@@ -1,0 +1,36 @@
+#!make
+include .env.local
+
+build:
+	@go build -o bin/ummah-growth/api main.go
+
+run: build
+	@./bin/proj
+
+install:
+	@go get ./...
+	@go mod vendor
+	@go mod tidy
+	@go mod download
+
+test:
+	@echo "Testing..."
+	@go test ./... -v
+
+watch:
+	@air -c .air.toml
+
+db-status:
+	@GOOSE_DRIVER=${GOOSE_DRIVER} GOOSE_DBSTRING=${DATABASE_URL} goose -dir=${GOOSE_MIGRATIONS_PATH} status
+
+db-up:
+	@GOOSE_DRIVER=${GOOSE_DRIVER} GOOSE_DBSTRING=${DATABASE_URL} goose -dir=${GOOSE_MIGRATIONS_PATH} up
+
+db-up-one:
+	@GOOSE_DRIVER=${GOOSE_DRIVER} GOOSE_DBSTRING=${DATABASE_URL} goose -dir=${GOOSE_MIGRATIONS_PATH} up-by-one 
+	
+db-down:
+	@GOOSE_DRIVER=${GOOSE_DRIVER} GOOSE_DBSTRING=${DATABASE_URL} goose -dir=${GOOSE_MIGRATIONS_PATH} down
+
+db-reset:
+	@GOOSE_DRIVER=${GOOSE_DRIVER} GOOSE_DBSTRING=${DATABASE_URL} goose -dir=${GOOSE_MIGRATIONS_PATH} reset
