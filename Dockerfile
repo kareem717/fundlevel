@@ -17,7 +17,7 @@ COPY . .
 RUN apk add --no-cache make
 
 # Build the Go app
-RUN go build -o bin/ummah-growth/api cmd/app/main.go
+RUN go build -o bin/ummah-growth/api main.go
 
 # Expose port 3000 to the outside world
 EXPOSE 3000
