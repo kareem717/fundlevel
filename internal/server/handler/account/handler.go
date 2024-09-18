@@ -5,9 +5,9 @@ import (
 	"database/sql"
 	"errors"
 
-	"ummah-growth/api/internal/entities/account"
-	"ummah-growth/api/internal/server/handler/shared"
-	"ummah-growth/api/internal/service"
+	"fundlevel/internal/entities/account"
+	"fundlevel/internal/server/handler/shared"
+	"fundlevel/internal/service"
 
 	"github.com/danielgtaylor/huma/v2"
 	"go.uber.org/zap"

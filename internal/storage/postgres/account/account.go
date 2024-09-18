@@ -4,8 +4,8 @@ import (
 	"context"
 	"database/sql"
 
-	"ummah-growth/api/internal/entities/account"
-	"ummah-growth/api/internal/storage/postgres/shared"
+	"fundlevel/internal/entities/account"
+	"fundlevel/internal/storage/postgres/shared"
 
 	"github.com/google/uuid"
 	"github.com/uptrace/bun"

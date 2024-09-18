@@ -3,9 +3,9 @@ package foo
 import (
 	"context"
 
-	"ummah-growth/api/internal/entities/foo"
-	"ummah-growth/api/internal/storage"
-	"ummah-growth/api/internal/storage/postgres/shared"
+	"fundlevel/internal/entities/foo"
+	"fundlevel/internal/storage"
+	"fundlevel/internal/storage/postgres/shared"
 )
 
 type FooService struct {

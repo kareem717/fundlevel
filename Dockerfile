@@ -16,8 +16,11 @@ COPY . .
 # Install make
 RUN apk add --no-cache make
 
+# Install Goose 
+RUN go install github.com/pressly/goose/v3/cmd/goose@latest
+
 # Build the Go app
-RUN go build -o bin/ummah-growth/api main.go
+RUN go build -o bin/fundlevel main.go
 
 # Expose port 3000 to the outside world
 EXPOSE 3000
@@ -26,4 +29,4 @@ EXPOSE 3000
 RUN printenv > .env.local
 
 # Command to run the executable
-CMD ["./bin/ummah-growth/api"]
+CMD ["./bin/fundlevel"]

@@ -3,8 +3,8 @@ package service
 import (
 	"context"
 
-	"ummah-growth/api/internal/entities/account"
-	"ummah-growth/api/internal/entities/foo"
+	"fundlevel/internal/entities/account"
+	"fundlevel/internal/entities/foo"
 
 	"github.com/google/uuid"
 )

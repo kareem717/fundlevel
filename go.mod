@@ -1,4 +1,4 @@
-module ummah-growth/api
+module fundlevel
 
 go 1.23.0
 

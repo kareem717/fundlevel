@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/supabase-community/gotrue-go/types"
-	"ummah-growth/api/internal/entities/account"
+	"fundlevel/internal/entities/account"
 )
 
 const (

@@ -3,9 +3,9 @@ package storage
 import (
 	"context"
 
-	"ummah-growth/api/internal/entities/account"
-	"ummah-growth/api/internal/entities/foo"
-	"ummah-growth/api/internal/storage/postgres/shared"
+	"fundlevel/internal/entities/account"
+	"fundlevel/internal/entities/foo"
+	"fundlevel/internal/storage/postgres/shared"
 
 	"github.com/google/uuid"
 )

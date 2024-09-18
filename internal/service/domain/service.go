@@ -1,11 +1,11 @@
 package domain
 
 import (
-	"ummah-growth/api/internal/service"
-	"ummah-growth/api/internal/service/domain/foo"
-	"ummah-growth/api/internal/service/domain/health"
-	"ummah-growth/api/internal/service/domain/account"
-	"ummah-growth/api/internal/storage"
+	"fundlevel/internal/service"
+	"fundlevel/internal/service/domain/foo"
+	"fundlevel/internal/service/domain/health"
+	"fundlevel/internal/service/domain/account"
+	"fundlevel/internal/storage"
 )
 
 // NewService implementation for storage of all services.

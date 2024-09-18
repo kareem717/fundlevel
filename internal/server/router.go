@@ -2,9 +2,9 @@ package http
 
 import (
 	"net/http"
-	"ummah-growth/api/internal/server/handler/account"
-	"ummah-growth/api/internal/server/handler/foo"
-	"ummah-growth/api/internal/server/handler/health"
+	"fundlevel/internal/server/handler/account"
+	"fundlevel/internal/server/handler/foo"
+	"fundlevel/internal/server/handler/health"
 
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/danielgtaylor/huma/v2/adapters/humachi"

@@ -3,8 +3,8 @@ package foo
 import (
 	"net/http"
 
-	"ummah-growth/api/internal/server/middleware"
-	"ummah-growth/api/internal/service"
+	"fundlevel/internal/server/middleware"
+	"fundlevel/internal/service"
 
 	"github.com/danielgtaylor/huma/v2"
 	"go.uber.org/zap"

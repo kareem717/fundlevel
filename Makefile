@@ -2,7 +2,7 @@
 include .env.local
 
 build:
-	@go build -o bin/ummah-growth/api main.go
+	@go build -o bin/fundlevel main.go
 
 run: build
 	@./bin/proj

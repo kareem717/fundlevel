@@ -3,7 +3,7 @@ package account
 import (
 	"github.com/google/uuid"
 	"github.com/uptrace/bun"
-	"ummah-growth/api/internal/entities/shared"
+	"fundlevel/internal/entities/shared"
 )
 
 // Account represents an account entity.

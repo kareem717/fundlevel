@@ -1,7 +1,7 @@
 package foo
 
 import (
-	"ummah-growth/api/internal/entities/shared"
+	"fundlevel/internal/entities/shared"
 
 	"github.com/uptrace/bun"
 )

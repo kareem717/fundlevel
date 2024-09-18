@@ -6,8 +6,8 @@ import (
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/supabase-community/supabase-go"
 	"go.uber.org/zap"
-	"ummah-growth/api/internal/server/middleware"
-	"ummah-growth/api/internal/service"
+	"fundlevel/internal/server/middleware"
+	"fundlevel/internal/service"
 )
 
 func RegisterHumaRoutes(

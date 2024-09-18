@@ -3,8 +3,8 @@ package health
 import (
 	"context"
 
-	"ummah-growth/api/internal/server/handler/shared"
-	"ummah-growth/api/internal/service"
+	"fundlevel/internal/server/handler/shared"
+	"fundlevel/internal/service"
 
 	"go.uber.org/zap"
 )

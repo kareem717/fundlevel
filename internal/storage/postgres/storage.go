@@ -5,9 +5,9 @@ import (
 	"errors"
 	"time"
 
-	"ummah-growth/api/internal/storage"
-	"ummah-growth/api/internal/storage/postgres/account"
-	"ummah-growth/api/internal/storage/postgres/foo"
+	"fundlevel/internal/storage"
+	"fundlevel/internal/storage/postgres/account"
+	"fundlevel/internal/storage/postgres/foo"
 
 	"github.com/alexlast/bunzap"
 	"github.com/jackc/pgx/v5/pgxpool"

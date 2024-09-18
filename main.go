@@ -6,9 +6,9 @@ import (
 	"os"
 	"strconv"
 
-	server "ummah-growth/api/internal/server"
-	"ummah-growth/api/internal/service/domain"
-	"ummah-growth/api/internal/storage/postgres"
+	server "fundlevel/internal/server"
+	"fundlevel/internal/service/domain"
+	"fundlevel/internal/storage/postgres"
 
 	"github.com/danielgtaylor/huma/v2/humacli"
 	"github.com/joho/godotenv"
