@@ -4,6 +4,7 @@ import (
 	"ummah-growth/api/internal/service"
 	"ummah-growth/api/internal/service/domain/foo"
 	"ummah-growth/api/internal/service/domain/health"
+	"ummah-growth/api/internal/service/domain/account"
 	"ummah-growth/api/internal/storage"
 )
 
@@ -14,5 +15,6 @@ func NewService(
 	return &service.Service{
 		FooService:    foo.NewFooService(repositories),
 		HealthService: health.NewHealthService(repositories),
+		AccountService: account.NewAccountService(repositories),
 	}
 }

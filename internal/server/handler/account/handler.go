@@ -68,6 +68,7 @@ func (h *httpHandler) getByUserId(ctx context.Context, input *shared.PathUserIDP
 		return nil, huma.Error403Forbidden("Cannot get account for another user")
 	}
 
+	h.logger.Info("getting account by user id", zap.Any("user id", input.UserID))
 	account, err := h.accountService.GetByUserId(ctx, input.UserID)
 	if err != nil {
 		switch {
