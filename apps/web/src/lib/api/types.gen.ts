@@ -3,8 +3,9 @@
 export type Account = {
     createdAt: Date;
     deletedAt: (Date) | null;
+    firstName: string;
     id: number;
-    name: string;
+    lastName: string;
     updatedAt: (Date) | null;
     userId: string;
 };
@@ -14,16 +15,45 @@ export type CreateAccountParams = {
      * A URL to the JSON Schema for this object.
      */
     readonly $schema?: string;
-    name: string;
+    firstName: string;
+    lastName: string;
     userId: string;
 };
 
-export type CreateFooParams = {
+export type CreateOfferParams = {
     /**
      * A URL to the JSON Schema for this object.
      */
     readonly $schema?: string;
+    offererAccountId: number;
+    percentageAmount: number;
+    roundId: number;
+    usdAmount: number;
+};
+
+export type CreateRoundParams = {
+    /**
+     * A URL to the JSON Schema for this object.
+     */
+    readonly $schema?: string;
+    endTime: Date;
+    isAuctioned: boolean;
+    maximumInvestmentPercentage: number;
+    minimumInvestmentPercentage: number;
+    offeredPercentage: number;
+    startTime: Date;
+    usdPercentageValue: number;
+    ventureId: number;
+};
+
+export type CreateVentureParams = {
+    /**
+     * A URL to the JSON Schema for this object.
+     */
+    readonly $schema?: string;
+    description: string;
     name: string;
+    ownerAccountId: number;
 };
 
 export type ErrorDetail = {
@@ -72,23 +102,37 @@ export type ErrorModel = {
     type?: string;
 };
 
-export type Foo = {
-    createdAt: Date;
-    deletedAt: (Date) | null;
-    id: number;
-    name: string;
-    updatedAt: (Date) | null;
-};
-
-export type GetAllFooOutputBody = {
+export type GetAllVenturesOutputBody = {
     /**
      * A URL to the JSON Schema for this object.
      */
     readonly $schema?: string;
-    foos: Array<Foo> | null;
     hasMore: boolean;
     message: string;
     nextCursor: (number) | null;
+    ventures: Array<Venture> | null;
+};
+
+export type GetManyOffersOutputBody = {
+    /**
+     * A URL to the JSON Schema for this object.
+     */
+    readonly $schema?: string;
+    hasMore: boolean;
+    message: string;
+    nextCursor: (number) | null;
+    offers: Array<Offer> | null;
+};
+
+export type GetManyRoundsOutputBody = {
+    /**
+     * A URL to the JSON Schema for this object.
+     */
+    readonly $schema?: string;
+    hasMore: boolean;
+    message: string;
+    nextCursor: (number) | null;
+    rounds: Array<Round> | null;
 };
 
 export type MessageResponse = {
@@ -97,6 +141,42 @@ export type MessageResponse = {
      */
     readonly $schema?: string;
     message: string;
+};
+
+export type Offer = {
+    createdAt: Date;
+    deletedAt: (Date) | null;
+    id: number;
+    offererAccountId: number;
+    percentageAmount: number;
+    roundId: number;
+    status: 'pending' | 'accepted' | 'rejected' | 'withdrawn';
+    updatedAt: (Date) | null;
+    usdAmount: number;
+};
+
+export type status = 'pending' | 'accepted' | 'rejected' | 'withdrawn';
+
+export const status = {
+    PENDING: 'pending',
+    ACCEPTED: 'accepted',
+    REJECTED: 'rejected',
+    WITHDRAWN: 'withdrawn'
+} as const;
+
+export type Round = {
+    createdAt: Date;
+    deletedAt: (Date) | null;
+    endTime: Date;
+    id: number;
+    isAuctioned: boolean;
+    maximumInvestmentPercentage: number;
+    minimumInvestmentPercentage: number;
+    offeredPercentage: number;
+    startTime: Date;
+    updatedAt: (Date) | null;
+    usdPercentageValue: number;
+    ventureId: number;
 };
 
 export type SingleAccountResponseBody = {
@@ -108,13 +188,31 @@ export type SingleAccountResponseBody = {
     message: string;
 };
 
-export type SingleFooResponseBody = {
+export type SingleOfferResponseBody = {
     /**
      * A URL to the JSON Schema for this object.
      */
     readonly $schema?: string;
-    foo: Foo;
     message: string;
+    offer: Offer;
+};
+
+export type SingleRoundResponseBody = {
+    /**
+     * A URL to the JSON Schema for this object.
+     */
+    readonly $schema?: string;
+    message: string;
+    round: Round;
+};
+
+export type SingleVentureResponseBody = {
+    /**
+     * A URL to the JSON Schema for this object.
+     */
+    readonly $schema?: string;
+    message: string;
+    venture: Venture;
 };
 
 export type UpdateAccountParams = {
@@ -122,15 +220,43 @@ export type UpdateAccountParams = {
      * A URL to the JSON Schema for this object.
      */
     readonly $schema?: string;
-    name: string;
+    firstName: string;
+    lastName: string;
 };
 
-export type UpdateFooParams = {
+export type UpdateOfferParams = {
     /**
      * A URL to the JSON Schema for this object.
      */
     readonly $schema?: string;
+    status: 'pending' | 'accepted' | 'rejected' | 'withdrawn';
+};
+
+export type UpdateRoundParams = {
+    /**
+     * A URL to the JSON Schema for this object.
+     */
+    readonly $schema?: string;
+    endTime: Date;
+};
+
+export type UpdateVentureParams = {
+    /**
+     * A URL to the JSON Schema for this object.
+     */
+    readonly $schema?: string;
+    description: string;
     name: string;
+};
+
+export type Venture = {
+    createdAt: Date;
+    deletedAt: (Date) | null;
+    description: string;
+    id: number;
+    name: string;
+    ownerAccountId: number;
+    updatedAt: (Date) | null;
 };
 
 export type CreateAccountData = {
@@ -182,59 +308,173 @@ export type UpdateAccountResponse = (SingleAccountResponseBody);
 
 export type UpdateAccountError = (ErrorModel);
 
-export type GetAllFoosData = {
+export type HealthCheckResponse = (MessageResponse);
+
+export type HealthCheckError = (ErrorModel);
+
+export type GetAllOffersData = {
     query?: {
         cursor?: number;
         limit?: number;
     };
 };
 
-export type GetAllFoosResponse = (GetAllFooOutputBody);
+export type GetAllOffersResponse = (GetManyOffersOutputBody);
 
-export type GetAllFoosError = (ErrorModel);
+export type GetAllOffersError = (ErrorModel);
 
-export type CreateFooData = {
-    body: CreateFooParams;
+export type CreateOfferData = {
+    body: CreateOfferParams;
 };
 
-export type CreateFooResponse = (SingleFooResponseBody);
+export type CreateOfferResponse = (SingleOfferResponseBody);
 
-export type CreateFooError = (ErrorModel);
+export type CreateOfferError = (ErrorModel);
 
-export type DeleteFooData = {
+export type GetOffersByRoundIdData = {
+    path: {
+        id: number;
+    };
+    query?: {
+        cursor?: number;
+        limit?: number;
+    };
+};
+
+export type GetOffersByRoundIdResponse = (GetManyOffersOutputBody);
+
+export type GetOffersByRoundIdError = (ErrorModel);
+
+export type DeleteOfferData = {
     path: {
         id: number;
     };
 };
 
-export type DeleteFooResponse = (MessageResponse);
+export type DeleteOfferResponse = (MessageResponse);
 
-export type DeleteFooError = (ErrorModel);
+export type DeleteOfferError = (ErrorModel);
 
-export type GetFooByIdData = {
+export type GetOfferByIdData = {
     path: {
         id: number;
     };
 };
 
-export type GetFooByIdResponse = (SingleFooResponseBody);
+export type GetOfferByIdResponse = (SingleOfferResponseBody);
 
-export type GetFooByIdError = (ErrorModel);
+export type GetOfferByIdError = (ErrorModel);
 
-export type UpdateFooData = {
-    body: UpdateFooParams;
+export type UpdateOfferStatusData = {
+    body: UpdateOfferParams;
     path: {
         id: number;
     };
 };
 
-export type UpdateFooResponse = (SingleFooResponseBody);
+export type UpdateOfferStatusResponse = (SingleOfferResponseBody);
 
-export type UpdateFooError = (ErrorModel);
+export type UpdateOfferStatusError = (ErrorModel);
 
-export type HealthCheckResponse = (MessageResponse);
+export type GetAllRoundsData = {
+    query?: {
+        cursor?: number;
+        limit?: number;
+    };
+};
 
-export type HealthCheckError = (ErrorModel);
+export type GetAllRoundsResponse = (GetManyRoundsOutputBody);
+
+export type GetAllRoundsError = (ErrorModel);
+
+export type CreateRoundData = {
+    body: CreateRoundParams;
+};
+
+export type CreateRoundResponse = (SingleRoundResponseBody);
+
+export type CreateRoundError = (ErrorModel);
+
+export type DeleteRoundData = {
+    path: {
+        id: number;
+    };
+};
+
+export type DeleteRoundResponse = (MessageResponse);
+
+export type DeleteRoundError = (ErrorModel);
+
+export type GetRoundByIdData = {
+    path: {
+        id: number;
+    };
+};
+
+export type GetRoundByIdResponse = (SingleRoundResponseBody);
+
+export type GetRoundByIdError = (ErrorModel);
+
+export type UpdateRoundData = {
+    body: UpdateRoundParams;
+    path: {
+        id: number;
+    };
+};
+
+export type UpdateRoundResponse = (SingleRoundResponseBody);
+
+export type UpdateRoundError = (ErrorModel);
+
+export type GetAllVenturesData = {
+    query?: {
+        cursor?: number;
+        limit?: number;
+    };
+};
+
+export type GetAllVenturesResponse = (GetAllVenturesOutputBody);
+
+export type GetAllVenturesError = (ErrorModel);
+
+export type CreateVentureData = {
+    body: CreateVentureParams;
+};
+
+export type CreateVentureResponse = (SingleVentureResponseBody);
+
+export type CreateVentureError = (ErrorModel);
+
+export type DeleteVentureData = {
+    path: {
+        id: number;
+    };
+};
+
+export type DeleteVentureResponse = (MessageResponse);
+
+export type DeleteVentureError = (ErrorModel);
+
+export type GetVentureByIdData = {
+    path: {
+        id: number;
+    };
+};
+
+export type GetVentureByIdResponse = (SingleVentureResponseBody);
+
+export type GetVentureByIdError = (ErrorModel);
+
+export type UpdateVentureData = {
+    body: UpdateVentureParams;
+    path: {
+        id: number;
+    };
+};
+
+export type UpdateVentureResponse = (SingleVentureResponseBody);
+
+export type UpdateVentureError = (ErrorModel);
 
 export type CreateAccountResponseTransformer = (data: any) => Promise<CreateAccountResponse>;
 
@@ -288,13 +528,13 @@ export const UpdateAccountResponseTransformer: UpdateAccountResponseTransformer 
     return data;
 };
 
-export type GetAllFoosResponseTransformer = (data: any) => Promise<GetAllFoosResponse>;
+export type GetAllOffersResponseTransformer = (data: any) => Promise<GetAllOffersResponse>;
 
-export type GetAllFooOutputBodyModelResponseTransformer = (data: any) => GetAllFooOutputBody;
+export type GetManyOffersOutputBodyModelResponseTransformer = (data: any) => GetManyOffersOutputBody;
 
-export type FooModelResponseTransformer = (data: any) => Foo;
+export type OfferModelResponseTransformer = (data: any) => Offer;
 
-export const FooModelResponseTransformer: FooModelResponseTransformer = data => {
+export const OfferModelResponseTransformer: OfferModelResponseTransformer = data => {
     if (data?.createdAt) {
         data.createdAt = new Date(data.createdAt);
     }
@@ -307,44 +547,179 @@ export const FooModelResponseTransformer: FooModelResponseTransformer = data => 
     return data;
 };
 
-export const GetAllFooOutputBodyModelResponseTransformer: GetAllFooOutputBodyModelResponseTransformer = data => {
-    if (Array.isArray(data?.foos)) {
-        data.foos.forEach(FooModelResponseTransformer);
+export const GetManyOffersOutputBodyModelResponseTransformer: GetManyOffersOutputBodyModelResponseTransformer = data => {
+    if (Array.isArray(data?.offers)) {
+        data.offers.forEach(OfferModelResponseTransformer);
     }
     return data;
 };
 
-export const GetAllFoosResponseTransformer: GetAllFoosResponseTransformer = async (data) => {
-    GetAllFooOutputBodyModelResponseTransformer(data);
+export const GetAllOffersResponseTransformer: GetAllOffersResponseTransformer = async (data) => {
+    GetManyOffersOutputBodyModelResponseTransformer(data);
     return data;
 };
 
-export type CreateFooResponseTransformer = (data: any) => Promise<CreateFooResponse>;
+export type CreateOfferResponseTransformer = (data: any) => Promise<CreateOfferResponse>;
 
-export type SingleFooResponseBodyModelResponseTransformer = (data: any) => SingleFooResponseBody;
+export type SingleOfferResponseBodyModelResponseTransformer = (data: any) => SingleOfferResponseBody;
 
-export const SingleFooResponseBodyModelResponseTransformer: SingleFooResponseBodyModelResponseTransformer = data => {
-    if (data?.foo) {
-        FooModelResponseTransformer(data.foo);
+export const SingleOfferResponseBodyModelResponseTransformer: SingleOfferResponseBodyModelResponseTransformer = data => {
+    if (data?.offer) {
+        OfferModelResponseTransformer(data.offer);
     }
     return data;
 };
 
-export const CreateFooResponseTransformer: CreateFooResponseTransformer = async (data) => {
-    SingleFooResponseBodyModelResponseTransformer(data);
+export const CreateOfferResponseTransformer: CreateOfferResponseTransformer = async (data) => {
+    SingleOfferResponseBodyModelResponseTransformer(data);
     return data;
 };
 
-export type GetFooByIdResponseTransformer = (data: any) => Promise<GetFooByIdResponse>;
+export type GetOffersByRoundIdResponseTransformer = (data: any) => Promise<GetOffersByRoundIdResponse>;
 
-export const GetFooByIdResponseTransformer: GetFooByIdResponseTransformer = async (data) => {
-    SingleFooResponseBodyModelResponseTransformer(data);
+export const GetOffersByRoundIdResponseTransformer: GetOffersByRoundIdResponseTransformer = async (data) => {
+    GetManyOffersOutputBodyModelResponseTransformer(data);
     return data;
 };
 
-export type UpdateFooResponseTransformer = (data: any) => Promise<UpdateFooResponse>;
+export type GetOfferByIdResponseTransformer = (data: any) => Promise<GetOfferByIdResponse>;
 
-export const UpdateFooResponseTransformer: UpdateFooResponseTransformer = async (data) => {
-    SingleFooResponseBodyModelResponseTransformer(data);
+export const GetOfferByIdResponseTransformer: GetOfferByIdResponseTransformer = async (data) => {
+    SingleOfferResponseBodyModelResponseTransformer(data);
+    return data;
+};
+
+export type UpdateOfferStatusResponseTransformer = (data: any) => Promise<UpdateOfferStatusResponse>;
+
+export const UpdateOfferStatusResponseTransformer: UpdateOfferStatusResponseTransformer = async (data) => {
+    SingleOfferResponseBodyModelResponseTransformer(data);
+    return data;
+};
+
+export type GetAllRoundsResponseTransformer = (data: any) => Promise<GetAllRoundsResponse>;
+
+export type GetManyRoundsOutputBodyModelResponseTransformer = (data: any) => GetManyRoundsOutputBody;
+
+export type RoundModelResponseTransformer = (data: any) => Round;
+
+export const RoundModelResponseTransformer: RoundModelResponseTransformer = data => {
+    if (data?.createdAt) {
+        data.createdAt = new Date(data.createdAt);
+    }
+    if (data?.deletedAt) {
+        data.deletedAt = new Date(data.deletedAt);
+    }
+    if (data?.endTime) {
+        data.endTime = new Date(data.endTime);
+    }
+    if (data?.startTime) {
+        data.startTime = new Date(data.startTime);
+    }
+    if (data?.updatedAt) {
+        data.updatedAt = new Date(data.updatedAt);
+    }
+    return data;
+};
+
+export const GetManyRoundsOutputBodyModelResponseTransformer: GetManyRoundsOutputBodyModelResponseTransformer = data => {
+    if (Array.isArray(data?.rounds)) {
+        data.rounds.forEach(RoundModelResponseTransformer);
+    }
+    return data;
+};
+
+export const GetAllRoundsResponseTransformer: GetAllRoundsResponseTransformer = async (data) => {
+    GetManyRoundsOutputBodyModelResponseTransformer(data);
+    return data;
+};
+
+export type CreateRoundResponseTransformer = (data: any) => Promise<CreateRoundResponse>;
+
+export type SingleRoundResponseBodyModelResponseTransformer = (data: any) => SingleRoundResponseBody;
+
+export const SingleRoundResponseBodyModelResponseTransformer: SingleRoundResponseBodyModelResponseTransformer = data => {
+    if (data?.round) {
+        RoundModelResponseTransformer(data.round);
+    }
+    return data;
+};
+
+export const CreateRoundResponseTransformer: CreateRoundResponseTransformer = async (data) => {
+    SingleRoundResponseBodyModelResponseTransformer(data);
+    return data;
+};
+
+export type GetRoundByIdResponseTransformer = (data: any) => Promise<GetRoundByIdResponse>;
+
+export const GetRoundByIdResponseTransformer: GetRoundByIdResponseTransformer = async (data) => {
+    SingleRoundResponseBodyModelResponseTransformer(data);
+    return data;
+};
+
+export type UpdateRoundResponseTransformer = (data: any) => Promise<UpdateRoundResponse>;
+
+export const UpdateRoundResponseTransformer: UpdateRoundResponseTransformer = async (data) => {
+    SingleRoundResponseBodyModelResponseTransformer(data);
+    return data;
+};
+
+export type GetAllVenturesResponseTransformer = (data: any) => Promise<GetAllVenturesResponse>;
+
+export type GetAllVenturesOutputBodyModelResponseTransformer = (data: any) => GetAllVenturesOutputBody;
+
+export type VentureModelResponseTransformer = (data: any) => Venture;
+
+export const VentureModelResponseTransformer: VentureModelResponseTransformer = data => {
+    if (data?.createdAt) {
+        data.createdAt = new Date(data.createdAt);
+    }
+    if (data?.deletedAt) {
+        data.deletedAt = new Date(data.deletedAt);
+    }
+    if (data?.updatedAt) {
+        data.updatedAt = new Date(data.updatedAt);
+    }
+    return data;
+};
+
+export const GetAllVenturesOutputBodyModelResponseTransformer: GetAllVenturesOutputBodyModelResponseTransformer = data => {
+    if (Array.isArray(data?.ventures)) {
+        data.ventures.forEach(VentureModelResponseTransformer);
+    }
+    return data;
+};
+
+export const GetAllVenturesResponseTransformer: GetAllVenturesResponseTransformer = async (data) => {
+    GetAllVenturesOutputBodyModelResponseTransformer(data);
+    return data;
+};
+
+export type CreateVentureResponseTransformer = (data: any) => Promise<CreateVentureResponse>;
+
+export type SingleVentureResponseBodyModelResponseTransformer = (data: any) => SingleVentureResponseBody;
+
+export const SingleVentureResponseBodyModelResponseTransformer: SingleVentureResponseBodyModelResponseTransformer = data => {
+    if (data?.venture) {
+        VentureModelResponseTransformer(data.venture);
+    }
+    return data;
+};
+
+export const CreateVentureResponseTransformer: CreateVentureResponseTransformer = async (data) => {
+    SingleVentureResponseBodyModelResponseTransformer(data);
+    return data;
+};
+
+export type GetVentureByIdResponseTransformer = (data: any) => Promise<GetVentureByIdResponse>;
+
+export const GetVentureByIdResponseTransformer: GetVentureByIdResponseTransformer = async (data) => {
+    SingleVentureResponseBodyModelResponseTransformer(data);
+    return data;
+};
+
+export type UpdateVentureResponseTransformer = (data: any) => Promise<UpdateVentureResponse>;
+
+export const UpdateVentureResponseTransformer: UpdateVentureResponseTransformer = async (data) => {
+    SingleVentureResponseBodyModelResponseTransformer(data);
     return data;
 };

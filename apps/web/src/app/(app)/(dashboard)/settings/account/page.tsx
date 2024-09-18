@@ -1,4 +1,4 @@
-import { UpdateAccountForm } from "@/components/app/settings/account/update-account-form"
+import { UpdateAccountForm } from "@/components/auth/account/update-account-form"
 import {
   Card,
   CardContent,

@@ -16,42 +16,54 @@ import {
  */
 export const createAccount = actionClient
 	.schema(createAccountSchema)
-	.action(async ({ parsedInput: { name }, ctx: { apiClient, user } }) => {
-		if (!user) {
-			throw new Error("User not found");
-		}
+	.action(
+		async ({
+			parsedInput: { firstName, lastName },
+			ctx: { apiClient, user },
+		}) => {
+			if (!user) {
+				throw new Error("User not found");
+			}
 
-		return await createAccountApi({
-			client: apiClient,
-			body: {
-				name,
-				userId: user.id,
-			},
-			throwOnError: true,
-		});
-	});
+			return await createAccountApi({
+				client: apiClient,
+				body: {
+					firstName,
+					lastName,
+					userId: user.id,
+				},
+				throwOnError: true,
+			});
+		}
+	);
 
 /**
  * Update the currently authenticated account
  */
 export const updateAccount = actionClient
 	.schema(updateAccountSchema)
-	.action(async ({ parsedInput: { name }, ctx: { apiClient, account } }) => {
-		if (!account) {
-			throw new Error("Account not found");
-		}
+	.action(
+		async ({
+			parsedInput: { firstName, lastName },
+			ctx: { apiClient, account },
+		}) => {
+			if (!account) {
+				throw new Error("Account not found");
+			}
 
-		return await updateAccountApi({
-			client: apiClient,
-			path: {
-				id: account.id,
-			},
-			body: {
-				name,
-			},
-			throwOnError: true,
-		});
-	});
+			return await updateAccountApi({
+				client: apiClient,
+				path: {
+					id: account.id,
+				},
+				body: {
+					firstName,
+					lastName,
+				},
+				throwOnError: true,
+			});
+		}
+	);
 
 /**
  * Get the currently authenticated account

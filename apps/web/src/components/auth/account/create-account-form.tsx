@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import {
 	Form,
 	FormControl,
-	FormDescription,
 	FormField,
 	FormItem,
 	FormLabel,
@@ -60,16 +59,26 @@ export const CreateAccountForm: FC<CreateAccountFormProps> = ({ className, ...pr
 			<form onSubmit={form.handleSubmit(onSubmit)} className={cn("space-y-4", className)} {...props}>
 				<FormField
 					control={form.control}
-					name="name"
+					name="firstName"
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel>Name</FormLabel>
+							<FormLabel>First Name</FormLabel>
 							<FormControl>
 								<Input placeholder="Jimmy" {...field} />
 							</FormControl>
-							<FormDescription>
-								This is your public display name.
-							</FormDescription>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+				<FormField
+					control={form.control}
+					name="lastName"
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>Last Name</FormLabel>
+							<FormControl>
+								<Input placeholder="Smith" {...field} />
+							</FormControl>
 							<FormMessage />
 						</FormItem>
 					)}

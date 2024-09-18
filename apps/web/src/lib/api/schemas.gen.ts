@@ -11,11 +11,23 @@ export const AccountSchema = {
             format: 'date-time',
             type: ['string', 'null']
         },
+        firstName: {
+            maxLength: 30,
+            minLength: 3,
+            pattern: '^[a-zA-Z]+$',
+            patternDescription: 'Must be a alphabetical string with at least 3 characters',
+            type: 'string'
+        },
         id: {
             format: 'int64',
+            minimum: 1,
             type: 'integer'
         },
-        name: {
+        lastName: {
+            maxLength: 30,
+            minLength: 3,
+            pattern: '^[a-zA-Z]+$',
+            patternDescription: 'Must be a alphabetical string with at least 3 characters',
             type: 'string'
         },
         updatedAt: {
@@ -29,7 +41,7 @@ export const AccountSchema = {
             type: 'string'
         }
     },
-    required: ['id', 'userId', 'name', 'createdAt', 'updatedAt', 'deletedAt'],
+    required: ['id', 'userId', 'firstName', 'lastName', 'createdAt', 'updatedAt', 'deletedAt'],
     type: 'object'
 } as const;
 
@@ -42,7 +54,18 @@ export const CreateAccountParamsSchema = {
             readOnly: true,
             type: 'string'
         },
-        name: {
+        firstName: {
+            maxLength: 30,
+            minLength: 3,
+            pattern: '^[a-zA-Z]+$',
+            patternDescription: 'Must be a alphabetical string with at least 3 characters',
+            type: 'string'
+        },
+        lastName: {
+            maxLength: 30,
+            minLength: 3,
+            pattern: '^[a-zA-Z]+$',
+            patternDescription: 'Must be a alphabetical string with at least 3 characters',
             type: 'string'
         },
         userId: {
@@ -52,24 +75,124 @@ export const CreateAccountParamsSchema = {
             type: 'string'
         }
     },
-    required: ['name', 'userId'],
+    required: ['userId', 'firstName', 'lastName'],
     type: 'object'
 } as const;
 
-export const CreateFooParamsSchema = {
+export const CreateOfferParamsSchema = {
     additionalProperties: false,
     properties: {
         '$schema': {
-            examples: ['https://example.com/schemas/CreateFooParams.json'],
+            examples: ['https://example.com/schemas/CreateOfferParams.json'],
             format: 'uri',
             readOnly: true,
             type: 'string'
         },
-        name: {
-            type: 'string'
+        offererAccountId: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
+        percentageAmount: {
+            format: 'double',
+            maximum: 100,
+            minimum: 0,
+            type: 'number'
+        },
+        roundId: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
+        usdAmount: {
+            format: 'double',
+            maximum: 9999999999.99,
+            minimum: 0,
+            type: 'number'
         }
     },
-    required: ['name'],
+    required: ['roundId', 'offererAccountId', 'percentageAmount', 'usdAmount'],
+    type: 'object'
+} as const;
+
+export const CreateRoundParamsSchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/CreateRoundParams.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        endTime: {
+            format: 'date-time',
+            type: 'string'
+        },
+        isAuctioned: {
+            type: 'boolean'
+        },
+        maximumInvestmentPercentage: {
+            format: 'double',
+            minimum: 0,
+            type: 'number'
+        },
+        minimumInvestmentPercentage: {
+            format: 'double',
+            minimum: 0,
+            type: 'number'
+        },
+        offeredPercentage: {
+            format: 'double',
+            maximum: 100,
+            minimum: 0,
+            type: 'number'
+        },
+        startTime: {
+            format: 'date-time',
+            type: 'string'
+        },
+        usdPercentageValue: {
+            format: 'double',
+            maximum: 9999999999.99,
+            minimum: 0,
+            type: 'number'
+        },
+        ventureId: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        }
+    },
+    required: ['offeredPercentage', 'usdPercentageValue', 'minimumInvestmentPercentage', 'maximumInvestmentPercentage', 'isAuctioned', 'startTime', 'ventureId', 'endTime'],
+    type: 'object'
+} as const;
+
+export const CreateVentureParamsSchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/CreateVentureParams.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        description: {
+            maxLength: 5000,
+            minLength: 3,
+            type: 'string'
+        },
+        name: {
+            maxLength: 100,
+            minLength: 3,
+            type: 'string'
+        },
+        ownerAccountId: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        }
+    },
+    required: ['ownerAccountId', 'name', 'description'],
     type: 'object'
 } as const;
 
@@ -130,47 +253,14 @@ export const ErrorModelSchema = {
     type: 'object'
 } as const;
 
-export const FooSchema = {
-    additionalProperties: false,
-    properties: {
-        createdAt: {
-            format: 'date-time',
-            type: 'string'
-        },
-        deletedAt: {
-            format: 'date-time',
-            type: ['string', 'null']
-        },
-        id: {
-            format: 'int64',
-            type: 'integer'
-        },
-        name: {
-            type: 'string'
-        },
-        updatedAt: {
-            format: 'date-time',
-            type: ['string', 'null']
-        }
-    },
-    required: ['id', 'name', 'createdAt', 'updatedAt', 'deletedAt'],
-    type: 'object'
-} as const;
-
-export const GetAllFooOutputBodySchema = {
+export const GetAllVenturesOutputBodySchema = {
     additionalProperties: false,
     properties: {
         '$schema': {
-            examples: ['https://example.com/schemas/GetAllFooOutputBody.json'],
+            examples: ['https://example.com/schemas/GetAllVenturesOutputBody.json'],
             format: 'uri',
             readOnly: true,
             type: 'string'
-        },
-        foos: {
-            items: {
-                '$ref': '#/components/schemas/Foo'
-            },
-            type: ['array', 'null']
         },
         hasMore: {
             type: 'boolean'
@@ -181,9 +271,75 @@ export const GetAllFooOutputBodySchema = {
         nextCursor: {
             format: 'int64',
             type: ['integer', 'null']
+        },
+        ventures: {
+            items: {
+                '$ref': '#/components/schemas/Venture'
+            },
+            type: ['array', 'null']
         }
     },
-    required: ['foos', 'message', 'nextCursor', 'hasMore'],
+    required: ['ventures', 'message', 'nextCursor', 'hasMore'],
+    type: 'object'
+} as const;
+
+export const GetManyOffersOutputBodySchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/GetManyOffersOutputBody.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        hasMore: {
+            type: 'boolean'
+        },
+        message: {
+            type: 'string'
+        },
+        nextCursor: {
+            format: 'int64',
+            type: ['integer', 'null']
+        },
+        offers: {
+            items: {
+                '$ref': '#/components/schemas/Offer'
+            },
+            type: ['array', 'null']
+        }
+    },
+    required: ['offers', 'message', 'nextCursor', 'hasMore'],
+    type: 'object'
+} as const;
+
+export const GetManyRoundsOutputBodySchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/GetManyRoundsOutputBody.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        hasMore: {
+            type: 'boolean'
+        },
+        message: {
+            type: 'string'
+        },
+        nextCursor: {
+            format: 'int64',
+            type: ['integer', 'null']
+        },
+        rounds: {
+            items: {
+                '$ref': '#/components/schemas/Round'
+            },
+            type: ['array', 'null']
+        }
+    },
+    required: ['rounds', 'message', 'nextCursor', 'hasMore'],
     type: 'object'
 } as const;
 
@@ -201,6 +357,120 @@ export const MessageResponseSchema = {
         }
     },
     required: ['message'],
+    type: 'object'
+} as const;
+
+export const OfferSchema = {
+    additionalProperties: false,
+    properties: {
+        createdAt: {
+            format: 'date-time',
+            type: 'string'
+        },
+        deletedAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        },
+        id: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
+        offererAccountId: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
+        percentageAmount: {
+            format: 'double',
+            maximum: 100,
+            minimum: 0,
+            type: 'number'
+        },
+        roundId: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
+        status: {
+            enum: ['pending', 'accepted', 'rejected', 'withdrawn'],
+            type: 'string'
+        },
+        updatedAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        },
+        usdAmount: {
+            format: 'double',
+            maximum: 9999999999.99,
+            minimum: 0,
+            type: 'number'
+        }
+    },
+    required: ['id', 'roundId', 'offererAccountId', 'percentageAmount', 'usdAmount', 'status', 'createdAt', 'updatedAt', 'deletedAt'],
+    type: 'object'
+} as const;
+
+export const RoundSchema = {
+    additionalProperties: false,
+    properties: {
+        createdAt: {
+            format: 'date-time',
+            type: 'string'
+        },
+        deletedAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        },
+        endTime: {
+            format: 'date-time',
+            type: 'string'
+        },
+        id: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
+        isAuctioned: {
+            type: 'boolean'
+        },
+        maximumInvestmentPercentage: {
+            format: 'double',
+            minimum: 0,
+            type: 'number'
+        },
+        minimumInvestmentPercentage: {
+            format: 'double',
+            minimum: 0,
+            type: 'number'
+        },
+        offeredPercentage: {
+            format: 'double',
+            maximum: 100,
+            minimum: 0,
+            type: 'number'
+        },
+        startTime: {
+            format: 'date-time',
+            type: 'string'
+        },
+        updatedAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        },
+        usdPercentageValue: {
+            format: 'double',
+            maximum: 9999999999.99,
+            minimum: 0,
+            type: 'number'
+        },
+        ventureId: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        }
+    },
+    required: ['id', 'offeredPercentage', 'usdPercentageValue', 'minimumInvestmentPercentage', 'maximumInvestmentPercentage', 'isAuctioned', 'startTime', 'ventureId', 'endTime', 'createdAt', 'updatedAt', 'deletedAt'],
     type: 'object'
 } as const;
 
@@ -224,23 +494,63 @@ export const SingleAccountResponseBodySchema = {
     type: 'object'
 } as const;
 
-export const SingleFooResponseBodySchema = {
+export const SingleOfferResponseBodySchema = {
     additionalProperties: false,
     properties: {
         '$schema': {
-            examples: ['https://example.com/schemas/SingleFooResponseBody.json'],
+            examples: ['https://example.com/schemas/SingleOfferResponseBody.json'],
             format: 'uri',
             readOnly: true,
             type: 'string'
         },
-        foo: {
-            '$ref': '#/components/schemas/Foo'
+        message: {
+            type: 'string'
+        },
+        offer: {
+            '$ref': '#/components/schemas/Offer'
+        }
+    },
+    required: ['offer', 'message'],
+    type: 'object'
+} as const;
+
+export const SingleRoundResponseBodySchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/SingleRoundResponseBody.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
         },
         message: {
             type: 'string'
+        },
+        round: {
+            '$ref': '#/components/schemas/Round'
         }
     },
-    required: ['foo', 'message'],
+    required: ['round', 'message'],
+    type: 'object'
+} as const;
+
+export const SingleVentureResponseBodySchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/SingleVentureResponseBody.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        message: {
+            type: 'string'
+        },
+        venture: {
+            '$ref': '#/components/schemas/Venture'
+        }
+    },
+    required: ['venture', 'message'],
     type: 'object'
 } as const;
 
@@ -253,27 +563,121 @@ export const UpdateAccountParamsSchema = {
             readOnly: true,
             type: 'string'
         },
-        name: {
+        firstName: {
+            maxLength: 30,
+            minLength: 3,
+            pattern: '^[a-zA-Z]+$',
+            patternDescription: 'Must be a alphabetical string with at least 3 characters',
+            type: 'string'
+        },
+        lastName: {
+            maxLength: 30,
+            minLength: 3,
+            pattern: '^[a-zA-Z]+$',
+            patternDescription: 'Must be a alphabetical string with at least 3 characters',
             type: 'string'
         }
     },
-    required: ['name'],
+    required: ['firstName', 'lastName'],
     type: 'object'
 } as const;
 
-export const UpdateFooParamsSchema = {
+export const UpdateOfferParamsSchema = {
     additionalProperties: false,
     properties: {
         '$schema': {
-            examples: ['https://example.com/schemas/UpdateFooParams.json'],
+            examples: ['https://example.com/schemas/UpdateOfferParams.json'],
             format: 'uri',
             readOnly: true,
             type: 'string'
         },
-        name: {
+        status: {
+            enum: ['pending', 'accepted', 'rejected', 'withdrawn'],
             type: 'string'
         }
     },
-    required: ['name'],
+    required: ['status'],
+    type: 'object'
+} as const;
+
+export const UpdateRoundParamsSchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/UpdateRoundParams.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        endTime: {
+            format: 'date-time',
+            type: 'string'
+        }
+    },
+    required: ['endTime'],
+    type: 'object'
+} as const;
+
+export const UpdateVentureParamsSchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/UpdateVentureParams.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        description: {
+            maxLength: 5000,
+            minLength: 3,
+            type: 'string'
+        },
+        name: {
+            maxLength: 100,
+            minLength: 3,
+            type: 'string'
+        }
+    },
+    required: ['name', 'description'],
+    type: 'object'
+} as const;
+
+export const VentureSchema = {
+    additionalProperties: false,
+    properties: {
+        createdAt: {
+            format: 'date-time',
+            type: 'string'
+        },
+        deletedAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        },
+        description: {
+            maxLength: 5000,
+            minLength: 3,
+            type: 'string'
+        },
+        id: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
+        name: {
+            maxLength: 100,
+            minLength: 3,
+            type: 'string'
+        },
+        ownerAccountId: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
+        updatedAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        }
+    },
+    required: ['id', 'ownerAccountId', 'name', 'description', 'createdAt', 'updatedAt', 'deletedAt'],
     type: 'object'
 } as const;

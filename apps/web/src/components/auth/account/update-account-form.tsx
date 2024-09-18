@@ -34,7 +34,8 @@ export const UpdateAccountForm: FC<UpdateAccountFormProps> = ({ account, classNa
   const form = useForm<InferType<typeof updateAccountSchema>>({
     resolver: yupResolver(updateAccountSchema),
     defaultValues: {
-      name: account?.name || "",
+      firstName: account?.firstName || "",
+      lastName: account?.lastName || "",
     },
   });
 
@@ -60,16 +61,26 @@ export const UpdateAccountForm: FC<UpdateAccountFormProps> = ({ account, classNa
       <form onSubmit={form.handleSubmit(onSubmit)} className={cn("space-y-4", className)} {...props}>
         <FormField
           control={form.control}
-          name="name"
+          name="firstName"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Name</FormLabel>
+              <FormLabel>First Name</FormLabel>
               <FormControl>
                 <Input placeholder="Jimmy" {...field} />
               </FormControl>
-              <FormDescription>
-                This is your public display name.
-              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="lastName"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Last Name</FormLabel>
+              <FormControl>
+                <Input placeholder="Smith" {...field} />
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}

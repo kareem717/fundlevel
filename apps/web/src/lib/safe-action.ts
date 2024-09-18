@@ -83,6 +83,8 @@ export const actionClient = createSafeActionClient({
 		account = data;
 	}
 
+	console.log("access_token", session?.access_token);
+	console.log("user_id", user?.id);
 	return next({
 		ctx: {
 			apiClient: apiClient(session?.access_token),
