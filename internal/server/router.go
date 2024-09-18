@@ -3,6 +3,7 @@ package http
 import (
 	"fundlevel/internal/server/handler/account"
 	"fundlevel/internal/server/handler/health"
+	"fundlevel/internal/server/handler/offer"
 	"fundlevel/internal/server/handler/round"
 	"fundlevel/internal/server/handler/venture"
 	"net/http"
@@ -66,6 +67,12 @@ func (s *Server) routes() chi.Router {
 	)
 
 	round.RegisterHumaRoutes(
+		s.services,
+		humaApi,
+		s.logger,
+	)
+
+	offer.RegisterHumaRoutes(
 		s.services,
 		humaApi,
 		s.logger,

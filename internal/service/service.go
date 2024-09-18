@@ -4,13 +4,16 @@ import (
 	"context"
 
 	"fundlevel/internal/entities/account"
+	"fundlevel/internal/entities/offer"
 	"fundlevel/internal/entities/round"
 	"fundlevel/internal/entities/venture"
 	accountService "fundlevel/internal/service/domain/account"
 	healthService "fundlevel/internal/service/domain/health"
+	offerService "fundlevel/internal/service/domain/offer"
 	roundService "fundlevel/internal/service/domain/round"
 	ventureService "fundlevel/internal/service/domain/venture"
 	"fundlevel/internal/storage"
+
 	"github.com/google/uuid"
 )
 
@@ -44,11 +47,21 @@ type RoundService interface {
 	GetAll(ctx context.Context, limit int, cursor int) ([]round.Round, error)
 }
 
+type OfferService interface {
+	Create(ctx context.Context, params offer.CreateOfferParams) (offer.Offer, error)
+	Delete(ctx context.Context, id int) error
+	UpdateStatus(ctx context.Context, id int, status offer.OfferStatus) (offer.Offer, error)
+	GetById(ctx context.Context, id int) (offer.Offer, error)
+	GetByRoundId(ctx context.Context, roundId int, limit int, cursor int) ([]offer.Offer, error)
+	GetAll(ctx context.Context, limit int, cursor int) ([]offer.Offer, error)
+}
+
 type Service struct {
 	VentureService VentureService
 	RoundService   RoundService
 	AccountService AccountService
 	HealthService  HealthService
+	OfferService   OfferService
 }
 
 // NewService implementation for storage of all services.
@@ -60,5 +73,6 @@ func NewService(
 		HealthService:  healthService.NewHealthService(repositories),
 		AccountService: accountService.NewAccountService(repositories),
 		RoundService:   roundService.NewRoundService(repositories),
+		OfferService:   offerService.NewOfferService(repositories),
 	}
 }

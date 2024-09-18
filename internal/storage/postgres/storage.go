@@ -7,6 +7,7 @@ import (
 
 	"fundlevel/internal/storage"
 	"fundlevel/internal/storage/postgres/account"
+	"fundlevel/internal/storage/postgres/offer"
 	"fundlevel/internal/storage/postgres/round"
 	"fundlevel/internal/storage/postgres/venture"
 
@@ -86,6 +87,7 @@ type transaction struct {
 	ventureRepo *venture.VentureRepository
 	accountRepo *account.AccountRepository
 	roundRepo   *round.RoundRepository
+	offerRepo   *offer.OfferRepository
 	tx          *bun.Tx
 	ctx         context.Context
 }
@@ -100,6 +102,10 @@ func (t *transaction) Account() storage.AccountRepository {
 
 func (t *transaction) Round() storage.RoundRepository {
 	return t.roundRepo
+}
+
+func (t *transaction) Offer() storage.OfferRepository {
+	return t.offerRepo
 }
 
 func (t *transaction) Commit() error {
@@ -119,6 +125,7 @@ func (t *transaction) SubTransaction() (storage.Transaction, error) {
 	return &transaction{
 		ventureRepo: venture.NewVentureRepository(tx, t.ctx),
 		accountRepo: account.NewAccountRepository(tx, t.ctx),
+		offerRepo:   offer.NewOfferRepository(tx, t.ctx),
 		roundRepo:   round.NewRoundRepository(tx, t.ctx),
 		tx:          &tx,
 	}, nil
@@ -127,6 +134,7 @@ func (t *transaction) SubTransaction() (storage.Transaction, error) {
 type Repository struct {
 	ventureRepo *venture.VentureRepository
 	accountRepo *account.AccountRepository
+	offerRepo   *offer.OfferRepository
 	roundRepo   *round.RoundRepository
 	db          *bun.DB
 	ctx         context.Context
@@ -168,6 +176,7 @@ func NewRepository(config Config, ctx context.Context, logger *zap.Logger) *Repo
 		ventureRepo: venture.NewVentureRepository(db, ctx),
 		accountRepo: account.NewAccountRepository(db, ctx),
 		roundRepo:   round.NewRoundRepository(db, ctx),
+		offerRepo:   offer.NewOfferRepository(db, ctx),
 		db:          db,
 		ctx:         ctx,
 	}
@@ -185,6 +194,10 @@ func (r *Repository) Round() storage.RoundRepository {
 	return r.roundRepo
 }
 
+func (r *Repository) Offer() storage.OfferRepository {
+	return r.offerRepo
+}
+
 func (r *Repository) HealthCheck(ctx context.Context) error {
 	return r.db.PingContext(ctx)
 }
@@ -196,6 +209,7 @@ func (r *Repository) NewTransaction() (storage.Transaction, error) {
 	}
 
 	return &transaction{
+		offerRepo:   offer.NewOfferRepository(tx, r.ctx),
 		ventureRepo: venture.NewVentureRepository(tx, r.ctx),
 		accountRepo: account.NewAccountRepository(tx, r.ctx),
 		tx:          &tx,
