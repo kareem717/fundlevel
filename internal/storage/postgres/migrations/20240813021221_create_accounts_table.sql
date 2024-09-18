@@ -3,7 +3,8 @@
 CREATE TABLE
     accounts (
         id SERIAL PRIMARY KEY,
-        NAME TEXT NOT NULL,
+        first_name VARCHAR(30) NOT NULL,
+        last_name VARCHAR(30) NOT NULL,
         user_id UUID REFERENCES auth.users (id) NOT NULL,
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP WITH TIME ZONE,
