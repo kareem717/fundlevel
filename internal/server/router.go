@@ -1,10 +1,10 @@
 package http
 
 import (
-	"net/http"
 	"fundlevel/internal/server/handler/account"
-	"fundlevel/internal/server/handler/foo"
 	"fundlevel/internal/server/handler/health"
+	"fundlevel/internal/server/handler/venture"
+	"net/http"
 
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/danielgtaylor/huma/v2/adapters/humachi"
@@ -18,7 +18,7 @@ func (s *Server) routes() chi.Router {
 	// Basic CORS
 	// for more ideas, see: https://developer.github.com/v3/#cross-origin-resource-sharing
 	r.Use(cors.Handler(cors.Options{
-		// AllowedOrigins:   []string{"https://foo.com"}, // Use this to allow specific origin hosts
+		// AllowedOrigins:   []string{"https://venture.com"}, // Use this to allow specific origin hosts
 		// AllowedOrigins:   []string{"*"},
 		AllowOriginFunc:    func(r *http.Request, origin string) bool { return true },
 		AllowedMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
@@ -45,7 +45,7 @@ func (s *Server) routes() chi.Router {
 
 	humaApi := humachi.New(r, config)
 
-	foo.RegisterHumaRoutes(
+	venture.RegisterHumaRoutes(
 		s.services,
 		humaApi,
 		s.logger,

@@ -4,18 +4,18 @@ import (
 	"context"
 
 	"fundlevel/internal/entities/account"
-	"fundlevel/internal/entities/foo"
+	"fundlevel/internal/entities/venture"
 	"fundlevel/internal/storage/postgres/shared"
 
 	"github.com/google/uuid"
 )
 
-type FooRepository interface {
-	Create(ctx context.Context, params foo.CreateFooParams) (foo.Foo, error)
+type VentureRepository interface {
+	Create(ctx context.Context, params venture.CreateVentureParams) (venture.Venture, error)
 	Delete(ctx context.Context, id int) error
-	GetAll(ctx context.Context, paginationParams shared.PaginationRequest) ([]foo.Foo, error)
-	Update(ctx context.Context, id int, params foo.UpdateFooParams) (foo.Foo, error)
-	GetById(ctx context.Context, id int) (foo.Foo, error)
+	GetAll(ctx context.Context, paginationParams shared.PaginationRequest) ([]venture.Venture, error)
+	Update(ctx context.Context, id int, params venture.UpdateVentureParams) (venture.Venture, error)
+	GetById(ctx context.Context, id int) (venture.Venture, error)
 }
 
 type AccountRepository interface {
@@ -28,7 +28,7 @@ type AccountRepository interface {
 }
 
 type RepositoryProvider interface {
-	Foo() FooRepository
+	Venture() VentureRepository
 	Account() AccountRepository
 }
 

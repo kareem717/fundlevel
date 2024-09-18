@@ -3,18 +3,19 @@ package shared
 import (
 	"context"
 
-	"github.com/supabase-community/gotrue-go/types"
 	"fundlevel/internal/entities/account"
+
+	"github.com/supabase-community/gotrue-go/types"
 )
 
 const (
-	UserContextKey    = "user"
-	AccountContextKey = "account"
-	FooBearerTokenKey = "fbt"
+	UserContextKey        = "user"
+	AccountContextKey     = "account"
+	ventureBearerTokenKey = "fbt"
 )
 
-func GetFooBearerToken(ctx context.Context) string {
-	if ctxValue, ok := ctx.Value(FooBearerTokenKey).(string); ok {
+func GetventureBearerToken(ctx context.Context) string {
+	if ctxValue, ok := ctx.Value(ventureBearerTokenKey).(string); ok {
 		return ctxValue
 	}
 

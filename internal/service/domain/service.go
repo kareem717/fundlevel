@@ -2,9 +2,9 @@ package domain
 
 import (
 	"fundlevel/internal/service"
-	"fundlevel/internal/service/domain/foo"
-	"fundlevel/internal/service/domain/health"
 	"fundlevel/internal/service/domain/account"
+	"fundlevel/internal/service/domain/health"
+	"fundlevel/internal/service/domain/venture"
 	"fundlevel/internal/storage"
 )
 
@@ -13,8 +13,8 @@ func NewService(
 	repositories storage.Repository,
 ) *service.Service {
 	return &service.Service{
-		FooService:    foo.NewFooService(repositories),
-		HealthService: health.NewHealthService(repositories),
+		VentureService: venture.NewVentureService(repositories),
+		HealthService:  health.NewHealthService(repositories),
 		AccountService: account.NewAccountService(repositories),
 	}
 }

@@ -7,7 +7,7 @@ import (
 
 	"fundlevel/internal/storage"
 	"fundlevel/internal/storage/postgres/account"
-	"fundlevel/internal/storage/postgres/foo"
+	"fundlevel/internal/storage/postgres/venture"
 
 	"github.com/alexlast/bunzap"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -82,14 +82,14 @@ func configDBPool(config Config) (*pgxpool.Config, error) {
 }
 
 type transaction struct {
-	fooRepo     *foo.FooRepository
+	ventureRepo *venture.VentureRepository
 	accountRepo *account.AccountRepository
 	tx          *bun.Tx
 	ctx         context.Context
 }
 
-func (t *transaction) Foo() storage.FooRepository {
-	return t.fooRepo
+func (t *transaction) Venture() storage.VentureRepository {
+	return t.ventureRepo
 }
 
 func (t *transaction) Account() storage.AccountRepository {
@@ -111,14 +111,14 @@ func (t *transaction) SubTransaction() (storage.Transaction, error) {
 	}
 
 	return &transaction{
-		fooRepo:     foo.NewFooRepository(tx, t.ctx),
+		ventureRepo: venture.NewVentureRepository(tx, t.ctx),
 		accountRepo: account.NewAccountRepository(tx, t.ctx),
 		tx:          &tx,
 	}, nil
 }
 
 type Repository struct {
-	fooRepo     *foo.FooRepository
+	ventureRepo *venture.VentureRepository
 	accountRepo *account.AccountRepository
 	db          *bun.DB
 	ctx         context.Context
@@ -157,15 +157,15 @@ func NewRepository(config Config, ctx context.Context, logger *zap.Logger) *Repo
 
 	logger.Info("Successfully connected to the database.")
 	return &Repository{
-		fooRepo:     foo.NewFooRepository(db, ctx),
+		ventureRepo: venture.NewVentureRepository(db, ctx),
 		accountRepo: account.NewAccountRepository(db, ctx),
 		db:          db,
 		ctx:         ctx,
 	}
 }
 
-func (r *Repository) Foo() storage.FooRepository {
-	return r.fooRepo
+func (r *Repository) Venture() storage.VentureRepository {
+	return r.ventureRepo
 }
 
 func (r *Repository) Account() storage.AccountRepository {
@@ -183,7 +183,7 @@ func (r *Repository) NewTransaction() (storage.Transaction, error) {
 	}
 
 	return &transaction{
-		fooRepo:     foo.NewFooRepository(tx, r.ctx),
+		ventureRepo: venture.NewVentureRepository(tx, r.ctx),
 		accountRepo: account.NewAccountRepository(tx, r.ctx),
 		tx:          &tx,
 		ctx:         r.ctx,

@@ -68,25 +68,3 @@ func WithAccount(api huma.API) func(ctx huma.Context, next func(huma.Context), l
 		next(huma.WithValue(ctx, shared.AccountContextKey, queryResp))
 	}
 }
-
-func WithFooBearerToken(api huma.API) func(ctx huma.Context, next func(huma.Context), logger *zap.Logger) {
-	return func(ctx huma.Context, next func(huma.Context), logger *zap.Logger) {
-		authHeader := ctx.Header("Authorization")
-		if authHeader == "" {
-			huma.WriteErr(api, ctx, http.StatusUnauthorized,
-				"No authorization header was provided",
-			)
-			return
-		}
-
-		accessToken, err := parseBearerToken(authHeader)
-		if err != nil {
-			huma.WriteErr(api, ctx, http.StatusUnauthorized,
-				err.Error(),
-			)
-			return
-		}
-
-		next(huma.WithValue(ctx, shared.FooBearerTokenKey, accessToken))
-	}
-}

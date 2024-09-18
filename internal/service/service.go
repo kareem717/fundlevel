@@ -4,17 +4,17 @@ import (
 	"context"
 
 	"fundlevel/internal/entities/account"
-	"fundlevel/internal/entities/foo"
+	"fundlevel/internal/entities/venture"
 
 	"github.com/google/uuid"
 )
 
-type FooService interface {
-	Create(ctx context.Context, params foo.CreateFooParams) (foo.Foo, error)
+type VentureService interface {
+	Create(ctx context.Context, params venture.CreateVentureParams) (venture.Venture, error)
 	Delete(ctx context.Context, id int) error
-	Update(ctx context.Context, id int, params foo.UpdateFooParams) (foo.Foo, error)
-	GetById(ctx context.Context, id int) (foo.Foo, error)
-	GetAll(ctx context.Context, limit int, cursor int) ([]foo.Foo, error)
+	Update(ctx context.Context, id int, params venture.UpdateVentureParams) (venture.Venture, error)
+	GetById(ctx context.Context, id int) (venture.Venture, error)
+	GetAll(ctx context.Context, limit int, cursor int) ([]venture.Venture, error)
 }
 
 type AccountService interface {
@@ -31,7 +31,7 @@ type HealthService interface {
 }
 
 type Service struct {
-	FooService     FooService
+	VentureService VentureService
 	AccountService AccountService
 	HealthService  HealthService
 }
