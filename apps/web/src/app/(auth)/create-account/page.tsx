@@ -1,10 +1,10 @@
-import { getAccountByUserId } from "@/actions/auth";
+import { getAccount } from "@/actions/auth";
 import { CreateAccountForm } from "@/components/auth/account/create-account-form";
 import redirects from "@/lib/config/redirects";
 import { redirect } from "next/navigation";
 
 export default async function CreateAccountPage() {
-	const result = await getAccountByUserId()
+	const result = await getAccount()
 
 	if (result?.serverError || result?.validationErrors) {
 		const msg = result?.serverError?.message || "An unknown error occurred"

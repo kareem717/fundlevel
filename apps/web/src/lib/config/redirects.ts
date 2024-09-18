@@ -10,12 +10,12 @@ const redirects = {
 		callback: "/auth/callback",
 		createAccount: "/create-account",
 	},
-	// app: {
-	// 	dashboard: "/dashboard",
-	// 	settings: {
-	// 		account: "/settings/account",
-	// 		billing: "/settings/billing",
-	// 	},
+	app: {
+		dashboard: "/dashboard",
+		settings: {
+			account: "/settings/account",
+			billing: "/settings/billing",
+		},
 	// 	// waitlist: {
 	// 	// 	create: "/waitlist/create",
 	// 	// 	index: "/waitlist/:id",
@@ -28,7 +28,7 @@ const redirects = {
 	// 	join: "/queue/:id/join",
 	// 	index: "/queue",
 	// 	leave: "/queue/:id/leave",
-	// },
+	},
 };
 
 export default redirects;

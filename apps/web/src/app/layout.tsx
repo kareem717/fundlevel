@@ -3,9 +3,7 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/sonner"
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { env } from "@/env";
-import { ReactQueryProvider } from "@/components/providers/react-query-provider";
 import { GeistSans } from 'geist/font/sans';
-import { GeistMono } from 'geist/font/mono';
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -36,10 +34,8 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <ReactQueryProvider>
             {children}
             <Toaster />
-          </ReactQueryProvider>
         </ThemeProvider>
       </body>
     </html>

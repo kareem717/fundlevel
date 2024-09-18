@@ -11,6 +11,9 @@ import {
 	getAccountByUserId as getAccountByUserIdApi,
 } from "@/lib/api";
 
+/**
+ * Create a new account for the currently authenticated user
+ */
 export const createAccount = actionClient
 	.schema(createAccountSchema)
 	.action(async ({ parsedInput: { name }, ctx: { apiClient, user } }) => {
@@ -28,6 +31,9 @@ export const createAccount = actionClient
 		});
 	});
 
+/**
+ * Update the currently authenticated account
+ */
 export const updateAccount = actionClient
 	.schema(updateAccountSchema)
 	.action(async ({ parsedInput: { name }, ctx: { apiClient, account } }) => {
@@ -47,8 +53,16 @@ export const updateAccount = actionClient
 		});
 	});
 
-export const getAccountByUserId = actionClient.action(
-	async ({ ctx: { apiClient, account } }) => {
-		return account;
-	}
-);
+/**
+ * Get the currently authenticated account
+ */
+export const getAccount = actionClient.action(async ({ ctx: { account } }) => {
+	return account;
+});
+
+/**
+ * Get the currently authenticated user
+ */
+export const getUser = actionClient.action(async ({ ctx: { user } }) => {
+	return user;
+});
