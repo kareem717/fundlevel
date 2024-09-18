@@ -10,17 +10,19 @@ import (
 type Venture struct {
 	bun.BaseModel `bun:"table:ventures"`
 
-	ID   int    `json:"id"`
-	Name string `json:"name"`
+	shared.IntegerID
+	CreateVentureParams
 	shared.Timestamps
 }
 
 // CreateVentureParams contains the parameters for creating a new venture.
 type CreateVentureParams struct {
-	Name string `json:"name"`
+	UpdateVentureParams
+	OwnerAccountID int `json:"ownerAccountId" minimum:"1"`
 }
 
 // UpdateVentureParams contains the parameters for updating a venture.
 type UpdateVentureParams struct {
-	Name string `json:"name"`
+	Name        string `json:"name" minLength:"3" maxLength:"100"`
+	Description string `json:"description" minLength:"3" maxLength:"5000"`
 }

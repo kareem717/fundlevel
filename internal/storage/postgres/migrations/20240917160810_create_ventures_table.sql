@@ -3,7 +3,9 @@
 CREATE TABLE
     ventures (
         id serial PRIMARY KEY,
-        NAME VARCHAR(50) NOT NULL,
+        NAME TEXT NOT NULL,
+        description TEXT NOT NULL,
+        owner_account_id INT NOT NULL REFERENCES accounts (id),
         created_at timestamptz DEFAULT CLOCK_TIMESTAMP(),
         updated_at timestamptz,
         deleted_at timestamptz
