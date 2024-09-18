@@ -18,10 +18,10 @@ type Round struct {
 
 // CreateRoundParams contains the parameters for creating a new round.
 type CreateRoundParams struct {
-	OfferedPercentage           float64   `json:"offeredPercentage" multipleOf:"0.001" minimum:"0" maximum:"100"`
+	OfferedPercentage           float64   `json:"offeredPercentage" minimum:"0" maximum:"100"`
 	USDPercentageValue          float64   `json:"usdPercentageValue" minimum:"0"`
-	MinimumInvestmentPercentage float64   `json:"minimumInvestmentPercentage" multipleOf:"0.001" minimum:"0" maximum:"100"`
-	MaximumInvestmentPercentage float64   `json:"maximumInvestmentPercentage" multipleOf:"0.001" minimum:"0" maximum:"100"`
+	MinimumInvestmentPercentage float64   `json:"minimumInvestmentPercentage" minimum:"0"`
+	MaximumInvestmentPercentage float64   `json:"maximumInvestmentPercentage" minimum:"0"`
 	IsAuctioned                 bool      `json:"isAuctioned"`
 	StartTime                   time.Time `json:"startTime" format:"date-time"`
 	UpdateRoundParams
