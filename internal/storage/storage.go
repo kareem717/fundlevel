@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"fundlevel/internal/entities/account"
+	"fundlevel/internal/entities/round"
 	"fundlevel/internal/entities/venture"
 	"fundlevel/internal/storage/postgres/shared"
 
@@ -18,6 +19,15 @@ type VentureRepository interface {
 	GetById(ctx context.Context, id int) (venture.Venture, error)
 }
 
+type RoundRepository interface {
+	Create(ctx context.Context, params round.CreateRoundParams) (round.Round, error)
+	Delete(ctx context.Context, id int) error
+	GetAll(ctx context.Context, paginationParams shared.PaginationRequest) ([]round.Round, error)
+	Update(ctx context.Context, id int, params round.UpdateRoundParams) (round.Round, error)
+	GetById(ctx context.Context, id int) (round.Round, error)
+	GetByVentureId(ctx context.Context, ventureId int, paginationParams shared.PaginationRequest) ([]round.Round, error)
+}
+
 type AccountRepository interface {
 	Create(ctx context.Context, params account.CreateAccountParams) (account.Account, error)
 	Delete(ctx context.Context, id int) error
@@ -30,6 +40,7 @@ type AccountRepository interface {
 type RepositoryProvider interface {
 	Venture() VentureRepository
 	Account() AccountRepository
+	Round() RoundRepository
 }
 
 type Transaction interface {

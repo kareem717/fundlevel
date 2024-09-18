@@ -13,6 +13,7 @@ install:
 	@go mod tidy
 	@go mod download
 
+
 test:
 	@echo "Testing..."
 	@go test ./... -v

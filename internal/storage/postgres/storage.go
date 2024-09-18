@@ -7,6 +7,7 @@ import (
 
 	"fundlevel/internal/storage"
 	"fundlevel/internal/storage/postgres/account"
+	"fundlevel/internal/storage/postgres/round"
 	"fundlevel/internal/storage/postgres/venture"
 
 	"github.com/alexlast/bunzap"
@@ -84,6 +85,7 @@ func configDBPool(config Config) (*pgxpool.Config, error) {
 type transaction struct {
 	ventureRepo *venture.VentureRepository
 	accountRepo *account.AccountRepository
+	roundRepo   *round.RoundRepository
 	tx          *bun.Tx
 	ctx         context.Context
 }
@@ -94,6 +96,10 @@ func (t *transaction) Venture() storage.VentureRepository {
 
 func (t *transaction) Account() storage.AccountRepository {
 	return t.accountRepo
+}
+
+func (t *transaction) Round() storage.RoundRepository {
+	return t.roundRepo
 }
 
 func (t *transaction) Commit() error {
@@ -113,6 +119,7 @@ func (t *transaction) SubTransaction() (storage.Transaction, error) {
 	return &transaction{
 		ventureRepo: venture.NewVentureRepository(tx, t.ctx),
 		accountRepo: account.NewAccountRepository(tx, t.ctx),
+		roundRepo:   round.NewRoundRepository(tx, t.ctx),
 		tx:          &tx,
 	}, nil
 }
@@ -120,6 +127,7 @@ func (t *transaction) SubTransaction() (storage.Transaction, error) {
 type Repository struct {
 	ventureRepo *venture.VentureRepository
 	accountRepo *account.AccountRepository
+	roundRepo   *round.RoundRepository
 	db          *bun.DB
 	ctx         context.Context
 }
@@ -159,6 +167,7 @@ func NewRepository(config Config, ctx context.Context, logger *zap.Logger) *Repo
 	return &Repository{
 		ventureRepo: venture.NewVentureRepository(db, ctx),
 		accountRepo: account.NewAccountRepository(db, ctx),
+		roundRepo:   round.NewRoundRepository(db, ctx),
 		db:          db,
 		ctx:         ctx,
 	}
@@ -170,6 +179,10 @@ func (r *Repository) Venture() storage.VentureRepository {
 
 func (r *Repository) Account() storage.AccountRepository {
 	return r.accountRepo
+}
+
+func (r *Repository) Round() storage.RoundRepository {
+	return r.roundRepo
 }
 
 func (r *Repository) HealthCheck(ctx context.Context) error {

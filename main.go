@@ -7,7 +7,7 @@ import (
 	"strconv"
 
 	server "fundlevel/internal/server"
-	"fundlevel/internal/service/domain"
+	"fundlevel/internal/service"
 	"fundlevel/internal/storage/postgres"
 
 	"github.com/danielgtaylor/huma/v2/humacli"
@@ -59,7 +59,7 @@ func main() {
 		postgresConfig := postgres.NewConfig(options.DatabaseURL)
 		repositories := postgres.NewRepository(postgresConfig, ctx, logger)
 
-		services := domain.NewService(repositories)
+		services := service.NewService(repositories)
 
 		supabaseClient, err := supabase.NewClient(
 			options.SupabaseHost,

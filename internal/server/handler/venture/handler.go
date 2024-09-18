@@ -25,14 +25,14 @@ func newHTTPHandler(ventureService service.VentureService, logger *zap.Logger) *
 	}
 }
 
-type SingleventureResponse struct {
+type SingleVentureResponse struct {
 	Body struct {
 		shared.MessageResponse
 		Venture *venture.Venture `json:"venture"`
 	}
 }
 
-func (h *httpHandler) getByID(ctx context.Context, input *shared.PathIDParam) (*SingleventureResponse, error) {
+func (h *httpHandler) getByID(ctx context.Context, input *shared.PathIDParam) (*SingleVentureResponse, error) {
 	venture, err := h.ventureService.GetById(ctx, input.ID)
 	if err != nil {
 		switch {
@@ -44,14 +44,14 @@ func (h *httpHandler) getByID(ctx context.Context, input *shared.PathIDParam) (*
 		}
 	}
 
-	resp := &SingleventureResponse{}
-	resp.Body.Message = "venture fetched successfully"
+	resp := &SingleVentureResponse{}
+	resp.Body.Message = "Venture fetched successfully"
 	resp.Body.Venture = &venture
 
 	return resp, nil
 }
 
-type GetAllventureOutput struct {
+type GetAllVenturesOutput struct {
 	Body struct {
 		shared.MessageResponse
 		Ventures []venture.Venture `json:"ventures"`
@@ -59,7 +59,7 @@ type GetAllventureOutput struct {
 	}
 }
 
-func (h *httpHandler) getAll(ctx context.Context, input *shared.PaginationRequest) (*GetAllventureOutput, error) {
+func (h *httpHandler) getAll(ctx context.Context, input *shared.PaginationRequest) (*GetAllVenturesOutput, error) {
 	LIMIT := input.Limit + 1
 
 	ventures, err := h.ventureService.GetAll(ctx, LIMIT, input.Cursor)
@@ -73,8 +73,8 @@ func (h *httpHandler) getAll(ctx context.Context, input *shared.PaginationReques
 		}
 	}
 
-	resp := &GetAllventureOutput{}
-	resp.Body.Message = "ventures fetched successfully"
+	resp := &GetAllVenturesOutput{}
+	resp.Body.Message = "Ventures fetched successfully"
 	resp.Body.Ventures = ventures
 
 	if len(ventures) == LIMIT {
@@ -86,30 +86,30 @@ func (h *httpHandler) getAll(ctx context.Context, input *shared.PaginationReques
 	return resp, nil
 }
 
-type CreateventureInput struct {
+type CreateVentureInput struct {
 	Body venture.CreateVentureParams `json:"venture"`
 }
 
-func (h *httpHandler) create(ctx context.Context, input *CreateventureInput) (*SingleventureResponse, error) {
+func (h *httpHandler) create(ctx context.Context, input *CreateVentureInput) (*SingleVentureResponse, error) {
 	venture, err := h.ventureService.Create(ctx, input.Body)
 	if err != nil {
 		h.logger.Error("failed to create venture", zap.Error(err))
 		return nil, huma.Error500InternalServerError("An error occurred while creating the venture")
 	}
 
-	resp := &SingleventureResponse{}
-	resp.Body.Message = "venture created successfully"
+	resp := &SingleVentureResponse{}
+	resp.Body.Message = "Venture created successfully"
 	resp.Body.Venture = &venture
 
 	return resp, nil
 }
 
-type UpdateventureInput struct {
+type UpdateVentureInput struct {
 	shared.PathIDParam
 	Body venture.UpdateVentureParams `json:"venture"`
 }
 
-func (h *httpHandler) update(ctx context.Context, input *UpdateventureInput) (*SingleventureResponse, error) {
+func (h *httpHandler) update(ctx context.Context, input *UpdateVentureInput) (*SingleVentureResponse, error) {
 	_, err := h.ventureService.GetById(ctx, input.ID)
 	if err != nil {
 		switch {
@@ -128,18 +128,18 @@ func (h *httpHandler) update(ctx context.Context, input *UpdateventureInput) (*S
 		return nil, huma.Error500InternalServerError("An error occurred while updating the venture")
 	}
 
-	resp := &SingleventureResponse{}
-	resp.Body.Message = "venture updated successfully"
+	resp := &SingleVentureResponse{}
+	resp.Body.Message = "Venture updated successfully"
 	resp.Body.Venture = &venture
 
 	return resp, nil
 }
 
-type DeleteventureResponse struct {
+type DeleteVentureOutput struct {
 	Body shared.MessageResponse
 }
 
-func (h *httpHandler) delete(ctx context.Context, input *shared.PathIDParam) (*DeleteventureResponse, error) {
+func (h *httpHandler) delete(ctx context.Context, input *shared.PathIDParam) (*DeleteVentureOutput, error) {
 	_, err := h.ventureService.GetById(ctx, input.ID)
 	if err != nil {
 		switch {
@@ -157,8 +157,8 @@ func (h *httpHandler) delete(ctx context.Context, input *shared.PathIDParam) (*D
 		return nil, huma.Error500InternalServerError("An error occurred while deleting the venture")
 	}
 
-	resp := &DeleteventureResponse{}
-	resp.Body.Message = "venture deleted successfully"
+	resp := &DeleteVentureOutput{}
+	resp.Body.Message = "Venture deleted successfully"
 
 	return resp, nil
 }
