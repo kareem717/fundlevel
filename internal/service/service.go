@@ -38,6 +38,8 @@ type AccountService interface {
 	Update(ctx context.Context, id int, params account.UpdateAccountParams) (account.Account, error)
 	GetById(ctx context.Context, id int) (account.Account, error)
 	GetAll(ctx context.Context, limit int, cursor int) ([]account.Account, error)
+
+	GetVentures(ctx context.Context, accountId int, limit int, cursor int) ([]venture.Venture, error)
 }
 
 type HealthService interface {
