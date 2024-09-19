@@ -25,10 +25,48 @@ const NavigationConfig: Group[] = [
 		groupLabel: "",
 		menus: [
 			{
-				href: redirects.app.dashboard,
-				label: "Dashboard",
-				pathIdentifier: redirects.app.dashboard,
+				href: redirects.app.explore,
+				label: "Explore",
+				pathIdentifier: redirects.app.explore,
 				icon: "layoutGrid",
+				submenus: [],
+			},
+		],
+	},
+	{
+		groupLabel: "Ventures",
+		menus: [
+			{
+				href: redirects.app.venture.myVentures,
+				label: "My Ventures",
+				pathIdentifier: redirects.app.venture.myVentures,
+				icon: "store",
+				submenus: [],
+			},
+			{
+				href: redirects.app.venture.create,
+				label: "Create",
+				pathIdentifier: redirects.app.venture.create,
+				icon: "add",
+				submenus: [],
+			},
+		],
+	},
+	{
+		groupLabel: "Rounds",
+		menus: [
+			{
+				href: redirects.app.rounds.myRounds,
+				label: "My Rounds",
+				pathIdentifier: redirects.app.rounds.myRounds,
+				icon: "chartPie",
+				submenus: [],
+			},
+			{
+				href: redirects.app.venture.create,
+				label: "Create",
+				pathIdentifier: redirects.app.venture.create,
+				icon: "add",
 				submenus: [],
 			},
 		],

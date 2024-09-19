@@ -1,7 +1,7 @@
 import { MobileSidebar } from "@/components/app/sidebar"
 import { Sidebar } from "@/components/app/sidebar"
 
-export default async function DashboardLayout({
+export default async function MainAppLayout({
   children,
 }: {
   children: React.ReactNode;

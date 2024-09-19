@@ -12,8 +12,6 @@ import {
 import redirects from "@/lib/config/redirects"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
-import createClient from "@/lib/utils/supabase/server";
-import { redirect } from "next/navigation";
 
 export default async function DashboardPage({ searchParams }: { searchParams: { page: string | null, limit: string | null } }) {
   const page = searchParams.page ? parseInt(searchParams.page) : 1
@@ -34,11 +32,11 @@ export default async function DashboardPage({ searchParams }: { searchParams: { 
   return (
     <div className="flex flex-col gap-4 w-full h-full">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Waitlists</h1>
+        <h1 className="text-3xl font-bold">Ventures</h1>
         <Link className={cn(buttonVariants({ variant: "secondary" }), "flex items-center gap-2")} href="#">
           <Icons.add className="size-5" />
           <span className="hidden md:inline">
-            Create Waitlist
+            Create Venture
           </span>
         </Link>
       </div>
@@ -51,19 +49,19 @@ export default async function DashboardPage({ searchParams }: { searchParams: { 
           </div>
         ) : (
           <div className="flex flex-col gap-4">
-            <p className="text-sm text-muted-foreground">No waitlists found</p>
+            <p className="text-sm text-muted-foreground">No ventures found</p>
           </div>
         )}
         <Pagination className="mb-4">
           <PaginationContent>
             {page > 1 && (
               <PaginationItem>
-                <PaginationPrevious href={`${redirects.app.dashboard}?page=${page - 1}&limit=${limit}`} />
+                <PaginationPrevious href={`${redirects.app.explore}?page=${page - 1}&limit=${limit}`} />
               </PaginationItem>
             )}
             {(ventures?.length ?? 0) > limit && (
               <PaginationItem>
-                <PaginationNext href={`${redirects.app.dashboard}?page=${page + 1}&limit=${limit}`} />
+                <PaginationNext href={`${redirects.app.explore}?page=${page + 1}&limit=${limit}`} />
               </PaginationItem>
             )}
           </PaginationContent>
