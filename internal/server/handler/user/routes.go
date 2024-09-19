@@ -26,7 +26,7 @@ func RegisterHumaRoutes(
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "get-user-account",
 		Method:      http.MethodGet,
-		Path:        "/user/{id}/account",
+		Path:        "/user/{userId}/account",
 		Summary:     "Get a user's account",
 		Description: "Get the current account of a user.",
 		Tags:        []string{"Users", "Accounts"},
