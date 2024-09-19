@@ -1,8 +1,12 @@
 "use server";
 
 import { actionClient } from "@/lib/safe-action";
-import { getAllVentures as getAllVenturesApi } from "@/lib/api";
+import {
+	getAllVentures as getAllVenturesApi,
+	createVenture as createVentureApi,
+} from "@/lib/api";
 import { paginationRequestSchema } from "@/lib/validations/shared";
+import { createVentureSchema } from "@/lib/validations/ventures";
 
 /**
  * Get all ventures
@@ -21,6 +25,32 @@ export const getAllVentures = actionClient
 				query: {
 					cursor: cursor ?? undefined,
 					limit: limit ?? undefined,
+				},
+			});
+		}
+	);
+
+/**
+ * Create a venture
+ */
+export const createVenture = actionClient
+	.schema(createVentureSchema)
+	.action(
+		async ({
+			parsedInput: { name, description },
+			ctx: { apiClient, account },
+		}) => {
+			if (!account) {
+				throw new Error("User not found");
+			}
+
+			return await createVentureApi({
+				client: apiClient,
+				throwOnError: true,
+				body: {
+					name,
+					description,
+					ownerAccountId: account.id,
 				},
 			});
 		}
