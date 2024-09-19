@@ -59,15 +59,7 @@ func (h *httpHandler) getByID(ctx context.Context, input *shared.PathIDParam) (*
 	return resp, nil
 }
 
-type GetAllVenturesOutput struct {
-	Body struct {
-		shared.MessageResponse
-		Ventures []venture.Venture `json:"ventures"`
-		shared.PaginationResponse
-	}
-}
-
-func (h *httpHandler) getAll(ctx context.Context, input *shared.PaginationRequest) (*GetAllVenturesOutput, error) {
+func (h *httpHandler) getAll(ctx context.Context, input *shared.PaginationRequest) (*shared.GetManyVenturesOutput, error) {
 	LIMIT := input.Limit + 1
 
 	ventures, err := h.service.VentureService.GetAll(ctx, LIMIT, input.Cursor)
@@ -81,7 +73,7 @@ func (h *httpHandler) getAll(ctx context.Context, input *shared.PaginationReques
 		}
 	}
 
-	resp := &GetAllVenturesOutput{}
+	resp := &shared.GetManyVenturesOutput{}
 	resp.Body.Message = "Ventures fetched successfully"
 	resp.Body.Ventures = ventures
 

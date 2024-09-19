@@ -14,7 +14,7 @@ import (
 )
 
 type httpHandler struct {
-	service *service.Service	
+	service *service.Service
 	logger  *zap.Logger
 }
 
@@ -157,6 +157,33 @@ func (h *httpHandler) delete(ctx context.Context, input *shared.PathIDParam) (*D
 
 	resp := &DeleteAccountResponse{}
 	resp.Body.Message = "Account deleted successfully"
+
+	return resp, nil
+}
+
+func (h *httpHandler) getVentures(ctx context.Context, input *shared.GetManyByParentPathIDInput) (*shared.GetManyVenturesOutput, error) {
+	LIMIT := input.Limit + 1
+
+	ventures, err := h.service.AccountService.GetVentures(ctx, input.ID, LIMIT, input.Cursor)
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("ventures not found")
+		default:
+			h.logger.Error("failed to fetch ventures", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the ventures")
+		}
+	}
+
+	resp := &shared.GetManyVenturesOutput{}
+	resp.Body.Message = "Ventures fetched successfully"
+	resp.Body.Ventures = ventures
+
+	if len(ventures) == LIMIT {
+		resp.Body.NextCursor = &ventures[len(ventures)-1].ID
+		resp.Body.HasMore = true
+		resp.Body.Ventures = resp.Body.Ventures[:len(resp.Body.Ventures)-1]
+	}
 
 	return resp, nil
 }

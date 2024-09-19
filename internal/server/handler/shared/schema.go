@@ -4,6 +4,7 @@ import (
 	"fundlevel/internal/entities/account"
 	"fundlevel/internal/entities/offer"
 	"fundlevel/internal/entities/round"
+	"fundlevel/internal/entities/venture"
 
 	"github.com/google/uuid"
 )
@@ -47,6 +48,14 @@ type GetManyOffersOutput struct {
 	Body struct {
 		MessageResponse
 		Offers []offer.Offer `json:"offers"`
+		PaginationResponse
+	}
+}
+
+type GetManyVenturesOutput struct {
+	Body struct {
+		MessageResponse
+		Ventures []venture.Venture `json:"ventures"`
 		PaginationResponse
 	}
 }

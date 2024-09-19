@@ -42,7 +42,6 @@ func RegisterHumaRoutes(
 		},
 	}, handler.getByID)
 
-
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "create-account",
 		Method:      http.MethodPost,
@@ -99,5 +98,14 @@ func RegisterHumaRoutes(
 			},
 		},
 	}, handler.delete)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-account-ventures",
+		Method:      http.MethodGet,
+		Path:        "/account/{id}/ventures",
+		Summary:     "Get account ventures",
+		Description: "Get all of the ventures owned by a given account.",
+		Tags:        []string{"Accounts", "Ventures"},
+	}, handler.getVentures)
 
 }

@@ -79,7 +79,7 @@ func RegisterHumaRoutes(
 		Path:        "/venture/{id}",
 		Summary:     "Delete a venture",
 		Description: "Delete a venture.",
-		Tags:        []string{"Venture"},
+		Tags:        []string{"Ventures"},
 	}, handler.delete)
 
 }
