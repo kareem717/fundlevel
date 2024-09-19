@@ -11,6 +11,7 @@ import (
 	healthService "fundlevel/internal/service/domain/health"
 	offerService "fundlevel/internal/service/domain/offer"
 	roundService "fundlevel/internal/service/domain/round"
+	userService "fundlevel/internal/service/domain/user"
 	ventureService "fundlevel/internal/service/domain/venture"
 	"fundlevel/internal/storage"
 
@@ -23,6 +24,12 @@ type VentureService interface {
 	Update(ctx context.Context, id int, params venture.UpdateVentureParams) (venture.Venture, error)
 	GetById(ctx context.Context, id int) (venture.Venture, error)
 	GetAll(ctx context.Context, limit int, cursor int) ([]venture.Venture, error)
+	GetOffers(ctx context.Context, ventureId int, limit int, cursor int) ([]offer.Offer, error)
+	GetRounds(ctx context.Context, ventureId int, limit int, cursor int) ([]round.Round, error)
+}
+
+type UserService interface {
+	GetAccount(ctx context.Context, id uuid.UUID) (account.Account, error)
 }
 
 type AccountService interface {
@@ -30,7 +37,6 @@ type AccountService interface {
 	Delete(ctx context.Context, id int) error
 	Update(ctx context.Context, id int, params account.UpdateAccountParams) (account.Account, error)
 	GetById(ctx context.Context, id int) (account.Account, error)
-	GetByUserId(ctx context.Context, userId uuid.UUID) (account.Account, error)
 	GetAll(ctx context.Context, limit int, cursor int) ([]account.Account, error)
 }
 
@@ -43,8 +49,8 @@ type RoundService interface {
 	Delete(ctx context.Context, id int) error
 	Update(ctx context.Context, id int, params round.UpdateRoundParams) (round.Round, error)
 	GetById(ctx context.Context, id int) (round.Round, error)
-	GetByVentureId(ctx context.Context, ventureId int, limit int, cursor int) ([]round.Round, error)
 	GetAll(ctx context.Context, limit int, cursor int) ([]round.Round, error)
+	GetOffers(ctx context.Context, roundId int, limit int, cursor int) ([]offer.Offer, error)
 }
 
 type OfferService interface {
@@ -53,8 +59,6 @@ type OfferService interface {
 	UpdateStatus(ctx context.Context, id int, status offer.OfferStatus) (offer.Offer, error)
 	GetById(ctx context.Context, id int) (offer.Offer, error)
 	GetAll(ctx context.Context, limit int, cursor int) ([]offer.Offer, error)
-	GetByRoundId(ctx context.Context, roundId int, limit int, cursor int) ([]offer.Offer, error)
-	GetByVentureId(ctx context.Context, ventureId int, limit int, cursor int) ([]offer.Offer, error)
 }
 
 type Service struct {
@@ -62,6 +66,7 @@ type Service struct {
 	RoundService   RoundService
 	AccountService AccountService
 	HealthService  HealthService
+	UserService    UserService
 	OfferService   OfferService
 }
 
@@ -73,6 +78,7 @@ func NewService(
 		VentureService: ventureService.NewVentureService(repositories),
 		HealthService:  healthService.NewHealthService(repositories),
 		AccountService: accountService.NewAccountService(repositories),
+		UserService:    userService.NewUserService(repositories),
 		RoundService:   roundService.NewRoundService(repositories),
 		OfferService:   offerService.NewOfferService(repositories),
 	}

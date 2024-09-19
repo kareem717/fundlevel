@@ -18,6 +18,10 @@ type VentureRepository interface {
 	GetAll(ctx context.Context, paginationParams shared.PaginationRequest) ([]venture.Venture, error)
 	Update(ctx context.Context, id int, params venture.UpdateVentureParams) (venture.Venture, error)
 	GetById(ctx context.Context, id int) (venture.Venture, error)
+
+	GetRounds(ctx context.Context, ventureId int, paginationParams shared.PaginationRequest) ([]round.Round, error)
+
+	GetOffers(ctx context.Context, ventureId int, paginationParams shared.PaginationRequest) ([]offer.Offer, error)
 }
 
 type OfferRepository interface {
@@ -26,8 +30,6 @@ type OfferRepository interface {
 	GetAll(ctx context.Context, paginationParams shared.PaginationRequest) ([]offer.Offer, error)
 	Update(ctx context.Context, id int, params offer.UpdateOfferParams) (offer.Offer, error)
 	GetById(ctx context.Context, id int) (offer.Offer, error)
-	GetByRoundId(ctx context.Context, roundId int, paginationParams shared.PaginationRequest) ([]offer.Offer, error)
-	GetByVentureId(ctx context.Context, ventureId int, paginationParams shared.PaginationRequest) ([]offer.Offer, error)
 }
 
 type RoundRepository interface {
@@ -36,7 +38,8 @@ type RoundRepository interface {
 	GetAll(ctx context.Context, paginationParams shared.PaginationRequest) ([]round.Round, error)
 	Update(ctx context.Context, id int, params round.UpdateRoundParams) (round.Round, error)
 	GetById(ctx context.Context, id int) (round.Round, error)
-	GetByVentureId(ctx context.Context, ventureId int, paginationParams shared.PaginationRequest) ([]round.Round, error)
+
+	GetOffers(ctx context.Context, roundId int, paginationParams shared.PaginationRequest) ([]offer.Offer, error)
 }
 
 type AccountRepository interface {
@@ -45,7 +48,10 @@ type AccountRepository interface {
 	GetAll(ctx context.Context, paginationParams shared.PaginationRequest) ([]account.Account, error)
 	Update(ctx context.Context, id int, params account.UpdateAccountParams) (account.Account, error)
 	GetById(ctx context.Context, id int) (account.Account, error)
-	GetByUserId(ctx context.Context, userId uuid.UUID) (account.Account, error)
+}
+
+type UserRepository interface {
+	GetAccount(ctx context.Context, userId uuid.UUID) (account.Account, error)
 }
 
 type RepositoryProvider interface {
@@ -53,6 +59,7 @@ type RepositoryProvider interface {
 	Account() AccountRepository
 	Round() RoundRepository
 	Offer() OfferRepository
+	User() UserRepository
 }
 
 type Transaction interface {

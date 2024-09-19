@@ -23,15 +23,6 @@ func (s *RoundService) GetById(ctx context.Context, id int) (round.Round, error)
 	return s.repositories.Round().GetById(ctx, id)
 }
 
-func (s *RoundService) GetByVentureId(ctx context.Context, ventureId int, limit int, cursor int) ([]round.Round, error) {
-	paginationParams := shared.PaginationRequest{
-		Limit:  limit,
-		Cursor: cursor,
-	}
-
-	return s.repositories.Round().GetByVentureId(ctx, ventureId, paginationParams)
-}
-
 func (s *RoundService) GetAll(ctx context.Context, limit int, cursor int) ([]round.Round, error) {
 	paginationParams := shared.PaginationRequest{
 		Limit:  limit,

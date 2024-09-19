@@ -79,53 +79,6 @@ func (r *OfferRepository) GetById(ctx context.Context, id int) (offer.Offer, err
 	return resp, err
 }
 
-func (r *OfferRepository) GetByRoundId(ctx context.Context, roundId int, paginationParams shared.PaginationRequest) ([]offer.Offer, error) {
-	resp := []offer.Offer{}
-
-	err := r.db.
-		NewSelect().
-		Model(&resp).
-		Join("JOIN rounds as r ON r.id = offer.round_id").
-		Where("r.id = ?", roundId).
-		Where("offer.id >= ?", paginationParams.Cursor).
-		Order("offer.id").
-		Limit(paginationParams.Limit).
-		Scan(ctx)
-
-	return resp, err
-}
-
-func (r *OfferRepository) GetByVentureId(ctx context.Context, ventureId int, paginationParams shared.PaginationRequest) ([]offer.Offer, error) {
-	resp := []offer.Offer{}
-
-	err := r.db.
-		NewSelect().
-		Model(&resp).
-		Join("JOIN rounds as r ON r.id = offer.round_id").
-		Where("r.venture_id = ?", ventureId).
-		Where("offer.id >= ?", paginationParams.Cursor).
-		Order("offer.id").
-		Limit(paginationParams.Limit).
-		Scan(ctx)
-
-	return resp, err
-}
-
-func (r *OfferRepository) GetByOfferorAccountId(ctx context.Context, accountId int, paginationParams shared.PaginationRequest) ([]offer.Offer, error) {
-	resp := []offer.Offer{}
-
-	err := r.db.
-		NewSelect().
-		Model(&resp).
-		Where("offerer_account_id = ?", accountId).
-		Where("id >= ?", paginationParams.Cursor).
-		Order("id").
-		Limit(paginationParams.Limit).
-		Scan(ctx)
-
-	return resp, err
-}
-
 func (r *OfferRepository) GetAll(ctx context.Context, paginationParams shared.PaginationRequest) ([]offer.Offer, error) {
 	resp := []offer.Offer{}
 

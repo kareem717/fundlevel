@@ -26,21 +26,14 @@ func newHTTPHandler(service *service.Service, logger *zap.Logger) *httpHandler {
 	if logger == nil {
 		panic("logger is nil")
 	}
-	
+
 	return &httpHandler{
 		service: service,
 		logger:  logger,
 	}
 }
 
-type SingleAccountResponse struct {
-	Body struct {
-		shared.MessageResponse
-		Account *account.Account `json:"account"`
-	}
-}
-
-func (h *httpHandler) getByID(ctx context.Context, input *shared.PathIDParam) (*SingleAccountResponse, error) {
+func (h *httpHandler) getByID(ctx context.Context, input *shared.PathIDParam) (*shared.SingleAccountResponse, error) {
 	if account := shared.GetAuthenticatedAccount(ctx); account.ID != input.ID {
 		h.logger.Error("input account id does not match authenticated account id",
 			zap.Any("input account id", input.ID),
@@ -60,35 +53,7 @@ func (h *httpHandler) getByID(ctx context.Context, input *shared.PathIDParam) (*
 		}
 	}
 
-	resp := &SingleAccountResponse{}
-	resp.Body.Message = "Account fetched successfully"
-	resp.Body.Account = &account
-
-	return resp, nil
-}
-
-func (h *httpHandler) getByUserId(ctx context.Context, input *shared.PathUserIDParam) (*SingleAccountResponse, error) {
-	if user := shared.GetAuthenticatedUser(ctx); user.ID != input.UserID {
-		h.logger.Error("input user id does not match authenticated user id",
-			zap.Any("input user id", input.UserID),
-			zap.Any("authenticated user id", user.ID))
-
-		return nil, huma.Error403Forbidden("Cannot get account for another user")
-	}
-
-	h.logger.Info("getting account by user id", zap.Any("user id", input.UserID))
-	account, err := h.service.AccountService.GetByUserId(ctx, input.UserID)
-	if err != nil {
-		switch {
-		case errors.Is(err, sql.ErrNoRows):
-			return nil, huma.Error404NotFound("Account not found")
-		default:
-			h.logger.Error("failed to fetch account", zap.Error(err))
-			return nil, huma.Error500InternalServerError("An error occurred while fetching the account")
-		}
-	}
-
-	resp := &SingleAccountResponse{}
+	resp := &shared.SingleAccountResponse{}
 	resp.Body.Message = "Account fetched successfully"
 	resp.Body.Account = &account
 
@@ -99,7 +64,7 @@ type CreateAccountInput struct {
 	Body account.CreateAccountParams `json:"account"`
 }
 
-func (h *httpHandler) create(ctx context.Context, input *CreateAccountInput) (*SingleAccountResponse, error) {
+func (h *httpHandler) create(ctx context.Context, input *CreateAccountInput) (*shared.SingleAccountResponse, error) {
 	if user := shared.GetAuthenticatedUser(ctx); user.ID != input.Body.UserID {
 		h.logger.Error("input user id does not match authenticated user id",
 			zap.Any("input user id", input.Body.UserID),
@@ -114,7 +79,7 @@ func (h *httpHandler) create(ctx context.Context, input *CreateAccountInput) (*S
 		return nil, huma.Error500InternalServerError("An error occurred while creating the account")
 	}
 
-	resp := &SingleAccountResponse{}
+	resp := &shared.SingleAccountResponse{}
 	resp.Body.Message = "Account created successfully"
 	resp.Body.Account = &account
 
@@ -126,7 +91,7 @@ type UpdateAccountInput struct {
 	Body account.UpdateAccountParams `json:"account"`
 }
 
-func (h *httpHandler) update(ctx context.Context, input *UpdateAccountInput) (*SingleAccountResponse, error) {
+func (h *httpHandler) update(ctx context.Context, input *UpdateAccountInput) (*shared.SingleAccountResponse, error) {
 	if account := shared.GetAuthenticatedAccount(ctx); account.ID != input.ID {
 		h.logger.Error("input account id does not match authenticated account id",
 			zap.Any("input account id", input.ID),
@@ -153,7 +118,7 @@ func (h *httpHandler) update(ctx context.Context, input *UpdateAccountInput) (*S
 		return nil, huma.Error500InternalServerError("An error occurred while updating the account")
 	}
 
-	resp := &SingleAccountResponse{}
+	resp := &shared.SingleAccountResponse{}
 	resp.Body.Message = "Account updated successfully"
 	resp.Body.Account = &account
 

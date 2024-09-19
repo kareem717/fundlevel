@@ -56,7 +56,7 @@ func WithAccount(api huma.API) func(ctx huma.Context, next func(huma.Context), l
 			return
 		}
 
-		queryResp, err := sv.AccountService.GetByUserId(ctx.Context(), user.ID)
+		queryResp, err := sv.UserService.GetAccount(ctx.Context(), user.ID)
 		if err != nil {
 			logger.Error("Error getting account", zap.Error(err))
 			huma.WriteErr(api, ctx, http.StatusInternalServerError,

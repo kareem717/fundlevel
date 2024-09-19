@@ -25,7 +25,7 @@ func RegisterHumaRoutes(
 		Path:        "/venture/{id}",
 		Summary:     "Get venture by ID",
 		Description: "Get venture by ID.",
-		Tags:        []string{"Venture"},
+		Tags:        []string{"Ventures"},
 	}, handler.getByID)
 
 	huma.Register(humaApi, huma.Operation{
@@ -34,7 +34,7 @@ func RegisterHumaRoutes(
 		Path:        "/venture",
 		Summary:     "Get all ventures",
 		Description: "Get all ventures.",
-		Tags:        []string{"Venture"},
+		Tags:        []string{"Ventures"},
 	}, handler.getAll)
 
 	huma.Register(humaApi, huma.Operation{
@@ -43,7 +43,7 @@ func RegisterHumaRoutes(
 		Path:        "/venture/{id}/rounds",
 		Summary:     "Get all rounds for a venture",
 		Description: "Get all rounds for a venture.",
-		Tags:        []string{"Venture"},
+		Tags:        []string{"Ventures", "Rounds"},
 	}, handler.getRounds)
 
 	huma.Register(humaApi, huma.Operation{
@@ -52,7 +52,7 @@ func RegisterHumaRoutes(
 		Path:        "/venture/{id}/offers",
 		Summary:     "Get all offers for a venture",
 		Description: "Get all offers for a venture.",
-		Tags:        []string{"Venture"},
+		Tags:        []string{"Ventures", "Offers"},
 	}, handler.getOffers)
 
 	huma.Register(humaApi, huma.Operation{
@@ -61,7 +61,7 @@ func RegisterHumaRoutes(
 		Path:        "/venture",
 		Summary:     "Create a venture",
 		Description: "Create a venture.",
-		Tags:        []string{"Venture"},
+		Tags:        []string{"Ventures"},
 	}, handler.create)
 
 	huma.Register(humaApi, huma.Operation{
@@ -70,7 +70,7 @@ func RegisterHumaRoutes(
 		Path:        "/venture/{id}",
 		Summary:     "Update a venture",
 		Description: "Update a venture.",
-		Tags:        []string{"Venture"},
+		Tags:        []string{"Ventures"},
 	}, handler.update)
 
 	huma.Register(humaApi, huma.Operation{

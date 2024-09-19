@@ -26,7 +26,7 @@ func RegisterHumaRoutes(
 		Path:        "/offer/{id}",
 		Summary:     "Get offer by ID",
 		Description: "Get offer by ID.",
-		Tags:        []string{"Offer"},
+		Tags:        []string{"Offers"},
 	}, handler.getByID)
 
 	huma.Register(humaApi, huma.Operation{
@@ -35,7 +35,7 @@ func RegisterHumaRoutes(
 		Path:        "/offer",
 		Summary:     "Get all offers",
 		Description: "Get all offers.",
-		Tags:        []string{"Offer"},
+		Tags:        []string{"Offers"},
 	}, handler.getAll)
 
 	huma.Register(humaApi, huma.Operation{
@@ -44,7 +44,7 @@ func RegisterHumaRoutes(
 		Path:        "/offer",
 		Summary:     "Create a offer",
 		Description: "Create a offer.",
-		Tags:        []string{"Offer"},
+		Tags:        []string{"Offers"},
 	}, handler.create)
 
 	huma.Register(humaApi, huma.Operation{
@@ -53,7 +53,7 @@ func RegisterHumaRoutes(
 		Path:        "/offer/{id}",
 		Summary:     "Update a offer status",
 		Description: "Update a offer status.",
-		Tags:        []string{"Offer"},
+		Tags:        []string{"Offers"},
 	}, handler.updateStatus)
 
 	huma.Register(humaApi, huma.Operation{
@@ -62,7 +62,7 @@ func RegisterHumaRoutes(
 		Path:        "/offer/{id}",
 		Summary:     "Delete a offer",
 		Description: "Delete a offer.",
-		Tags:        []string{"Offer"},
+		Tags:        []string{"Offers"},
 	}, handler.delete)
 
 }

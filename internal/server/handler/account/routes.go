@@ -28,7 +28,7 @@ func RegisterHumaRoutes(
 		Path:        "/account/{id}",
 		Summary:     "Get account by ID",
 		Description: "Get account by ID.",
-		Tags:        []string{"Account"},
+		Tags:        []string{"Accounts"},
 		Security: []map[string][]string{
 			{"bearerAuth": {}},
 		},
@@ -42,23 +42,6 @@ func RegisterHumaRoutes(
 		},
 	}, handler.getByID)
 
-	// this route breaks the pattern of other routes becuase we don't manage user entities ourselves
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-account-by-user-id",
-		Method:      http.MethodGet,
-		Path:        "/user/{id}/account",
-		Summary:     "Get account by user ID",
-		Description: "Get account by user ID.",
-		Tags:        []string{"Account"},
-		Security: []map[string][]string{
-			{"bearerAuth": {}},
-		},
-		Middlewares: huma.Middlewares{
-			func(ctx huma.Context, next func(huma.Context)) {
-				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
-			},
-		},
-	}, handler.getByUserId)
 
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "create-account",
@@ -66,7 +49,7 @@ func RegisterHumaRoutes(
 		Path:        "/account",
 		Summary:     "Create a account",
 		Description: "Create a account.",
-		Tags:        []string{"Account"},
+		Tags:        []string{"Accounts"},
 		Security: []map[string][]string{
 			{"bearerAuth": {}},
 		},
@@ -83,7 +66,7 @@ func RegisterHumaRoutes(
 		Path:        "/account/{id}",
 		Summary:     "Update a account",
 		Description: "Update a account.",
-		Tags:        []string{"Account"},
+		Tags:        []string{"Accounts"},
 		Security: []map[string][]string{
 			{"bearerAuth": {}},
 		},
@@ -103,7 +86,7 @@ func RegisterHumaRoutes(
 		Path:        "/account/{id}",
 		Summary:     "Delete a account",
 		Description: "Delete a account.",
-		Tags:        []string{"Account"},
+		Tags:        []string{"Accounts"},
 		Security: []map[string][]string{
 			{"bearerAuth": {}},
 		},

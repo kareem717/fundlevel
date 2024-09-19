@@ -89,7 +89,7 @@ func (h *httpHandler) getAll(ctx context.Context, input *shared.PaginationReques
 func (h *httpHandler) getOffers(ctx context.Context, input *shared.GetManyByParentPathIDInput) (*shared.GetManyOffersOutput, error) {
 	LIMIT := input.Limit + 1
 
-	offers, err := h.service.OfferService.GetByRoundId(ctx, input.ID, LIMIT, input.Cursor)
+	offers, err := h.service.RoundService.GetOffers(ctx, input.ID, LIMIT, input.Cursor)
 	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):

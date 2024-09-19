@@ -24,15 +24,6 @@ func (s *OfferService) GetById(ctx context.Context, id int) (offer.Offer, error)
 	return s.repositories.Offer().GetById(ctx, id)
 }
 
-func (s *OfferService) GetByRoundId(ctx context.Context, roundId int, limit int, cursor int) ([]offer.Offer, error) {
-	paginationParams := shared.PaginationRequest{
-		Limit:  limit,
-		Cursor: cursor,
-	}
-
-	return s.repositories.Offer().GetByRoundId(ctx, roundId, paginationParams)
-}
-
 func (s *OfferService) GetAll(ctx context.Context, limit int, cursor int) ([]offer.Offer, error) {
 	paginationParams := shared.PaginationRequest{
 		Limit:  limit,
@@ -40,15 +31,6 @@ func (s *OfferService) GetAll(ctx context.Context, limit int, cursor int) ([]off
 	}
 
 	return s.repositories.Offer().GetAll(ctx, paginationParams)
-}
-
-func (s *OfferService) GetByVentureId(ctx context.Context, ventureId int, limit int, cursor int) ([]offer.Offer, error) {
-	paginationParams := shared.PaginationRequest{
-		Limit:  limit,
-		Cursor: cursor,
-	}
-
-	return s.repositories.Offer().GetByVentureId(ctx, ventureId, paginationParams)
 }
 
 func (s *OfferService) Create(ctx context.Context, params offer.CreateOfferParams) (offer.Offer, error) {

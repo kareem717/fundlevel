@@ -1,6 +1,7 @@
 package shared
 
 import (
+	"fundlevel/internal/entities/account"
 	"fundlevel/internal/entities/offer"
 	"fundlevel/internal/entities/round"
 
@@ -47,5 +48,12 @@ type GetManyOffersOutput struct {
 		MessageResponse
 		Offers []offer.Offer `json:"offers"`
 		PaginationResponse
+	}
+}
+
+type SingleAccountResponse struct {
+	Body struct {
+		MessageResponse
+		Account *account.Account `json:"account"`
 	}
 }

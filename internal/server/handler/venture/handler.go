@@ -97,7 +97,7 @@ func (h *httpHandler) getAll(ctx context.Context, input *shared.PaginationReques
 func (h *httpHandler) getRounds(ctx context.Context, input *shared.GetManyByParentPathIDInput) (*shared.GetManyRoundsOutput, error) {
 	LIMIT := input.Limit + 1
 
-	rounds, err := h.service.RoundService.GetByVentureId(ctx, input.ID, LIMIT, input.Cursor)
+	rounds, err := h.service.VentureService.GetRounds(ctx, input.ID, LIMIT, input.Cursor)
 	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
@@ -124,7 +124,7 @@ func (h *httpHandler) getRounds(ctx context.Context, input *shared.GetManyByPare
 func (h *httpHandler) getOffers(ctx context.Context, input *shared.GetManyByParentPathIDInput) (*shared.GetManyOffersOutput, error) {
 	LIMIT := input.Limit + 1
 
-	offers, err := h.service.OfferService.GetByVentureId(ctx, input.ID, LIMIT, input.Cursor)
+	offers, err := h.service.VentureService.GetOffers(ctx, input.ID, LIMIT, input.Cursor)
 	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
