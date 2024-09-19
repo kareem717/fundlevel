@@ -11,6 +11,7 @@ CREATE TABLE
         minimum_investment_percentage NUMERIC(6, 3) NOT NULL,
         maximum_investment_percentage NUMERIC(6, 3) NOT NULL,
         is_auctioned BOOLEAN NOT NULL DEFAULT FALSE,
+        venture_id INT NOT NULL REFERENCES ventures (id),
         start_time timestamptz NOT NULL,
         end_time timestamptz NOT NULL,
         created_at timestamptz DEFAULT CLOCK_TIMESTAMP(),
@@ -36,8 +37,12 @@ ADD CONSTRAINT check_maximum_investment_percentage_range CHECK (maximum_investme
 
 -- Check that the maximum_investment_percentage is greater than the minimum_investment_percentage
 ALTER TABLE rounds
+ADD CONSTRAINT check_offered_percentage_is_greater_than_maximum CHECK (offered_percentage>=maximum_investment_percentage);
+
+-- Check that the maximum_investment_percentage is greater than the minimum_investment_percentage
+ALTER TABLE rounds
 ADD CONSTRAINT check_maximum_investment_percentage_is_greater_than_minimum CHECK (
-    maximum_investment_percentage>minimum_investment_percentage
+    maximum_investment_percentage>=minimum_investment_percentage
 );
 
 -- Check that the start_time is greater or equal to the current time
