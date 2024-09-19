@@ -20,7 +20,7 @@ export const createOffer = actionClient
 			throwOnError: true,
 			body: {
 				...parsedInput,
-				offererAccountId: account.id,
+				investorAccountId: account.id,
 			},
 		});
 	});

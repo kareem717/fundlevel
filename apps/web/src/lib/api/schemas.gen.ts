@@ -95,9 +95,10 @@ export const CreateOfferParamsSchema = {
             type: 'number'
         },
         currency: {
+            enum: ['USD', 'GBP', 'EUR', 'CAD', 'AUD', 'JPY'],
             type: 'string'
         },
-        offererAccountId: {
+        investorAccountId: {
             format: 'int64',
             minimum: 1,
             type: 'integer'
@@ -114,7 +115,7 @@ export const CreateOfferParamsSchema = {
             type: 'integer'
         }
     },
-    required: ['roundId', 'offererAccountId', 'percentageAmount', 'amount', 'currency'],
+    required: ['roundId', 'investorAccountId', 'percentageAmount', 'amount', 'currency'],
     type: 'object'
 } as const;
 
@@ -261,36 +262,6 @@ export const ErrorModelSchema = {
     type: 'object'
 } as const;
 
-export const GetAllVenturesOutputBodySchema = {
-    additionalProperties: false,
-    properties: {
-        '$schema': {
-            examples: ['https://example.com/schemas/GetAllVenturesOutputBody.json'],
-            format: 'uri',
-            readOnly: true,
-            type: 'string'
-        },
-        hasMore: {
-            type: 'boolean'
-        },
-        message: {
-            type: 'string'
-        },
-        nextCursor: {
-            format: 'int64',
-            type: ['integer', 'null']
-        },
-        ventures: {
-            items: {
-                '$ref': '#/components/schemas/Venture'
-            },
-            type: ['array', 'null']
-        }
-    },
-    required: ['ventures', 'message', 'nextCursor', 'hasMore'],
-    type: 'object'
-} as const;
-
 export const GetManyOffersOutputBodySchema = {
     additionalProperties: false,
     properties: {
@@ -351,6 +322,36 @@ export const GetManyRoundsOutputBodySchema = {
     type: 'object'
 } as const;
 
+export const GetManyVenturesOutputBodySchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/GetManyVenturesOutputBody.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        hasMore: {
+            type: 'boolean'
+        },
+        message: {
+            type: 'string'
+        },
+        nextCursor: {
+            format: 'int64',
+            type: ['integer', 'null']
+        },
+        ventures: {
+            items: {
+                '$ref': '#/components/schemas/Venture'
+            },
+            type: ['array', 'null']
+        }
+    },
+    required: ['ventures', 'message', 'nextCursor', 'hasMore'],
+    type: 'object'
+} as const;
+
 export const MessageResponseSchema = {
     additionalProperties: false,
     properties: {
@@ -382,6 +383,7 @@ export const OfferSchema = {
             type: 'string'
         },
         currency: {
+            enum: ['USD', 'GBP', 'EUR', 'CAD', 'AUD', 'JPY'],
             type: 'string'
         },
         deletedAt: {
@@ -393,7 +395,7 @@ export const OfferSchema = {
             minimum: 1,
             type: 'integer'
         },
-        offererAccountId: {
+        investorAccountId: {
             format: 'int64',
             minimum: 1,
             type: 'integer'
@@ -418,7 +420,7 @@ export const OfferSchema = {
             type: ['string', 'null']
         }
     },
-    required: ['id', 'roundId', 'offererAccountId', 'percentageAmount', 'amount', 'currency', 'status', 'createdAt', 'updatedAt', 'deletedAt'],
+    required: ['id', 'roundId', 'investorAccountId', 'percentageAmount', 'amount', 'currency', 'status', 'createdAt', 'updatedAt', 'deletedAt'],
     type: 'object'
 } as const;
 

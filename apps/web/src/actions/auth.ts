@@ -8,7 +8,7 @@ import {
 import {
 	createAccount as createAccountApi,
 	updateAccount as updateAccountApi,
-	getAccountByUserId as getAccountByUserIdApi,
+	getUserAccount as getUserAccountApi,
 } from "@/lib/api";
 
 /**

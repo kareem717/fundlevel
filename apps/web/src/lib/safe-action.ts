@@ -5,7 +5,7 @@ import {
 import { yupAdapter } from "next-safe-action/adapters/yup";
 import { env } from "@/env";
 import supabase from "@/lib/utils/supabase/server";
-import { ErrorModel, getAccountByUserId } from "./api";
+import { ErrorModel, getUserAccount } from "./api";
 import { createClient } from "@hey-api/client-fetch";
 
 class ActionError extends Error {
@@ -67,7 +67,7 @@ export const actionClient = createSafeActionClient({
 
 	let account;
 	if (user?.id) {
-		const { data, error } = await getAccountByUserId({
+		const { data, error } = await getUserAccount({
 			client,
 			path: {
 				userId: user?.id,
