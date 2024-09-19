@@ -25,10 +25,11 @@ export type CreateOfferParams = {
      * A URL to the JSON Schema for this object.
      */
     readonly $schema?: string;
+    amount: number;
+    currency: string;
     offererAccountId: number;
     percentageAmount: number;
     roundId: number;
-    usdAmount: number;
 };
 
 export type CreateRoundParams = {
@@ -41,8 +42,9 @@ export type CreateRoundParams = {
     maximumInvestmentPercentage: number;
     minimumInvestmentPercentage: number;
     offeredPercentage: number;
+    percentageValue: number;
+    percentageValueCurrency: string;
     startTime: Date;
-    usdPercentageValue: number;
     ventureId: number;
 };
 
@@ -144,7 +146,9 @@ export type MessageResponse = {
 };
 
 export type Offer = {
+    amount: number;
     createdAt: Date;
+    currency: string;
     deletedAt: (Date) | null;
     id: number;
     offererAccountId: number;
@@ -152,7 +156,6 @@ export type Offer = {
     roundId: number;
     status: 'pending' | 'accepted' | 'rejected' | 'withdrawn';
     updatedAt: (Date) | null;
-    usdAmount: number;
 };
 
 export type status = 'pending' | 'accepted' | 'rejected' | 'withdrawn';
@@ -173,9 +176,10 @@ export type Round = {
     maximumInvestmentPercentage: number;
     minimumInvestmentPercentage: number;
     offeredPercentage: number;
+    percentageValue: number;
+    percentageValueCurrency: string;
     startTime: Date;
     updatedAt: (Date) | null;
-    usdPercentageValue: number;
     ventureId: number;
 };
 

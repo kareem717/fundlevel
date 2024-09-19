@@ -88,6 +88,15 @@ export const CreateOfferParamsSchema = {
             readOnly: true,
             type: 'string'
         },
+        amount: {
+            format: 'double',
+            maximum: 1000000000000000,
+            minimum: 0,
+            type: 'number'
+        },
+        currency: {
+            type: 'string'
+        },
         offererAccountId: {
             format: 'int64',
             minimum: 1,
@@ -103,15 +112,9 @@ export const CreateOfferParamsSchema = {
             format: 'int64',
             minimum: 1,
             type: 'integer'
-        },
-        usdAmount: {
-            format: 'double',
-            maximum: 9999999999.99,
-            minimum: 0,
-            type: 'number'
         }
     },
-    required: ['roundId', 'offererAccountId', 'percentageAmount', 'usdAmount'],
+    required: ['roundId', 'offererAccountId', 'percentageAmount', 'amount', 'currency'],
     type: 'object'
 } as const;
 
@@ -133,11 +136,13 @@ export const CreateRoundParamsSchema = {
         },
         maximumInvestmentPercentage: {
             format: 'double',
+            maximum: 100,
             minimum: 0,
             type: 'number'
         },
         minimumInvestmentPercentage: {
             format: 'double',
+            maximum: 100,
             minimum: 0,
             type: 'number'
         },
@@ -147,15 +152,18 @@ export const CreateRoundParamsSchema = {
             minimum: 0,
             type: 'number'
         },
+        percentageValue: {
+            format: 'double',
+            maximum: 1000000000000000,
+            minimum: 0,
+            type: 'number'
+        },
+        percentageValueCurrency: {
+            type: 'string'
+        },
         startTime: {
             format: 'date-time',
             type: 'string'
-        },
-        usdPercentageValue: {
-            format: 'double',
-            maximum: 9999999999.99,
-            minimum: 0,
-            type: 'number'
         },
         ventureId: {
             format: 'int64',
@@ -163,7 +171,7 @@ export const CreateRoundParamsSchema = {
             type: 'integer'
         }
     },
-    required: ['offeredPercentage', 'usdPercentageValue', 'minimumInvestmentPercentage', 'maximumInvestmentPercentage', 'isAuctioned', 'startTime', 'ventureId', 'endTime'],
+    required: ['offeredPercentage', 'percentageValue', 'percentageValueCurrency', 'minimumInvestmentPercentage', 'maximumInvestmentPercentage', 'isAuctioned', 'startTime', 'ventureId', 'endTime'],
     type: 'object'
 } as const;
 
@@ -363,8 +371,17 @@ export const MessageResponseSchema = {
 export const OfferSchema = {
     additionalProperties: false,
     properties: {
+        amount: {
+            format: 'double',
+            maximum: 1000000000000000,
+            minimum: 0,
+            type: 'number'
+        },
         createdAt: {
             format: 'date-time',
+            type: 'string'
+        },
+        currency: {
             type: 'string'
         },
         deletedAt: {
@@ -399,15 +416,9 @@ export const OfferSchema = {
         updatedAt: {
             format: 'date-time',
             type: ['string', 'null']
-        },
-        usdAmount: {
-            format: 'double',
-            maximum: 9999999999.99,
-            minimum: 0,
-            type: 'number'
         }
     },
-    required: ['id', 'roundId', 'offererAccountId', 'percentageAmount', 'usdAmount', 'status', 'createdAt', 'updatedAt', 'deletedAt'],
+    required: ['id', 'roundId', 'offererAccountId', 'percentageAmount', 'amount', 'currency', 'status', 'createdAt', 'updatedAt', 'deletedAt'],
     type: 'object'
 } as const;
 
@@ -436,11 +447,13 @@ export const RoundSchema = {
         },
         maximumInvestmentPercentage: {
             format: 'double',
+            maximum: 100,
             minimum: 0,
             type: 'number'
         },
         minimumInvestmentPercentage: {
             format: 'double',
+            maximum: 100,
             minimum: 0,
             type: 'number'
         },
@@ -450,6 +463,15 @@ export const RoundSchema = {
             minimum: 0,
             type: 'number'
         },
+        percentageValue: {
+            format: 'double',
+            maximum: 1000000000000000,
+            minimum: 0,
+            type: 'number'
+        },
+        percentageValueCurrency: {
+            type: 'string'
+        },
         startTime: {
             format: 'date-time',
             type: 'string'
@@ -458,19 +480,13 @@ export const RoundSchema = {
             format: 'date-time',
             type: ['string', 'null']
         },
-        usdPercentageValue: {
-            format: 'double',
-            maximum: 9999999999.99,
-            minimum: 0,
-            type: 'number'
-        },
         ventureId: {
             format: 'int64',
             minimum: 1,
             type: 'integer'
         }
     },
-    required: ['id', 'offeredPercentage', 'usdPercentageValue', 'minimumInvestmentPercentage', 'maximumInvestmentPercentage', 'isAuctioned', 'startTime', 'ventureId', 'endTime', 'createdAt', 'updatedAt', 'deletedAt'],
+    required: ['id', 'offeredPercentage', 'percentageValue', 'percentageValueCurrency', 'minimumInvestmentPercentage', 'maximumInvestmentPercentage', 'isAuctioned', 'startTime', 'ventureId', 'endTime', 'createdAt', 'updatedAt', 'deletedAt'],
     type: 'object'
 } as const;
 

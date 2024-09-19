@@ -80,7 +80,7 @@ export const actionClient = createSafeActionClient({
 			}
 		}
 
-		account = data;
+		account = data?.account;
 	}
 
 	console.log("access_token", session?.access_token);
@@ -88,8 +88,8 @@ export const actionClient = createSafeActionClient({
 	return next({
 		ctx: {
 			apiClient: apiClient(session?.access_token),
-			user: user,
-			account: account?.account,
+			user,
+			account,
 		},
 	});
 });
