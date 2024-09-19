@@ -48,6 +48,8 @@ type AccountRepository interface {
 	GetAll(ctx context.Context, paginationParams shared.PaginationRequest) ([]account.Account, error)
 	Update(ctx context.Context, id int, params account.UpdateAccountParams) (account.Account, error)
 	GetById(ctx context.Context, id int) (account.Account, error)
+
+	GetVentures(ctx context.Context, accountId int, paginationParams shared.PaginationRequest) ([]venture.Venture, error)
 }
 
 type UserRepository interface {
