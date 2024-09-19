@@ -10,14 +10,22 @@ import (
 )
 
 type httpHandler struct {
-	healthService service.HealthService
-	logger        *zap.Logger
+	service *service.Service
+	logger  *zap.Logger
 }
 
-func newHTTPHandler(healthService service.HealthService, logger *zap.Logger) *httpHandler {
+func newHTTPHandler(service *service.Service, logger *zap.Logger) *httpHandler {
+	if service == nil {
+		panic("service is nil")
+	}
+
+	if logger == nil {
+		panic("logger is nil")
+	}
+
 	return &httpHandler{
-		healthService: healthService,
-		logger:        logger,
+		service: service,
+		logger:  logger,
 	}
 }
 
@@ -26,7 +34,7 @@ type HealthCheckOutput struct {
 }
 
 func (h *httpHandler) healthCheck(ctx context.Context, input *struct{}) (*HealthCheckOutput, error) {
-	err := h.healthService.HealthCheck(ctx)
+	err := h.service.HealthService.HealthCheck(ctx)
 	if err != nil {
 		h.logger.Error("failed to health check", zap.Error(err))
 	}

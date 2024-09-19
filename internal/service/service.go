@@ -52,8 +52,9 @@ type OfferService interface {
 	Delete(ctx context.Context, id int) error
 	UpdateStatus(ctx context.Context, id int, status offer.OfferStatus) (offer.Offer, error)
 	GetById(ctx context.Context, id int) (offer.Offer, error)
-	GetByRoundId(ctx context.Context, roundId int, limit int, cursor int) ([]offer.Offer, error)
 	GetAll(ctx context.Context, limit int, cursor int) ([]offer.Offer, error)
+	GetByRoundId(ctx context.Context, roundId int, limit int, cursor int) ([]offer.Offer, error)
+	GetByVentureId(ctx context.Context, ventureId int, limit int, cursor int) ([]offer.Offer, error)
 }
 
 type Service struct {

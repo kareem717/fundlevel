@@ -16,8 +16,8 @@ func RegisterHumaRoutes(
 ) {
 
 	handler := &httpHandler{
-		offerService: service.OfferService,
-		logger:       logger,
+		service: service,
+		logger:  logger,
 	}
 
 	huma.Register(humaApi, huma.Operation{
@@ -28,15 +28,6 @@ func RegisterHumaRoutes(
 		Description: "Get offer by ID.",
 		Tags:        []string{"Offer"},
 	}, handler.getByID)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-offers-by-round-id",
-		Method:      http.MethodGet,
-		Path:        "/offer/round/{id}",
-		Summary:     "Get offer by round ID",
-		Description: "Get offer by round ID.",
-		Tags:        []string{"Offer"},
-	}, handler.getAllByRoundID)
 
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "get-all-offers",

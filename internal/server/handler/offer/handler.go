@@ -14,14 +14,22 @@ import (
 )
 
 type httpHandler struct {
-	offerService service.OfferService
-	logger       *zap.Logger
+	service *service.Service
+	logger  *zap.Logger
 }
 
-func newHTTPHandler(offerService service.OfferService, logger *zap.Logger) *httpHandler {
+func newHTTPHandler(service *service.Service, logger *zap.Logger) *httpHandler {
+	if service == nil {
+		panic("service is nil")
+	}
+
+	if logger == nil {
+		panic("logger is nil")
+	}
+
 	return &httpHandler{
-		offerService: offerService,
-		logger:       logger,
+		service: service,
+		logger:  logger,
 	}
 }
 
@@ -33,7 +41,7 @@ type SingleOfferResponse struct {
 }
 
 func (h *httpHandler) getByID(ctx context.Context, input *shared.PathIDParam) (*SingleOfferResponse, error) {
-	offer, err := h.offerService.GetById(ctx, input.ID)
+	offer, err := h.service.OfferService.GetById(ctx, input.ID)
 	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
@@ -51,18 +59,10 @@ func (h *httpHandler) getByID(ctx context.Context, input *shared.PathIDParam) (*
 	return resp, nil
 }
 
-type GetManyOffersOutput struct {
-	Body struct {
-		shared.MessageResponse
-		Offers []offer.Offer `json:"offers"`
-		shared.PaginationResponse
-	}
-}
-
-func (h *httpHandler) getAll(ctx context.Context, input *shared.PaginationRequest) (*GetManyOffersOutput, error) {
+func (h *httpHandler) getAll(ctx context.Context, input *shared.PaginationRequest) (*shared.GetManyOffersOutput, error) {
 	LIMIT := input.Limit + 1
 
-	offers, err := h.offerService.GetAll(ctx, LIMIT, input.Cursor)
+	offers, err := h.service.OfferService.GetAll(ctx, LIMIT, input.Cursor)
 	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
@@ -73,39 +73,7 @@ func (h *httpHandler) getAll(ctx context.Context, input *shared.PaginationReques
 		}
 	}
 
-	resp := &GetManyOffersOutput{}
-	resp.Body.Message = "Offers fetched successfully"
-	resp.Body.Offers = offers
-
-	if len(offers) == LIMIT {
-		resp.Body.NextCursor = &offers[len(offers)-1].ID
-		resp.Body.HasMore = true
-		resp.Body.Offers = resp.Body.Offers[:len(resp.Body.Offers)-1]
-	}
-
-	return resp, nil
-}
-
-type GetManyOffersByRoundIDInput struct {
-	shared.PathIDParam
-	shared.PaginationRequest
-}
-
-func (h *httpHandler) getAllByRoundID(ctx context.Context, input *GetManyOffersByRoundIDInput) (*GetManyOffersOutput, error) {
-	LIMIT := input.Limit + 1
-
-	offers, err := h.offerService.GetByRoundId(ctx, input.ID, LIMIT, input.Cursor)
-	if err != nil {
-		switch {
-		case errors.Is(err, sql.ErrNoRows):
-			return nil, huma.Error404NotFound("offers not found")
-		default:
-			h.logger.Error("failed to fetch offers", zap.Error(err))
-			return nil, huma.Error500InternalServerError("An error occurred while fetching the offers")
-		}
-	}
-
-	resp := &GetManyOffersOutput{}
+	resp := &shared.GetManyOffersOutput{}
 	resp.Body.Message = "Offers fetched successfully"
 	resp.Body.Offers = offers
 
@@ -128,7 +96,7 @@ func (i *CreateOfferInput) Resolve(ctx huma.Context) []error {
 }
 
 func (h *httpHandler) create(ctx context.Context, input *CreateOfferInput) (*SingleOfferResponse, error) {
-	offer, err := h.offerService.Create(ctx, input.Body)
+	offer, err := h.service.OfferService.Create(ctx, input.Body)
 	if err != nil {
 		h.logger.Error("failed to create offer", zap.Error(err))
 		return nil, huma.Error500InternalServerError("An error occurred while creating the offer")
@@ -152,7 +120,7 @@ func (i *UpdateOfferInput) Resolve(ctx huma.Context) []error {
 }
 
 func (h *httpHandler) updateStatus(ctx context.Context, input *UpdateOfferInput) (*SingleOfferResponse, error) {
-	_, err := h.offerService.GetById(ctx, input.ID)
+	_, err := h.service.OfferService.GetById(ctx, input.ID)
 	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
@@ -163,7 +131,7 @@ func (h *httpHandler) updateStatus(ctx context.Context, input *UpdateOfferInput)
 		}
 	}
 
-	offer, err := h.offerService.UpdateStatus(ctx, input.ID, input.Body.Status)
+	offer, err := h.service.OfferService.UpdateStatus(ctx, input.ID, input.Body.Status)
 
 	if err != nil {
 		h.logger.Error("failed to update offer", zap.Error(err))
@@ -182,7 +150,7 @@ type DeleteOfferOutput struct {
 }
 
 func (h *httpHandler) delete(ctx context.Context, input *shared.PathIDParam) (*DeleteOfferOutput, error) {
-	_, err := h.offerService.GetById(ctx, input.ID)
+	_, err := h.service.OfferService.GetById(ctx, input.ID)
 	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
@@ -193,7 +161,7 @@ func (h *httpHandler) delete(ctx context.Context, input *shared.PathIDParam) (*D
 		}
 	}
 
-	err = h.offerService.Delete(ctx, input.ID)
+	err = h.service.OfferService.Delete(ctx, input.ID)
 	if err != nil {
 		h.logger.Error("failed to delete offer", zap.Error(err))
 		return nil, huma.Error500InternalServerError("An error occurred while deleting the offer")

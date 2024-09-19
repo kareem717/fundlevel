@@ -14,10 +14,9 @@ func RegisterHumaRoutes(
 	humaApi huma.API,
 	logger *zap.Logger,
 ) {
-
 	handler := &httpHandler{
-		ventureService: service.VentureService,
-		logger:         logger,
+		service: service,
+		logger:  logger,
 	}
 
 	huma.Register(humaApi, huma.Operation{
@@ -37,6 +36,24 @@ func RegisterHumaRoutes(
 		Description: "Get all ventures.",
 		Tags:        []string{"Venture"},
 	}, handler.getAll)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-venture-rounds",
+		Method:      http.MethodGet,
+		Path:        "/venture/{id}/rounds",
+		Summary:     "Get all rounds for a venture",
+		Description: "Get all rounds for a venture.",
+		Tags:        []string{"Venture"},
+	}, handler.getRounds)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-venture-offers",
+		Method:      http.MethodGet,
+		Path:        "/venture/{id}/offers",
+		Summary:     "Get all offers for a venture",
+		Description: "Get all offers for a venture.",
+		Tags:        []string{"Venture"},
+	}, handler.getOffers)
 
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "create-venture",

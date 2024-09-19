@@ -6,7 +6,7 @@ CREATE TABLE
     offers (
         id serial PRIMARY KEY,
         round_id INT NOT NULL REFERENCES rounds (id),
-        offerer_account_id INT NOT NULL REFERENCES accounts (id),
+        inverstor_account_id INT NOT NULL REFERENCES accounts (id),
         percentage_amount NUMERIC(6, 3) NOT NULL,
         amount NUMERIC(15, 2) NOT NULL,
         currency currency NOT NULL,

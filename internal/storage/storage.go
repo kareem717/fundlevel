@@ -27,6 +27,7 @@ type OfferRepository interface {
 	Update(ctx context.Context, id int, params offer.UpdateOfferParams) (offer.Offer, error)
 	GetById(ctx context.Context, id int) (offer.Offer, error)
 	GetByRoundId(ctx context.Context, roundId int, paginationParams shared.PaginationRequest) ([]offer.Offer, error)
+	GetByVentureId(ctx context.Context, ventureId int, paginationParams shared.PaginationRequest) ([]offer.Offer, error)
 }
 
 type RoundRepository interface {

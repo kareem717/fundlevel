@@ -14,14 +14,22 @@ import (
 )
 
 type httpHandler struct {
-	roundService service.RoundService
-	logger       *zap.Logger
+	service *service.Service
+	logger  *zap.Logger
 }
 
-func newHTTPHandler(roundService service.RoundService, logger *zap.Logger) *httpHandler {
+func newHTTPHandler(service *service.Service, logger *zap.Logger) *httpHandler {
+	if service == nil {
+		panic("service is nil")
+	}
+
+	if logger == nil {
+		panic("logger is nil")
+	}
+
 	return &httpHandler{
-		roundService: roundService,
-		logger:       logger,
+		service: service,
+		logger:  logger,
 	}
 }
 
@@ -33,7 +41,7 @@ type SingleRoundResponse struct {
 }
 
 func (h *httpHandler) getByID(ctx context.Context, input *shared.PathIDParam) (*SingleRoundResponse, error) {
-	round, err := h.roundService.GetById(ctx, input.ID)
+	round, err := h.service.RoundService.GetById(ctx, input.ID)
 	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
@@ -51,18 +59,10 @@ func (h *httpHandler) getByID(ctx context.Context, input *shared.PathIDParam) (*
 	return resp, nil
 }
 
-type GetManyRoundsOutput struct {
-	Body struct {
-		shared.MessageResponse
-		Rounds []round.Round `json:"rounds"`
-		shared.PaginationResponse
-	}
-}
-
-func (h *httpHandler) getAll(ctx context.Context, input *shared.PaginationRequest) (*GetManyRoundsOutput, error) {
+func (h *httpHandler) getAll(ctx context.Context, input *shared.PaginationRequest) (*shared.GetManyRoundsOutput, error) {
 	LIMIT := input.Limit + 1
 
-	rounds, err := h.roundService.GetAll(ctx, LIMIT, input.Cursor)
+	rounds, err := h.service.RoundService.GetAll(ctx, LIMIT, input.Cursor)
 	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
@@ -73,7 +73,7 @@ func (h *httpHandler) getAll(ctx context.Context, input *shared.PaginationReques
 		}
 	}
 
-	resp := &GetManyRoundsOutput{}
+	resp := &shared.GetManyRoundsOutput{}
 	resp.Body.Message = "Rounds fetched successfully"
 	resp.Body.Rounds = rounds
 
@@ -86,33 +86,28 @@ func (h *httpHandler) getAll(ctx context.Context, input *shared.PaginationReques
 	return resp, nil
 }
 
-type GetManyRoundsByVentureIDInput struct {
-	shared.PathIDParam
-	shared.PaginationRequest
-}
-
-func (h *httpHandler) getAllByVentureID(ctx context.Context, input *GetManyRoundsByVentureIDInput) (*GetManyRoundsOutput, error) {
+func (h *httpHandler) getOffers(ctx context.Context, input *shared.GetManyByParentPathIDInput) (*shared.GetManyOffersOutput, error) {
 	LIMIT := input.Limit + 1
 
-	rounds, err := h.roundService.GetByVentureId(ctx, input.ID, LIMIT, input.Cursor)
+	offers, err := h.service.OfferService.GetByRoundId(ctx, input.ID, LIMIT, input.Cursor)
 	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
-			return nil, huma.Error404NotFound("rounds not found")
+			return nil, huma.Error404NotFound("offers not found")
 		default:
-			h.logger.Error("failed to fetch rounds", zap.Error(err))
-			return nil, huma.Error500InternalServerError("An error occurred while fetching the rounds")
+			h.logger.Error("failed to fetch offers", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the offers")
 		}
 	}
 
-	resp := &GetManyRoundsOutput{}
-	resp.Body.Message = "Rounds fetched successfully"
-	resp.Body.Rounds = rounds
+	resp := &shared.GetManyOffersOutput{}
+	resp.Body.Message = "Offers fetched successfully"
+	resp.Body.Offers = offers
 
-	if len(rounds) == LIMIT {
-		resp.Body.NextCursor = &rounds[len(rounds)-1].ID
+	if len(offers) == LIMIT {
+		resp.Body.NextCursor = &offers[len(offers)-1].ID
 		resp.Body.HasMore = true
-		resp.Body.Rounds = resp.Body.Rounds[:len(resp.Body.Rounds)-1]
+		resp.Body.Offers = resp.Body.Offers[:len(resp.Body.Offers)-1]
 	}
 
 	return resp, nil
@@ -128,7 +123,7 @@ func (i *CreateRoundInput) Resolve(ctx huma.Context) []error {
 }
 
 func (h *httpHandler) create(ctx context.Context, input *CreateRoundInput) (*SingleRoundResponse, error) {
-	round, err := h.roundService.Create(ctx, input.Body)
+	round, err := h.service.RoundService.Create(ctx, input.Body)
 	if err != nil {
 		h.logger.Error("failed to create round", zap.Error(err))
 		return nil, huma.Error500InternalServerError("An error occurred while creating the round")
@@ -152,7 +147,7 @@ func (i *UpdateRoundInput) Resolve(ctx huma.Context) []error {
 }
 
 func (h *httpHandler) update(ctx context.Context, input *UpdateRoundInput) (*SingleRoundResponse, error) {
-	_, err := h.roundService.GetById(ctx, input.ID)
+	_, err := h.service.RoundService.GetById(ctx, input.ID)
 	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
@@ -163,7 +158,7 @@ func (h *httpHandler) update(ctx context.Context, input *UpdateRoundInput) (*Sin
 		}
 	}
 
-	round, err := h.roundService.Update(ctx, input.ID, input.Body)
+	round, err := h.service.RoundService.Update(ctx, input.ID, input.Body)
 
 	if err != nil {
 		h.logger.Error("failed to update round", zap.Error(err))
@@ -182,7 +177,7 @@ type DeleteRoundOutput struct {
 }
 
 func (h *httpHandler) delete(ctx context.Context, input *shared.PathIDParam) (*DeleteRoundOutput, error) {
-	_, err := h.roundService.GetById(ctx, input.ID)
+	_, err := h.service.RoundService.GetById(ctx, input.ID)
 	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
@@ -193,7 +188,7 @@ func (h *httpHandler) delete(ctx context.Context, input *shared.PathIDParam) (*D
 		}
 	}
 
-	err = h.roundService.Delete(ctx, input.ID)
+	err = h.service.RoundService.Delete(ctx, input.ID)
 	if err != nil {
 		h.logger.Error("failed to delete round", zap.Error(err))
 		return nil, huma.Error500InternalServerError("An error occurred while deleting the round")

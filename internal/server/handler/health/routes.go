@@ -16,8 +16,8 @@ func RegisterHumaRoutes(
 ) {
 
 	handler := &httpHandler{
-		healthService: service.HealthService,
-		logger:        logger,
+		service: service,
+		logger:  logger,
 	}
 
 	huma.Register(humaApi, huma.Operation{

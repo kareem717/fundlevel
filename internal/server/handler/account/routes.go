@@ -3,11 +3,11 @@ package account
 import (
 	"net/http"
 
+	"fundlevel/internal/server/middleware"
+	"fundlevel/internal/service"
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/supabase-community/supabase-go"
 	"go.uber.org/zap"
-	"fundlevel/internal/server/middleware"
-	"fundlevel/internal/service"
 )
 
 func RegisterHumaRoutes(
@@ -18,8 +18,8 @@ func RegisterHumaRoutes(
 ) {
 
 	handler := &httpHandler{
-		accountService: service.AccountService,
-		logger:         logger,
+		service: service,
+		logger:  logger,
 	}
 
 	huma.Register(humaApi, huma.Operation{
@@ -42,10 +42,11 @@ func RegisterHumaRoutes(
 		},
 	}, handler.getByID)
 
+	// this route breaks the pattern of other routes becuase we don't manage user entities ourselves
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "get-account-by-user-id",
 		Method:      http.MethodGet,
-		Path:        "/account/user/{userId}",
+		Path:        "/user/{id}/account",
 		Summary:     "Get account by user ID",
 		Description: "Get account by user ID.",
 		Tags:        []string{"Account"},

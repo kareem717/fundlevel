@@ -14,14 +14,22 @@ import (
 )
 
 type httpHandler struct {
-	ventureService service.VentureService
-	logger         *zap.Logger
+	service *service.Service
+	logger  *zap.Logger
 }
 
-func newHTTPHandler(ventureService service.VentureService, logger *zap.Logger) *httpHandler {
+func newHTTPHandler(service *service.Service, logger *zap.Logger) *httpHandler {
+	if service == nil {
+		panic("service is nil")
+	}
+
+	if logger == nil {
+		panic("logger is nil")
+	}
+
 	return &httpHandler{
-		ventureService: ventureService,
-		logger:         logger,
+		service: service,
+		logger:  logger,
 	}
 }
 
@@ -33,7 +41,7 @@ type SingleVentureResponse struct {
 }
 
 func (h *httpHandler) getByID(ctx context.Context, input *shared.PathIDParam) (*SingleVentureResponse, error) {
-	venture, err := h.ventureService.GetById(ctx, input.ID)
+	venture, err := h.service.VentureService.GetById(ctx, input.ID)
 	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
@@ -62,7 +70,7 @@ type GetAllVenturesOutput struct {
 func (h *httpHandler) getAll(ctx context.Context, input *shared.PaginationRequest) (*GetAllVenturesOutput, error) {
 	LIMIT := input.Limit + 1
 
-	ventures, err := h.ventureService.GetAll(ctx, LIMIT, input.Cursor)
+	ventures, err := h.service.VentureService.GetAll(ctx, LIMIT, input.Cursor)
 	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
@@ -86,12 +94,66 @@ func (h *httpHandler) getAll(ctx context.Context, input *shared.PaginationReques
 	return resp, nil
 }
 
+func (h *httpHandler) getRounds(ctx context.Context, input *shared.GetManyByParentPathIDInput) (*shared.GetManyRoundsOutput, error) {
+	LIMIT := input.Limit + 1
+
+	rounds, err := h.service.RoundService.GetByVentureId(ctx, input.ID, LIMIT, input.Cursor)
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("rounds not found")
+		default:
+			h.logger.Error("failed to fetch rounds", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the rounds")
+		}
+	}
+
+	resp := &shared.GetManyRoundsOutput{}
+	resp.Body.Message = "Rounds fetched successfully"
+	resp.Body.Rounds = rounds
+
+	if len(rounds) == LIMIT {
+		resp.Body.NextCursor = &rounds[len(rounds)-1].ID
+		resp.Body.HasMore = true
+		resp.Body.Rounds = resp.Body.Rounds[:len(resp.Body.Rounds)-1]
+	}
+
+	return resp, nil
+}
+
+func (h *httpHandler) getOffers(ctx context.Context, input *shared.GetManyByParentPathIDInput) (*shared.GetManyOffersOutput, error) {
+	LIMIT := input.Limit + 1
+
+	offers, err := h.service.OfferService.GetByVentureId(ctx, input.ID, LIMIT, input.Cursor)
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("offers not found")
+		default:
+			h.logger.Error("failed to fetch offers", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the offers")
+		}
+	}
+
+	resp := &shared.GetManyOffersOutput{}
+	resp.Body.Message = "Offers fetched successfully"
+	resp.Body.Offers = offers
+
+	if len(offers) == LIMIT {
+		resp.Body.NextCursor = &offers[len(offers)-1].ID
+		resp.Body.HasMore = true
+		resp.Body.Offers = resp.Body.Offers[:len(resp.Body.Offers)-1]
+	}
+
+	return resp, nil
+}
+
 type CreateVentureInput struct {
 	Body venture.CreateVentureParams `json:"venture"`
 }
 
 func (h *httpHandler) create(ctx context.Context, input *CreateVentureInput) (*SingleVentureResponse, error) {
-	venture, err := h.ventureService.Create(ctx, input.Body)
+	venture, err := h.service.VentureService.Create(ctx, input.Body)
 	if err != nil {
 		h.logger.Error("failed to create venture", zap.Error(err))
 		return nil, huma.Error500InternalServerError("An error occurred while creating the venture")
@@ -110,7 +172,7 @@ type UpdateVentureInput struct {
 }
 
 func (h *httpHandler) update(ctx context.Context, input *UpdateVentureInput) (*SingleVentureResponse, error) {
-	_, err := h.ventureService.GetById(ctx, input.ID)
+	_, err := h.service.VentureService.GetById(ctx, input.ID)
 	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
@@ -121,7 +183,7 @@ func (h *httpHandler) update(ctx context.Context, input *UpdateVentureInput) (*S
 		}
 	}
 
-	venture, err := h.ventureService.Update(ctx, input.ID, input.Body)
+	venture, err := h.service.VentureService.Update(ctx, input.ID, input.Body)
 
 	if err != nil {
 		h.logger.Error("failed to update venture", zap.Error(err))
@@ -140,7 +202,7 @@ type DeleteVentureOutput struct {
 }
 
 func (h *httpHandler) delete(ctx context.Context, input *shared.PathIDParam) (*DeleteVentureOutput, error) {
-	_, err := h.ventureService.GetById(ctx, input.ID)
+	_, err := h.service.VentureService.GetById(ctx, input.ID)
 	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
@@ -151,7 +213,7 @@ func (h *httpHandler) delete(ctx context.Context, input *shared.PathIDParam) (*D
 		}
 	}
 
-	err = h.ventureService.Delete(ctx, input.ID)
+	err = h.service.VentureService.Delete(ctx, input.ID)
 	if err != nil {
 		h.logger.Error("failed to delete venture", zap.Error(err))
 		return nil, huma.Error500InternalServerError("An error occurred while deleting the venture")

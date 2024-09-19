@@ -14,14 +14,22 @@ import (
 )
 
 type httpHandler struct {
-	accountService service.AccountService
-	logger         *zap.Logger
+	service *service.Service	
+	logger  *zap.Logger
 }
 
-func newHTTPHandler(accountService service.AccountService, logger *zap.Logger) *httpHandler {
+func newHTTPHandler(service *service.Service, logger *zap.Logger) *httpHandler {
+	if service == nil {
+		panic("service is nil")
+	}
+
+	if logger == nil {
+		panic("logger is nil")
+	}
+	
 	return &httpHandler{
-		accountService: accountService,
-		logger:         logger,
+		service: service,
+		logger:  logger,
 	}
 }
 
@@ -41,7 +49,7 @@ func (h *httpHandler) getByID(ctx context.Context, input *shared.PathIDParam) (*
 		return nil, huma.Error403Forbidden("Cannot get account for another user")
 	}
 
-	account, err := h.accountService.GetById(ctx, input.ID)
+	account, err := h.service.AccountService.GetById(ctx, input.ID)
 	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
@@ -69,7 +77,7 @@ func (h *httpHandler) getByUserId(ctx context.Context, input *shared.PathUserIDP
 	}
 
 	h.logger.Info("getting account by user id", zap.Any("user id", input.UserID))
-	account, err := h.accountService.GetByUserId(ctx, input.UserID)
+	account, err := h.service.AccountService.GetByUserId(ctx, input.UserID)
 	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
@@ -100,7 +108,7 @@ func (h *httpHandler) create(ctx context.Context, input *CreateAccountInput) (*S
 		return nil, huma.Error403Forbidden("Cannot create account for another user")
 	}
 
-	account, err := h.accountService.Create(ctx, input.Body)
+	account, err := h.service.AccountService.Create(ctx, input.Body)
 	if err != nil {
 		h.logger.Error("failed to create account", zap.Error(err))
 		return nil, huma.Error500InternalServerError("An error occurred while creating the account")
@@ -127,7 +135,7 @@ func (h *httpHandler) update(ctx context.Context, input *UpdateAccountInput) (*S
 		return nil, huma.Error403Forbidden("Cannot update account for another user")
 	}
 
-	_, err := h.accountService.GetById(ctx, input.ID)
+	_, err := h.service.AccountService.GetById(ctx, input.ID)
 	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
@@ -138,7 +146,7 @@ func (h *httpHandler) update(ctx context.Context, input *UpdateAccountInput) (*S
 		}
 	}
 
-	account, err := h.accountService.Update(ctx, input.ID, input.Body)
+	account, err := h.service.AccountService.Update(ctx, input.ID, input.Body)
 
 	if err != nil {
 		h.logger.Error("failed to update account", zap.Error(err))
@@ -165,7 +173,7 @@ func (h *httpHandler) delete(ctx context.Context, input *shared.PathIDParam) (*D
 		return nil, huma.Error403Forbidden("Cannot delete account for another user")
 	}
 
-	_, err := h.accountService.GetById(ctx, input.ID)
+	_, err := h.service.AccountService.GetById(ctx, input.ID)
 	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
@@ -176,7 +184,7 @@ func (h *httpHandler) delete(ctx context.Context, input *shared.PathIDParam) (*D
 		}
 	}
 
-	err = h.accountService.Delete(ctx, input.ID)
+	err = h.service.AccountService.Delete(ctx, input.ID)
 	if err != nil {
 		h.logger.Error("failed to delete account", zap.Error(err))
 		return nil, huma.Error500InternalServerError("An error occurred while deleting the account")
