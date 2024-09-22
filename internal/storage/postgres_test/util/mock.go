@@ -8,6 +8,9 @@ import (
 	"testing"
 	"time"
 
+	"fundlevel/internal/storage/postgres/migrations"
+	"fundlevel/internal/storage/postgres_test/seed"
+
 	"github.com/alexlast/bunzap"
 	_ "github.com/lib/pq"
 	"github.com/pressly/goose/v3"
@@ -15,7 +18,6 @@ import (
 	"github.com/testcontainers/testcontainers-go/wait"
 	"github.com/uptrace/bun"
 	"github.com/uptrace/bun/dialect/pgdialect"
-	"fundlevel/internal/storage/postgres_test/seed"
 	"go.uber.org/zap"
 )
 
@@ -103,8 +105,11 @@ func SetupTestDB(t *testing.T, seedConfig seed.SeedConfig) (*bun.DB, *seed.SeedR
 		t.Fatalf("failed to create auth schema and users table: %s", err)
 	}
 
+	// Set the working directory for goose
+	goose.SetBaseFS(migrations.MigrationsFS);
+
 	// Run migrations
-	if err := goose.Up(sqldb, "../../postgres/migrations"); err != nil {
+	if err := goose.Up(sqldb, "."); err != nil {
 		t.Fatalf("failed to run migrations: %s", err)
 	}
 

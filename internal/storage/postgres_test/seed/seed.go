@@ -10,6 +10,7 @@ import (
 // mock postgres database.
 type SeedConfig struct {
 	numUsers int
+	numVentures int
 }
 
 // SeedConfigOption is a option function that alters the SeedConfig
@@ -20,6 +21,7 @@ type SeedConfigOption func(config *SeedConfig)
 func NewSeedConfig(opts ...SeedConfigOption) SeedConfig {
 	config := SeedConfig{
 		numUsers: 10,
+		numVentures: 50,
 	}
 
 	for _, opt := range opts {
@@ -37,6 +39,13 @@ func WithNumUsers(numUsers int) SeedConfigOption {
 	}
 }
 
+// WithNumVentures sets the number of ventures to seed.
+func WithNumVentures(numVentures int) SeedConfigOption {
+	return func(config *SeedConfig) {
+		config.numVentures = numVentures
+	}
+}
+
 // SeedResult is the result of seeding the database. It contains useful
 // information about the seeded data.
 type SeedResult struct {
@@ -44,6 +53,8 @@ type SeedResult struct {
 	UserIds []uuid.UUID
 	// AccountIds is a list of the ids of the accounts that were seeded.
 	AccountIds []int
+	// VentureIds is a list of the ids of the ventures that were seeded.
+	VentureIds []int
 }
 
 // SeedDB seeds the database utilizing the configuration provided.
@@ -63,6 +74,13 @@ func SeedDB(db *sql.DB, config SeedConfig) (*SeedResult, error) {
 	}
 
 	result.AccountIds = accountIds
+
+	ventureIds, err := SeedVentures(db, accountIds, config.numVentures)
+	if err != nil {
+		return nil, err
+	}
+
+	result.VentureIds = ventureIds
 
 	return &result, nil
 }
