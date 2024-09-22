@@ -57,7 +57,12 @@ func main() {
 				zapcore.AddSync(os.Stdout), zap.InfoLevel))
 
 		postgresConfig := postgres.NewConfig(options.DatabaseURL)
-		repositories := postgres.NewRepository(postgresConfig, ctx, logger)
+		db, err := postgres.NewDB(postgresConfig, ctx, logger)
+		if err != nil {
+			logger.Fatal("Failed to create database", zap.Error(err))
+		}
+
+		repositories := postgres.NewRepository(db, ctx)
 
 		services := service.NewService(repositories)
 

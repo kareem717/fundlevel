@@ -148,7 +148,7 @@ type Repository struct {
 	ctx         context.Context
 }
 
-func NewRepository(config Config, ctx context.Context, logger *zap.Logger) *Repository {
+func NewDB(config Config, ctx context.Context, logger *zap.Logger) (*bun.DB, error) {
 	poolConfig, err := configDBPool(config)
 	if err != nil {
 		logger.Fatal("Error creating pool config: %v", zap.Error(err))
@@ -180,6 +180,11 @@ func NewRepository(config Config, ctx context.Context, logger *zap.Logger) *Repo
 	}
 
 	logger.Info("Successfully connected to the database.")
+
+	return db, nil
+}
+
+func NewRepository(db *bun.DB, ctx context.Context) *Repository {
 	return &Repository{
 		ventureRepo: venture.NewVentureRepository(db, ctx),
 		accountRepo: account.NewAccountRepository(db, ctx),
