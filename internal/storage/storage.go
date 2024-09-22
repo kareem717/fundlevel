@@ -15,7 +15,7 @@ import (
 type VentureRepository interface {
 	Create(ctx context.Context, params venture.CreateVentureParams) (venture.Venture, error)
 	Delete(ctx context.Context, id int) error
-	GetAll(ctx context.Context, paginationParams shared.PaginationRequest) ([]venture.Venture, error)
+	GetMany(ctx context.Context, paginationParams shared.PaginationRequest) ([]venture.Venture, error)
 	Update(ctx context.Context, id int, params venture.UpdateVentureParams) (venture.Venture, error)
 	GetById(ctx context.Context, id int) (venture.Venture, error)
 
@@ -25,27 +25,32 @@ type VentureRepository interface {
 }
 
 type OfferRepository interface {
-	Create(ctx context.Context, params offer.CreateOfferParams) (offer.Offer, error)
 	Delete(ctx context.Context, id int) error
-	GetAll(ctx context.Context, paginationParams shared.PaginationRequest) ([]offer.Offer, error)
-	Update(ctx context.Context, id int, params offer.UpdateOfferParams) (offer.Offer, error)
 	GetById(ctx context.Context, id int) (offer.Offer, error)
+	Update(ctx context.Context, id int, params offer.UpdateOfferParams) (offer.Offer, error)
+	Create(ctx context.Context, params offer.CreateOfferParams) (offer.Offer, error)
+
+	CreateStaticRoundOffer(ctx context.Context, params offer.CreateStaticRoundOfferParams) (offer.StaticRoundOffer, error)
+
+	CreateDynamicRoundOffer(ctx context.Context, params offer.CreateDynamicRoundOfferParams) (offer.DynamicRoundOffer, error)
 }
 
 type RoundRepository interface {
-	Create(ctx context.Context, params round.CreateRoundParams) (round.Round, error)
 	Delete(ctx context.Context, id int) error
-	GetAll(ctx context.Context, paginationParams shared.PaginationRequest) ([]round.Round, error)
-	Update(ctx context.Context, id int, params round.UpdateRoundParams) (round.Round, error)
 	GetById(ctx context.Context, id int) (round.Round, error)
+	GetMany(ctx context.Context, paginationParams shared.PaginationRequest) ([]round.Round, error)
+	Create(ctx context.Context, params round.CreateRoundParams) (round.Round, error)
 
-	GetOffers(ctx context.Context, roundId int, paginationParams shared.PaginationRequest) ([]offer.Offer, error)
+	CreateDynamic(ctx context.Context, params round.CreateDynamicRoundParams) (round.DynamicRound, error)
+	UpdateDynamic(ctx context.Context, id int, params round.UpdateDynamicRoundParams) (round.DynamicRound, error)
+
+	CreateStatic(ctx context.Context, params round.CreateStaticRoundParams) (round.StaticRound, error)
 }
 
 type AccountRepository interface {
 	Create(ctx context.Context, params account.CreateAccountParams) (account.Account, error)
 	Delete(ctx context.Context, id int) error
-	GetAll(ctx context.Context, paginationParams shared.PaginationRequest) ([]account.Account, error)
+	GetMany(ctx context.Context, paginationParams shared.PaginationRequest) ([]account.Account, error)
 	Update(ctx context.Context, id int, params account.UpdateAccountParams) (account.Account, error)
 	GetById(ctx context.Context, id int) (account.Account, error)
 

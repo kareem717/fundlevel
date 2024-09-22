@@ -35,7 +35,7 @@ func RegisterHumaRoutes(
 		Summary:     "Get all ventures",
 		Description: "Get all ventures.",
 		Tags:        []string{"Ventures"},
-	}, handler.getAll)
+	}, handler.getMany)
 
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "get-venture-rounds",

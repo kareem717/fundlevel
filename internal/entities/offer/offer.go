@@ -21,17 +21,15 @@ type Offer struct {
 	bun.BaseModel `bun:"table:offers"`
 	shared.IntegerID
 	CreateOfferParams
-	UpdateOfferParams
 	shared.Timestamps
 }
 
 // CreateOfferParams contains the parameters for creating a new offer.
 type CreateOfferParams struct {
-	RoundID           int     `json:"roundId" minimum:"1"`
-	InvestorAccountID int     `json:"investorAccountId" minimum:"1"`
-	PercentageAmount  float64 `json:"percentageAmount" minimum:"0" maximum:"100"`
-	Amount            float64 `json:"amount" minimum:"0" maximum:"999999999999999.99"`
-	Currency          string  `json:"currency" enum:"USD,GBP,EUR,CAD,AUD,JPY"`
+	InvestorAccountID       int     `json:"investorAccountId" minimum:"1"`
+	MonetaryInvestmentValue float64 `json:"monetaryInvestmentValue" minimum:"0" maximum:"999999999999999.99"`
+	Currency                string  `json:"currency" enum:"USD,GBP,EUR,CAD,AUD,JPY"`
+	UpdateOfferParams
 }
 
 // UpdateOfferParams contains the parameters for updating an offer.

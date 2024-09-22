@@ -28,16 +28,7 @@ func RegisterHumaRoutes(
 		Description: "Get offer by ID.",
 		Tags:        []string{"Offers"},
 	}, handler.getByID)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-all-offers",
-		Method:      http.MethodGet,
-		Path:        "/offer",
-		Summary:     "Get all offers",
-		Description: "Get all offers.",
-		Tags:        []string{"Offers"},
-	}, handler.getAll)
-
+	
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "create-offer",
 		Method:      http.MethodPost,

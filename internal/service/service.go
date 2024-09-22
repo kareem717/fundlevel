@@ -23,7 +23,7 @@ type VentureService interface {
 	Delete(ctx context.Context, id int) error
 	Update(ctx context.Context, id int, params venture.UpdateVentureParams) (venture.Venture, error)
 	GetById(ctx context.Context, id int) (venture.Venture, error)
-	GetAll(ctx context.Context, limit int, cursor int) ([]venture.Venture, error)
+	GetMany(ctx context.Context, limit int, cursor int) ([]venture.Venture, error)
 	GetOffers(ctx context.Context, ventureId int, limit int, cursor int) ([]offer.Offer, error)
 	GetRounds(ctx context.Context, ventureId int, limit int, cursor int) ([]round.Round, error)
 }
@@ -37,7 +37,7 @@ type AccountService interface {
 	Delete(ctx context.Context, id int) error
 	Update(ctx context.Context, id int, params account.UpdateAccountParams) (account.Account, error)
 	GetById(ctx context.Context, id int) (account.Account, error)
-	GetAll(ctx context.Context, limit int, cursor int) ([]account.Account, error)
+	GetMany(ctx context.Context, limit int, cursor int) ([]account.Account, error)
 
 	GetVentures(ctx context.Context, accountId int, limit int, cursor int) ([]venture.Venture, error)
 }
@@ -49,10 +49,8 @@ type HealthService interface {
 type RoundService interface {
 	Create(ctx context.Context, params round.CreateRoundParams) (round.Round, error)
 	Delete(ctx context.Context, id int) error
-	Update(ctx context.Context, id int, params round.UpdateRoundParams) (round.Round, error)
 	GetById(ctx context.Context, id int) (round.Round, error)
-	GetAll(ctx context.Context, limit int, cursor int) ([]round.Round, error)
-	GetOffers(ctx context.Context, roundId int, limit int, cursor int) ([]offer.Offer, error)
+	GetMany(ctx context.Context, limit int, cursor int) ([]round.Round, error)
 }
 
 type OfferService interface {
@@ -60,7 +58,6 @@ type OfferService interface {
 	Delete(ctx context.Context, id int) error
 	UpdateStatus(ctx context.Context, id int, status offer.OfferStatus) (offer.Offer, error)
 	GetById(ctx context.Context, id int) (offer.Offer, error)
-	GetAll(ctx context.Context, limit int, cursor int) ([]offer.Offer, error)
 }
 
 type Service struct {

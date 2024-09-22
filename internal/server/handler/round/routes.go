@@ -36,16 +36,7 @@ func RegisterHumaRoutes(
 		Summary:     "Get all rounds",
 		Description: "Get all rounds.",
 		Tags:        []string{"Rounds"},
-	}, handler.getAll)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-round-offers",
-		Method:      http.MethodGet,
-		Path:        "/round/{id}/offers",
-		Summary:     "Get round offers",
-		Description: "Get all offers for a round.",
-		Tags:        []string{"Rounds", "Offers"},
-	}, handler.getOffers)
+	}, handler.getMany)
 
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "create-round",
@@ -55,15 +46,6 @@ func RegisterHumaRoutes(
 		Description: "Create a round.",
 		Tags:        []string{"Rounds"},
 	}, handler.create)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "update-round",
-		Method:      http.MethodPut,
-		Path:        "/round/{id}",
-		Summary:     "Update a round",
-		Description: "Update a round.",
-		Tags:        []string{"Rounds"},
-	}, handler.update)
 
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "delete-round",

@@ -23,13 +23,13 @@ func (s *AccountService) GetById(ctx context.Context, id int) (account.Account, 
 	return s.repositories.Account().GetById(ctx, id)
 }
 
-func (s *AccountService) GetAll(ctx context.Context, limit int, cursor int) ([]account.Account, error) {
+func (s *AccountService) GetMany(ctx context.Context, limit int, cursor int) ([]account.Account, error) {
 	paginationParams := shared.PaginationRequest{
 		Limit:  limit,
 		Cursor: cursor,
 	}
 
-	return s.repositories.Account().GetAll(ctx, paginationParams)
+	return s.repositories.Account().GetMany(ctx, paginationParams)
 }
 
 func (s *AccountService) Create(ctx context.Context, params account.CreateAccountParams) (account.Account, error) {

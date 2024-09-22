@@ -79,7 +79,7 @@ func (r *OfferRepository) GetById(ctx context.Context, id int) (offer.Offer, err
 	return resp, err
 }
 
-func (r *OfferRepository) GetAll(ctx context.Context, paginationParams shared.PaginationRequest) ([]offer.Offer, error) {
+func (r *OfferRepository) GetMany(ctx context.Context, paginationParams shared.PaginationRequest) ([]offer.Offer, error) {
 	resp := []offer.Offer{}
 
 	err := r.db.

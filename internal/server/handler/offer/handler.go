@@ -59,33 +59,6 @@ func (h *httpHandler) getByID(ctx context.Context, input *shared.PathIDParam) (*
 	return resp, nil
 }
 
-func (h *httpHandler) getAll(ctx context.Context, input *shared.PaginationRequest) (*shared.GetManyOffersOutput, error) {
-	LIMIT := input.Limit + 1
-
-	offers, err := h.service.OfferService.GetAll(ctx, LIMIT, input.Cursor)
-	if err != nil {
-		switch {
-		case errors.Is(err, sql.ErrNoRows):
-			return nil, huma.Error404NotFound("offers not found")
-		default:
-			h.logger.Error("failed to fetch offers", zap.Error(err))
-			return nil, huma.Error500InternalServerError("An error occurred while fetching the offers")
-		}
-	}
-
-	resp := &shared.GetManyOffersOutput{}
-	resp.Body.Message = "Offers fetched successfully"
-	resp.Body.Offers = offers
-
-	if len(offers) == LIMIT {
-		resp.Body.NextCursor = &offers[len(offers)-1].ID
-		resp.Body.HasMore = true
-		resp.Body.Offers = resp.Body.Offers[:len(resp.Body.Offers)-1]
-	}
-
-	return resp, nil
-}
-
 type CreateOfferInput struct {
 	Body offer.CreateOfferParams `json:"offer"`
 }

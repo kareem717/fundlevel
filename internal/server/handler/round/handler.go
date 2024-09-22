@@ -59,10 +59,10 @@ func (h *httpHandler) getByID(ctx context.Context, input *shared.PathIDParam) (*
 	return resp, nil
 }
 
-func (h *httpHandler) getAll(ctx context.Context, input *shared.PaginationRequest) (*shared.GetManyRoundsOutput, error) {
+func (h *httpHandler) getMany(ctx context.Context, input *shared.PaginationRequest) (*shared.GetManyRoundsOutput, error) {
 	LIMIT := input.Limit + 1
 
-	rounds, err := h.service.RoundService.GetAll(ctx, LIMIT, input.Cursor)
+	rounds, err := h.service.RoundService.GetMany(ctx, LIMIT, input.Cursor)
 	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
@@ -86,33 +86,6 @@ func (h *httpHandler) getAll(ctx context.Context, input *shared.PaginationReques
 	return resp, nil
 }
 
-func (h *httpHandler) getOffers(ctx context.Context, input *shared.GetManyByParentPathIDInput) (*shared.GetManyOffersOutput, error) {
-	LIMIT := input.Limit + 1
-
-	offers, err := h.service.RoundService.GetOffers(ctx, input.ID, LIMIT, input.Cursor)
-	if err != nil {
-		switch {
-		case errors.Is(err, sql.ErrNoRows):
-			return nil, huma.Error404NotFound("offers not found")
-		default:
-			h.logger.Error("failed to fetch offers", zap.Error(err))
-			return nil, huma.Error500InternalServerError("An error occurred while fetching the offers")
-		}
-	}
-
-	resp := &shared.GetManyOffersOutput{}
-	resp.Body.Message = "Offers fetched successfully"
-	resp.Body.Offers = offers
-
-	if len(offers) == LIMIT {
-		resp.Body.NextCursor = &offers[len(offers)-1].ID
-		resp.Body.HasMore = true
-		resp.Body.Offers = resp.Body.Offers[:len(resp.Body.Offers)-1]
-	}
-
-	return resp, nil
-}
-
 type CreateRoundInput struct {
 	Body round.CreateRoundParams `json:"round"`
 }
@@ -131,42 +104,6 @@ func (h *httpHandler) create(ctx context.Context, input *CreateRoundInput) (*Sin
 
 	resp := &SingleRoundResponse{}
 	resp.Body.Message = "Round created successfully"
-	resp.Body.Round = &round
-
-	return resp, nil
-}
-
-type UpdateRoundInput struct {
-	shared.PathIDParam
-	Body round.UpdateRoundParams `json:"round"`
-}
-
-func (i *UpdateRoundInput) Resolve(ctx huma.Context) []error {
-	//TODO: implement db checks
-	return nil
-}
-
-func (h *httpHandler) update(ctx context.Context, input *UpdateRoundInput) (*SingleRoundResponse, error) {
-	_, err := h.service.RoundService.GetById(ctx, input.ID)
-	if err != nil {
-		switch {
-		case errors.Is(err, sql.ErrNoRows):
-			return nil, huma.Error404NotFound("round not found")
-		default:
-			h.logger.Error("failed to fetch round", zap.Error(err))
-			return nil, huma.Error500InternalServerError("An error occurred while fetching the round")
-		}
-	}
-
-	round, err := h.service.RoundService.Update(ctx, input.ID, input.Body)
-
-	if err != nil {
-		h.logger.Error("failed to update round", zap.Error(err))
-		return nil, huma.Error500InternalServerError("An error occurred while updating the round")
-	}
-
-	resp := &SingleRoundResponse{}
-	resp.Body.Message = "Round updated successfully"
 	resp.Body.Round = &round
 
 	return resp, nil

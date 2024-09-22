@@ -79,7 +79,7 @@ func (r *VentureRepository) GetById(ctx context.Context, id int) (venture.Ventur
 	return resp, err
 }
 
-func (r *VentureRepository) GetAll(ctx context.Context, paginationParams shared.PaginationRequest) ([]venture.Venture, error) {
+func (r *VentureRepository) GetMany(ctx context.Context, paginationParams shared.PaginationRequest) ([]venture.Venture, error) {
 	resp := []venture.Venture{}
 
 	err := r.db.

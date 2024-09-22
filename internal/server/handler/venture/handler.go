@@ -59,10 +59,10 @@ func (h *httpHandler) getByID(ctx context.Context, input *shared.PathIDParam) (*
 	return resp, nil
 }
 
-func (h *httpHandler) getAll(ctx context.Context, input *shared.PaginationRequest) (*shared.GetManyVenturesOutput, error) {
+func (h *httpHandler) getMany(ctx context.Context, input *shared.PaginationRequest) (*shared.GetManyVenturesOutput, error) {
 	LIMIT := input.Limit + 1
 
-	ventures, err := h.service.VentureService.GetAll(ctx, LIMIT, input.Cursor)
+	ventures, err := h.service.VentureService.GetMany(ctx, LIMIT, input.Cursor)
 	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):

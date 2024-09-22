@@ -92,7 +92,7 @@ func (r *AccountRepository) GetByUserId(ctx context.Context, userId uuid.UUID) (
 	return resp, err
 }
 
-func (r *AccountRepository) GetAll(ctx context.Context, paginationParams shared.PaginationRequest) ([]account.Account, error) {
+func (r *AccountRepository) GetMany(ctx context.Context, paginationParams shared.PaginationRequest) ([]account.Account, error) {
 	resp := []account.Account{}
 
 	err := r.db.

@@ -5,12 +5,10 @@ CREATE TYPE offer_status AS ENUM('pending', 'accepted', 'rejected', 'withdrawn')
 CREATE TABLE
     offers (
         id serial PRIMARY KEY,
-        round_id INT NOT NULL REFERENCES rounds (id),
         investor_account_id INT NOT NULL REFERENCES accounts (id),
-        percentage_amount NUMERIC(6, 3) NOT NULL,
-        amount NUMERIC(15, 2) NOT NULL,
+        monetary_investment_value NUMERIC(15, 2) NOT NULL,
         currency currency NOT NULL,
-        status offer_status NOT NULL DEFAULT 'pending',
+        status offer_status NOT NULL,
         created_at timestamptz DEFAULT CLOCK_TIMESTAMP(),
         updated_at timestamptz,
         deleted_at timestamptz

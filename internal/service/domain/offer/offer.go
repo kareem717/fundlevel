@@ -6,7 +6,6 @@ import (
 
 	"fundlevel/internal/entities/offer"
 	"fundlevel/internal/storage"
-	"fundlevel/internal/storage/postgres/shared"
 )
 
 type OfferService struct {
@@ -22,15 +21,6 @@ func NewOfferService(repositories storage.Repository) *OfferService {
 
 func (s *OfferService) GetById(ctx context.Context, id int) (offer.Offer, error) {
 	return s.repositories.Offer().GetById(ctx, id)
-}
-
-func (s *OfferService) GetAll(ctx context.Context, limit int, cursor int) ([]offer.Offer, error) {
-	paginationParams := shared.PaginationRequest{
-		Limit:  limit,
-		Cursor: cursor,
-	}
-
-	return s.repositories.Offer().GetAll(ctx, paginationParams)
 }
 
 func (s *OfferService) Create(ctx context.Context, params offer.CreateOfferParams) (offer.Offer, error) {

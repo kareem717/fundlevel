@@ -23,13 +23,13 @@ func (s *RoundService) GetById(ctx context.Context, id int) (round.Round, error)
 	return s.repositories.Round().GetById(ctx, id)
 }
 
-func (s *RoundService) GetAll(ctx context.Context, limit int, cursor int) ([]round.Round, error) {
+func (s *RoundService) GetMany(ctx context.Context, limit int, cursor int) ([]round.Round, error) {
 	paginationParams := shared.PaginationRequest{
 		Limit:  limit,
 		Cursor: cursor,
 	}
 
-	return s.repositories.Round().GetAll(ctx, paginationParams)
+	return s.repositories.Round().GetMany(ctx, paginationParams)
 }
 
 func (s *RoundService) Create(ctx context.Context, params round.CreateRoundParams) (round.Round, error) {
@@ -38,8 +38,4 @@ func (s *RoundService) Create(ctx context.Context, params round.CreateRoundParam
 
 func (s *RoundService) Delete(ctx context.Context, id int) error {
 	return s.repositories.Round().Delete(ctx, id)
-}
-
-func (s *RoundService) Update(ctx context.Context, id int, params round.UpdateRoundParams) (round.Round, error) {
-	return s.repositories.Round().Update(ctx, id, params)
 }

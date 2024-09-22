@@ -23,13 +23,13 @@ func (s *VentureService) GetById(ctx context.Context, id int) (venture.Venture, 
 	return s.repositories.Venture().GetById(ctx, id)
 }
 
-func (s *VentureService) GetAll(ctx context.Context, limit int, cursor int) ([]venture.Venture, error) {
+func (s *VentureService) GetMany(ctx context.Context, limit int, cursor int) ([]venture.Venture, error) {
 	paginationParams := shared.PaginationRequest{
 		Limit:  limit,
 		Cursor: cursor,
 	}
 
-	return s.repositories.Venture().GetAll(ctx, paginationParams)
+	return s.repositories.Venture().GetMany(ctx, paginationParams)
 }
 
 func (s *VentureService) Create(ctx context.Context, params venture.CreateVentureParams) (venture.Venture, error) {
