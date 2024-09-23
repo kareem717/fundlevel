@@ -7,6 +7,7 @@ import (
 	"fundlevel/internal/entities/round"
 	"fundlevel/internal/storage/postgres/shared"
 
+	"log"
 	"github.com/uptrace/bun"
 )
 
@@ -25,8 +26,14 @@ func NewRoundRepository(db bun.IDB, ctx context.Context) *RoundRepository {
 
 func (r *RoundRepository) Create(ctx context.Context, params round.CreateRoundParams) (round.Round, error) {
 	resp := round.Round{}
-
+	test := []round.Round{}
 	err := r.db.
+		NewSelect().
+		Model(&test).
+		Scan(ctx, &test)
+	log.Printf("test: %+v", test)
+
+	err = r.db.
 		NewInsert().
 		Model(&params).
 		ModelTableExpr("rounds").

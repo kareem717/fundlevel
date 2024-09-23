@@ -17,3 +17,7 @@ type Timestamps struct {
 type IntegerID struct {
 	ID int `json:"id" minimum:"1"`
 }
+
+type RoundIDField struct {
+	RoundID int `json:"roundId" minimum:"1"`
+}

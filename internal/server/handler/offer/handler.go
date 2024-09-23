@@ -59,29 +59,6 @@ func (h *httpHandler) getByID(ctx context.Context, input *shared.PathIDParam) (*
 	return resp, nil
 }
 
-type CreateOfferInput struct {
-	Body offer.CreateOfferParams `json:"offer"`
-}
-
-func (i *CreateOfferInput) Resolve(ctx huma.Context) []error {
-	//TODO: implement db checks
-	return nil
-}
-
-func (h *httpHandler) create(ctx context.Context, input *CreateOfferInput) (*SingleOfferResponse, error) {
-	offer, err := h.service.OfferService.Create(ctx, input.Body)
-	if err != nil {
-		h.logger.Error("failed to create offer", zap.Error(err))
-		return nil, huma.Error500InternalServerError("An error occurred while creating the offer")
-	}
-
-	resp := &SingleOfferResponse{}
-	resp.Body.Message = "Offer created successfully"
-	resp.Body.Offer = &offer
-
-	return resp, nil
-}
-
 type UpdateOfferInput struct {
 	shared.PathIDParam
 	Body offer.UpdateOfferParams `json:"offer"`

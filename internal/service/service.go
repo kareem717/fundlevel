@@ -51,13 +51,20 @@ type RoundService interface {
 	Delete(ctx context.Context, id int) error
 	GetById(ctx context.Context, id int) (round.Round, error)
 	GetMany(ctx context.Context, limit int, cursor int) ([]round.Round, error)
+
+	CreateDynamic(ctx context.Context, dynamicParams round.CreateDynamicRoundParams, roundParams round.CreateRoundParams) (round.DynamicRoundWithRound, error)
+
+	CreateStatic(ctx context.Context, staticParams round.CreateStaticRoundParams, roundParams round.CreateRoundParams) (round.StaticRoundWithRound, error)
 }
 
 type OfferService interface {
-	Create(ctx context.Context, params offer.CreateOfferParams) (offer.Offer, error)
 	Delete(ctx context.Context, id int) error
 	UpdateStatus(ctx context.Context, id int, status offer.OfferStatus) (offer.Offer, error)
 	GetById(ctx context.Context, id int) (offer.Offer, error)
+
+	CreateDynamic(ctx context.Context, params offer.CreateDynamicRoundOfferParams, offerParams offer.CreateOfferParams) (offer.DynamicRoundOfferWithOffer, error)
+
+	CreateStatic(ctx context.Context, params offer.CreateStaticRoundOfferParams, offerParams offer.CreateOfferParams) (offer.StaticRoundOfferWithOffer, error)
 }
 
 type Service struct {

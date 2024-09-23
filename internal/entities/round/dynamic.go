@@ -7,11 +7,21 @@ import (
 	"github.com/uptrace/bun"
 )
 
+type MinimumMonetaryInvestmentValueField struct {
+	MinimumMonetaryInvestmentValue float64 `json:"minimumMonetaryInvestmentValue" minimum:"0" maximum:"999999999999999.99"`
+}
+
+type EndsAtField struct {
+	EndsAt time.Time `json:"endsAt" format:"date-time"`
+}
+
 // DynamicRound represents a dynamic round entity.
 type DynamicRound struct {
 	bun.BaseModel `bun:"table:dynamic_rounds"`
 	shared.IntegerID
-	CreateDynamicRoundParams
+	shared.RoundIDField
+	MinimumMonetaryInvestmentValueField
+	EndsAtField
 	shared.Timestamps
 }
 
@@ -23,12 +33,14 @@ type DynamicRoundWithRound struct {
 
 // CreateDynamicRoundParams contains the parameters for creating a new dynamic round.
 type CreateDynamicRoundParams struct {
-	RoundID int `json:"roundId" minimum:"1"`
-	UpdateDynamicRoundParams
+	shared.RoundIDField
+	MinimumMonetaryInvestmentValueField
+	EndsAtField
 }
 
 // UpdateDynamicRoundParams contains the parameters for updating a dynamic round.
 type UpdateDynamicRoundParams struct {
-	MinimumMonetaryInvestmentValue float64   `json:"minimumMonetaryInvestmentValue" minimum:"0" maximum:"999999999999999.99"`
-	EndsAt                         time.Time `json:"endsAt" format:"date-time"`
+	shared.RoundIDField
+	MinimumMonetaryInvestmentValueField
+	EndsAtField
 }

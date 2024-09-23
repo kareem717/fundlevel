@@ -6,17 +6,22 @@ import (
 	"github.com/uptrace/bun"
 )
 
+type VentureRoundID struct {
+	VentureRoundID int `json:"ventureRoundId" minimum:"1"`
+}
+
 // VentureRounds represents an venture rounds entity.
 type VentureRounds struct {
 	bun.BaseModel `bun:"table:venture_rounds"`
 
 	shared.IntegerID
-	CreateVentureRoundsParams
+	VentureRoundID
+	shared.RoundIDField
 	shared.Timestamps
 }
 
 // CreateVentureRoundsParams contains the parameters for creating a new venture rounds.
 type CreateVentureRoundsParams struct {
-	VentureID int `json:"ventureId" minimum:"1"`
-	RoundID   int `json:"roundId" minimum:"1"`
+	VentureRoundID
+	shared.RoundIDField
 }

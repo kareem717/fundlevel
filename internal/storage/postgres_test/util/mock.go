@@ -21,6 +21,13 @@ import (
 	"go.uber.org/zap"
 )
 
+type Logger struct {
+}
+
+func (l *Logger) Printf(format string, v ...any) {
+
+}
+
 func SetupTestDB(t *testing.T, seedConfig seed.SeedConfig) (*bun.DB, *seed.SeedResult) {
 	ctx := context.Background()
 
@@ -38,6 +45,7 @@ func SetupTestDB(t *testing.T, seedConfig seed.SeedConfig) (*bun.DB, *seed.SeedR
 	postgresC, err := testcontainers.GenericContainer(ctx, testcontainers.GenericContainerRequest{
 		ContainerRequest: req,
 		Started:          true,
+		Logger:           &Logger{},
 	})
 	if err != nil {
 		t.Fatalf("failed to start container: %s", err)
@@ -106,7 +114,7 @@ func SetupTestDB(t *testing.T, seedConfig seed.SeedConfig) (*bun.DB, *seed.SeedR
 	}
 
 	// Set the working directory for goose
-	goose.SetBaseFS(migrations.MigrationsFS);
+	goose.SetBaseFS(migrations.MigrationsFS)
 
 	// Run migrations
 	if err := goose.Up(sqldb, "."); err != nil {

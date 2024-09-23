@@ -2,15 +2,21 @@ package round
 
 import (
 	"fundlevel/internal/entities/shared"
+	"time"
 
 	"github.com/uptrace/bun"
 )
 
-// DynamicRound represents a dynamic round entity.
+type EndsAtNullable struct {
+	EndsAt *time.Time `json:"endsAt" format:"date-time"`
+}
+
+// StaticRound represents a static round entity.
 type StaticRound struct {
 	bun.BaseModel `bun:"table:static_rounds"`
 	shared.IntegerID
-	CreateStaticRoundParams
+	shared.RoundIDField
+	EndsAtNullable
 	shared.Timestamps
 }
 
@@ -20,7 +26,8 @@ type StaticRoundWithRound struct {
 	Round Round `bun:"-"`
 }
 
-// CreateDynamicRoundParams contains the parameters for creating a new dynamic round.
+// CreateStaticRoundParams contains the parameters for creating a new static round.
 type CreateStaticRoundParams struct {
-	RoundID int `json:"roundId" minimum:"1"`
+	shared.RoundIDField
+	EndsAtNullable
 }

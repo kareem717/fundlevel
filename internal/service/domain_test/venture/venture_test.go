@@ -14,7 +14,7 @@ func TestGetById(t *testing.T) {
 		seed.WithNumUsers(1),
 	)
 
-	service := util.SetupTestService(t, seedConfig, ctx)
+	service, _ := util.SetupTestService(t, seedConfig, ctx)
 
 	venture, err := service.VentureService.GetById(ctx, 1)
 	if err != nil {

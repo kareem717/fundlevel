@@ -4,9 +4,11 @@ CREATE TABLE
     static_rounds (
         id serial PRIMARY KEY,
         round_id INT NOT NULL REFERENCES rounds (id),
+        ends_at timestamptz,
         created_at timestamptz DEFAULT CLOCK_TIMESTAMP(),
         updated_at timestamptz,
-        deleted_at timestamptz
+        deleted_at timestamptz,
+        CONSTRAINT check_ends_at CHECK (ends_at > created_at OR ends_at IS NULL)
     );
 
 CREATE UNIQUE INDEX static_rounds_idx_round_id ON static_rounds (round_id)

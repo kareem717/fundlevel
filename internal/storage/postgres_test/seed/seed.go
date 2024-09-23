@@ -9,7 +9,7 @@ import (
 // SeedConfig is used to configure what data is seeded into the
 // mock postgres database.
 type SeedConfig struct {
-	numUsers int
+	numUsers    int
 	numVentures int
 }
 
@@ -20,7 +20,7 @@ type SeedConfigOption func(config *SeedConfig)
 // or default values for any unspecified options.
 func NewSeedConfig(opts ...SeedConfigOption) SeedConfig {
 	config := SeedConfig{
-		numUsers: 10,
+		numUsers:    10,
 		numVentures: 50,
 	}
 
@@ -55,6 +55,10 @@ type SeedResult struct {
 	AccountIds []int
 	// VentureIds is a list of the ids of the ventures that were seeded.
 	VentureIds []int
+	// DynamicRoundIds is a list of the ids of the dynamic rounds that were seeded.
+	DynamicRoundIds []int
+	// StaticRoundIds is a list of the ids of the static rounds that were seeded.
+	StaticRoundIds []int
 }
 
 // SeedDB seeds the database utilizing the configuration provided.
@@ -81,6 +85,26 @@ func SeedDB(db *sql.DB, config SeedConfig) (*SeedResult, error) {
 	}
 
 	result.VentureIds = ventureIds
+
+	roundIds, err := SeedRounds(db, ventureIds)
+	if err != nil {
+		return nil, err
+	}
+
+	numDynamic := len(roundIds) / 2
+	dynamicRoundIds, err := SeedDynamicRounds(db, roundIds[:numDynamic])
+	if err != nil {
+		return nil, err
+	}
+
+	result.DynamicRoundIds = dynamicRoundIds
+
+	staticRoundIds, err := SeedStaticRounds(db, roundIds[numDynamic:])
+	if err != nil {
+		return nil, err
+	}
+
+	result.StaticRoundIds = staticRoundIds
 
 	return &result, nil
 }

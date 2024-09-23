@@ -8,11 +8,13 @@ CREATE TABLE
         ends_at timestamptz NOT NULL,
         created_at timestamptz DEFAULT CLOCK_TIMESTAMP(),
         updated_at timestamptz,
-        deleted_at timestamptz
+        deleted_at timestamptz,
+        CONSTRAINT check_ends_at CHECK (ends_at > created_at)  -- Named the CHECK constraint
     );
 
 CREATE UNIQUE INDEX dynamic_rounds_idx_round_id ON dynamic_rounds (round_id)
-WHERE deleted_at IS NULL;
+WHERE
+    deleted_at IS NULL;
 
 CREATE TRIGGER sync_dynamic_rounds_updated_at BEFORE
 UPDATE ON dynamic_rounds FOR EACH ROW
