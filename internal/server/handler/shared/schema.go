@@ -2,7 +2,6 @@ package shared
 
 import (
 	"fundlevel/internal/entities/account"
-	"fundlevel/internal/entities/offer"
 	"fundlevel/internal/entities/round"
 	"fundlevel/internal/entities/venture"
 
@@ -40,14 +39,6 @@ type GetManyRoundsOutput struct {
 	Body struct {
 		MessageResponse
 		Rounds []round.Round `json:"rounds"`
-		PaginationResponse
-	}
-}
-
-type GetManyOffersOutput struct {
-	Body struct {
-		MessageResponse
-		Offers []offer.Offer `json:"offers"`
 		PaginationResponse
 	}
 }

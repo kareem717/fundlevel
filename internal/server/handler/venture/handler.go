@@ -112,34 +112,6 @@ func (h *httpHandler) getRounds(ctx context.Context, input *shared.GetManyByPare
 
 	return resp, nil
 }
-
-func (h *httpHandler) getOffers(ctx context.Context, input *shared.GetManyByParentPathIDInput) (*shared.GetManyOffersOutput, error) {
-	LIMIT := input.Limit + 1
-
-	offers, err := h.service.VentureService.GetOffers(ctx, input.ID, LIMIT, input.Cursor)
-	if err != nil {
-		switch {
-		case errors.Is(err, sql.ErrNoRows):
-			return nil, huma.Error404NotFound("offers not found")
-		default:
-			h.logger.Error("failed to fetch offers", zap.Error(err))
-			return nil, huma.Error500InternalServerError("An error occurred while fetching the offers")
-		}
-	}
-
-	resp := &shared.GetManyOffersOutput{}
-	resp.Body.Message = "Offers fetched successfully"
-	resp.Body.Offers = offers
-
-	if len(offers) == LIMIT {
-		resp.Body.NextCursor = &offers[len(offers)-1].ID
-		resp.Body.HasMore = true
-		resp.Body.Offers = resp.Body.Offers[:len(resp.Body.Offers)-1]
-	}
-
-	return resp, nil
-}
-
 type CreateVentureInput struct {
 	Body venture.CreateVentureParams `json:"venture"`
 }

@@ -7,7 +7,6 @@ import (
 
 	"fundlevel/internal/storage"
 	"fundlevel/internal/storage/postgres/account"
-	"fundlevel/internal/storage/postgres/offer"
 	"fundlevel/internal/storage/postgres/round"
 	"fundlevel/internal/storage/postgres/user"
 	"fundlevel/internal/storage/postgres/venture"
@@ -88,7 +87,6 @@ type transaction struct {
 	ventureRepo *venture.VentureRepository
 	accountRepo *account.AccountRepository
 	roundRepo   *round.RoundRepository
-	offerRepo   *offer.OfferRepository
 	userRepo    *user.UserRepository
 	tx          *bun.Tx
 	ctx         context.Context
@@ -104,10 +102,6 @@ func (t *transaction) Account() storage.AccountRepository {
 
 func (t *transaction) Round() storage.RoundRepository {
 	return t.roundRepo
-}
-
-func (t *transaction) Offer() storage.OfferRepository {
-	return t.offerRepo
 }
 
 func (t *transaction) User() storage.UserRepository {
@@ -131,7 +125,6 @@ func (t *transaction) SubTransaction() (storage.Transaction, error) {
 	return &transaction{
 		ventureRepo: venture.NewVentureRepository(tx, t.ctx),
 		accountRepo: account.NewAccountRepository(tx, t.ctx),
-		offerRepo:   offer.NewOfferRepository(tx, t.ctx),
 		roundRepo:   round.NewRoundRepository(tx, t.ctx),
 		userRepo:    user.NewUserRepository(tx, t.ctx),
 		tx:          &tx,
@@ -141,7 +134,6 @@ func (t *transaction) SubTransaction() (storage.Transaction, error) {
 type Repository struct {
 	ventureRepo *venture.VentureRepository
 	accountRepo *account.AccountRepository
-	offerRepo   *offer.OfferRepository
 	roundRepo   *round.RoundRepository
 	userRepo    *user.UserRepository
 	db          *bun.DB
@@ -189,7 +181,6 @@ func NewRepository(db *bun.DB, ctx context.Context) *Repository {
 		ventureRepo: venture.NewVentureRepository(db, ctx),
 		accountRepo: account.NewAccountRepository(db, ctx),
 		roundRepo:   round.NewRoundRepository(db, ctx),
-		offerRepo:   offer.NewOfferRepository(db, ctx),
 		userRepo:    user.NewUserRepository(db, ctx),
 		db:          db,
 		ctx:         ctx,
@@ -208,10 +199,6 @@ func (r *Repository) Round() storage.RoundRepository {
 	return r.roundRepo
 }
 
-func (r *Repository) Offer() storage.OfferRepository {
-	return r.offerRepo
-}
-
 func (r *Repository) User() storage.UserRepository {
 	return r.userRepo
 }
@@ -227,7 +214,6 @@ func (r *Repository) NewTransaction() (storage.Transaction, error) {
 	}
 
 	return &transaction{
-		offerRepo:   offer.NewOfferRepository(tx, r.ctx),
 		ventureRepo: venture.NewVentureRepository(tx, r.ctx),
 		accountRepo: account.NewAccountRepository(tx, r.ctx),
 		userRepo:    user.NewUserRepository(tx, r.ctx),

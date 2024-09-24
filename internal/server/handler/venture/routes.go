@@ -45,16 +45,7 @@ func RegisterHumaRoutes(
 		Description: "Get all rounds for a venture.",
 		Tags:        []string{"Ventures", "Rounds"},
 	}, handler.getRounds)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-venture-offers",
-		Method:      http.MethodGet,
-		Path:        "/venture/{id}/offers",
-		Summary:     "Get all offers for a venture",
-		Description: "Get all offers for a venture.",
-		Tags:        []string{"Ventures", "Offers"},
-	}, handler.getOffers)
-
+	
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "create-venture",
 		Method:      http.MethodPost,

@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"fundlevel/internal/entities/account"
-	"fundlevel/internal/entities/offer"
 	"fundlevel/internal/entities/round"
 	"fundlevel/internal/entities/venture"
 	"fundlevel/internal/storage/postgres/shared"
@@ -20,19 +19,6 @@ type VentureRepository interface {
 	GetById(ctx context.Context, id int) (venture.Venture, error)
 
 	GetRounds(ctx context.Context, ventureId int, paginationParams shared.PaginationRequest) ([]round.Round, error)
-
-	GetOffers(ctx context.Context, ventureId int, paginationParams shared.PaginationRequest) ([]offer.Offer, error)
-}
-
-type OfferRepository interface {
-	Delete(ctx context.Context, id int) error
-	GetById(ctx context.Context, id int) (offer.Offer, error)
-	Update(ctx context.Context, id int, params offer.UpdateOfferParams) (offer.Offer, error)
-	Create(ctx context.Context, params offer.CreateOfferParams) (offer.Offer, error)
-
-	CreateStaticRoundOffer(ctx context.Context, params offer.CreateStaticRoundOfferParams) (offer.StaticRoundOffer, error)
-
-	CreateDynamicRoundOffer(ctx context.Context, params offer.CreateDynamicRoundOfferParams) (offer.DynamicRoundOffer, error)
 }
 
 type RoundRepository interface {
@@ -40,11 +26,6 @@ type RoundRepository interface {
 	GetById(ctx context.Context, id int) (round.Round, error)
 	GetMany(ctx context.Context, paginationParams shared.PaginationRequest) ([]round.Round, error)
 	Create(ctx context.Context, params round.CreateRoundParams) (round.Round, error)
-
-	CreateDynamic(ctx context.Context, params round.CreateDynamicRoundParams) (round.DynamicRound, error)
-	UpdateDynamic(ctx context.Context, id int, params round.UpdateDynamicRoundParams) (round.DynamicRound, error)
-
-	CreateStatic(ctx context.Context, params round.CreateStaticRoundParams) (round.StaticRound, error)
 }
 
 type AccountRepository interface {
@@ -65,7 +46,6 @@ type RepositoryProvider interface {
 	Venture() VentureRepository
 	Account() AccountRepository
 	Round() RoundRepository
-	Offer() OfferRepository
 	User() UserRepository
 }
 
