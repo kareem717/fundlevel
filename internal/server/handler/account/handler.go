@@ -6,6 +6,7 @@ import (
 	"errors"
 
 	"fundlevel/internal/entities/account"
+	"fundlevel/internal/entities/venture"
 	"fundlevel/internal/server/handler/shared"
 	"fundlevel/internal/service"
 
@@ -164,7 +165,15 @@ func (h *httpHandler) delete(ctx context.Context, input *shared.PathIDParam) (*D
 func (h *httpHandler) getVentures(ctx context.Context, input *shared.GetManyByParentPathIDInput) (*shared.GetManyVenturesOutput, error) {
 	LIMIT := input.Limit + 1
 
-	ventures, err := h.service.AccountService.GetVentures(ctx, input.ID, LIMIT, input.Cursor)
+	var ventures []venture.Venture
+	var err error
+
+	if input.CursorPagination != nil {
+		ventures, err = h.service.AccountService.GetVenturesByCursor(ctx, input.ID, LIMIT, input.Cursor)
+	} else {
+		ventures, err = h.service.AccountService.GetVenturesByPage(ctx, input.ID, LIMIT, input.Cursor)
+	}
+
 	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):

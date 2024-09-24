@@ -5,7 +5,6 @@ import (
 	"database/sql"
 
 	"fundlevel/internal/entities/account"
-	"fundlevel/internal/storage/postgres/shared"
 
 	"github.com/google/uuid"
 	"github.com/uptrace/bun"
@@ -87,20 +86,6 @@ func (r *AccountRepository) GetByUserId(ctx context.Context, userId uuid.UUID) (
 		NewSelect().
 		Model(&resp).
 		Where("user_id = ?", userId).
-		Scan(ctx)
-
-	return resp, err
-}
-
-func (r *AccountRepository) GetMany(ctx context.Context, paginationParams shared.PaginationRequest) ([]account.Account, error) {
-	resp := []account.Account{}
-
-	err := r.db.
-		NewSelect().
-		Model(&resp).
-		Where("id >= ?", paginationParams.Cursor).
-		Order("id").
-		Limit(paginationParams.Limit).
 		Scan(ctx)
 
 	return resp, err

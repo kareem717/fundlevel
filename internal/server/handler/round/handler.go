@@ -62,7 +62,15 @@ func (h *httpHandler) getByID(ctx context.Context, input *shared.PathIDParam) (*
 func (h *httpHandler) getMany(ctx context.Context, input *shared.PaginationRequest) (*shared.GetManyRoundsOutput, error) {
 	LIMIT := input.Limit + 1
 
-	rounds, err := h.service.RoundService.GetMany(ctx, LIMIT, input.Cursor)
+	var rounds []round.Round
+	var err error
+
+	if input.CursorPagination != nil {
+		rounds, err = h.service.RoundService.GetManyByCursor(ctx, LIMIT, input.Cursor)
+	} else {
+		rounds, err = h.service.RoundService.GetManyByPage(ctx, LIMIT, input.Cursor)
+	}
+
 	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):

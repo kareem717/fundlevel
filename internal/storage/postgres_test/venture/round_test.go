@@ -12,7 +12,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGetRounds(t *testing.T) {
+func TestGetRoundsByCursor(t *testing.T) {
 	testCtx := context.Background()
 
 	// Setup test database and seed data
@@ -31,7 +31,7 @@ func TestGetRounds(t *testing.T) {
 	ventureId := seedResult.VentureIds[0]
 
 	// Call the GetAccount method
-	rounds, err := ventureRepository.GetRounds(testCtx, ventureId, shared.PaginationRequest{})
+	rounds, err := ventureRepository.GetRoundsByCursor(testCtx, ventureId, shared.CursorPagination{})
 	if err != nil {
 		t.Fatalf("Error getting rounds: %v", err)
 	}

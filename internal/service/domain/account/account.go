@@ -5,7 +5,6 @@ import (
 
 	"fundlevel/internal/entities/account"
 	"fundlevel/internal/storage"
-	"fundlevel/internal/storage/postgres/shared"
 )
 
 type AccountService struct {
@@ -21,15 +20,6 @@ func NewAccountService(repositories storage.Repository) *AccountService {
 
 func (s *AccountService) GetById(ctx context.Context, id int) (account.Account, error) {
 	return s.repositories.Account().GetById(ctx, id)
-}
-
-func (s *AccountService) GetMany(ctx context.Context, limit int, cursor int) ([]account.Account, error) {
-	paginationParams := shared.PaginationRequest{
-		Limit:  limit,
-		Cursor: cursor,
-	}
-
-	return s.repositories.Account().GetMany(ctx, paginationParams)
 }
 
 func (s *AccountService) Create(ctx context.Context, params account.CreateAccountParams) (account.Account, error) {

@@ -107,7 +107,7 @@ func TestGetById(t *testing.T) {
 	assert.Nil(t, fetchedRound.RegularDynamicRoundID)
 }
 
-func TestGetMany(t *testing.T) {
+func TestGetManyByCursor(t *testing.T) {
 	ctx := context.Background()
 
 	seedConfig := seed.NewSeedConfig(
@@ -120,23 +120,58 @@ func TestGetMany(t *testing.T) {
 
 	repo := round.NewRoundRepository(db, ctx)
 
-	params := shared.PaginationRequest{
+	params := shared.CursorPagination{
 		Limit: 20,
 	}
 
-	rounds, err := repo.GetMany(ctx, params)
+	rounds, err := repo.GetManyByCursor(ctx, params)
 	assert.NoError(t, err)
 
 	assert.Len(t, rounds, 20)
 
 	params.Cursor = rounds[len(rounds)-1].ID
 
-	rounds, err = repo.GetMany(ctx, params)
+	rounds, err = repo.GetManyByCursor(ctx, params)
 
 	assert.NoError(t, err)
 	assert.Len(t, rounds, 20)
 
 	assert.Equal(t, rounds[0].ID, params.Cursor)
+
+	for _, round := range rounds {
+		assert.Nil(t, round.RegularDynamicRoundID)
+	}
+}
+
+func TestGetManyByPage(t *testing.T) {
+	ctx := context.Background()
+
+	seedConfig := seed.NewSeedConfig(
+		seed.WithUsers(12),
+		seed.WithVentures(1),
+		seed.WithRounds(100),
+	)
+
+	db, _ := util.SetupTestDB(t, seedConfig)
+
+	repo := round.NewRoundRepository(db, ctx)
+
+	params := shared.OffsetPagination{
+		Page:     1,
+		PageSize: 20,
+	}
+
+	rounds, err := repo.GetManyByPage(ctx, params)
+	assert.NoError(t, err)
+
+	assert.Len(t, rounds, 20)
+
+	params.Page = 2
+
+	rounds, err = repo.GetManyByPage(ctx, params)
+
+	assert.NoError(t, err)
+	assert.Len(t, rounds, 20)
 
 	for _, round := range rounds {
 		assert.Nil(t, round.RegularDynamicRoundID)

@@ -14,12 +14,15 @@ import (
 type VentureRepository interface {
 	Create(ctx context.Context, params venture.CreateVentureParams) (venture.Venture, error)
 	Delete(ctx context.Context, id int) error
-	GetMany(ctx context.Context, paginationParams shared.PaginationRequest) ([]venture.Venture, error)
+	GetManyByCursor(ctx context.Context, paginationParams shared.CursorPagination) ([]venture.Venture, error)
+	GetManyByPage(ctx context.Context, paginationParams shared.OffsetPagination) ([]venture.Venture, error)
 	Update(ctx context.Context, id int, params venture.UpdateVentureParams) (venture.Venture, error)
 	GetById(ctx context.Context, id int) (venture.Venture, error)
 
-	// GetRounds gets the total fixed rounds for a venture
-	GetRounds(ctx context.Context, ventureId int, paginationParams shared.PaginationRequest) ([]round.Round, error)
+	// GetRoundsByCursor gets paginated total fixed rounds
+	GetRoundsByCursor(ctx context.Context, ventureId int, paginationParams shared.CursorPagination) ([]round.Round, error)
+	// GetRoundsByPage gets paginated total fixed rounds
+	GetRoundsByPage(ctx context.Context, ventureId int, paginationParams shared.OffsetPagination) ([]round.Round, error)
 }
 
 type RoundRepository interface {
@@ -27,8 +30,10 @@ type RoundRepository interface {
 	Delete(ctx context.Context, id int) error
 	// GetById gets a total fixed round by id
 	GetById(ctx context.Context, id int) (round.Round, error)
-	// GetMany gets paginated total fixed rounds
-	GetMany(ctx context.Context, paginationParams shared.PaginationRequest) ([]round.Round, error)
+	// GetManyByCursor gets paginated total fixed rounds
+	GetManyByCursor(ctx context.Context, paginationParams shared.CursorPagination) ([]round.Round, error)
+	// GetManyByPage gets paginated total fixed rounds
+	GetManyByPage(ctx context.Context, paginationParams shared.OffsetPagination) ([]round.Round, error)
 	// Create creates a total fixed round
 	Create(ctx context.Context, params round.CreateRoundParams) (round.Round, error)
 }
@@ -36,11 +41,11 @@ type RoundRepository interface {
 type AccountRepository interface {
 	Create(ctx context.Context, params account.CreateAccountParams) (account.Account, error)
 	Delete(ctx context.Context, id int) error
-	GetMany(ctx context.Context, paginationParams shared.PaginationRequest) ([]account.Account, error)
 	Update(ctx context.Context, id int, params account.UpdateAccountParams) (account.Account, error)
 	GetById(ctx context.Context, id int) (account.Account, error)
 
-	GetVentures(ctx context.Context, accountId int, paginationParams shared.PaginationRequest) ([]venture.Venture, error)
+	GetVenturesByCursor(ctx context.Context, accountId int, paginationParams shared.CursorPagination) ([]venture.Venture, error)
+	GetVenturesByPage(ctx context.Context, accountId int, paginationParams shared.OffsetPagination) ([]venture.Venture, error)
 }
 
 type UserRepository interface {

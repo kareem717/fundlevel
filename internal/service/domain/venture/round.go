@@ -7,11 +7,20 @@ import (
 	"fundlevel/internal/storage/postgres/shared"
 )
 
-func (s *VentureService) GetRounds(ctx context.Context, id int, limit int, cursor int) ([]round.Round, error) {
-	paginationParams := shared.PaginationRequest{
+func (s *VentureService) GetRoundsByCursor(ctx context.Context, id int, limit int, cursor int) ([]round.Round, error) {
+	paginationParams := shared.CursorPagination{
 		Limit:  limit,
 		Cursor: cursor,
 	}
 
-	return s.repositories.Venture().GetRounds(ctx, id, paginationParams)
+	return s.repositories.Venture().GetRoundsByCursor(ctx, id, paginationParams)
+}
+
+func (s *VentureService) GetRoundsByPage(ctx context.Context, id int, pageSize int, page int) ([]round.Round, error) {
+	paginationParams := shared.OffsetPagination{
+		PageSize: pageSize,
+		Page:     page,
+	}
+
+	return s.repositories.Venture().GetRoundsByPage(ctx, id, paginationParams)
 }

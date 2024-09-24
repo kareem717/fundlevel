@@ -21,9 +21,11 @@ type VentureService interface {
 	Delete(ctx context.Context, id int) error
 	Update(ctx context.Context, id int, params venture.UpdateVentureParams) (venture.Venture, error)
 	GetById(ctx context.Context, id int) (venture.Venture, error)
-	GetMany(ctx context.Context, limit int, cursor int) ([]venture.Venture, error)
-	
-	GetRounds(ctx context.Context, ventureId int, limit int, cursor int) ([]round.Round, error)
+	GetManyByCursor(ctx context.Context, limit int, cursor int) ([]venture.Venture, error)
+	GetManyByPage(ctx context.Context, limit int, page int) ([]venture.Venture, error)
+
+	GetRoundsByCursor(ctx context.Context, ventureId int, limit int, cursor int) ([]round.Round, error)
+	GetRoundsByPage(ctx context.Context, ventureId int, pageSize int, page int) ([]round.Round, error)
 }
 
 type UserService interface {
@@ -35,9 +37,9 @@ type AccountService interface {
 	Delete(ctx context.Context, id int) error
 	Update(ctx context.Context, id int, params account.UpdateAccountParams) (account.Account, error)
 	GetById(ctx context.Context, id int) (account.Account, error)
-	GetMany(ctx context.Context, limit int, cursor int) ([]account.Account, error)
 
-	GetVentures(ctx context.Context, accountId int, limit int, cursor int) ([]venture.Venture, error)
+	GetVenturesByCursor(ctx context.Context, accountId int, limit int, cursor int) ([]venture.Venture, error)
+	GetVenturesByPage(ctx context.Context, accountId int, pageSize int, page int) ([]venture.Venture, error)
 }
 
 type HealthService interface {
@@ -48,7 +50,8 @@ type RoundService interface {
 	Create(ctx context.Context, params round.CreateRoundParams) (round.Round, error)
 	Delete(ctx context.Context, id int) error
 	GetById(ctx context.Context, id int) (round.Round, error)
-	GetMany(ctx context.Context, limit int, cursor int) ([]round.Round, error)
+	GetManyByCursor(ctx context.Context, limit int, cursor int) ([]round.Round, error)
+	GetManyByPage(ctx context.Context, pageSize int, page int) ([]round.Round, error)
 }
 
 type Service struct {

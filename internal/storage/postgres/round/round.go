@@ -65,7 +65,7 @@ func (r *RoundRepository) GetById(ctx context.Context, id int) (round.Round, err
 	return resp, err
 }
 
-func (r *RoundRepository) GetMany(ctx context.Context, paginationParams shared.PaginationRequest) ([]round.Round, error) {
+func (r *RoundRepository) GetManyByCursor(ctx context.Context, paginationParams shared.CursorPagination) ([]round.Round, error) {
 	resp := []round.Round{}
 
 	err := r.db.
@@ -75,6 +75,22 @@ func (r *RoundRepository) GetMany(ctx context.Context, paginationParams shared.P
 		Where("id >= ?", paginationParams.Cursor).
 		Order("id").
 		Limit(paginationParams.Limit).
+		Scan(ctx)
+
+	return resp, err
+}
+
+func (r *RoundRepository) GetManyByPage(ctx context.Context, paginationParams shared.OffsetPagination) ([]round.Round, error) {
+	resp := []round.Round{}
+	offset := (paginationParams.Page - 1) * paginationParams.PageSize
+
+	err := r.db.
+		NewSelect().
+		Model(&resp).
+		Where("regular_dynamic_round_id IS NULL").
+		Order("id").
+		Offset(offset).
+		Limit(paginationParams.PageSize).
 		Scan(ctx)
 
 	return resp, err

@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 
+	"fundlevel/internal/entities/round"
 	"fundlevel/internal/entities/venture"
 	"fundlevel/internal/server/handler/shared"
 	"fundlevel/internal/service"
@@ -62,7 +63,15 @@ func (h *httpHandler) getByID(ctx context.Context, input *shared.PathIDParam) (*
 func (h *httpHandler) getMany(ctx context.Context, input *shared.PaginationRequest) (*shared.GetManyVenturesOutput, error) {
 	LIMIT := input.Limit + 1
 
-	ventures, err := h.service.VentureService.GetMany(ctx, LIMIT, input.Cursor)
+	var ventures []venture.Venture
+	var err error
+
+	if input.CursorPagination != nil {
+		ventures, err = h.service.VentureService.GetManyByCursor(ctx, LIMIT, input.Cursor)
+	} else {
+		ventures, err = h.service.VentureService.GetManyByPage(ctx, LIMIT, input.Cursor)
+	}
+
 	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
@@ -89,7 +98,15 @@ func (h *httpHandler) getMany(ctx context.Context, input *shared.PaginationReque
 func (h *httpHandler) getRounds(ctx context.Context, input *shared.GetManyByParentPathIDInput) (*shared.GetManyRoundsOutput, error) {
 	LIMIT := input.Limit + 1
 
-	rounds, err := h.service.VentureService.GetRounds(ctx, input.ID, LIMIT, input.Cursor)
+	var rounds []round.Round
+	var err error
+
+	if input.CursorPagination != nil {
+		rounds, err = h.service.VentureService.GetRoundsByCursor(ctx, input.ID, LIMIT, input.Cursor)
+	} else {
+		rounds, err = h.service.VentureService.GetRoundsByPage(ctx, input.ID, LIMIT, input.Cursor)
+	}
+
 	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):

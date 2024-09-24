@@ -79,7 +79,7 @@ func (r *VentureRepository) GetById(ctx context.Context, id int) (venture.Ventur
 	return resp, err
 }
 
-func (r *VentureRepository) GetMany(ctx context.Context, paginationParams shared.PaginationRequest) ([]venture.Venture, error) {
+func (r *VentureRepository) GetManyByCursor(ctx context.Context, paginationParams shared.CursorPagination) ([]venture.Venture, error) {
 	resp := []venture.Venture{}
 
 	err := r.db.
@@ -88,6 +88,21 @@ func (r *VentureRepository) GetMany(ctx context.Context, paginationParams shared
 		Where("id >= ?", paginationParams.Cursor).
 		Order("id").
 		Limit(paginationParams.Limit).
+		Scan(ctx)
+
+	return resp, err
+}
+
+func (r *VentureRepository) GetManyByPage(ctx context.Context, paginationParams shared.OffsetPagination) ([]venture.Venture, error) {
+	resp := []venture.Venture{}
+	offset := (paginationParams.Page - 1) * paginationParams.PageSize
+
+	err := r.db.
+		NewSelect().
+		Model(&resp).
+		Order("id").
+		Offset(offset).
+		Limit(paginationParams.PageSize).
 		Scan(ctx)
 
 	return resp, err
