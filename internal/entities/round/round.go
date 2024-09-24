@@ -32,16 +32,17 @@ type Round struct {
 
 	shared.IntegerID
 	CreateRoundParams
+	RegularDynamicRoundID *int `json:"regularDynamicRoundId" minimum:"1"`
 	shared.Timestamps
 }
 
 // CreateRoundParams contains the parameters for creating a new round.
 type CreateRoundParams struct {
-	VentureID         int       `json:"ventureId" minimum:"1"`
-	BeginsAt          time.Time `json:"beginsAt" format:"date-time"`
-	EndsAt            time.Time `json:"endsAt" format:"date-time"`
-	PercentageOffered float64   `json:"percentageOffered" minimum:"0" maximum:"100"`
-	PercentageValue   int       `json:"percentageValue" minimum:"1"`
-	ValueCurrency     Currency  `json:"valueCurrency" enum:"USD,GBP,EUR,CAD,AUD,JPY"`
+	VentureID         int         `json:"ventureId" minimum:"1"`
+	BeginsAt          time.Time   `json:"beginsAt" format:"date-time"`
+	EndsAt            time.Time   `json:"endsAt" format:"date-time"`
+	PercentageOffered float64     `json:"percentageOffered" minimum:"0" maximum:"100"`
+	PercentageValue   int         `json:"percentageValue" minimum:"1"`
+	ValueCurrency     Currency    `json:"valueCurrency" enum:"USD,GBP,EUR,CAD,AUD,JPY"`
 	Status            RoundStatus `json:"status" enum:"active,successful,failed"`
 }

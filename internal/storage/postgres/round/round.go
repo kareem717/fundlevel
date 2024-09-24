@@ -6,7 +6,7 @@ import (
 
 	"fundlevel/internal/entities/round"
 	"fundlevel/internal/storage/postgres/shared"
-	
+
 	"github.com/uptrace/bun"
 )
 
@@ -42,6 +42,7 @@ func (r *RoundRepository) Delete(ctx context.Context, id int) error {
 			NewDelete().
 			Model(&round.Round{}).
 			Where("id = ?", id).
+			Where("regular_dynamic_round_id IS NULL").
 			Exec(ctx)
 
 	if rows, _ := res.RowsAffected(); rows == 0 {
@@ -58,6 +59,7 @@ func (r *RoundRepository) GetById(ctx context.Context, id int) (round.Round, err
 		NewSelect().
 		Model(&resp).
 		Where("id = ?", id).
+		Where("regular_dynamic_round_id IS NULL").
 		Scan(ctx)
 
 	return resp, err
@@ -69,6 +71,7 @@ func (r *RoundRepository) GetMany(ctx context.Context, paginationParams shared.P
 	err := r.db.
 		NewSelect().
 		Model(&resp).
+		Where("regular_dynamic_round_id IS NULL").
 		Where("id >= ?", paginationParams.Cursor).
 		Order("id").
 		Limit(paginationParams.Limit).

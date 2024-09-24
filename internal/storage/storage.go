@@ -18,13 +18,18 @@ type VentureRepository interface {
 	Update(ctx context.Context, id int, params venture.UpdateVentureParams) (venture.Venture, error)
 	GetById(ctx context.Context, id int) (venture.Venture, error)
 
+	// GetRounds gets the total fixed rounds for a venture
 	GetRounds(ctx context.Context, ventureId int, paginationParams shared.PaginationRequest) ([]round.Round, error)
 }
 
 type RoundRepository interface {
+	// Delete deletes a total fixed round by id
 	Delete(ctx context.Context, id int) error
+	// GetById gets a total fixed round by id
 	GetById(ctx context.Context, id int) (round.Round, error)
+	// GetMany gets paginated total fixed rounds
 	GetMany(ctx context.Context, paginationParams shared.PaginationRequest) ([]round.Round, error)
+	// Create creates a total fixed round
 	Create(ctx context.Context, params round.CreateRoundParams) (round.Round, error)
 }
 

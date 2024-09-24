@@ -47,5 +47,6 @@ func TestGetRounds(t *testing.T) {
 
 		assert.LessOrEqual(t, round.PercentageOffered, 100.0)
 		assert.GreaterOrEqual(t, round.PercentageOffered, 0.0)
+		assert.Nil(t, round.RegularDynamicRoundID)
 	}
 }

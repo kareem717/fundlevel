@@ -15,6 +15,7 @@ func (r *VentureRepository) GetRounds(ctx context.Context, ventureId int, pagina
 		Model(&resp).
 		Where("venture_id = ?", ventureId).
 		Where("id >= ?", paginationParams.Cursor).
+		Where("regular_dynamic_round_id is null").
 		Order("id").
 		Limit(paginationParams.Limit).
 		Scan(ctx)

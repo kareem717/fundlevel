@@ -51,6 +51,7 @@ func TestCreate(t *testing.T) {
 	assert.Equal(t, createdRound.Status, params.Status)
 	assert.Equal(t, createdRound.BeginsAt.UTC(), params.BeginsAt.UTC())
 	assert.Equal(t, createdRound.EndsAt.UTC(), params.EndsAt.UTC())
+	assert.Nil(t, createdRound.RegularDynamicRoundID)
 }
 
 func TestDelete(t *testing.T) {
@@ -103,6 +104,7 @@ func TestGetById(t *testing.T) {
 	assert.NoError(t, err)
 
 	assert.Equal(t, roundID, fetchedRound.ID)
+	assert.Nil(t, fetchedRound.RegularDynamicRoundID)
 }
 
 func TestGetMany(t *testing.T) {
@@ -135,4 +137,8 @@ func TestGetMany(t *testing.T) {
 	assert.Len(t, rounds, 20)
 
 	assert.Equal(t, rounds[0].ID, params.Cursor)
+
+	for _, round := range rounds {
+		assert.Nil(t, round.RegularDynamicRoundID)
+	}
 }
