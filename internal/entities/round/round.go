@@ -7,15 +7,15 @@ import (
 	"github.com/uptrace/bun"
 )
 
-type MonetaryValueCurrency string
+type Currency string
 
 const (
-	USD MonetaryValueCurrency = "usd"
-	GBP MonetaryValueCurrency = "gbp"
-	EUR MonetaryValueCurrency = "eur"
-	CAD MonetaryValueCurrency = "cad"
-	AUD MonetaryValueCurrency = "aud"
-	JPY MonetaryValueCurrency = "jpy"
+	USD Currency = "USD"
+	GBP Currency = "GBP"
+	EUR Currency = "EUR"
+	CAD Currency = "CAD"
+	AUD Currency = "AUD"
+	JPY Currency = "JPY"
 )
 
 // Round represents an round entity.
@@ -29,9 +29,10 @@ type Round struct {
 
 // CreateRoundParams contains the parameters for creating a new round.
 type CreateRoundParams struct {
-	OfferedPercentage       float64               `json:"offeredPercentage" minimum:"0" maximum:"100"`
-	MonetaryPercentageValue float64               `json:"monetaryPercentageValue" minimum:"0" maximum:"999999999999999.99"`
-	MonetaryValueCurrency   MonetaryValueCurrency `json:"monetaryValueCurrency" enums:"usd,gbp,eur,cad,aud,jpy"`
-	VentureID               int                   `json:"ventureId" minimum:"1"`
-	BeginsAt                time.Time             `json:"beginsAt" format:"date-time"`
+	VentureID         int       `json:"ventureId" minimum:"1"`
+	BeginsAt          time.Time `json:"beginsAt" format:"date-time"`
+	EndsAt            time.Time `json:"endsAt" format:"date-time"`
+	PercentageOffered float64   `json:"percentageOffered" minimum:"0" maximum:"100"`
+	PercentageValue   int       `json:"percentageValue" minimum:"1"`
+	ValueCurrency     Currency  `json:"valueCurrency" enum:"USD,GBP,EUR,CAD,AUD,JPY"`
 }

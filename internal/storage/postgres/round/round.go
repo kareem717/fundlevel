@@ -70,21 +70,6 @@ func (r *RoundRepository) GetById(ctx context.Context, id int) (round.Round, err
 	return resp, err
 }
 
-func (r *RoundRepository) GetByVentureId(ctx context.Context, ventureId int, paginationParams shared.PaginationRequest) ([]round.Round, error) {
-	resp := []round.Round{}
-
-	err := r.db.
-		NewSelect().
-		Model(&resp).
-		Where("venture_id = ?", ventureId).
-		Where("id >= ?", paginationParams.Cursor).
-		Order("id").
-		Limit(paginationParams.Limit).
-		Scan(ctx)
-
-	return resp, err
-}
-
 func (r *RoundRepository) GetMany(ctx context.Context, paginationParams shared.PaginationRequest) ([]round.Round, error) {
 	resp := []round.Round{}
 

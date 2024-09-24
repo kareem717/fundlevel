@@ -55,10 +55,8 @@ type SeedResult struct {
 	AccountIds []int
 	// VentureIds is a list of the ids of the ventures that were seeded.
 	VentureIds []int
-	// DynamicRoundIds is a list of the ids of the dynamic rounds that were seeded.
-	DynamicRoundIds []int
-	// StaticRoundIds is a list of the ids of the static rounds that were seeded.
-	StaticRoundIds []int
+	// RoundIds is a list of the ids of the rounds that were seeded.
+	RoundIds []int
 }
 
 // SeedDB seeds the database utilizing the configuration provided.
@@ -91,20 +89,7 @@ func SeedDB(db *sql.DB, config SeedConfig) (*SeedResult, error) {
 		return nil, err
 	}
 
-	numDynamic := len(roundIds) / 2
-	dynamicRoundIds, err := SeedDynamicRounds(db, roundIds[:numDynamic])
-	if err != nil {
-		return nil, err
-	}
-
-	result.DynamicRoundIds = dynamicRoundIds
-
-	staticRoundIds, err := SeedStaticRounds(db, roundIds[numDynamic:])
-	if err != nil {
-		return nil, err
-	}
-
-	result.StaticRoundIds = staticRoundIds
+	result.RoundIds = roundIds
 
 	return &result, nil
 }
