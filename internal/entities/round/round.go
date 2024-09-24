@@ -18,6 +18,14 @@ const (
 	JPY Currency = "JPY"
 )
 
+type RoundStatus string
+
+const (
+	Active     RoundStatus = "active"
+	Successful RoundStatus = "successful"
+	Failed     RoundStatus = "failed"
+)
+
 // Round represents an round entity.
 type Round struct {
 	bun.BaseModel `bun:"table:rounds"`
@@ -35,4 +43,5 @@ type CreateRoundParams struct {
 	PercentageOffered float64   `json:"percentageOffered" minimum:"0" maximum:"100"`
 	PercentageValue   int       `json:"percentageValue" minimum:"1"`
 	ValueCurrency     Currency  `json:"valueCurrency" enum:"USD,GBP,EUR,CAD,AUD,JPY"`
+	Status            RoundStatus `json:"status" enum:"active,successful,failed"`
 }

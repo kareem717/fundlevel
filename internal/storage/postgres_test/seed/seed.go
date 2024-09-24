@@ -11,6 +11,7 @@ import (
 type SeedConfig struct {
 	numUsers    int
 	numVentures int
+	numRounds   int
 }
 
 // SeedConfigOption is a option function that alters the SeedConfig
@@ -22,6 +23,7 @@ func NewSeedConfig(opts ...SeedConfigOption) SeedConfig {
 	config := SeedConfig{
 		numUsers:    10,
 		numVentures: 50,
+		numRounds:   30,
 	}
 
 	for _, opt := range opts {
@@ -33,16 +35,25 @@ func NewSeedConfig(opts ...SeedConfigOption) SeedConfig {
 
 // WithNumUsers sets the number of users to seed. Each user will have
 // an account created for them.
-func WithNumUsers(numUsers int) SeedConfigOption {
+func WithUsers(numUsers int) SeedConfigOption {
 	return func(config *SeedConfig) {
 		config.numUsers = numUsers
 	}
 }
 
 // WithNumVentures sets the number of ventures to seed.
-func WithNumVentures(numVentures int) SeedConfigOption {
+func WithVentures(numVentures int) SeedConfigOption {
 	return func(config *SeedConfig) {
 		config.numVentures = numVentures
+	}
+}
+
+// WithRounds sets the number of rounds to seed. If the number is greater than
+// the number of ventures, each venture will have a single active round and
+// the remaining rounds will be inactive.
+func WithRounds(numRounds int) SeedConfigOption {
+	return func(config *SeedConfig) {
+		config.numRounds = numRounds
 	}
 }
 
@@ -55,8 +66,8 @@ type SeedResult struct {
 	AccountIds []int
 	// VentureIds is a list of the ids of the ventures that were seeded.
 	VentureIds []int
-	// RoundIds is a list of the ids of the rounds that were seeded.
-	RoundIds []int
+	// VentureRounds is a map of the ids of the ventures to the ids of the rounds that were seeded.
+	VentureRounds VentureRoundMap
 }
 
 // SeedDB seeds the database utilizing the configuration provided.
@@ -84,12 +95,11 @@ func SeedDB(db *sql.DB, config SeedConfig) (*SeedResult, error) {
 
 	result.VentureIds = ventureIds
 
-	roundIds, err := SeedRounds(db, ventureIds)
+	ventureRounds, err := SeedRounds(db, ventureIds, config.numRounds)
 	if err != nil {
 		return nil, err
 	}
 
-	result.RoundIds = roundIds
-
+	result.VentureRounds = ventureRounds
 	return &result, nil
 }

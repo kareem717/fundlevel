@@ -15,7 +15,7 @@ func TestGetAccount(t *testing.T) {
 
 	// Setup test database and seed data
 	seedConfig := seed.NewSeedConfig(
-		seed.WithNumUsers(12),
+		seed.WithUsers(12),
 	)
 
 	db, seedResult := util.SetupTestDB(t, seedConfig)

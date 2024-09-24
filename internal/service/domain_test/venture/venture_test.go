@@ -11,7 +11,8 @@ func TestGetById(t *testing.T) {
 	ctx := context.Background()
 
 	seedConfig := seed.NewSeedConfig(
-		seed.WithNumUsers(1),
+		seed.WithUsers(1),
+		seed.WithVentures(1),
 	)
 
 	service, _ := util.SetupTestService(t, seedConfig, ctx)
