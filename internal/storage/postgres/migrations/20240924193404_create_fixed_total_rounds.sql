@@ -1,23 +1,21 @@
 -- +goose Up
 -- +goose StatementBegin
 CREATE TABLE
-    regular_dynamic_rounds (
+    fixed_total_rounds (
         round_id INT NOT NULL REFERENCES rounds (id),
-        days_to_extend_on_bid INT NOT NULL,
         created_at timestamptz DEFAULT CLOCK_TIMESTAMP(),
         updated_at timestamptz,
         deleted_at timestamptz,
-        PRIMARY KEY (round_id, created_at),
-        CONSTRAINT days_to_extend_on_bid_check CHECK (days_to_extend_on_bid>0)
+        PRIMARY KEY (round_id, created_at)
     );
 
-CREATE TRIGGER sync_regular_dynamic_rounds_updated_at BEFORE
-UPDATE ON regular_dynamic_rounds FOR EACH ROW
+CREATE TRIGGER sync_fixed_total_rounds_updated_at BEFORE
+UPDATE ON fixed_total_rounds FOR EACH ROW
 EXECUTE PROCEDURE sync_updated_at_column ();
 
 -- +goose StatementEnd
 -- +goose Down
 -- +goose StatementBegin
-DROP TABLE regular_dynamic_rounds;
+DROP TABLE fixed_total_rounds;
 
 -- +goose StatementEnd

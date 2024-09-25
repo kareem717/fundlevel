@@ -3,6 +3,7 @@ package round
 import (
 	"context"
 	"database/sql"
+	"fmt"
 
 	"fundlevel/internal/entities/round"
 	"fundlevel/internal/storage/postgres/shared"
@@ -23,26 +24,45 @@ func NewRoundRepository(db bun.IDB, ctx context.Context) *RoundRepository {
 	}
 }
 
-func (r *RoundRepository) Create(ctx context.Context, params round.CreateRoundParams) (round.Round, error) {
-	resp := round.Round{}
+func (r *RoundRepository) CreateFixedTotalRound(ctx context.Context, params round.CreateFixedTotalRoundParams) (round.FixedTotalRound, error) {
+	roundResp := round.Round{}
+	fixedTotalRound := round.FixedTotalRound{}
 
-	err := r.db.
-		NewInsert().
-		Model(&params).
-		ModelTableExpr("rounds").
-		Returning("*").
-		Scan(ctx, &resp)
+	err := r.db.RunInTx(ctx, nil, func(ctx context.Context, tx bun.Tx) error {
+		err := tx.NewInsert().
+			Model(&params.Round).
+			ModelTableExpr("rounds").
+			Returning("*").
+			Scan(ctx, &roundResp)
 
-	return resp, err
+		if err != nil {
+			return err
+		}
+
+		fmt.Printf("roundResp %+v\n", roundResp)
+
+		params.FixedTotalRound.RoundID = roundResp.ID
+
+		err = tx.NewInsert().
+			Model(&params.FixedTotalRound).
+			ModelTableExpr("fixed_total_rounds").
+			Returning("*").
+			Scan(ctx, &fixedTotalRound)
+
+		return err
+	})
+
+	fixedTotalRound.Round = &roundResp
+
+	return fixedTotalRound, err
 }
 
-func (r *RoundRepository) Delete(ctx context.Context, id int) error {
+func (r *RoundRepository) DeleteFixedTotalRound(ctx context.Context, id int) error {
 	res, err :=
 		r.db.
 			NewDelete().
-			Model(&round.Round{}).
-			Where("id = ?", id).
-			Where("regular_dynamic_round_id IS NULL").
+			Model(&round.FixedTotalRound{}).
+			Where("round_id = ?", id).
 			Exec(ctx)
 
 	if rows, _ := res.RowsAffected(); rows == 0 {
@@ -52,43 +72,45 @@ func (r *RoundRepository) Delete(ctx context.Context, id int) error {
 	return err
 }
 
-func (r *RoundRepository) GetById(ctx context.Context, id int) (round.Round, error) {
-	resp := round.Round{}
+func (r *RoundRepository) GetFixedTotalRoundById(ctx context.Context, id int) (round.FixedTotalRound, error) {
+	resp := round.FixedTotalRound{}
 
 	err := r.db.
 		NewSelect().
 		Model(&resp).
-		Where("id = ?", id).
-		Where("regular_dynamic_round_id IS NULL").
+		Relation("Round").
+		Where("round_id = ?", id).
 		Scan(ctx)
+
+	fmt.Printf("resp %+v\n", resp)
 
 	return resp, err
 }
 
-func (r *RoundRepository) GetManyByCursor(ctx context.Context, paginationParams shared.CursorPagination) ([]round.Round, error) {
-	resp := []round.Round{}
+func (r *RoundRepository) GetFixedTotalRoundsByCursor(ctx context.Context, paginationParams shared.CursorPagination) ([]round.FixedTotalRound, error) {
+	resp := []round.FixedTotalRound{}
 
 	err := r.db.
 		NewSelect().
 		Model(&resp).
-		Where("regular_dynamic_round_id IS NULL").
-		Where("id >= ?", paginationParams.Cursor).
-		Order("id").
+		Relation("Round").
+		Where("round_id >= ?", paginationParams.Cursor).
+		Order("round_id").
 		Limit(paginationParams.Limit).
 		Scan(ctx)
 
 	return resp, err
 }
 
-func (r *RoundRepository) GetManyByPage(ctx context.Context, paginationParams shared.OffsetPagination) ([]round.Round, error) {
-	resp := []round.Round{}
+func (r *RoundRepository) GetFixedTotalRoundsByPage(ctx context.Context, paginationParams shared.OffsetPagination) ([]round.FixedTotalRound, error) {
+	resp := []round.FixedTotalRound{}
 	offset := (paginationParams.Page - 1) * paginationParams.PageSize
 
 	err := r.db.
 		NewSelect().
 		Model(&resp).
-		Where("regular_dynamic_round_id IS NULL").
-		Order("id").
+		Relation("Round").
+		Order("round_id").
 		Offset(offset).
 		Limit(paginationParams.PageSize).
 		Scan(ctx)

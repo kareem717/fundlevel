@@ -14,13 +14,13 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCreate(t *testing.T) {
+func TestCreateFixedTotalRound(t *testing.T) {
 	ctx := context.Background()
 
 	seedConfig := seed.NewSeedConfig(
 		seed.WithUsers(12),
 		seed.WithVentures(10),
-		seed.WithRounds(0),
+		seed.WithFixedTotalRounds(0),
 	)
 
 	db, seedResult := util.SetupTestDB(t, seedConfig)
@@ -29,38 +29,39 @@ func TestCreate(t *testing.T) {
 
 	ventureID := seedResult.VentureIds[0]
 
-	params := entities.CreateRoundParams{
-		VentureID:         ventureID,
-		BeginsAt:          time.Now().Add(time.Hour * 24),
-		PercentageOffered: 10.0,
-		PercentageValue:   10000,
-		ValueCurrency:     entities.USD,
-		Status:            entities.Active,
+	params := entities.CreateFixedTotalRoundParams{
+		Round: entities.CreateRoundParams{
+			VentureID:         ventureID,
+			BeginsAt:          time.Now().Add(time.Hour * 24),
+			PercentageOffered: 10.0,
+			PercentageValue:   10000,
+			ValueCurrency:     entities.USD,
+			Status:            entities.Active,
+		},
 	}
 
-	params.EndsAt = params.BeginsAt.Add(time.Hour * 24 * 60)
+	params.Round.EndsAt = params.Round.BeginsAt.Add(time.Hour * 24 * 60)
 
-	createdRound, err := repo.Create(ctx, params)
+	createdRound, err := repo.CreateFixedTotalRound(ctx, params)
 
 	assert.NoError(t, err)
 
-	assert.Equal(t, createdRound.VentureID, params.VentureID)
-	assert.Equal(t, createdRound.PercentageOffered, params.PercentageOffered)
-	assert.Equal(t, createdRound.PercentageValue, params.PercentageValue)
-	assert.Equal(t, createdRound.ValueCurrency, params.ValueCurrency)
-	assert.Equal(t, createdRound.Status, params.Status)
-	assert.Equal(t, createdRound.BeginsAt.UTC(), params.BeginsAt.UTC())
-	assert.Equal(t, createdRound.EndsAt.UTC(), params.EndsAt.UTC())
-	assert.Nil(t, createdRound.RegularDynamicRoundID)
+	assert.Equal(t, createdRound.Round.VentureID, params.Round.VentureID)
+	assert.Equal(t, createdRound.Round.PercentageOffered, params.Round.PercentageOffered)
+	assert.Equal(t, createdRound.Round.PercentageValue, params.Round.PercentageValue)
+	assert.Equal(t, createdRound.Round.ValueCurrency, params.Round.ValueCurrency)
+	assert.Equal(t, createdRound.Round.Status, params.Round.Status)
+	assert.Equal(t, createdRound.Round.BeginsAt.UTC(), params.Round.BeginsAt.UTC())
+	assert.Equal(t, createdRound.Round.EndsAt.UTC(), params.Round.EndsAt.UTC())
 }
 
-func TestDelete(t *testing.T) {
+func TestDeleteFixedTotalRound(t *testing.T) {
 	ctx := context.Background()
 
 	seedConfig := seed.NewSeedConfig(
 		seed.WithUsers(12),
 		seed.WithVentures(10),
-		seed.WithRounds(1),
+		seed.WithFixedTotalRounds(1),
 	)
 
 	db, seedResult := util.SetupTestDB(t, seedConfig)
@@ -68,24 +69,24 @@ func TestDelete(t *testing.T) {
 	repo := round.NewRoundRepository(db, ctx)
 
 	ventureID := 1
-	if _, ok := seedResult.VentureRounds[ventureID]; !ok {
+	if _, ok := seedResult.VentureFixedTotalRounds[ventureID]; !ok {
 		t.Fatalf("Round not found for venture %d", ventureID)
 	}
 
-	roundID := seedResult.VentureRounds[ventureID][0].RoundID
+	roundID := seedResult.VentureFixedTotalRounds[ventureID][0].RoundID
 
-	err := repo.Delete(ctx, roundID)
+	err := repo.DeleteFixedTotalRound(ctx, roundID)
 
 	assert.NoError(t, err)
 }
 
-func TestGetById(t *testing.T) {
+func TestGetFixedTotalRoundById(t *testing.T) {
 	ctx := context.Background()
 
 	seedConfig := seed.NewSeedConfig(
 		seed.WithUsers(12),
 		seed.WithVentures(10),
-		seed.WithRounds(1),
+		seed.WithFixedTotalRounds(1),
 	)
 
 	db, seedResult := util.SetupTestDB(t, seedConfig)
@@ -93,27 +94,26 @@ func TestGetById(t *testing.T) {
 	repo := round.NewRoundRepository(db, ctx)
 
 	ventureID := 1
-	if _, ok := seedResult.VentureRounds[ventureID]; !ok {
+	if _, ok := seedResult.VentureFixedTotalRounds[ventureID]; !ok {
 		t.Fatalf("Round not found for venture %d", ventureID)
 	}
 
-	roundID := seedResult.VentureRounds[ventureID][0].RoundID
+	roundID := seedResult.VentureFixedTotalRounds[ventureID][0].RoundID
 
-	fetchedRound, err := repo.GetById(ctx, roundID)
+	fetchedRound, err := repo.GetFixedTotalRoundById(ctx, roundID)
 
 	assert.NoError(t, err)
 
-	assert.Equal(t, roundID, fetchedRound.ID)
-	assert.Nil(t, fetchedRound.RegularDynamicRoundID)
+	assert.Equal(t, roundID, fetchedRound.Round.ID)
 }
 
-func TestGetManyByCursor(t *testing.T) {
+func TestGetFixedTotalRoundsByCursor(t *testing.T) {
 	ctx := context.Background()
 
 	seedConfig := seed.NewSeedConfig(
 		seed.WithUsers(12),
 		seed.WithVentures(10),
-		seed.WithRounds(1000),
+		seed.WithFixedTotalRounds(1000),
 	)
 
 	db, _ := util.SetupTestDB(t, seedConfig)
@@ -124,32 +124,35 @@ func TestGetManyByCursor(t *testing.T) {
 		Limit: 20,
 	}
 
-	rounds, err := repo.GetManyByCursor(ctx, params)
+	rounds, err := repo.GetFixedTotalRoundsByCursor(ctx, params)
 	assert.NoError(t, err)
 
 	assert.Len(t, rounds, 20)
-
-	params.Cursor = rounds[len(rounds)-1].ID
-
-	rounds, err = repo.GetManyByCursor(ctx, params)
-
-	assert.NoError(t, err)
-	assert.Len(t, rounds, 20)
-
-	assert.Equal(t, rounds[0].ID, params.Cursor)
 
 	for _, round := range rounds {
-		assert.Nil(t, round.RegularDynamicRoundID)
+		assert.NotNil(t, round.Round)
 	}
+
+	params.Cursor = rounds[len(rounds)-1].Round.ID
+	rounds, err = repo.GetFixedTotalRoundsByCursor(ctx, params)
+
+	assert.NoError(t, err)
+	assert.Len(t, rounds, 20)
+	for _, round := range rounds {
+		assert.NotNil(t, round.Round)
+	}
+
+	assert.Equal(t, rounds[0].Round.ID, params.Cursor)
+
 }
 
-func TestGetManyByPage(t *testing.T) {
+func TestGetFixedTotalRoundsByPage(t *testing.T) {
 	ctx := context.Background()
 
 	seedConfig := seed.NewSeedConfig(
 		seed.WithUsers(12),
 		seed.WithVentures(1),
-		seed.WithRounds(100),
+		seed.WithFixedTotalRounds(100),
 	)
 
 	db, _ := util.SetupTestDB(t, seedConfig)
@@ -161,19 +164,22 @@ func TestGetManyByPage(t *testing.T) {
 		PageSize: 20,
 	}
 
-	rounds, err := repo.GetManyByPage(ctx, params)
+	rounds, err := repo.GetFixedTotalRoundsByPage(ctx, params)
 	assert.NoError(t, err)
 
-	assert.Len(t, rounds, 20)
-
-	params.Page = 2
-
-	rounds, err = repo.GetManyByPage(ctx, params)
-
-	assert.NoError(t, err)
 	assert.Len(t, rounds, 20)
 
 	for _, round := range rounds {
-		assert.Nil(t, round.RegularDynamicRoundID)
+		assert.NotNil(t, round.Round)
+	}
+
+	params.Page = 2
+
+	rounds, err = repo.GetFixedTotalRoundsByPage(ctx, params)
+
+	assert.NoError(t, err)
+	assert.Len(t, rounds, 20)
+	for _, round := range rounds {
+		assert.NotNil(t, round.Round)
 	}
 }

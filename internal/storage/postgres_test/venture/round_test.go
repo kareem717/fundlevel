@@ -12,18 +12,17 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGetRoundsByCursor(t *testing.T) {
+func TestGetFixedTotalRoundsByCursor(t *testing.T) {
 	testCtx := context.Background()
 
 	// Setup test database and seed data
 	seedConfig := seed.NewSeedConfig(
 		seed.WithUsers(12),
 		seed.WithVentures(10),
-		seed.WithRounds(30),
+		seed.WithFixedTotalRounds(30),
 	)
 
 	db, seedResult := util.SetupTestDB(t, seedConfig)
-
 	// Create a new UserRepository instance
 	ventureRepository := venture.NewVentureRepository(db, testCtx)
 
@@ -31,7 +30,7 @@ func TestGetRoundsByCursor(t *testing.T) {
 	ventureId := seedResult.VentureIds[0]
 
 	// Call the GetAccount method
-	rounds, err := ventureRepository.GetRoundsByCursor(testCtx, ventureId, shared.CursorPagination{})
+	rounds, err := ventureRepository.GetFixedTotalRoundsByCursor(testCtx, ventureId, shared.CursorPagination{})
 	if err != nil {
 		t.Fatalf("Error getting rounds: %v", err)
 	}
@@ -41,12 +40,11 @@ func TestGetRoundsByCursor(t *testing.T) {
 
 	// Assert the account data is as expected
 	for _, round := range rounds {
-		assert.Equal(t, round.VentureID, ventureId)
-		assert.Less(t, round.BeginsAt, round.EndsAt)
-		assert.Less(t, round.CreatedAt, round.BeginsAt)
+		assert.Equal(t, round.Round.VentureID, ventureId)
+		assert.Less(t, round.Round.BeginsAt, round.Round.EndsAt)
+		assert.Less(t, round.Round.CreatedAt, round.Round.BeginsAt)
 
-		assert.LessOrEqual(t, round.PercentageOffered, 100.0)
-		assert.GreaterOrEqual(t, round.PercentageOffered, 0.0)
-		assert.Nil(t, round.RegularDynamicRoundID)
+		assert.LessOrEqual(t, round.Round.PercentageOffered, 100.0)
+		assert.GreaterOrEqual(t, round.Round.PercentageOffered, 0.0)
 	}
 }

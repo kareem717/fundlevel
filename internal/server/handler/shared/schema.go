@@ -56,10 +56,10 @@ type GetManyByParentPathIDInput struct {
 	PaginationRequest
 }
 
-type GetManyRoundsOutput struct {
+type GetManyFixedTotalRoundsOutput struct {
 	Body struct {
 		MessageResponse
-		Rounds []round.Round `json:"rounds"`
+		FixedTotalRounds []round.FixedTotalRound `json:"fixedTotalRounds"`
 		PaginationResponse
 	}
 }

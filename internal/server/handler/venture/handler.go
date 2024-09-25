@@ -95,16 +95,16 @@ func (h *httpHandler) getMany(ctx context.Context, input *shared.PaginationReque
 	return resp, nil
 }
 
-func (h *httpHandler) getRounds(ctx context.Context, input *shared.GetManyByParentPathIDInput) (*shared.GetManyRoundsOutput, error) {
+func (h *httpHandler) getRounds(ctx context.Context, input *shared.GetManyByParentPathIDInput) (*shared.GetManyFixedTotalRoundsOutput, error) {
 	LIMIT := input.Limit + 1
 
-	var rounds []round.Round
+	var rounds []round.FixedTotalRound
 	var err error
 
 	if input.CursorPagination != nil {
-		rounds, err = h.service.VentureService.GetRoundsByCursor(ctx, input.ID, LIMIT, input.Cursor)
+		rounds, err = h.service.VentureService.GetFixedTotalRoundsByCursor(ctx, input.ID, LIMIT, input.Cursor)
 	} else {
-		rounds, err = h.service.VentureService.GetRoundsByPage(ctx, input.ID, LIMIT, input.Cursor)
+		rounds, err = h.service.VentureService.GetFixedTotalRoundsByPage(ctx, input.ID, LIMIT, input.Cursor)
 	}
 
 	if err != nil {
@@ -117,18 +117,19 @@ func (h *httpHandler) getRounds(ctx context.Context, input *shared.GetManyByPare
 		}
 	}
 
-	resp := &shared.GetManyRoundsOutput{}
+	resp := &shared.GetManyFixedTotalRoundsOutput{}
 	resp.Body.Message = "Rounds fetched successfully"
-	resp.Body.Rounds = rounds
+	resp.Body.FixedTotalRounds = rounds
 
 	if len(rounds) == LIMIT {
-		resp.Body.NextCursor = &rounds[len(rounds)-1].ID
+		resp.Body.NextCursor = &rounds[len(rounds)-1].Round.ID
 		resp.Body.HasMore = true
-		resp.Body.Rounds = resp.Body.Rounds[:len(resp.Body.Rounds)-1]
+		resp.Body.FixedTotalRounds = resp.Body.FixedTotalRounds[:len(resp.Body.FixedTotalRounds)-1]
 	}
 
 	return resp, nil
 }
+
 type CreateVentureInput struct {
 	Body venture.CreateVentureParams `json:"venture"`
 }

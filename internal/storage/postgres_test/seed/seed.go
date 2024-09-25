@@ -9,9 +9,9 @@ import (
 // SeedConfig is used to configure what data is seeded into the
 // mock postgres database.
 type SeedConfig struct {
-	numUsers    int
-	numVentures int
-	numRounds   int
+	numUsers            int
+	numVentures         int
+	numFixedTotalRounds int
 }
 
 // SeedConfigOption is a option function that alters the SeedConfig
@@ -21,9 +21,9 @@ type SeedConfigOption func(config *SeedConfig)
 // or default values for any unspecified options.
 func NewSeedConfig(opts ...SeedConfigOption) SeedConfig {
 	config := SeedConfig{
-		numUsers:    10,
-		numVentures: 50,
-		numRounds:   30,
+		numUsers:            10,
+		numVentures:         50,
+		numFixedTotalRounds: 10,
 	}
 
 	for _, opt := range opts {
@@ -51,9 +51,9 @@ func WithVentures(numVentures int) SeedConfigOption {
 // WithRounds sets the number of rounds to seed. If the number is greater than
 // the number of ventures, each venture will have a single active round and
 // the remaining rounds will be inactive.
-func WithRounds(numRounds int) SeedConfigOption {
+func WithFixedTotalRounds(numFixedTotalRounds int) SeedConfigOption {
 	return func(config *SeedConfig) {
-		config.numRounds = numRounds
+		config.numFixedTotalRounds = numFixedTotalRounds
 	}
 }
 
@@ -66,8 +66,8 @@ type SeedResult struct {
 	AccountIds []int
 	// VentureIds is a list of the ids of the ventures that were seeded.
 	VentureIds []int
-	// VentureRounds is a map of the ids of the ventures to the ids of the rounds that were seeded.
-	VentureRounds VentureRoundMap
+	// FixedTotalRounds is a map of the ids of the ventures to the ids of the fixed total rounds that were seeded.
+	VentureFixedTotalRounds FixedTotalRoundMap
 }
 
 // SeedDB seeds the database utilizing the configuration provided.
@@ -95,11 +95,11 @@ func SeedDB(db *sql.DB, config SeedConfig) (*SeedResult, error) {
 
 	result.VentureIds = ventureIds
 
-	ventureRounds, err := SeedRounds(db, ventureIds, config.numRounds)
+	fixedTotalRounds, err := SeedFixedTotalRounds(db, ventureIds, config.numFixedTotalRounds)
 	if err != nil {
 		return nil, err
 	}
 
-	result.VentureRounds = ventureRounds
+	result.VentureFixedTotalRounds = fixedTotalRounds
 	return &result, nil
 }

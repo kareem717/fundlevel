@@ -19,23 +19,16 @@ type VentureRepository interface {
 	Update(ctx context.Context, id int, params venture.UpdateVentureParams) (venture.Venture, error)
 	GetById(ctx context.Context, id int) (venture.Venture, error)
 
-	// GetRoundsByCursor gets paginated total fixed rounds
-	GetRoundsByCursor(ctx context.Context, ventureId int, paginationParams shared.CursorPagination) ([]round.Round, error)
-	// GetRoundsByPage gets paginated total fixed rounds
-	GetRoundsByPage(ctx context.Context, ventureId int, paginationParams shared.OffsetPagination) ([]round.Round, error)
+	GetFixedTotalRoundsByCursor(ctx context.Context, ventureId int, paginationParams shared.CursorPagination) ([]round.FixedTotalRound, error)
+	GetFixedTotalRoundsByPage(ctx context.Context, ventureId int, paginationParams shared.OffsetPagination) ([]round.FixedTotalRound, error)
 }
 
 type RoundRepository interface {
-	// Delete deletes a total fixed round by id
-	Delete(ctx context.Context, id int) error
-	// GetById gets a total fixed round by id
-	GetById(ctx context.Context, id int) (round.Round, error)
-	// GetManyByCursor gets paginated total fixed rounds
-	GetManyByCursor(ctx context.Context, paginationParams shared.CursorPagination) ([]round.Round, error)
-	// GetManyByPage gets paginated total fixed rounds
-	GetManyByPage(ctx context.Context, paginationParams shared.OffsetPagination) ([]round.Round, error)
-	// Create creates a total fixed round
-	Create(ctx context.Context, params round.CreateRoundParams) (round.Round, error)
+	DeleteFixedTotalRound(ctx context.Context, id int) error
+	GetFixedTotalRoundById(ctx context.Context, id int) (round.FixedTotalRound, error)
+	GetFixedTotalRoundsByCursor(ctx context.Context, paginationParams shared.CursorPagination) ([]round.FixedTotalRound, error)
+	GetFixedTotalRoundsByPage(ctx context.Context, paginationParams shared.OffsetPagination) ([]round.FixedTotalRound, error)
+	CreateFixedTotalRound(ctx context.Context, params round.CreateFixedTotalRoundParams) (round.FixedTotalRound, error)
 }
 
 type AccountRepository interface {

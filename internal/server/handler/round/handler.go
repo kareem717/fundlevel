@@ -33,15 +33,15 @@ func newHTTPHandler(service *service.Service, logger *zap.Logger) *httpHandler {
 	}
 }
 
-type SingleRoundResponse struct {
+type SingleFixedTotalRoundResponse struct {
 	Body struct {
 		shared.MessageResponse
-		Round *round.Round `json:"round"`
+		Round *round.FixedTotalRound `json:"round"`
 	}
 }
 
-func (h *httpHandler) getByID(ctx context.Context, input *shared.PathIDParam) (*SingleRoundResponse, error) {
-	round, err := h.service.RoundService.GetById(ctx, input.ID)
+func (h *httpHandler) getByID(ctx context.Context, input *shared.PathIDParam) (*SingleFixedTotalRoundResponse, error) {
+	round, err := h.service.RoundService.GetFixedTotalById(ctx, input.ID)
 	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
@@ -52,23 +52,23 @@ func (h *httpHandler) getByID(ctx context.Context, input *shared.PathIDParam) (*
 		}
 	}
 
-	resp := &SingleRoundResponse{}
+	resp := &SingleFixedTotalRoundResponse{}
 	resp.Body.Message = "Round fetched successfully"
 	resp.Body.Round = &round
 
 	return resp, nil
 }
 
-func (h *httpHandler) getMany(ctx context.Context, input *shared.PaginationRequest) (*shared.GetManyRoundsOutput, error) {
+func (h *httpHandler) getMany(ctx context.Context, input *shared.PaginationRequest) (*shared.GetManyFixedTotalRoundsOutput, error) {
 	LIMIT := input.Limit + 1
 
-	var rounds []round.Round
+	var rounds []round.FixedTotalRound
 	var err error
 
 	if input.CursorPagination != nil {
-		rounds, err = h.service.RoundService.GetManyByCursor(ctx, LIMIT, input.Cursor)
+		rounds, err = h.service.RoundService.GetFixedTotalRoundsByCursor(ctx, LIMIT, input.Cursor)
 	} else {
-		rounds, err = h.service.RoundService.GetManyByPage(ctx, LIMIT, input.Cursor)
+		rounds, err = h.service.RoundService.GetFixedTotalRoundsByPage(ctx, LIMIT, input.Cursor)
 	}
 
 	if err != nil {
@@ -81,21 +81,21 @@ func (h *httpHandler) getMany(ctx context.Context, input *shared.PaginationReque
 		}
 	}
 
-	resp := &shared.GetManyRoundsOutput{}
+	resp := &shared.GetManyFixedTotalRoundsOutput{}
 	resp.Body.Message = "Rounds fetched successfully"
-	resp.Body.Rounds = rounds
+	resp.Body.FixedTotalRounds = rounds
 
 	if len(rounds) == LIMIT {
-		resp.Body.NextCursor = &rounds[len(rounds)-1].ID
+		resp.Body.NextCursor = &rounds[len(rounds)-1].Round.ID
 		resp.Body.HasMore = true
-		resp.Body.Rounds = resp.Body.Rounds[:len(resp.Body.Rounds)-1]
+		resp.Body.FixedTotalRounds = resp.Body.FixedTotalRounds[:len(resp.Body.FixedTotalRounds)-1]
 	}
 
 	return resp, nil
 }
 
 type CreateRoundInput struct {
-	Body round.CreateRoundParams `json:"round"`
+	Body round.CreateFixedTotalRoundParams `json:"round"`
 }
 
 func (i *CreateRoundInput) Resolve(ctx huma.Context) []error {
@@ -103,14 +103,14 @@ func (i *CreateRoundInput) Resolve(ctx huma.Context) []error {
 	return nil
 }
 
-func (h *httpHandler) create(ctx context.Context, input *CreateRoundInput) (*SingleRoundResponse, error) {
-	round, err := h.service.RoundService.Create(ctx, input.Body)
+func (h *httpHandler) create(ctx context.Context, input *CreateRoundInput) (*SingleFixedTotalRoundResponse, error) {
+	round, err := h.service.RoundService.CreateFixedTotalRound(ctx, input.Body)
 	if err != nil {
 		h.logger.Error("failed to create round", zap.Error(err))
 		return nil, huma.Error500InternalServerError("An error occurred while creating the round")
 	}
 
-	resp := &SingleRoundResponse{}
+	resp := &SingleFixedTotalRoundResponse{}
 	resp.Body.Message = "Round created successfully"
 	resp.Body.Round = &round
 
@@ -122,7 +122,7 @@ type DeleteRoundOutput struct {
 }
 
 func (h *httpHandler) delete(ctx context.Context, input *shared.PathIDParam) (*DeleteRoundOutput, error) {
-	_, err := h.service.RoundService.GetById(ctx, input.ID)
+	_, err := h.service.RoundService.GetFixedTotalById(ctx, input.ID)
 	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
@@ -133,7 +133,7 @@ func (h *httpHandler) delete(ctx context.Context, input *shared.PathIDParam) (*D
 		}
 	}
 
-	err = h.service.RoundService.Delete(ctx, input.ID)
+	err = h.service.RoundService.DeleteFixedTotalRound(ctx, input.ID)
 	if err != nil {
 		h.logger.Error("failed to delete round", zap.Error(err))
 		return nil, huma.Error500InternalServerError("An error occurred while deleting the round")

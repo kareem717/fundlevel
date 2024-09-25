@@ -80,7 +80,7 @@ func SetupTestDB(t *testing.T, seedConfig seed.SeedConfig) (*bun.DB, *seed.SeedR
 		db.Close()
 	})
 
-	logger, err := zap.NewProduction()
+	logger, err := zap.NewDevelopment()
 	if err != nil {
 		t.Fatalf("failed to create logger: %s", err)
 	}

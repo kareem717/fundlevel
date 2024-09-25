@@ -24,8 +24,8 @@ type VentureService interface {
 	GetManyByCursor(ctx context.Context, limit int, cursor int) ([]venture.Venture, error)
 	GetManyByPage(ctx context.Context, limit int, page int) ([]venture.Venture, error)
 
-	GetRoundsByCursor(ctx context.Context, ventureId int, limit int, cursor int) ([]round.Round, error)
-	GetRoundsByPage(ctx context.Context, ventureId int, pageSize int, page int) ([]round.Round, error)
+	GetFixedTotalRoundsByCursor(ctx context.Context, ventureId int, limit int, cursor int) ([]round.FixedTotalRound, error)
+	GetFixedTotalRoundsByPage(ctx context.Context, ventureId int, pageSize int, page int) ([]round.FixedTotalRound, error)
 }
 
 type UserService interface {
@@ -47,11 +47,11 @@ type HealthService interface {
 }
 
 type RoundService interface {
-	Create(ctx context.Context, params round.CreateRoundParams) (round.Round, error)
-	Delete(ctx context.Context, id int) error
-	GetById(ctx context.Context, id int) (round.Round, error)
-	GetManyByCursor(ctx context.Context, limit int, cursor int) ([]round.Round, error)
-	GetManyByPage(ctx context.Context, pageSize int, page int) ([]round.Round, error)
+	CreateFixedTotalRound(ctx context.Context, params round.CreateFixedTotalRoundParams) (round.FixedTotalRound, error)
+	DeleteFixedTotalRound(ctx context.Context, id int) error
+	GetFixedTotalById(ctx context.Context, id int) (round.FixedTotalRound, error)
+	GetFixedTotalRoundsByCursor(ctx context.Context, limit int, cursor int) ([]round.FixedTotalRound, error)
+	GetFixedTotalRoundsByPage(ctx context.Context, pageSize int, page int) ([]round.FixedTotalRound, error)
 }
 
 type Service struct {

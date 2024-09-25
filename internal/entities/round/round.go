@@ -32,7 +32,6 @@ type Round struct {
 
 	shared.IntegerID
 	CreateRoundParams
-	RegularDynamicRoundID *int `json:"regularDynamicRoundId" minimum:"1"`
 	shared.Timestamps
 }
 

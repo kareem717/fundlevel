@@ -15,7 +15,7 @@ type Timestamps struct {
 }
 
 type IntegerID struct {
-	ID int `json:"id" minimum:"1"`
+	ID int `json:"id" minimum:"1" bun:",pk"`
 }
 
 type RoundIDField struct {
