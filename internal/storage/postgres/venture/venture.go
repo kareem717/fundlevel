@@ -102,7 +102,7 @@ func (r *VentureRepository) GetManyByPage(ctx context.Context, paginationParams 
 		Model(&resp).
 		Order("id").
 		Offset(offset).
-		Limit(paginationParams.PageSize).
+		Limit(paginationParams.PageSize+1).
 		Scan(ctx)
 
 	return resp, err

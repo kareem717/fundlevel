@@ -11,12 +11,12 @@ type FixedTotalRound struct {
 	bun.BaseModel `bun:"table:fixed_total_rounds"`
 
 	createFixedTotalRoundParams
-	Round *Round `bun:"rel:belongs-to,join:round_id=id"`
+	Round *Round `json:"round" bun:"rel:belongs-to,join:round_id=id"`
 	shared.Timestamps
 }
 
 type createFixedTotalRoundParams struct {
-	RoundID int
+	RoundID int `json:"roundId"`
 }
 
 // CreateFixedTotalRoundParams contains the parameters for creating a new fixed total round.

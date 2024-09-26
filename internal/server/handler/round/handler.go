@@ -40,7 +40,7 @@ type SingleFixedTotalRoundResponse struct {
 	}
 }
 
-func (h *httpHandler) getByID(ctx context.Context, input *shared.PathIDParam) (*SingleFixedTotalRoundResponse, error) {
+func (h *httpHandler) getFixedTotalById(ctx context.Context, input *shared.PathIDParam) (*SingleFixedTotalRoundResponse, error) {
 	round, err := h.service.RoundService.GetFixedTotalById(ctx, input.ID)
 	if err != nil {
 		switch {
@@ -59,17 +59,8 @@ func (h *httpHandler) getByID(ctx context.Context, input *shared.PathIDParam) (*
 	return resp, nil
 }
 
-func (h *httpHandler) getMany(ctx context.Context, input *shared.PaginationRequest) (*shared.GetManyFixedTotalRoundsOutput, error) {
-	LIMIT := input.Limit + 1
-
-	var rounds []round.FixedTotalRound
-	var err error
-
-	if input.CursorPagination != nil {
-		rounds, err = h.service.RoundService.GetFixedTotalRoundsByCursor(ctx, LIMIT, input.Cursor)
-	} else {
-		rounds, err = h.service.RoundService.GetFixedTotalRoundsByPage(ctx, LIMIT, input.Cursor)
-	}
+func (h *httpHandler) getOffsetPaginatedFixedTotalRounds(ctx context.Context, input *shared.OffsetPaginationRequest) (*shared.GetOffsetPaginatedFixedTotalRoundsOutput, error) {
+	rounds, err := h.service.RoundService.GetFixedTotalRoundsByPage(ctx, input.PageSize, input.Page)
 
 	if err != nil {
 		switch {
@@ -81,14 +72,40 @@ func (h *httpHandler) getMany(ctx context.Context, input *shared.PaginationReque
 		}
 	}
 
-	resp := &shared.GetManyFixedTotalRoundsOutput{}
+	resp := &shared.GetOffsetPaginatedFixedTotalRoundsOutput{}
 	resp.Body.Message = "Rounds fetched successfully"
 	resp.Body.FixedTotalRounds = rounds
 
-	if len(rounds) == LIMIT {
-		resp.Body.NextCursor = &rounds[len(rounds)-1].Round.ID
+	if len(rounds) > input.PageSize {
 		resp.Body.HasMore = true
-		resp.Body.FixedTotalRounds = resp.Body.FixedTotalRounds[:len(resp.Body.FixedTotalRounds)-1]
+		resp.Body.FixedTotalRounds = resp.Body.FixedTotalRounds[:input.PageSize]
+	}
+
+	return resp, nil
+}
+
+func (h *httpHandler) getCursorPaginatedFixedTotalRounds(ctx context.Context, input *shared.CursorPaginationRequest) (*shared.GetCursorPaginatedFixedTotalRoundsOutput, error) {
+	limit := input.Limit + 1
+	rounds, err := h.service.RoundService.GetFixedTotalRoundsByCursor(ctx, limit, input.Cursor)
+
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("rounds not found")
+		default:
+			h.logger.Error("failed to fetch rounds", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the rounds")
+		}
+	}
+
+	resp := &shared.GetCursorPaginatedFixedTotalRoundsOutput{}
+	resp.Body.Message = "Rounds fetched successfully"
+	resp.Body.FixedTotalRounds = rounds
+
+	if len(rounds) == limit {
+		resp.Body.NextCursor = &rounds[input.Limit].Round.ID
+		resp.Body.HasMore = true
+		resp.Body.FixedTotalRounds = resp.Body.FixedTotalRounds[:input.Limit]
 	}
 
 	return resp, nil
@@ -103,7 +120,7 @@ func (i *CreateRoundInput) Resolve(ctx huma.Context) []error {
 	return nil
 }
 
-func (h *httpHandler) create(ctx context.Context, input *CreateRoundInput) (*SingleFixedTotalRoundResponse, error) {
+func (h *httpHandler) createFixedTotalRound(ctx context.Context, input *CreateRoundInput) (*SingleFixedTotalRoundResponse, error) {
 	round, err := h.service.RoundService.CreateFixedTotalRound(ctx, input.Body)
 	if err != nil {
 		h.logger.Error("failed to create round", zap.Error(err))
@@ -121,7 +138,7 @@ type DeleteRoundOutput struct {
 	Body shared.MessageResponse
 }
 
-func (h *httpHandler) delete(ctx context.Context, input *shared.PathIDParam) (*DeleteRoundOutput, error) {
+func (h *httpHandler) deleteFixedTotalRound(ctx context.Context, input *shared.PathIDParam) (*DeleteRoundOutput, error) {
 	_, err := h.service.RoundService.GetFixedTotalById(ctx, input.ID)
 	if err != nil {
 		switch {

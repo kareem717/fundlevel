@@ -25,7 +25,7 @@ func (r *VentureRepository) GetFixedTotalRoundsByCursor(ctx context.Context, ven
 
 func (r *VentureRepository) GetFixedTotalRoundsByPage(ctx context.Context, ventureId int, paginationParams shared.OffsetPagination) ([]round.FixedTotalRound, error) {
 	resp := []round.FixedTotalRound{}
-	offset := (paginationParams.Page - 1) * paginationParams.PageSize
+	offset := paginationParams.PageSize * (paginationParams.Page - 1)
 
 	err := r.db.
 		NewSelect().
@@ -34,7 +34,7 @@ func (r *VentureRepository) GetFixedTotalRoundsByPage(ctx context.Context, ventu
 		Where("round.venture_id = ?", ventureId).
 		Order("round.id").
 		Offset(offset).
-		Limit(paginationParams.PageSize).
+		Limit(paginationParams.PageSize + 1).
 		Scan(ctx)
 
 	return resp, err

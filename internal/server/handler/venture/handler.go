@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"errors"
 
-	"fundlevel/internal/entities/round"
 	"fundlevel/internal/entities/venture"
 	"fundlevel/internal/server/handler/shared"
 	"fundlevel/internal/service"
@@ -60,17 +59,8 @@ func (h *httpHandler) getByID(ctx context.Context, input *shared.PathIDParam) (*
 	return resp, nil
 }
 
-func (h *httpHandler) getMany(ctx context.Context, input *shared.PaginationRequest) (*shared.GetManyVenturesOutput, error) {
-	LIMIT := input.Limit + 1
-
-	var ventures []venture.Venture
-	var err error
-
-	if input.CursorPagination != nil {
-		ventures, err = h.service.VentureService.GetManyByCursor(ctx, LIMIT, input.Cursor)
-	} else {
-		ventures, err = h.service.VentureService.GetManyByPage(ctx, LIMIT, input.Cursor)
-	}
+func (h *httpHandler) getOffsetPaginated(ctx context.Context, input *shared.OffsetPaginationRequest) (*shared.GetOffsetPaginatedVenturesOutput, error) {
+	ventures, err := h.service.VentureService.GetManyByPage(ctx, input.PageSize, input.Page)
 
 	if err != nil {
 		switch {
@@ -82,30 +72,47 @@ func (h *httpHandler) getMany(ctx context.Context, input *shared.PaginationReque
 		}
 	}
 
-	resp := &shared.GetManyVenturesOutput{}
+	resp := &shared.GetOffsetPaginatedVenturesOutput{}
 	resp.Body.Message = "Ventures fetched successfully"
 	resp.Body.Ventures = ventures
 
-	if len(ventures) == LIMIT {
-		resp.Body.NextCursor = &ventures[len(ventures)-1].ID
+	if len(ventures) > input.PageSize {
 		resp.Body.HasMore = true
-		resp.Body.Ventures = resp.Body.Ventures[:len(resp.Body.Ventures)-1]
+		resp.Body.Ventures = resp.Body.Ventures[:input.PageSize]
 	}
 
 	return resp, nil
 }
 
-func (h *httpHandler) getRounds(ctx context.Context, input *shared.GetManyByParentPathIDInput) (*shared.GetManyFixedTotalRoundsOutput, error) {
-	LIMIT := input.Limit + 1
+func (h *httpHandler) getCursorPaginated(ctx context.Context, input *shared.CursorPaginationRequest) (*shared.GetCursorPaginatedVenturesOutput, error) {
+	limit := input.Limit + 1
+	ventures, err := h.service.VentureService.GetManyByCursor(ctx, limit, input.Cursor)
 
-	var rounds []round.FixedTotalRound
-	var err error
-
-	if input.CursorPagination != nil {
-		rounds, err = h.service.VentureService.GetFixedTotalRoundsByCursor(ctx, input.ID, LIMIT, input.Cursor)
-	} else {
-		rounds, err = h.service.VentureService.GetFixedTotalRoundsByPage(ctx, input.ID, LIMIT, input.Cursor)
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("ventures not found")
+		default:
+			h.logger.Error("failed to fetch ventures", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the ventures")
+		}
 	}
+
+	resp := &shared.GetCursorPaginatedVenturesOutput{}
+	resp.Body.Message = "Ventures fetched successfully"
+	resp.Body.Ventures = ventures
+
+	if len(ventures) == limit {
+		resp.Body.NextCursor = &ventures[input.Limit].ID
+		resp.Body.HasMore = true
+		resp.Body.Ventures = resp.Body.Ventures[:input.Limit]
+	}
+
+	return resp, nil
+}
+
+func (h *httpHandler) getOffsetPaginatedFixedTotalRounds(ctx context.Context, input *shared.GetOffsetPaginatedByParentPathIDInput) (*shared.GetOffsetPaginatedFixedTotalRoundsOutput, error) {
+	rounds, err := h.service.VentureService.GetFixedTotalRoundsByPage(ctx, input.ID, input.PageSize, input.Page)
 
 	if err != nil {
 		switch {
@@ -117,14 +124,41 @@ func (h *httpHandler) getRounds(ctx context.Context, input *shared.GetManyByPare
 		}
 	}
 
-	resp := &shared.GetManyFixedTotalRoundsOutput{}
+	resp := &shared.GetOffsetPaginatedFixedTotalRoundsOutput{}
 	resp.Body.Message = "Rounds fetched successfully"
 	resp.Body.FixedTotalRounds = rounds
 
-	if len(rounds) == LIMIT {
-		resp.Body.NextCursor = &rounds[len(rounds)-1].Round.ID
+	if len(rounds) > input.PageSize {
 		resp.Body.HasMore = true
-		resp.Body.FixedTotalRounds = resp.Body.FixedTotalRounds[:len(resp.Body.FixedTotalRounds)-1]
+		resp.Body.FixedTotalRounds = resp.Body.FixedTotalRounds[:input.PageSize]
+	}
+
+	return resp, nil
+}
+
+func (h *httpHandler) getCursorPaginatedFixedTotalRounds(ctx context.Context, input *shared.GetCursorPaginatedByParentPathIDInput) (*shared.GetCursorPaginatedFixedTotalRoundsOutput, error) {
+	limit := input.Limit + 1
+
+	rounds, err := h.service.VentureService.GetFixedTotalRoundsByCursor(ctx, input.ID, limit, input.Cursor)
+
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("rounds not found")
+		default:
+			h.logger.Error("failed to fetch rounds", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the rounds")
+		}
+	}
+
+	resp := &shared.GetCursorPaginatedFixedTotalRoundsOutput{}
+	resp.Body.Message = "Rounds fetched successfully"
+	resp.Body.FixedTotalRounds = rounds
+
+	if len(rounds) == limit {
+		resp.Body.NextCursor = &rounds[input.Limit].Round.ID
+		resp.Body.HasMore = true
+		resp.Body.FixedTotalRounds = resp.Body.FixedTotalRounds[:input.Limit]
 	}
 
 	return resp, nil

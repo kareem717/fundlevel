@@ -21,39 +21,48 @@ func RegisterHumaRoutes(
 	}
 
 	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-round-by-id",
+		OperationID: "get-fixed-total-round-by-id",
 		Method:      http.MethodGet,
-		Path:        "/round/{id}",
-		Summary:     "Get round by ID",
-		Description: "Get round by ID.",
-		Tags:        []string{"Rounds"},
-	}, handler.getByID)
+		Path:        "/round/total/fixed/{id}",
+		Summary:     "Get fixed total round by ID",
+		Description: "Get fixed total round by the associated round ID.",
+		Tags:        []string{"Fixed Total Rounds"},
+	}, handler.getFixedTotalById)
 
 	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-all-rounds",
+		OperationID: "get-all-fixed-total-rounds-cursor",
 		Method:      http.MethodGet,
-		Path:        "/round",
-		Summary:     "Get all rounds",
-		Description: "Get all rounds.",
-		Tags:        []string{"Rounds"},
-	}, handler.getMany)
+		Path:        "/round/total/fixed/cursor",
+		Summary:     "Get cursor paginated fixed total rounds",
+		Description: "Get cursor paginated fixed total rounds.",
+		Tags:        []string{"Fixed Total Rounds"},
+	}, handler.getCursorPaginatedFixedTotalRounds)
 
 	huma.Register(humaApi, huma.Operation{
-		OperationID: "create-round",
+		OperationID: "get-all-fixed-total-rounds-offset",
+		Method:      http.MethodGet,
+		Path:        "/round/total/fixed/offset",
+		Summary:     "Get offset paginated fixed total rounds",
+		Description: "Get offset paginated fixed total rounds.",
+		Tags:        []string{"Fixed Total Rounds"},
+	}, handler.getOffsetPaginatedFixedTotalRounds)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "create-fixed-total-round",
 		Method:      http.MethodPost,
-		Path:        "/round",
-		Summary:     "Create a round",
-		Description: "Create a round.",
-		Tags:        []string{"Rounds"},
-	}, handler.create)
+		Path:        "/round/total/fixed",
+		Summary:     "Create a fixed total round",
+		Description: "Create a fixed total round.",
+		Tags:        []string{"Fixed Total Rounds"},
+	}, handler.createFixedTotalRound)
 
 	huma.Register(humaApi, huma.Operation{
-		OperationID: "delete-round",
+		OperationID: "delete-fixed-total-round",
 		Method:      http.MethodDelete,
-		Path:        "/round/{id}",
-		Summary:     "Delete a round",
-		Description: "Delete a round.",
-		Tags:        []string{"Rounds"},
-	}, handler.delete)
+		Path:        "/round/total/fixed/{id}",
+		Summary:     "Delete a fixed total round",
+		Description: "Delete a fixed total round.",
+		Tags:        []string{"Fixed Total Rounds"},
+	}, handler.deleteFixedTotalRound)
 
 }

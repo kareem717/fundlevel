@@ -113,7 +113,7 @@ func TestGetFixedTotalRoundsByCursor(t *testing.T) {
 	seedConfig := seed.NewSeedConfig(
 		seed.WithUsers(12),
 		seed.WithVentures(10),
-		seed.WithFixedTotalRounds(1000),
+		seed.WithFixedTotalRounds(30),
 	)
 
 	db, _ := util.SetupTestDB(t, seedConfig)
@@ -121,23 +121,23 @@ func TestGetFixedTotalRoundsByCursor(t *testing.T) {
 	repo := round.NewRoundRepository(db, ctx)
 
 	params := shared.CursorPagination{
-		Limit: 20,
+		Limit: 21,
 	}
 
 	rounds, err := repo.GetFixedTotalRoundsByCursor(ctx, params)
 	assert.NoError(t, err)
 
-	assert.Len(t, rounds, 20)
+	assert.Len(t, rounds, 21)
 
 	for _, round := range rounds {
 		assert.NotNil(t, round.Round)
 	}
 
-	params.Cursor = rounds[len(rounds)-1].Round.ID
+	params.Cursor = rounds[params.Limit-1].Round.ID
 	rounds, err = repo.GetFixedTotalRoundsByCursor(ctx, params)
 
 	assert.NoError(t, err)
-	assert.Len(t, rounds, 20)
+	assert.Len(t, rounds, 10)
 	for _, round := range rounds {
 		assert.NotNil(t, round.Round)
 	}
@@ -167,13 +167,22 @@ func TestGetFixedTotalRoundsByPage(t *testing.T) {
 	rounds, err := repo.GetFixedTotalRoundsByPage(ctx, params)
 	assert.NoError(t, err)
 
-	assert.Len(t, rounds, 20)
+	assert.Len(t, rounds, 21)
 
 	for _, round := range rounds {
 		assert.NotNil(t, round.Round)
 	}
-
 	params.Page = 2
+
+	rounds, err = repo.GetFixedTotalRoundsByPage(ctx, params)
+
+	assert.NoError(t, err)
+	assert.Len(t, rounds, 21)
+	for _, round := range rounds {
+		assert.NotNil(t, round.Round)
+	}
+
+	params.Page = 5
 
 	rounds, err = repo.GetFixedTotalRoundsByPage(ctx, params)
 

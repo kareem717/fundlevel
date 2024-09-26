@@ -89,7 +89,7 @@ func TestGetFixedTotalRoundsByPage(t *testing.T) {
 	)
 	assert.NoError(t, err)
 
-	assert.Len(t, output, 10)
+	assert.Len(t, output, 11)
 	for _, round := range output {
 		assert.Equal(t, 1, round.Round.VentureID)
 	}
@@ -107,7 +107,8 @@ func TestGetFixedTotalRoundsByPage(t *testing.T) {
 		assert.Equal(t, 1, round.Round.VentureID)
 	}
 
-	assert.Less(t, lastRoundID, output[0].Round.ID)
+	assert.Equal(t, lastRoundID, output[0].Round.ID)
+	assert.Less(t, lastRoundID, output[1].Round.ID)
 }
 
 func TestCreateFixedTotalRound(t *testing.T) {

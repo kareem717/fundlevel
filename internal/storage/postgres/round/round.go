@@ -112,7 +112,7 @@ func (r *RoundRepository) GetFixedTotalRoundsByPage(ctx context.Context, paginat
 		Relation("Round").
 		Order("round_id").
 		Offset(offset).
-		Limit(paginationParams.PageSize).
+		Limit(paginationParams.PageSize+1).
 		Scan(ctx)
 
 	return resp, err

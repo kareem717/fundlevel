@@ -106,6 +106,6 @@ func RegisterHumaRoutes(
 		Summary:     "Get account ventures",
 		Description: "Get all of the ventures owned by a given account.",
 		Tags:        []string{"Accounts", "Ventures"},
-	}, handler.getVentures)
+	}, handler.getCursorPaginatedVentures)
 
 }
