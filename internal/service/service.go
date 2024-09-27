@@ -29,6 +29,9 @@ type VentureService interface {
 
 	GetRegularDynamicRoundsByCursor(ctx context.Context, ventureId int, limit int, cursor int) ([]round.RegularDynamicRound, error)
 	GetRegularDynamicRoundsByPage(ctx context.Context, ventureId int, pageSize int, page int) ([]round.RegularDynamicRound, error)
+
+	GetPartialTotalRoundsByCursor(ctx context.Context, ventureId int, limit int, cursor int) ([]round.PartialTotalRound, error)
+	GetPartialTotalRoundsByPage(ctx context.Context, ventureId int, pageSize int, page int) ([]round.PartialTotalRound, error)
 }
 
 type UserService interface {
@@ -61,6 +64,12 @@ type RoundService interface {
 	GetRegularDynamicById(ctx context.Context, id int) (round.RegularDynamicRound, error)
 	GetRegularDynamicRoundsByCursor(ctx context.Context, limit int, cursor int) ([]round.RegularDynamicRound, error)
 	GetRegularDynamicRoundsByPage(ctx context.Context, pageSize int, page int) ([]round.RegularDynamicRound, error)
+
+	CreatePartialTotalRound(ctx context.Context, params round.CreatePartialTotalRoundParams) (round.PartialTotalRound, error)
+	DeletePartialTotalRound(ctx context.Context, id int) error
+	GetPartialTotalById(ctx context.Context, id int) (round.PartialTotalRound, error)
+	GetPartialTotalRoundsByCursor(ctx context.Context, limit int, cursor int) ([]round.PartialTotalRound, error)
+	GetPartialTotalRoundsByPage(ctx context.Context, pageSize int, page int) ([]round.PartialTotalRound, error)
 }
 
 type Service struct {
