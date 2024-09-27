@@ -26,6 +26,9 @@ type VentureService interface {
 
 	GetFixedTotalRoundsByCursor(ctx context.Context, ventureId int, limit int, cursor int) ([]round.FixedTotalRound, error)
 	GetFixedTotalRoundsByPage(ctx context.Context, ventureId int, pageSize int, page int) ([]round.FixedTotalRound, error)
+
+	GetRegularDynamicRoundsByCursor(ctx context.Context, ventureId int, limit int, cursor int) ([]round.RegularDynamicRound, error)
+	GetRegularDynamicRoundsByPage(ctx context.Context, ventureId int, pageSize int, page int) ([]round.RegularDynamicRound, error)
 }
 
 type UserService interface {
@@ -52,6 +55,12 @@ type RoundService interface {
 	GetFixedTotalById(ctx context.Context, id int) (round.FixedTotalRound, error)
 	GetFixedTotalRoundsByCursor(ctx context.Context, limit int, cursor int) ([]round.FixedTotalRound, error)
 	GetFixedTotalRoundsByPage(ctx context.Context, pageSize int, page int) ([]round.FixedTotalRound, error)
+
+	CreateRegularDynamicRound(ctx context.Context, params round.CreateRegularDynamicRoundParams) (round.RegularDynamicRound, error)
+	DeleteRegularDynamicRound(ctx context.Context, id int) error
+	GetRegularDynamicById(ctx context.Context, id int) (round.RegularDynamicRound, error)
+	GetRegularDynamicRoundsByCursor(ctx context.Context, limit int, cursor int) ([]round.RegularDynamicRound, error)
+	GetRegularDynamicRoundsByPage(ctx context.Context, pageSize int, page int) ([]round.RegularDynamicRound, error)
 }
 
 type Service struct {

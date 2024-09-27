@@ -20,16 +20,22 @@ func TestGetFixedTotalById(t *testing.T) {
 		seed.WithFixedTotalRounds(1),
 	)
 
-	service, _ := util.SetupTestService(t, seedConfig, ctx)
+	service, seedResult := util.SetupTestService(t, seedConfig, ctx)
+	ventureID := seedResult.VentureIds[0]
+	if _, ok := seedResult.VentureFixedTotalRounds[ventureID]; !ok {
+		t.Fatalf("VentureFixedTotalRounds not found in seedResult")
+	}
+
+	roundID := seedResult.VentureFixedTotalRounds[ventureID][0].RoundID
 
 	output, err := service.RoundService.GetFixedTotalById(
 		ctx,
-		1,
+		roundID,
 	)
 
 	assert.NoError(t, err)
-	assert.Equal(t, 1, output.Round.ID)
-	assert.Equal(t, 1, output.Round.VentureID)
+	assert.Equal(t, roundID, output.Round.ID)
+	assert.Equal(t, ventureID, output.Round.VentureID)
 	assert.Equal(t, output.RoundID, output.Round.ID)
 }
 
@@ -42,7 +48,8 @@ func TestGetFixedTotalRoundsByCursor(t *testing.T) {
 		seed.WithFixedTotalRounds(15),
 	)
 
-	service, _ := util.SetupTestService(t, seedConfig, ctx)
+	service, seedResult := util.SetupTestService(t, seedConfig, ctx)
+	ventureID := seedResult.VentureIds[0]
 
 	output, err := service.RoundService.GetFixedTotalRoundsByCursor(
 		ctx,
@@ -52,7 +59,7 @@ func TestGetFixedTotalRoundsByCursor(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Len(t, output, 10)
 	for _, round := range output {
-		assert.Equal(t, 1, round.Round.VentureID)
+		assert.Equal(t, ventureID, round.Round.VentureID)
 	}
 
 	cursor := output[len(output)-1].RoundID
@@ -65,7 +72,7 @@ func TestGetFixedTotalRoundsByCursor(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Len(t, output, 6)
 	for _, round := range output {
-		assert.Equal(t, 1, round.Round.VentureID)
+		assert.Equal(t, ventureID, round.Round.VentureID)
 	}
 
 	assert.Equal(t, cursor, output[0].Round.ID)
@@ -80,7 +87,8 @@ func TestGetFixedTotalRoundsByPage(t *testing.T) {
 		seed.WithFixedTotalRounds(15),
 	)
 
-	service, _ := util.SetupTestService(t, seedConfig, ctx)
+	service, seedResult := util.SetupTestService(t, seedConfig, ctx)
+	ventureID := seedResult.VentureIds[0]
 
 	output, err := service.RoundService.GetFixedTotalRoundsByPage(
 		ctx,
@@ -91,7 +99,7 @@ func TestGetFixedTotalRoundsByPage(t *testing.T) {
 
 	assert.Len(t, output, 11)
 	for _, round := range output {
-		assert.Equal(t, 1, round.Round.VentureID)
+		assert.Equal(t, ventureID, round.Round.VentureID)
 	}
 
 	lastRoundID := output[len(output)-1].RoundID
@@ -104,7 +112,7 @@ func TestGetFixedTotalRoundsByPage(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Len(t, output, 5)
 	for _, round := range output {
-		assert.Equal(t, 1, round.Round.VentureID)
+		assert.Equal(t, ventureID, round.Round.VentureID)
 	}
 
 	assert.Equal(t, lastRoundID, output[0].Round.ID)
@@ -155,11 +163,17 @@ func TestDeleteFixedTotalRound(t *testing.T) {
 		seed.WithFixedTotalRounds(1),
 	)
 
-	service, _ := util.SetupTestService(t, seedConfig, ctx)
+	service, seedResult := util.SetupTestService(t, seedConfig, ctx)
+	ventureID := seedResult.VentureIds[0]
+	if _, ok := seedResult.VentureFixedTotalRounds[ventureID]; !ok {
+		t.Fatalf("VentureFixedTotalRounds not found in seedResult")
+	}
+
+	roundID := seedResult.VentureFixedTotalRounds[ventureID][0].RoundID
 
 	err := service.RoundService.DeleteFixedTotalRound(
 		ctx,
-		1,
+		roundID,
 	)
 
 	assert.NoError(t, err)
