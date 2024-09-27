@@ -7,6 +7,7 @@ CREATE TABLE
         created_at timestamptz DEFAULT CLOCK_TIMESTAMP(),
         updated_at timestamptz,
         deleted_at timestamptz,
+        CONSTRAINT check_days_extend_on_bid CHECK (days_extend_on_bid>0),
         PRIMARY KEY (round_id, created_at)
     );
 

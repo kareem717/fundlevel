@@ -18,7 +18,7 @@ type RegularDynamicRound struct {
 
 type RegularDynamicRoundParams struct {
 	RoundID         int `json:"roundId" readOnly:"true"`
-	DaysExtendOnBid int `json:"daysExtendOnBid"`
+	DaysExtendOnBid int `json:"daysExtendOnBid" minimum:"1"`
 }
 
 // CreateRegularDynamicRoundParams contains the parameters for creating a new regular dynamic round.

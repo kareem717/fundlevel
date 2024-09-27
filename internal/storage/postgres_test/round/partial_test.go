@@ -15,13 +15,13 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCreateRegularDynamicRound(t *testing.T) {
+func TestCreatePartialTotalRound(t *testing.T) {
 	ctx := context.Background()
 
 	seedConfig := seed.NewSeedConfig(
 		seed.WithUsers(12),
 		seed.WithVentures(10),
-		seed.WithRegularDynamicRounds(0),
+		seed.WithPartialTotalRounds(0),
 	)
 
 	db, seedResult := util.SetupTestDB(t, seedConfig)
@@ -30,9 +30,9 @@ func TestCreateRegularDynamicRound(t *testing.T) {
 
 	ventureID := seedResult.VentureIds[0]
 
-	params := entities.CreateRegularDynamicRoundParams{
-		RegularDynamicRound: entities.RegularDynamicRoundParams{
-			DaysExtendOnBid: rand.Intn(30) + 1,
+	params := entities.CreatePartialTotalRoundParams{
+		PartialTotalRound: entities.PartialTotalRoundParams{
+			InvestorCount: rand.Intn(10) + 1,
 		},
 		Round: entities.CreateRoundParams{
 			VentureID:         ventureID,
@@ -46,7 +46,7 @@ func TestCreateRegularDynamicRound(t *testing.T) {
 
 	params.Round.EndsAt = params.Round.BeginsAt.Add(time.Hour * 24 * 60)
 
-	createdRound, err := repo.CreateRegularDynamicRound(ctx, params)
+	createdRound, err := repo.CreatePartialTotalRound(ctx, params)
 
 	assert.NoError(t, err)
 
@@ -59,13 +59,13 @@ func TestCreateRegularDynamicRound(t *testing.T) {
 	assert.Equal(t, createdRound.Round.EndsAt.UTC(), params.Round.EndsAt.UTC())
 }
 
-func TestDeleteRegularDynamicRound(t *testing.T) {
+func TestDeletePartialTotalRound(t *testing.T) {
 	ctx := context.Background()
 
 	seedConfig := seed.NewSeedConfig(
 		seed.WithUsers(12),
 		seed.WithVentures(10),
-		seed.WithRegularDynamicRounds(1),
+		seed.WithPartialTotalRounds(1),
 	)
 
 	db, seedResult := util.SetupTestDB(t, seedConfig)
@@ -73,24 +73,24 @@ func TestDeleteRegularDynamicRound(t *testing.T) {
 	repo := round.NewRoundRepository(db, ctx)
 
 	ventureID := 1
-	if _, ok := seedResult.VentureRegularDynamicRounds[ventureID]; !ok {
+	if _, ok := seedResult.VenturePartialTotalRounds[ventureID]; !ok {
 		t.Fatalf("Round not found for venture %d", ventureID)
 	}
 
-	roundID := seedResult.VentureRegularDynamicRounds[ventureID][0].RoundID
+	roundID := seedResult.VenturePartialTotalRounds[ventureID][0].RoundID
 
-	err := repo.DeleteRegularDynamicRound(ctx, roundID)
+	err := repo.DeletePartialTotalRound(ctx, roundID)
 
 	assert.NoError(t, err)
 }
 
-func TestGetRegularDynamicRoundById(t *testing.T) {
+func TestGetPartialTotalRoundById(t *testing.T) {
 	ctx := context.Background()
 
 	seedConfig := seed.NewSeedConfig(
 		seed.WithUsers(12),
 		seed.WithVentures(10),
-		seed.WithRegularDynamicRounds(1),
+		seed.WithPartialTotalRounds(1),
 	)
 
 	db, seedResult := util.SetupTestDB(t, seedConfig)
@@ -98,26 +98,26 @@ func TestGetRegularDynamicRoundById(t *testing.T) {
 	repo := round.NewRoundRepository(db, ctx)
 
 	ventureID := 1
-	if _, ok := seedResult.VentureRegularDynamicRounds[ventureID]; !ok {
+	if _, ok := seedResult.VenturePartialTotalRounds[ventureID]; !ok {
 		t.Fatalf("Round not found for venture %d", ventureID)
 	}
 
-	roundID := seedResult.VentureRegularDynamicRounds[ventureID][0].RoundID
+	roundID := seedResult.VenturePartialTotalRounds[ventureID][0].RoundID
 
-	fetchedRound, err := repo.GetRegularDynamicRoundById(ctx, roundID)
+	fetchedRound, err := repo.GetPartialTotalRoundById(ctx, roundID)
 
 	assert.NoError(t, err)
 
 	assert.Equal(t, roundID, fetchedRound.Round.ID)
 }
 
-func TestGetRegularDynamicRoundsByCursor(t *testing.T) {
+func TestGetPartialTotalRoundsByCursor(t *testing.T) {
 	ctx := context.Background()
 
 	seedConfig := seed.NewSeedConfig(
 		seed.WithUsers(12),
 		seed.WithVentures(10),
-		seed.WithRegularDynamicRounds(30),
+		seed.WithPartialTotalRounds(30),
 	)
 
 	db, _ := util.SetupTestDB(t, seedConfig)
@@ -128,7 +128,7 @@ func TestGetRegularDynamicRoundsByCursor(t *testing.T) {
 		Limit: 21,
 	}
 
-	rounds, err := repo.GetRegularDynamicRoundsByCursor(ctx, params)
+	rounds, err := repo.GetPartialTotalRoundsByCursor(ctx, params)
 	assert.NoError(t, err)
 
 	assert.Len(t, rounds, 21)
@@ -138,7 +138,7 @@ func TestGetRegularDynamicRoundsByCursor(t *testing.T) {
 	}
 
 	params.Cursor = rounds[params.Limit-1].Round.ID
-	rounds, err = repo.GetRegularDynamicRoundsByCursor(ctx, params)
+	rounds, err = repo.GetPartialTotalRoundsByCursor(ctx, params)
 
 	assert.NoError(t, err)
 	assert.Len(t, rounds, 10)
@@ -150,13 +150,13 @@ func TestGetRegularDynamicRoundsByCursor(t *testing.T) {
 
 }
 
-func TestGetRegularDynamicRoundsByPage(t *testing.T) {
+func TestGetPartialTotalRoundsByPage(t *testing.T) {
 	ctx := context.Background()
 
 	seedConfig := seed.NewSeedConfig(
 		seed.WithUsers(12),
 		seed.WithVentures(1),
-		seed.WithRegularDynamicRounds(100),
+		seed.WithPartialTotalRounds(100),
 	)
 
 	db, _ := util.SetupTestDB(t, seedConfig)
@@ -168,7 +168,7 @@ func TestGetRegularDynamicRoundsByPage(t *testing.T) {
 		PageSize: 20,
 	}
 
-	rounds, err := repo.GetRegularDynamicRoundsByPage(ctx, params)
+	rounds, err := repo.GetPartialTotalRoundsByPage(ctx, params)
 	assert.NoError(t, err)
 
 	assert.Len(t, rounds, 21)
@@ -178,7 +178,7 @@ func TestGetRegularDynamicRoundsByPage(t *testing.T) {
 	}
 	params.Page = 2
 
-	rounds, err = repo.GetRegularDynamicRoundsByPage(ctx, params)
+	rounds, err = repo.GetPartialTotalRoundsByPage(ctx, params)
 
 	assert.NoError(t, err)
 	assert.Len(t, rounds, 21)
@@ -188,7 +188,7 @@ func TestGetRegularDynamicRoundsByPage(t *testing.T) {
 
 	params.Page = 5
 
-	rounds, err = repo.GetRegularDynamicRoundsByPage(ctx, params)
+	rounds, err = repo.GetPartialTotalRoundsByPage(ctx, params)
 
 	assert.NoError(t, err)
 	assert.Len(t, rounds, 20)

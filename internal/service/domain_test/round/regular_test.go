@@ -137,6 +137,7 @@ func TestCreateRegularDynamicRound(t *testing.T) {
 	params.Round.PercentageValue = 180000
 	params.Round.ValueCurrency = round.USD
 	params.Round.Status = round.Active
+	params.RegularDynamicRound.DaysExtendOnBid = 10
 
 	output, err := service.RoundService.CreateRegularDynamicRound(
 		ctx,
@@ -151,6 +152,7 @@ func TestCreateRegularDynamicRound(t *testing.T) {
 	assert.Equal(t, output.Round.Status, params.Round.Status)
 	assert.Equal(t, output.Round.BeginsAt.UTC(), params.Round.BeginsAt.UTC())
 	assert.Equal(t, output.Round.EndsAt.UTC(), params.Round.EndsAt.UTC())
+	assert.Equal(t, output.DaysExtendOnBid, params.RegularDynamicRound.DaysExtendOnBid)
 }
 
 func TestDeleteRegularDynamicRound(t *testing.T) {
