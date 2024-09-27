@@ -47,22 +47,40 @@ func RegisterHumaRoutes(
 	}, handler.getCursorPaginated)
 
 	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-venture-rounds-cursor",
+		OperationID: "get-venture-fixed-total-rounds-cursor",
 		Method:      http.MethodGet,
 		Path:        "/venture/{id}/rounds/fixed/total/cursor",
 		Summary:     "Get cursor paginated rounds for a venture",
 		Description: "Get all rounds for a venture.",
-		Tags:        []string{"Ventures", "Rounds"},
+		Tags:        []string{"Ventures", "Fixed Total Rounds"},
 	}, handler.getCursorPaginatedFixedTotalRounds)
 
 	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-venture-rounds-offset",
+		OperationID: "get-venture-fixed-total-rounds-offset",
 		Method:      http.MethodGet,
 		Path:        "/venture/{id}/rounds/fixed/total/offset",
 		Summary:     "Get offset paginated rounds for a venture",
 		Description: "Get all rounds for a venture.",
-		Tags:        []string{"Ventures", "Rounds"},
+		Tags:        []string{"Ventures", "Fixed Total Rounds"},
 	}, handler.getOffsetPaginatedFixedTotalRounds)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-venture-regular-dynamic-rounds-cursor",
+		Method:      http.MethodGet,
+		Path:        "/venture/{id}/rounds/regular/dynamic/cursor",
+		Summary:     "Get cursor paginated rounds for a venture",
+		Description: "Get all rounds for a venture.",
+		Tags:        []string{"Ventures", "Regular Dynamic Rounds"},
+	}, handler.getCursorPaginatedRegularDynamicRounds)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-venture-regular-dynamic-rounds-offset",
+		Method:      http.MethodGet,
+		Path:        "/venture/{id}/rounds/regular/dynamic/offset",
+		Summary:     "Get offset paginated rounds for a venture",
+		Description: "Get all rounds for a venture.",
+		Tags:        []string{"Ventures", "Regular Dynamic Rounds"},
+	}, handler.getOffsetPaginatedRegularDynamicRounds)
 
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "create-venture",

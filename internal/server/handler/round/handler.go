@@ -33,6 +33,135 @@ func newHTTPHandler(service *service.Service, logger *zap.Logger) *httpHandler {
 	}
 }
 
+type SingleRegularDynamicRoundResponse struct {
+	Body struct {
+		shared.MessageResponse
+		Round *round.RegularDynamicRound `json:"round"`
+	}
+}
+
+func (h *httpHandler) getRegularDynamicById(ctx context.Context, input *shared.PathIDParam) (*SingleRegularDynamicRoundResponse, error) {
+	round, err := h.service.RoundService.GetRegularDynamicById(ctx, input.ID)
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("round not found")
+		default:
+			h.logger.Error("failed to fetch round", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the round")
+		}
+	}
+
+	resp := &SingleRegularDynamicRoundResponse{}
+	resp.Body.Message = "Round fetched successfully"
+	resp.Body.Round = &round
+
+	return resp, nil
+}
+
+func (h *httpHandler) getOffsetPaginatedRegularDynamicRounds(ctx context.Context, input *shared.OffsetPaginationRequest) (*shared.GetOffsetPaginatedRegularDynamicRoundsOutput, error) {
+	rounds, err := h.service.RoundService.GetRegularDynamicRoundsByPage(ctx, input.PageSize, input.Page)
+
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("rounds not found")
+		default:
+			h.logger.Error("failed to fetch rounds", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the rounds")
+		}
+	}
+
+	resp := &shared.GetOffsetPaginatedRegularDynamicRoundsOutput{}
+	resp.Body.Message = "Rounds fetched successfully"
+	resp.Body.RegularDynamicRounds = rounds
+
+	if len(rounds) > input.PageSize {
+		resp.Body.HasMore = true
+		resp.Body.RegularDynamicRounds = resp.Body.RegularDynamicRounds[:input.PageSize]
+	}
+
+	return resp, nil
+}
+
+func (h *httpHandler) getCursorPaginatedRegularDynamicRounds(ctx context.Context, input *shared.CursorPaginationRequest) (*shared.GetCursorPaginatedRegularDynamicRoundsOutput, error) {
+	limit := input.Limit + 1
+	rounds, err := h.service.RoundService.GetRegularDynamicRoundsByCursor(ctx, limit, input.Cursor)
+
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("rounds not found")
+		default:
+			h.logger.Error("failed to fetch rounds", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the rounds")
+		}
+	}
+
+	resp := &shared.GetCursorPaginatedRegularDynamicRoundsOutput{}
+	resp.Body.Message = "Rounds fetched successfully"
+	resp.Body.RegularDynamicRounds = rounds
+
+	if len(rounds) == limit {
+		resp.Body.NextCursor = &rounds[input.Limit].Round.ID
+		resp.Body.HasMore = true
+		resp.Body.RegularDynamicRounds = resp.Body.RegularDynamicRounds[:input.Limit]
+	}
+
+	return resp, nil
+}
+
+type CreateRegularDynamicRoundInput struct {
+	Body round.CreateRegularDynamicRoundParams `json:"round"`
+}
+
+func (i *CreateRegularDynamicRoundInput) Resolve(ctx huma.Context) []error {
+	//TODO: implement db checks
+	return nil
+}
+
+func (h *httpHandler) createRegularDynamicRound(ctx context.Context, input *CreateRegularDynamicRoundInput) (*SingleRegularDynamicRoundResponse, error) {
+	round, err := h.service.RoundService.CreateRegularDynamicRound(ctx, input.Body)
+	if err != nil {
+		h.logger.Error("failed to create round", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while creating the round")
+	}
+
+	resp := &SingleRegularDynamicRoundResponse{}
+	resp.Body.Message = "Round created successfully"
+	resp.Body.Round = &round
+
+	return resp, nil
+}
+
+type DeleteRegularDynamicRoundOutput struct {
+	Body shared.MessageResponse
+}
+
+func (h *httpHandler) deleteRegularDynamicRound(ctx context.Context, input *shared.PathIDParam) (*DeleteRegularDynamicRoundOutput, error) {
+	_, err := h.service.RoundService.GetRegularDynamicById(ctx, input.ID)
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("round not found")
+		default:
+			h.logger.Error("failed to fetch round", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the round")
+		}
+	}
+
+	err = h.service.RoundService.DeleteRegularDynamicRound(ctx, input.ID)
+	if err != nil {
+		h.logger.Error("failed to delete round", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while deleting the round")
+	}
+
+	resp := &DeleteRegularDynamicRoundOutput{}
+	resp.Body.Message = "Round deleted successfully"
+
+	return resp, nil
+}
+
 type SingleFixedTotalRoundResponse struct {
 	Body struct {
 		shared.MessageResponse
@@ -111,16 +240,16 @@ func (h *httpHandler) getCursorPaginatedFixedTotalRounds(ctx context.Context, in
 	return resp, nil
 }
 
-type CreateRoundInput struct {
+type CreateFixedTotalRoundInput struct {
 	Body round.CreateFixedTotalRoundParams `json:"round"`
 }
 
-func (i *CreateRoundInput) Resolve(ctx huma.Context) []error {
+func (i *CreateFixedTotalRoundInput) Resolve(ctx huma.Context) []error {
 	//TODO: implement db checks
 	return nil
 }
 
-func (h *httpHandler) createFixedTotalRound(ctx context.Context, input *CreateRoundInput) (*SingleFixedTotalRoundResponse, error) {
+func (h *httpHandler) createFixedTotalRound(ctx context.Context, input *CreateFixedTotalRoundInput) (*SingleFixedTotalRoundResponse, error) {
 	round, err := h.service.RoundService.CreateFixedTotalRound(ctx, input.Body)
 	if err != nil {
 		h.logger.Error("failed to create round", zap.Error(err))
@@ -134,11 +263,11 @@ func (h *httpHandler) createFixedTotalRound(ctx context.Context, input *CreateRo
 	return resp, nil
 }
 
-type DeleteRoundOutput struct {
+type DeleteFixedTotalRoundOutput struct {
 	Body shared.MessageResponse
 }
 
-func (h *httpHandler) deleteFixedTotalRound(ctx context.Context, input *shared.PathIDParam) (*DeleteRoundOutput, error) {
+func (h *httpHandler) deleteFixedTotalRound(ctx context.Context, input *shared.PathIDParam) (*DeleteFixedTotalRoundOutput, error) {
 	_, err := h.service.RoundService.GetFixedTotalById(ctx, input.ID)
 	if err != nil {
 		switch {
@@ -156,7 +285,7 @@ func (h *httpHandler) deleteFixedTotalRound(ctx context.Context, input *shared.P
 		return nil, huma.Error500InternalServerError("An error occurred while deleting the round")
 	}
 
-	resp := &DeleteRoundOutput{}
+	resp := &DeleteFixedTotalRoundOutput{}
 	resp.Body.Message = "Round deleted successfully"
 
 	return resp, nil

@@ -10,19 +10,19 @@ import (
 type RegularDynamicRound struct {
 	bun.BaseModel `bun:"table:regular_dynamic_rounds"`
 
-	createRegularDynamicRoundParams
-	RoundID int `json:"roundId"`
-	Round *Round `json:"round" bun:"rel:belongs-to,join:round_id=id"`
+	RegularDynamicRoundParams
+	RoundID int    `json:"roundId"`
+	Round   *Round `json:"round" bun:"rel:belongs-to,join:round_id=id"`
 	shared.Timestamps
 }
 
-type createRegularDynamicRoundParams struct {
-	RoundID int `json:"roundId" readOnly:"true"`
+type RegularDynamicRoundParams struct {
+	RoundID         int `json:"roundId" readOnly:"true"`
 	DaysExtendOnBid int `json:"daysExtendOnBid"`
 }
 
-// CreateFixedTotalRoundParams contains the parameters for creating a new fixed total round.
+// CreateRegularDynamicRoundParams contains the parameters for creating a new regular dynamic round.
 type CreateRegularDynamicRoundParams struct {
-	RegularDynamicRound createRegularDynamicRoundParams `json:"regularDynamicRound"`
-	Round               CreateRoundParams               `json:"round"`
+	RegularDynamicRound RegularDynamicRoundParams `json:"regularDynamicRound"`
+	Round               CreateRoundParams         `json:"round"`
 }

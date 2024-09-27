@@ -164,6 +164,59 @@ func (h *httpHandler) getCursorPaginatedFixedTotalRounds(ctx context.Context, in
 	return resp, nil
 }
 
+func (h *httpHandler) getOffsetPaginatedRegularDynamicRounds(ctx context.Context, input *shared.GetOffsetPaginatedByParentPathIDInput) (*shared.GetOffsetPaginatedRegularDynamicRoundsOutput, error) {
+	rounds, err := h.service.VentureService.GetRegularDynamicRoundsByPage(ctx, input.ID, input.PageSize, input.Page)
+
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("rounds not found")
+		default:
+			h.logger.Error("failed to fetch rounds", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the rounds")
+		}
+	}
+
+	resp := &shared.GetOffsetPaginatedRegularDynamicRoundsOutput{}
+	resp.Body.Message = "Rounds fetched successfully"
+	resp.Body.RegularDynamicRounds = rounds
+
+	if len(rounds) > input.PageSize {
+		resp.Body.HasMore = true
+		resp.Body.RegularDynamicRounds = resp.Body.RegularDynamicRounds[:input.PageSize]
+	}
+
+	return resp, nil
+}
+
+func (h *httpHandler) getCursorPaginatedRegularDynamicRounds(ctx context.Context, input *shared.GetCursorPaginatedByParentPathIDInput) (*shared.GetCursorPaginatedRegularDynamicRoundsOutput, error) {
+	limit := input.Limit + 1
+
+	rounds, err := h.service.VentureService.GetRegularDynamicRoundsByCursor(ctx, input.ID, limit, input.Cursor)
+
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("rounds not found")
+		default:
+			h.logger.Error("failed to fetch rounds", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the rounds")
+		}
+	}
+
+	resp := &shared.GetCursorPaginatedRegularDynamicRoundsOutput{}
+	resp.Body.Message = "Rounds fetched successfully"
+	resp.Body.RegularDynamicRounds = rounds
+
+	if len(rounds) == limit {
+		resp.Body.NextCursor = &rounds[input.Limit].Round.ID
+		resp.Body.HasMore = true
+		resp.Body.RegularDynamicRounds = resp.Body.RegularDynamicRounds[:input.Limit]
+	}
+
+	return resp, nil
+}
+
 type CreateVentureInput struct {
 	Body venture.CreateVentureParams `json:"venture"`
 }

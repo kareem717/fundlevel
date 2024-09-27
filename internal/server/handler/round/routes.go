@@ -65,4 +65,49 @@ func RegisterHumaRoutes(
 		Tags:        []string{"Fixed Total Rounds"},
 	}, handler.deleteFixedTotalRound)
 
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-regular-dynamic-round-by-id",
+		Method:      http.MethodGet,
+		Path:        "/round/dynamic/regular/{id}",
+		Summary:     "Get regular dynamic round by ID",
+		Description: "Get regular dynamic round by the associated round ID.",
+		Tags:        []string{"Regular Dynamic Rounds"},
+	}, handler.getRegularDynamicById)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-all-regular-dynamic-rounds-cursor",
+		Method:      http.MethodGet,
+		Path:        "/round/dynamic/regular/cursor",
+		Summary:     "Get cursor paginated regular dynamic rounds",
+		Description: "Get cursor paginated regular dynamic rounds.",
+		Tags:        []string{"Regular Dynamic Rounds"},
+	}, handler.getCursorPaginatedRegularDynamicRounds)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-all-fixed-total-rounds-offset",
+		Method:      http.MethodGet,
+		Path:        "/round/dynamic/regular/offset",
+		Summary:     "Get offset paginated regular dynamic rounds",
+		Description: "Get offset paginated regular dynamic rounds.",
+		Tags:        []string{"Regular Dynamic Rounds"},
+	}, handler.getOffsetPaginatedRegularDynamicRounds)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "create-regular-dynamic-round",
+		Method:      http.MethodPost,
+		Path:        "/round/dynamic/regular",
+		Summary:     "Create a regular dynamic round",
+		Description: "Create a regular dynamic round.",
+		Tags:        []string{"Regular Dynamic Rounds"},
+	}, handler.createRegularDynamicRound)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "delete-regular-dynamic-round",
+		Method:      http.MethodDelete,
+		Path:        "/round/dynamic/regular/{id}",
+		Summary:     "Delete a regular dynamic round",
+		Description: "Delete a regular dynamic round.",
+		Tags:        []string{"Regular Dynamic Rounds"},
+	}, handler.deleteRegularDynamicRound)
+
 }
