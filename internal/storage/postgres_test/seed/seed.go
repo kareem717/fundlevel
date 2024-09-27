@@ -9,9 +9,10 @@ import (
 // SeedConfig is used to configure what data is seeded into the
 // mock postgres database.
 type SeedConfig struct {
-	numUsers            int
-	numVentures         int
-	numFixedTotalRounds int
+	numUsers                int
+	numVentures             int
+	numFixedTotalRounds     int
+	numRegularDynamicRounds int
 }
 
 // SeedConfigOption is a option function that alters the SeedConfig
@@ -21,9 +22,10 @@ type SeedConfigOption func(config *SeedConfig)
 // or default values for any unspecified options.
 func NewSeedConfig(opts ...SeedConfigOption) SeedConfig {
 	config := SeedConfig{
-		numUsers:            10,
-		numVentures:         50,
-		numFixedTotalRounds: 10,
+		numUsers:                10,
+		numVentures:             50,
+		numFixedTotalRounds:     10,
+		numRegularDynamicRounds: 10,
 	}
 
 	for _, opt := range opts {
@@ -57,6 +59,13 @@ func WithFixedTotalRounds(numFixedTotalRounds int) SeedConfigOption {
 	}
 }
 
+// WithRegularDynamicRounds sets the number of regular dynamic rounds to seed.
+func WithRegularDynamicRounds(numRegularDynamicRounds int) SeedConfigOption {
+	return func(config *SeedConfig) {
+		config.numRegularDynamicRounds = numRegularDynamicRounds
+	}
+}
+
 // SeedResult is the result of seeding the database. It contains useful
 // information about the seeded data.
 type SeedResult struct {
@@ -68,6 +77,8 @@ type SeedResult struct {
 	VentureIds []int
 	// FixedTotalRounds is a map of the ids of the ventures to the ids of the fixed total rounds that were seeded.
 	VentureFixedTotalRounds FixedTotalRoundMap
+	// VentureRegularDynamicRounds is a map of the ids of the ventures to the ids of the regular dynamic rounds that were seeded.
+	VentureRegularDynamicRounds RegularDynamicRoundMap
 }
 
 // SeedDB seeds the database utilizing the configuration provided.
@@ -95,11 +106,19 @@ func SeedDB(db *sql.DB, config SeedConfig) (*SeedResult, error) {
 
 	result.VentureIds = ventureIds
 
-	fixedTotalRounds, err := SeedFixedTotalRounds(db, ventureIds, config.numFixedTotalRounds)
+	fixedTotalRounds, err := SeedFixedTotalRounds(db, ventureIds, config)
 	if err != nil {
 		return nil, err
 	}
 
 	result.VentureFixedTotalRounds = fixedTotalRounds
+
+	regularDynamicRounds, err := SeedRegularDynamicRounds(db, ventureIds, config)
+	if err != nil {
+		return nil, err
+	}
+
+	result.VentureRegularDynamicRounds = regularDynamicRounds
+
 	return &result, nil
 }
