@@ -27,6 +27,9 @@ type VentureRepository interface {
 
 	GetPartialTotalRoundsByCursor(ctx context.Context, ventureId int, paginationParams shared.CursorPagination) ([]round.PartialTotalRound, error)
 	GetPartialTotalRoundsByPage(ctx context.Context, ventureId int, paginationParams shared.OffsetPagination) ([]round.PartialTotalRound, error)
+
+	GetDutchDynamicRoundsByCursor(ctx context.Context, ventureId int, paginationParams shared.CursorPagination) ([]round.DutchDynamicRound, error)
+	GetDutchDynamicRoundsByPage(ctx context.Context, ventureId int, paginationParams shared.OffsetPagination) ([]round.DutchDynamicRound, error)
 }
 
 type RoundRepository interface {
@@ -47,6 +50,12 @@ type RoundRepository interface {
 	GetPartialTotalRoundsByCursor(ctx context.Context, paginationParams shared.CursorPagination) ([]round.PartialTotalRound, error)
 	GetPartialTotalRoundsByPage(ctx context.Context, paginationParams shared.OffsetPagination) ([]round.PartialTotalRound, error)
 	CreatePartialTotalRound(ctx context.Context, params round.CreatePartialTotalRoundParams) (round.PartialTotalRound, error)
+
+	DeleteDutchDynamicRound(ctx context.Context, id int) error
+	GetDutchDynamicRoundById(ctx context.Context, id int) (round.DutchDynamicRound, error)
+	GetDutchDynamicRoundsByCursor(ctx context.Context, paginationParams shared.CursorPagination) ([]round.DutchDynamicRound, error)
+	GetDutchDynamicRoundsByPage(ctx context.Context, paginationParams shared.OffsetPagination) ([]round.DutchDynamicRound, error)
+	CreateDutchDynamicRound(ctx context.Context, params round.CreateDutchDynamicRoundParams) (round.DutchDynamicRound, error)
 }
 
 type AccountRepository interface {

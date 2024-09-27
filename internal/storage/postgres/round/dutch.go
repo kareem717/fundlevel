@@ -10,9 +10,9 @@ import (
 	"github.com/uptrace/bun"
 )
 
-func (r *RoundRepository) CreateFixedTotalRound(ctx context.Context, params round.CreateFixedTotalRoundParams) (round.FixedTotalRound, error) {
+func (r *RoundRepository) CreateDutchDynamicRound(ctx context.Context, params round.CreateDutchDynamicRoundParams) (round.DutchDynamicRound, error) {
 	roundResp := round.Round{}
-	fixedTotalRound := round.FixedTotalRound{}
+	dutchDynamicRound := round.DutchDynamicRound{}
 
 	err := r.db.RunInTx(ctx, nil, func(ctx context.Context, tx bun.Tx) error {
 		err := tx.NewInsert().
@@ -25,28 +25,27 @@ func (r *RoundRepository) CreateFixedTotalRound(ctx context.Context, params roun
 			return err
 		}
 
-
-		params.FixedTotalRound.RoundID = roundResp.ID
+		params.DutchDynamicRound.RoundID = roundResp.ID
 
 		err = tx.NewInsert().
-			Model(&params.FixedTotalRound).
-			ModelTableExpr("fixed_total_rounds").
+			Model(&params.DutchDynamicRound).
+			ModelTableExpr("dutch_dynamic_rounds").
 			Returning("*").
-			Scan(ctx, &fixedTotalRound)
+			Scan(ctx, &dutchDynamicRound)
 
 		return err
 	})
 
-	fixedTotalRound.Round = &roundResp
+	dutchDynamicRound.Round = &roundResp
 
-	return fixedTotalRound, err
+	return dutchDynamicRound, err
 }
 
-func (r *RoundRepository) DeleteRegularDynamicRound(ctx context.Context, id int) error {
+func (r *RoundRepository) DeleteDutchDynamicRound(ctx context.Context, id int) error {
 	res, err :=
 		r.db.
 			NewDelete().
-			Model(&round.RegularDynamicRound{}).
+			Model(&round.DutchDynamicRound{}).
 			Where("round_id = ?", id).
 			Exec(ctx)
 
@@ -57,8 +56,8 @@ func (r *RoundRepository) DeleteRegularDynamicRound(ctx context.Context, id int)
 	return err
 }
 
-func (r *RoundRepository) GetRegularDynamicRoundById(ctx context.Context, id int) (round.RegularDynamicRound, error) {
-	resp := round.RegularDynamicRound{}
+func (r *RoundRepository) GetDutchDynamicRoundById(ctx context.Context, id int) (round.DutchDynamicRound, error) {
+	resp := round.DutchDynamicRound{}
 
 	err := r.db.
 		NewSelect().
@@ -67,12 +66,11 @@ func (r *RoundRepository) GetRegularDynamicRoundById(ctx context.Context, id int
 		Where("round_id = ?", id).
 		Scan(ctx)
 
-
 	return resp, err
 }
 
-func (r *RoundRepository) GetFixedTotalRoundsByCursor(ctx context.Context, paginationParams shared.CursorPagination) ([]round.FixedTotalRound, error) {
-	resp := []round.FixedTotalRound{}
+func (r *RoundRepository) GetDutchDynamicRoundsByCursor(ctx context.Context, paginationParams shared.CursorPagination) ([]round.DutchDynamicRound, error) {
+	resp := []round.DutchDynamicRound{}
 
 	err := r.db.
 		NewSelect().
@@ -86,8 +84,8 @@ func (r *RoundRepository) GetFixedTotalRoundsByCursor(ctx context.Context, pagin
 	return resp, err
 }
 
-func (r *RoundRepository) GetFixedTotalRoundsByPage(ctx context.Context, paginationParams shared.OffsetPagination) ([]round.FixedTotalRound, error) {
-	resp := []round.FixedTotalRound{}
+func (r *RoundRepository) GetDutchDynamicRoundsByPage(ctx context.Context, paginationParams shared.OffsetPagination) ([]round.DutchDynamicRound, error) {
+	resp := []round.DutchDynamicRound{}
 	offset := (paginationParams.Page - 1) * paginationParams.PageSize
 
 	err := r.db.

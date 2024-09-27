@@ -14,6 +14,7 @@ type SeedConfig struct {
 	numFixedTotalRounds     int
 	numRegularDynamicRounds int
 	numPartialTotalRounds   int
+	numDutchDynamicRounds   int
 }
 
 // SeedConfigOption is a option function that alters the SeedConfig
@@ -28,6 +29,7 @@ func NewSeedConfig(opts ...SeedConfigOption) SeedConfig {
 		numFixedTotalRounds:     10,
 		numRegularDynamicRounds: 10,
 		numPartialTotalRounds:   10,
+		numDutchDynamicRounds:   10,
 	}
 
 	for _, opt := range opts {
@@ -75,6 +77,13 @@ func WithRegularDynamicRounds(numRegularDynamicRounds int) SeedConfigOption {
 	}
 }
 
+// WithDutchDynamicRounds sets the number of dutch dynamic rounds to seed.
+func WithDutchDynamicRounds(numDutchDynamicRounds int) SeedConfigOption {
+	return func(config *SeedConfig) {
+		config.numDutchDynamicRounds = numDutchDynamicRounds
+	}
+}
+
 // SeedResult is the result of seeding the database. It contains useful
 // information about the seeded data.
 type SeedResult struct {
@@ -90,6 +99,8 @@ type SeedResult struct {
 	VentureRegularDynamicRounds RegularDynamicRoundMap
 	// VenturePartialTotalRounds is a map of the ids of the ventures to the ids of the partial total rounds that were seeded.
 	VenturePartialTotalRounds PartialTotalRoundMap
+	// VentureDutchDynamicRounds is a map of the ids of the ventures to the ids of the dutch dynamic rounds that were seeded.
+	VentureDutchDynamicRounds DutchDynamicRoundMap
 }
 
 // SeedDB seeds the database utilizing the configuration provided.
@@ -137,6 +148,13 @@ func SeedDB(db *sql.DB, config SeedConfig) (*SeedResult, error) {
 	}
 
 	result.VenturePartialTotalRounds = partialTotalRounds
+
+	dutchDynamicRounds, err := SeedDutchDynamicRounds(db, ventureIds, config)
+	if err != nil {
+		return nil, err
+	}
+
+	result.VentureDutchDynamicRounds = dutchDynamicRounds
 
 	return &result, nil
 }
