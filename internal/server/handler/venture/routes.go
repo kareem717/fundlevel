@@ -49,7 +49,7 @@ func RegisterHumaRoutes(
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "get-venture-fixed-total-rounds-cursor",
 		Method:      http.MethodGet,
-		Path:        "/venture/{id}/rounds/fixed/total/cursor",
+		Path:        "/venture/{id}/rounds/total/fixed/cursor",
 		Summary:     "Get cursor paginated rounds for a venture",
 		Description: "Get all rounds for a venture.",
 		Tags:        []string{"Ventures", "Fixed Total Rounds"},
@@ -58,7 +58,7 @@ func RegisterHumaRoutes(
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "get-venture-fixed-total-rounds-offset",
 		Method:      http.MethodGet,
-		Path:        "/venture/{id}/rounds/fixed/total/offset",
+		Path:        "/venture/{id}/rounds/total/fixed/offset",
 		Summary:     "Get offset paginated rounds for a venture",
 		Description: "Get all rounds for a venture.",
 		Tags:        []string{"Ventures", "Fixed Total Rounds"},
@@ -67,7 +67,7 @@ func RegisterHumaRoutes(
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "get-venture-regular-dynamic-rounds-cursor",
 		Method:      http.MethodGet,
-		Path:        "/venture/{id}/rounds/regular/dynamic/cursor",
+		Path:        "/venture/{id}/rounds/dynamic/regular/cursor",
 		Summary:     "Get cursor paginated rounds for a venture",
 		Description: "Get all rounds for a venture.",
 		Tags:        []string{"Ventures", "Regular Dynamic Rounds"},
@@ -76,11 +76,29 @@ func RegisterHumaRoutes(
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "get-venture-regular-dynamic-rounds-offset",
 		Method:      http.MethodGet,
-		Path:        "/venture/{id}/rounds/regular/dynamic/offset",
+		Path:        "/venture/{id}/rounds/dynamic/regular/offset",
 		Summary:     "Get offset paginated rounds for a venture",
 		Description: "Get all rounds for a venture.",
 		Tags:        []string{"Ventures", "Regular Dynamic Rounds"},
 	}, handler.getOffsetPaginatedRegularDynamicRounds)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-venture-partial-total-rounds-cursor",
+		Method:      http.MethodGet,
+		Path:        "/venture/{id}/rounds/total/partial/cursor",
+		Summary:     "Get cursor paginated rounds for a venture",
+		Description: "Get all rounds for a venture.",
+		Tags:        []string{"Ventures", "Partial Total Rounds"},
+	}, handler.getCursorPaginatedPartialTotalRounds)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-venture-partial-total-rounds-offset",
+		Method:      http.MethodGet,
+		Path:        "/venture/{id}/rounds/total/partial/offset",
+		Summary:     "Get offset paginated rounds for a venture",
+		Description: "Get all rounds for a venture.",
+		Tags:        []string{"Ventures", "Partial Total Rounds"},
+	}, handler.getOffsetPaginatedPartialTotalRounds)
 
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "create-venture",

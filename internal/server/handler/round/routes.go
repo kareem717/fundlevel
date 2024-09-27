@@ -110,4 +110,49 @@ func RegisterHumaRoutes(
 		Tags:        []string{"Regular Dynamic Rounds"},
 	}, handler.deleteRegularDynamicRound)
 
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-partial-total-round-by-id",
+		Method:      http.MethodGet,
+		Path:        "/round/total/partial/{id}",
+		Summary:     "Get partial total round by ID",
+		Description: "Get partial total round by the associated round ID.",
+		Tags:        []string{"Partial Total Rounds"},
+	}, handler.getPartialTotalById)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-all-partial-total-rounds-cursor",
+		Method:      http.MethodGet,
+		Path:        "/round/total/partial/cursor",
+		Summary:     "Get cursor paginated partial total rounds",
+		Description: "Get cursor paginated partial total rounds.",
+		Tags:        []string{"Partial Total Rounds"},
+	}, handler.getCursorPaginatedPartialTotalRounds)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-all-partial-total-rounds-offset",
+		Method:      http.MethodGet,
+		Path:        "/round/total/partial/offset",
+		Summary:     "Get offset paginated partial total rounds",
+		Description: "Get offset paginated partial total rounds.",
+		Tags:        []string{"Partial Total Rounds"},
+	}, handler.getOffsetPaginatedPartialTotalRounds)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "create-partial-total-round",
+		Method:      http.MethodPost,
+		Path:        "/round/total/partial",
+		Summary:     "Create a partial total round",
+		Description: "Create a partial total round.",
+		Tags:        []string{"Partial Total Rounds"},
+	}, handler.createPartialTotalRound)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "delete-partial-total-round",
+		Method:      http.MethodDelete,
+		Path:        "/round/total/partial/{id}",
+		Summary:     "Delete a partial total round",
+		Description: "Delete a partial total round.",
+		Tags:        []string{"Partial Total Rounds"},
+	}, handler.deletePartialTotalRound)
+
 }

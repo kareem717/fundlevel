@@ -290,3 +290,132 @@ func (h *httpHandler) deleteFixedTotalRound(ctx context.Context, input *shared.P
 
 	return resp, nil
 }
+
+type SinglePartialTotalRoundResponse struct {
+	Body struct {
+		shared.MessageResponse
+		Round *round.PartialTotalRound `json:"round"`
+	}
+}
+
+func (h *httpHandler) getPartialTotalById(ctx context.Context, input *shared.PathIDParam) (*SinglePartialTotalRoundResponse, error) {
+	round, err := h.service.RoundService.GetPartialTotalById(ctx, input.ID)
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("round not found")
+		default:
+			h.logger.Error("failed to fetch round", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the round")
+		}
+	}
+
+	resp := &SinglePartialTotalRoundResponse{}
+	resp.Body.Message = "Round fetched successfully"
+	resp.Body.Round = &round
+
+	return resp, nil
+}
+
+func (h *httpHandler) getOffsetPaginatedPartialTotalRounds(ctx context.Context, input *shared.OffsetPaginationRequest) (*shared.GetOffsetPaginatedPartialTotalRoundsOutput, error) {
+	rounds, err := h.service.RoundService.GetPartialTotalRoundsByPage(ctx, input.PageSize, input.Page)
+
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("rounds not found")
+		default:
+			h.logger.Error("failed to fetch rounds", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the rounds")
+		}
+	}
+
+	resp := &shared.GetOffsetPaginatedPartialTotalRoundsOutput{}
+	resp.Body.Message = "Rounds fetched successfully"
+	resp.Body.PartialTotalRounds = rounds
+
+	if len(rounds) > input.PageSize {
+		resp.Body.HasMore = true
+		resp.Body.PartialTotalRounds = resp.Body.PartialTotalRounds[:input.PageSize]
+	}
+
+	return resp, nil
+}
+
+func (h *httpHandler) getCursorPaginatedPartialTotalRounds(ctx context.Context, input *shared.CursorPaginationRequest) (*shared.GetCursorPaginatedPartialTotalRoundsOutput, error) {
+	limit := input.Limit + 1
+	rounds, err := h.service.RoundService.GetPartialTotalRoundsByCursor(ctx, limit, input.Cursor)
+
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("rounds not found")
+		default:
+			h.logger.Error("failed to fetch rounds", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the rounds")
+		}
+	}
+
+	resp := &shared.GetCursorPaginatedPartialTotalRoundsOutput{}
+	resp.Body.Message = "Rounds fetched successfully"
+	resp.Body.PartialTotalRounds = rounds
+
+	if len(rounds) == limit {
+		resp.Body.NextCursor = &rounds[input.Limit].Round.ID
+		resp.Body.HasMore = true
+		resp.Body.PartialTotalRounds = resp.Body.PartialTotalRounds[:input.Limit]
+	}
+
+	return resp, nil
+}
+
+type CreatePartialTotalRoundInput struct {
+	Body round.CreatePartialTotalRoundParams `json:"round"`
+}
+
+func (i *CreatePartialTotalRoundInput) Resolve(ctx huma.Context) []error {
+	//TODO: implement db checks
+	return nil
+}
+
+func (h *httpHandler) createPartialTotalRound(ctx context.Context, input *CreatePartialTotalRoundInput) (*SinglePartialTotalRoundResponse, error) {
+	round, err := h.service.RoundService.CreatePartialTotalRound(ctx, input.Body)
+	if err != nil {
+		h.logger.Error("failed to create round", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while creating the round")
+	}
+
+	resp := &SinglePartialTotalRoundResponse{}
+	resp.Body.Message = "Round created successfully"
+	resp.Body.Round = &round
+
+	return resp, nil
+}
+
+type DeletePartialTotalRoundOutput struct {
+	Body shared.MessageResponse
+}
+
+func (h *httpHandler) deletePartialTotalRound(ctx context.Context, input *shared.PathIDParam) (*DeletePartialTotalRoundOutput, error) {
+	_, err := h.service.RoundService.GetPartialTotalById(ctx, input.ID)
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("round not found")
+		default:
+			h.logger.Error("failed to fetch round", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the round")
+		}
+	}
+
+	err = h.service.RoundService.DeletePartialTotalRound(ctx, input.ID)
+	if err != nil {
+		h.logger.Error("failed to delete round", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while deleting the round")
+	}
+
+	resp := &DeletePartialTotalRoundOutput{}
+	resp.Body.Message = "Round deleted successfully"
+
+	return resp, nil
+}
