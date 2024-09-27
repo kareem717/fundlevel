@@ -270,6 +270,59 @@ func (h *httpHandler) getCursorPaginatedPartialTotalRounds(ctx context.Context, 
 	return resp, nil
 }
 
+func (h *httpHandler) getOffsetPaginatedDutchDynamicRounds(ctx context.Context, input *shared.GetOffsetPaginatedByParentPathIDInput) (*shared.GetOffsetPaginatedDutchDynamicRoundsOutput, error) {
+	rounds, err := h.service.VentureService.GetDutchDynamicRoundsByPage(ctx, input.ID, input.PageSize, input.Page)
+
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("rounds not found")
+		default:
+			h.logger.Error("failed to fetch rounds", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the rounds")
+		}
+	}
+
+	resp := &shared.GetOffsetPaginatedDutchDynamicRoundsOutput{}
+	resp.Body.Message = "Rounds fetched successfully"
+	resp.Body.DutchDynamicRounds = rounds
+
+	if len(rounds) > input.PageSize {
+		resp.Body.HasMore = true
+		resp.Body.DutchDynamicRounds = resp.Body.DutchDynamicRounds[:input.PageSize]
+	}
+
+	return resp, nil
+}
+
+func (h *httpHandler) getCursorPaginatedDutchDynamicRounds(ctx context.Context, input *shared.GetCursorPaginatedByParentPathIDInput) (*shared.GetCursorPaginatedDutchDynamicRoundsOutput, error) {
+	limit := input.Limit + 1
+
+	rounds, err := h.service.VentureService.GetDutchDynamicRoundsByCursor(ctx, input.ID, limit, input.Cursor)
+
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("rounds not found")
+		default:
+			h.logger.Error("failed to fetch rounds", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the rounds")
+		}
+	}
+
+	resp := &shared.GetCursorPaginatedDutchDynamicRoundsOutput{}
+	resp.Body.Message = "Rounds fetched successfully"
+	resp.Body.DutchDynamicRounds = rounds
+
+	if len(rounds) == limit {
+		resp.Body.NextCursor = &rounds[input.Limit].Round.ID
+		resp.Body.HasMore = true
+		resp.Body.DutchDynamicRounds = resp.Body.DutchDynamicRounds[:input.Limit]
+	}
+
+	return resp, nil
+}
+
 type CreateVentureInput struct {
 	Body venture.CreateVentureParams `json:"venture"`
 }

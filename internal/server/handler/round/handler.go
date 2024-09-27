@@ -419,3 +419,132 @@ func (h *httpHandler) deletePartialTotalRound(ctx context.Context, input *shared
 
 	return resp, nil
 }
+
+type SingleDutchDynamicRoundResponse struct {
+	Body struct {
+		shared.MessageResponse
+		Round *round.DutchDynamicRound `json:"round"`
+	}
+}
+
+func (h *httpHandler) getDutchDynamicById(ctx context.Context, input *shared.PathIDParam) (*SingleDutchDynamicRoundResponse, error) {
+	round, err := h.service.RoundService.GetDutchDynamicById(ctx, input.ID)
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("round not found")
+		default:
+			h.logger.Error("failed to fetch round", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the round")
+		}
+	}
+
+	resp := &SingleDutchDynamicRoundResponse{}
+	resp.Body.Message = "Round fetched successfully"
+	resp.Body.Round = &round
+
+	return resp, nil
+}
+
+func (h *httpHandler) getOffsetPaginatedDutchDynamicRounds(ctx context.Context, input *shared.OffsetPaginationRequest) (*shared.GetOffsetPaginatedDutchDynamicRoundsOutput, error) {
+	rounds, err := h.service.RoundService.GetDutchDynamicRoundsByPage(ctx, input.PageSize, input.Page)
+
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("rounds not found")
+		default:
+			h.logger.Error("failed to fetch rounds", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the rounds")
+		}
+	}
+
+	resp := &shared.GetOffsetPaginatedDutchDynamicRoundsOutput{}
+	resp.Body.Message = "Rounds fetched successfully"
+	resp.Body.DutchDynamicRounds = rounds
+
+	if len(rounds) > input.PageSize {
+		resp.Body.HasMore = true
+		resp.Body.DutchDynamicRounds = resp.Body.DutchDynamicRounds[:input.PageSize]
+	}
+
+	return resp, nil
+}
+
+func (h *httpHandler) getCursorPaginatedDutchDynamicRounds(ctx context.Context, input *shared.CursorPaginationRequest) (*shared.GetCursorPaginatedDutchDynamicRoundsOutput, error) {
+	limit := input.Limit + 1
+	rounds, err := h.service.RoundService.GetDutchDynamicRoundsByCursor(ctx, limit, input.Cursor)
+
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("rounds not found")
+		default:
+			h.logger.Error("failed to fetch rounds", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the rounds")
+		}
+	}
+
+	resp := &shared.GetCursorPaginatedDutchDynamicRoundsOutput{}
+	resp.Body.Message = "Rounds fetched successfully"
+	resp.Body.DutchDynamicRounds = rounds
+
+	if len(rounds) == limit {
+		resp.Body.NextCursor = &rounds[input.Limit].Round.ID
+		resp.Body.HasMore = true
+		resp.Body.DutchDynamicRounds = resp.Body.DutchDynamicRounds[:input.Limit]
+	}
+
+	return resp, nil
+}
+
+type CreateDutchDynamicRoundInput struct {
+	Body round.CreateDutchDynamicRoundParams `json:"round"`
+}
+
+func (i *CreateDutchDynamicRoundInput) Resolve(ctx huma.Context) []error {
+	//TODO: implement db checks
+	return nil
+}
+
+func (h *httpHandler) createDutchDynamicRound(ctx context.Context, input *CreateDutchDynamicRoundInput) (*SingleDutchDynamicRoundResponse, error) {
+	round, err := h.service.RoundService.CreateDutchDynamicRound(ctx, input.Body)
+	if err != nil {
+		h.logger.Error("failed to create round", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while creating the round")
+	}
+
+	resp := &SingleDutchDynamicRoundResponse{}
+	resp.Body.Message = "Round created successfully"
+	resp.Body.Round = &round
+
+	return resp, nil
+}
+
+type DeleteDutchDynamicRoundOutput struct {
+	Body shared.MessageResponse
+}
+
+func (h *httpHandler) deleteDutchDynamicRound(ctx context.Context, input *shared.PathIDParam) (*DeleteDutchDynamicRoundOutput, error) {
+	_, err := h.service.RoundService.GetDutchDynamicById(ctx, input.ID)
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("round not found")
+		default:
+			h.logger.Error("failed to fetch round", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the round")
+		}
+	}
+
+	err = h.service.RoundService.DeleteDutchDynamicRound(ctx, input.ID)
+	if err != nil {
+		h.logger.Error("failed to delete round", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while deleting the round")
+	}
+
+	resp := &DeleteDutchDynamicRoundOutput{}
+	resp.Body.Message = "Round deleted successfully"
+
+	return resp, nil
+}

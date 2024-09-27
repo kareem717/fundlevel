@@ -57,25 +57,18 @@ type GetCursorPaginatedFixedTotalRoundsOutput struct {
 	}
 }
 
-type GetCursorPaginatedRegularDynamicRoundsOutput struct {
-	Body struct {
-		MessageResponse
-		RegularDynamicRounds []round.RegularDynamicRound `json:"regularDynamicRounds"`
-		CursorPaginationResponse
-	}
-}
-type GetCursorPaginatedPartialTotalRoundsOutput struct {
-	Body struct {
-		MessageResponse
-		PartialTotalRounds []round.PartialTotalRound `json:"partialTotalRounds"`
-		CursorPaginationResponse
-	}
-}
 type GetOffsetPaginatedFixedTotalRoundsOutput struct {
 	Body struct {
 		MessageResponse
 		FixedTotalRounds []round.FixedTotalRound `json:"fixedTotalRounds"`
 		OffsetPaginationResponse
+	}
+}
+type GetCursorPaginatedRegularDynamicRoundsOutput struct {
+	Body struct {
+		MessageResponse
+		RegularDynamicRounds []round.RegularDynamicRound `json:"regularDynamicRounds"`
+		CursorPaginationResponse
 	}
 }
 
@@ -84,6 +77,13 @@ type GetOffsetPaginatedRegularDynamicRoundsOutput struct {
 		MessageResponse
 		RegularDynamicRounds []round.RegularDynamicRound `json:"regularDynamicRounds"`
 		OffsetPaginationResponse
+	}
+}
+type GetCursorPaginatedPartialTotalRoundsOutput struct {
+	Body struct {
+		MessageResponse
+		PartialTotalRounds []round.PartialTotalRound `json:"partialTotalRounds"`
+		CursorPaginationResponse
 	}
 }
 
@@ -95,6 +95,22 @@ type GetOffsetPaginatedPartialTotalRoundsOutput struct {
 	}
 }
 
+type GetCursorPaginatedDutchDynamicRoundsOutput struct {
+	Body struct {
+		MessageResponse
+		DutchDynamicRounds []round.DutchDynamicRound `json:"dutchDynamicRounds"`
+		CursorPaginationResponse
+	}
+}
+
+type GetOffsetPaginatedDutchDynamicRoundsOutput struct {
+	Body struct {
+		MessageResponse
+		DutchDynamicRounds []round.DutchDynamicRound `json:"dutchDynamicRounds"`
+		OffsetPaginationResponse
+	}
+}
+
 type GetCursorPaginatedVenturesOutput struct {
 	Body struct {
 		MessageResponse
@@ -102,6 +118,7 @@ type GetCursorPaginatedVenturesOutput struct {
 		CursorPaginationResponse
 	}
 }
+
 type GetOffsetPaginatedVenturesOutput struct {
 	Body struct {
 		MessageResponse

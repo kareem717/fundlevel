@@ -155,4 +155,52 @@ func RegisterHumaRoutes(
 		Tags:        []string{"Partial Total Rounds"},
 	}, handler.deletePartialTotalRound)
 
+
+
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-dutch-dynamic-round-by-id",
+		Method:      http.MethodGet,
+		Path:        "/round/dynamic/dutch/{id}",
+		Summary:     "Get dutch dynamic round by ID",
+		Description: "Get partial total round by the associated round ID.",
+		Tags:        []string{"Dutch Dynamic Rounds"},
+	}, handler.getDutchDynamicById)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-all-dutch-dynamic-rounds-cursor",
+		Method:      http.MethodGet,
+		Path:        "/round/dynamic/dutch/cursor",
+		Summary:     "Get cursor paginated partial total rounds",
+		Description: "Get cursor paginated partial total rounds.",
+		Tags:        []string{"Dutch Dynamic Rounds"},
+	}, handler.getCursorPaginatedDutchDynamicRounds)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-all-dutch-dynamic-rounds-offset",
+		Method:      http.MethodGet,
+		Path:        "/round/dynamic/dutch/offset",
+		Summary:     "Get offset paginated dutch dynamic rounds",
+		Description: "Get offset paginated dutch dynamic rounds.",
+		Tags:        []string{"Dutch Dynamic Rounds"},
+	}, handler.getOffsetPaginatedDutchDynamicRounds)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "create-dutch-dynamic-round",
+		Method:      http.MethodPost,
+		Path:        "/round/dynamic/dutch",
+		Summary:     "Create a partial total round",
+		Description: "Create a partial total round.",
+		Tags:        []string{"Dutch Dynamic Rounds"},
+	}, handler.createDutchDynamicRound)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "delete-dutch-dynamic-round",
+		Method:      http.MethodDelete,
+		Path:        "/round/dynamic/dutch/{id}",
+		Summary:     "Delete a dutch dynamic round",
+		Description: "Delete a dutch dynamic round.",
+		Tags:        []string{"Dutch Dynamic Rounds"},
+	}, handler.deleteDutchDynamicRound)
+
 }
