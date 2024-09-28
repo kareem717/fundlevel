@@ -227,10 +227,9 @@ func (r *Repository) NewTransaction() (storage.Transaction, error) {
 	}
 
 	return &transaction{
-		ventureRepo:    venture.NewVentureRepository(tx, r.ctx),
-		accountRepo:    account.NewAccountRepository(tx, r.ctx),
-		investmentRepo: investment.NewInvestmentRepository(tx, r.ctx),
-		userRepo:       user.NewUserRepository(tx, r.ctx),
+		ventureRepo: venture.NewVentureRepository(tx, r.ctx),
+		accountRepo: account.NewAccountRepository(tx, r.ctx),
+		userRepo:    user.NewUserRepository(tx, r.ctx),
 		roundRepo:   round.NewRoundRepository(tx, r.ctx),
 		tx:          &tx,
 		ctx:         r.ctx,

@@ -33,9 +33,8 @@ func TestCreate(t *testing.T) {
 		RoundID:    dynamicRound.RoundID,
 		InvestorID: seedResult.AccountIds[0],
 		Amount:     10000,
-		Status:     investment.InvestmentStatusPending,
 	}
-
+	params.Status = investment.InvestmentStatusPending
 	createdRound, err := repo.Create(ctx, params)
 
 	assert.NoError(t, err)
@@ -162,3 +161,31 @@ func TestGetByPage(t *testing.T) {
 		assert.NotNil(t, investment.Investor)
 	}
 }
+
+
+func TestUpdate(t *testing.T) {
+	ctx := context.Background()
+
+	seedConfig := seed.NewSeedConfig(
+		seed.WithUsers(12),
+		seed.WithVentures(1),
+		seed.WithRoundInvestments(100),
+	)
+
+	db, seedResult := util.SetupTestDB(t, seedConfig)
+
+	ventureId := seedResult.VentureIds[0]
+	roundId := seedResult.VentureRegularDynamicRounds[ventureId][0].RoundID
+	investmentId := seedResult.RoundInvestments[roundId][0].ID
+
+	repo := repo.NewInvestmentRepository(db, ctx)
+
+	params := investment.UpdateInvestmentParams{
+		Status: investment.InvestmentStatusPending,
+	}
+
+	investment, err := repo.Update(ctx, investmentId, params)
+	assert.NoError(t, err)
+	assert.Equal(t, params.Status, investment.Status)
+}
+

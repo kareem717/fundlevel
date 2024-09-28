@@ -28,8 +28,12 @@ type RoundInvestment struct {
 }
 
 type CreateInvestmentParams struct {
-	RoundID    int              `json:"roundId"`
-	InvestorID int              `json:"investorId"`
-	Amount     int              `json:"amount"`
-	Status     InvestmentStatus `json:"status" enum:"pending,accepted,rejected,withdrawn"`
+	RoundID    int `json:"roundId"`
+	InvestorID int `json:"investorId"`
+	Amount     int `json:"amount"`
+	UpdateInvestmentParams
+}
+
+type UpdateInvestmentParams struct {
+	Status InvestmentStatus `json:"status" enum:"pending,accepted,rejected,withdrawn"`
 }

@@ -43,9 +43,9 @@ func SeedRoundInvestments(db *sql.DB, roundIds []int, accountIds []int, seedConf
 				RoundID:    roundId,
 				InvestorID: accountId,
 				Amount:     rand.Intn(1000000000) + 1,
-				Status:     status,
 			},
 		}
+		investment.Status = status
 		investment.ID = invetmentId
 
 		roundInvestments[roundId] = append(roundInvestments[roundId], investment)

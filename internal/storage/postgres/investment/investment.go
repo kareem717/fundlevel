@@ -40,7 +40,7 @@ func (r *InvestmentRepository) Delete(ctx context.Context, id int) error {
 		Where("round_investment.id = ?", id).
 		Exec(ctx)
 
-	return err	
+	return err
 }
 
 func (r *InvestmentRepository) GetById(ctx context.Context, id int) (investment.RoundInvestment, error) {
@@ -65,7 +65,7 @@ func (r *InvestmentRepository) GetByCursor(ctx context.Context, paginationParams
 		Relation("Round").
 		Relation("Investor").
 		Where("round_investment.id >= ?", paginationParams.Cursor).
-		Order("round_investment.id")	.
+		Order("round_investment.id").
 		Limit(paginationParams.Limit).
 		Scan(ctx)
 
@@ -85,6 +85,19 @@ func (r *InvestmentRepository) GetByPage(ctx context.Context, paginationParams s
 		Offset(offset).
 		Limit(paginationParams.PageSize + 1).
 		Scan(ctx)
+
+	return resp, err
+}
+
+func (r *InvestmentRepository) Update(ctx context.Context, id int, params investment.UpdateInvestmentParams) (investment.RoundInvestment, error) {
+	resp := investment.RoundInvestment{}
+
+	err := r.db.NewUpdate().
+		Model(&params).
+		ModelTableExpr("round_investments").
+		Where("round_investments.id = ?", id).
+		Returning("*").
+		Scan(ctx, &resp)
 
 	return resp, err
 }
