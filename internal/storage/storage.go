@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"fundlevel/internal/entities/account"
+	"fundlevel/internal/entities/investment"
 	"fundlevel/internal/entities/round"
 	"fundlevel/internal/entities/venture"
 	"fundlevel/internal/storage/postgres/shared"
@@ -56,6 +57,17 @@ type RoundRepository interface {
 	GetDutchDynamicRoundsByCursor(ctx context.Context, paginationParams shared.CursorPagination) ([]round.DutchDynamicRound, error)
 	GetDutchDynamicRoundsByPage(ctx context.Context, paginationParams shared.OffsetPagination) ([]round.DutchDynamicRound, error)
 	CreateDutchDynamicRound(ctx context.Context, params round.CreateDutchDynamicRoundParams) (round.DutchDynamicRound, error)
+
+	GetRoundInvestmentsByCursor(ctx context.Context, roundId int, paginationParams shared.CursorPagination) ([]investment.RoundInvestment, error)
+	GetRoundInvestmentsByPage(ctx context.Context, roundId int, paginationParams shared.OffsetPagination) ([]investment.RoundInvestment, error)
+}
+
+type InvestmentRepository interface {
+	Create(ctx context.Context, params investment.CreateInvestmentParams) (investment.RoundInvestment, error)
+	Delete(ctx context.Context, id int) error
+	GetById(ctx context.Context, id int) (investment.RoundInvestment, error)
+	GetByCursor(ctx context.Context, paginationParams shared.CursorPagination) ([]investment.RoundInvestment, error)
+	GetByPage(ctx context.Context, paginationParams shared.OffsetPagination) ([]investment.RoundInvestment, error)
 }
 
 type AccountRepository interface {
@@ -66,6 +78,9 @@ type AccountRepository interface {
 
 	GetVenturesByCursor(ctx context.Context, accountId int, paginationParams shared.CursorPagination) ([]venture.Venture, error)
 	GetVenturesByPage(ctx context.Context, accountId int, paginationParams shared.OffsetPagination) ([]venture.Venture, error)
+
+	GetRoundInvestmentsByCursor(ctx context.Context, accountId int, paginationParams shared.CursorPagination) ([]investment.RoundInvestment, error)
+	GetRoundInvestmentsByPage(ctx context.Context, accountId int, paginationParams shared.OffsetPagination) ([]investment.RoundInvestment, error)
 }
 
 type UserRepository interface {
@@ -76,6 +91,7 @@ type RepositoryProvider interface {
 	Venture() VentureRepository
 	Account() AccountRepository
 	Round() RoundRepository
+	Investment() InvestmentRepository
 	User() UserRepository
 }
 

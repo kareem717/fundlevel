@@ -7,6 +7,7 @@ import (
 
 	"fundlevel/internal/storage"
 	"fundlevel/internal/storage/postgres/account"
+	"fundlevel/internal/storage/postgres/investment"
 	"fundlevel/internal/storage/postgres/round"
 	"fundlevel/internal/storage/postgres/user"
 	"fundlevel/internal/storage/postgres/venture"
@@ -84,12 +85,13 @@ func configDBPool(config Config) (*pgxpool.Config, error) {
 }
 
 type transaction struct {
-	ventureRepo *venture.VentureRepository
-	accountRepo *account.AccountRepository
-	roundRepo   *round.RoundRepository
-	userRepo    *user.UserRepository
-	tx          *bun.Tx
-	ctx         context.Context
+	ventureRepo    *venture.VentureRepository
+	accountRepo    *account.AccountRepository
+	roundRepo      *round.RoundRepository
+	userRepo       *user.UserRepository
+	investmentRepo *investment.InvestmentRepository
+	tx             *bun.Tx
+	ctx            context.Context
 }
 
 func (t *transaction) Venture() storage.VentureRepository {
@@ -108,6 +110,10 @@ func (t *transaction) User() storage.UserRepository {
 	return t.userRepo
 }
 
+func (t *transaction) Investment() storage.InvestmentRepository {
+	return t.investmentRepo
+}
+
 func (t *transaction) Commit() error {
 	return t.tx.Commit()
 }
@@ -123,21 +129,23 @@ func (t *transaction) SubTransaction() (storage.Transaction, error) {
 	}
 
 	return &transaction{
-		ventureRepo: venture.NewVentureRepository(tx, t.ctx),
-		accountRepo: account.NewAccountRepository(tx, t.ctx),
-		roundRepo:   round.NewRoundRepository(tx, t.ctx),
-		userRepo:    user.NewUserRepository(tx, t.ctx),
-		tx:          &tx,
+		ventureRepo:    venture.NewVentureRepository(tx, t.ctx),
+		accountRepo:    account.NewAccountRepository(tx, t.ctx),
+		roundRepo:      round.NewRoundRepository(tx, t.ctx),
+		userRepo:       user.NewUserRepository(tx, t.ctx),
+		investmentRepo: investment.NewInvestmentRepository(tx, t.ctx),
+		tx:             &tx,
 	}, nil
 }
 
 type Repository struct {
-	ventureRepo *venture.VentureRepository
-	accountRepo *account.AccountRepository
-	roundRepo   *round.RoundRepository
-	userRepo    *user.UserRepository
-	db          *bun.DB
-	ctx         context.Context
+	ventureRepo    *venture.VentureRepository
+	accountRepo    *account.AccountRepository
+	roundRepo      *round.RoundRepository
+	userRepo       *user.UserRepository
+	investmentRepo *investment.InvestmentRepository
+	db             *bun.DB
+	ctx            context.Context
 }
 
 func NewDB(config Config, ctx context.Context, logger *zap.Logger) (*bun.DB, error) {
@@ -178,12 +186,13 @@ func NewDB(config Config, ctx context.Context, logger *zap.Logger) (*bun.DB, err
 
 func NewRepository(db *bun.DB, ctx context.Context) *Repository {
 	return &Repository{
-		ventureRepo: venture.NewVentureRepository(db, ctx),
-		accountRepo: account.NewAccountRepository(db, ctx),
-		roundRepo:   round.NewRoundRepository(db, ctx),
-		userRepo:    user.NewUserRepository(db, ctx),
-		db:          db,
-		ctx:         ctx,
+		ventureRepo:    venture.NewVentureRepository(db, ctx),
+		accountRepo:    account.NewAccountRepository(db, ctx),
+		roundRepo:      round.NewRoundRepository(db, ctx),
+		userRepo:       user.NewUserRepository(db, ctx),
+		investmentRepo: investment.NewInvestmentRepository(db, ctx),
+		db:             db,
+		ctx:            ctx,
 	}
 }
 
@@ -197,6 +206,10 @@ func (r *Repository) Account() storage.AccountRepository {
 
 func (r *Repository) Round() storage.RoundRepository {
 	return r.roundRepo
+}
+
+func (r *Repository) Investment() storage.InvestmentRepository {
+	return r.investmentRepo
 }
 
 func (r *Repository) User() storage.UserRepository {
@@ -214,9 +227,10 @@ func (r *Repository) NewTransaction() (storage.Transaction, error) {
 	}
 
 	return &transaction{
-		ventureRepo: venture.NewVentureRepository(tx, r.ctx),
-		accountRepo: account.NewAccountRepository(tx, r.ctx),
-		userRepo:    user.NewUserRepository(tx, r.ctx),
+		ventureRepo:    venture.NewVentureRepository(tx, r.ctx),
+		accountRepo:    account.NewAccountRepository(tx, r.ctx),
+		investmentRepo: investment.NewInvestmentRepository(tx, r.ctx),
+		userRepo:       user.NewUserRepository(tx, r.ctx),
 		roundRepo:   round.NewRoundRepository(tx, r.ctx),
 		tx:          &tx,
 		ctx:         r.ctx,

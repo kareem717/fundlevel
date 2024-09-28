@@ -311,3 +311,4 @@ func SeedDutchDynamicRounds(db *sql.DB, ventureIds []int, seedConfig SeedConfig)
 
 	return dutchDynamicRounds, nil
 }
+

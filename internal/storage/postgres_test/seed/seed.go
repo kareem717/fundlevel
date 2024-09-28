@@ -15,6 +15,7 @@ type SeedConfig struct {
 	numRegularDynamicRounds int
 	numPartialTotalRounds   int
 	numDutchDynamicRounds   int
+	numRoundInvestments     int
 }
 
 // SeedConfigOption is a option function that alters the SeedConfig
@@ -30,6 +31,7 @@ func NewSeedConfig(opts ...SeedConfigOption) SeedConfig {
 		numRegularDynamicRounds: 10,
 		numPartialTotalRounds:   10,
 		numDutchDynamicRounds:   10,
+		numRoundInvestments:     10,
 	}
 
 	for _, opt := range opts {
@@ -84,6 +86,13 @@ func WithDutchDynamicRounds(numDutchDynamicRounds int) SeedConfigOption {
 	}
 }
 
+// WithRoundInvestments sets the number of round investments to seed.
+func WithRoundInvestments(numRoundInvestments int) SeedConfigOption {
+	return func(config *SeedConfig) {
+		config.numRoundInvestments = numRoundInvestments
+	}
+}
+
 // SeedResult is the result of seeding the database. It contains useful
 // information about the seeded data.
 type SeedResult struct {
@@ -101,6 +110,8 @@ type SeedResult struct {
 	VenturePartialTotalRounds PartialTotalRoundMap
 	// VentureDutchDynamicRounds is a map of the ids of the ventures to the ids of the dutch dynamic rounds that were seeded.
 	VentureDutchDynamicRounds DutchDynamicRoundMap
+	// VentureRoundInvestments is a map of the ids of the ventures to the ids of the round investments that were seeded.
+	RoundInvestments RoundInvestmentMap
 }
 
 // SeedDB seeds the database utilizing the configuration provided.
@@ -155,6 +166,36 @@ func SeedDB(db *sql.DB, config SeedConfig) (*SeedResult, error) {
 	}
 
 	result.VentureDutchDynamicRounds = dutchDynamicRounds
+
+	//TODO: cleanup
+	var roundIds []int
+	for _, rounds := range result.VentureFixedTotalRounds {
+		for _, round := range rounds {
+			roundIds = append(roundIds, round.RoundID)
+		}
+	}
+	for _, rounds := range result.VentureRegularDynamicRounds {
+		for _, round := range rounds {
+			roundIds = append(roundIds, round.RoundID)
+		}
+	}
+	for _, rounds := range result.VenturePartialTotalRounds {
+		for _, round := range rounds {
+			roundIds = append(roundIds, round.RoundID)
+		}
+	}
+	for _, rounds := range result.VentureDutchDynamicRounds {
+		for _, round := range rounds {
+			roundIds = append(roundIds, round.RoundID)
+		}
+	}
+
+	roundInvestments, err := SeedRoundInvestments(db, roundIds, accountIds, config)
+	if err != nil {
+		return nil, err
+	}
+
+	result.RoundInvestments = roundInvestments
 
 	return &result, nil
 }
