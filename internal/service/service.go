@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"fundlevel/internal/entities/account"
+	"fundlevel/internal/entities/investment"
 	"fundlevel/internal/entities/round"
 	"fundlevel/internal/entities/venture"
 	accountService "fundlevel/internal/service/domain/account"
@@ -49,6 +50,12 @@ type AccountService interface {
 
 	GetVenturesByCursor(ctx context.Context, accountId int, limit int, cursor int) ([]venture.Venture, error)
 	GetVenturesByPage(ctx context.Context, accountId int, pageSize int, page int) ([]venture.Venture, error)
+
+	GetRoundInvestmentsByCursor(ctx context.Context, accountId int, limit int, cursor int) ([]investment.RoundInvestment, error)
+	GetRoundInvestmentsByPage(ctx context.Context, accountId int, pageSize int, page int) ([]investment.RoundInvestment, error)
+	WithdrawRoundInvestment(ctx context.Context, accountId int, investmentId int) error
+	DeleteRoundInvestment(ctx context.Context, accountId int, investmentId int) error
+	CreateRoundInvestment(ctx context.Context, params investment.CreateInvestmentParams) (investment.RoundInvestment, error)
 }
 
 type HealthService interface {
@@ -79,6 +86,10 @@ type RoundService interface {
 	GetDutchDynamicById(ctx context.Context, id int) (round.DutchDynamicRound, error)
 	GetDutchDynamicRoundsByCursor(ctx context.Context, limit int, cursor int) ([]round.DutchDynamicRound, error)
 	GetDutchDynamicRoundsByPage(ctx context.Context, pageSize int, page int) ([]round.DutchDynamicRound, error)
+
+	GetRoundInvestmentsByCursor(ctx context.Context, roundId int, limit int, cursor int) ([]investment.RoundInvestment, error)
+	GetRoundInvestmentsByPage(ctx context.Context, roundId int, pageSize int, page int) ([]investment.RoundInvestment, error)
+	AcceptRoundInvestment(ctx context.Context, roundId int, investmentId int) error
 }
 
 type Service struct {

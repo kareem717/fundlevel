@@ -162,7 +162,6 @@ func TestGetByPage(t *testing.T) {
 	}
 }
 
-
 func TestUpdate(t *testing.T) {
 	ctx := context.Background()
 
@@ -189,3 +188,27 @@ func TestUpdate(t *testing.T) {
 	assert.Equal(t, params.Status, investment.Status)
 }
 
+func TestGetByRoundIdAndAccountId(t *testing.T) {
+	ctx := context.Background()
+
+	seedConfig := seed.NewSeedConfig(
+		seed.WithUsers(12),
+		seed.WithVentures(1),
+		seed.WithRoundInvestments(100),
+	)
+
+	db, seedResult := util.SetupTestDB(t, seedConfig)
+
+	repo := repo.NewInvestmentRepository(db, ctx)
+
+	ventureId := seedResult.VentureIds[0]
+	roundId := seedResult.VentureRegularDynamicRounds[ventureId][0].RoundID
+	accountId := seedResult.RoundInvestments[roundId][0].InvestorID
+
+	investment, err := repo.GetByRoundIdAndAccountId(ctx, roundId, accountId)
+	assert.NoError(t, err)
+	assert.NotNil(t, investment.Round)
+	assert.NotNil(t, investment.Investor)
+	assert.Equal(t, roundId, investment.RoundID)
+	assert.Equal(t, accountId, investment.InvestorID)
+}

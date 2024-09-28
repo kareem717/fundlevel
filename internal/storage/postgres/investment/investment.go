@@ -101,3 +101,17 @@ func (r *InvestmentRepository) Update(ctx context.Context, id int, params invest
 
 	return resp, err
 }
+
+func (r *InvestmentRepository) GetByRoundIdAndAccountId(ctx context.Context, roundId int, accountId int) (investment.RoundInvestment, error) {
+	resp := investment.RoundInvestment{}
+
+	err := r.db.NewSelect().
+		Model(&resp).
+		Relation("Round").
+		Relation("Investor").
+		Where("round_investment.round_id = ?", roundId).
+		Where("round_investment.investor_id = ?", accountId).
+		Scan(ctx)
+
+	return resp, err
+}
