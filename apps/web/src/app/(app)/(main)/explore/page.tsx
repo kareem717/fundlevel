@@ -1,4 +1,3 @@
-import { getAllVentures } from "@/actions/ventures"
 import { VentureIndexCard } from "@/components/app/ventures/venture-index-card"
 import { Icons } from "@/components/icons"
 import { buttonVariants } from "@/components/ui/button"
@@ -9,6 +8,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination"
+import { Venture } from "@/lib/api"
 import redirects from "@/lib/config/redirects"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
@@ -17,18 +17,8 @@ export default async function DashboardPage({ searchParams }: { searchParams: { 
   const page = searchParams.page ? parseInt(searchParams.page) : 1
   const limit = searchParams.limit ? parseInt(searchParams.limit) : 10
 
-  const venturesResp = await getAllVentures({
-    cursor: page,
-    limit: limit + 1,
-  })
 
-  const data = venturesResp?.data
-
-  if (!data) {
-    throw new Error(venturesResp?.serverError?.message || "Something went wrong")
-  }
-
-  const ventures = data?.data?.ventures
+  const ventures: Venture[] = []
   return (
     <div className="flex flex-col gap-4 w-full h-full">
       <div className="flex items-center justify-between">

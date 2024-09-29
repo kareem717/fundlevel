@@ -39,20 +39,6 @@ export const columns: ColumnDef<Round>[] = [
     accessorKey: "percentageValueCurrency",
     header: "Percentage Value Currency",
   },
-  {
-    accessorKey: "startTime",
-    header: "Start Time",
-    cell: ({ row }) => {
-      return format(new Date(row.original.startTime), "MM/dd/yyyy")
-    }
-  },
-  {
-    accessorKey: "endTime",
-    header: "End Time",
-    cell: ({ row }) => {
-      return format(new Date(row.original.endTime), "MM/dd/yyyy")
-    }
-  },
 ]
 
 export interface VentureRoundsTableProps extends ComponentPropsWithoutRef<"div"> {

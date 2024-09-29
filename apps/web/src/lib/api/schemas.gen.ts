@@ -79,91 +79,141 @@ export const CreateAccountParamsSchema = {
     type: 'object'
 } as const;
 
-export const CreateOfferParamsSchema = {
+export const CreateDutchDynamicRoundParamsSchema = {
     additionalProperties: false,
     properties: {
         '$schema': {
-            examples: ['https://example.com/schemas/CreateOfferParams.json'],
+            examples: ['https://example.com/schemas/CreateDutchDynamicRoundParams.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        dutchDynamicRound: {
+            '$ref': '#/components/schemas/DutchDynamicRoundParams'
+        },
+        round: {
+            '$ref': '#/components/schemas/CreateRoundParams'
+        }
+    },
+    required: ['dutchDynamicRound', 'round'],
+    type: 'object'
+} as const;
+
+export const CreateFixedTotalRoundParamsSchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/CreateFixedTotalRoundParams.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        round: {
+            '$ref': '#/components/schemas/CreateRoundParams'
+        }
+    },
+    required: ['round'],
+    type: 'object'
+} as const;
+
+export const CreateInvestmentParamsSchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/CreateInvestmentParams.json'],
             format: 'uri',
             readOnly: true,
             type: 'string'
         },
         amount: {
-            format: 'double',
-            maximum: 1000000000000000,
-            minimum: 0,
-            type: 'number'
-        },
-        currency: {
-            enum: ['USD', 'GBP', 'EUR', 'CAD', 'AUD', 'JPY'],
-            type: 'string'
-        },
-        investorAccountId: {
             format: 'int64',
-            minimum: 1,
             type: 'integer'
         },
-        percentageAmount: {
-            format: 'double',
-            maximum: 100,
-            minimum: 0,
-            type: 'number'
+        investorId: {
+            format: 'int64',
+            type: 'integer'
         },
         roundId: {
             format: 'int64',
-            minimum: 1,
             type: 'integer'
+        },
+        status: {
+            enum: ['pending', 'accepted', 'rejected', 'withdrawn'],
+            type: 'string'
         }
     },
-    required: ['roundId', 'investorAccountId', 'percentageAmount', 'amount', 'currency'],
+    required: ['roundId', 'investorId', 'amount', 'status'],
+    type: 'object'
+} as const;
+
+export const CreatePartialTotalRoundParamsSchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/CreatePartialTotalRoundParams.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        partialTotalRound: {
+            '$ref': '#/components/schemas/PartialTotalRoundParams'
+        },
+        round: {
+            '$ref': '#/components/schemas/CreateRoundParams'
+        }
+    },
+    required: ['partialTotalRound', 'round'],
+    type: 'object'
+} as const;
+
+export const CreateRegularDynamicRoundParamsSchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/CreateRegularDynamicRoundParams.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        regularDynamicRound: {
+            '$ref': '#/components/schemas/RegularDynamicRoundParams'
+        },
+        round: {
+            '$ref': '#/components/schemas/CreateRoundParams'
+        }
+    },
+    required: ['regularDynamicRound', 'round'],
     type: 'object'
 } as const;
 
 export const CreateRoundParamsSchema = {
     additionalProperties: false,
     properties: {
-        '$schema': {
-            examples: ['https://example.com/schemas/CreateRoundParams.json'],
-            format: 'uri',
-            readOnly: true,
-            type: 'string'
-        },
-        endTime: {
+        beginsAt: {
             format: 'date-time',
             type: 'string'
         },
-        isAuctioned: {
-            type: 'boolean'
+        endsAt: {
+            format: 'date-time',
+            type: 'string'
         },
-        maximumInvestmentPercentage: {
-            format: 'double',
-            maximum: 100,
-            minimum: 0,
-            type: 'number'
-        },
-        minimumInvestmentPercentage: {
-            format: 'double',
-            maximum: 100,
-            minimum: 0,
-            type: 'number'
-        },
-        offeredPercentage: {
+        percentageOffered: {
             format: 'double',
             maximum: 100,
             minimum: 0,
             type: 'number'
         },
         percentageValue: {
-            format: 'double',
-            maximum: 1000000000000000,
-            minimum: 0,
-            type: 'number'
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
         },
-        percentageValueCurrency: {
+        status: {
+            enum: ['active', 'successful', 'failed'],
             type: 'string'
         },
-        startTime: {
-            format: 'date-time',
+        valueCurrency: {
+            enum: ['USD', 'GBP', 'EUR', 'CAD', 'AUD', 'JPY'],
             type: 'string'
         },
         ventureId: {
@@ -172,7 +222,7 @@ export const CreateRoundParamsSchema = {
             type: 'integer'
         }
     },
-    required: ['offeredPercentage', 'percentageValue', 'percentageValueCurrency', 'minimumInvestmentPercentage', 'maximumInvestmentPercentage', 'isAuctioned', 'startTime', 'ventureId', 'endTime'],
+    required: ['ventureId', 'beginsAt', 'endsAt', 'percentageOffered', 'percentageValue', 'valueCurrency', 'status'],
     type: 'object'
 } as const;
 
@@ -202,6 +252,70 @@ export const CreateVentureParamsSchema = {
         }
     },
     required: ['ownerAccountId', 'name', 'description'],
+    type: 'object'
+} as const;
+
+export const DutchDynamicRoundSchema = {
+    additionalProperties: false,
+    properties: {
+        createdAt: {
+            format: 'date-time',
+            type: 'string'
+        },
+        deletedAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        },
+        round: {
+            '$ref': '#/components/schemas/Round'
+        },
+        roundId: {
+            format: 'int64',
+            type: 'integer'
+        },
+        updatedAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        },
+        valuationDollarDropRate: {
+            format: 'int64',
+            type: 'integer'
+        },
+        valuationDropIntervalDays: {
+            format: 'int64',
+            type: 'integer'
+        },
+        valuationStopLoss: {
+            format: 'int64',
+            type: 'integer'
+        }
+    },
+    required: ['roundId', 'round', 'valuationDollarDropRate', 'valuationStopLoss', 'valuationDropIntervalDays', 'createdAt', 'updatedAt', 'deletedAt'],
+    type: 'object'
+} as const;
+
+export const DutchDynamicRoundParamsSchema = {
+    additionalProperties: false,
+    properties: {
+        roundId: {
+            format: 'int64',
+            readOnly: true,
+            type: 'integer'
+        },
+        valuationDollarDropRate: {
+            format: 'int64',
+            type: 'integer'
+        },
+        valuationDropIntervalDays: {
+            format: 'int64',
+            type: 'integer'
+        },
+        valuationStopLoss: {
+            format: 'int64',
+            type: 'integer'
+        }
+    },
+    required: ['roundId', 'valuationDollarDropRate', 'valuationStopLoss', 'valuationDropIntervalDays'],
     type: 'object'
 } as const;
 
@@ -262,11 +376,94 @@ export const ErrorModelSchema = {
     type: 'object'
 } as const;
 
-export const GetManyOffersOutputBodySchema = {
+export const FixedTotalRoundSchema = {
+    additionalProperties: false,
+    properties: {
+        createdAt: {
+            format: 'date-time',
+            type: 'string'
+        },
+        deletedAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        },
+        round: {
+            '$ref': '#/components/schemas/Round'
+        },
+        updatedAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        }
+    },
+    required: ['round', 'createdAt', 'updatedAt', 'deletedAt'],
+    type: 'object'
+} as const;
+
+export const GetCursorPaginatedDutchDynamicRoundsOutputBodySchema = {
     additionalProperties: false,
     properties: {
         '$schema': {
-            examples: ['https://example.com/schemas/GetManyOffersOutputBody.json'],
+            examples: ['https://example.com/schemas/GetCursorPaginatedDutchDynamicRoundsOutputBody.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        dutchDynamicRounds: {
+            items: {
+                '$ref': '#/components/schemas/DutchDynamicRound'
+            },
+            type: ['array', 'null']
+        },
+        hasMore: {
+            type: 'boolean'
+        },
+        message: {
+            type: 'string'
+        },
+        nextCursor: {
+            format: 'int64',
+            type: ['integer', 'null']
+        }
+    },
+    required: ['dutchDynamicRounds', 'message', 'nextCursor', 'hasMore'],
+    type: 'object'
+} as const;
+
+export const GetCursorPaginatedFixedTotalRoundsOutputBodySchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/GetCursorPaginatedFixedTotalRoundsOutputBody.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        fixedTotalRounds: {
+            items: {
+                '$ref': '#/components/schemas/FixedTotalRound'
+            },
+            type: ['array', 'null']
+        },
+        hasMore: {
+            type: 'boolean'
+        },
+        message: {
+            type: 'string'
+        },
+        nextCursor: {
+            format: 'int64',
+            type: ['integer', 'null']
+        }
+    },
+    required: ['fixedTotalRounds', 'message', 'nextCursor', 'hasMore'],
+    type: 'object'
+} as const;
+
+export const GetCursorPaginatedPartialTotalRoundsOutputBodySchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/GetCursorPaginatedPartialTotalRoundsOutputBody.json'],
             format: 'uri',
             readOnly: true,
             type: 'string'
@@ -281,22 +478,22 @@ export const GetManyOffersOutputBodySchema = {
             format: 'int64',
             type: ['integer', 'null']
         },
-        offers: {
+        partialTotalRounds: {
             items: {
-                '$ref': '#/components/schemas/Offer'
+                '$ref': '#/components/schemas/PartialTotalRound'
             },
             type: ['array', 'null']
         }
     },
-    required: ['offers', 'message', 'nextCursor', 'hasMore'],
+    required: ['partialTotalRounds', 'message', 'nextCursor', 'hasMore'],
     type: 'object'
 } as const;
 
-export const GetManyRoundsOutputBodySchema = {
+export const GetCursorPaginatedRegularDynamicRoundsOutputBodySchema = {
     additionalProperties: false,
     properties: {
         '$schema': {
-            examples: ['https://example.com/schemas/GetManyRoundsOutputBody.json'],
+            examples: ['https://example.com/schemas/GetCursorPaginatedRegularDynamicRoundsOutputBody.json'],
             format: 'uri',
             readOnly: true,
             type: 'string'
@@ -311,22 +508,52 @@ export const GetManyRoundsOutputBodySchema = {
             format: 'int64',
             type: ['integer', 'null']
         },
-        rounds: {
+        regularDynamicRounds: {
             items: {
-                '$ref': '#/components/schemas/Round'
+                '$ref': '#/components/schemas/RegularDynamicRound'
             },
             type: ['array', 'null']
         }
     },
-    required: ['rounds', 'message', 'nextCursor', 'hasMore'],
+    required: ['regularDynamicRounds', 'message', 'nextCursor', 'hasMore'],
     type: 'object'
 } as const;
 
-export const GetManyVenturesOutputBodySchema = {
+export const GetCursorPaginatedRoundInvestmentsOutputBodySchema = {
     additionalProperties: false,
     properties: {
         '$schema': {
-            examples: ['https://example.com/schemas/GetManyVenturesOutputBody.json'],
+            examples: ['https://example.com/schemas/GetCursorPaginatedRoundInvestmentsOutputBody.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        hasMore: {
+            type: 'boolean'
+        },
+        investments: {
+            items: {
+                '$ref': '#/components/schemas/RoundInvestment'
+            },
+            type: ['array', 'null']
+        },
+        message: {
+            type: 'string'
+        },
+        nextCursor: {
+            format: 'int64',
+            type: ['integer', 'null']
+        }
+    },
+    required: ['investments', 'message', 'nextCursor', 'hasMore'],
+    type: 'object'
+} as const;
+
+export const GetCursorPaginatedVenturesOutputBodySchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/GetCursorPaginatedVenturesOutputBody.json'],
             format: 'uri',
             readOnly: true,
             type: 'string'
@@ -352,6 +579,162 @@ export const GetManyVenturesOutputBodySchema = {
     type: 'object'
 } as const;
 
+export const GetOffsetPaginatedDutchDynamicRoundsOutputBodySchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/GetOffsetPaginatedDutchDynamicRoundsOutputBody.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        dutchDynamicRounds: {
+            items: {
+                '$ref': '#/components/schemas/DutchDynamicRound'
+            },
+            type: ['array', 'null']
+        },
+        hasMore: {
+            type: 'boolean'
+        },
+        message: {
+            type: 'string'
+        }
+    },
+    required: ['dutchDynamicRounds', 'message', 'hasMore'],
+    type: 'object'
+} as const;
+
+export const GetOffsetPaginatedFixedTotalRoundsOutputBodySchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/GetOffsetPaginatedFixedTotalRoundsOutputBody.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        fixedTotalRounds: {
+            items: {
+                '$ref': '#/components/schemas/FixedTotalRound'
+            },
+            type: ['array', 'null']
+        },
+        hasMore: {
+            type: 'boolean'
+        },
+        message: {
+            type: 'string'
+        }
+    },
+    required: ['fixedTotalRounds', 'message', 'hasMore'],
+    type: 'object'
+} as const;
+
+export const GetOffsetPaginatedPartialTotalRoundsOutputBodySchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/GetOffsetPaginatedPartialTotalRoundsOutputBody.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        hasMore: {
+            type: 'boolean'
+        },
+        message: {
+            type: 'string'
+        },
+        partialTotalRounds: {
+            items: {
+                '$ref': '#/components/schemas/PartialTotalRound'
+            },
+            type: ['array', 'null']
+        }
+    },
+    required: ['partialTotalRounds', 'message', 'hasMore'],
+    type: 'object'
+} as const;
+
+export const GetOffsetPaginatedRegularDynamicRoundsOutputBodySchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/GetOffsetPaginatedRegularDynamicRoundsOutputBody.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        hasMore: {
+            type: 'boolean'
+        },
+        message: {
+            type: 'string'
+        },
+        regularDynamicRounds: {
+            items: {
+                '$ref': '#/components/schemas/RegularDynamicRound'
+            },
+            type: ['array', 'null']
+        }
+    },
+    required: ['regularDynamicRounds', 'message', 'hasMore'],
+    type: 'object'
+} as const;
+
+export const GetOffsetPaginatedRoundInvestmentsOutputBodySchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/GetOffsetPaginatedRoundInvestmentsOutputBody.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        hasMore: {
+            type: 'boolean'
+        },
+        investments: {
+            items: {
+                '$ref': '#/components/schemas/RoundInvestment'
+            },
+            type: ['array', 'null']
+        },
+        message: {
+            type: 'string'
+        }
+    },
+    required: ['investments', 'message', 'hasMore'],
+    type: 'object'
+} as const;
+
+export const GetOffsetPaginatedVenturesOutputBodySchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/GetOffsetPaginatedVenturesOutputBody.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        hasMore: {
+            type: 'boolean'
+        },
+        message: {
+            type: 'string'
+        },
+        ventures: {
+            items: {
+                '$ref': '#/components/schemas/Venture'
+            },
+            type: ['array', 'null']
+        }
+    },
+    required: ['ventures', 'message', 'hasMore'],
+    type: 'object'
+} as const;
+
 export const MessageResponseSchema = {
     additionalProperties: false,
     properties: {
@@ -369,21 +752,170 @@ export const MessageResponseSchema = {
     type: 'object'
 } as const;
 
-export const OfferSchema = {
+export const PartialTotalRoundSchema = {
     additionalProperties: false,
     properties: {
-        amount: {
-            format: 'double',
-            maximum: 1000000000000000,
-            minimum: 0,
-            type: 'number'
+        createdAt: {
+            format: 'date-time',
+            type: 'string'
+        },
+        deletedAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        },
+        investorCount: {
+            format: 'int64',
+            type: 'integer'
+        },
+        round: {
+            '$ref': '#/components/schemas/Round'
+        },
+        roundId: {
+            format: 'int64',
+            type: 'integer'
+        },
+        updatedAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        }
+    },
+    required: ['roundId', 'round', 'investorCount', 'createdAt', 'updatedAt', 'deletedAt'],
+    type: 'object'
+} as const;
+
+export const PartialTotalRoundParamsSchema = {
+    additionalProperties: false,
+    properties: {
+        investorCount: {
+            format: 'int64',
+            type: 'integer'
+        },
+        roundId: {
+            format: 'int64',
+            readOnly: true,
+            type: 'integer'
+        }
+    },
+    required: ['roundId', 'investorCount'],
+    type: 'object'
+} as const;
+
+export const RegularDynamicRoundSchema = {
+    additionalProperties: false,
+    properties: {
+        createdAt: {
+            format: 'date-time',
+            type: 'string'
+        },
+        daysExtendOnBid: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
+        deletedAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        },
+        round: {
+            '$ref': '#/components/schemas/Round'
+        },
+        roundId: {
+            format: 'int64',
+            type: 'integer'
+        },
+        updatedAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        }
+    },
+    required: ['roundId', 'round', 'daysExtendOnBid', 'createdAt', 'updatedAt', 'deletedAt'],
+    type: 'object'
+} as const;
+
+export const RegularDynamicRoundParamsSchema = {
+    additionalProperties: false,
+    properties: {
+        daysExtendOnBid: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
+        roundId: {
+            format: 'int64',
+            readOnly: true,
+            type: 'integer'
+        }
+    },
+    required: ['roundId', 'daysExtendOnBid'],
+    type: 'object'
+} as const;
+
+export const RoundSchema = {
+    additionalProperties: false,
+    properties: {
+        beginsAt: {
+            format: 'date-time',
+            type: 'string'
         },
         createdAt: {
             format: 'date-time',
             type: 'string'
         },
-        currency: {
+        deletedAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        },
+        endsAt: {
+            format: 'date-time',
+            type: 'string'
+        },
+        id: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
+        percentageOffered: {
+            format: 'double',
+            maximum: 100,
+            minimum: 0,
+            type: 'number'
+        },
+        percentageValue: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
+        status: {
+            enum: ['active', 'successful', 'failed'],
+            type: 'string'
+        },
+        updatedAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        },
+        valueCurrency: {
             enum: ['USD', 'GBP', 'EUR', 'CAD', 'AUD', 'JPY'],
+            type: 'string'
+        },
+        ventureId: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        }
+    },
+    required: ['id', 'ventureId', 'beginsAt', 'endsAt', 'percentageOffered', 'percentageValue', 'valueCurrency', 'status', 'createdAt', 'updatedAt', 'deletedAt'],
+    type: 'object'
+} as const;
+
+export const RoundInvestmentSchema = {
+    additionalProperties: false,
+    properties: {
+        amount: {
+            format: 'int64',
+            type: 'integer'
+        },
+        createdAt: {
+            format: 'date-time',
             type: 'string'
         },
         deletedAt: {
@@ -395,20 +927,18 @@ export const OfferSchema = {
             minimum: 1,
             type: 'integer'
         },
-        investorAccountId: {
+        investor: {
+            '$ref': '#/components/schemas/Account'
+        },
+        investorId: {
             format: 'int64',
-            minimum: 1,
             type: 'integer'
         },
-        percentageAmount: {
-            format: 'double',
-            maximum: 100,
-            minimum: 0,
-            type: 'number'
+        round: {
+            '$ref': '#/components/schemas/Round'
         },
         roundId: {
             format: 'int64',
-            minimum: 1,
             type: 'integer'
         },
         status: {
@@ -420,75 +950,7 @@ export const OfferSchema = {
             type: ['string', 'null']
         }
     },
-    required: ['id', 'roundId', 'investorAccountId', 'percentageAmount', 'amount', 'currency', 'status', 'createdAt', 'updatedAt', 'deletedAt'],
-    type: 'object'
-} as const;
-
-export const RoundSchema = {
-    additionalProperties: false,
-    properties: {
-        createdAt: {
-            format: 'date-time',
-            type: 'string'
-        },
-        deletedAt: {
-            format: 'date-time',
-            type: ['string', 'null']
-        },
-        endTime: {
-            format: 'date-time',
-            type: 'string'
-        },
-        id: {
-            format: 'int64',
-            minimum: 1,
-            type: 'integer'
-        },
-        isAuctioned: {
-            type: 'boolean'
-        },
-        maximumInvestmentPercentage: {
-            format: 'double',
-            maximum: 100,
-            minimum: 0,
-            type: 'number'
-        },
-        minimumInvestmentPercentage: {
-            format: 'double',
-            maximum: 100,
-            minimum: 0,
-            type: 'number'
-        },
-        offeredPercentage: {
-            format: 'double',
-            maximum: 100,
-            minimum: 0,
-            type: 'number'
-        },
-        percentageValue: {
-            format: 'double',
-            maximum: 1000000000000000,
-            minimum: 0,
-            type: 'number'
-        },
-        percentageValueCurrency: {
-            type: 'string'
-        },
-        startTime: {
-            format: 'date-time',
-            type: 'string'
-        },
-        updatedAt: {
-            format: 'date-time',
-            type: ['string', 'null']
-        },
-        ventureId: {
-            format: 'int64',
-            minimum: 1,
-            type: 'integer'
-        }
-    },
-    required: ['id', 'offeredPercentage', 'percentageValue', 'percentageValueCurrency', 'minimumInvestmentPercentage', 'maximumInvestmentPercentage', 'isAuctioned', 'startTime', 'ventureId', 'endTime', 'createdAt', 'updatedAt', 'deletedAt'],
+    required: ['round', 'investor', 'id', 'roundId', 'investorId', 'amount', 'status', 'createdAt', 'updatedAt', 'deletedAt'],
     type: 'object'
 } as const;
 
@@ -512,31 +974,11 @@ export const SingleAccountResponseBodySchema = {
     type: 'object'
 } as const;
 
-export const SingleOfferResponseBodySchema = {
+export const SingleDutchDynamicRoundResponseBodySchema = {
     additionalProperties: false,
     properties: {
         '$schema': {
-            examples: ['https://example.com/schemas/SingleOfferResponseBody.json'],
-            format: 'uri',
-            readOnly: true,
-            type: 'string'
-        },
-        message: {
-            type: 'string'
-        },
-        offer: {
-            '$ref': '#/components/schemas/Offer'
-        }
-    },
-    required: ['offer', 'message'],
-    type: 'object'
-} as const;
-
-export const SingleRoundResponseBodySchema = {
-    additionalProperties: false,
-    properties: {
-        '$schema': {
-            examples: ['https://example.com/schemas/SingleRoundResponseBody.json'],
+            examples: ['https://example.com/schemas/SingleDutchDynamicRoundResponseBody.json'],
             format: 'uri',
             readOnly: true,
             type: 'string'
@@ -545,10 +987,90 @@ export const SingleRoundResponseBodySchema = {
             type: 'string'
         },
         round: {
-            '$ref': '#/components/schemas/Round'
+            '$ref': '#/components/schemas/DutchDynamicRound'
         }
     },
     required: ['round', 'message'],
+    type: 'object'
+} as const;
+
+export const SingleFixedTotalRoundResponseBodySchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/SingleFixedTotalRoundResponseBody.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        message: {
+            type: 'string'
+        },
+        round: {
+            '$ref': '#/components/schemas/FixedTotalRound'
+        }
+    },
+    required: ['round', 'message'],
+    type: 'object'
+} as const;
+
+export const SinglePartialTotalRoundResponseBodySchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/SinglePartialTotalRoundResponseBody.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        message: {
+            type: 'string'
+        },
+        round: {
+            '$ref': '#/components/schemas/PartialTotalRound'
+        }
+    },
+    required: ['round', 'message'],
+    type: 'object'
+} as const;
+
+export const SingleRegularDynamicRoundResponseBodySchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/SingleRegularDynamicRoundResponseBody.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        message: {
+            type: 'string'
+        },
+        round: {
+            '$ref': '#/components/schemas/RegularDynamicRound'
+        }
+    },
+    required: ['round', 'message'],
+    type: 'object'
+} as const;
+
+export const SingleRoundInvestmentResponseBodySchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/SingleRoundInvestmentResponseBody.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        investment: {
+            '$ref': '#/components/schemas/RoundInvestment'
+        },
+        message: {
+            type: 'string'
+        }
+    },
+    required: ['investment', 'message'],
     type: 'object'
 } as const;
 
@@ -597,42 +1119,6 @@ export const UpdateAccountParamsSchema = {
         }
     },
     required: ['firstName', 'lastName'],
-    type: 'object'
-} as const;
-
-export const UpdateOfferParamsSchema = {
-    additionalProperties: false,
-    properties: {
-        '$schema': {
-            examples: ['https://example.com/schemas/UpdateOfferParams.json'],
-            format: 'uri',
-            readOnly: true,
-            type: 'string'
-        },
-        status: {
-            enum: ['pending', 'accepted', 'rejected', 'withdrawn'],
-            type: 'string'
-        }
-    },
-    required: ['status'],
-    type: 'object'
-} as const;
-
-export const UpdateRoundParamsSchema = {
-    additionalProperties: false,
-    properties: {
-        '$schema': {
-            examples: ['https://example.com/schemas/UpdateRoundParams.json'],
-            format: 'uri',
-            readOnly: true,
-            type: 'string'
-        },
-        endTime: {
-            format: 'date-time',
-            type: 'string'
-        }
-    },
-    required: ['endTime'],
     type: 'object'
 } as const;
 
@@ -696,6 +1182,6 @@ export const VentureSchema = {
             type: ['string', 'null']
         }
     },
-    required: ['id', 'ownerAccountId', 'name', 'description', 'createdAt', 'updatedAt', 'deletedAt'],
+    required: ['ownerAccountId', 'name', 'description', 'id', 'createdAt', 'updatedAt', 'deletedAt'],
     type: 'object'
 } as const;
