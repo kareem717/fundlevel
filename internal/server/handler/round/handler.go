@@ -548,3 +548,71 @@ func (h *httpHandler) deleteDutchDynamicRound(ctx context.Context, input *shared
 
 	return resp, nil
 }
+
+func (h *httpHandler) getCursorPaginatedRoundInvestments(ctx context.Context, input *shared.GetCursorPaginatedByParentPathIDInput) (*shared.GetCursorPaginatedRoundInvestmentsOutput, error) {
+	limit := input.Limit + 1
+
+	investments, err := h.service.RoundService.GetRoundInvestmentsByCursor(ctx, input.ID, limit, input.Cursor)
+
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("investments not found")
+		default:
+			h.logger.Error("failed to fetch investments", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the investments")
+		}
+	}
+
+	resp := &shared.GetCursorPaginatedRoundInvestmentsOutput{}
+	resp.Body.Message = "Investments fetched successfully"
+	resp.Body.Investments = investments
+
+	if len(investments) == limit {
+		resp.Body.NextCursor = &investments[len(investments)-1].ID
+		resp.Body.HasMore = true
+		resp.Body.Investments = resp.Body.Investments[:len(resp.Body.Investments)-1]
+	}
+
+	return resp, nil
+}
+
+func (h *httpHandler) getOffsetPaginatedRoundInvestments(ctx context.Context, input *shared.GetOffsetPaginatedByParentPathIDInput) (*shared.GetOffsetPaginatedRoundInvestmentsOutput, error) {
+	pageSize := input.PageSize + 1
+
+	investments, err := h.service.RoundService.GetRoundInvestmentsByPage(ctx, input.ID, pageSize, input.Page)
+
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("investments not found")
+		default:
+			h.logger.Error("failed to fetch investments", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the investments")
+		}
+	}
+
+	resp := &shared.GetOffsetPaginatedRoundInvestmentsOutput{}
+	resp.Body.Message = "Investments fetched successfully"
+	resp.Body.Investments = investments
+
+	if len(investments) == pageSize {
+		resp.Body.HasMore = true
+		resp.Body.Investments = resp.Body.Investments[:len(resp.Body.Investments)-1]
+	}
+
+	return resp, nil
+}
+
+func (h *httpHandler) acceptRoundInvestment(ctx context.Context, input *shared.ParentInvestmentIDParam) (*shared.MessageResponse, error) {
+	err := h.service.RoundService.AcceptRoundInvestment(ctx, input.ID, input.InvestmentID)
+	if err != nil {
+		h.logger.Error("failed to accept investment", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while accepting the investment")
+	}
+
+	resp := &shared.MessageResponse{}
+	resp.Message = "Investment accepted successfully"
+
+	return resp, nil
+}

@@ -2,6 +2,7 @@ package shared
 
 import (
 	"fundlevel/internal/entities/account"
+	"fundlevel/internal/entities/investment"
 	"fundlevel/internal/entities/round"
 	"fundlevel/internal/entities/venture"
 
@@ -19,7 +20,7 @@ type CursorPaginationRequest struct {
 }
 
 type PathIDParam struct {
-	ID int `path:"id"`
+	ID int `path:"id" minimum:"1"`
 }
 
 type PathUserIDParam struct {
@@ -127,9 +128,30 @@ type GetOffsetPaginatedVenturesOutput struct {
 	}
 }
 
+type GetCursorPaginatedRoundInvestmentsOutput struct {
+	Body struct {
+		MessageResponse
+		Investments []investment.RoundInvestment `json:"investments"`
+		CursorPaginationResponse
+	}
+}
+
+type GetOffsetPaginatedRoundInvestmentsOutput struct {
+	Body struct {
+		MessageResponse
+		Investments []investment.RoundInvestment `json:"investments"`
+		OffsetPaginationResponse
+	}
+}
+
 type SingleAccountResponse struct {
 	Body struct {
 		MessageResponse
 		Account *account.Account `json:"account"`
 	}
+}
+
+type ParentInvestmentIDParam struct {
+	PathIDParam
+	InvestmentID int `path:"investmentId" minimum:"1"`
 }

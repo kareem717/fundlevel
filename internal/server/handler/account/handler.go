@@ -6,6 +6,7 @@ import (
 	"errors"
 
 	"fundlevel/internal/entities/account"
+	"fundlevel/internal/entities/investment"
 	"fundlevel/internal/server/handler/shared"
 	"fundlevel/internal/service"
 
@@ -212,6 +213,112 @@ func (h *httpHandler) getOffsetPaginatedVentures(ctx context.Context, input *sha
 		resp.Body.HasMore = true
 		resp.Body.Ventures = resp.Body.Ventures[:len(resp.Body.Ventures)-1]
 	}
+
+	return resp, nil
+}
+
+func (h *httpHandler) getCursorPaginatedRoundInvestments(ctx context.Context, input *shared.GetCursorPaginatedByParentPathIDInput) (*shared.GetCursorPaginatedRoundInvestmentsOutput, error) {
+	limit := input.Limit + 1
+
+	investments, err := h.service.AccountService.GetRoundInvestmentsByCursor(ctx, input.ID, limit, input.Cursor)
+
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("investments not found")
+		default:
+			h.logger.Error("failed to fetch investments", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the investments")
+		}
+	}
+
+	resp := &shared.GetCursorPaginatedRoundInvestmentsOutput{}
+	resp.Body.Message = "Investments fetched successfully"
+	resp.Body.Investments = investments
+
+	if len(investments) == limit {
+		resp.Body.NextCursor = &investments[len(investments)-1].ID
+		resp.Body.HasMore = true
+		resp.Body.Investments = resp.Body.Investments[:len(resp.Body.Investments)-1]
+	}
+
+	return resp, nil
+}
+
+func (h *httpHandler) getOffsetPaginatedRoundInvestments(ctx context.Context, input *shared.GetOffsetPaginatedByParentPathIDInput) (*shared.GetOffsetPaginatedRoundInvestmentsOutput, error) {
+	pageSize := input.PageSize + 1
+
+	investments, err := h.service.AccountService.GetRoundInvestmentsByPage(ctx, input.ID, pageSize, input.Page)
+
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("investments not found")
+		default:
+			h.logger.Error("failed to fetch investments", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the investments")
+		}
+	}
+
+	resp := &shared.GetOffsetPaginatedRoundInvestmentsOutput{}
+	resp.Body.Message = "Investments fetched successfully"
+	resp.Body.Investments = investments
+
+	if len(investments) == pageSize {
+		resp.Body.HasMore = true
+		resp.Body.Investments = resp.Body.Investments[:len(resp.Body.Investments)-1]
+	}
+
+	return resp, nil
+}
+
+func (h *httpHandler) withdrawRoundInvestment(ctx context.Context, input *shared.ParentInvestmentIDParam) (*shared.MessageResponse, error) {
+	err := h.service.AccountService.WithdrawRoundInvestment(ctx, input.ID, input.InvestmentID)
+	if err != nil {
+		h.logger.Error("failed to withdraw investment", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while withdrawing the investment")
+	}
+
+	resp := &shared.MessageResponse{}
+	resp.Message = "Investment withdrawn successfully"
+
+	return resp, nil
+}
+
+func (h *httpHandler) deleteRoundInvestment(ctx context.Context, input *shared.ParentInvestmentIDParam) (*shared.MessageResponse, error) {
+	err := h.service.AccountService.DeleteRoundInvestment(ctx, input.ID, input.InvestmentID)
+	if err != nil {
+		h.logger.Error("failed to delete investment", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while deleting the investment")
+	}
+
+	resp := &shared.MessageResponse{}
+	resp.Message = "Investment deleted successfully"
+
+	return resp, nil
+}
+
+type CreateRoundInvestmentInput struct {
+	Body investment.CreateInvestmentParams `json:"investment"`
+}
+
+type SingleRoundInvestmentResponse struct {
+	Body struct {
+		shared.MessageResponse
+		Investment *investment.RoundInvestment `json:"investment"`
+	}
+}
+
+func (h *httpHandler) createRoundInvestment(ctx context.Context, input *CreateRoundInvestmentInput) (*SingleRoundInvestmentResponse, error) {
+	investment, err := h.service.AccountService.CreateRoundInvestment(ctx, input.Body)
+	if err != nil {
+		h.logger.Error("failed to create investment", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while creating the investment")
+	}
+
+	resp := &SingleRoundInvestmentResponse{}
+	resp.Body.Message = "Investment created successfully"
+	resp.Body.Investment = &investment
 
 	return resp, nil
 }

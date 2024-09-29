@@ -155,9 +155,6 @@ func RegisterHumaRoutes(
 		Tags:        []string{"Partial Total Rounds"},
 	}, handler.deletePartialTotalRound)
 
-
-
-
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "get-dutch-dynamic-round-by-id",
 		Method:      http.MethodGet,
@@ -202,5 +199,30 @@ func RegisterHumaRoutes(
 		Description: "Delete a dutch dynamic round.",
 		Tags:        []string{"Dutch Dynamic Rounds"},
 	}, handler.deleteDutchDynamicRound)
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-round-investments-cursor",
+		Method:      http.MethodGet,
+		Path:        "/round/{id}/round-investments/cursor",
+		Summary:     "Get round investments",
+		Description: "Get round investments.",
+		Tags:        []string{"Round", "Investments"},
+	}, handler.getCursorPaginatedRoundInvestments)
 
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-round-investments-offset",
+		Method:      http.MethodGet,
+		Path:        "/round/{id}/round-investments/offset",
+		Summary:     "Get round investments",
+		Description: "Get round investments.",
+		Tags:        []string{"Round", "Investments"},
+	}, handler.getOffsetPaginatedRoundInvestments)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "accept-round-investment",
+		Method:      http.MethodPost,
+		Path:        "/round/{id}/round-investments/{investmentId}/accept",
+		Summary:     "Accept a round investment",
+		Description: "Accept a round investment.",
+		Tags:        []string{"Round", "Investments"},
+	}, handler.acceptRoundInvestment)
 }

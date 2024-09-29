@@ -108,4 +108,49 @@ func RegisterHumaRoutes(
 		Tags:        []string{"Accounts", "Ventures"},
 	}, handler.getCursorPaginatedVentures)
 
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "create-round-investment",
+		Method:      http.MethodPost,
+		Path:        "/account/{id}/round-investments",
+		Summary:     "Create a round investment",
+		Description: "Create a round investment.",
+		Tags:        []string{"Accounts", "Investments"},
+	}, handler.createRoundInvestment)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "delete-round-investment",
+		Method:      http.MethodDelete,
+		Path:        "/account/{id}/round-investments/{investmentId}",
+		Summary:     "Delete a round investment",
+		Description: "Delete a round investment.",
+		Tags:        []string{"Accounts", "Investments"},
+	}, handler.deleteRoundInvestment)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-round-investments-cursor",
+		Method:      http.MethodGet,
+		Path:        "/account/{id}/round-investments/cursor",
+		Summary:     "Get round investments",
+		Description: "Get round investments.",
+		Tags:        []string{"Accounts", "Investments"},
+	}, handler.getCursorPaginatedRoundInvestments)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-round-investments-offset",
+		Method:      http.MethodGet,
+		Path:        "/account/{id}/round-investments/offset",
+		Summary:     "Get round investments",
+		Description: "Get round investments.",
+		Tags:        []string{"Accounts", "Investments"},
+	}, handler.getOffsetPaginatedRoundInvestments)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "withdraw-round-investment",
+		Method:      http.MethodPost,
+		Path:        "/account/{id}/round-investments/{investmentId}/withdraw",
+		Summary:     "Withdraw a round investment",
+		Description: "Withdraw a round investment.",
+		Tags:        []string{"Accounts", "Investments"},
+	}, handler.withdrawRoundInvestment)
+
 }
