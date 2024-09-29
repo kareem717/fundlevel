@@ -127,7 +127,7 @@ func RegisterHumaRoutes(
 	}, handler.deleteRoundInvestment)
 
 	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-round-investments-cursor",
+		OperationID: "get-account-round-investments-cursor",
 		Method:      http.MethodGet,
 		Path:        "/account/{id}/round-investments/cursor",
 		Summary:     "Get round investments",

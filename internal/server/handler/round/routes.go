@@ -84,7 +84,7 @@ func RegisterHumaRoutes(
 	}, handler.getCursorPaginatedRegularDynamicRounds)
 
 	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-all-fixed-total-rounds-offset",
+		OperationID: "get-all-regular-dynamic-rounds-offset",
 		Method:      http.MethodGet,
 		Path:        "/round/dynamic/regular/offset",
 		Summary:     "Get offset paginated regular dynamic rounds",
@@ -200,7 +200,7 @@ func RegisterHumaRoutes(
 		Tags:        []string{"Dutch Dynamic Rounds"},
 	}, handler.deleteDutchDynamicRound)
 	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-round-investments-cursor",
+		OperationID: "get-round-round-investments-cursor",
 		Method:      http.MethodGet,
 		Path:        "/round/{id}/round-investments/cursor",
 		Summary:     "Get round investments",
@@ -209,7 +209,7 @@ func RegisterHumaRoutes(
 	}, handler.getCursorPaginatedRoundInvestments)
 
 	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-round-investments-offset",
+		OperationID: "get-round-round-investments-offset",
 		Method:      http.MethodGet,
 		Path:        "/round/{id}/round-investments/offset",
 		Summary:     "Get round investments",
