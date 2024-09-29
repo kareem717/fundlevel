@@ -37,16 +37,16 @@ const NavigationConfig: Group[] = [
 		groupLabel: "Ventures",
 		menus: [
 			{
-				href: redirects.app.venture.myVentures,
+				href: redirects.app.venture.myVentures.index,
 				label: "My Ventures",
-				pathIdentifier: redirects.app.venture.myVentures,
+				pathIdentifier: redirects.app.venture.myVentures.index,
 				icon: "store",
 				submenus: [],
 			},
 			{
-				href: redirects.app.venture.create,
+				href: redirects.app.venture.myVentures.create,
 				label: "Create",
-				pathIdentifier: redirects.app.venture.create,
+				pathIdentifier: redirects.app.venture.myVentures.create,
 				icon: "add",
 				submenus: [],
 			},
@@ -63,9 +63,9 @@ const NavigationConfig: Group[] = [
 				submenus: [],
 			},
 			{
-				href: redirects.app.venture.create,
+				href: redirects.app.venture.myVentures.create,
 				label: "Create",
-				pathIdentifier: redirects.app.venture.create,
+				pathIdentifier: redirects.app.venture.myVentures.create,
 				icon: "add",
 				submenus: [],
 			},

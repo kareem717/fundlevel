@@ -7,13 +7,14 @@ export interface VentureIndexCardProps extends ComponentPropsWithoutRef<"div"> {
   ventureId: string
   name: string
   createdAt: Date
+  href?: string
 };
 
-export const VentureIndexCard: FC<VentureIndexCardProps> = ({ className, ventureId, name, createdAt, ...props }) => {
+export const VentureIndexCard: FC<VentureIndexCardProps> = ({ className, ventureId, name, createdAt, href, ...props }) => {
 
   return (
     // TODO: Add a redirect to the venture page
-    <Link href={redirects.app.explore.replace(":id", ventureId)}>
+    <Link href={href ?? redirects.app.venture.view.replace(":id", ventureId)}>
       <div className={cn("bg-card border shadow-sm rounded-md p-4 aspect-square h-full w-full flex flex-col justify-between items-start", className)}>
         <div className="text-lg font-bold">
           {name}

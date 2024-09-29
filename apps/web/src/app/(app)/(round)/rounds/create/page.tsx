@@ -26,7 +26,7 @@ export default function CreateVenturePage() {
             <CardDescription>Create a new venture to start collecting emails.</CardDescription>
           </CardHeader>
           <CardContent>
-            <CreateVentureForm />
+            TBI
           </CardContent>
         </Card>
       </div>

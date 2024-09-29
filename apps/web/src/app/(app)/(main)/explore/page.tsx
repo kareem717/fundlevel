@@ -33,7 +33,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: { 
     <div className="flex flex-col gap-4 w-full h-full">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Ventures</h1>
-        <Link className={cn(buttonVariants({ variant: "secondary" }), "flex items-center gap-2")} href="#">
+        <Link className={cn(buttonVariants({ variant: "secondary" }), "flex items-center gap-2")} href={redirects.app.venture.myVentures.create}>
           <Icons.add className="size-5" />
           <span className="hidden md:inline">
             Create Venture

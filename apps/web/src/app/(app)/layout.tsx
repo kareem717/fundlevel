@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
 import redirects from "@/lib/config/redirects";
 import AuthProvider from "@/components/providers/auth-provider";
-import createClient from "@/lib/utils/supabase/server";
 import { getAccount, getUser } from "@/actions/auth";
 
 export default async function AppLayout({

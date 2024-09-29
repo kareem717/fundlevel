@@ -41,8 +41,11 @@ const redirects = {
 			billing: "/settings/billing",
 		},
 		venture: {
-			myVentures: "/my-ventures",
-			create: "/venture/create",
+			myVentures: {
+				view: "/my-ventures/:id",
+				index: "/my-ventures",
+				create: "/my-ventures/create",
+			},
 			view: "/venture/:id",
 		},
 		rounds: {

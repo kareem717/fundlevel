@@ -16,3 +16,5 @@ export const currency = string().oneOf([
 ]);
 
 export const dollarAmount = number().min(0).max(9999999999.99);
+
+export const intIdSchema = number().min(1).integer()
