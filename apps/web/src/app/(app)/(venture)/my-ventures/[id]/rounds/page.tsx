@@ -1,7 +1,7 @@
 import { buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
 
-export default function VentureRoundsPage({ params }: { params: { id: string } }) {
+export default async function VentureRoundsPage({ params }: { params: { id: string } }) {
 
   return (
     <div className="p-4 space-y-4">

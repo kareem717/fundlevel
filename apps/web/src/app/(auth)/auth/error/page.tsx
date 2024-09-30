@@ -1,7 +1,7 @@
 import { Icons } from '@/components/icons'
 
 
-export default function AuthErrorPage({ searchParams }: { searchParams: { error?: string | null } }) {
+export default async function AuthErrorPage({ searchParams }: { searchParams: { error?: string | null } }) {
   let error;
   if (searchParams.error) {
     // i.e. The+redirect_uri+MUST+match+the+registered+callback+URL+for+this+application.

@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   title: "Create a venture",
 };
 
-export default function CreateVenturePage() {
+export default async function CreateVenturePage() {
   return (
     <div className="flex flex-col justify-center w-full h-full p-2 gap-16">
       <div className="flex flex-col items-start w-full">

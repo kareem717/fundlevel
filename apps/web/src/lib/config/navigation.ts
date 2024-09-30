@@ -56,45 +56,45 @@ const NavigationConfig: Group[] = [
 		groupLabel: "Rounds",
 		menus: [
 			{
-				href: redirects.app.rounds.myRounds.index,
+				href: "",
 				label: "My Rounds",
-				pathIdentifier: redirects.app.rounds.myRounds.index,
+				pathIdentifier: redirects.app.rounds.myRounds.root,
 				icon: "chartPie",
 				submenus: [
 					{
-						href: redirects.app.venture.myVentures.index,
+						href: redirects.app.rounds.myRounds.overview,
 						label: "Overview",
-						pathIdentifier: redirects.app.venture.myVentures.index,
+						pathIdentifier: redirects.app.rounds.myRounds.overview,
 					},
 					{
-						href: redirects.app.venture.myVentures.index,
+						href: redirects.app.rounds.myRounds.regularDynamic,
 						label: "Regular Dynamic",
-						pathIdentifier: redirects.app.venture.myVentures.index,
+						pathIdentifier: redirects.app.rounds.myRounds.regularDynamic,
 					},
 
 					{
-						href: redirects.app.venture.myVentures.index,
+						href: redirects.app.rounds.myRounds.dutchDynamic,
 						label: "Dutch Dynamic",
-						pathIdentifier: redirects.app.venture.myVentures.index,
+						pathIdentifier: redirects.app.rounds.myRounds.dutchDynamic,
 					},
 
 					{
-						href: redirects.app.venture.myVentures.index,
+						href: redirects.app.rounds.myRounds.fixedTotal,
 						label: "Fixed Total",
-						pathIdentifier: redirects.app.venture.myVentures.index,
+						pathIdentifier: redirects.app.rounds.myRounds.fixedTotal,
 					},
 
 					{
-						href: redirects.app.venture.myVentures.index,
+						href: redirects.app.rounds.myRounds.partialTotal,
 						label: "Partial Total",
-						pathIdentifier: redirects.app.venture.myVentures.index,
+						pathIdentifier: redirects.app.rounds.myRounds.partialTotal,
 					},
 				],
 			},
 			{
-				href: redirects.app.venture.myVentures.create,
+				href: "",
 				label: "Create",
-				pathIdentifier: redirects.app.venture.myVentures.create,
+				pathIdentifier: redirects.app.rounds.myRounds.create.root,
 				icon: "add",
 				submenus: [
 					{

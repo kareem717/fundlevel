@@ -1,12 +1,12 @@
 import { getAccountVentures } from "@/actions/ventures"
-import page from "@/app/page";
 import { VentureIndexCard } from "@/components/app/ventures/venture-index-card"
 import { Icons } from "@/components/icons";
 import { buttonVariants } from "@/components/ui/button";
-import { Pagination, PaginationContent, PaginationItem, PaginationPrevious, PaginationNext } from "@/components/ui/pagination";
 import redirects from "@/lib/config/redirects";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+
+export const dynamic = 'force-dynamic'; // Add this line
 
 export default async function MyVenturesPage() {
   const ventureResp = await getAccountVentures({

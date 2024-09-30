@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   title: "Create a round",
 };
 
-export default function CreateFixedTotalRoundPage({ params }: { params: { id: string } }) {
+export default async function CreateFixedTotalRoundPage({ params }: { params: { id: string } }) {
   return (
     <div className="flex flex-col justify-center w-full h-full p-2 gap-16">
       <div className="flex flex-col items-center w-full h-full">

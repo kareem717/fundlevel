@@ -56,9 +56,15 @@ const redirects = {
 		},
 		rounds: {
 			myRounds: {
+				root: "/my-rounds",
 				view: "/my-rounds/:id",
-				index: "/my-rounds",
+				overview: "/my-rounds",
+				regularDynamic: "/my-rounds/regular-dynamic",
+				dutchDynamic: "/my-rounds/dutch-dynamic",
+				partialTotal: "/my-rounds/partial-total",
+				fixedTotal: "/my-rounds/fixed-total",
 				create: {
+					root: "/my-rounds/create",
 					fixedTotal: "/my-rounds/create/fixed-total",
 					partialTotal: "/my-rounds/create/partial-total",
 					regularDynamic: "/my-rounds/create/regular-dynamic",

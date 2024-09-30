@@ -3,6 +3,8 @@ import { CreateAccountForm } from "@/components/auth/account/create-account-form
 import redirects from "@/lib/config/redirects";
 import { redirect } from "next/navigation";
 
+export const dynamic = 'force-dynamic'; // Add this line˝
+
 export default async function CreateAccountPage() {
 	const result = await getAccount()
 
