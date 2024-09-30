@@ -70,6 +70,9 @@ export const CreatePartialTotalRoundForm: FC<CreatePartialTotalRoundFormProps> =
         ventureId: 1,
         status: "active",
       },
+      partialTotalRound: {
+        investorCount: 1,
+      },
     },
   })
 
@@ -276,7 +279,26 @@ export const CreatePartialTotalRoundForm: FC<CreatePartialTotalRoundFormProps> =
             )}
           />
         </div>
-
+        <FormField
+          control={form.control}
+          name="partialTotalRound.investorCount"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Number of investors</FormLabel>
+              <FormControl>
+                <Input
+                  type="number"
+                  placeholder="10"
+                  {...field}
+                />
+              </FormControl>
+              <FormDescription>
+                The precentage you are offering to sell is divided by the number of investors you allow to invest in the round.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <Button type="submit" disabled={isExecuting} className="w-full">
           {isExecuting && (<Icons.spinner className="mr-2 h-4 w-4 animate-spin" />)}
           Create
