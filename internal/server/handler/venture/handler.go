@@ -323,6 +323,59 @@ func (h *httpHandler) getCursorPaginatedDutchDynamicRounds(ctx context.Context, 
 	return resp, nil
 }
 
+func (h *httpHandler) getOffsetPaginatedRoundInvestments(ctx context.Context, input *shared.GetOffsetPaginatedByParentPathIDInput) (*shared.GetOffsetPaginatedRoundInvestmentsOutput, error) {
+	rounds, err := h.service.VentureService.GetVentureRoundInvestmentsByPage(ctx, input.ID, input.PageSize, input.Page)
+
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("round investments not found")
+		default:
+			h.logger.Error("failed to fetch round investments", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the round investments")
+		}
+	}
+
+	resp := &shared.GetOffsetPaginatedRoundInvestmentsOutput{}
+	resp.Body.Message = "Round investments fetched successfully"
+	resp.Body.Investments = rounds
+
+	if len(rounds) > input.PageSize {
+		resp.Body.HasMore = true
+		resp.Body.Investments = resp.Body.Investments[:input.PageSize]
+	}
+
+	return resp, nil
+}
+
+func (h *httpHandler) getCursorPaginatedRoundInvestments(ctx context.Context, input *shared.GetCursorPaginatedByParentPathIDInput) (*shared.GetCursorPaginatedRoundInvestmentsOutput, error) {
+	limit := input.Limit + 1
+
+	rounds, err := h.service.VentureService.GetVentureRoundInvestmentsByCursor(ctx, input.ID, limit, input.Cursor)
+
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("rounds not found")
+		default:
+			h.logger.Error("failed to fetch rounds", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the round investments")
+		}
+	}
+
+	resp := &shared.GetCursorPaginatedRoundInvestmentsOutput{}
+	resp.Body.Message = "Round investments fetched successfully"
+	resp.Body.Investments = rounds
+
+	if len(rounds) == limit {
+		resp.Body.NextCursor = &rounds[input.Limit].Round.ID
+		resp.Body.HasMore = true
+		resp.Body.Investments = resp.Body.Investments[:input.Limit]
+	}
+
+	return resp, nil
+}
+
 type CreateVentureInput struct {
 	Body venture.CreateVentureParams `json:"venture"`
 }

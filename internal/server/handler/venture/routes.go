@@ -119,6 +119,24 @@ func RegisterHumaRoutes(
 	}, handler.getOffsetPaginatedDutchDynamicRounds)
 
 	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-venture-round-investments-cursor",
+		Method:      http.MethodGet,
+		Path:        "/venture/{id}/round-investments/cursor",
+		Summary:     "Get cursor paginated round investments for a venture",
+		Description: "Get all round investments for a venture.",
+		Tags:        []string{"Ventures", "Round Investments"},
+	}, handler.getCursorPaginatedRoundInvestments)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-venture-round-investments-offset",
+		Method:      http.MethodGet,
+		Path:        "/venture/{id}/round-investments/offset",
+		Summary:     "Get offset paginated round investments for a venture",
+		Description: "Get all round investments for a venture.",
+		Tags:        []string{"Ventures", "Round Investments"},
+	}, handler.getOffsetPaginatedRoundInvestments)
+
+	huma.Register(humaApi, huma.Operation{
 		OperationID: "create-venture",
 		Method:      http.MethodPost,
 		Path:        "/venture",
