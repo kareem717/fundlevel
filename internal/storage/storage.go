@@ -31,6 +31,9 @@ type VentureRepository interface {
 
 	GetDutchDynamicRoundsByCursor(ctx context.Context, ventureId int, paginationParams shared.CursorPagination) ([]round.DutchDynamicRound, error)
 	GetDutchDynamicRoundsByPage(ctx context.Context, ventureId int, paginationParams shared.OffsetPagination) ([]round.DutchDynamicRound, error)
+
+	GetVentureRoundInvestmentsByCursor(ctx context.Context, ventureId int, paginationParams shared.CursorPagination) ([]investment.RoundInvestment, error)
+	GetVentureRoundInvestmentsByPage(ctx context.Context, ventureId int, paginationParams shared.OffsetPagination) ([]investment.RoundInvestment, error)
 }
 
 type RoundRepository interface {
