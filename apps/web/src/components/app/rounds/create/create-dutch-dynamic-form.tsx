@@ -276,7 +276,75 @@ export const CreateDutchDynamicRoundForm: FC<CreateDutchDynamicRoundFormProps> =
             )}
           />
         </div>
-
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 w-full">
+            <FormField
+              control={form.control}
+              name="dutchDynamicRound.valuationDollarDropRate"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Dollar Drop Rate</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="25000"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    The venture valuation will drop by this every drop interval.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="dutchDynamicRound.valuationDropIntervalDays"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Drop Interval (Days)</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="25000"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Every this many days, the venture valuation will drop by the dollar drop rate.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="dutchDynamicRound.valuationStopLoss"
+              render={({ field }) => (
+                <FormItem className="w-full sm:col-span-2 xl:col-span-1">
+                  <FormLabel>Stop Loss</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="25000"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    The buy-in price will continue to drop until the valuation is equal to or less than this value.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          {form.getValues("dutchDynamicRound.valuationStopLoss") && form.getValues("dutchDynamicRound.valuationDollarDropRate") && form.getValues("dutchDynamicRound.valuationDropIntervalDays") && (
+            <p>
+              The venture valuation will drop by <b>{form.getValues("dutchDynamicRound.valuationDollarDropRate")}</b> every <b>{form.getValues("dutchDynamicRound.valuationDropIntervalDays")}</b> days until it reaches <b>{form.getValues("dutchDynamicRound.valuationStopLoss")}</b>.
+            </p>
+          )}
+        </div>
         <Button type="submit" disabled={isExecuting} className="w-full">
           {isExecuting && (<Icons.spinner className="mr-2 h-4 w-4 animate-spin" />)}
           Create
