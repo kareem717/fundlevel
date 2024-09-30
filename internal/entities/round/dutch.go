@@ -17,7 +17,7 @@ type DutchDynamicRound struct {
 }
 
 type DutchDynamicRoundParams struct {
-	RoundID                   int `json:"roundId" readOnly:"true"`
+	RoundID                   int `json:"roundId" hidden:"true"`
 	ValuationDollarDropRate   int `json:"valuationDollarDropRate"`
 	ValuationStopLoss         int `json:"valuationStopLoss"`
 	ValuationDropIntervalDays int `json:"valuationDropIntervalDays"`

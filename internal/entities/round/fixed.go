@@ -16,7 +16,7 @@ type FixedTotalRound struct {
 }
 
 type createFixedTotalRoundParams struct {
-	RoundID int `json:"roundId"`
+	RoundID int `json:"roundId" hidden:"true"`
 }
 
 // CreateFixedTotalRoundParams contains the parameters for creating a new fixed total round.
