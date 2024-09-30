@@ -126,7 +126,6 @@ export type DutchDynamicRound = {
 };
 
 export type DutchDynamicRoundParams = {
-    readonly roundId: number;
     valuationDollarDropRate: number;
     valuationDropIntervalDays: number;
     valuationStopLoss: number;
@@ -330,7 +329,6 @@ export type PartialTotalRound = {
 
 export type PartialTotalRoundParams = {
     investorCount: number;
-    readonly roundId: number;
 };
 
 export type RegularDynamicRound = {
@@ -344,7 +342,6 @@ export type RegularDynamicRound = {
 
 export type RegularDynamicRoundParams = {
     daysExtendOnBid: number;
-    readonly roundId: number;
 };
 
 export type Round = {
@@ -889,6 +886,34 @@ export type UpdateVentureData = {
 export type UpdateVentureResponse = (SingleVentureResponseBody);
 
 export type UpdateVentureError = (ErrorModel);
+
+export type GetVentureRoundInvestmentsCursorData = {
+    path: {
+        id: number;
+    };
+    query?: {
+        cursor?: number;
+        limit?: number;
+    };
+};
+
+export type GetVentureRoundInvestmentsCursorResponse = (GetCursorPaginatedRoundInvestmentsOutputBody);
+
+export type GetVentureRoundInvestmentsCursorError = (ErrorModel);
+
+export type GetVentureRoundInvestmentsOffsetData = {
+    path: {
+        id: number;
+    };
+    query?: {
+        page?: number;
+        pageSize?: number;
+    };
+};
+
+export type GetVentureRoundInvestmentsOffsetResponse = (GetOffsetPaginatedRoundInvestmentsOutputBody);
+
+export type GetVentureRoundInvestmentsOffsetError = (ErrorModel);
 
 export type GetVentureDutchDynamicRoundsCursorData = {
     path: {
@@ -1531,6 +1556,20 @@ export type UpdateVentureResponseTransformer = (data: any) => Promise<UpdateVent
 
 export const UpdateVentureResponseTransformer: UpdateVentureResponseTransformer = async (data) => {
     SingleVentureResponseBodyModelResponseTransformer(data);
+    return data;
+};
+
+export type GetVentureRoundInvestmentsCursorResponseTransformer = (data: any) => Promise<GetVentureRoundInvestmentsCursorResponse>;
+
+export const GetVentureRoundInvestmentsCursorResponseTransformer: GetVentureRoundInvestmentsCursorResponseTransformer = async (data) => {
+    GetCursorPaginatedRoundInvestmentsOutputBodyModelResponseTransformer(data);
+    return data;
+};
+
+export type GetVentureRoundInvestmentsOffsetResponseTransformer = (data: any) => Promise<GetVentureRoundInvestmentsOffsetResponse>;
+
+export const GetVentureRoundInvestmentsOffsetResponseTransformer: GetVentureRoundInvestmentsOffsetResponseTransformer = async (data) => {
+    GetOffsetPaginatedRoundInvestmentsOutputBodyModelResponseTransformer(data);
     return data;
 };
 

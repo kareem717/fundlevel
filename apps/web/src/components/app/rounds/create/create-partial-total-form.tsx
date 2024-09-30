@@ -24,11 +24,11 @@ import { createVentureSchema } from "@/lib/validations/ventures";
 import { Textarea } from "@/components/ui/textarea";
 import { InferType } from "yup";
 
-export interface CreateVentureFormProps extends ComponentPropsWithoutRef<'form'> {
+export interface CreatePartialTotalRoundFormProps extends ComponentPropsWithoutRef<'form'> {
   onSuccess?: () => void
 }
 
-export const CreateVentureForm: FC<CreateVentureFormProps> = ({ className, onSuccess, ...props }) => {
+export const CreatePartialTotalRoundForm: FC<CreatePartialTotalRoundFormProps> = ({ className, onSuccess, ...props }) => {
   const router = useRouter()
 
   const form = useForm<InferType<typeof createVentureSchema>>({

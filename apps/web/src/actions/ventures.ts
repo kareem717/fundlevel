@@ -5,9 +5,19 @@ import {
 	createVenture as createVentureApi,
 	getAccountVentures as getAccountVenturesApi,
 	getVentureById as getVentureByIdApi,
+	getVentureFixedTotalRoundsCursor as getVentureFixedTotalRoundsCursorApi,
+	getVenturePartialTotalRoundsCursor as getVenturePartialTotalRoundsCursorApi,
+	getVentureRegularDynamicRoundsCursor as getVentureRegularDynamicRoundsCursorApi,
+	getVentureDutchDynamicRoundsCursor as getVentureDutchDynamicRoundsCursorApi,
+	getVentureRoundInvestmentsCursor as getVentureRoundInvestmentsCursorApi,
 } from "@/lib/api";
-import { intIdSchema, paginationRequestSchema } from "@/lib/validations/shared";
+import {
+	intIdSchema,
+	paginationRequestSchema,
+	getByParentIdWithCursorSchema,
+} from "@/lib/validations/shared";
 import { createVentureSchema } from "@/lib/validations/ventures";
+import { env } from "@/env";
 
 /**
  * Get all ventures
@@ -20,7 +30,7 @@ export const getAccountVentures = actionClient
 				throw new Error("Account not found");
 			}
 
-			return await getAccountVenturesApi({
+			const data = await getAccountVenturesApi({
 				client: apiClient,
 				throwOnError: true,
 				path: {
@@ -31,6 +41,8 @@ export const getAccountVentures = actionClient
 					limit: limit ?? undefined,
 				},
 			});
+
+			return data.data;
 		}
 	);
 
@@ -48,7 +60,7 @@ export const createVenture = actionClient
 				throw new Error("User not found");
 			}
 
-			return await createVentureApi({
+			await createVentureApi({
 				client: apiClient,
 				throwOnError: true,
 				body: {
@@ -71,3 +83,118 @@ export const getVentureById = actionClient
 			},
 		});
 	});
+
+export const getVentureFixedTotalRoundsCursor = actionClient
+	.schema(getByParentIdWithCursorSchema)
+	.action(
+		async ({
+			ctx: { apiClient },
+			parsedInput: { parentId, cursor, limit },
+		}) => {
+			const response = await getVentureFixedTotalRoundsCursorApi({
+				client: apiClient,
+				throwOnError: true,
+				path: {
+					id: parentId,
+				},
+				query: {
+					cursor: cursor ?? undefined,
+					limit: limit ?? undefined,
+				},
+			});
+
+			return response.data;
+		}
+	);
+
+export const getVenturePartialTotalRoundsCursor = actionClient
+	.schema(getByParentIdWithCursorSchema)
+	.action(
+		async ({
+			ctx: { apiClient },
+			parsedInput: { parentId, cursor, limit },
+		}) => {
+			const response = await getVenturePartialTotalRoundsCursorApi({
+				client: apiClient,
+				throwOnError: true,
+				path: {
+					id: parentId,
+				},
+				query: {
+					cursor: cursor ?? undefined,
+					limit: limit ?? undefined,
+				},
+			});
+
+			return response.data;
+		}
+	);
+
+export const getVentureRegularDynamicRoundsCursor = actionClient
+	.schema(getByParentIdWithCursorSchema)
+	.action(
+		async ({
+			ctx: { apiClient },
+			parsedInput: { parentId, cursor, limit },
+		}) => {
+			const response = await getVentureRegularDynamicRoundsCursorApi({
+				client: apiClient,
+				throwOnError: true,
+				path: {
+					id: parentId,
+				},
+				query: {
+					cursor: cursor ?? undefined,
+					limit: limit ?? undefined,
+				},
+			});
+
+			return response.data;
+		}
+	);
+
+export const getVentureDutchDynamicRoundsCursor = actionClient
+	.schema(getByParentIdWithCursorSchema)
+	.action(
+		async ({
+			ctx: { apiClient },
+			parsedInput: { parentId, cursor, limit },
+		}) => {
+			const response = await getVentureDutchDynamicRoundsCursorApi({
+				client: apiClient,
+				throwOnError: true,
+				path: {
+					id: parentId,
+				},
+				query: {
+					cursor: cursor ?? undefined,
+					limit: limit ?? undefined,
+				},
+			});
+
+			return response.data;
+		}
+	);
+
+export const getVentureRoundInvestmentsCursor = actionClient
+	.schema(getByParentIdWithCursorSchema)
+	.action(
+		async ({
+			ctx: { apiClient },
+			parsedInput: { parentId, cursor, limit },
+		}) => {
+			const response = await getVentureRoundInvestmentsCursorApi({
+				client: apiClient,
+				throwOnError: true,
+				path: {
+					id: parentId,
+				},
+				query: {
+					cursor: cursor ?? undefined,
+					limit: limit ?? undefined,
+				},
+			});
+
+			return response.data;
+		}
+	);

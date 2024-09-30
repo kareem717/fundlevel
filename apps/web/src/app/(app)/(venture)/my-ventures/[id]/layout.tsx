@@ -29,9 +29,7 @@ export default async function VentureLayout({
       <div className="flex flex-col flex-1 overflow-hidden">
         <VentureNav ventureId={params.id} />
         <div className="flex-1 overflow-auto px-4 py-10 md:px-8 md:py-8 w-full">
-          <div className="max-w-screen-lg mx-auto">
-            {children}
-          </div>
+          {children}
         </div>
       </div>
     </div>

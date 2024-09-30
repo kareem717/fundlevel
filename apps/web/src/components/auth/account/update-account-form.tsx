@@ -14,23 +14,22 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner"
 import { updateAccount } from "@/actions/auth";
-import { ComponentPropsWithoutRef, FC } from "react";
+import { ComponentPropsWithoutRef, FC, useState } from "react";
 import { Icons } from "@/components/icons";
-import { useRouter } from "next/navigation";
 import { useAction } from "next-safe-action/hooks";
 import { Account } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { InferType } from "yup";
 import { updateAccountSchema } from "@/lib/validations/account";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useAuth } from "@/components/providers/auth-provider";
 
 export interface UpdateAccountFormProps extends ComponentPropsWithoutRef<"form"> {
-  account: Account
 }
 
-export const UpdateAccountForm: FC<UpdateAccountFormProps> = ({ account, className, ...props }) => {
-  const router = useRouter();
-
+export const UpdateAccountForm: FC<UpdateAccountFormProps> = ({ className, ...props }) => {
+  const { account } = useAuth()
+  
   const form = useForm<InferType<typeof updateAccountSchema>>({
     resolver: yupResolver(updateAccountSchema),
     defaultValues: {
@@ -42,7 +41,6 @@ export const UpdateAccountForm: FC<UpdateAccountFormProps> = ({ account, classNa
   const { executeAsync, isExecuting } = useAction(updateAccount, {
     onSuccess: () => {
       toast.success("Account updated successfully!");
-      router.refresh();
     },
     onError: ({ error }) => {
       console.log(error);

@@ -51,7 +51,7 @@ export const updateAccount = actionClient
 				throw new Error("Account not found");
 			}
 
-			return await updateAccountApi({
+			await updateAccountApi({
 				client: apiClient,
 				path: {
 					id: account.id,

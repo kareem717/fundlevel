@@ -297,11 +297,6 @@ export const DutchDynamicRoundSchema = {
 export const DutchDynamicRoundParamsSchema = {
     additionalProperties: false,
     properties: {
-        roundId: {
-            format: 'int64',
-            readOnly: true,
-            type: 'integer'
-        },
         valuationDollarDropRate: {
             format: 'int64',
             type: 'integer'
@@ -315,7 +310,7 @@ export const DutchDynamicRoundParamsSchema = {
             type: 'integer'
         }
     },
-    required: ['roundId', 'valuationDollarDropRate', 'valuationStopLoss', 'valuationDropIntervalDays'],
+    required: ['valuationDollarDropRate', 'valuationStopLoss', 'valuationDropIntervalDays'],
     type: 'object'
 } as const;
 
@@ -789,14 +784,9 @@ export const PartialTotalRoundParamsSchema = {
         investorCount: {
             format: 'int64',
             type: 'integer'
-        },
-        roundId: {
-            format: 'int64',
-            readOnly: true,
-            type: 'integer'
         }
     },
-    required: ['roundId', 'investorCount'],
+    required: ['investorCount'],
     type: 'object'
 } as const;
 
@@ -839,14 +829,9 @@ export const RegularDynamicRoundParamsSchema = {
             format: 'int64',
             minimum: 1,
             type: 'integer'
-        },
-        roundId: {
-            format: 'int64',
-            readOnly: true,
-            type: 'integer'
         }
     },
-    required: ['roundId', 'daysExtendOnBid'],
+    required: ['daysExtendOnBid'],
     type: 'object'
 } as const;
 

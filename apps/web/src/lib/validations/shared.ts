@@ -17,4 +17,10 @@ export const currency = string().oneOf([
 
 export const dollarAmount = number().min(0).max(9999999999.99);
 
-export const intIdSchema = number().min(1).integer()
+export const intIdSchema = number().min(1).integer();
+
+export const getByParentIdWithCursorSchema = object().shape({
+	parentId: intIdSchema.required(),
+	cursor: number().min(1).default(1),
+	limit: number().min(1).max(100).default(10).optional(),
+});

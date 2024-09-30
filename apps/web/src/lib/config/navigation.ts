@@ -56,17 +56,88 @@ const NavigationConfig: Group[] = [
 		groupLabel: "Rounds",
 		menus: [
 			{
-				href: redirects.app.rounds.myRounds,
+				href: redirects.app.rounds.myRounds.index,
 				label: "My Rounds",
-				pathIdentifier: redirects.app.rounds.myRounds,
+				pathIdentifier: redirects.app.rounds.myRounds.index,
 				icon: "chartPie",
-				submenus: [],
+				submenus: [
+					{
+						href: redirects.app.venture.myVentures.index,
+						label: "Overview",
+						pathIdentifier: redirects.app.venture.myVentures.index,
+					},
+					{
+						href: redirects.app.venture.myVentures.index,
+						label: "Regular Dynamic",
+						pathIdentifier: redirects.app.venture.myVentures.index,
+					},
+
+					{
+						href: redirects.app.venture.myVentures.index,
+						label: "Dutch Dynamic",
+						pathIdentifier: redirects.app.venture.myVentures.index,
+					},
+
+					{
+						href: redirects.app.venture.myVentures.index,
+						label: "Fixed Total",
+						pathIdentifier: redirects.app.venture.myVentures.index,
+					},
+
+					{
+						href: redirects.app.venture.myVentures.index,
+						label: "Partial Total",
+						pathIdentifier: redirects.app.venture.myVentures.index,
+					},
+				],
 			},
 			{
 				href: redirects.app.venture.myVentures.create,
 				label: "Create",
 				pathIdentifier: redirects.app.venture.myVentures.create,
 				icon: "add",
+				submenus: [
+					{
+						href: redirects.app.rounds.myRounds.create.regularDynamic,
+						label: "Regular Dynamic",
+						pathIdentifier: redirects.app.rounds.myRounds.create.regularDynamic,
+					},
+					{
+						href: redirects.app.rounds.myRounds.create.dutchDynamic,
+						label: "Dutch Dynamic",
+						pathIdentifier: redirects.app.rounds.myRounds.create.dutchDynamic,
+					},
+
+					{
+						href: redirects.app.rounds.myRounds.create.fixedTotal,
+						label: "Fixed Total",
+						pathIdentifier: redirects.app.rounds.myRounds.create.fixedTotal,
+					},
+
+					{
+						href: redirects.app.rounds.myRounds.create.partialTotal,
+						label: "Partial Total",
+						pathIdentifier: redirects.app.rounds.myRounds.create.partialTotal,
+					},
+				],
+			},
+		],
+	},
+	{
+		groupLabel: "Investments",
+		menus: [
+			{
+				href: "#",
+				label: "My Investments",
+				pathIdentifier: "#",
+				icon: "chartPie",
+				submenus: [],
+			},
+			{
+				href: "#",
+				label: "Received",
+				pathIdentifier: "#",
+				icon: "bookmark",
 				submenus: [],
 			},
 		],

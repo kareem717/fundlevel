@@ -9,16 +9,22 @@ export type Menu = {
 
 const myVentureNav: Menu[] = [
 	{
-		href: "/my-ventures/:id/edit",
-		label: "Edit",
-		pathIdentifier: "/my-ventures/:id/edit",
-		icon: "edit",
+		href: "/my-ventures/:id",
+		label: "Overview",
+		pathIdentifier: "/my-ventures/:id",
+		icon: "home",
 	},
 	{
 		href: "/my-ventures/:id/rounds",
 		label: "Rounds",
 		pathIdentifier: "/my-ventures/:id/rounds",
 		icon: "chartPie",
+	},
+	{
+		href: "/my-ventures/:id/investments",
+		label: "Investments",
+		pathIdentifier: "/my-ventures/:id/investments",
+		icon: "chart",
 	},
 ];
 
@@ -49,8 +55,16 @@ const redirects = {
 			view: "/venture/:id",
 		},
 		rounds: {
-			myRounds: "/my-rounds",
-			create: "/round/create",
+			myRounds: {
+				view: "/my-rounds/:id",
+				index: "/my-rounds",
+				create: {
+					fixedTotal: "/my-rounds/create/fixed-total",
+					partialTotal: "/my-rounds/create/partial-total",
+					regularDynamic: "/my-rounds/create/regular-dynamic",
+					dutchDynamic: "/my-rounds/create/dutch-dynamic",
+				},
+			},
 			view: "/round/:id",
 		},
 	},

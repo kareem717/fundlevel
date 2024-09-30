@@ -19,7 +19,7 @@ export default async function AppLayout({
   }
 
   return (
-    <AuthProvider user={userResponse.data} account={accountResponse.data}>
+    <AuthProvider user={userResponse.data} account={accountResponse?.data}>
       {children}
     </AuthProvider>
   );

@@ -1,37 +1,63 @@
-import { object, number, date, boolean } from "yup";
-import { CreateRoundParams } from "../api";
+import { object, number, date, string } from "yup";
+import {
+	CreateFixedTotalRoundParams,
+	CreatePartialTotalRoundParams,
+	CreateRoundParams,
+	CreateRegularDynamicRoundParams,
+	CreateDutchDynamicRoundParams,
+	valueCurrency,
+	PartialTotalRoundParams,
+	RegularDynamicRoundParams,
+	DutchDynamicRoundParams,
+} from "../api";
 import { currency, dollarAmount } from "./shared";
+
+const tomorrow = new Date();
+tomorrow.setDate(tomorrow.getDate() + 1);
+tomorrow.setHours(0, 0, 0, 0);
 
 export const createRoundSchema = object<CreateRoundParams>()
 	.shape({
-		endTime: date().required(),
-		isAuctioned: boolean().default(false),
-		maximumInvestmentPercentage: number().min(0).max(100).required(),
-		minimumInvestmentPercentage: number().min(0).max(100).required(),
-		offeredPercentage: number().min(0).max(100).required(),
-		startTime: date()
-			.min(new Date(new Date().setDate(new Date().getDate() + 1)))
+		beginsAt: date()
+			.min(tomorrow)
 			.required(),
-		percentageValue: dollarAmount.required(),
-		percentageValueCurrency: currency.required(),
+		endsAt: date().required(),
+		percentageOffered: number().moreThan(0).lessThan(100).required(),
+		percentageValue: number().min(1).required(),
+		valueCurrency: currency.required(),
 		ventureId: number().min(1).required(),
+		status: string()
+			.oneOf(["successful", "failed", "active"])
+			.default("active"),
 	})
-	.test("is-valid-round-time", "End time must be after start time", (value) => {
-		return value.startTime < value.endTime;
-	})
-	.test(
-		"is-valid-round",
-		"Minimum investment percentage must be less than or equal to maximum investment percentage",
-		(value) => {
-			return (
-				value.minimumInvestmentPercentage <= value.maximumInvestmentPercentage
-			);
-		}
-	)
-	.test(
-		"is-valid-round",
-		"Maximum investment percentage must be less than or equal to offered percentage",
-		(value) => {
-			return value.maximumInvestmentPercentage <= value.offeredPercentage;
-		}
-	);
+	.test("is-valid-round-time", "End date must be after start date", (value) => {
+		return value.beginsAt < value.endsAt;
+	});
+
+export const createFixedTotalRoundSchema =
+	object<CreateFixedTotalRoundParams>().shape({
+		round: createRoundSchema,
+	});
+export const createPartialTotalRoundSchema =
+	object<CreatePartialTotalRoundParams>().shape({
+		round: createRoundSchema,
+		partialTotalRound: object<PartialTotalRoundParams>().shape({
+			investorCount: number().min(1).required(),
+		}),
+	});
+export const createRegularDynamicRoundSchema =
+	object<CreateRegularDynamicRoundParams>().shape({
+		round: createRoundSchema,
+		regularDynamicRound: object<RegularDynamicRoundParams>().shape({
+			daysExtendOnBid: number().min(1).required(),
+		}),
+	});
+export const createDutchDynamicRoundSchema =
+	object<CreateDutchDynamicRoundParams>().shape({
+		round: createRoundSchema,
+		dutchDynamicRound: object<DutchDynamicRoundParams>().shape({
+			valuationDollarDropRate: number().moreThan(0).required(),
+			valuationDropIntervalDays: number().min(1).required(),
+			valuationStopLoss: number().moreThan(0).required(),
+		}),
+	});

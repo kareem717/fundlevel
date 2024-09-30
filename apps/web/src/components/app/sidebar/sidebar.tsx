@@ -13,7 +13,7 @@ export const Sidebar: FC<SidebarProps> = ({ className, ...props }) => {
         <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
           <LogoDiv />
         </div>
-        <div className="flex-1">
+        <div className="flex-1 overflow-y-auto">
           <Menu />
         </div>
         <ModeToggle className="px-2 lg:px-4 mt-auto mb-4" />

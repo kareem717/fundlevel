@@ -14,7 +14,7 @@ export default async function MyVenturesPage() {
     limit: 10,
   });
 
-  const ventures = ventureResp?.data?.data.ventures;
+  const ventures = ventureResp?.data?.ventures;
 
   if (!ventures) {
     throw new Error(ventureResp?.serverError?.message ?? "Failed to fetch ventures");
