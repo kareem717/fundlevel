@@ -36,6 +36,9 @@ type VentureService interface {
 
 	GetDutchDynamicRoundsByCursor(ctx context.Context, ventureId int, limit int, cursor int) ([]round.DutchDynamicRound, error)
 	GetDutchDynamicRoundsByPage(ctx context.Context, ventureId int, pageSize int, page int) ([]round.DutchDynamicRound, error)
+
+	GetVentureRoundInvestmentsByCursor(ctx context.Context, ventureId int, limit int, cursor int) ([]investment.RoundInvestment, error)
+	GetVentureRoundInvestmentsByPage(ctx context.Context, ventureId int, pageSize int, page int) ([]investment.RoundInvestment, error)
 }
 
 type UserService interface {
