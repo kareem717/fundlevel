@@ -5,7 +5,7 @@ import { Menu } from "./menu"
 import { Icons } from "@/components/icons"
 import { ModeToggle } from "@/components/app/mode-toggle"
 import { LogoDiv } from "@/components/logo-div"
-
+import { ScrollArea } from "@/components/ui/scroll-area"
 export interface MobileSidebarProps extends ComponentPropsWithoutRef<typeof Sheet> { }
 
 export const MobileSidebar: FC<MobileSidebarProps> = ({ ...props }) => {
@@ -25,7 +25,11 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({ ...props }) => {
         <SheetHeader className="px-2">
           <LogoDiv />
         </SheetHeader>
-        <Menu className="px-2" />
+        <div className="overflow-y-auto">
+          <ScrollArea className="h-full w-full">
+            <Menu />
+          </ScrollArea>
+        </div>
         <ModeToggle className="mt-auto px-2 text-sm font-medium" />
       </SheetContent>
     </Sheet>
