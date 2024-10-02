@@ -106,3 +106,25 @@ func TestGetRoundInvestmentsByPage(t *testing.T) {
 		assert.Nil(t, investment.Investor)
 	}
 }
+
+func TestIsInvestedInRound(t *testing.T) {
+	ctx := context.Background()
+
+	seedConfig := seed.NewSeedConfig(
+		seed.WithUsers(1),
+		seed.WithVentures(1),
+		seed.WithRoundInvestments(40),
+	)
+
+	db, seedResults := util.SetupTestDB(t, seedConfig)
+
+	repo := account.NewAccountRepository(db, ctx)
+
+	accountId := seedResults.AccountIds[0]
+	ventureId := seedResults.VentureIds[0]
+	roundId := seedResults.VentureFixedTotalRounds[ventureId][0].RoundID
+
+	exists, err := repo.IsInvestedInRound(ctx, accountId, roundId)
+	assert.NoError(t, err)
+	assert.True(t, exists)
+}

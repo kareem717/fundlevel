@@ -2,7 +2,6 @@ package account
 
 import (
 	"context"
-	"database/sql"
 	"errors"
 
 	"fundlevel/internal/entities/investment"
@@ -63,17 +62,13 @@ func (s *AccountService) DeleteRoundInvestment(ctx context.Context, accountId in
 
 func (s *AccountService) CreateRoundInvestment(ctx context.Context, params investment.CreateInvestmentParams) (investment.RoundInvestment, error) {
 	// make sure the account isn't already invested in the round without a withdrawal
-	currInvestment, err := s.repositories.Investment().GetByRoundIdAndAccountId(ctx, params.RoundID, params.InvestorID)
+	isInvested, err := s.repositories.Account().IsInvestedInRound(ctx, params.InvestorID, params.RoundID)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			// No existing investment found, proceed to create a new one
-			return s.repositories.Investment().Create(ctx, params)
-		}
 		return investment.RoundInvestment{}, err
 	}
 
-	if currInvestment.Status != investment.InvestmentStatusWithdrawn {
-		return investment.RoundInvestment{}, errors.New("investment is not withdrawn")
+	if isInvested {
+		return investment.RoundInvestment{}, errors.New("account is already invested in round")
 	}
 
 	return s.repositories.Investment().Create(ctx, params)

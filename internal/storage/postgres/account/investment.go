@@ -5,6 +5,8 @@ import (
 
 	"fundlevel/internal/entities/investment"
 	"fundlevel/internal/storage/postgres/shared"
+
+	"github.com/uptrace/bun/dialect/pgdialect"
 )
 
 func (r *AccountRepository) GetRoundInvestmentsByCursor(ctx context.Context, accountId int, paginationParams shared.CursorPagination) ([]investment.RoundInvestment, error) {
@@ -38,4 +40,22 @@ func (r *AccountRepository) GetRoundInvestmentsByPage(ctx context.Context, accou
 		Scan(ctx)
 
 	return resp, err
+}
+
+func (r *AccountRepository) IsInvestedInRound(ctx context.Context, accountId int, roundId int) (bool, error) {
+	statusArray := []investment.InvestmentStatus{investment.InvestmentStatusAccepted, investment.InvestmentStatusPending}
+	stringStatusArray := make([]string, len(statusArray))
+	for i, status := range statusArray {
+		stringStatusArray[i] = string(status)
+	}
+
+	exists, err  := r.db.
+		NewSelect().
+		Model(&investment.RoundInvestment{}).
+		Where("round_investment.investor_id = ?", accountId).
+		Where("round_investment.round_id = ?", roundId).
+		WhereOr("round_investment.status = ANY(?)", pgdialect.Array(stringStatusArray)).
+		Exists(ctx)
+
+	return exists, err
 }
