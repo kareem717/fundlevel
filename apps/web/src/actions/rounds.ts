@@ -6,12 +6,9 @@ import {
 	createPartialTotalRound as createPartialTotalRoundApi,
 	createRegularDynamicRound as createRegularDynamicRoundApi,
 	createDutchDynamicRound as createDutchDynamicRoundApi,
+	getFixedTotalRoundById as getFixedTotalRoundByIdApi,
 } from "@/lib/api";
-import {
-	intIdSchema,
-	paginationRequestSchema,
-	getByParentIdWithCursorSchema,
-} from "@/lib/validations/shared";
+import { intIdSchema } from "@/lib/validations/shared";
 import {
 	createFixedTotalRoundSchema,
 	createPartialTotalRoundSchema,
@@ -52,6 +49,7 @@ export const createPartialTotalRound = actionClient
 			body: parsedInput,
 		});
 	});
+	
 /**
  * Create a venture
  */
@@ -83,4 +81,25 @@ export const createDutchDynamicRound = actionClient
 			throwOnError: true,
 			body: parsedInput,
 		});
+	});
+
+/**
+ * Create a venture
+ */
+export const getFixedTotalRoundById = actionClient
+	.schema(intIdSchema)
+	.action(async ({ parsedInput, ctx: { apiClient } }) => {
+		if (!parsedInput) {
+			throw new Error("Round ID not found");
+		}
+
+		const response = await getFixedTotalRoundByIdApi({
+			client: apiClient,
+			throwOnError: true,
+			path: {
+				id: parsedInput,
+			},
+		});
+
+		return response.data.round;
 	});

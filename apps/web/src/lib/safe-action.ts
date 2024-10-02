@@ -8,11 +8,10 @@ import supabase from "@/lib/utils/supabase/server";
 import { ErrorModel, getUserAccount } from "./api";
 import { createClient } from "@hey-api/client-fetch";
 
-class ActionError extends Error {
-	constructor(message: string, public statusCode: number) {
-		super(message);
-	}
-}
+type ActionError = {
+	message: string;
+	statusCode: number;
+};
 
 const apiClient = (accessToken?: string) => {
 	return createClient({
@@ -32,15 +31,13 @@ const apiClient = (accessToken?: string) => {
 export const actionClient = createSafeActionClient({
 	validationAdapter: yupAdapter(),
 	handleServerError: async (error) => {
-		console.log(error);
+		const err = JSON.parse(error.message) as ErrorModel; // Attempt to cast to ErrorModel
+		console.error(err);
 
-		const err = error as ErrorModel;
-
-		if (err.detail) {
-			return new ActionError(err.detail, err.status ?? 500);
-		}
-
-		return new ActionError(DEFAULT_SERVER_ERROR_MESSAGE, 500);
+		return {
+			message: err.detail ?? DEFAULT_SERVER_ERROR_MESSAGE,
+			statusCode: err.status ?? 500,
+		};
 	},
 }).use(async ({ next }) => {
 	const sb = supabase();
