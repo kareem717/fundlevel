@@ -26,7 +26,7 @@ export default async function RootLayout({
   return (
     <html lang="en" className={GeistSans.className}>
       <body
-        className="h-screen w-screen bg-background antialiased"
+        className="h-screen w-screen"
       >
         <ThemeProvider
           attribute="class"

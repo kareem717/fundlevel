@@ -1,4 +1,4 @@
-import { CreatePartialTotalRoundForm } from "@/components/app/rounds/create/create-partial-total-form";
+import { CreatePartialTotalRoundForm } from "@/components/app/rounds/forms/create/create-partial-total-form";
 import { LogoDiv } from "@/components/logo-div"
 import {
   Card,

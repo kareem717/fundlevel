@@ -92,34 +92,11 @@ const NavigationConfig: Group[] = [
 				],
 			},
 			{
-				href: "",
+				href: redirects.app.rounds.create,
 				label: "Create",
-				pathIdentifier: redirects.app.rounds.myRounds.create.root,
+				pathIdentifier: redirects.app.rounds.create,
 				icon: "add",
-				submenus: [
-					{
-						href: redirects.app.rounds.myRounds.create.regularDynamic,
-						label: "Regular Dynamic",
-						pathIdentifier: redirects.app.rounds.myRounds.create.regularDynamic,
-					},
-					{
-						href: redirects.app.rounds.myRounds.create.dutchDynamic,
-						label: "Dutch Dynamic",
-						pathIdentifier: redirects.app.rounds.myRounds.create.dutchDynamic,
-					},
-
-					{
-						href: redirects.app.rounds.myRounds.create.fixedTotal,
-						label: "Fixed Total",
-						pathIdentifier: redirects.app.rounds.myRounds.create.fixedTotal,
-					},
-
-					{
-						href: redirects.app.rounds.myRounds.create.partialTotal,
-						label: "Partial Total",
-						pathIdentifier: redirects.app.rounds.myRounds.create.partialTotal,
-					},
-				],
+				submenus: [],
 			},
 		],
 	},

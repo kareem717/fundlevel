@@ -28,14 +28,14 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { createVentureSchema } from "@/lib/validations/ventures";
 import { Textarea } from "@/components/ui/textarea";
 import { InferType } from "yup";
-import { createRegularDynamicRoundSchema } from "@/lib/validations/rounds";
-import { createRegularDynamicRound } from "@/actions/rounds";
+import { createPartialTotalRoundSchema } from "@/lib/validations/rounds";
+import { createPartialTotalRound } from "@/actions/rounds";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns"
-import { Unit, UnitSelect } from "../../input/unit-select";
-import { VentureSelect } from "../../venture-select";
+import { Unit, UnitSelect } from "../../../input/unit-select";
+import { VentureSelect } from "../../../venture-select";
 
-export interface CreateRegularDynamicRoundFormProps extends ComponentPropsWithoutRef<'form'> {
+export interface CreatePartialTotalRoundFormProps extends ComponentPropsWithoutRef<'form'> {
   onSuccess?: () => void
 }
 
@@ -48,7 +48,7 @@ const units: Unit[] = [
   { value: "JPY", label: "JPY", icon: <span className="text-sm">¥</span> },
 ]
 
-export const CreateRegularDynamicRoundForm: FC<CreateRegularDynamicRoundFormProps> = ({ className, onSuccess, ...props }) => {
+export const CreatePartialTotalRoundForm: FC<CreatePartialTotalRoundFormProps> = ({ className, onSuccess, ...props }) => {
   const router = useRouter()
 
   const tomorrow = new Date()
@@ -58,8 +58,8 @@ export const CreateRegularDynamicRoundForm: FC<CreateRegularDynamicRoundFormProp
   const afterTomorrow = new Date(tomorrow)
   afterTomorrow.setDate(afterTomorrow.getDate() + 1)
 
-  const form = useForm<InferType<typeof createRegularDynamicRoundSchema>>({
-    resolver: yupResolver(createRegularDynamicRoundSchema),
+  const form = useForm<InferType<typeof createPartialTotalRoundSchema>>({
+    resolver: yupResolver(createPartialTotalRoundSchema),
     defaultValues: {
       round: {
         beginsAt: tomorrow,
@@ -70,13 +70,13 @@ export const CreateRegularDynamicRoundForm: FC<CreateRegularDynamicRoundFormProp
         ventureId: 1,
         status: "active",
       },
-      regularDynamicRound: {
-        daysExtendOnBid: 1
-      }
+      partialTotalRound: {
+        investorCount: 1,
+      },
     },
   })
 
-  const { executeAsync, isExecuting } = useAction(createRegularDynamicRound, {
+  const { executeAsync, isExecuting } = useAction(createPartialTotalRound, {
     onSuccess: () => {
       form.reset()
       toast.success("Done!", {
@@ -91,7 +91,7 @@ export const CreateRegularDynamicRoundForm: FC<CreateRegularDynamicRoundFormProp
     }
   })
 
-  const onSubmit = async (values: InferType<typeof createRegularDynamicRoundSchema>) => {
+  const onSubmit = async (values: InferType<typeof createPartialTotalRoundSchema>) => {
     await executeAsync(values)
   }
 
@@ -281,19 +281,19 @@ export const CreateRegularDynamicRoundForm: FC<CreateRegularDynamicRoundFormProp
         </div>
         <FormField
           control={form.control}
-          name="regularDynamicRound.daysExtendOnBid"
+          name="partialTotalRound.investorCount"
           render={({ field }) => (
-            <FormItem className="w-full">
-              <FormLabel>Days to extend on bid</FormLabel>
+            <FormItem>
+              <FormLabel>Number of investors</FormLabel>
               <FormControl>
                 <Input
                   type="number"
-                  placeholder="1"
+                  placeholder="10"
                   {...field}
                 />
               </FormControl>
               <FormDescription>
-                When a bid is placed on, the round will be extended by the number of days specified here.
+                The precentage you are offering to sell is divided by the number of investors you allow to invest in the round.
               </FormDescription>
               <FormMessage />
             </FormItem>

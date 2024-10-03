@@ -1,4 +1,4 @@
-import { CreateFixedTotalRoundForm } from "@/components/app/rounds/create/create-fixed-total-form";
+import { CreateFixedTotalRoundForm } from "@/components/app/rounds/forms/create/create-fixed-total-form";
 import { LogoDiv } from "@/components/logo-div"
 import {
   Card,

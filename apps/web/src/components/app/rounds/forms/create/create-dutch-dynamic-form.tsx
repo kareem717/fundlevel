@@ -28,14 +28,14 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { createVentureSchema } from "@/lib/validations/ventures";
 import { Textarea } from "@/components/ui/textarea";
 import { InferType } from "yup";
-import { createFixedTotalRoundSchema } from "@/lib/validations/rounds";
-import { createFixedTotalRound } from "@/actions/rounds";
+import { createDutchDynamicRoundSchema } from "@/lib/validations/rounds";
+import { createDutchDynamicRound } from "@/actions/rounds";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns"
-import { Unit, UnitSelect } from "../../input/unit-select";
-import { VentureSelect } from "../../venture-select";
+import { Unit, UnitSelect } from "../../../input/unit-select";
+import { VentureSelect } from "../../../venture-select";
 
-export interface CreateFixedTotalRoundFormProps extends ComponentPropsWithoutRef<'form'> {
+export interface CreateDutchDynamicRoundFormProps extends ComponentPropsWithoutRef<'form'> {
   onSuccess?: () => void
 }
 
@@ -48,7 +48,7 @@ const units: Unit[] = [
   { value: "JPY", label: "JPY", icon: <span className="text-sm">¥</span> },
 ]
 
-export const CreateFixedTotalRoundForm: FC<CreateFixedTotalRoundFormProps> = ({ className, onSuccess, ...props }) => {
+export const CreateDutchDynamicRoundForm: FC<CreateDutchDynamicRoundFormProps> = ({ className, onSuccess, ...props }) => {
   const router = useRouter()
 
   const tomorrow = new Date()
@@ -58,8 +58,8 @@ export const CreateFixedTotalRoundForm: FC<CreateFixedTotalRoundFormProps> = ({ 
   const afterTomorrow = new Date(tomorrow)
   afterTomorrow.setDate(afterTomorrow.getDate() + 1)
 
-  const form = useForm<InferType<typeof createFixedTotalRoundSchema>>({
-    resolver: yupResolver(createFixedTotalRoundSchema),
+  const form = useForm<InferType<typeof createDutchDynamicRoundSchema>>({
+    resolver: yupResolver(createDutchDynamicRoundSchema),
     defaultValues: {
       round: {
         beginsAt: tomorrow,
@@ -73,7 +73,7 @@ export const CreateFixedTotalRoundForm: FC<CreateFixedTotalRoundFormProps> = ({ 
     },
   })
 
-  const { executeAsync, isExecuting } = useAction(createFixedTotalRound, {
+  const { executeAsync, isExecuting } = useAction(createDutchDynamicRound, {
     onSuccess: () => {
       form.reset()
       toast.success("Done!", {
@@ -88,7 +88,7 @@ export const CreateFixedTotalRoundForm: FC<CreateFixedTotalRoundFormProps> = ({ 
     }
   })
 
-  const onSubmit = async (values: InferType<typeof createFixedTotalRoundSchema>) => {
+  const onSubmit = async (values: InferType<typeof createDutchDynamicRoundSchema>) => {
     await executeAsync(values)
   }
 
@@ -276,7 +276,75 @@ export const CreateFixedTotalRoundForm: FC<CreateFixedTotalRoundFormProps> = ({ 
             )}
           />
         </div>
-
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 w-full">
+            <FormField
+              control={form.control}
+              name="dutchDynamicRound.valuationDollarDropRate"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Dollar Drop Rate</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="25000"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    The venture valuation will drop by this every drop interval.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="dutchDynamicRound.valuationDropIntervalDays"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Drop Interval (Days)</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="25000"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Every this many days, the venture valuation will drop by the dollar drop rate.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="dutchDynamicRound.valuationStopLoss"
+              render={({ field }) => (
+                <FormItem className="w-full sm:col-span-2 xl:col-span-1">
+                  <FormLabel>Stop Loss</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="25000"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    The buy-in price will continue to drop until the valuation is equal to or less than this value.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          {form.getValues("dutchDynamicRound.valuationStopLoss") && form.getValues("dutchDynamicRound.valuationDollarDropRate") && form.getValues("dutchDynamicRound.valuationDropIntervalDays") && (
+            <p>
+              The venture valuation will drop by <b>{form.getValues("dutchDynamicRound.valuationDollarDropRate")}</b> every <b>{form.getValues("dutchDynamicRound.valuationDropIntervalDays")}</b> days until it reaches <b>{form.getValues("dutchDynamicRound.valuationStopLoss")}</b>.
+            </p>
+          )}
+        </div>
         <Button type="submit" disabled={isExecuting} className="w-full">
           {isExecuting && (<Icons.spinner className="mr-2 h-4 w-4 animate-spin" />)}
           Create

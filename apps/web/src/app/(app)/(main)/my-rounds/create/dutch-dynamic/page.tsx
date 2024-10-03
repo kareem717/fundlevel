@@ -1,4 +1,4 @@
-import { CreateDutchDynamicRoundForm } from "@/components/app/rounds/create/create-dutch-dynamic-form";
+import { CreateDutchDynamicRoundForm } from "@/components/app/rounds/forms/create/create-dutch-dynamic-form";
 import { LogoDiv } from "@/components/logo-div"
 import {
   Card,
@@ -22,7 +22,7 @@ export default async function CreateDutchAuctionRoundPage({ params }: { params: 
             <CardTitle>Create a round</CardTitle>
             <CardDescription>Create a new round for your venture.</CardDescription>
           </CardHeader>
-          <CardContent> 
+          <CardContent>
             <CreateDutchDynamicRoundForm />
           </CardContent>
         </Card>

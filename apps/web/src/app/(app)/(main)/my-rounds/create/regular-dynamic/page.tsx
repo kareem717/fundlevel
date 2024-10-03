@@ -7,7 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Metadata } from "next";
-import { CreateRegularDynamicRoundForm } from "@/components/app/rounds/create/create-regular-dynamic-form";
+import { CreateRegularDynamicRoundForm } from "@/components/app/rounds/forms/create/create-regular-dynamic-form";
 export const metadata: Metadata = {
   title: "Create a round",
 };
