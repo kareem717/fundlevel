@@ -25,6 +25,13 @@ export const registerService = <T>(name: string, initFn: () => T) => {
 	return initFn();
 };
 
+const truncate = (text: string, maxLength: number) => {
+	if (text.length > maxLength) {
+		return text.substring(0, maxLength) + "...";
+	}
+	return text;
+};
+
 /**
  * Time since.
  * @description Returns a string representing the time since the

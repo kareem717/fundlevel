@@ -19,8 +19,6 @@ export interface RoundViewHeroProps extends ComponentPropsWithoutRef<"div"> {
 
 
 export const RoundViewHero: FC<RoundViewHeroProps> = ({ name, images, className, ...props }) => {
-
-
   return (
     <div className={cn("w-full flex flex-col gap-4", className)} {...props}>
       <div className="flex justify-between items-center">
