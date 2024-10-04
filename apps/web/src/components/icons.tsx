@@ -111,10 +111,11 @@ import {
   Repeat,
   Key,
   Heart,
+  ArrowLeft,
   Reply,
   Store,
   type LucideIcon,
-  type LucideProps,
+  type LucideProps, 
   Sparkles,
   CircleUser,
 } from "lucide-react";
@@ -122,6 +123,7 @@ import {
 export type Icon = LucideIcon;
 
 export const Icons = {
+  arrowLeft: ArrowLeft,
   home: Home,
   map: Map,
   telescope: Telescope,

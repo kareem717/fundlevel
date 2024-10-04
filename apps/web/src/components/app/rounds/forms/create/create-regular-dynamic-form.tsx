@@ -82,6 +82,7 @@ export const CreateRegularDynamicRoundForm: FC<CreateRegularDynamicRoundFormProp
       toast.success("Done!", {
         description: "Your round has been created.",
       })
+      onSuccess?.()
       router.refresh()
     },
     onError: ({ error }) => {

@@ -1,0 +1,13 @@
+export default async function SettingsLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="w-full h-full flex justify-center items-center">
+      <div className="w-full max-w-xl p-2">
+        {children}
+      </div>
+    </div>
+  );
+}

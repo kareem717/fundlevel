@@ -42,6 +42,7 @@ export const CreateVentureForm: FC<CreateVentureFormProps> = ({ className, onSuc
         description: "Your venture has been created.",
       })
       router.refresh()
+      onSuccess?.()
     },
     onError: ({ error }) => {
       toast.error("Something went wrong", {

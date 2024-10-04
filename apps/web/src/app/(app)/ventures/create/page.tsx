@@ -31,6 +31,5 @@ export default async function CreateVenturePage({ params }: { params: { id: stri
         </Card>
       </div>
     </div>
-
   )
 }

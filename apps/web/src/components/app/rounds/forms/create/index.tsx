@@ -17,10 +17,11 @@ import { cn } from "@/lib/utils";
 export type RoundType = "fixed-total" | "partial-total" | "regular-dynamic" | "dutch-dynamic";
 
 export interface CreateRoundFormProps extends ComponentPropsWithoutRef<"div"> {
-  roundType?: RoundType;
+  roundType?: RoundType;  
+  onSuccess?: () => void;
 };
 
-export const CreateRoundForm: FC<CreateRoundFormProps> = ({ roundType: initialRoundType, className, ...props }) => {
+export const CreateRoundForm: FC<CreateRoundFormProps> = ({ roundType: initialRoundType, className, onSuccess, ...props }) => {
   const [roundType, setRoundType] = useState<RoundType | "">(initialRoundType || "");
 
   let Form: ReactNode; // {{ edit_1 }} Define Form as ReactNode
@@ -28,16 +29,16 @@ export const CreateRoundForm: FC<CreateRoundFormProps> = ({ roundType: initialRo
   // switch
   switch (roundType) {
     case "fixed-total":
-      Form = <CreateFixedTotalRoundForm />;
+      Form = <CreateFixedTotalRoundForm onSuccess={onSuccess} />;
       break;
     case "partial-total":
-      Form = <CreatePartialTotalRoundForm />;
+      Form = <CreatePartialTotalRoundForm onSuccess={onSuccess} />;
       break;
     case "regular-dynamic":
-      Form = <CreateRegularDynamicRoundForm />;
+      Form = <CreateRegularDynamicRoundForm onSuccess={onSuccess} />;
       break;
     case "dutch-dynamic":
-      Form = <CreateDutchDynamicRoundForm />;
+      Form = <CreateDutchDynamicRoundForm onSuccess={onSuccess} />;
       break;
   }
 

@@ -37,16 +37,16 @@ const NavigationConfig: Group[] = [
 		groupLabel: "Ventures",
 		menus: [
 			{
-				href: redirects.app.venture.myVentures.index,
+				href: redirects.app.ventures.myVentures.index,
 				label: "My Ventures",
-				pathIdentifier: redirects.app.venture.myVentures.index,
+				pathIdentifier: redirects.app.ventures.myVentures.index,
 				icon: "store",
 				submenus: [],
 			},
 			{
-				href: redirects.app.venture.myVentures.create,
+				href: redirects.app.ventures.create,
 				label: "Create",
-				pathIdentifier: redirects.app.venture.myVentures.create,
+				pathIdentifier: redirects.app.ventures.create,
 				icon: "add",
 				submenus: [],
 			},
@@ -56,40 +56,11 @@ const NavigationConfig: Group[] = [
 		groupLabel: "Rounds",
 		menus: [
 			{
-				href: "",
+				href: redirects.app.rounds.myRounds.root,
 				label: "My Rounds",
 				pathIdentifier: redirects.app.rounds.myRounds.root,
 				icon: "chartPie",
-				submenus: [
-					{
-						href: redirects.app.rounds.myRounds.overview,
-						label: "Overview",
-						pathIdentifier: redirects.app.rounds.myRounds.overview,
-					},
-					{
-						href: redirects.app.rounds.myRounds.regularDynamic,
-						label: "Regular Dynamic",
-						pathIdentifier: redirects.app.rounds.myRounds.regularDynamic,
-					},
-
-					{
-						href: redirects.app.rounds.myRounds.dutchDynamic,
-						label: "Dutch Dynamic",
-						pathIdentifier: redirects.app.rounds.myRounds.dutchDynamic,
-					},
-
-					{
-						href: redirects.app.rounds.myRounds.fixedTotal,
-						label: "Fixed Total",
-						pathIdentifier: redirects.app.rounds.myRounds.fixedTotal,
-					},
-
-					{
-						href: redirects.app.rounds.myRounds.partialTotal,
-						label: "Partial Total",
-						pathIdentifier: redirects.app.rounds.myRounds.partialTotal,
-					},
-				],
+				submenus: [],
 			},
 			{
 				href: redirects.app.rounds.create,

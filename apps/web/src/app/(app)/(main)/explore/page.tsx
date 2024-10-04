@@ -17,13 +17,12 @@ export default async function DashboardPage({ searchParams }: { searchParams: { 
   const page = searchParams.page ? parseInt(searchParams.page) : 1
   const limit = searchParams.limit ? parseInt(searchParams.limit) : 10
 
-
   const ventures: Venture[] = []
   return (
     <div className="flex flex-col gap-4 w-full h-full">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Ventures</h1>
-        <Link className={cn(buttonVariants({ variant: "secondary" }), "flex items-center gap-2")} href={redirects.app.venture.myVentures.create}>
+        <Link className={cn(buttonVariants({ variant: "secondary" }), "flex items-center gap-2")} href={redirects.app.ventures.create}>
           <Icons.add className="size-5" />
           <span className="hidden md:inline">
             Create Venture

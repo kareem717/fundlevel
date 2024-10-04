@@ -79,6 +79,7 @@ export const CreateFixedTotalRoundForm: FC<CreateFixedTotalRoundFormProps> = ({ 
       toast.success("Done!", {
         description: "Your round has been created.",
       })
+      onSuccess?.()
       router.refresh()
     },
     onError: ({ error }) => {

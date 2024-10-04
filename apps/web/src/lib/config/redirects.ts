@@ -43,29 +43,23 @@ const redirects = {
 	app: {
 		explore: "/explore",
 		settings: {
-			account: "/settings/account",
-			billing: "/settings/billing",
+			account: "/settings?tab=account",
 		},
-		venture: {
+		ventures: {
 			myVentures: {
 				view: "/my-ventures/:id",
 				index: "/my-ventures",
-				create: "/my-ventures/create",
 			},
-			view: "/venture/:id",
+			create: "/ventures/create",
+			view: "/ventures/:id",
 		},
 		rounds: {
 			myRounds: {
 				root: "/my-rounds",
 				view: "/my-rounds/:id",
-				overview: "/my-rounds",
-				regularDynamic: "/my-rounds/regular-dynamic",
-				dutchDynamic: "/my-rounds/dutch-dynamic",
-				partialTotal: "/my-rounds/partial-total",
-				fixedTotal: "/my-rounds/fixed-total",
 			},
 			create: "/rounds/create",
-			view: "/round/:id",
+			view: "/rounds/:id",
 		},
 	},
 	myVentureNav,

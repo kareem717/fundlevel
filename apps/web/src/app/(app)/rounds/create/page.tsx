@@ -12,15 +12,12 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Icons } from "@/components/icons";
 
 export const metadata: Metadata = {
-  title: "Create a venture",
+  title: "Create a round",
 };
 
-export default async function CreateVenturePage() {
+export default async function CreateRoundPage() {
   return (
     <div className="flex flex-col justify-center w-full h-full p-2 gap-8">
-      <div className="flex flex-col items-start w-full">
-        <LogoDiv />
-      </div>
       <Alert className="w-full max-w-2xl mx-auto">
         <Icons.warning className="h-4 w-4" />
         <AlertTitle>Heads up!</AlertTitle>
@@ -31,8 +28,8 @@ export default async function CreateVenturePage() {
       <div className="flex flex-col items-center w-full h-full">
         <Card className="w-full max-w-2xl">
           <CardHeader>
-            <CardTitle>Create a venture</CardTitle>
-            <CardDescription>Create a new venture to start collecting emails.</CardDescription>
+            <CardTitle>Create a round</CardTitle>
+            <CardDescription>Create a new round to start collecting emails.</CardDescription>
           </CardHeader>
           <CardContent>
             <CreateRoundForm />
@@ -40,6 +37,5 @@ export default async function CreateVenturePage() {
         </Card>
       </div>
     </div>
-
   )
 }

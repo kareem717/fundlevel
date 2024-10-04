@@ -82,6 +82,7 @@ export const CreatePartialTotalRoundForm: FC<CreatePartialTotalRoundFormProps> =
       toast.success("Done!", {
         description: "Your round has been created.",
       })
+      onSuccess?.()
       router.refresh()
     },
     onError: ({ error }) => {

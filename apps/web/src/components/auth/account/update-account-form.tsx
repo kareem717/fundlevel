@@ -25,9 +25,10 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useAuth } from "@/components/providers/auth-provider";
 
 export interface UpdateAccountFormProps extends ComponentPropsWithoutRef<"form"> {
+  onSuccess?: () => void;
 }
 
-export const UpdateAccountForm: FC<UpdateAccountFormProps> = ({ className, ...props }) => {
+export const UpdateAccountForm: FC<UpdateAccountFormProps> = ({ className, onSuccess, ...props }) => {
   const { account } = useAuth()
   
   const form = useForm<InferType<typeof updateAccountSchema>>({
@@ -41,6 +42,7 @@ export const UpdateAccountForm: FC<UpdateAccountFormProps> = ({ className, ...pr
   const { executeAsync, isExecuting } = useAction(updateAccount, {
     onSuccess: () => {
       toast.success("Account updated successfully!");
+      onSuccess?.()
     },
     onError: ({ error }) => {
       console.log(error);
