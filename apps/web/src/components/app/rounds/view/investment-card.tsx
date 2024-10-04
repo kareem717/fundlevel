@@ -23,6 +23,24 @@ export interface RoundViewInvestmentCardProps extends ComponentPropsWithoutRef<t
   currency: string;
 };
 
+export const MiniRoundViewInvestmentCard: FC<RoundViewInvestmentCardProps> = ({ className, purchasePercentage, purchasePrice, currency, ...props }) => {
+
+  return (
+    <div
+      className={cn("flex flex-row justify-between items-center w-full font-semibold py-2 px-4 sm:px-6 bg-background border-t", className)}
+      {...props}
+    >
+      <span>
+        {/* //TODO: localize currency symbol */}
+        ${purchasePrice}
+      </span>
+      <Link href={`#`} className={cn(buttonVariants(), "w-1/2")}>
+        Invest
+      </Link>
+    </div>
+  );
+};
+
 export const RoundViewInvestmentCard: FC<RoundViewInvestmentCardProps> = ({ className, purchasePercentage, purchasePrice, currency, ...props }) => {
   const valuationAtPurchase = Math.round(purchasePrice / (purchasePercentage / 100));
 
@@ -87,3 +105,4 @@ export const RoundViewInvestmentCard: FC<RoundViewInvestmentCardProps> = ({ clas
     </Card>
   );
 };
+
