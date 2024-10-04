@@ -7,6 +7,7 @@ import (
 
 	"fundlevel/internal/entities/account"
 	"fundlevel/internal/entities/investment"
+	"fundlevel/internal/entities/round"
 	"fundlevel/internal/server/handler/shared"
 	"fundlevel/internal/service"
 
@@ -319,6 +320,40 @@ func (h *httpHandler) createRoundInvestment(ctx context.Context, input *CreateRo
 	resp := &SingleRoundInvestmentResponse{}
 	resp.Body.Message = "Investment created successfully"
 	resp.Body.Investment = &investment
+
+	return resp, nil
+}
+
+type GetRoundsByFilterAndCursorInput struct {
+	shared.PathIDParam
+	shared.CursorPaginationRequest
+	round.RoundFilter
+}
+
+func (h *httpHandler) getRoundsByFilterAndCursor(ctx context.Context, input *GetRoundsByFilterAndCursorInput) (*shared.GetCursorPaginatedRoundsWithSubtypesOutput, error) {
+	limit := input.Limit + 1
+
+	rounds, err := h.service.AccountService.GetRoundsByFilterAndCursor(ctx, input.ID, input.RoundFilter, limit, input.Cursor)
+
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("rounds not found")
+		default:
+			h.logger.Error("failed to fetch rounds", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the rounds")
+		}
+	}
+
+	resp := &shared.GetCursorPaginatedRoundsWithSubtypesOutput{}
+	resp.Body.Message = "Rounds fetched successfully"
+	resp.Body.RoundWithSubtypes = rounds
+
+	if len(rounds) == limit {
+		resp.Body.NextCursor = &rounds[len(rounds)-1].ID
+		resp.Body.HasMore = true
+		resp.Body.RoundWithSubtypes = resp.Body.RoundWithSubtypes[:len(resp.Body.RoundWithSubtypes)-1]
+	}
 
 	return resp, nil
 }

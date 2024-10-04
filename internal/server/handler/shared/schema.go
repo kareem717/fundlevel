@@ -50,6 +50,14 @@ type GetCursorPaginatedByParentPathIDInput struct {
 	CursorPaginationRequest
 }
 
+type GetCursorPaginatedRoundsWithSubtypesOutput struct {
+	Body struct {
+		MessageResponse
+		RoundWithSubtypes []round.RoundWithSubtypes `json:"roundsWithSubtypes"`
+		CursorPaginationResponse
+	}
+}
+
 type GetCursorPaginatedFixedTotalRoundsOutput struct {
 	Body struct {
 		MessageResponse

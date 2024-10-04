@@ -59,6 +59,7 @@ type AccountService interface {
 	WithdrawRoundInvestment(ctx context.Context, accountId int, investmentId int) error
 	DeleteRoundInvestment(ctx context.Context, accountId int, investmentId int) error
 	CreateRoundInvestment(ctx context.Context, params investment.CreateInvestmentParams) (investment.RoundInvestment, error)
+	GetRoundsByFilterAndCursor(ctx context.Context, accountId int, filter round.RoundFilter, limit int, cursor int) ([]round.RoundWithSubtypes, error)
 }
 
 type HealthService interface {

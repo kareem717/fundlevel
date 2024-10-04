@@ -32,7 +32,17 @@ type Round struct {
 
 	shared.IntegerID
 	CreateRoundParams
+
 	shared.Timestamps
+}
+
+type RoundWithSubtypes struct {
+	bun.BaseModel `bun:"table:rounds"`
+	Round
+	FixedTotalRound     *FixedTotalRound     `json:"fixedTotalRound" bun:"rel:has-one,join:id=round_id"`
+	DutchDynamicRound   *DutchDynamicRound   `json:"dutchDynamicRound" bun:"rel:has-one,join:id=round_id"`
+	PartialTotalRound   *PartialTotalRound   `json:"partialTotalRound" bun:"rel:has-one,join:id=round_id"`
+	RegularDynamicRound *RegularDynamicRound `json:"regularDynamicRound" bun:"rel:has-one,join:id=round_id"`
 }
 
 // CreateRoundParams contains the parameters for creating a new round.
@@ -44,4 +54,20 @@ type CreateRoundParams struct {
 	PercentageValue   int         `json:"percentageValue" minimum:"1"`
 	ValueCurrency     Currency    `json:"valueCurrency" enum:"USD,GBP,EUR,CAD,AUD,JPY"`
 	Status            RoundStatus `json:"status" enum:"active,successful,failed"`
+}
+
+type RoundType string
+
+const (
+	RoundTypeFixedTotal     RoundType = "fixedTotal"
+	RoundTypeDutchDynamic   RoundType = "dutchDynamic"
+	RoundTypePartialTotal   RoundType = "partialTotal"
+	RoundTypeRegularDynamic RoundType = "regularDynamic"
+)
+
+type RoundFilter struct {
+	Status    []string  `json:"status" enum:"active,successful,failed" query:"status"`
+	MinEndsAt time.Time `json:"minEndsAt" format:"date-time" query:"minEndsAt"`
+	MaxEndsAt time.Time `json:"maxEndsAt" format:"date-time" query:"maxEndsAt"`
+	// Type   []RoundType `json:"type" enum:"fixedTotal,dutchDynamic,partialTotal,regularDynamic"`
 }

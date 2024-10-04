@@ -153,4 +153,14 @@ func RegisterHumaRoutes(
 		Tags:        []string{"Accounts", "Investments"},
 	}, handler.withdrawRoundInvestment)
 
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-rounds",
+		Method:      http.MethodGet,
+		Path:        "/account/{id}/rounds",
+		Summary:     "Get rounds",
+		Description: "Get rounds.",
+		Tags:        []string{"Accounts", "Rounds"},
+	}, handler.getRoundsByFilterAndCursor)
+
+
 }
