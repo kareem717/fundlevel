@@ -8,6 +8,7 @@ import {
 	createDutchDynamicRound as createDutchDynamicRoundApi,
 	getFixedTotalRoundById as getFixedTotalRoundByIdApi,
 	getRounds,
+	getRoundById as getRoundByIdApi
 } from "@/lib/api";
 import { intIdSchema } from "@/lib/validations/shared";
 import {
@@ -17,7 +18,6 @@ import {
 	createDutchDynamicRoundSchema,
 	roundFilterSchema,
 } from "@/lib/validations/rounds";
-import { object } from "yup";
 
 /**
  * Create a venture
@@ -34,6 +34,27 @@ export const createFixedTotalRound = actionClient
 			throwOnError: true,
 			body: parsedInput,
 		});
+	});
+
+/**
+ * Create a venture
+ */
+export const getRoundById = actionClient
+	.schema(intIdSchema.required())
+	.action(async ({ parsedInput, ctx: { apiClient, account } }) => {
+		if (!account) {
+			throw new Error("User not found");
+		}
+
+		const response = await getRoundByIdApi({
+			client: apiClient,
+			throwOnError: true,
+			path: {
+				id: parsedInput
+			},
+		});
+
+		return response.data;
 	});
 
 /**

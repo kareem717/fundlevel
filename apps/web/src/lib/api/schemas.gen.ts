@@ -734,6 +734,32 @@ export const GetOffsetPaginatedRoundInvestmentsOutputBodySchema = {
     type: 'object'
 } as const;
 
+export const GetOffsetPaginatedRoundsWithSubtypesOutputBodySchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/GetOffsetPaginatedRoundsWithSubtypesOutputBody.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        hasMore: {
+            type: 'boolean'
+        },
+        message: {
+            type: 'string'
+        },
+        roundsWithSubtypes: {
+            items: {
+                '$ref': '#/components/schemas/RoundWithSubtypes'
+            },
+            type: ['array', 'null']
+        }
+    },
+    required: ['roundsWithSubtypes', 'message', 'hasMore'],
+    type: 'object'
+} as const;
+
 export const GetOffsetPaginatedVenturesOutputBodySchema = {
     additionalProperties: false,
     properties: {
@@ -1155,6 +1181,26 @@ export const SingleRoundInvestmentResponseBodySchema = {
         }
     },
     required: ['investment', 'message'],
+    type: 'object'
+} as const;
+
+export const SingleRoundWithSubtypesResponseBodySchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/SingleRoundWithSubtypesResponseBody.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        message: {
+            type: 'string'
+        },
+        round: {
+            '$ref': '#/components/schemas/RoundWithSubtypes'
+        }
+    },
+    required: ['round', 'message'],
     type: 'object'
 } as const;
 
