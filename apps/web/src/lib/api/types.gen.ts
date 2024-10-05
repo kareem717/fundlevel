@@ -585,6 +585,20 @@ export type GetRoundInvestmentsOffsetResponse = (GetOffsetPaginatedRoundInvestme
 
 export type GetRoundInvestmentsOffsetError = (ErrorModel);
 
+export type GetAccountRecievedRoundInvestmentsCursorData = {
+    path: {
+        id: number;
+    };
+    query?: {
+        cursor?: number;
+        limit?: number;
+    };
+};
+
+export type GetAccountRecievedRoundInvestmentsCursorResponse = (GetCursorPaginatedRoundInvestmentsOutputBody);
+
+export type GetAccountRecievedRoundInvestmentsCursorError = (ErrorModel);
+
 export type DeleteRoundInvestmentData = {
     path: {
         id: number;
@@ -1284,6 +1298,13 @@ export const GetOffsetPaginatedRoundInvestmentsOutputBodyModelResponseTransforme
 
 export const GetRoundInvestmentsOffsetResponseTransformer: GetRoundInvestmentsOffsetResponseTransformer = async (data) => {
     GetOffsetPaginatedRoundInvestmentsOutputBodyModelResponseTransformer(data);
+    return data;
+};
+
+export type GetAccountRecievedRoundInvestmentsCursorResponseTransformer = (data: any) => Promise<GetAccountRecievedRoundInvestmentsCursorResponse>;
+
+export const GetAccountRecievedRoundInvestmentsCursorResponseTransformer: GetAccountRecievedRoundInvestmentsCursorResponseTransformer = async (data) => {
+    GetCursorPaginatedRoundInvestmentsOutputBodyModelResponseTransformer(data);
     return data;
 };
 

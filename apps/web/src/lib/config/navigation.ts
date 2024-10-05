@@ -82,9 +82,9 @@ const NavigationConfig: Group[] = [
 				submenus: [],
 			},
 			{
-				href: "#",
+				href: redirects.app.investments.myInvestments.recieved.root,
 				label: "Received",
-				pathIdentifier: "#",
+				pathIdentifier: redirects.app.investments.myInvestments.recieved.root,
 				icon: "handCoins",
 				submenus: [],
 			},

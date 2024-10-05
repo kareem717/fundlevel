@@ -42,7 +42,7 @@ export default function VentureFixedTotalRoundsPage({ params }: { params: { id: 
 
   const loadMore = async () => {
     try {
-      await executeAsync({ cursor, parentId: parseInt(params.id), limit: 10 })
+      await executeAsync({ cursorPaginationSchema: { cursor, limit: 10 }, parentId: parseInt(params.id) })
     } catch (error) {
       console.error('Error fetching more data:', error)
     }

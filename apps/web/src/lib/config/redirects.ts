@@ -64,6 +64,10 @@ const redirects = {
 		investments: {
 			myInvestments: {
 				root: "/my-investments",
+				recieved: {
+					root: "/my-investments/recieved",
+					view: "/my-investments/recieved/:id",
+				},
 			},
 		},
 	},

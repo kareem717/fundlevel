@@ -37,8 +37,8 @@ export const getAccountVentures = actionClient
 					id: account.id,
 				},
 				query: {
-						cursor,
-						limit
+					cursor,
+					limit,
 				},
 			});
 
@@ -89,7 +89,10 @@ export const getVentureFixedTotalRoundsCursor = actionClient
 	.action(
 		async ({
 			ctx: { apiClient },
-			parsedInput: { parentId, cursor, limit },
+			parsedInput: {
+				parentId,
+				cursorPaginationSchema: { cursor, limit },
+			},
 		}) => {
 			const response = await getVentureFixedTotalRoundsCursorApi({
 				client: apiClient,
@@ -112,7 +115,10 @@ export const getVenturePartialTotalRoundsCursor = actionClient
 	.action(
 		async ({
 			ctx: { apiClient },
-			parsedInput: { parentId, cursor, limit },
+			parsedInput: {
+				parentId,
+				cursorPaginationSchema: { cursor, limit },
+			},
 		}) => {
 			const response = await getVenturePartialTotalRoundsCursorApi({
 				client: apiClient,
@@ -135,7 +141,10 @@ export const getVentureRegularDynamicRoundsCursor = actionClient
 	.action(
 		async ({
 			ctx: { apiClient },
-			parsedInput: { parentId, cursor, limit },
+			parsedInput: {
+				parentId,
+				cursorPaginationSchema: { cursor, limit },
+			},
 		}) => {
 			const response = await getVentureRegularDynamicRoundsCursorApi({
 				client: apiClient,
@@ -158,7 +167,10 @@ export const getVentureDutchDynamicRoundsCursor = actionClient
 	.action(
 		async ({
 			ctx: { apiClient },
-			parsedInput: { parentId, cursor, limit },
+			parsedInput: {
+				parentId,
+				cursorPaginationSchema: { cursor, limit },
+			},
 		}) => {
 			const response = await getVentureDutchDynamicRoundsCursorApi({
 				client: apiClient,
@@ -181,7 +193,10 @@ export const getVentureRoundInvestmentsCursor = actionClient
 	.action(
 		async ({
 			ctx: { apiClient },
-			parsedInput: { parentId, cursor, limit },
+			parsedInput: {
+				parentId,
+				cursorPaginationSchema: { cursor, limit },
+			},
 		}) => {
 			const response = await getVentureRoundInvestmentsCursorApi({
 				client: apiClient,

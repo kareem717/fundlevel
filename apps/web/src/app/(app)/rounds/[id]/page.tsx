@@ -23,7 +23,7 @@ export default function RoundViewPage() {
 
   const [data, setData] = useState<RoundWithSubtypes | undefined>(undefined);
 
-  const { execute, isExecuting } = useAction(getRoundById, {
+  const { execute } = useAction(getRoundById, {
     onSuccess: ({ data }) => {
       setData(data?.round);
     },
