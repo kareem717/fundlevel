@@ -7,14 +7,16 @@ import Link from "next/link";
 import React from "react";
 import { cn } from "@/lib/utils";
 import { copy } from "@/lib/config";
+import { ModeToggle } from "@/components/mode-toggle";
 
-export default function Home() {
+export default async function Home() {
   const { landing } = copy;
 
   return (
     <div className="flex flex-col items-center justify-between h-full w-full p-4">
-      <header className="flex flex-col items-start justify-center y-4 w-full">
+      <header className="flex flex-row items-center justify-between y-4 w-full">
         <LogoDiv />
+        <ModeToggle />
       </header>
       <div className="flex flex-col items-center justify-center gap-6">
         <h1 className="text-4xl font-bold">
@@ -46,7 +48,7 @@ export default function Home() {
             {contact.email}
           </Link>
         </div>
-        <p>{business.copyright}</p>
+        <p className="text-xs text-muted-foreground">{business.copyright}</p>
       </footer>
     </div>
   );

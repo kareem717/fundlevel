@@ -1,6 +1,8 @@
 import {
   Loader2,
   Linkedin,
+  Sun,
+  Moon,
   type LucideIcon,
   LucideProps,
 } from "lucide-react";
@@ -9,7 +11,9 @@ export type Icon = LucideIcon;
 
 export const Icons = {
   spinner: Loader2,
-  linkedin: Linkedin,
+  linkedin: Linkedin, 
+  sun: Sun,
+  moon: Moon,
   xTwitter: (props: LucideProps) => (
     <svg width="1200" height="1227" viewBox="0 0 1200 1227" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
       <path
