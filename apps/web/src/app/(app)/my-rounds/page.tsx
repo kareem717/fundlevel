@@ -1,30 +1,43 @@
-import { EmptySectionCard } from "@/components/app/empty-section-card"
-import { Label } from "@/components/ui/label"
+import { ActiveRoundIndex } from "@/components/app/rounds/index/active-round-index"
+import { PastRoundIndex } from "@/components/app/rounds/index/past-round-index"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
-export default async function MyRoundsPage() {
+
+export default async function MyRoundsPage({ searchParams }: { searchParams: { tab: string } }) {
+  const tabs = [
+    {
+      value: "active",
+      label: "Active",
+      component: <ActiveRoundIndex />,
+    },
+    {
+      value: "past",
+      label: "Past",
+      component: <PastRoundIndex />,
+    },
+  ]
+
+  const defaultTab = tabs.find((tab) => tab.value === searchParams.tab) || tabs[0]
+
+
   return (
-    <div className="p-8 flex flex-col gap-16 justify-center items-center">
-      {Array.from({ length: 3 }).map((_, index) => (
-        <div className="flex flex-col gap-2 w-full" key={index}>
-          <Label className="text-2xl font-bold" htmlFor={`no-rounds-card-${index}`}>
-            Round Type {index + 1}
-          </Label> 
-          <EmptySectionCard
-            id={`no-rounds-card-${index}`}
-            title="No rounds found"
-            description="You don't have any rounds yet. Create one to get started."
-            button={{
-              label: "Create Round",
-              href: "/rounds/create",
-            }}
-            icon="add"
-            image={{
-              src: "/filler.jpeg",
-              alt: "No rounds found",
-            }}
-          />
-        </div>
-      ))}
+    <div className="p-8 flex flex-col gap-16 justify-center items-center max-w-screen-2xl mx-auto">
+      <Tabs defaultValue={defaultTab.value} className="w-full space-y-10">
+        <TabsList className="w-full">
+          {tabs.map((tab) => (
+            <TabsTrigger key={tab.value} value={tab.value} className="w-full">
+              {tab.label}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+        {tabs.map((tab) => (
+          <TabsContent key={tab.value} value={tab.value}>
+            {tab.component}
+          </TabsContent>
+        ))}
+      </Tabs>
     </div>
+
+
   )
 }

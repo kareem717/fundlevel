@@ -544,6 +544,36 @@ export const GetCursorPaginatedRoundInvestmentsOutputBodySchema = {
     type: 'object'
 } as const;
 
+export const GetCursorPaginatedRoundsWithSubtypesOutputBodySchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/GetCursorPaginatedRoundsWithSubtypesOutputBody.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        hasMore: {
+            type: 'boolean'
+        },
+        message: {
+            type: 'string'
+        },
+        nextCursor: {
+            format: 'int64',
+            type: ['integer', 'null']
+        },
+        roundsWithSubtypes: {
+            items: {
+                '$ref': '#/components/schemas/RoundWithSubtypes'
+            },
+            type: ['array', 'null']
+        }
+    },
+    required: ['roundsWithSubtypes', 'message', 'nextCursor', 'hasMore'],
+    type: 'object'
+} as const;
+
 export const GetCursorPaginatedVenturesOutputBodySchema = {
     additionalProperties: false,
     properties: {
@@ -936,6 +966,75 @@ export const RoundInvestmentSchema = {
         }
     },
     required: ['round', 'investor', 'id', 'roundId', 'investorId', 'amount', 'status', 'createdAt', 'updatedAt', 'deletedAt'],
+    type: 'object'
+} as const;
+
+export const RoundWithSubtypesSchema = {
+    additionalProperties: false,
+    properties: {
+        beginsAt: {
+            format: 'date-time',
+            type: 'string'
+        },
+        createdAt: {
+            format: 'date-time',
+            type: 'string'
+        },
+        deletedAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        },
+        dutchDynamicRound: {
+            '$ref': '#/components/schemas/DutchDynamicRound'
+        },
+        endsAt: {
+            format: 'date-time',
+            type: 'string'
+        },
+        fixedTotalRound: {
+            '$ref': '#/components/schemas/FixedTotalRound'
+        },
+        id: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
+        partialTotalRound: {
+            '$ref': '#/components/schemas/PartialTotalRound'
+        },
+        percentageOffered: {
+            format: 'double',
+            maximum: 100,
+            minimum: 0,
+            type: 'number'
+        },
+        percentageValue: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
+        regularDynamicRound: {
+            '$ref': '#/components/schemas/RegularDynamicRound'
+        },
+        status: {
+            enum: ['active', 'successful', 'failed'],
+            type: 'string'
+        },
+        updatedAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        },
+        valueCurrency: {
+            enum: ['USD', 'GBP', 'EUR', 'CAD', 'AUD', 'JPY'],
+            type: 'string'
+        },
+        ventureId: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        }
+    },
+    required: ['fixedTotalRound', 'dutchDynamicRound', 'partialTotalRound', 'regularDynamicRound', 'id', 'ventureId', 'beginsAt', 'endsAt', 'percentageOffered', 'percentageValue', 'valueCurrency', 'status', 'createdAt', 'updatedAt', 'deletedAt'],
     type: 'object'
 } as const;
 

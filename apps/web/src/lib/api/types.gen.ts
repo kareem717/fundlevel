@@ -239,6 +239,17 @@ export type GetCursorPaginatedRoundInvestmentsOutputBody = {
     nextCursor: (number) | null;
 };
 
+export type GetCursorPaginatedRoundsWithSubtypesOutputBody = {
+    /**
+     * A URL to the JSON Schema for this object.
+     */
+    readonly $schema?: string;
+    hasMore: boolean;
+    message: string;
+    nextCursor: (number) | null;
+    roundsWithSubtypes: Array<RoundWithSubtypes> | null;
+};
+
 export type GetCursorPaginatedVenturesOutputBody = {
     /**
      * A URL to the JSON Schema for this object.
@@ -369,6 +380,24 @@ export type RoundInvestment = {
     roundId: number;
     status: 'pending' | 'accepted' | 'rejected' | 'withdrawn';
     updatedAt: (Date) | null;
+};
+
+export type RoundWithSubtypes = {
+    beginsAt: Date;
+    createdAt: Date;
+    deletedAt: (Date) | null;
+    dutchDynamicRound: DutchDynamicRound;
+    endsAt: Date;
+    fixedTotalRound: FixedTotalRound;
+    id: number;
+    partialTotalRound: PartialTotalRound;
+    percentageOffered: number;
+    percentageValue: number;
+    regularDynamicRound: RegularDynamicRound;
+    status: 'active' | 'successful' | 'failed';
+    updatedAt: (Date) | null;
+    valueCurrency: 'USD' | 'GBP' | 'EUR' | 'CAD' | 'AUD' | 'JPY';
+    ventureId: number;
 };
 
 export type SingleAccountResponseBody = {
@@ -558,6 +587,23 @@ export type WithdrawRoundInvestmentData = {
 export type WithdrawRoundInvestmentResponse = (string);
 
 export type WithdrawRoundInvestmentError = (ErrorModel);
+
+export type GetRoundsData = {
+    path: {
+        id: number;
+    };
+    query?: {
+        cursor?: number;
+        limit?: number;
+        maxEndsAt?: Date;
+        minEndsAt?: Date;
+        status?: Array<('active' | 'successful' | 'failed')> | null;
+    };
+};
+
+export type GetRoundsResponse = (GetCursorPaginatedRoundsWithSubtypesOutputBody);
+
+export type GetRoundsError = (ErrorModel);
 
 export type GetAccountVenturesData = {
     path: {
@@ -1162,6 +1208,127 @@ export const GetRoundInvestmentsOffsetResponseTransformer: GetRoundInvestmentsOf
     return data;
 };
 
+export type GetRoundsResponseTransformer = (data: any) => Promise<GetRoundsResponse>;
+
+export type GetCursorPaginatedRoundsWithSubtypesOutputBodyModelResponseTransformer = (data: any) => GetCursorPaginatedRoundsWithSubtypesOutputBody;
+
+export type RoundWithSubtypesModelResponseTransformer = (data: any) => RoundWithSubtypes;
+
+export type DutchDynamicRoundModelResponseTransformer = (data: any) => DutchDynamicRound;
+
+export const DutchDynamicRoundModelResponseTransformer: DutchDynamicRoundModelResponseTransformer = data => {
+    if (data?.createdAt) {
+        data.createdAt = new Date(data.createdAt);
+    }
+    if (data?.deletedAt) {
+        data.deletedAt = new Date(data.deletedAt);
+    }
+    if (data?.round) {
+        RoundModelResponseTransformer(data.round);
+    }
+    if (data?.updatedAt) {
+        data.updatedAt = new Date(data.updatedAt);
+    }
+    return data;
+};
+
+export type FixedTotalRoundModelResponseTransformer = (data: any) => FixedTotalRound;
+
+export const FixedTotalRoundModelResponseTransformer: FixedTotalRoundModelResponseTransformer = data => {
+    if (data?.createdAt) {
+        data.createdAt = new Date(data.createdAt);
+    }
+    if (data?.deletedAt) {
+        data.deletedAt = new Date(data.deletedAt);
+    }
+    if (data?.round) {
+        RoundModelResponseTransformer(data.round);
+    }
+    if (data?.updatedAt) {
+        data.updatedAt = new Date(data.updatedAt);
+    }
+    return data;
+};
+
+export type PartialTotalRoundModelResponseTransformer = (data: any) => PartialTotalRound;
+
+export const PartialTotalRoundModelResponseTransformer: PartialTotalRoundModelResponseTransformer = data => {
+    if (data?.createdAt) {
+        data.createdAt = new Date(data.createdAt);
+    }
+    if (data?.deletedAt) {
+        data.deletedAt = new Date(data.deletedAt);
+    }
+    if (data?.round) {
+        RoundModelResponseTransformer(data.round);
+    }
+    if (data?.updatedAt) {
+        data.updatedAt = new Date(data.updatedAt);
+    }
+    return data;
+};
+
+export type RegularDynamicRoundModelResponseTransformer = (data: any) => RegularDynamicRound;
+
+export const RegularDynamicRoundModelResponseTransformer: RegularDynamicRoundModelResponseTransformer = data => {
+    if (data?.createdAt) {
+        data.createdAt = new Date(data.createdAt);
+    }
+    if (data?.deletedAt) {
+        data.deletedAt = new Date(data.deletedAt);
+    }
+    if (data?.round) {
+        RoundModelResponseTransformer(data.round);
+    }
+    if (data?.updatedAt) {
+        data.updatedAt = new Date(data.updatedAt);
+    }
+    return data;
+};
+
+export const RoundWithSubtypesModelResponseTransformer: RoundWithSubtypesModelResponseTransformer = data => {
+    if (data?.beginsAt) {
+        data.beginsAt = new Date(data.beginsAt);
+    }
+    if (data?.createdAt) {
+        data.createdAt = new Date(data.createdAt);
+    }
+    if (data?.deletedAt) {
+        data.deletedAt = new Date(data.deletedAt);
+    }
+    if (data?.dutchDynamicRound) {
+        DutchDynamicRoundModelResponseTransformer(data.dutchDynamicRound);
+    }
+    if (data?.endsAt) {
+        data.endsAt = new Date(data.endsAt);
+    }
+    if (data?.fixedTotalRound) {
+        FixedTotalRoundModelResponseTransformer(data.fixedTotalRound);
+    }
+    if (data?.partialTotalRound) {
+        PartialTotalRoundModelResponseTransformer(data.partialTotalRound);
+    }
+    if (data?.regularDynamicRound) {
+        RegularDynamicRoundModelResponseTransformer(data.regularDynamicRound);
+    }
+    if (data?.updatedAt) {
+        data.updatedAt = new Date(data.updatedAt);
+    }
+    return data;
+};
+
+export const GetCursorPaginatedRoundsWithSubtypesOutputBodyModelResponseTransformer: GetCursorPaginatedRoundsWithSubtypesOutputBodyModelResponseTransformer = data => {
+    if (Array.isArray(data?.roundsWithSubtypes)) {
+        data.roundsWithSubtypes.forEach(RoundWithSubtypesModelResponseTransformer);
+    }
+    return data;
+};
+
+export const GetRoundsResponseTransformer: GetRoundsResponseTransformer = async (data) => {
+    GetCursorPaginatedRoundsWithSubtypesOutputBodyModelResponseTransformer(data);
+    return data;
+};
+
 export type GetAccountVenturesResponseTransformer = (data: any) => Promise<GetAccountVenturesResponse>;
 
 export type GetCursorPaginatedVenturesOutputBodyModelResponseTransformer = (data: any) => GetCursorPaginatedVenturesOutputBody;
@@ -1196,24 +1363,6 @@ export const GetAccountVenturesResponseTransformer: GetAccountVenturesResponseTr
 export type CreateDutchDynamicRoundResponseTransformer = (data: any) => Promise<CreateDutchDynamicRoundResponse>;
 
 export type SingleDutchDynamicRoundResponseBodyModelResponseTransformer = (data: any) => SingleDutchDynamicRoundResponseBody;
-
-export type DutchDynamicRoundModelResponseTransformer = (data: any) => DutchDynamicRound;
-
-export const DutchDynamicRoundModelResponseTransformer: DutchDynamicRoundModelResponseTransformer = data => {
-    if (data?.createdAt) {
-        data.createdAt = new Date(data.createdAt);
-    }
-    if (data?.deletedAt) {
-        data.deletedAt = new Date(data.deletedAt);
-    }
-    if (data?.round) {
-        RoundModelResponseTransformer(data.round);
-    }
-    if (data?.updatedAt) {
-        data.updatedAt = new Date(data.updatedAt);
-    }
-    return data;
-};
 
 export const SingleDutchDynamicRoundResponseBodyModelResponseTransformer: SingleDutchDynamicRoundResponseBodyModelResponseTransformer = data => {
     if (data?.round) {
@@ -1270,24 +1419,6 @@ export type CreateRegularDynamicRoundResponseTransformer = (data: any) => Promis
 
 export type SingleRegularDynamicRoundResponseBodyModelResponseTransformer = (data: any) => SingleRegularDynamicRoundResponseBody;
 
-export type RegularDynamicRoundModelResponseTransformer = (data: any) => RegularDynamicRound;
-
-export const RegularDynamicRoundModelResponseTransformer: RegularDynamicRoundModelResponseTransformer = data => {
-    if (data?.createdAt) {
-        data.createdAt = new Date(data.createdAt);
-    }
-    if (data?.deletedAt) {
-        data.deletedAt = new Date(data.deletedAt);
-    }
-    if (data?.round) {
-        RoundModelResponseTransformer(data.round);
-    }
-    if (data?.updatedAt) {
-        data.updatedAt = new Date(data.updatedAt);
-    }
-    return data;
-};
-
 export const SingleRegularDynamicRoundResponseBodyModelResponseTransformer: SingleRegularDynamicRoundResponseBodyModelResponseTransformer = data => {
     if (data?.round) {
         RegularDynamicRoundModelResponseTransformer(data.round);
@@ -1343,24 +1474,6 @@ export type CreateFixedTotalRoundResponseTransformer = (data: any) => Promise<Cr
 
 export type SingleFixedTotalRoundResponseBodyModelResponseTransformer = (data: any) => SingleFixedTotalRoundResponseBody;
 
-export type FixedTotalRoundModelResponseTransformer = (data: any) => FixedTotalRound;
-
-export const FixedTotalRoundModelResponseTransformer: FixedTotalRoundModelResponseTransformer = data => {
-    if (data?.createdAt) {
-        data.createdAt = new Date(data.createdAt);
-    }
-    if (data?.deletedAt) {
-        data.deletedAt = new Date(data.deletedAt);
-    }
-    if (data?.round) {
-        RoundModelResponseTransformer(data.round);
-    }
-    if (data?.updatedAt) {
-        data.updatedAt = new Date(data.updatedAt);
-    }
-    return data;
-};
-
 export const SingleFixedTotalRoundResponseBodyModelResponseTransformer: SingleFixedTotalRoundResponseBodyModelResponseTransformer = data => {
     if (data?.round) {
         FixedTotalRoundModelResponseTransformer(data.round);
@@ -1415,24 +1528,6 @@ export const GetFixedTotalRoundByIdResponseTransformer: GetFixedTotalRoundByIdRe
 export type CreatePartialTotalRoundResponseTransformer = (data: any) => Promise<CreatePartialTotalRoundResponse>;
 
 export type SinglePartialTotalRoundResponseBodyModelResponseTransformer = (data: any) => SinglePartialTotalRoundResponseBody;
-
-export type PartialTotalRoundModelResponseTransformer = (data: any) => PartialTotalRound;
-
-export const PartialTotalRoundModelResponseTransformer: PartialTotalRoundModelResponseTransformer = data => {
-    if (data?.createdAt) {
-        data.createdAt = new Date(data.createdAt);
-    }
-    if (data?.deletedAt) {
-        data.deletedAt = new Date(data.deletedAt);
-    }
-    if (data?.round) {
-        RoundModelResponseTransformer(data.round);
-    }
-    if (data?.updatedAt) {
-        data.updatedAt = new Date(data.updatedAt);
-    }
-    return data;
-};
 
 export const SinglePartialTotalRoundResponseBodyModelResponseTransformer: SinglePartialTotalRoundResponseBodyModelResponseTransformer = data => {
     if (data?.round) {

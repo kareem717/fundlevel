@@ -75,17 +75,17 @@ const NavigationConfig: Group[] = [
 		groupLabel: "Investments",
 		menus: [
 			{
-				href: "#",
+				href: redirects.app.investments.myInvestments.root,
 				label: "My Investments",
-				pathIdentifier: "#",
-				icon: "chartPie",
+				pathIdentifier: redirects.app.investments.myInvestments.root,
+				icon: "chart",
 				submenus: [],
 			},
 			{
 				href: "#",
 				label: "Received",
 				pathIdentifier: "#",
-				icon: "bookmark",
+				icon: "handCoins",
 				submenus: [],
 			},
 		],

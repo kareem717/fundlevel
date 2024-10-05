@@ -1,3 +1,5 @@
+"use client"
+
 import {
   Card,
   CardContent,
@@ -6,8 +8,8 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { cn } from "@/lib/utils";
-import { ComponentPropsWithoutRef, FC } from "react"
-import { buttonVariants } from "@/components/ui/button";
+import { ComponentPropsWithoutRef, FC, useState } from "react"
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import {
   Tooltip,
@@ -15,16 +17,26 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import Link from "next/link";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { CreateInvestmentForm, RoundInvestmentPrice } from "../../investments/create-investment-form";
 
 export interface RoundViewInvestmentCardProps extends ComponentPropsWithoutRef<typeof Card> {
   purchasePercentage: number;
   purchasePrice: number;
   currency: string;
+  roundId: number;
+  price: RoundInvestmentPrice
 };
 
-export const MiniRoundViewInvestmentCard: FC<RoundViewInvestmentCardProps> = ({ className, purchasePercentage, purchasePrice, currency, ...props }) => {
-
+export const MiniRoundViewInvestmentCard: FC<RoundViewInvestmentCardProps> = ({ className, purchasePercentage, purchasePrice, currency, roundId, price, ...props }) => {
+  const [isOpen, setIsOpen] = useState(false);
   return (
     <div
       className={cn("flex flex-row justify-between items-center w-full font-semibold py-2 px-4 sm:px-6 bg-background border-t", className)}
@@ -34,15 +46,29 @@ export const MiniRoundViewInvestmentCard: FC<RoundViewInvestmentCardProps> = ({ 
         {/* //TODO: localize currency symbol */}
         ${purchasePrice}
       </span>
-      <Link href={`#`} className={cn(buttonVariants(), "w-1/2")}>
-        Invest
-      </Link>
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogTrigger asChild className="w-1/2">
+          <Button className="w-full">
+            Invest
+          </Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Invest in Round</DialogTitle>
+            <DialogDescription>
+              yap yap yap.....
+            </DialogDescription>
+          </DialogHeader>
+          <CreateInvestmentForm roundId={roundId} currency={currency} price={price} onSuccess={() => setIsOpen(false)} />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
 
-export const RoundViewInvestmentCard: FC<RoundViewInvestmentCardProps> = ({ className, purchasePercentage, purchasePrice, currency, ...props }) => {
+export const RoundViewInvestmentCard: FC<RoundViewInvestmentCardProps> = ({ className, purchasePercentage, purchasePrice, currency, roundId, price, ...props }) => {
   const valuationAtPurchase = Math.round(purchasePrice / (purchasePercentage / 100));
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <Card className={cn("w-full", className)} {...props}>
@@ -98,9 +124,22 @@ export const RoundViewInvestmentCard: FC<RoundViewInvestmentCardProps> = ({ clas
         </CardContent>
       </TooltipProvider>
       <CardFooter className="w-full mt-8">
-        <Link href={`#`} className={cn(buttonVariants(), "w-full")}>
-          Invest
-        </Link>
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+          <DialogTrigger asChild className="w-full">
+            <Button className="w-full">
+              Invest
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Invest in Round</DialogTitle>
+              <DialogDescription>
+                yap yap yap.....
+              </DialogDescription>
+            </DialogHeader>
+            <CreateInvestmentForm roundId={roundId} currency={currency} price={price} onSuccess={() => setIsOpen(false)} />
+          </DialogContent>
+        </Dialog>
       </CardFooter>
     </Card>
   );

@@ -61,6 +61,11 @@ const redirects = {
 			create: "/rounds/create",
 			view: "/rounds/:id",
 		},
+		investments: {
+			myInvestments: {
+				root: "/my-investments",
+			},
+		},
 	},
 	myVentureNav,
 };

@@ -37,8 +37,8 @@ export const getAccountVentures = actionClient
 					id: account.id,
 				},
 				query: {
-					cursor: cursor ?? undefined,
-					limit: limit ?? undefined,
+						cursor,
+						limit
 				},
 			});
 

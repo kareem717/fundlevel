@@ -113,16 +113,19 @@ import {
   Heart,
   ArrowLeft,
   Reply,
+  Flag,
   Store,
   type LucideIcon,
   type LucideProps, 
   Sparkles,
   CircleUser,
+  HandCoins,
 } from "lucide-react";
 
 export type Icon = LucideIcon;
 
 export const Icons = {
+  flag: Flag,
   arrowLeft: ArrowLeft,
   home: Home,
   map: Map,
@@ -132,6 +135,7 @@ export const Icons = {
   radio: Radio,
   fileDown: FileDownIcon,
   key: Key,
+  handCoins: HandCoins,
   repeat: Repeat,
   info: Info,
   minus: Minus,

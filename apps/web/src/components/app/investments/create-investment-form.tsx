@@ -16,22 +16,36 @@ import { ComponentPropsWithoutRef, FC } from "react";
 import { Icons } from "@/components/icons";
 import { cn } from "@/lib/utils";
 import { yupResolver } from '@hookform/resolvers/yup';
-import { InferType } from "yup";
+import { InferType, number } from "yup";
 import { createRoundInvestment } from "@/actions/investments";
 import { useAction } from "next-safe-action/hooks";
 import { createRoundInvestmentSchema } from "@/lib/validations/investments";
 
-export interface CreateTotalRoundInvestmentFormProps extends ComponentPropsWithoutRef<"form"> {
+export type RoundInvestmentPrice = number | {
+  min: number;
+}
+
+export interface CreateInvestmentFormProps extends ComponentPropsWithoutRef<"form"> {
   roundId: number;
   currency: string;
   onSuccess?: () => void;
+  price: RoundInvestmentPrice;
 }
 
-export const CreateTotalRoundInvestmentForm: FC<CreateTotalRoundInvestmentFormProps> = ({ roundId, currency, onSuccess, className, ...props }) => {
-  const form = useForm<InferType<typeof createRoundInvestmentSchema>>({
-    resolver: yupResolver(createRoundInvestmentSchema),
+export const CreateInvestmentForm: FC<CreateInvestmentFormProps> = ({ roundId, currency, onSuccess, className, price, ...props }) => {
+  const isFixedPrice = typeof price === "number";
+
+  const formSchema = isFixedPrice ? createRoundInvestmentSchema.shape({
+    amount: number().min(price, `Amount must be equal to ${price}`).max(price, `Amount must be equal to ${price}`).required(),
+  }) : createRoundInvestmentSchema.shape({
+    amount: number().min(price.min, `Amount must be greater than or equal to the minimum amount of ${price.min}`).required(),
+  });
+
+  const form = useForm<InferType<typeof formSchema>>({
+    resolver: yupResolver(formSchema),
     defaultValues: {
       roundId,
+      amount: isFixedPrice ? price : price.min,
     }
   });
 
@@ -47,9 +61,17 @@ export const CreateTotalRoundInvestmentForm: FC<CreateTotalRoundInvestmentFormPr
   });
 
 
-  async function onSubmit(values: InferType<typeof createRoundInvestmentSchema>) {
+  async function onSubmit(values: InferType<typeof formSchema>) {
+    if (isFixedPrice && values.amount !== price) {
+      form.setError("amount", {
+        message: "Price is fixed, you cannot change it",
+      });
+      return;
+    }
+
     await executeAsync({
       ...values,
+      amount: isFixedPrice ? price : values.amount,
     });
   }
 
@@ -70,6 +92,7 @@ export const CreateTotalRoundInvestmentForm: FC<CreateTotalRoundInvestmentFormPr
                     min="1"
                     step="1"
                     placeholder="10000"
+                    disabled={isFixedPrice}
                     {...field}
                   />
                   <span className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
@@ -81,8 +104,8 @@ export const CreateTotalRoundInvestmentForm: FC<CreateTotalRoundInvestmentFormPr
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full flex justify-center items-center">
-          {isExecuting && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />}  Create
+        <Button type="submit" className="w-full flex justify-center items-center" disabled={isExecuting}>
+          {isExecuting && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />} Invest
         </Button>
       </form>
     </Form>

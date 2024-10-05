@@ -1,4 +1,4 @@
-import { object, number, date, string } from "yup";
+import { object, number, date, string, array } from "yup";
 import {
 	CreateFixedTotalRoundParams,
 	CreatePartialTotalRoundParams,
@@ -9,8 +9,9 @@ import {
 	PartialTotalRoundParams,
 	RegularDynamicRoundParams,
 	DutchDynamicRoundParams,
+	GetRoundsData,
 } from "../api";
-import { currency, dollarAmount } from "./shared";
+import { currency, dollarAmount, paginationRequestSchema } from "./shared";
 
 const tomorrow = new Date();
 tomorrow.setDate(tomorrow.getDate() + 1);
@@ -61,3 +62,10 @@ export const createDutchDynamicRoundSchema =
 			valuationStopLoss: number().moreThan(0).required(),
 		}),
 	});
+
+export const roundFilterSchema = object().shape({
+	paginationRequestSchema,
+	status: array().of(string().oneOf(["active", "successful", "failed"]).required()), // Corrected type for status
+	minEndsAt: date(),
+	maxEndsAt: date(),
+});

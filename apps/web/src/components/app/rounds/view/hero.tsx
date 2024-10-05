@@ -30,7 +30,7 @@ export interface RoundViewHeroProps extends ComponentPropsWithoutRef<"div"> {
 export const RoundViewHero: FC<RoundViewHeroProps> = ({ name, images, className, ...props }) => {
   return (
     <div className={cn("w-full flex flex-col gap-4", className)} {...props}>
-      <div className="flex justify-between items-center">
+      <div className="flex sm:flex-row flex-col justify-between sm:items-center">
         <h1 className="text-2xl font-bold">{name}</h1>
         <div className="flex gap-2">
           <Button variant="ghost" size="sm">
@@ -43,6 +43,12 @@ export const RoundViewHero: FC<RoundViewHeroProps> = ({ name, images, className,
             <Icons.heart className="mr-2 h-4 w-4 text-muted-foreground" />
             <span className="underline">
               Save
+            </span>
+          </Button>
+          <Button variant="ghost" size="sm">
+            <Icons.flag className="mr-2 h-4 w-4 text-muted-foreground" />
+            <span className="underline">
+              Report
             </span>
           </Button>
         </div>
