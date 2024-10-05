@@ -15,7 +15,7 @@ type OffsetPaginationRequest struct {
 }
 
 type CursorPaginationRequest struct {
-	Cursor int `query:"cursor" required:"false" default:"0"`
+	Cursor int `query:"cursor" required:"false" default:"1"`
 	Limit  int `query:"limit" required:"false" default:"10"`
 }
 
@@ -55,6 +55,14 @@ type GetCursorPaginatedRoundsWithSubtypesOutput struct {
 		MessageResponse
 		RoundWithSubtypes []round.RoundWithSubtypes `json:"roundsWithSubtypes"`
 		CursorPaginationResponse
+	}
+}
+
+type GetOffsetPaginatedRoundsWithSubtypesOutput struct {
+	Body struct {
+		MessageResponse
+		RoundWithSubtypes []round.RoundWithSubtypes `json:"roundsWithSubtypes"`
+		OffsetPaginationResponse
 	}
 }
 

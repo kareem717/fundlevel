@@ -47,6 +47,24 @@ func RegisterHumaRoutes(
 	}, handler.getCursorPaginated)
 
 	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-venture-rounds-cursor",
+		Method:      http.MethodGet,
+		Path:        "/venture/{id}/rounds/cursor",
+		Summary:     "Get cursor paginated rounds for a venture",
+		Description: "Get all rounds for a venture.",
+		Tags:        []string{"Ventures", "Rounds"},
+	}, handler.getCursorPaginatedFixedTotalRounds)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-venture-rounds-offset",
+		Method:      http.MethodGet,
+		Path:        "/venture/{id}/rounds/offset",
+		Summary:     "Get offset paginated rounds for a venture",
+		Description: "Get all rounds for a venture.",
+		Tags:        []string{"Ventures", "Rounds"},
+	}, handler.getCursorPaginatedFixedTotalRounds)
+
+	huma.Register(humaApi, huma.Operation{
 		OperationID: "get-venture-fixed-total-rounds-cursor",
 		Method:      http.MethodGet,
 		Path:        "/venture/{id}/rounds/total/fixed/cursor",

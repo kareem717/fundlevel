@@ -25,6 +25,9 @@ type VentureService interface {
 	GetManyByCursor(ctx context.Context, limit int, cursor int) ([]venture.Venture, error)
 	GetManyByPage(ctx context.Context, limit int, page int) ([]venture.Venture, error)
 
+	GetRoundsByCursor(ctx context.Context, ventureId int, limit int, cursor int) ([]round.RoundWithSubtypes, error)
+	GetRoundsByPage(ctx context.Context, ventureId int, pageSize int, page int) ([]round.RoundWithSubtypes, error)
+
 	GetFixedTotalRoundsByCursor(ctx context.Context, ventureId int, limit int, cursor int) ([]round.FixedTotalRound, error)
 	GetFixedTotalRoundsByPage(ctx context.Context, ventureId int, pageSize int, page int) ([]round.FixedTotalRound, error)
 
@@ -67,6 +70,10 @@ type HealthService interface {
 }
 
 type RoundService interface {
+	GetById(ctx context.Context, id int) (round.RoundWithSubtypes, error)
+	GetByCursor(ctx context.Context, limit int, cursor int) ([]round.RoundWithSubtypes, error)
+	GetByPage(ctx context.Context, pageSize int, page int) ([]round.RoundWithSubtypes, error)
+
 	CreateFixedTotalRound(ctx context.Context, params round.CreateFixedTotalRoundParams) (round.FixedTotalRound, error)
 	DeleteFixedTotalRound(ctx context.Context, id int) error
 	GetFixedTotalById(ctx context.Context, id int) (round.FixedTotalRound, error)

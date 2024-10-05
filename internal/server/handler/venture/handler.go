@@ -452,3 +452,55 @@ func (h *httpHandler) delete(ctx context.Context, input *shared.PathIDParam) (*D
 
 	return resp, nil
 }
+func (h *httpHandler) getRoundsByCursor(ctx context.Context, input *shared.GetCursorPaginatedByParentPathIDInput) (*shared.GetCursorPaginatedRoundsWithSubtypesOutput, error) {
+	limit := input.Limit + 1
+
+	rounds, err := h.service.VentureService.GetRoundsByCursor(ctx, input.ID, limit, input.Cursor)
+
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("rounds not found")
+		default:
+			h.logger.Error("failed to fetch investments", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the investments")
+		}
+	}
+
+	resp := &shared.GetCursorPaginatedRoundsWithSubtypesOutput{}
+	resp.Body.Message = "Rounds fetched successfully"
+	resp.Body.RoundWithSubtypes = rounds
+
+	if len(rounds) == limit {
+		resp.Body.NextCursor = &rounds[len(rounds)-1].ID
+		resp.Body.HasMore = true
+		resp.Body.RoundWithSubtypes = resp.Body.RoundWithSubtypes[:len(resp.Body.RoundWithSubtypes)-1]
+	}
+
+	return resp, nil
+}
+
+func (h *httpHandler) getRoundsByPage(ctx context.Context, input *shared.GetOffsetPaginatedByParentPathIDInput) (*shared.GetOffsetPaginatedRoundsWithSubtypesOutput, error) {
+	rounds, err := h.service.VentureService.GetRoundsByPage(ctx, input.ID, input.PageSize, input.Page)
+
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("investments not found")
+		default:
+			h.logger.Error("failed to fetch investments", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the investments")
+		}
+	}
+
+	resp := &shared.GetOffsetPaginatedRoundsWithSubtypesOutput{}
+	resp.Body.Message = "Rounds fetched successfully"
+	resp.Body.RoundWithSubtypes = rounds
+
+	if len(rounds) > input.PageSize {
+		resp.Body.HasMore = true
+		resp.Body.RoundWithSubtypes = resp.Body.RoundWithSubtypes[:len(resp.Body.RoundWithSubtypes)-1]
+	}
+
+	return resp, nil
+}

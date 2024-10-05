@@ -21,6 +21,33 @@ func RegisterHumaRoutes(
 	}
 
 	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-round-by-cursor",
+		Method:      http.MethodGet,
+		Path:        "/round/cursor",
+		Summary:     "Get round by cursor",
+		Description: "Get round by cursor.",
+		Tags:        []string{"Round"},
+	}, handler.getByCursor)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-round-by-page",
+		Method:      http.MethodGet,
+		Path:        "/round/page",
+		Summary:     "Get round by page",
+		Description: "Get round by page.",
+		Tags:        []string{"Round"},
+	}, handler.getByPage)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-round-by-id",
+		Method:      http.MethodGet,
+		Path:        "/round/{id}",
+		Summary:     "Get round by ID",
+		Description: "Get round by ID.",
+		Tags:        []string{"Round"},
+	}, handler.getRoundById)
+
+	huma.Register(humaApi, huma.Operation{
 		OperationID: "get-fixed-total-round-by-id",
 		Method:      http.MethodGet,
 		Path:        "/round/total/fixed/{id}",

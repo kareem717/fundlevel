@@ -192,9 +192,7 @@ func (h *httpHandler) getCursorPaginatedVentures(ctx context.Context, input *sha
 }
 
 func (h *httpHandler) getOffsetPaginatedVentures(ctx context.Context, input *shared.GetOffsetPaginatedByParentPathIDInput) (*shared.GetOffsetPaginatedVenturesOutput, error) {
-	pageSize := input.PageSize + 1
-
-	ventures, err := h.service.AccountService.GetVenturesByPage(ctx, input.ID, pageSize, input.Page)
+	ventures, err := h.service.AccountService.GetVenturesByPage(ctx, input.ID, input.PageSize, input.Page)
 
 	if err != nil {
 		switch {
@@ -210,7 +208,7 @@ func (h *httpHandler) getOffsetPaginatedVentures(ctx context.Context, input *sha
 	resp.Body.Message = "Ventures fetched successfully"
 	resp.Body.Ventures = ventures
 
-	if len(ventures) == pageSize {
+	if len(ventures) > input.PageSize {
 		resp.Body.HasMore = true
 		resp.Body.Ventures = resp.Body.Ventures[:len(resp.Body.Ventures)-1]
 	}
@@ -247,9 +245,7 @@ func (h *httpHandler) getCursorPaginatedRoundInvestments(ctx context.Context, in
 }
 
 func (h *httpHandler) getOffsetPaginatedRoundInvestments(ctx context.Context, input *shared.GetOffsetPaginatedByParentPathIDInput) (*shared.GetOffsetPaginatedRoundInvestmentsOutput, error) {
-	pageSize := input.PageSize + 1
-
-	investments, err := h.service.AccountService.GetRoundInvestmentsByPage(ctx, input.ID, pageSize, input.Page)
+	investments, err := h.service.AccountService.GetRoundInvestmentsByPage(ctx, input.ID, input.PageSize, input.Page)
 
 	if err != nil {
 		switch {
@@ -265,7 +261,7 @@ func (h *httpHandler) getOffsetPaginatedRoundInvestments(ctx context.Context, in
 	resp.Body.Message = "Investments fetched successfully"
 	resp.Body.Investments = investments
 
-	if len(investments) == pageSize {
+	if len(investments) > input.PageSize {
 		resp.Body.HasMore = true
 		resp.Body.Investments = resp.Body.Investments[:len(resp.Body.Investments)-1]
 	}

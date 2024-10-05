@@ -578,9 +578,8 @@ func (h *httpHandler) getCursorPaginatedRoundInvestments(ctx context.Context, in
 }
 
 func (h *httpHandler) getOffsetPaginatedRoundInvestments(ctx context.Context, input *shared.GetOffsetPaginatedByParentPathIDInput) (*shared.GetOffsetPaginatedRoundInvestmentsOutput, error) {
-	pageSize := input.PageSize + 1
 
-	investments, err := h.service.RoundService.GetRoundInvestmentsByPage(ctx, input.ID, pageSize, input.Page)
+	investments, err := h.service.RoundService.GetRoundInvestmentsByPage(ctx, input.ID, input.PageSize, input.Page)
 
 	if err != nil {
 		switch {
@@ -596,7 +595,7 @@ func (h *httpHandler) getOffsetPaginatedRoundInvestments(ctx context.Context, in
 	resp.Body.Message = "Investments fetched successfully"
 	resp.Body.Investments = investments
 
-	if len(investments) == pageSize {
+	if len(investments) > input.PageSize {
 		resp.Body.HasMore = true
 		resp.Body.Investments = resp.Body.Investments[:len(resp.Body.Investments)-1]
 	}
@@ -613,6 +612,85 @@ func (h *httpHandler) acceptRoundInvestment(ctx context.Context, input *shared.P
 
 	resp := &shared.MessageResponse{}
 	resp.Message = "Investment accepted successfully"
+
+	return resp, nil
+}
+
+func (h *httpHandler) getByCursor(ctx context.Context, input *shared.CursorPaginationRequest) (*shared.GetCursorPaginatedRoundsWithSubtypesOutput, error) {
+	limit := input.Limit + 1
+
+	rounds, err := h.service.RoundService.GetByCursor(ctx, limit, input.Cursor)
+
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("rounds not found")
+		default:
+			h.logger.Error("failed to fetch investments", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the investments")
+		}
+	}
+
+	resp := &shared.GetCursorPaginatedRoundsWithSubtypesOutput{}
+	resp.Body.Message = "Rounds fetched successfully"
+	resp.Body.RoundWithSubtypes = rounds
+
+	if len(rounds) == limit {
+		resp.Body.NextCursor = &rounds[len(rounds)-1].ID
+		resp.Body.HasMore = true
+		resp.Body.RoundWithSubtypes = resp.Body.RoundWithSubtypes[:len(resp.Body.RoundWithSubtypes)-1]
+	}
+
+	return resp, nil
+}
+
+func (h *httpHandler) getByPage(ctx context.Context, input *shared.OffsetPaginationRequest) (*shared.GetOffsetPaginatedRoundsWithSubtypesOutput, error) {
+	rounds, err := h.service.RoundService.GetByPage(ctx, input.PageSize, input.Page)
+
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("investments not found")
+		default:
+			h.logger.Error("failed to fetch investments", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the investments")
+		}
+	}
+
+	resp := &shared.GetOffsetPaginatedRoundsWithSubtypesOutput{}
+	resp.Body.Message = "Rounds fetched successfully"
+	resp.Body.RoundWithSubtypes = rounds
+
+	if len(rounds) > input.PageSize {
+		resp.Body.HasMore = true
+		resp.Body.RoundWithSubtypes = resp.Body.RoundWithSubtypes[:len(resp.Body.RoundWithSubtypes)-1]
+	}
+
+	return resp, nil
+}
+
+type SingleRoundWithSubtypesResponse struct {
+	Body struct {
+		shared.MessageResponse
+		Round *round.RoundWithSubtypes `json:"round"`
+	}
+}
+
+func (h *httpHandler) getRoundById(ctx context.Context, input *shared.PathIDParam) (*SingleRoundWithSubtypesResponse, error) {
+	round, err := h.service.RoundService.GetById(ctx, input.ID)
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("round not found")
+		default:
+			h.logger.Error("failed to fetch round", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the round")
+		}
+	}
+
+	resp := &SingleRoundWithSubtypesResponse{}
+	resp.Body.Message = "Round fetched successfully"
+	resp.Body.Round = &round
 
 	return resp, nil
 }

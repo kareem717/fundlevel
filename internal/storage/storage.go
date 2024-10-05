@@ -20,6 +20,9 @@ type VentureRepository interface {
 	Update(ctx context.Context, id int, params venture.UpdateVentureParams) (venture.Venture, error)
 	GetById(ctx context.Context, id int) (venture.Venture, error)
 
+	GetRoundsByCursor(ctx context.Context, ventureId int, paginationParams shared.CursorPagination) ([]round.RoundWithSubtypes, error)
+	GetRoundsByPage(ctx context.Context, ventureId int, paginationParams shared.OffsetPagination) ([]round.RoundWithSubtypes, error)
+
 	GetFixedTotalRoundsByCursor(ctx context.Context, ventureId int, paginationParams shared.CursorPagination) ([]round.FixedTotalRound, error)
 	GetFixedTotalRoundsByPage(ctx context.Context, ventureId int, paginationParams shared.OffsetPagination) ([]round.FixedTotalRound, error)
 
@@ -37,6 +40,11 @@ type VentureRepository interface {
 }
 
 type RoundRepository interface {
+	Delete(ctx context.Context, id int) error
+	GetById(ctx context.Context, id int) (round.RoundWithSubtypes, error)
+	GetByCursor(ctx context.Context, paginationParams shared.CursorPagination) ([]round.RoundWithSubtypes, error)
+	GetByPage(ctx context.Context, paginationParams shared.OffsetPagination) ([]round.RoundWithSubtypes, error)
+
 	DeleteFixedTotalRound(ctx context.Context, id int) error
 	GetFixedTotalRoundById(ctx context.Context, id int) (round.FixedTotalRound, error)
 	GetFixedTotalRoundsByCursor(ctx context.Context, paginationParams shared.CursorPagination) ([]round.FixedTotalRound, error)
