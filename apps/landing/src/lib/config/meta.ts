@@ -9,6 +9,22 @@ const landing: Metadata = {
 	description: "The best way to fund",
 };
 
+/**
+ * Configuration for error page meta content.
+ */
+const error: Metadata = {
+	title: "Fundlevel",
+	description: "The best way to fund",
+};
+
+/**
+ * Configuration for not-found/404 page meta content.
+ */
+const notFound: Metadata = {
+	title: "Fundlevel",
+	description: "The best way to fund",
+};
+
 const root: Metadata = {
 	metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
 	title: {
@@ -24,4 +40,6 @@ const root: Metadata = {
 export const meta: Record<string, Metadata> = {
 	root,
 	landing,
+	error,
+	notFound,
 };

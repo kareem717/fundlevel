@@ -1,6 +1,5 @@
 import type { MetadataRoute } from "next";
 import { env } from "@/env";
-import { redirects } from "@/lib/config";
 
 export default function robots(): MetadataRoute.Robots {
 	return {
