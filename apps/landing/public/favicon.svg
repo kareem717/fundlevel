@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs" width="1000" height="1000"><style>
+    #light-icon {
+      display: inline;
+    }
+    #dark-icon {
+      display: none;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      #light-icon {
+        display: none;
+      }
+      #dark-icon {
+        display: inline;
+      }
+    }
+  </style><g id="light-icon"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs" width="1000" height="1000"><g clip-path="url(#SvgjsClipPath1057)"><rect width="1000" height="1000" fill="#000000"></rect><g transform="matrix(5.07503806278547,0,0,5.07503806278547,150.55827159734736,149.97962760779268)"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs" width="137.71" height="137.93"><svg id="Layer_2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 137.71 137.93">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #462e8b;
+      }
+
+      .cls-2 {
+        fill: #fff;
+      }
+    </style>
+  <clipPath id="SvgjsClipPath1057"><rect width="1000" height="1000" x="0" y="0" rx="350" ry="350"></rect></clipPath></defs>
+  <g id="Layer_1-2" data-name="Layer_1">
+    <g>
+      <path class="cls-2" d="M0,38.66h75.4v24.28H0v-24.28ZM24.81,8.84C30.93,2.95,40.17,0,52.55,0h24.22v24.09h-16.02c-4.04,0-6.94.97-8.69,2.91s-2.64,4.99-2.64,9.13v101.8H15.63V34.58c0-11.27,3.06-19.85,9.18-25.74Z"></path>
+      <path class="cls-1" d="M96.3,130.74c-5.08-4.79-7.62-12.3-7.62-22.54V0h33.6v104.52c0,3.37.75,5.76,2.25,7.19,1.49,1.43,3.81,2.14,6.93,2.14h6.25v24.09h-19.34c-9.64,0-16.99-2.39-22.07-7.19Z"></path>
+    </g>
+  </g>
+</svg></svg></g></g></svg></g><g id="dark-icon"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs" width="1000" height="1000"><g clip-path="url(#SvgjsClipPath1058)"><rect width="1000" height="1000" fill="#ffffff"></rect><g transform="matrix(5.072463768115942,0,0,5.072463768115942,150,150)"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs" width="138" height="138" viewBox="0 0 138 138"><image width="138" height="138" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIoAAACKCAIAAAD65UUzAAAACXBIWXMAAAsSAAALEgHS3X78AAAEsElEQVR4nO3dP0wbZxzG8WtlqZZi5zwFJwNU8WAWLksqVKTDCgPOypBmuYiBkIAKylSP7VCTwanUSBD1T5RI4GRvuQ4EpKo6D1Ullrss9QDiPCQ4k69JVTY6JMLB2OCz733vcXg+8yven/TVe74zh/hof39fCYntOI7tuK5rO06t5rmuW6lUBO2199+/xy9wNndyUyuCdj9gzGSM2Uz76yPiRmnKskqrpmnbTqlUkrx1L5KUx7JKK8WiaZqe94+cHT8MYvPUPK9YLC4uPhB31fqwCcyzuLSUzy/wuHRDSB7LKt2cvsUT072PA/+J+fzCePYq2wQiyNNT87xr167zlixAgeWped74eNZxngf1A0kJ6uLGNoIEkIdtxAkgz/T0LbYRpNs8i0tLpvlbIKPQUV3lcV03n18IahQ6qqs8N6dv80sBoTrPY1klPuKI1nmeb3lZE6/DPDw6cnSYZ6VYDHYOaqqTPDXPe/LkaeCj0FGd5DFXzcDnoKY6ybNqMo8kneSxLCvwOagp33lsx+GjqDS+f98T1tHRdT0zqmuXtISaCGWAUPjOY9uOiDlaUdWz83Nzc/NzCVWVuS8I33lcV95LBJo29PDhz5c0TdqOaHzncRxbxBxHqerZ9fVnp/PQHPB9ayDtvuC7e/dOeRvFbx7bkfTB09/ff+OGIWcvZP7yeDVP0BwN5ue/lLMRuOBfQwzE6Oho2CNAAM1zmu/W3oeYR9OGwh4BBWIe9TR9L3A8xDx0gHmgMQ+0iK/3CHdcV9woB4J9u3FgYKB3n3Aj+YW7Yc/QqFKpBDiVruu9m4cXN2jMA415oDEPNOaBxjzQmAca80BjHmjMA415oDEPNOaBxjzQmAca80BjHmjMA415oDEPNOaBxjzQmAda5MT/nPI+yyqNZ6+Km+YtXdc31tdE79ITeHqgMQ805oHGPNCYBxrzQGMeaMwDjXmgMQ805oHGPNCYBxrzQGMeaMwDjXmgMQ805oHGPNCYBxrzQGMeaMwDjXmgMQ805oHGPNCYBxrzQGMeaMwDjXmgMQ805oHGPNCYBxrzQGMeaMwDjXmgMQ805pFqq7zraz3zSFV9UfO1nnmk2i5X37zea38988j25+/l9hczj2zFH/5o/wAxj2yvXno/FZ61WYh53jkTj0rba2PVzk0tO5s7J66MiB+mN6TSSZnbbZeruamVc+fVkbHBWDyqfTbQdBnzhOnVS++Xp38piqL82HwBL251F9N9YY/QiHnq+i4kwh6hEfPUSf74aQfz1LX6fA4R89Rd5OlBFotHhy5jHSDmOWTkymDYIxzCPIeMjKXDHuEQ5jmk70Li8ytAhZin0YQxHPYIdczTSLv8Kc4NAvM0MZPLhj3CO8zTRCqdNGYyYU+hKMzTijGbQfiGlHlaKjyaPBP7JNwZmKelWDxaeBxyIeY5TiqdLDyeDPEqxzwnSKWThUeTYT2rMs/JYvHoN/evf/39F/IvdMzTrpGxweW1O8ZMRmYk5vEhFo8as5nltTu3v8qeO69K2JFv6vgWi0cnjOEJY3irvLvxq+1s7myXq4L2Yp7OpdLJVC6pKMqb13vb5d2tv6vVF7W3fyLyfNMNZIv/AQwXNCoHJ8FqAAAAAElFTkSuQmCC"></image></svg></g></g><defs><clipPath id="SvgjsClipPath1058"><rect width="1000" height="1000" x="0" y="0" rx="350" ry="350"></rect></clipPath></defs></svg></g></svg>
