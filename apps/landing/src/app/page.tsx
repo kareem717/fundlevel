@@ -13,7 +13,7 @@ export default async function Home() {
   const { landing } = copy;
 
   return (
-    <div className="p-4 flex flex-col justify-between h-[100dvh] w-full items-center">
+    <div className="p-4 flex flex-col justify-between h-[100dvh] w-full max-w-screen-2xl mx-auto items-center">
       <header className="flex flex-row items-center justify-between y-4 w-full">
         <LogoDiv />
         <ModeToggle />
@@ -33,11 +33,12 @@ export default async function Home() {
       <footer className="flex flex-col sm:flex-row items-center justify-between w-full">
         <div className="flex items-center justify-center gap-2">
           <div >
-            {contact.socials.map(({ icon, link }, index) => (
+            {contact.socials.map(({ icon, link, label }, index) => (
               <Link
                 className={cn(buttonVariants({ variant: "ghost", size: "icon" }))}
                 key={index}
                 href={link}
+                aria-label={`Visit us on ${label}`}
               >
                 {createElement(Icons[icon], { className: "size-5 fill-current" })}
               </Link>
