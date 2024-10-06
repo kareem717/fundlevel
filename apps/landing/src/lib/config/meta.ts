@@ -2,27 +2,19 @@ import { env } from "@/env";
 import { Metadata } from "next";
 
 /**
- * Configuration for landing page meta content.
- */
-const landing: Metadata = {
-	title: "Fundlevel",
-	description: "The best way to fund",
-};
-
-/**
  * Configuration for error page meta content.
  */
 const error: Metadata = {
-	title: "Fundlevel",
-	description: "The best way to fund",
+	title: "Error",
+	description: "An error occurred while loading the page.",
 };
 
 /**
  * Configuration for not-found/404 page meta content.
  */
 const notFound: Metadata = {
-	title: "Fundlevel",
-	description: "The best way to fund",
+	title: "Not Found",
+	description: "The page you are looking for does not exist.",
 };
 
 const root: Metadata = {
@@ -39,7 +31,6 @@ const root: Metadata = {
  */
 export const meta: Record<string, Metadata> = {
 	root,
-	landing,
 	error,
 	notFound,
 };
