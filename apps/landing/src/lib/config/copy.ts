@@ -3,7 +3,6 @@
  */
 const landing = {
 	hero: {
-		title: "The right way to fund.",
 		meetingCTA: "Book meeting",
 	},
 };
