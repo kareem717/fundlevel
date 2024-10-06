@@ -10,11 +10,11 @@ type Social = {
  */
 const socials: Social[] = [
 	{
-		link: "#",
+		link: "https://x.com/fundlevel",
 		icon: "xTwitter",
 	},
 	{
-		link: "#",
+		link: "https://linkedin.com/company/fundlevel",
 		icon: "linkedin",
 	},
 ];
@@ -23,7 +23,7 @@ const socials: Social[] = [
  * Configuration for all contact information for the app.
  */
 export const contact = {
-	email: "team@fundlevel.app",
+	email: "admin@fundlevel.app",
 	calendly: "https://calendly.com/fundlevel/30min",
 	socials,
 };
@@ -32,6 +32,6 @@ export const contact = {
  * Configuration for all business information for the app.
  */
 export const business = {
-	name: "Fund Level",
-  copyright: "© 2024 Fund Level. All rights reserved.",
+	name: "Fundlevel",
+  copyright: "© 2024 Fundlevel Inc. All rights reserved.",
 };
