@@ -20,7 +20,7 @@ const (
 // FixedTotalRound represents an fixed total round entity.
 type RoundInvestment struct {
 	bun.BaseModel    `bun:"table:round_investments"`
-	shared.IntegerID `json:"id"`
+	shared.IntegerID
 	CreateInvestmentParams
 	Round    *round.Round     `json:"round" bun:"rel:belongs-to,join:round_id=id" readonly:"true"`
 	Investor *account.Account `json:"investor" bun:"rel:belongs-to,join:investor_id=id" readonly:"true"`

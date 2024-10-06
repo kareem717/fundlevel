@@ -244,6 +244,34 @@ func (h *httpHandler) getCursorPaginatedRoundInvestments(ctx context.Context, in
 	return resp, nil
 }
 
+func (h *httpHandler) getCursorPaginatedRecievedRoundInvestments(ctx context.Context, input *shared.GetCursorPaginatedByParentPathIDInput) (*shared.GetCursorPaginatedRoundInvestmentsOutput, error) {
+	limit := input.Limit + 1
+
+	investments, err := h.service.AccountService.GetRecievedRoundInvestmentsByCursor(ctx, input.ID, limit, input.Cursor)
+
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("investments not found")
+		default:
+			h.logger.Error("failed to fetch investments", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the investments")
+		}
+	}
+
+	resp := &shared.GetCursorPaginatedRoundInvestmentsOutput{}
+	resp.Body.Message = "Investments fetched successfully"
+	resp.Body.Investments = investments
+
+	if len(investments) == limit {
+		resp.Body.NextCursor = &investments[len(investments)-1].ID
+		resp.Body.HasMore = true
+		resp.Body.Investments = resp.Body.Investments[:len(resp.Body.Investments)-1]
+	}
+
+	return resp, nil
+}
+
 func (h *httpHandler) getOffsetPaginatedRoundInvestments(ctx context.Context, input *shared.GetOffsetPaginatedByParentPathIDInput) (*shared.GetOffsetPaginatedRoundInvestmentsOutput, error) {
 	investments, err := h.service.AccountService.GetRoundInvestmentsByPage(ctx, input.ID, input.PageSize, input.Page)
 

@@ -136,6 +136,15 @@ func RegisterHumaRoutes(
 	}, handler.getCursorPaginatedRoundInvestments)
 
 	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-account-recieved-round-investments-cursor",
+		Method:      http.MethodGet,
+		Path:        "/account/{id}/round-investments/recieved/cursor",
+		Summary:     "Get recieved round investments",
+		Description: "Get recieved round investments.",
+		Tags:        []string{"Accounts", "Investments"},
+	}, handler.getCursorPaginatedRecievedRoundInvestments)
+
+	huma.Register(humaApi, huma.Operation{
 		OperationID: "get-round-investments-offset",
 		Method:      http.MethodGet,
 		Path:        "/account/{id}/round-investments/offset",
@@ -161,6 +170,5 @@ func RegisterHumaRoutes(
 		Description: "Get rounds.",
 		Tags:        []string{"Accounts", "Rounds"},
 	}, handler.getRoundsByFilterAndCursor)
-
 
 }
