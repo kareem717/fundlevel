@@ -17,6 +17,9 @@ const notFound: Metadata = {
 	description: "The page you are looking for does not exist.",
 };
 
+/**
+ * Configuration for the root layout meta content.
+ */
 const root: Metadata = {
 	metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
 	title: {
