@@ -24,6 +24,7 @@ const root: Metadata = {
 		template: "%s | Fundlevel",
 	},
 	description: "The best way to fund",
+	keywords: ["funding", "fundlevel", "fund level", "halal loan", "halal", "profit sharing"]
 };
 
 /**
