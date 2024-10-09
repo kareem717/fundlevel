@@ -8,14 +8,14 @@ import { LogoDiv } from "@/components/logo-div"
 import { ScrollArea } from "@/components/ui/scroll-area"
 export interface MobileSidebarProps extends ComponentPropsWithoutRef<typeof Sheet> { }
 
-export const MobileSidebar: FC<MobileSidebarProps> = ({ ...props }) => {
+export const Sidebar: FC<MobileSidebarProps> = ({ ...props }) => {
   return (
     <Sheet {...props}>
       <SheetTrigger asChild>
         <Button
           variant="outline"
           size="icon"
-          className="shrink-0 md:hidden"
+          className="shrink-0"
         >
           <Icons.menu className="h-5 w-5" />
           <span className="sr-only">Toggle navigation menu</span>
