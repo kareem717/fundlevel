@@ -10,7 +10,7 @@ import { copy } from "@/lib/config";
 import { ModeToggle } from "@/components/mode-toggle";
 
 export default async function Home() {
-  const { landing } = copy;
+  const { landing: { hero } } = copy;
 
   return (
     <div className="p-4 flex flex-col justify-between h-[100dvh] w-full max-w-screen-2xl mx-auto items-center">
@@ -22,13 +22,21 @@ export default async function Home() {
         <h1 className="text-3xl sm:text-4xl font-bold text-center">
           The right way to <span className="text-primary">fund</span>.
         </h1>
-        <Link
-          href={contact.calendly}
-          className={cn("uppercase font-bold", buttonVariants({ variant: "outline" }))}
-        >
-          {landing.hero.meetingCTA}
-          <Icons.arrowRight className="size-4 ml-2" />
-        </Link>
+        <div className="flex flex-col gap-4 w-2/3">
+          <Link
+            href={contact.calendly}
+            className={cn("uppercase font-bold w-full", buttonVariants())}
+          >
+            {hero.meetingCTA}
+            <Icons.arrowRight className="size-4 ml-2" />
+          </Link>
+          <Link
+            href={hero.newsletter.signUpURL}
+            className={cn("uppercase font-bold w-full", buttonVariants({ variant: "secondary" }))}
+          >
+            {hero.newsletter.CTA}
+          </Link>
+        </div>
       </div>
       <footer className="flex flex-col sm:flex-row items-center justify-between w-full">
         <div className="flex items-center justify-center gap-2">
