@@ -36,5 +36,5 @@ export const contact = {
  */
 export const business = {
 	name: "Fundlevel",
-  copyright: "© 2024 Fundlevel Inc. All rights reserved.",
+  copyright: "© 2024 Fundlevel. All rights reserved.",
 };
