@@ -1,6 +1,6 @@
 import { createElement } from "react";
 import { Icons } from "@/components/icons";
-import { LogoDiv } from "@/components/logo-div";
+import { LogoDiv, SmallLogoDiv } from "@/components/logo-div";
 import { buttonVariants } from "@/components/ui/button";
 import { contact, business } from "@/lib/config";
 import Link from "next/link";
@@ -15,7 +15,8 @@ export default async function Home() {
   return (
     <div className="p-4 flex flex-col justify-between h-[100dvh] w-full max-w-screen-2xl mx-auto items-center">
       <header className="flex flex-row items-center justify-between y-4 w-full">
-        <LogoDiv />
+        <LogoDiv className="hidden sm:block" />
+        <SmallLogoDiv className="sm:hidden" />
         <ModeToggle />
       </header>
       <div className="flex flex-col items-center justify-center gap-4 sm:gap-8">

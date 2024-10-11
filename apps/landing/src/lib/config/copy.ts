@@ -7,7 +7,7 @@ const landing = {
 	hero: {
 		meetingCTA: "Book meeting",
 		newsletter: {
-			CTA: "Subscribe to newsletter",
+			CTA: "Newsletter",
 			signUpURL: env.NEXT_PUBLIC_NEWS_LETTER_SIGN_UP_URL,
 		},
 	},
