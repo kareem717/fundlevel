@@ -2,6 +2,7 @@ package shared
 
 import (
 	"fundlevel/internal/entities/account"
+	"fundlevel/internal/entities/business"
 	"fundlevel/internal/entities/investment"
 	"fundlevel/internal/entities/round"
 	"fundlevel/internal/entities/venture"
@@ -170,4 +171,26 @@ type SingleAccountResponse struct {
 type ParentInvestmentIDParam struct {
 	PathIDParam
 	InvestmentID int `path:"investmentId" minimum:"1"`
+}
+
+type SingleBusinessResponse struct {
+	Body struct {
+		MessageResponse
+		Business *business.Business `json:"business"`
+	}
+}
+
+type SingleBusinessMemberResponse struct {
+	Body struct {
+		MessageResponse
+		BusinessMember *business.BusinessMember `json:"businessMember"`
+	}
+}
+
+type GetOffsetPaginatedBusinessesOutput struct {
+	Body struct {
+		MessageResponse
+		Businesses []business.Business `json:"businesses"`
+		OffsetPaginationResponse
+	}
 }

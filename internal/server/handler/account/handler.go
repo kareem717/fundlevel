@@ -381,3 +381,28 @@ func (h *httpHandler) getRoundsByFilterAndCursor(ctx context.Context, input *Get
 
 	return resp, nil
 }
+
+func (h *httpHandler) getOffsetPaginatedBusinesses(ctx context.Context, input *shared.GetOffsetPaginatedByParentPathIDInput) (*shared.GetOffsetPaginatedBusinessesOutput, error) {
+	businesses, err := h.service.AccountService.GetBusinessesByPage(ctx, input.ID, input.PageSize, input.Page)
+
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("businesses not found")
+		default:
+			h.logger.Error("failed to fetch businesses", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the ventures")
+		}
+	}
+
+	resp := &shared.GetOffsetPaginatedBusinessesOutput{}
+	resp.Body.Message = "Businesses fetched successfully"
+	resp.Body.Businesses = businesses
+
+	if len(businesses) > input.PageSize {
+		resp.Body.HasMore = true
+		resp.Body.Businesses = resp.Body.Businesses[:input.PageSize]
+	}
+
+	return resp, nil
+}

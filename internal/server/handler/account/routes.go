@@ -171,4 +171,13 @@ func RegisterHumaRoutes(
 		Tags:        []string{"Accounts", "Rounds"},
 	}, handler.getRoundsByFilterAndCursor)
 
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-account-businesses-offset",
+		Method:      http.MethodGet,
+		Path:        "/account/{id}/businesses/offset",
+		Summary:     "Get businesses",
+		Description: "Get businesses.",
+		Tags:        []string{"Accounts", "Businesses"},
+	}, handler.getOffsetPaginatedBusinesses)
+
 }

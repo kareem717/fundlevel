@@ -6,6 +6,7 @@ import (
 	"fundlevel/internal/server/handler/round"
 	"fundlevel/internal/server/handler/user"
 	"fundlevel/internal/server/handler/venture"
+	"fundlevel/internal/server/handler/business"
 	"net/http"
 
 	"github.com/danielgtaylor/huma/v2"
@@ -74,6 +75,12 @@ func (s *Server) routes() chi.Router {
 	)
 
 	round.RegisterHumaRoutes(
+		s.services,
+		humaApi,
+		s.logger,
+	)
+
+	business.RegisterHumaRoutes(
 		s.services,
 		humaApi,
 		s.logger,
