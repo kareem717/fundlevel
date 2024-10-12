@@ -29,14 +29,22 @@ func (r *VentureRepository) Create(ctx context.Context, params venture.CreateVen
 	resp := venture.Venture{}
 
 	err := r.db.RunInTx(ctx, nil, func(ctx context.Context, tx bun.Tx) error {
-		err := tx.NewInsert().
-			Model(&params.Address).
-			ModelTableExpr("addresses").
-			Returning("*").
-			Scan(ctx, &address)
+		if params.Address != nil {
+			err := tx.NewInsert().
+				Model(params.Address).
+				ModelTableExpr("addresses").
+				Returning("*").
+				Scan(ctx, &address)
 
-		params.Venture.AddressID = address.ID
-		err = tx.NewInsert().
+			if err != nil {
+				return err
+			}
+
+			params.Venture.AddressID = &address.ID
+			resp.Address = &address
+		}
+
+		err := tx.NewInsert().
 			Model(&params.Venture).
 			ModelTableExpr("ventures").
 			Returning("*").
@@ -50,8 +58,6 @@ func (r *VentureRepository) Create(ctx context.Context, params venture.CreateVen
 	if err != nil {
 		return resp, err
 	}
-
-	resp.Address = &address
 
 	return resp, err
 }
