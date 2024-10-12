@@ -13,6 +13,7 @@ func (r *BusinessRepository) GetVenturesByCursor(ctx context.Context, businessId
 	err := r.db.
 		NewSelect().
 		Model(&resp).
+		Relation("Address").
 		Where("business_id = ?", businessId).
 		Where("id >= ?", paginationParams.Cursor).
 		Order("id").
@@ -29,6 +30,7 @@ func (r *BusinessRepository) GetVenturesByPage(ctx context.Context, businessId i
 	err := r.db.
 		NewSelect().
 		Model(&resp).
+		Relation("Address").
 		Where("business_id = ?", businessId).
 		Order("id").
 		Offset(offset).

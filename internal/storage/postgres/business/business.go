@@ -3,6 +3,7 @@ package business
 import (
 	"context"
 	"errors"
+	"fundlevel/internal/entities/address"
 	"fundlevel/internal/entities/business"
 
 	"github.com/uptrace/bun"
@@ -18,15 +19,35 @@ func NewBusinessRepository(db bun.IDB, ctx context.Context) *BusinessRepository 
 }
 
 func (r *BusinessRepository) Create(ctx context.Context, params business.CreateBusinessParams) (business.Business, error) {
+	address := address.Address{}
 	resp := business.Business{}
 
-	err := r.db.NewInsert().
-		Model(&params).
-		ModelTableExpr("businesses").
-		Returning("*").
-		Scan(ctx, &resp)
+	err := r.db.RunInTx(ctx, nil, func(ctx context.Context, tx bun.Tx) error {
+		err := tx.NewInsert().
+			Model(&params.Address).
+			ModelTableExpr("addresses").
+			Returning("*").
+			Scan(ctx, &address)
 
-	return resp, err
+		params.Business.AddressID = address.ID
+		err = tx.NewInsert().
+			Model(&params.Business).
+			ModelTableExpr("businesses").
+			Returning("*").
+			Scan(ctx, &resp)
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
+	if err != nil {
+		return resp, err
+	}
+
+	resp.Address = &address
+
+	return resp, nil
 }
 
 func (r *BusinessRepository) GetById(ctx context.Context, id int) (business.Business, error) {
@@ -34,6 +55,7 @@ func (r *BusinessRepository) GetById(ctx context.Context, id int) (business.Busi
 
 	err := r.db.NewSelect().
 		Model(&resp).
+		Relation("Address").
 		Where("id = ?", id).
 		Scan(ctx)
 

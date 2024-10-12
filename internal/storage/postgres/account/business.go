@@ -14,6 +14,7 @@ func (r *AccountRepository) GetBusinessesByPage(ctx context.Context, accountId i
 	err := r.db.
 		NewSelect().
 		Model(&resp).
+		Relation("Address").
 		Join("LEFT JOIN business_members ON business.id = business_members.business_id").
 		Where("business.owner_account_id = ? ", accountId).
 		WhereOr("business_members.account_id = ?", accountId).

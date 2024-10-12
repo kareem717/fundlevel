@@ -1,6 +1,7 @@
 package venture
 
 import (
+	"fundlevel/internal/entities/address"
 	"fundlevel/internal/entities/shared"
 
 	"github.com/uptrace/bun"
@@ -10,15 +11,24 @@ import (
 type Venture struct {
 	bun.BaseModel `bun:"table:ventures"`
 
-	CreateVentureParams
+	VentureParams
+	Address *address.Address `json:"address" bun:"rel:has-one,join:address_id=id"`
+
 	shared.IntegerID
 	shared.Timestamps
 }
 
+type VentureParams struct {
+	BusinessID int  `json:"businessId" minimum:"1"`
+	IsHidden   bool `json:"isHidden" readOnly:"true"`
+	AddressID  int  `json:"addressId" minimum:"1" readOnly:"true"`
+	UpdateVentureParams
+}
+
 // CreateVentureParams contains the parameters for creating a new venture.
 type CreateVentureParams struct {
-	BusinessID int `json:"businessId" minimum:"1"`
-	UpdateVentureParams
+	Venture VentureParams               `json:"venture"`
+	Address address.CreateAddressParams `json:"address"`
 }
 
 // UpdateVentureParams contains the parameters for updating a venture.
