@@ -4,10 +4,12 @@ import (
 	"context"
 
 	"fundlevel/internal/entities/account"
+	"fundlevel/internal/entities/business"
 	"fundlevel/internal/entities/investment"
 	"fundlevel/internal/entities/round"
 	"fundlevel/internal/entities/venture"
 	accountService "fundlevel/internal/service/domain/account"
+	businessService "fundlevel/internal/service/domain/business"
 	healthService "fundlevel/internal/service/domain/health"
 	roundService "fundlevel/internal/service/domain/round"
 	userService "fundlevel/internal/service/domain/user"
@@ -64,6 +66,8 @@ type AccountService interface {
 	CreateRoundInvestment(ctx context.Context, params investment.CreateInvestmentParams) (investment.RoundInvestment, error)
 	GetRecievedRoundInvestmentsByCursor(ctx context.Context, accountId int, limit int, cursor int) ([]investment.RoundInvestment, error)
 	GetRoundsByFilterAndCursor(ctx context.Context, accountId int, filter round.RoundFilter, limit int, cursor int) ([]round.RoundWithSubtypes, error)
+
+	GetBusinessesByPage(ctx context.Context, accountId int, pageSize int, page int) ([]business.Business, error)
 }
 
 type HealthService interface {
@@ -104,12 +108,24 @@ type RoundService interface {
 	AcceptRoundInvestment(ctx context.Context, roundId int, investmentId int) error
 }
 
+type BusinessService interface {
+	Create(ctx context.Context, params business.CreateBusinessParams) (business.Business, error)
+	Delete(ctx context.Context, id int) error
+	GetById(ctx context.Context, id int) (business.Business, error)
+
+	CreateMember(ctx context.Context, params business.CreateBusinessMemberParams) (business.BusinessMember, error)
+	DeleteMember(ctx context.Context, businessId int, accountId int) error
+	UpdateMember(ctx context.Context, businessId int, accountId int, params business.UpdateBusinessMemberParams) (business.BusinessMember, error)
+	GetMembersByPage(ctx context.Context, businessId int, pageSize int, page int) ([]business.BusinessMember, error)
+}
+
 type Service struct {
-	VentureService VentureService
-	RoundService   RoundService
-	AccountService AccountService
-	HealthService  HealthService
-	UserService    UserService
+	VentureService  VentureService
+	RoundService    RoundService
+	AccountService  AccountService
+	HealthService   HealthService
+	UserService     UserService
+	BusinessService BusinessService
 }
 
 // NewService implementation for storage of all services.
@@ -117,10 +133,11 @@ func NewService(
 	repositories storage.Repository,
 ) *Service {
 	return &Service{
-		VentureService: ventureService.NewVentureService(repositories),
-		HealthService:  healthService.NewHealthService(repositories),
-		AccountService: accountService.NewAccountService(repositories),
-		UserService:    userService.NewUserService(repositories),
-		RoundService:   roundService.NewRoundService(repositories),
+		VentureService:  ventureService.NewVentureService(repositories),
+		HealthService:   healthService.NewHealthService(repositories),
+		AccountService:  accountService.NewAccountService(repositories),
+		UserService:     userService.NewUserService(repositories),
+		RoundService:    roundService.NewRoundService(repositories),
+		BusinessService: businessService.NewBusinessService(repositories),
 	}
 }
