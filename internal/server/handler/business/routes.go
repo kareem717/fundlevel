@@ -81,4 +81,31 @@ func RegisterHumaRoutes(
 		Description: "Get business members.",
 		Tags:        []string{"Businesses", "Members"},
 	}, handler.getMembersByPage)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-business-ventures",
+		Method:      http.MethodGet,
+		Path:        "/business/{id}/ventures",
+		Summary:     "Get business ventures",
+		Description: "Get all of the ventures owned by a given business.",
+		Tags:        []string{"Businesses", "Ventures"},
+	}, handler.getCursorPaginatedVentures)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-business-recieved-round-investments-cursor",
+		Method:      http.MethodGet,
+		Path:        "/business/{id}/round-investments/recieved/cursor",
+		Summary:     "Get recieved round investments",
+		Description: "Get recieved round investments.",
+		Tags:        []string{"Businesses", "Investments"},
+	}, handler.getCursorPaginatedRecievedRoundInvestments)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-business-rounds",
+		Method:      http.MethodGet,
+		Path:        "/business/{id}/rounds",
+		Summary:     "Get rounds",
+		Description: "Get rounds.",
+		Tags:        []string{"Businesses", "Rounds"},
+	}, handler.getRoundsByFilterAndCursor)
 }

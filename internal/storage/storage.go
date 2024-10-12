@@ -90,16 +90,10 @@ type AccountRepository interface {
 	Update(ctx context.Context, id int, params account.UpdateAccountParams) (account.Account, error)
 	GetById(ctx context.Context, id int) (account.Account, error)
 
-	GetVenturesByCursor(ctx context.Context, accountId int, paginationParams shared.CursorPagination) ([]venture.Venture, error)
-	GetVenturesByPage(ctx context.Context, accountId int, paginationParams shared.OffsetPagination) ([]venture.Venture, error)
-
 	GetRoundInvestmentsByCursor(ctx context.Context, accountId int, paginationParams shared.CursorPagination) ([]investment.RoundInvestment, error)
 	GetRoundInvestmentsByPage(ctx context.Context, accountId int, paginationParams shared.OffsetPagination) ([]investment.RoundInvestment, error)
 	IsInvestedInRound(ctx context.Context, accountId int, roundId int) (bool, error)
 
-	GetRecievedRoundInvestmentsByCursor(ctx context.Context, accountId int, paginationParams shared.CursorPagination) ([]investment.RoundInvestment, error)
-
-	GetRoundsByFilterAndCursor(ctx context.Context, accountId int, filter round.RoundFilter, paginationParams shared.CursorPagination) ([]round.RoundWithSubtypes, error)
 	GetBusinessesByPage(ctx context.Context, accountId int, paginationParams shared.OffsetPagination) ([]business.Business, error)
 }
 
@@ -116,6 +110,12 @@ type BusinessRepository interface {
 	DeleteMember(ctx context.Context, businessId int, accountId int) error
 	UpdateMember(ctx context.Context, businessId int, accountId int, params business.UpdateBusinessMemberParams) (business.BusinessMember, error)
 	GetMembersByPage(ctx context.Context, businessId int, paginationParams shared.OffsetPagination) ([]business.BusinessMember, error)
+
+	GetVenturesByCursor(ctx context.Context, businessId int, paginationParams shared.CursorPagination) ([]venture.Venture, error)
+	GetVenturesByPage(ctx context.Context, businessId int, paginationParams shared.OffsetPagination) ([]venture.Venture, error)
+
+	GetRecievedRoundInvestmentsByCursor(ctx context.Context, businessId int, paginationParams shared.CursorPagination) ([]investment.RoundInvestment, error)
+	GetRoundsByFilterAndCursor(ctx context.Context, businessId int, filter round.RoundFilter, paginationParams shared.CursorPagination) ([]round.RoundWithSubtypes, error)
 }
 
 type RepositoryProvider interface {

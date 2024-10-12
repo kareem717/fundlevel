@@ -6,6 +6,7 @@ import (
 	"errors"
 
 	"fundlevel/internal/entities/business"
+	"fundlevel/internal/entities/round"
 	"fundlevel/internal/server/handler/shared"
 	"fundlevel/internal/service"
 
@@ -174,6 +175,121 @@ func (h *httpHandler) getMembersByPage(ctx context.Context, input *shared.GetOff
 	if len(members) > input.PageSize {
 		resp.Body.HasMore = true
 		resp.Body.BusinessMembers = resp.Body.BusinessMembers[:input.PageSize]
+	}
+
+	return resp, nil
+}
+
+type GetRoundsByFilterAndCursorInput struct {
+	shared.PathIDParam
+	shared.CursorPaginationRequest
+	round.RoundFilter
+}
+
+func (h *httpHandler) getRoundsByFilterAndCursor(ctx context.Context, input *GetRoundsByFilterAndCursorInput) (*shared.GetCursorPaginatedRoundsWithSubtypesOutput, error) {
+	limit := input.Limit + 1
+
+	rounds, err := h.service.BusinessService.GetRoundsByFilterAndCursor(ctx, input.ID, input.RoundFilter, limit, input.Cursor)
+
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("rounds not found")
+		default:
+			h.logger.Error("failed to fetch rounds", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the rounds")
+		}
+	}
+
+	resp := &shared.GetCursorPaginatedRoundsWithSubtypesOutput{}
+	resp.Body.Message = "Rounds fetched successfully"
+	resp.Body.RoundWithSubtypes = rounds
+
+	if len(rounds) == limit {
+		resp.Body.NextCursor = &rounds[len(rounds)-1].ID
+		resp.Body.HasMore = true
+		resp.Body.RoundWithSubtypes = resp.Body.RoundWithSubtypes[:len(resp.Body.RoundWithSubtypes)-1]
+	}
+
+	return resp, nil
+}
+
+func (h *httpHandler) getCursorPaginatedRecievedRoundInvestments(ctx context.Context, input *shared.GetCursorPaginatedByParentPathIDInput) (*shared.GetCursorPaginatedRoundInvestmentsOutput, error) {
+	limit := input.Limit + 1
+
+	investments, err := h.service.BusinessService.GetRecievedRoundInvestmentsByCursor(ctx, input.ID, limit, input.Cursor)
+
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("investments not found")
+		default:
+			h.logger.Error("failed to fetch investments", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the investments")
+		}
+	}
+
+	resp := &shared.GetCursorPaginatedRoundInvestmentsOutput{}
+	resp.Body.Message = "Investments fetched successfully"
+	resp.Body.Investments = investments
+
+	if len(investments) == limit {
+		resp.Body.NextCursor = &investments[len(investments)-1].ID
+		resp.Body.HasMore = true
+		resp.Body.Investments = resp.Body.Investments[:len(resp.Body.Investments)-1]
+	}
+
+	return resp, nil
+}
+
+func (h *httpHandler) getCursorPaginatedVentures(ctx context.Context, input *shared.GetCursorPaginatedByParentPathIDInput) (*shared.GetCursorPaginatedVenturesOutput, error) {
+	limit := input.Limit + 1
+
+	ventures, err := h.service.BusinessService.GetVenturesByCursor(ctx, input.ID, limit, input.Cursor)
+
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("ventures not found")
+		default:
+			h.logger.Error("failed to fetch ventures", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the ventures")
+		}
+	}
+
+	resp := &shared.GetCursorPaginatedVenturesOutput{}
+	resp.Body.Message = "Ventures fetched successfully"
+	resp.Body.Ventures = ventures
+
+	if len(ventures) == limit {
+		resp.Body.NextCursor = &ventures[len(ventures)-1].ID
+		resp.Body.HasMore = true
+		resp.Body.Ventures = resp.Body.Ventures[:len(resp.Body.Ventures)-1]
+	}
+
+	return resp, nil
+}
+
+func (h *httpHandler) getOffsetPaginatedVentures(ctx context.Context, input *shared.GetOffsetPaginatedByParentPathIDInput) (*shared.GetOffsetPaginatedVenturesOutput, error) {
+	ventures, err := h.service.BusinessService.GetVenturesByPage(ctx, input.ID, input.PageSize, input.Page)
+
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("ventures not found")
+		default:
+			h.logger.Error("failed to fetch ventures", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the ventures")
+		}
+	}
+
+	resp := &shared.GetOffsetPaginatedVenturesOutput{}
+	resp.Body.Message = "Ventures fetched successfully"
+	resp.Body.Ventures = ventures
+
+	if len(ventures) > input.PageSize {
+		resp.Body.HasMore = true
+		resp.Body.Ventures = resp.Body.Ventures[:len(resp.Body.Ventures)-1]
 	}
 
 	return resp, nil

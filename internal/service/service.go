@@ -56,16 +56,11 @@ type AccountService interface {
 	Update(ctx context.Context, id int, params account.UpdateAccountParams) (account.Account, error)
 	GetById(ctx context.Context, id int) (account.Account, error)
 
-	GetVenturesByCursor(ctx context.Context, accountId int, limit int, cursor int) ([]venture.Venture, error)
-	GetVenturesByPage(ctx context.Context, accountId int, pageSize int, page int) ([]venture.Venture, error)
-
 	GetRoundInvestmentsByCursor(ctx context.Context, accountId int, limit int, cursor int) ([]investment.RoundInvestment, error)
 	GetRoundInvestmentsByPage(ctx context.Context, accountId int, pageSize int, page int) ([]investment.RoundInvestment, error)
 	WithdrawRoundInvestment(ctx context.Context, accountId int, investmentId int) error
 	DeleteRoundInvestment(ctx context.Context, accountId int, investmentId int) error
 	CreateRoundInvestment(ctx context.Context, params investment.CreateInvestmentParams) (investment.RoundInvestment, error)
-	GetRecievedRoundInvestmentsByCursor(ctx context.Context, accountId int, limit int, cursor int) ([]investment.RoundInvestment, error)
-	GetRoundsByFilterAndCursor(ctx context.Context, accountId int, filter round.RoundFilter, limit int, cursor int) ([]round.RoundWithSubtypes, error)
 
 	GetBusinessesByPage(ctx context.Context, accountId int, pageSize int, page int) ([]business.Business, error)
 }
@@ -117,6 +112,12 @@ type BusinessService interface {
 	DeleteMember(ctx context.Context, businessId int, accountId int) error
 	UpdateMember(ctx context.Context, businessId int, accountId int, params business.UpdateBusinessMemberParams) (business.BusinessMember, error)
 	GetMembersByPage(ctx context.Context, businessId int, pageSize int, page int) ([]business.BusinessMember, error)
+
+	GetVenturesByCursor(ctx context.Context, accountId int, limit int, cursor int) ([]venture.Venture, error)
+	GetVenturesByPage(ctx context.Context, accountId int, pageSize int, page int) ([]venture.Venture, error)
+
+	GetRecievedRoundInvestmentsByCursor(ctx context.Context, accountId int, limit int, cursor int) ([]investment.RoundInvestment, error)
+	GetRoundsByFilterAndCursor(ctx context.Context, accountId int, filter round.RoundFilter, limit int, cursor int) ([]round.RoundWithSubtypes, error)
 }
 
 type Service struct {

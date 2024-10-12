@@ -17,12 +17,12 @@ type Venture struct {
 
 // CreateVentureParams contains the parameters for creating a new venture.
 type CreateVentureParams struct {
-	OwnerAccountID int `json:"ownerAccountId" minimum:"1"`
+	BusinessID int `json:"businessId" minimum:"1"`
 	UpdateVentureParams
 }
 
 // UpdateVentureParams contains the parameters for updating a venture.
 type UpdateVentureParams struct {
-	Name string `json:"name" minLength:"3" maxLength:"100"`
+	Name        string `json:"name" minLength:"3" maxLength:"100"`
 	Description string `json:"description" minLength:"3" maxLength:"5000"`
 }

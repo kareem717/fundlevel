@@ -1,4 +1,4 @@
-package account
+package business
 
 import (
 	"context"
@@ -9,7 +9,7 @@ import (
 	"github.com/uptrace/bun"
 )
 
-func (r *AccountRepository) GetRoundsByFilterAndCursor(ctx context.Context, accountId int, filter round.RoundFilter, paginationParams shared.CursorPagination) ([]round.RoundWithSubtypes, error) {
+func (r *BusinessRepository) GetRoundsByFilterAndCursor(ctx context.Context, businessId int, filter round.RoundFilter, paginationParams shared.CursorPagination) ([]round.RoundWithSubtypes, error) {
 	resp := []round.RoundWithSubtypes{}
 
 	query := r.db.
@@ -19,6 +19,8 @@ func (r *AccountRepository) GetRoundsByFilterAndCursor(ctx context.Context, acco
 		Relation("DutchDynamicRound").
 		Relation("PartialTotalRound").
 		Relation("RegularDynamicRound").
+		Join("JOIN ventures on round_with_subtypes.venture_id = ventures.id").
+		Where("ventures.business_id = ?", businessId).
 		Where("round_with_subtypes.id >= ?", paginationParams.Cursor).
 		Order("round_with_subtypes.id").
 		Limit(paginationParams.Limit)

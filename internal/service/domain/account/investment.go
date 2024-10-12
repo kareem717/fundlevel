@@ -17,15 +17,6 @@ func (s *AccountService) GetRoundInvestmentsByCursor(ctx context.Context, accoun
 	return s.repositories.Account().GetRoundInvestmentsByCursor(ctx, accountId, paginationParams)
 }
 
-func (s *AccountService) GetRecievedRoundInvestmentsByCursor(ctx context.Context, accountId int, limit int, cursor int) ([]investment.RoundInvestment, error) {
-	paginationParams := shared.CursorPagination{
-		Limit:  limit,
-		Cursor: cursor,
-	}
-
-	return s.repositories.Account().GetRecievedRoundInvestmentsByCursor(ctx, accountId, paginationParams)
-}
-
 func (s *AccountService) GetRoundInvestmentsByPage(ctx context.Context, accountId int, pageSize int, page int) ([]investment.RoundInvestment, error) {
 	paginationParams := shared.OffsetPagination{
 		PageSize: pageSize,

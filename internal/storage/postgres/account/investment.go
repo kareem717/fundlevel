@@ -25,24 +25,6 @@ func (r *AccountRepository) GetRoundInvestmentsByCursor(ctx context.Context, acc
 	return resp, err
 }
 
-func (r *AccountRepository) GetRecievedRoundInvestmentsByCursor(ctx context.Context, accountId int, paginationParams shared.CursorPagination) ([]investment.RoundInvestment, error) {
-	resp := []investment.RoundInvestment{}
-
-	err := r.db.
-		NewSelect().
-		Model(&resp).
-		Relation("Round").
-		Join("JOIN ventures").
-		JoinOn("round.venture_id = ventures.id").
-		Where("ventures.owner_account_id = ?", accountId).
-		Where("round_investment.id >= ?", paginationParams.Cursor).
-		Order("round_investment.id").
-		Limit(paginationParams.Limit).
-		Scan(ctx)
-
-	return resp, err
-}
-
 func (r *AccountRepository) GetRoundInvestmentsByPage(ctx context.Context, accountId int, paginationParams shared.OffsetPagination) ([]investment.RoundInvestment, error) {
 	resp := []investment.RoundInvestment{}
 	offset := (paginationParams.Page - 1) * paginationParams.PageSize
@@ -67,7 +49,7 @@ func (r *AccountRepository) IsInvestedInRound(ctx context.Context, accountId int
 		stringStatusArray[i] = string(status)
 	}
 
-	exists, err  := r.db.
+	exists, err := r.db.
 		NewSelect().
 		Model(&investment.RoundInvestment{}).
 		Where("round_investment.investor_id = ?", accountId).
