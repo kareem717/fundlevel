@@ -9,6 +9,7 @@ import (
 	"fundlevel/internal/entities/round"
 	"fundlevel/internal/entities/venture"
 	accountService "fundlevel/internal/service/domain/account"
+	"fundlevel/internal/service/domain/billing"
 	businessService "fundlevel/internal/service/domain/business"
 	healthService "fundlevel/internal/service/domain/health"
 	roundService "fundlevel/internal/service/domain/round"
@@ -61,6 +62,7 @@ type AccountService interface {
 	WithdrawRoundInvestment(ctx context.Context, accountId int, investmentId int) error
 	DeleteRoundInvestment(ctx context.Context, accountId int, investmentId int) error
 	CreateRoundInvestment(ctx context.Context, params investment.CreateInvestmentParams) (investment.RoundInvestment, error)
+	GetInvestmentById(ctx context.Context, accountId int, investmentId int) (investment.RoundInvestment, error)
 
 	GetBusinessesByPage(ctx context.Context, accountId int, pageSize int, page int) ([]business.Business, error)
 }
@@ -120,6 +122,11 @@ type BusinessService interface {
 	GetRoundsByFilterAndCursor(ctx context.Context, accountId int, filter round.RoundFilter, limit int, cursor int) ([]round.RoundWithSubtypes, error)
 }
 
+type BillingService interface {
+	CreateCheckoutSession(price int, successURL string, cancelURL string, investmentId int) (string, error)
+	HandleCheckoutSuccess(sessionID string) (string, error)
+}
+
 type Service struct {
 	VentureService  VentureService
 	RoundService    RoundService
@@ -127,11 +134,13 @@ type Service struct {
 	HealthService   HealthService
 	UserService     UserService
 	BusinessService BusinessService
+	BillingService  BillingService
 }
 
 // NewService implementation for storage of all services.
 func NewService(
 	repositories storage.Repository,
+	config billing.BillingServiceConfig,
 ) *Service {
 	return &Service{
 		VentureService:  ventureService.NewVentureService(repositories),
@@ -140,5 +149,6 @@ func NewService(
 		UserService:     userService.NewUserService(repositories),
 		RoundService:    roundService.NewRoundService(repositories),
 		BusinessService: businessService.NewBusinessService(repositories),
+		BillingService:  billing.NewBillingService(repositories, config),
 	}
 }

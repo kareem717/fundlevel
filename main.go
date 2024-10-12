@@ -8,6 +8,7 @@ import (
 
 	server "fundlevel/internal/server"
 	"fundlevel/internal/service"
+	"fundlevel/internal/service/domain/billing"
 	"fundlevel/internal/storage/postgres"
 
 	"github.com/danielgtaylor/huma/v2/humacli"
@@ -25,6 +26,12 @@ type Options struct {
 	BaseURL            string `help:"Base API URL" short:"B"`
 	SupabaseHost       string `help:"Supabase Host" short:"s"`
 	SupabaseServiceKey string `help:"Supabase Service Key" short:"k"`
+
+	StripeAPIKey            string  `help:"Stripe API Key" short:"S"`
+	FeePercentage           string `help:"Fee Percentage" short:"f"`
+	TransactionFeeProductID string  `help:"Transaction Fee Product ID" short:"T"`
+	InvestmentFeeProductID  string  `help:"Investment Fee Product ID" short:"I"`
+	StripeWebhookSecret     string  `help:"Stripe Webhook Secret" short:"W"`
 }
 
 func (o *Options) config() {
@@ -38,6 +45,13 @@ func (o *Options) config() {
 	o.BaseURL = os.Getenv("BASE_API_URL")
 	o.SupabaseHost = os.Getenv("SUPABASE_HOST")
 	o.SupabaseServiceKey = os.Getenv("SUPABASE_SERVICE_KEY")
+
+	o.StripeAPIKey = os.Getenv("STRIPE_API_KEY")
+	o.TransactionFeeProductID = os.Getenv("TRANSACTION_FEE_PRODUCT_ID")
+	o.InvestmentFeeProductID = os.Getenv("INVESTMENT_FEE_PRODUCT_ID")
+	o.StripeWebhookSecret = os.Getenv("STRIPE_WEBHOOK_SECRET")
+	o.FeePercentage = os.Getenv("FEE_PERCENTAGE")
+	
 }
 
 func main() {
@@ -64,7 +78,16 @@ func main() {
 
 		repositories := postgres.NewRepository(db, ctx)
 
-		services := service.NewService(repositories)
+		feePercentage, err := strconv.ParseFloat(options.FeePercentage, 64)
+		if err != nil {
+			panic(fmt.Sprintf("Failed to parse FEE_PERCENTAGE: %v", err))
+		}
+		services := service.NewService(repositories, billing.BillingServiceConfig{
+			APIKey:                  options.StripeAPIKey,
+			FeePercentage:           feePercentage,
+			TransactionFeeProductID: options.TransactionFeeProductID,
+			InvestmentFeeProductID:  options.InvestmentFeeProductID,
+		})
 
 		supabaseClient, err := supabase.NewClient(
 			options.SupabaseHost,
@@ -81,6 +104,7 @@ func main() {
 			options.APIVersion,
 			logger,
 			supabaseClient,
+			options.StripeWebhookSecret,
 		)
 
 		hooks.OnStart(func() {

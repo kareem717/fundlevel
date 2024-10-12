@@ -190,7 +190,6 @@ func (h *httpHandler) getCursorPaginatedRoundInvestments(ctx context.Context, in
 	return resp, nil
 }
 
-
 func (h *httpHandler) getOffsetPaginatedRoundInvestments(ctx context.Context, input *shared.GetOffsetPaginatedByParentPathIDInput) (*shared.GetOffsetPaginatedRoundInvestmentsOutput, error) {
 	investments, err := h.service.AccountService.GetRoundInvestmentsByPage(ctx, input.ID, input.PageSize, input.Page)
 
@@ -267,7 +266,6 @@ func (h *httpHandler) createRoundInvestment(ctx context.Context, input *CreateRo
 	return resp, nil
 }
 
-
 func (h *httpHandler) getOffsetPaginatedBusinesses(ctx context.Context, input *shared.GetOffsetPaginatedByParentPathIDInput) (*shared.GetOffsetPaginatedBusinessesOutput, error) {
 	businesses, err := h.service.AccountService.GetBusinessesByPage(ctx, input.ID, input.PageSize, input.Page)
 
@@ -289,6 +287,40 @@ func (h *httpHandler) getOffsetPaginatedBusinesses(ctx context.Context, input *s
 		resp.Body.HasMore = true
 		resp.Body.Businesses = resp.Body.Businesses[:input.PageSize]
 	}
+
+	return resp, nil
+}
+
+type GetStripeCheckoutLinkInput struct {
+	shared.PathIDParam
+	InvestmentID int    `path:"investmentId"`
+	RedirectURL  string `query:"redirectUrl" required:"true"`
+}
+
+type LinkOutput struct {
+	Body struct {
+		Message string `json:"message"`
+		Link    string `json:"link"`
+	}
+}
+
+func (h *httpHandler) investmentCheckoutLink(ctx context.Context, input *GetStripeCheckoutLinkInput) (*LinkOutput, error) {
+	investment, err := h.service.AccountService.GetInvestmentById(ctx, input.ID, input.InvestmentID)
+	if err != nil {
+		h.logger.Error("failed to get investment", zap.Error(err))
+		return nil, huma.Error500InternalServerError("Failed to get investment")
+	}
+
+	checkoutPrice := investment.Amount * 100
+	sess, err := h.service.BillingService.CreateCheckoutSession(checkoutPrice, input.RedirectURL, input.RedirectURL, investment.ID)
+	if err != nil {
+		h.logger.Error("failed to create stripe checkout session", zap.Error(err))
+		return nil, huma.Error500InternalServerError("Failed to create stripe checkout session")
+	}
+
+	resp := &LinkOutput{}
+	resp.Body.Message = "Stripe checkout link created successfully"
+	resp.Body.Link = sess
 
 	return resp, nil
 }

@@ -93,6 +93,7 @@ type AccountRepository interface {
 	GetRoundInvestmentsByCursor(ctx context.Context, accountId int, paginationParams shared.CursorPagination) ([]investment.RoundInvestment, error)
 	GetRoundInvestmentsByPage(ctx context.Context, accountId int, paginationParams shared.OffsetPagination) ([]investment.RoundInvestment, error)
 	IsInvestedInRound(ctx context.Context, accountId int, roundId int) (bool, error)
+	GetRoundInvestmentById(ctx context.Context, accountId int, investmentId int) (investment.RoundInvestment, error)
 
 	GetBusinessesByPage(ctx context.Context, accountId int, paginationParams shared.OffsetPagination) ([]business.Business, error)
 }

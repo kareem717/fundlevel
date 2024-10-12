@@ -73,3 +73,7 @@ func (s *AccountService) CreateRoundInvestment(ctx context.Context, params inves
 
 	return s.repositories.Investment().Create(ctx, params)
 }
+
+func (s *AccountService) GetInvestmentById(ctx context.Context, accountId int, investmentId int) (investment.RoundInvestment, error) {
+	return s.repositories.Account().GetRoundInvestmentById(ctx, accountId, investmentId)
+}

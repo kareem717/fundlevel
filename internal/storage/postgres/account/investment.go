@@ -59,3 +59,17 @@ func (r *AccountRepository) IsInvestedInRound(ctx context.Context, accountId int
 
 	return exists, err
 }
+
+func (r *AccountRepository) GetRoundInvestmentById(ctx context.Context, accountId int, investmentId int) (investment.RoundInvestment, error) {
+	resp := investment.RoundInvestment{}
+
+	err := r.db.
+		NewSelect().
+		Model(&resp).
+		Relation("Round").
+		Where("round_investment.investor_id = ?", accountId).
+		Where("round_investment.id = ?", investmentId).
+		Scan(ctx)
+
+	return resp, err
+}
