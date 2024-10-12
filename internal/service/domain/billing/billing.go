@@ -1,11 +1,13 @@
 package billing
 
 import (
+	"context"
 	"fmt"
+	"fundlevel/internal/entities/investment"
 	"fundlevel/internal/service/domain/billing/stripe"
 	"fundlevel/internal/storage"
-	"log"
 	"strconv"
+	"time"
 )
 
 type BillingServiceConfig struct {
@@ -24,7 +26,7 @@ type BillingService struct {
 	client                  *stripe.Client
 }
 
-// NewTestService returns a new instance of test service.
+// NewBillingService returns a new instance of billing service.
 func NewBillingService(repositories storage.Repository, config BillingServiceConfig) *BillingService {
 	client := stripe.NewClient(config.APIKey)
 
@@ -38,7 +40,7 @@ func NewBillingService(repositories storage.Repository, config BillingServiceCon
 	}
 }
 
-func (s *BillingService) CreateCheckoutSession(price int, successURL string, cancelURL string, investmentId int) (string, error) {
+func (s *BillingService) CreateInvestmentCheckoutSession(ctx context.Context, price int, successURL string, cancelURL string, investmentId int) (string, error) {
 	resp, err := s.client.CreateCheckoutSession(
 		fmt.Sprintf("%d", investmentId),
 		price,
@@ -55,7 +57,9 @@ func (s *BillingService) CreateCheckoutSession(price int, successURL string, can
 	return resp.URL, nil
 }
 
-func (s *BillingService) HandleCheckoutSuccess(sessionID string) (string, error) {
+func (s *BillingService) HandleInvestmentCheckoutSuccess(ctx context.Context, sessionID string) (string, error) {
+	now := time.Now()
+
 	session, err := s.client.GetSession(sessionID)
 	if err != nil {
 		return "", err
@@ -71,7 +75,24 @@ func (s *BillingService) HandleCheckoutSuccess(sessionID string) (string, error)
 		return "", fmt.Errorf("failed to convert investment ID to int: %w", err)
 	}
 
-	log.Printf("investment ID: %d", investmentId)
+	investmentRecord, err := s.repositories.Investment().GetById(ctx, investmentId)
+	if err != nil {
+		return "", fmt.Errorf("failed to get investment: %w", err)
+	}
+
+	updateParams := investment.UpdateInvestmentParams{
+		// Status is updated to success as this is intended to be the final step - if desired we can delay this step
+		Status:                investment.InvestmentStatusSuccessful,
+		SignedAt:              investmentRecord.SignedAt,
+		PaidAt:                &now,
+		SignedStripeSessionID: &session.ID,
+	}
+
+	_, err = s.repositories.Investment().Update(ctx, investmentId, updateParams)
+	if err != nil {
+		// TODO: figure out how to reverse the transaction if it fails
+		return "", fmt.Errorf("failed to update investment: %w", err)
+	}
 
 	return session.SuccessURL, nil
 }

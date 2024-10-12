@@ -71,7 +71,7 @@ func (h *httpHandler) handleStripeWebhook(ctx context.Context, input *HandleStri
 			return nil, huma.Error500InternalServerError("Failed to parse webhook json")
 		}
 
-		redirectURL, err := h.service.BillingService.HandleCheckoutSuccess(eventBody.ID)
+		redirectURL, err := h.service.BillingService.HandleInvestmentCheckoutSuccess(ctx, eventBody.ID)
 		if err != nil {
 			h.logger.Error("failed to handle stripe checkout success", zap.Error(err))
 			return nil, huma.Error500InternalServerError("Failed to handle stripe checkout success")

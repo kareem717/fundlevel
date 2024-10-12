@@ -1,6 +1,8 @@
 package investment
 
 import (
+	"time"
+
 	"fundlevel/internal/entities/account"
 	"fundlevel/internal/entities/round"
 	"fundlevel/internal/entities/shared"
@@ -11,15 +13,17 @@ import (
 type InvestmentStatus string
 
 const (
-	InvestmentStatusPending   InvestmentStatus = "pending"
-	InvestmentStatusAccepted  InvestmentStatus = "accepted"
-	InvestmentStatusRejected  InvestmentStatus = "rejected"
-	InvestmentStatusWithdrawn InvestmentStatus = "withdrawn"
+	InvestmentStatusPending    InvestmentStatus = "pending"
+	InvestmentStatusAccepted   InvestmentStatus = "accepted"
+	InvestmentStatusRejected   InvestmentStatus = "rejected"
+	InvestmentStatusWithdrawn  InvestmentStatus = "withdrawn"
+	InvestmentStatusSuccessful InvestmentStatus = "successful"
+	InvestmentStatusFailed     InvestmentStatus = "failed"
 )
 
 // FixedTotalRound represents an fixed total round entity.
 type RoundInvestment struct {
-	bun.BaseModel    `bun:"table:round_investments"`
+	bun.BaseModel `bun:"table:round_investments"`
 	shared.IntegerID
 	CreateInvestmentParams
 	Round    *round.Round     `json:"round" bun:"rel:belongs-to,join:round_id=id" readonly:"true"`
@@ -35,5 +39,8 @@ type CreateInvestmentParams struct {
 }
 
 type UpdateInvestmentParams struct {
-	Status InvestmentStatus `json:"status" enum:"pending,accepted,rejected,withdrawn"`
+	Status                InvestmentStatus `json:"status" enum:"pending,accepted,rejected,withdrawn,successful,failed"`
+	SignedAt              *time.Time       `json:"signedAt" readOnly:"true"`
+	SignedStripeSessionID *string          `json:"signedStripeSessionId" readOnly:"true"`
+	PaidAt                *time.Time       `json:"paidAt" readOnly:"true"`
 }

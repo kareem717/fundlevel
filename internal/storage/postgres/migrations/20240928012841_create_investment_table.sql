@@ -1,6 +1,13 @@
 -- +goose Up
 -- +goose StatementBegin
-CREATE TYPE investment_status AS ENUM('pending', 'accepted', 'rejected', 'withdrawn');
+CREATE TYPE investment_status AS ENUM(
+    'pending',
+    'accepted',
+    'rejected',
+    'withdrawn',
+    'successful',
+    'failed'
+);
 
 CREATE TABLE
     round_investments (
@@ -9,10 +16,24 @@ CREATE TABLE
         investor_id INT NOT NULL REFERENCES accounts (id),
         amount BIGINT NOT NULL,
         status investment_status NOT NULL DEFAULT 'pending',
+        signed_at timestamptz,
+        signed_stripe_session_id TEXT,
+        paid_at timestamptz,
         created_at timestamptz DEFAULT CLOCK_TIMESTAMP(),
         updated_at timestamptz,
         deleted_at timestamptz,
-        CONSTRAINT amount_check CHECK (amount>0)
+        CONSTRAINT amount_check CHECK (amount>0),
+        CONSTRAINT paid_at_check CHECK (
+            (
+                paid_at IS NULL
+                AND signed_stripe_session_id IS NULL
+            )
+            OR (
+                paid_at IS NOT NULL
+                AND signed_stripe_session_id IS NOT NULL
+            )
+        )
+        -- //TODO: add paid_at/signed_at and status checks: i.e. cant be accepted if those are null etc.
     );
 
 CREATE TRIGGER sync_round_investments_updated_at BEFORE

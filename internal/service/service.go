@@ -12,6 +12,7 @@ import (
 	"fundlevel/internal/service/domain/billing"
 	businessService "fundlevel/internal/service/domain/business"
 	healthService "fundlevel/internal/service/domain/health"
+	investmentService "fundlevel/internal/service/domain/investment"
 	roundService "fundlevel/internal/service/domain/round"
 	userService "fundlevel/internal/service/domain/user"
 	ventureService "fundlevel/internal/service/domain/venture"
@@ -123,18 +124,24 @@ type BusinessService interface {
 }
 
 type BillingService interface {
-	CreateCheckoutSession(price int, successURL string, cancelURL string, investmentId int) (string, error)
-	HandleCheckoutSuccess(sessionID string) (string, error)
+	CreateInvestmentCheckoutSession(ctx context.Context, price int, successURL string, cancelURL string, investmentId int) (string, error)
+	HandleInvestmentCheckoutSuccess(ctx context.Context, sessionID string) (string, error)
+}
+
+type InvestmentService interface {
+	GetById(ctx context.Context, id int) (investment.RoundInvestment, error)
+	Update(ctx context.Context, id int, params investment.UpdateInvestmentParams) (investment.RoundInvestment, error)
 }
 
 type Service struct {
-	VentureService  VentureService
-	RoundService    RoundService
-	AccountService  AccountService
-	HealthService   HealthService
-	UserService     UserService
-	BusinessService BusinessService
-	BillingService  BillingService
+	VentureService    VentureService
+	RoundService      RoundService
+	AccountService    AccountService
+	HealthService     HealthService
+	UserService       UserService
+	BusinessService   BusinessService
+	BillingService    BillingService
+	InvestmentService InvestmentService
 }
 
 // NewService implementation for storage of all services.
@@ -143,12 +150,13 @@ func NewService(
 	config billing.BillingServiceConfig,
 ) *Service {
 	return &Service{
-		VentureService:  ventureService.NewVentureService(repositories),
-		HealthService:   healthService.NewHealthService(repositories),
-		AccountService:  accountService.NewAccountService(repositories),
-		UserService:     userService.NewUserService(repositories),
-		RoundService:    roundService.NewRoundService(repositories),
-		BusinessService: businessService.NewBusinessService(repositories),
-		BillingService:  billing.NewBillingService(repositories, config),
+		VentureService:    ventureService.NewVentureService(repositories),
+		HealthService:     healthService.NewHealthService(repositories),
+		AccountService:    accountService.NewAccountService(repositories),
+		UserService:       userService.NewUserService(repositories),
+		RoundService:      roundService.NewRoundService(repositories),
+		BusinessService:   businessService.NewBusinessService(repositories),
+		BillingService:    billing.NewBillingService(repositories, config),
+		InvestmentService: investmentService.NewInvestmentService(repositories),
 	}
 }
