@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"fundlevel/internal/entities/account"
+	"fundlevel/internal/entities/business"
 	"fundlevel/internal/entities/investment"
 	"fundlevel/internal/entities/round"
 	"fundlevel/internal/entities/venture"
@@ -99,10 +100,22 @@ type AccountRepository interface {
 	GetRecievedRoundInvestmentsByCursor(ctx context.Context, accountId int, paginationParams shared.CursorPagination) ([]investment.RoundInvestment, error)
 
 	GetRoundsByFilterAndCursor(ctx context.Context, accountId int, filter round.RoundFilter, paginationParams shared.CursorPagination) ([]round.RoundWithSubtypes, error)
+	GetBusinessesByPage(ctx context.Context, accountId int, paginationParams shared.OffsetPagination) ([]business.Business, error)
 }
 
 type UserRepository interface {
 	GetAccount(ctx context.Context, userId uuid.UUID) (account.Account, error)
+}
+
+type BusinessRepository interface {
+	Create(ctx context.Context, params business.CreateBusinessParams) (business.Business, error)
+	GetById(ctx context.Context, id int) (business.Business, error)
+	Delete(ctx context.Context, id int) error
+
+	CreateMember(ctx context.Context, params business.CreateBusinessMemberParams) (business.BusinessMember, error)
+	DeleteMember(ctx context.Context, businessId int, accountId int) error
+	UpdateMember(ctx context.Context, businessId int, accountId int, params business.UpdateBusinessMemberParams) (business.BusinessMember, error)
+	GetMembersByPage(ctx context.Context, businessId int, paginationParams shared.OffsetPagination) ([]business.BusinessMember, error)
 }
 
 type RepositoryProvider interface {
@@ -111,6 +124,7 @@ type RepositoryProvider interface {
 	Round() RoundRepository
 	Investment() InvestmentRepository
 	User() UserRepository
+	Business() BusinessRepository
 }
 
 type Transaction interface {
@@ -118,6 +132,7 @@ type Transaction interface {
 	Commit() error
 	Rollback() error
 	SubTransaction() (Transaction, error)
+	Business() BusinessRepository
 }
 
 type Repository interface {
