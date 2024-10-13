@@ -5,7 +5,6 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/awserr"
-	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ses"
 )
@@ -17,20 +16,11 @@ type Client struct {
 
 type ClientOptFunc func(*Client)
 
-func NewClient(credentials *credentials.Credentials, defaultSender string, region string) (*Client, error) {
-	// Create a Session with a custom region
-	sess, err := session.NewSession(&aws.Config{
-		Region:      aws.String(region),
-		Credentials: credentials,
-	})
-	if err != nil {
-		return nil, err
-	}
-
+func NewClient(session *session.Session, defaultSender string) (*Client) {
 	return &Client{
-		ses:           ses.New(sess),
+		ses:           ses.New(session),
 		defaultSender: defaultSender,
-	}, nil
+	}
 }
 
 // Email represents an email to be sent
