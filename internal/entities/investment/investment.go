@@ -40,7 +40,6 @@ type CreateInvestmentParams struct {
 
 type UpdateInvestmentParams struct {
 	Status                InvestmentStatus `json:"status" enum:"pending,accepted,rejected,withdrawn,successful,failed"`
-	SignedAt              *time.Time       `json:"signedAt" readOnly:"true"`
-	SignedStripeSessionID *string          `json:"signedStripeSessionId" readOnly:"true"`
+	StripeCheckoutSessionID *string          `json:"stripeCheckoutSessionId"`
 	PaidAt                *time.Time       `json:"paidAt" readOnly:"true"`
 }

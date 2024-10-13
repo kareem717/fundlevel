@@ -16,8 +16,7 @@ CREATE TABLE
         investor_id INT NOT NULL REFERENCES accounts (id),
         amount BIGINT NOT NULL,
         status investment_status NOT NULL DEFAULT 'pending',
-        signed_at timestamptz,
-        signed_stripe_session_id TEXT,
+        stripe_checkout_session_id TEXT,
         paid_at timestamptz,
         created_at timestamptz DEFAULT CLOCK_TIMESTAMP(),
         updated_at timestamptz,
@@ -26,11 +25,11 @@ CREATE TABLE
         CONSTRAINT paid_at_check CHECK (
             (
                 paid_at IS NULL
-                AND signed_stripe_session_id IS NULL
+                AND stripe_checkout_session_id IS NULL
             )
             OR (
                 paid_at IS NOT NULL
-                AND signed_stripe_session_id IS NOT NULL
+                AND stripe_checkout_session_id IS NOT NULL
             )
         )
         -- //TODO: add paid_at/signed_at and status checks: i.e. cant be accepted if those are null etc.

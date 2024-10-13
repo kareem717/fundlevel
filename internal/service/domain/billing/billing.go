@@ -2,6 +2,8 @@ package billing
 
 import (
 	"context"
+	"database/sql"
+	"errors"
 	"fmt"
 	"fundlevel/internal/entities/investment"
 	"fundlevel/internal/service/domain/billing/stripe"
@@ -75,17 +77,20 @@ func (s *BillingService) HandleInvestmentCheckoutSuccess(ctx context.Context, se
 		return "", fmt.Errorf("failed to convert investment ID to int: %w", err)
 	}
 
-	investmentRecord, err := s.repositories.Investment().GetById(ctx, investmentId)
+
+	_, err = s.repositories.Investment().GetById(ctx, investmentId)
 	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return "", fmt.Errorf("investment not found")
+		}
 		return "", fmt.Errorf("failed to get investment: %w", err)
 	}
 
 	updateParams := investment.UpdateInvestmentParams{
 		// Status is updated to success as this is intended to be the final step - if desired we can delay this step
-		Status:                investment.InvestmentStatusSuccessful,
-		SignedAt:              investmentRecord.SignedAt,
-		PaidAt:                &now,
-		SignedStripeSessionID: &session.ID,
+		Status:                  investment.InvestmentStatusSuccessful,
+		PaidAt:                  &now,
+		StripeCheckoutSessionID: &session.ID,
 	}
 
 	_, err = s.repositories.Investment().Update(ctx, investmentId, updateParams)
