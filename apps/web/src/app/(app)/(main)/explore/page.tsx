@@ -1,25 +1,29 @@
-import { VentureIndexCard } from "@/components/app/ventures/venture-index-card"
-import { Icons } from "@/components/icons"
+import { Payment, columns } from "../components/vetnure-table/columns"
+import { DataTable } from "../components/vetnure-table"
 import { buttonVariants } from "@/components/ui/button"
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination"
-import { Venture } from "@/lib/api"
-import redirects from "@/lib/config/redirects"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
+import { Icons } from "@/components/icons"
+import redirects from "@/lib/config/redirects"
+import { faker } from '@faker-js/faker'; // Add this import
 
-export default async function DashboardPage({ searchParams }: { searchParams: { page: string | null, limit: string | null } }) {
-  const page = searchParams.page ? parseInt(searchParams.page) : 1
-  const limit = searchParams.limit ? parseInt(searchParams.limit) : 10
+async function getData(): Promise<Payment[]> {
+  // Fetch data from your API here.
+  const payments: Payment[] = Array.from({ length: 1000 }, () => ({
+    id: faker.string.uuid(), // Generate a unique ID
+    amount: faker.number.int({ min: 1, max: 1000 }), // Generate a random amount
+    status: faker.helpers.arrayElement(["pending", "processing", "success", "failed"]), // Ensure status matches Payment type
+    email: faker.internet.email(), // Generate a random email
+  }));
 
-  const ventures: Venture[] = []
+  return payments; // Return the generated payments
+}
+
+export default async function VenturePage() {
+  const data = await getData()
+
   return (
-    <div className="flex flex-col gap-4 w-full h-full">
+    <div className="flex flex-col gap-4 w-full h-full max-w-screen-xl mx-auto">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Ventures</h1>
         <Link className={cn(buttonVariants({ variant: "secondary" }), "flex items-center gap-2")} href={redirects.app.ventures.create}>
@@ -30,33 +34,8 @@ export default async function DashboardPage({ searchParams }: { searchParams: { 
         </Link>
       </div>
       <div className="flex flex-col gap-4 items-center justify-between w-full h-full">
-        {!!ventures?.length ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
-            {ventures?.map((venture) => (
-              <VentureIndexCard key={venture.id} ventureId={venture.id.toString()} name={venture.name} createdAt={venture.createdAt} />
-            ))}
-          </div>
-        ) : (
-          <div className="flex flex-col gap-4">
-            <p className="text-sm text-muted-foreground">No ventures found</p>
-          </div>
-        )}
-        <Pagination className="mb-4">
-          <PaginationContent>
-            {page > 1 && (
-              <PaginationItem>
-                <PaginationPrevious href={`${redirects.app.explore}?page=${page - 1}&limit=${limit}`} />
-              </PaginationItem>
-            )}
-            {(ventures?.length ?? 0) > limit && (
-              <PaginationItem>
-                <PaginationNext href={`${redirects.app.explore}?page=${page + 1}&limit=${limit}`} />
-              </PaginationItem>
-            )}
-          </PaginationContent>
-        </Pagination>
+        <DataTable columns={columns} data={data} />
       </div >
     </div >
-
   )
 }

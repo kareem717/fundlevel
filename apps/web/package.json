@@ -57,6 +57,7 @@
     "sonner": "^1.5.0",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
+    "title-case": "^4.3.2",
     "vaul": "^0.9.3",
     "yup": "^1.4.0",
     "zustand": "^5.0.0-rc.2"

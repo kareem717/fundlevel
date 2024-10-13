@@ -1,6 +1,6 @@
 "use client"
 
-import { DataTable } from "@/components/ui/data-table";
+import { DataTable } from "@/components/ui";
 import { Round } from "@/lib/api";
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";

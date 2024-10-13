@@ -116,10 +116,14 @@ import {
   Flag,
   Store,
   type LucideIcon,
-  type LucideProps, 
+  type LucideProps,
+  ArrowUpDown,
   Sparkles,
   CircleUser,
   HandCoins,
+  ArrowUpWideNarrow,
+  Settings2,
+  ArrowDownWideNarrow,
 } from "lucide-react";
 
 export type Icon = LucideIcon;
@@ -133,7 +137,11 @@ export const Icons = {
   chartPie: ChartPie,
   store: Store,
   radio: Radio,
+  settings2: Settings2,
   fileDown: FileDownIcon,
+  arrowUpDown: ArrowUpDown,
+  sortAsc: ArrowUpWideNarrow,
+  sortDesc: ArrowDownWideNarrow,
   key: Key,
   handCoins: HandCoins,
   repeat: Repeat,

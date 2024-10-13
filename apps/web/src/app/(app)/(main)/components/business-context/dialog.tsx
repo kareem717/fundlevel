@@ -24,8 +24,7 @@ export interface BuisnessContextDialogProps extends ComponentPropsWithoutRef<"di
 
 export const BuisnessContextDialog: FC<BuisnessContextDialogProps> = ({ businesses, ...props }) => {
   const [open, setOpen] = useState(true)
-  const { setSelectedBusiness } = useBusinessContext()
-
+  const { setSelectedBusiness, selectedBusiness } = useBusinessContext()
   const onSelectBusiness = (businessId: string) => {
     const parsedBusinessId = parseInt(businessId)
     if (isNaN(parsedBusinessId)) {
@@ -44,8 +43,14 @@ export const BuisnessContextDialog: FC<BuisnessContextDialogProps> = ({ business
     setOpen(false)
   }
 
+  const handleOpenChange = (open: boolean) => {
+    if (selectedBusiness) {
+      setOpen(false)
+    }
+  }
+  
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Select a business</DialogTitle>
