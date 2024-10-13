@@ -227,6 +227,7 @@ func (h *httpHandler) getCursorPaginatedFixedTotalRounds(ctx context.Context, in
 		}
 	}
 
+
 	resp := &shared.GetCursorPaginatedFixedTotalRoundsOutput{}
 	resp.Body.Message = "Rounds fetched successfully"
 	resp.Body.FixedTotalRounds = rounds
