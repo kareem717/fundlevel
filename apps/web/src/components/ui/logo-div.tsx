@@ -2,6 +2,7 @@ import { ComponentPropsWithoutRef, FC } from "react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import redirects from "@/lib/config/redirects";
+import { Icons } from "./icons";
 
 interface LogoDivProps extends Omit<ComponentPropsWithoutRef<typeof Link>, "href"> {
   href?: string
@@ -10,31 +11,23 @@ interface LogoDivProps extends Omit<ComponentPropsWithoutRef<typeof Link>, "href
 export const LogoDiv: FC<LogoDivProps> = ({ className, href = redirects.home, ...props }) => {
   return (
     <Link
-      className={cn("flex flex-row items-center justify-center text-2xl font-bold", className)}
+      className={cn("flex flex-row items-center justify-center text-2xl font-bold hover:cursor-pointer w-40", className)}
       href={href}
       {...props}
     >
-      <span className="tracking-tight hover:cursor-pointer">
-        fund
-        <span className="text-primary">level</span>
-      </span>
+      <Icons.logo className="w-full h-auto fill-foreground"/>
     </Link >
   );
 };
 
-
-
 export const SmallLogoDiv: FC<LogoDivProps> = ({ className, href = redirects.home, ...props }) => {
   return (
     <Link
-      className={cn("flex flex-row items-center justify-center text-2xl font-bold", className)}
+      className={cn("flex flex-row items-center justify-center text-2xl font-bold hover:cursor-pointer", className)}
       href={href}
       {...props}
     >
-      <span className="tracking-tight hover:cursor-pointer">
-        f
-        <span className="text-primary">l</span>
-      </span>
+      <Icons.smallLogo className="size-9 fill-foreground"/>
     </Link >
   );
 };
