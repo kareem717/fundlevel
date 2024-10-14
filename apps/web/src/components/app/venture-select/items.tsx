@@ -11,17 +11,18 @@ import { useAction } from "next-safe-action/hooks";
 import { toast } from "sonner";
 import { Icons } from "@/components/icons";
 import { useInView } from "react-intersection-observer";
-import { getAccountVentures } from "@/actions/ventures";
+import { getBusinessVentures } from "@/actions/busineses";
 export interface VentureSelectItemsProps extends ComponentPropsWithoutRef<typeof SelectContent> {
+  businessId: number
 };
 
-export const VentureSelectItems: FC<VentureSelectItemsProps> = ({ className, ...props }) => {
+export const VentureSelectItems: FC<VentureSelectItemsProps> = ({ businessId, className, ...props }) => {
   const [ventures, setVentures] = useState<Venture[]>([])
   const [cursor, setCursor] = useState<number | null>(1)
   const [hasMore, setHasMore] = useState(true)
 
 
-  const { execute, isExecuting } = useAction(getAccountVentures, {
+  const { execute, isExecuting } = useAction(getBusinessVentures, {
     onSuccess: ({ data }) => {
       const newData = data?.ventures ?? []
       console.log("newData", newData)
@@ -45,7 +46,7 @@ export const VentureSelectItems: FC<VentureSelectItemsProps> = ({ className, ...
 
   useEffect(() => {
     if (cursor && inView && !isExecuting) {
-      execute({ cursor, limit: 10 })
+      execute({ businessId, pagination: { cursor, limit: 10 } })
     }
   }, [inView])
 

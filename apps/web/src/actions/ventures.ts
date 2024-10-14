@@ -3,47 +3,20 @@
 import { actionClient } from "@/lib/safe-action";
 import {
 	createVenture as createVentureApi,
-	getAccountVentures as getAccountVenturesApi,
 	getVentureById as getVentureByIdApi,
 	getVentureFixedTotalRoundsCursor as getVentureFixedTotalRoundsCursorApi,
 	getVenturePartialTotalRoundsCursor as getVenturePartialTotalRoundsCursorApi,
 	getVentureRegularDynamicRoundsCursor as getVentureRegularDynamicRoundsCursorApi,
 	getVentureDutchDynamicRoundsCursor as getVentureDutchDynamicRoundsCursorApi,
 	getVentureRoundInvestmentsCursor as getVentureRoundInvestmentsCursorApi,
+	updateVenture as updateVentureApi,
 } from "@/lib/api";
 import {
 	intIdSchema,
-	paginationRequestSchema,
 	getByParentIdWithCursorSchema,
 } from "@/lib/validations/shared";
-import { createVentureSchema } from "@/lib/validations/ventures";
+import { createVentureSchema, updateVentureSchema } from "@/lib/validations/ventures";
 
-/**
- * Get all ventures
- */
-export const getAccountVentures = actionClient
-	.schema(paginationRequestSchema)
-	.action(
-		async ({ parsedInput: { cursor, limit }, ctx: { apiClient, account } }) => {
-			if (!account) {
-				throw new Error("Account not found");
-			}
-
-			const data = await getAccountVenturesApi({
-				client: apiClient,
-				throwOnError: true,
-				path: {
-					id: account.id,
-				},
-				query: {
-					cursor,
-					limit,
-				},
-			});
-
-			return data.data;
-		}
-	);
 
 /**
  * Create a venture
@@ -52,7 +25,7 @@ export const createVenture = actionClient
 	.schema(createVentureSchema)
 	.action(
 		async ({
-			parsedInput: { name, description },
+			parsedInput: { address, venture },
 			ctx: { apiClient, account },
 		}) => {
 			if (!account) {
@@ -63,9 +36,11 @@ export const createVenture = actionClient
 				client: apiClient,
 				throwOnError: true,
 				body: {
-					name,
-					description,
-					ownerAccountId: account.id,
+					address,
+					venture: {
+						...venture,
+						isHidden: false,
+					},
 				},
 			});
 		}
@@ -210,5 +185,23 @@ export const getVentureRoundInvestmentsCursor = actionClient
 			});
 
 			return response.data;
+		}
+	);
+
+export const updateVenture = actionClient
+	.schema(updateVentureSchema)
+	.action(
+		async ({
+			ctx: { apiClient },
+			parsedInput: { id, ...params },
+		}) => {
+			await updateVentureApi({
+				client: apiClient,
+				throwOnError: true,
+				body: params,
+				path: {
+					id,
+				},
+			});
 		}
 	);

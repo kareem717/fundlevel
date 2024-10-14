@@ -31,7 +31,6 @@ export type Address = {
 
 export type Business = {
     address: Address;
-    readonly addressId: number;
     businessNumber: string;
     createdAt: Date;
     deletedAt: (Date) | null;
@@ -67,7 +66,6 @@ export const role = {
 } as const;
 
 export type BusinessParams = {
-    readonly addressId: number;
     businessNumber: string;
     foundingDate: Date;
     name: string;
@@ -143,22 +141,8 @@ export type CreateInvestmentParams = {
     readonly $schema?: string;
     amount: number;
     investorId: number;
-    readonly paidAt: (Date) | null;
     roundId: number;
-    status: 'pending' | 'accepted' | 'rejected' | 'withdrawn' | 'successful' | 'failed';
-    stripeCheckoutSessionId: (string) | null;
 };
-
-export type status2 = 'pending' | 'accepted' | 'rejected' | 'withdrawn' | 'successful' | 'failed';
-
-export const status2 = {
-    PENDING: 'pending',
-    ACCEPTED: 'accepted',
-    REJECTED: 'rejected',
-    WITHDRAWN: 'withdrawn',
-    SUCCESSFUL: 'successful',
-    FAILED: 'failed'
-} as const;
 
 export type CreatePartialTotalRoundParams = {
     /**
@@ -188,9 +172,9 @@ export type CreateRoundParams = {
     ventureId: number;
 };
 
-export type status3 = 'active' | 'successful' | 'failed';
+export type status2 = 'active' | 'successful' | 'failed';
 
-export const status3 = {
+export const status2 = {
     ACTIVE: 'active',
     SUCCESSFUL: 'successful',
     FAILED: 'failed'
@@ -286,6 +270,15 @@ export type FixedTotalRound = {
     updatedAt: (Date) | null;
 };
 
+export type GetBusinessesOutputBody = {
+    /**
+     * A URL to the JSON Schema for this object.
+     */
+    readonly $schema?: string;
+    businesses: Array<Business> | null;
+    message: string;
+};
+
 export type GetCursorPaginatedDutchDynamicRoundsOutputBody = {
     /**
      * A URL to the JSON Schema for this object.
@@ -369,16 +362,6 @@ export type GetOffsetPaginatedBusinessMembersResponseBody = {
      */
     readonly $schema?: string;
     businessMembers: Array<BusinessMember> | null;
-    hasMore: boolean;
-    message: string;
-};
-
-export type GetOffsetPaginatedBusinessesOutputBody = {
-    /**
-     * A URL to the JSON Schema for this object.
-     */
-    readonly $schema?: string;
-    businesses: Array<Business> | null;
     hasMore: boolean;
     message: string;
 };
@@ -520,10 +503,21 @@ export type RoundInvestment = {
     readonly paidAt: (Date) | null;
     round: Round;
     roundId: number;
-    status: 'pending' | 'accepted' | 'rejected' | 'withdrawn' | 'successful' | 'failed';
-    stripeCheckoutSessionId: (string) | null;
+    readonly status: 'pending' | 'accepted' | 'rejected' | 'withdrawn' | 'successful' | 'failed';
+    readonly stripeCheckoutSessionId: (string) | null;
     updatedAt: (Date) | null;
 };
+
+export type status3 = 'pending' | 'accepted' | 'rejected' | 'withdrawn' | 'successful' | 'failed';
+
+export const status3 = {
+    PENDING: 'pending',
+    ACCEPTED: 'accepted',
+    REJECTED: 'rejected',
+    WITHDRAWN: 'withdrawn',
+    SUCCESSFUL: 'successful',
+    FAILED: 'failed'
+} as const;
 
 export type RoundWithSubtypes = {
     beginsAt: Date;
@@ -735,19 +729,15 @@ export type UpdateAccountResponse = (SingleAccountResponseBody);
 
 export type UpdateAccountError = (ErrorModel);
 
-export type GetAccountBusinessesOffsetData = {
+export type GetAccountBusinessesData = {
     path: {
         id: number;
     };
-    query?: {
-        page?: number;
-        pageSize?: number;
-    };
 };
 
-export type GetAccountBusinessesOffsetResponse = (GetOffsetPaginatedBusinessesOutputBody);
+export type GetAccountBusinessesResponse = (GetBusinessesOutputBody);
 
-export type GetAccountBusinessesOffsetError = (ErrorModel);
+export type GetAccountBusinessesError = (ErrorModel);
 
 export type CreateRoundInvestmentData = {
     body: CreateInvestmentParams;
@@ -1509,9 +1499,9 @@ export const UpdateAccountResponseTransformer: UpdateAccountResponseTransformer 
     return data;
 };
 
-export type GetAccountBusinessesOffsetResponseTransformer = (data: any) => Promise<GetAccountBusinessesOffsetResponse>;
+export type GetAccountBusinessesResponseTransformer = (data: any) => Promise<GetAccountBusinessesResponse>;
 
-export type GetOffsetPaginatedBusinessesOutputBodyModelResponseTransformer = (data: any) => GetOffsetPaginatedBusinessesOutputBody;
+export type GetBusinessesOutputBodyModelResponseTransformer = (data: any) => GetBusinessesOutputBody;
 
 export type BusinessModelResponseTransformer = (data: any) => Business;
 
@@ -1549,15 +1539,15 @@ export const BusinessModelResponseTransformer: BusinessModelResponseTransformer 
     return data;
 };
 
-export const GetOffsetPaginatedBusinessesOutputBodyModelResponseTransformer: GetOffsetPaginatedBusinessesOutputBodyModelResponseTransformer = data => {
+export const GetBusinessesOutputBodyModelResponseTransformer: GetBusinessesOutputBodyModelResponseTransformer = data => {
     if (Array.isArray(data?.businesses)) {
         data.businesses.forEach(BusinessModelResponseTransformer);
     }
     return data;
 };
 
-export const GetAccountBusinessesOffsetResponseTransformer: GetAccountBusinessesOffsetResponseTransformer = async (data) => {
-    GetOffsetPaginatedBusinessesOutputBodyModelResponseTransformer(data);
+export const GetAccountBusinessesResponseTransformer: GetAccountBusinessesResponseTransformer = async (data) => {
+    GetBusinessesOutputBodyModelResponseTransformer(data);
     return data;
 };
 

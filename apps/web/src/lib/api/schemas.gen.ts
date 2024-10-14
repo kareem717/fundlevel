@@ -112,12 +112,6 @@ export const BusinessSchema = {
         address: {
             '$ref': '#/components/schemas/Address'
         },
-        addressId: {
-            format: 'int64',
-            minimum: 1,
-            readOnly: true,
-            type: 'integer'
-        },
         businessNumber: {
             type: 'string'
         },
@@ -155,7 +149,7 @@ export const BusinessSchema = {
             type: ['string', 'null']
         }
     },
-    required: ['address', 'id', 'name', 'businessNumber', 'foundingDate', 'ownerAccountId', 'status', 'addressId', 'createdAt', 'updatedAt', 'deletedAt'],
+    required: ['address', 'id', 'name', 'businessNumber', 'foundingDate', 'ownerAccountId', 'status', 'createdAt', 'updatedAt', 'deletedAt'],
     type: 'object'
 } as const;
 
@@ -192,12 +186,6 @@ export const BusinessMemberSchema = {
 export const BusinessParamsSchema = {
     additionalProperties: false,
     properties: {
-        addressId: {
-            format: 'int64',
-            minimum: 1,
-            readOnly: true,
-            type: 'integer'
-        },
         businessNumber: {
             type: 'string'
         },
@@ -218,7 +206,7 @@ export const BusinessParamsSchema = {
             type: 'string'
         }
     },
-    required: ['name', 'businessNumber', 'foundingDate', 'ownerAccountId', 'status', 'addressId'],
+    required: ['name', 'businessNumber', 'foundingDate', 'ownerAccountId', 'status'],
     type: 'object'
 } as const;
 
@@ -402,24 +390,12 @@ export const CreateInvestmentParamsSchema = {
             format: 'int64',
             type: 'integer'
         },
-        paidAt: {
-            format: 'date-time',
-            readOnly: true,
-            type: ['string', 'null']
-        },
         roundId: {
             format: 'int64',
             type: 'integer'
-        },
-        status: {
-            enum: ['pending', 'accepted', 'rejected', 'withdrawn', 'successful', 'failed'],
-            type: 'string'
-        },
-        stripeCheckoutSessionId: {
-            type: ['string', 'null']
         }
     },
-    required: ['roundId', 'investorId', 'amount', 'status', 'stripeCheckoutSessionId', 'paidAt'],
+    required: ['roundId', 'investorId', 'amount'],
     type: 'object'
 } as const;
 
@@ -662,6 +638,29 @@ export const FixedTotalRoundSchema = {
     type: 'object'
 } as const;
 
+export const GetBusinessesOutputBodySchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/GetBusinessesOutputBody.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        businesses: {
+            items: {
+                '$ref': '#/components/schemas/Business'
+            },
+            type: ['array', 'null']
+        },
+        message: {
+            type: 'string'
+        }
+    },
+    required: ['businesses', 'message'],
+    type: 'object'
+} as const;
+
 export const GetCursorPaginatedDutchDynamicRoundsOutputBodySchema = {
     additionalProperties: false,
     properties: {
@@ -895,32 +894,6 @@ export const GetOffsetPaginatedBusinessMembersResponseBodySchema = {
         }
     },
     required: ['businessMembers', 'message', 'hasMore'],
-    type: 'object'
-} as const;
-
-export const GetOffsetPaginatedBusinessesOutputBodySchema = {
-    additionalProperties: false,
-    properties: {
-        '$schema': {
-            examples: ['https://example.com/schemas/GetOffsetPaginatedBusinessesOutputBody.json'],
-            format: 'uri',
-            readOnly: true,
-            type: 'string'
-        },
-        businesses: {
-            items: {
-                '$ref': '#/components/schemas/Business'
-            },
-            type: ['array', 'null']
-        },
-        hasMore: {
-            type: 'boolean'
-        },
-        message: {
-            type: 'string'
-        }
-    },
-    required: ['businesses', 'message', 'hasMore'],
     type: 'object'
 } as const;
 
@@ -1329,9 +1302,11 @@ export const RoundInvestmentSchema = {
         },
         status: {
             enum: ['pending', 'accepted', 'rejected', 'withdrawn', 'successful', 'failed'],
+            readOnly: true,
             type: 'string'
         },
         stripeCheckoutSessionId: {
+            readOnly: true,
             type: ['string', 'null']
         },
         updatedAt: {

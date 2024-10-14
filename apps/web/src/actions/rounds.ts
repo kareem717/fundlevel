@@ -7,7 +7,6 @@ import {
 	createRegularDynamicRound as createRegularDynamicRoundApi,
 	createDutchDynamicRound as createDutchDynamicRoundApi,
 	getFixedTotalRoundById as getFixedTotalRoundByIdApi,
-	getRounds,
 	getRoundById as getRoundByIdApi
 } from "@/lib/api";
 import { intIdSchema } from "@/lib/validations/shared";
@@ -126,27 +125,4 @@ export const getFixedTotalRoundById = actionClient
 		});
 
 		return response.data.round;
-	});
-
-export const getAccountRounds = actionClient
-	.schema(roundFilterSchema)
-	.action(async ({ parsedInput, ctx: { apiClient, account } }) => {
-		const { paginationRequestSchema, ...filter } = parsedInput;
-		if (!account) {
-			throw new Error("Account not found");
-		}
-
-		const response = await getRounds({
-			client: apiClient,
-			throwOnError: true,
-			path: {
-				id: account.id,
-			},
-			query: {
-				...filter,
-				...paginationRequestSchema,
-			},
-		});
-
-		return response.data;
 	});

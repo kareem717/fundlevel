@@ -13,6 +13,7 @@ export const env = createEnv({
 		NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1),
 		NEXT_PUBLIC_BACKEND_API_URL: z.string().url().min(1),
 		NEXT_PUBLIC_BACKEND_OPENAPI_DOCS_URL: z.string().url().min(1),
+		NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN: z.string().min(1),
 	},
 	experimental__runtimeEnv: {
 		NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
@@ -21,5 +22,7 @@ export const env = createEnv({
 		NEXT_PUBLIC_BACKEND_API_URL: process.env.NEXT_PUBLIC_BACKEND_API_URL,
 		NEXT_PUBLIC_BACKEND_OPENAPI_DOCS_URL:
 			process.env.NEXT_PUBLIC_BACKEND_OPENAPI_DOCS_URL,
+		NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN:
+			process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN,
 	},
 });

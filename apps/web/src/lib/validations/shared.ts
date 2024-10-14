@@ -1,10 +1,4 @@
 import { number, object, string } from "yup";
-import { CreateAccountParams, UpdateAccountParams } from "../api";
-
-export const paginationRequestSchema = object().shape({
-	cursor: number().min(1).default(1).optional(),
-	limit: number().min(1).max(100).default(10).optional(),
-});
 
 export const currency = string().oneOf([
 	"USD",
@@ -21,6 +15,11 @@ export const intIdSchema = number().min(1).integer();
 
 export const cursorPaginationSchema = object().shape({
 	cursor: number().min(1).default(1).optional(),
+	limit: number().min(1).max(100).default(10).optional(),
+});
+
+export const offsetPaginationSchema = object().shape({
+	offset: number().min(0).default(0).optional(),
 	limit: number().min(1).max(100).default(10).optional(),
 });
 

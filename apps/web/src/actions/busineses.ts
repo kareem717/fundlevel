@@ -2,208 +2,90 @@
 
 import { actionClient } from "@/lib/safe-action";
 import {
-	createVenture as createVentureApi,
-	getAccountVentures as getAccountVenturesApi,
-	createBu
+	createBusiness as createBusinessApi,
+	getBusinessVentures as getBusinessVenturesApi,
+	getBusinessById as getBusinessByIdApi,
+	getAccountBusinesses as getAccountBusinessesApi,
 } from "@/lib/api";
-import {
-	intIdSchema,
-	paginationRequestSchema,
-	getByParentIdWithCursorSchema,
-} from "@/lib/validations/shared";
-import { createVentureSchema } from "@/lib/validations/ventures";
-
-/**
- * Get all ventures
- */
-export const getAccountVentures = actionClient
-	.schema(paginationRequestSchema)
-	.action(
-		async ({ parsedInput: { cursor, limit }, ctx: { apiClient, account } }) => {
-			if (!account) {
-				throw new Error("Account not found");
-			}
-
-			const data = await getAccountVenturesApi({
-				client: apiClient,
-				throwOnError: true,
-				path: {
-					id: account.id,
-				},
-				query: {
-					cursor,
-					limit,
-				},
-			});
-
-			return data.data;
-		}
-	);
+import { createBusinessSchema } from "@/lib/validations/business";
+import { cursorPaginationSchema, intIdSchema } from "@/lib/validations/shared";
+import { object } from "yup";
 
 /**
  * Create a venture
  */
-export const createVenture = actionClient
-	.schema(createVentureSchema)
+export const createBusiness = actionClient
+	.schema(createBusinessSchema)
 	.action(
 		async ({
-			parsedInput: { name, description },
+			parsedInput: { address, business },
 			ctx: { apiClient, account },
 		}) => {
 			if (!account) {
 				throw new Error("User not found");
 			}
 
-			await createVentureApi({
+			await createBusinessApi({
 				client: apiClient,
 				throwOnError: true,
 				body: {
-					name,
-					description,
-					ownerAccountId: account.id,
+					address,
+					business: {
+						...business,
+						ownerAccountId: account.id,
+						status: "pending",
+					},
 				},
 			});
 		}
 	);
 
-export const getVentureById = actionClient
-	.schema(intIdSchema.required())
-	.action(async ({ ctx: { apiClient }, parsedInput: id }) => {
-		return await getVentureByIdApi({
+export const getAccountBusinesses = actionClient.action(
+	async ({ ctx: { apiClient, account } }) => {
+		if (!account) {
+			throw new Error("User not found");
+		}
+
+		const res = await getAccountBusinessesApi({
 			client: apiClient,
 			throwOnError: true,
 			path: {
-				id,
+				id: account.id,
 			},
 		});
+
+		return res.data;
+	}
+);
+
+export const getBusinessVentures = actionClient
+	.schema(object().shape({
+		businessId: intIdSchema.required(),
+		pagination: cursorPaginationSchema
+	}))
+	.action(async ({ parsedInput: { businessId, pagination }, ctx: { apiClient } }) => {
+		const res = await getBusinessVenturesApi({
+			client: apiClient,
+			throwOnError: true,
+			query: {
+				...pagination,
+			},
+			path: {
+				id: businessId,
+			},
+		});
+
+		return res.data;
 	});
 
-export const getVentureFixedTotalRoundsCursor = actionClient
-	.schema(getByParentIdWithCursorSchema)
-	.action(
-		async ({
-			ctx: { apiClient },
-			parsedInput: {
-				parentId,
-				cursorPaginationSchema: { cursor, limit },
-			},
-		}) => {
-			const response = await getVentureFixedTotalRoundsCursorApi({
-				client: apiClient,
-				throwOnError: true,
-				path: {
-					id: parentId,
-				},
-				query: {
-					cursor: cursor ?? undefined,
-					limit: limit ?? undefined,
-				},
-			});
+export const getBusinessById = actionClient
+	.schema(intIdSchema.required())
+	.action(async ({ parsedInput: id, ctx: { apiClient } }) => {
+		const res = await getBusinessByIdApi({
+			client: apiClient,
+			throwOnError: true,
+			path: { id },
+		});
 
-			return response.data;
-		}
-	);
-
-export const getVenturePartialTotalRoundsCursor = actionClient
-	.schema(getByParentIdWithCursorSchema)
-	.action(
-		async ({
-			ctx: { apiClient },
-			parsedInput: {
-				parentId,
-				cursorPaginationSchema: { cursor, limit },
-			},
-		}) => {
-			const response = await getVenturePartialTotalRoundsCursorApi({
-				client: apiClient,
-				throwOnError: true,
-				path: {
-					id: parentId,
-				},
-				query: {
-					cursor: cursor ?? undefined,
-					limit: limit ?? undefined,
-				},
-			});
-
-			return response.data;
-		}
-	);
-
-export const getVentureRegularDynamicRoundsCursor = actionClient
-	.schema(getByParentIdWithCursorSchema)
-	.action(
-		async ({
-			ctx: { apiClient },
-			parsedInput: {
-				parentId,
-				cursorPaginationSchema: { cursor, limit },
-			},
-		}) => {
-			const response = await getVentureRegularDynamicRoundsCursorApi({
-				client: apiClient,
-				throwOnError: true,
-				path: {
-					id: parentId,
-				},
-				query: {
-					cursor: cursor ?? undefined,
-					limit: limit ?? undefined,
-				},
-			});
-
-			return response.data;
-		}
-	);
-
-export const getVentureDutchDynamicRoundsCursor = actionClient
-	.schema(getByParentIdWithCursorSchema)
-	.action(
-		async ({
-			ctx: { apiClient },
-			parsedInput: {
-				parentId,
-				cursorPaginationSchema: { cursor, limit },
-			},
-		}) => {
-			const response = await getVentureDutchDynamicRoundsCursorApi({
-				client: apiClient,
-				throwOnError: true,
-				path: {
-					id: parentId,
-				},
-				query: {
-					cursor: cursor ?? undefined,
-					limit: limit ?? undefined,
-				},
-			});
-
-			return response.data;
-		}
-	);
-
-export const getVentureRoundInvestmentsCursor = actionClient
-	.schema(getByParentIdWithCursorSchema)
-	.action(
-		async ({
-			ctx: { apiClient },
-			parsedInput: {
-				parentId,
-				cursorPaginationSchema: { cursor, limit },
-			},
-		}) => {
-			const response = await getVentureRoundInvestmentsCursorApi({
-				client: apiClient,
-				throwOnError: true,
-				path: {
-					id: parentId,
-				},
-				query: {
-					cursor: cursor ?? undefined,
-					limit: limit ?? undefined,
-				},
-			});
-
-			return response.data;
-		}
-	);
+		return res.data;
+	});
