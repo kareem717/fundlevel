@@ -8,8 +8,12 @@ import {
 	getAccountBusinesses as getAccountBusinessesApi,
 	getBusinessVenturesByPage,
 } from "@/lib/api";
-import { createBusinessSchema } from "@/lib/validations/business";
-import { intIdSchema, offsetPaginationSchema } from "@/lib/validations/shared";
+import { createBusinessSchema } from "@/actions/validations/business";
+import {
+	cursorPaginationSchema,
+	intIdSchema,
+	offsetPaginationSchema,
+} from "@/actions/validations/shared";
 import { object } from "yup";
 
 /**
@@ -69,6 +73,30 @@ export const getBusinessVentures = actionClient
 	.action(
 		async ({ parsedInput: { businessId, pagination }, ctx: { apiClient } }) => {
 			const res = await getBusinessVenturesByPage({
+				client: apiClient,
+				throwOnError: true,
+				query: {
+					...pagination,
+				},
+				path: {
+					id: businessId,
+				},
+			});
+
+			return res.data;
+		}
+	);
+
+export const getBusinessVenturesInfinite = actionClient
+	.schema(
+		object().shape({
+			businessId: intIdSchema.required(),
+			pagination: cursorPaginationSchema.required(),
+		})
+	)
+	.action(
+		async ({ parsedInput: { businessId, pagination }, ctx: { apiClient } }) => {
+			const res = await getBusinessVenturesApi({
 				client: apiClient,
 				throwOnError: true,
 				query: {

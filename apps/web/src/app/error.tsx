@@ -1,6 +1,6 @@
 'use client' // Error components must be Client Components
 
-import { SmallLogoDiv } from '@/components/logo-div'
+import { SmallLogoDiv } from '@/components/ui/logo-div'
 import { Button, buttonVariants } from '@/components/ui/button'
 import redirects from '@/lib/config/redirects'
 import { cn } from '@/lib/utils'

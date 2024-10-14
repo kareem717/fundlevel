@@ -14,9 +14,11 @@ import {
 import {
 	intIdSchema,
 	getByParentIdWithCursorSchema,
-} from "@/lib/validations/shared";
-import { createVentureSchema, updateVentureSchema } from "@/lib/validations/ventures";
-
+} from "@/actions/validations/shared";
+import {
+	createVentureSchema,
+	updateVentureSchema,
+} from "@/actions/validations/ventures";
 
 /**
  * Create a venture
@@ -190,18 +192,13 @@ export const getVentureRoundInvestmentsCursor = actionClient
 
 export const updateVenture = actionClient
 	.schema(updateVentureSchema)
-	.action(
-		async ({
-			ctx: { apiClient },
-			parsedInput: { id, ...params },
-		}) => {
-			await updateVentureApi({
-				client: apiClient,
-				throwOnError: true,
-				body: params,
-				path: {
-					id,
-				},
-			});
-		}
-	);
+	.action(async ({ ctx: { apiClient }, parsedInput: { id, ...params } }) => {
+		await updateVentureApi({
+			client: apiClient,
+			throwOnError: true,
+			body: params,
+			path: {
+				id,
+			},
+		});
+	});

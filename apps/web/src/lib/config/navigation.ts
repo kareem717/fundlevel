@@ -1,4 +1,4 @@
-import { Icons } from "@/components/icons";
+import { Icons } from "@/components/ui/icons";
 import redirects from "./redirects";
 
 export type Submenu = {

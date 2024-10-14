@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/tooltip";
 import NavigationConfig from "@/lib/config/navigation"
 import { CollapseMenuButton } from "./collapsible-menu-button"
-import { Icons } from "@/components/icons";
+import { Icons } from "@/components/ui/icons";
 import { usePathname } from "next/navigation";
 
 export interface MenuProps extends ComponentPropsWithoutRef<"nav"> { }

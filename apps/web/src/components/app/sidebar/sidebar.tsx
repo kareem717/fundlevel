@@ -2,7 +2,7 @@ import { ComponentPropsWithoutRef, FC } from "react"
 import { cn } from "@/lib/utils"
 import { Menu } from "./menu"
 import { ModeToggle } from "@/components/app/mode-toggle"
-import { LogoDiv } from "@/components/logo-div"
+import { LogoDiv } from "@/components/ui/logo-div"
 import { ScrollArea } from "@/components/ui/scroll-area"
 
 export interface SidebarProps extends ComponentPropsWithoutRef<"div"> { }

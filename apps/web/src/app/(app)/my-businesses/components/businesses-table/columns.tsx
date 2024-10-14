@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Icons } from "@/components/icons"
+import { Icons } from "@/components/ui/icons"
 import { DataTableColumnHeader } from "@/components/ui/data-table/column-header"
 import { titleCase } from "title-case"
 import { Address, Business } from "@/lib/api"

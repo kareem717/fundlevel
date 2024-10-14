@@ -17,9 +17,9 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
-import { LogoDiv } from "@/components/logo-div"
+import { LogoDiv } from "@/components/ui/logo-div"
 import redirects from "@/lib/config/redirects"
-import { Icons } from "@/components/icons"
+import { Icons } from "@/components/ui/icons"
 import Link from "next/link"
 
 export interface VentureNavProps extends ComponentPropsWithoutRef<"header"> {

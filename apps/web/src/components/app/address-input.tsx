@@ -6,7 +6,7 @@ import { AddressAutofill } from "@mapbox/search-js-react";
 import { env } from "@/env";
 import type { AddressAutofillRetrieveResponse } from "@mapbox/search-js-core";
 import { cn } from "@/lib/utils";
-import { createAddressSchema } from "@/lib/validations/address";
+import { createAddressSchema } from "@/actions/validations/address";
 import { InferType } from "yup";
 import { toast } from "sonner";
 

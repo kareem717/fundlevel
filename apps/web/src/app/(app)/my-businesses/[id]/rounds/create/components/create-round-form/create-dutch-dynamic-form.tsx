@@ -18,23 +18,24 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { Input } from "@/components/ui/input"
-import { Icons } from "@/components/icons";
+import { Icons } from "@/components/ui/icons";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useAction } from "next-safe-action/hooks";
 import { useRouter } from "next/navigation";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { InferType } from "yup";
-import { createDutchDynamicRoundSchema } from "@/lib/validations/rounds";
+import { createDutchDynamicRoundSchema } from "@/actions/validations/rounds";
 import { createDutchDynamicRound } from "@/actions/rounds";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns"
 import { Unit, UnitSelect } from "@/components/app/input/unit-select";
-import { VentureSelect } from "@/components/app/venture-select";
+import { VentureSelect } from "../venture-select";
 
 export interface CreateDutchDynamicRoundFormProps extends ComponentPropsWithoutRef<'form'> {
   onSuccess?: () => void
   businessId: number;
+  ventureId?: number;
 }
 
 const units: Unit[] = [

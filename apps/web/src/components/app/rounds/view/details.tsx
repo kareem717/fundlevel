@@ -1,4 +1,4 @@
-import { Icons } from "@/components/icons";
+import { Icons } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
 import { ComponentPropsWithoutRef, FC } from "react"
 import {

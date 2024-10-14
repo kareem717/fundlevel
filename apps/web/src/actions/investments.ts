@@ -5,8 +5,8 @@ import {
 	createRoundInvestment as createRoundInvestmentApi,
 	getAccountRoundInvestmentsCursor as getAccountRoundInvestmentsCursorApi,
 } from "@/lib/api";
-import { createRoundInvestmentSchema } from "@/lib/validations/investments";
-import { cursorPaginationSchema } from "@/lib/validations/shared";
+import { createRoundInvestmentSchema } from "@/actions/validations/investments";
+import { cursorPaginationSchema } from "@/actions/validations/shared";
 
 /**
  * Get all ventures

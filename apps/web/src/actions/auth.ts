@@ -4,7 +4,7 @@ import { actionClient } from "@/lib/safe-action";
 import {
 	createAccountSchema,
 	updateAccountSchema,
-} from "@/lib/validations/account";
+} from "@/actions/validations/account";
 import {
 	createAccount as createAccountApi,
 	updateAccount as updateAccountApi,

@@ -6,9 +6,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { SmallLogoDiv } from "@/components/logo-div"
+import { SmallLogoDiv } from "@/components/ui/logo-div"
 import { cn } from "@/lib/utils"
-import { Icons } from "@/components/icons"
+import { Icons } from "@/components/ui/icons"
 import Link from "next/link"
 import redirects from "@/lib/config/redirects"
 

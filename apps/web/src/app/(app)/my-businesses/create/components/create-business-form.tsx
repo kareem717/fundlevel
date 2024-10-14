@@ -13,7 +13,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Icons } from "@/components/icons";
+import { Icons } from "@/components/ui/icons";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useAction } from "next-safe-action/hooks";
@@ -21,7 +21,7 @@ import { useRouter } from "next/navigation";
 import { createBusiness } from "@/actions/busineses";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { InferType } from "yup";
-import { createBusinessSchema } from "@/lib/validations/business";
+import { createBusinessSchema } from "@/actions/validations/business";
 import { AddressInput } from "@/components/app/address-input";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { format } from "date-fns";

@@ -2,9 +2,9 @@ import { ComponentPropsWithoutRef, FC } from "react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger, SheetHeader } from "@/components/ui/sheet"
 import { Menu } from "./menu"
-import { Icons } from "@/components/icons"
+import { Icons } from "@/components/ui/icons"
 import { ModeToggle } from "@/components/app/mode-toggle"
-import { LogoDiv } from "@/components/logo-div"
+import { LogoDiv } from "@/components/ui/logo-div"
 import { ScrollArea } from "@/components/ui/scroll-area"
 export interface MobileSidebarProps extends ComponentPropsWithoutRef<typeof Sheet> { }
 

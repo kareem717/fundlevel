@@ -3,7 +3,7 @@
 import { ComponentPropsWithoutRef, FC } from "react"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { useTheme } from "next-themes"
-import { Icons } from "../icons"
+import { Icons } from "../ui/icons"
 import { cn } from "@/lib/utils"
 
 export interface ModeToggleProps extends ComponentPropsWithoutRef<"div"> { }

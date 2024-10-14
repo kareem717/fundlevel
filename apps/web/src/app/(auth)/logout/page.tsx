@@ -1,4 +1,4 @@
-import { LogoutForm } from "@/components/auth/logout-form";
+import { LogoutForm } from "@/app/(auth)/components/logout-form";
 import redirects from "@/lib/config/redirects";
 import createClient from "@/lib/utils/supabase/server";
 import { redirect } from "next/navigation";

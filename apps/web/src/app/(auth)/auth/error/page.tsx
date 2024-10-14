@@ -1,4 +1,4 @@
-import { Icons } from '@/components/icons'
+import { Icons } from '@/components/ui/icons'
 
 
 export default async function AuthErrorPage({ searchParams }: { searchParams: { error?: string | null } }) {

@@ -12,7 +12,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button";
-import { Icons } from "@/components/icons";
+import { Icons } from "@/components/ui/icons";
 import {
   Carousel,
   CarouselContent,

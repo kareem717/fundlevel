@@ -20,9 +20,10 @@ export interface CreateRoundFormProps extends ComponentPropsWithoutRef<"div"> {
   roundType?: RoundType;  
   onSuccess?: () => void;
   businessId: number;
+  ventureId?: number;
 };
 
-export const CreateRoundForm: FC<CreateRoundFormProps> = ({ roundType: initialRoundType, className, onSuccess, businessId, ...props }) => {
+export const CreateRoundForm: FC<CreateRoundFormProps> = ({ roundType: initialRoundType, className, onSuccess, businessId, ventureId, ...props }) => {
   const [roundType, setRoundType] = useState<RoundType | "">(initialRoundType || "");
 
   let Form: ReactNode; // {{ edit_1 }} Define Form as ReactNode
@@ -30,16 +31,16 @@ export const CreateRoundForm: FC<CreateRoundFormProps> = ({ roundType: initialRo
   // switch
   switch (roundType) {
     case "fixed-total":
-      Form = <CreateFixedTotalRoundForm onSuccess={onSuccess} businessId={businessId} />;
+      Form = <CreateFixedTotalRoundForm onSuccess={onSuccess} businessId={businessId} ventureId={ventureId} />;
       break;
     case "partial-total":
-      Form = <CreatePartialTotalRoundForm onSuccess={onSuccess} businessId={businessId} />;
+      Form = <CreatePartialTotalRoundForm onSuccess={onSuccess} businessId={businessId} ventureId={ventureId} />;
       break;
     case "regular-dynamic":
-      Form = <CreateRegularDynamicRoundForm onSuccess={onSuccess} businessId={businessId} />;
+      Form = <CreateRegularDynamicRoundForm onSuccess={onSuccess} businessId={businessId} ventureId={ventureId} />;
       break;
     case "dutch-dynamic":
-      Form = <CreateDutchDynamicRoundForm onSuccess={onSuccess} businessId={businessId} />;
+      Form = <CreateDutchDynamicRoundForm onSuccess={onSuccess} businessId={businessId} ventureId={ventureId} />;
       break;
   }
 

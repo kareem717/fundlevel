@@ -13,14 +13,14 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Icons } from "@/components/icons";
+import { Icons } from "@/components/ui/icons";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useAction } from "next-safe-action/hooks";
 import { useRouter } from "next/navigation";
 import { createVenture } from "@/actions/ventures";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { createVentureSchema } from "@/lib/validations/ventures";
+import { createVentureSchema } from "@/actions/validations/ventures";
 import { Textarea } from "@/components/ui/textarea";
 import { InferType } from "yup";
 import { AddressInput } from "@/components/app/address-input";

@@ -13,13 +13,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner"
 import { ComponentPropsWithoutRef, FC } from "react";
-import { Icons } from "@/components/icons";
+import { Icons } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { InferType, number } from "yup";
 import { createRoundInvestment } from "@/actions/investments";
 import { useAction } from "next-safe-action/hooks";
-import { createRoundInvestmentSchema } from "@/lib/validations/investments";
+import { createRoundInvestmentSchema } from "@/actions/validations/investments";
 
 export type RoundInvestmentPrice = number | {
   min: number;

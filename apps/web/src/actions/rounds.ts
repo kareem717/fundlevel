@@ -7,16 +7,16 @@ import {
 	createRegularDynamicRound as createRegularDynamicRoundApi,
 	createDutchDynamicRound as createDutchDynamicRoundApi,
 	getFixedTotalRoundById as getFixedTotalRoundByIdApi,
-	getRoundById as getRoundByIdApi
+	getRoundById as getRoundByIdApi,
 } from "@/lib/api";
-import { intIdSchema } from "@/lib/validations/shared";
+import { intIdSchema } from "@/actions/validations/shared";
 import {
 	createFixedTotalRoundSchema,
 	createPartialTotalRoundSchema,
 	createRegularDynamicRoundSchema,
 	createDutchDynamicRoundSchema,
 	roundFilterSchema,
-} from "@/lib/validations/rounds";
+} from "@/actions/validations/rounds";
 
 /**
  * Create a venture
@@ -49,7 +49,7 @@ export const getRoundById = actionClient
 			client: apiClient,
 			throwOnError: true,
 			path: {
-				id: parsedInput
+				id: parsedInput,
 			},
 		});
 

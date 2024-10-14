@@ -1,4 +1,4 @@
-import { LogoDiv } from "@/components/logo-div";
+import { LogoDiv } from "@/components/ui/logo-div";
 
 export default async function AuthLayout({
 	children,
