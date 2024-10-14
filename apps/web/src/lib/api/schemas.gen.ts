@@ -45,6 +45,183 @@ export const AccountSchema = {
     type: 'object'
 } as const;
 
+export const AddressSchema = {
+    additionalProperties: false,
+    properties: {
+        city: {
+            type: 'string'
+        },
+        country: {
+            type: 'string'
+        },
+        createdAt: {
+            format: 'date-time',
+            type: 'string'
+        },
+        deletedAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        },
+        district: {
+            type: 'string'
+        },
+        fullAddress: {
+            type: 'string'
+        },
+        id: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
+        line1: {
+            type: 'string'
+        },
+        line2: {
+            type: 'string'
+        },
+        postalCode: {
+            type: 'string'
+        },
+        rawJson: {},
+        region: {
+            type: 'string'
+        },
+        regionCode: {
+            type: 'string'
+        },
+        updatedAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        },
+        xCoordinate: {
+            format: 'double',
+            type: 'number'
+        },
+        yCoordinate: {
+            format: 'double',
+            type: 'number'
+        }
+    },
+    required: ['id', 'xCoordinate', 'yCoordinate', 'line1', 'line2', 'city', 'region', 'postalCode', 'country', 'rawJson', 'district', 'regionCode', 'fullAddress', 'createdAt', 'updatedAt', 'deletedAt'],
+    type: 'object'
+} as const;
+
+export const BusinessSchema = {
+    additionalProperties: false,
+    properties: {
+        address: {
+            '$ref': '#/components/schemas/Address'
+        },
+        addressId: {
+            format: 'int64',
+            minimum: 1,
+            readOnly: true,
+            type: 'integer'
+        },
+        businessNumber: {
+            type: 'string'
+        },
+        createdAt: {
+            format: 'date-time',
+            type: 'string'
+        },
+        deletedAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        },
+        foundingDate: {
+            format: 'date-time',
+            type: 'string'
+        },
+        id: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
+        name: {
+            type: 'string'
+        },
+        ownerAccountId: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
+        status: {
+            enum: ['pending', 'active', 'disabled'],
+            type: 'string'
+        },
+        updatedAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        }
+    },
+    required: ['address', 'id', 'name', 'businessNumber', 'foundingDate', 'ownerAccountId', 'status', 'addressId', 'createdAt', 'updatedAt', 'deletedAt'],
+    type: 'object'
+} as const;
+
+export const BusinessMemberSchema = {
+    additionalProperties: false,
+    properties: {
+        accountId: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
+        businessId: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
+        createdAt: {
+            format: 'date-time',
+            type: 'string'
+        },
+        role: {
+            enum: ['admin', 'member'],
+            type: 'string'
+        },
+        updatedAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        }
+    },
+    required: ['businessId', 'accountId', 'role', 'createdAt', 'updatedAt'],
+    type: 'object'
+} as const;
+
+export const BusinessParamsSchema = {
+    additionalProperties: false,
+    properties: {
+        addressId: {
+            format: 'int64',
+            minimum: 1,
+            readOnly: true,
+            type: 'integer'
+        },
+        businessNumber: {
+            type: 'string'
+        },
+        foundingDate: {
+            format: 'date-time',
+            type: 'string'
+        },
+        name: {
+            type: 'string'
+        },
+        ownerAccountId: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
+        status: {
+            enum: ['pending', 'active', 'disabled'],
+            type: 'string'
+        }
+    },
+    required: ['name', 'businessNumber', 'foundingDate', 'ownerAccountId', 'status', 'addressId'],
+    type: 'object'
+} as const;
+
 export const CreateAccountParamsSchema = {
     additionalProperties: false,
     properties: {
@@ -76,6 +253,98 @@ export const CreateAccountParamsSchema = {
         }
     },
     required: ['userId', 'firstName', 'lastName'],
+    type: 'object'
+} as const;
+
+export const CreateAddressParamsSchema = {
+    additionalProperties: false,
+    properties: {
+        city: {
+            type: 'string'
+        },
+        country: {
+            type: 'string'
+        },
+        district: {
+            type: 'string'
+        },
+        fullAddress: {
+            type: 'string'
+        },
+        line1: {
+            type: 'string'
+        },
+        line2: {
+            type: 'string'
+        },
+        postalCode: {
+            type: 'string'
+        },
+        rawJson: {},
+        region: {
+            type: 'string'
+        },
+        regionCode: {
+            type: 'string'
+        },
+        xCoordinate: {
+            format: 'double',
+            type: 'number'
+        },
+        yCoordinate: {
+            format: 'double',
+            type: 'number'
+        }
+    },
+    required: ['xCoordinate', 'yCoordinate', 'line1', 'line2', 'city', 'region', 'postalCode', 'country', 'rawJson', 'district', 'regionCode', 'fullAddress'],
+    type: 'object'
+} as const;
+
+export const CreateBusinessMemberParamsSchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/CreateBusinessMemberParams.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        accountId: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
+        businessId: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
+        role: {
+            enum: ['admin', 'member'],
+            type: 'string'
+        }
+    },
+    required: ['businessId', 'accountId', 'role'],
+    type: 'object'
+} as const;
+
+export const CreateBusinessParamsSchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/CreateBusinessParams.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        address: {
+            '$ref': '#/components/schemas/CreateAddressParams'
+        },
+        business: {
+            '$ref': '#/components/schemas/BusinessParams'
+        }
+    },
+    required: ['business', 'address'],
     type: 'object'
 } as const;
 
@@ -133,16 +402,24 @@ export const CreateInvestmentParamsSchema = {
             format: 'int64',
             type: 'integer'
         },
+        paidAt: {
+            format: 'date-time',
+            readOnly: true,
+            type: ['string', 'null']
+        },
         roundId: {
             format: 'int64',
             type: 'integer'
         },
         status: {
-            enum: ['pending', 'accepted', 'rejected', 'withdrawn'],
+            enum: ['pending', 'accepted', 'rejected', 'withdrawn', 'successful', 'failed'],
             type: 'string'
+        },
+        stripeCheckoutSessionId: {
+            type: ['string', 'null']
         }
     },
-    required: ['roundId', 'investorId', 'amount', 'status'],
+    required: ['roundId', 'investorId', 'amount', 'status', 'stripeCheckoutSessionId', 'paidAt'],
     type: 'object'
 } as const;
 
@@ -235,23 +512,14 @@ export const CreateVentureParamsSchema = {
             readOnly: true,
             type: 'string'
         },
-        description: {
-            maxLength: 5000,
-            minLength: 3,
-            type: 'string'
+        address: {
+            '$ref': '#/components/schemas/CreateAddressParams'
         },
-        name: {
-            maxLength: 100,
-            minLength: 3,
-            type: 'string'
-        },
-        ownerAccountId: {
-            format: 'int64',
-            minimum: 1,
-            type: 'integer'
+        venture: {
+            '$ref': '#/components/schemas/VentureParams'
         }
     },
-    required: ['ownerAccountId', 'name', 'description'],
+    required: ['venture'],
     type: 'object'
 } as const;
 
@@ -604,6 +872,58 @@ export const GetCursorPaginatedVenturesOutputBodySchema = {
     type: 'object'
 } as const;
 
+export const GetOffsetPaginatedBusinessMembersResponseBodySchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/GetOffsetPaginatedBusinessMembersResponseBody.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        businessMembers: {
+            items: {
+                '$ref': '#/components/schemas/BusinessMember'
+            },
+            type: ['array', 'null']
+        },
+        hasMore: {
+            type: 'boolean'
+        },
+        message: {
+            type: 'string'
+        }
+    },
+    required: ['businessMembers', 'message', 'hasMore'],
+    type: 'object'
+} as const;
+
+export const GetOffsetPaginatedBusinessesOutputBodySchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/GetOffsetPaginatedBusinessesOutputBody.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        businesses: {
+            items: {
+                '$ref': '#/components/schemas/Business'
+            },
+            type: ['array', 'null']
+        },
+        hasMore: {
+            type: 'boolean'
+        },
+        message: {
+            type: 'string'
+        }
+    },
+    required: ['businesses', 'message', 'hasMore'],
+    type: 'object'
+} as const;
+
 export const GetOffsetPaginatedDutchDynamicRoundsOutputBodySchema = {
     additionalProperties: false,
     properties: {
@@ -783,6 +1103,26 @@ export const GetOffsetPaginatedVenturesOutputBodySchema = {
         }
     },
     required: ['ventures', 'message', 'hasMore'],
+    type: 'object'
+} as const;
+
+export const LinkOutputBodySchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/LinkOutputBody.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        link: {
+            type: 'string'
+        },
+        message: {
+            type: 'string'
+        }
+    },
+    required: ['message', 'link'],
     type: 'object'
 } as const;
 
@@ -975,6 +1315,11 @@ export const RoundInvestmentSchema = {
             format: 'int64',
             type: 'integer'
         },
+        paidAt: {
+            format: 'date-time',
+            readOnly: true,
+            type: ['string', 'null']
+        },
         round: {
             '$ref': '#/components/schemas/Round'
         },
@@ -983,15 +1328,18 @@ export const RoundInvestmentSchema = {
             type: 'integer'
         },
         status: {
-            enum: ['pending', 'accepted', 'rejected', 'withdrawn'],
+            enum: ['pending', 'accepted', 'rejected', 'withdrawn', 'successful', 'failed'],
             type: 'string'
+        },
+        stripeCheckoutSessionId: {
+            type: ['string', 'null']
         },
         updatedAt: {
             format: 'date-time',
             type: ['string', 'null']
         }
     },
-    required: ['round', 'investor', 'id', 'roundId', 'investorId', 'amount', 'status', 'createdAt', 'updatedAt', 'deletedAt'],
+    required: ['round', 'investor', 'id', 'roundId', 'investorId', 'amount', 'status', 'stripeCheckoutSessionId', 'paidAt', 'createdAt', 'updatedAt', 'deletedAt'],
     type: 'object'
 } as const;
 
@@ -1081,6 +1429,46 @@ export const SingleAccountResponseBodySchema = {
         }
     },
     required: ['account', 'message'],
+    type: 'object'
+} as const;
+
+export const SingleBusinessMemberResponseBodySchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/SingleBusinessMemberResponseBody.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        businessMember: {
+            '$ref': '#/components/schemas/BusinessMember'
+        },
+        message: {
+            type: 'string'
+        }
+    },
+    required: ['businessMember', 'message'],
+    type: 'object'
+} as const;
+
+export const SingleBusinessResponseBodySchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/SingleBusinessResponseBody.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        business: {
+            '$ref': '#/components/schemas/Business'
+        },
+        message: {
+            type: 'string'
+        }
+    },
+    required: ['business', 'message'],
     type: 'object'
 } as const;
 
@@ -1252,6 +1640,24 @@ export const UpdateAccountParamsSchema = {
     type: 'object'
 } as const;
 
+export const UpdateBusinessMemberParamsSchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/UpdateBusinessMemberParams.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        role: {
+            enum: ['admin', 'member'],
+            type: 'string'
+        }
+    },
+    required: ['role'],
+    type: 'object'
+} as const;
+
 export const UpdateVentureParamsSchema = {
     additionalProperties: false,
     properties: {
@@ -1279,6 +1685,20 @@ export const UpdateVentureParamsSchema = {
 export const VentureSchema = {
     additionalProperties: false,
     properties: {
+        address: {
+            '$ref': '#/components/schemas/Address'
+        },
+        addressId: {
+            format: 'int64',
+            minimum: 1,
+            readOnly: true,
+            type: 'integer'
+        },
+        businessId: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
         createdAt: {
             format: 'date-time',
             type: 'string'
@@ -1297,21 +1717,69 @@ export const VentureSchema = {
             minimum: 1,
             type: 'integer'
         },
+        isHidden: {
+            readOnly: true,
+            type: 'boolean'
+        },
+        isRemote: {
+            default: false,
+            type: 'boolean'
+        },
         name: {
             maxLength: 100,
             minLength: 3,
             type: 'string'
         },
-        ownerAccountId: {
-            format: 'int64',
-            minimum: 1,
-            type: 'integer'
+        teamSize: {
+            enum: ['0-1', '2-10', '11-50', '51-200', '201-500', '501-1000', '1000+'],
+            type: 'string'
         },
         updatedAt: {
             format: 'date-time',
             type: ['string', 'null']
         }
     },
-    required: ['ownerAccountId', 'name', 'description', 'id', 'createdAt', 'updatedAt', 'deletedAt'],
+    required: ['address', 'businessId', 'isHidden', 'teamSize', 'isRemote', 'name', 'description', 'id', 'createdAt', 'updatedAt', 'deletedAt'],
+    type: 'object'
+} as const;
+
+export const VentureParamsSchema = {
+    additionalProperties: false,
+    properties: {
+        addressId: {
+            format: 'int64',
+            minimum: 1,
+            readOnly: true,
+            type: 'integer'
+        },
+        businessId: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
+        description: {
+            maxLength: 5000,
+            minLength: 3,
+            type: 'string'
+        },
+        isHidden: {
+            readOnly: true,
+            type: 'boolean'
+        },
+        isRemote: {
+            default: false,
+            type: 'boolean'
+        },
+        name: {
+            maxLength: 100,
+            minLength: 3,
+            type: 'string'
+        },
+        teamSize: {
+            enum: ['0-1', '2-10', '11-50', '51-200', '201-500', '501-1000', '1000+'],
+            type: 'string'
+        }
+    },
+    required: ['businessId', 'isHidden', 'teamSize', 'isRemote', 'name', 'description'],
     type: 'object'
 } as const;
