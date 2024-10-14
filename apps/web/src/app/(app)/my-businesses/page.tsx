@@ -1,6 +1,8 @@
 import { getAccountBusinesses } from "@/actions/busineses";
 import { buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
+import { BusinessesTable } from "./components/businesses-table";
+import { columns } from "./components/businesses-table/columns";
 
 export default async function BusinessPage() {
 	const resp = await getAccountBusinesses()
@@ -10,7 +12,7 @@ export default async function BusinessPage() {
 		throw new Error(resp.serverError?.message || "Something went wrong")
 	}
 
-	const businesses = resp?.data?.businesses
+	const businesses = resp?.data?.businesses || []
 
 	return (
 		<div>
@@ -23,15 +25,8 @@ export default async function BusinessPage() {
 					Create Business
 				</Link>
 			</div>
-			<div className="flex flex-col gap-4 max-w-sm">
-				{businesses?.map((business) => (
-					<Link
-						href={`/my-businesses/${business.id}`}
-						className={buttonVariants({ variant: "outline" })}
-					>
-						{business.name}
-					</Link>
-				))}
+			<div className="max-w-screen-lg mx-auto">
+				<BusinessesTable columns={columns} data={businesses} />
 			</div>
 		</div>
 	);
