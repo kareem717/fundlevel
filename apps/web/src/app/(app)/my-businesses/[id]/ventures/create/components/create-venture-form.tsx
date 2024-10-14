@@ -24,16 +24,33 @@ import { createVentureSchema } from "@/lib/validations/ventures";
 import { Textarea } from "@/components/ui/textarea";
 import { InferType } from "yup";
 import { AddressInput } from "@/components/app/address-input";
+import { BusinessSelect } from "@/components/app/input/business-select";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 export interface CreateVentureFormProps extends ComponentPropsWithoutRef<'form'> {
   onSuccess?: () => void
+  businessId?: number
 }
 
-export const CreateVentureForm: FC<CreateVentureFormProps> = ({ className, onSuccess, ...props }) => {
+export const CreateVentureForm: FC<CreateVentureFormProps> = ({ className, onSuccess, businessId, ...props }) => {
   const router = useRouter()
 
   const form = useForm<InferType<typeof createVentureSchema>>({
     resolver: yupResolver(createVentureSchema),
+    defaultValues: {
+      venture: {
+        businessId,
+        isRemote: false,
+        teamSize: "0-1",
+      }
+    }
   })
 
   const { executeAsync, isExecuting } = useAction(createVenture, {
@@ -42,7 +59,7 @@ export const CreateVentureForm: FC<CreateVentureFormProps> = ({ className, onSuc
       toast.success("Done!", {
         description: "Your venture has been created.",
       })
-      router.refresh()
+      router.push(`/my-businesses/${businessId}/ventures`)
       onSuccess?.()
     },
     onError: ({ error }) => {
@@ -56,9 +73,28 @@ export const CreateVentureForm: FC<CreateVentureFormProps> = ({ className, onSuc
     await executeAsync(values)
   }
 
+  console.log(form.formState.errors)
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className={cn("space-y-8", className)} {...props}>
+        {businessId == undefined && (
+          <FormField
+            control={form.control}
+            name="venture.businessId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Business</FormLabel>
+                <FormControl>
+                  <BusinessSelect onValueChange={(value) => field.onChange(parseInt(value))} />
+                </FormControl>
+                <FormDescription>
+                  This is the business you want to create a venture for.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
         <FormField
           control={form.control}
           name="venture.name"
@@ -72,6 +108,53 @@ export const CreateVentureForm: FC<CreateVentureFormProps> = ({ className, onSuc
                 This is the public display name of the venture.
               </FormDescription>
               <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="venture.teamSize"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Team Size</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a team size" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {["0-1", "2-10", "11-50", "51-200", "201-500", "501-1000", "1000+"].map((value) => (
+                    <SelectItem key={value} value={value}>{value}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormDescription>
+                This is the number of people on the team for this venture.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="venture.isRemote"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+              <FormControl>
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+              <div className="space-y-1 leading-none">
+                <FormLabel>
+                  Is Remote
+                </FormLabel>
+                <FormDescription>
+                  Select this if this venture's main point of business is remote/online.
+                </FormDescription>
+              </div>
             </FormItem>
           )}
         />

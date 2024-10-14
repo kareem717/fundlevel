@@ -940,6 +940,20 @@ export type GetBusinessVenturesResponse = (GetCursorPaginatedVenturesOutputBody)
 
 export type GetBusinessVenturesError = (ErrorModel);
 
+export type GetBusinessVenturesByPageData = {
+    path: {
+        id: number;
+    };
+    query?: {
+        page?: number;
+        pageSize?: number;
+    };
+};
+
+export type GetBusinessVenturesByPageResponse = (GetOffsetPaginatedVenturesOutputBody);
+
+export type GetBusinessVenturesByPageError = (ErrorModel);
+
 export type HealthCheckResponse = (MessageResponse);
 
 export type HealthCheckError = (ErrorModel);
@@ -1880,6 +1894,22 @@ export const GetBusinessVenturesResponseTransformer: GetBusinessVenturesResponse
     return data;
 };
 
+export type GetBusinessVenturesByPageResponseTransformer = (data: any) => Promise<GetBusinessVenturesByPageResponse>;
+
+export type GetOffsetPaginatedVenturesOutputBodyModelResponseTransformer = (data: any) => GetOffsetPaginatedVenturesOutputBody;
+
+export const GetOffsetPaginatedVenturesOutputBodyModelResponseTransformer: GetOffsetPaginatedVenturesOutputBodyModelResponseTransformer = data => {
+    if (Array.isArray(data?.ventures)) {
+        data.ventures.forEach(VentureModelResponseTransformer);
+    }
+    return data;
+};
+
+export const GetBusinessVenturesByPageResponseTransformer: GetBusinessVenturesByPageResponseTransformer = async (data) => {
+    GetOffsetPaginatedVenturesOutputBodyModelResponseTransformer(data);
+    return data;
+};
+
 export type GetRoundByCursorResponseTransformer = (data: any) => Promise<GetRoundByCursorResponse>;
 
 export const GetRoundByCursorResponseTransformer: GetRoundByCursorResponseTransformer = async (data) => {
@@ -2184,15 +2214,6 @@ export const GetAllVenturesCursorResponseTransformer: GetAllVenturesCursorRespon
 };
 
 export type GetAllVenturesOffsetResponseTransformer = (data: any) => Promise<GetAllVenturesOffsetResponse>;
-
-export type GetOffsetPaginatedVenturesOutputBodyModelResponseTransformer = (data: any) => GetOffsetPaginatedVenturesOutputBody;
-
-export const GetOffsetPaginatedVenturesOutputBodyModelResponseTransformer: GetOffsetPaginatedVenturesOutputBodyModelResponseTransformer = data => {
-    if (Array.isArray(data?.ventures)) {
-        data.ventures.forEach(VentureModelResponseTransformer);
-    }
-    return data;
-};
 
 export const GetAllVenturesOffsetResponseTransformer: GetAllVenturesOffsetResponseTransformer = async (data) => {
     GetOffsetPaginatedVenturesOutputBodyModelResponseTransformer(data);

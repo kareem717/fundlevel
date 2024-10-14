@@ -14,7 +14,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Icons } from "@/components/icons"
 import { DataTableColumnHeader } from "@/components/ui/data-table/column-header"
 import { titleCase } from "title-case"
-import { Address, Business } from "@/lib/api"
+import { Address, Business, Venture } from "@/lib/api"
 import Link from "next/link"
 import {
   Tooltip,
@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/tooltip"
 import { format } from "date-fns"
 
-export const columns: ColumnDef<Business>[] = [
+export const columns: ColumnDef<Venture>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -68,16 +68,6 @@ export const columns: ColumnDef<Business>[] = [
     },
   },
   {
-    accessorKey: "foundingDate",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Founding Date" />
-    ),
-    cell: ({ row }) => {
-      const foundingDate = row.getValue("foundingDate") as Date
-      return <div className="text-left font-medium">{format(foundingDate, "PPP")}</div>
-    },
-  },
-  {
     accessorKey: "businessNumber",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Business Number" />
@@ -98,12 +88,12 @@ export const columns: ColumnDef<Business>[] = [
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger>
-              <div className="text-left font-medium truncate max-w-32" title={address.fullAddress}>
-                {address.fullAddress}
+              <div className="text-left font-medium truncate max-w-32" title={address?.fullAddress || "N/A"}>
+                {address?.fullAddress || "N/A"}
               </div>
             </TooltipTrigger>
             <TooltipContent>
-              <p>{address.fullAddress}</p>
+              <p>{address?.fullAddress || "N/A"}</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
@@ -113,7 +103,7 @@ export const columns: ColumnDef<Business>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const business = row.original
+      const venture = row.original
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -125,38 +115,23 @@ export const columns: ColumnDef<Business>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(business.id.toString())}
+              onClick={() => navigator.clipboard.writeText(venture.id.toString())}
             >
-              Copy business ID
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(business.businessNumber)}
-            >
-              Copy business number
+              Copy venture ID
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <Link href={`/my-businesses/${business.id}`}>View details</Link>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuLabel>Ventures</DropdownMenuLabel>
-            <DropdownMenuItem asChild>
-              <Link href={`/my-businesses/${business.id}/ventures`}>View</Link>
+              <Link href={`/my-businesses/${venture.businessId}/ventures/${venture.id}`}>View details</Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <Link href={`/my-businesses/${business.id}/ventures/create`}>Create</Link>
+              <Link href={`/my-businesses/${venture.businessId}/ventures/${venture.id}/edit`}>Edit</Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuLabel>Rounds</DropdownMenuLabel>
             <DropdownMenuItem asChild>
-              <Link href={`/my-businesses/${business.id}/rounds`}>View</Link>
+              <Link href={`/my-businesses/${venture.businessId}/rounds?ventureId=${venture.id}`}>View</Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <Link href={`/my-businesses/${business.id}/rounds/create`}>Create</Link>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuLabel>Investments</DropdownMenuLabel>
-            <DropdownMenuItem asChild>
-              <Link href={`/my-businesses/${business.id}/investments`}>View Received</Link>
+              <Link href={`/my-businesses/${venture.businessId}/rounds/create?ventureId=${venture.id}`}>Create</Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
