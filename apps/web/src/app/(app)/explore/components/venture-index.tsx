@@ -63,6 +63,5 @@ export const VentureIndex: FC<VentureIndexProps> = ({ ventures, ...props }) => {
         </div>
       </ScrollArea>
     </div>
-
   );
 };

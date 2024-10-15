@@ -8,8 +8,9 @@ import {
 	createDutchDynamicRound as createDutchDynamicRoundApi,
 	getFixedTotalRoundById as getFixedTotalRoundByIdApi,
 	getRoundById as getRoundByIdApi,
+	getAllFixedTotalRoundsCursor,
 } from "@/lib/api";
-import { intIdSchema } from "@/actions/validations/shared";
+import { cursorPaginationSchema, getByParentIdWithCursorSchema, intIdSchema } from "@/actions/validations/shared";
 import {
 	createFixedTotalRoundSchema,
 	createPartialTotalRoundSchema,
@@ -104,6 +105,43 @@ export const createDutchDynamicRound = actionClient
 			throwOnError: true,
 			body: parsedInput,
 		});
+	});
+
+// /**
+//  * Create a venture
+//  */
+// export const getFixedTotalRoundById = actionClient
+// 	.schema(intIdSchema)
+// 	.action(async ({ parsedInput, ctx: { apiClient } }) => {
+// 		if (!parsedInput) {
+// 			throw new Error("Round ID not found");
+// 		}
+
+// 		const response = await getFixedTotalRoundByIdApi({
+// 			client: apiClient,
+// 			throwOnError: true,
+// 			path: {
+// 				id: parsedInput,
+// 			},
+// 		});
+
+// 		return response.data.round;
+// 	});
+
+/**
+ * Create a venture
+ */
+export const getFixedTotalRoundsInfinite = actionClient
+	.schema(cursorPaginationSchema)
+	.action(async ({ parsedInput, ctx: { apiClient } }) => {
+
+		const response = await getAllFixedTotalRoundsCursor({
+			client: apiClient,
+			throwOnError: true,
+			query: parsedInput,
+		});
+
+		return response.data;
 	});
 
 /**
