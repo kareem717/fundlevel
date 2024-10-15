@@ -1,8 +1,7 @@
 "use client"
 
-import { ComponentPropsWithoutRef, FC, useState } from "react"
+import { ComponentPropsWithoutRef, FC } from "react"
 import { cn } from "@/lib/utils"
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import {
   Select,
   SelectContent,
@@ -16,7 +15,7 @@ import { Icons } from "@/components/ui/icons"
 import { Button } from "@/components/ui/button"
 import { ExploreResource, useExploreNavbarStore } from "./use-explore-navbar"
 
-export interface ExploreNavbarProps extends ComponentPropsWithoutRef<"nav"> {
+export interface ExploreSearchProps extends ComponentPropsWithoutRef<"nav"> {
   default?: ExploreResource
 };
 
@@ -109,18 +108,11 @@ const VentureSearch: FC<ComponentPropsWithoutRef<"div">> = ({ className, ...prop
 }
 
 
-export const ExploreNavbar: FC<ExploreNavbarProps> = ({ className, default: defaultResource, ...props }) => {
-  const { resource, setResource } = useExploreNavbarStore()
-
-  const resources: ExploreResource[] = ["Ventures", "Rounds"]
+export const ExploreSearch: FC<ExploreSearchProps> = ({ className, default: defaultResource, ...props }) => {
+  const { resource } = useExploreNavbarStore()
 
   return (
-    <nav className={cn("flex flex-col items-center gap-4", className)} {...props}>
-      <ToggleGroup type="single" value={resource} onValueChange={(value) => setResource(value as ExploreResource)}>
-        {resources.map((resource) => (
-          <ToggleGroupItem key={resource} value={resource}>{resource}</ToggleGroupItem>
-        ))}
-      </ToggleGroup>
+    <nav className={cn("flex flex-col items-center gap-6", className)} {...props}>
       {resource === "Ventures" ? <VentureSearch /> : <RoundSearch />}
     </nav>
   );

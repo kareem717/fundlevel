@@ -29,3 +29,17 @@ export const RoundIndexCard: FC<RoundIndexCardProps> = ({ round, className, ...p
     </Link>
   );
 };
+
+export interface RoundIndexProps extends ComponentPropsWithoutRef<"div"> {
+  rounds: RoundWithSubtypes[]
+};
+
+export const RoundIndex: FC<RoundIndexProps> = ({ rounds, ...props }) => {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
+      {rounds.map((round) => (
+        <RoundIndexCard key={round.id} round={round} />
+      ))}
+    </div>
+  );
+};

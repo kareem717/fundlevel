@@ -12,6 +12,8 @@ import { Button } from "./button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Icons } from "./icons";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
+import redirects from "@/lib/config/redirects";
 
 export interface AccountDropdownProps extends ComponentPropsWithoutRef<typeof Button> {
   account: Account
@@ -33,6 +35,9 @@ export const AccountDropdown: FC<AccountDropdownProps> = ({ account, className, 
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuItem>
+          <Link href={redirects.auth.logout}>Logout</Link>
+        </DropdownMenuItem>
         <DropdownMenuItem>Settings</DropdownMenuItem>
         <DropdownMenuItem>My Investments</DropdownMenuItem>
         <DropdownMenuSeparator />
