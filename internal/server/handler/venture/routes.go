@@ -109,4 +109,40 @@ func RegisterHumaRoutes(
 		Tags:        []string{"Ventures"},
 	}, handler.delete)
 
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "create-venture-like",
+		Method:      http.MethodPost,
+		Path:        "/venture/{id}/account/{accountId}/like",
+		Summary:     "Create a venture like",
+		Description: "Create a venture like.",
+		Tags:        []string{"Ventures", "Likes"},
+	}, handler.createLike)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "delete-venture-like",
+		Method:      http.MethodDelete,
+		Path:        "/venture/{id}/account/{accountId}/like",
+		Summary:     "Delete a venture like",
+		Description: "Delete a venture like.",
+		Tags:        []string{"Ventures", "Likes"},
+	}, handler.deleteLike)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-venture-like-status",
+		Method:      http.MethodGet,
+		Path:        "/venture/{id}/account/{accountId}/like",
+		Summary:     "Get a venture like status",
+		Description: "Get a venture like status.",
+		Tags:        []string{"Ventures", "Likes"},
+	}, handler.isLikedByAccount)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-venture-like-count",
+		Method:      http.MethodGet,
+		Path:        "/venture/{id}/like",
+		Summary:     "Get a venture like count",
+		Description: "Get a venture like count.",
+		Tags:        []string{"Ventures", "Likes"},
+	}, handler.getLikeCount)
+
 }

@@ -293,3 +293,66 @@ func (h *httpHandler) delete(ctx context.Context, input *shared.PathIDParam) (*D
 
 	return resp, nil
 }
+
+type VentureLikeInput struct {
+	shared.PathIDParam
+	AccountID int `path:"accountId"`
+}
+
+func (h *httpHandler) createLike(ctx context.Context, input *VentureLikeInput) (*shared.MessageOutput, error) {
+	_, err := h.service.VentureService.CreateLike(ctx, venture.CreateVentureLikeParams{
+		VentureID: input.ID,
+		AccountID: input.AccountID,
+	})
+
+	if err != nil {
+		h.logger.Error("failed to create venture like", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while creating the venture like")
+	}
+
+	resp := &shared.MessageOutput{}
+	resp.Body.Message = "Venture like created successfully"
+
+	return resp, nil
+}
+
+func (h *httpHandler) deleteLike(ctx context.Context, input *VentureLikeInput) (*shared.MessageOutput, error) {
+	err := h.service.VentureService.DeleteLike(ctx, input.ID, input.AccountID)
+	if err != nil {
+		h.logger.Error("failed to delete venture like", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while deleting the venture like")
+	}
+
+	resp := &shared.MessageOutput{}
+	resp.Body.Message = "Venture like deleted successfully"
+
+	return resp, nil
+}
+
+func (h *httpHandler) getLikeCount(ctx context.Context, input *shared.PathIDParam) (*shared.GetLikeCountOutput, error) {
+	count, err := h.service.VentureService.GetLikeCount(ctx, input.ID)
+	if err != nil {
+		h.logger.Error("failed to get venture like count", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while getting the venture like count")
+	}
+
+	resp := &shared.GetLikeCountOutput{}
+	resp.Body.Message = "Venture like count fetched successfully"
+	resp.Body.Count = count
+
+	return resp, nil
+}
+
+func (h *httpHandler) isLikedByAccount(ctx context.Context, input *VentureLikeInput) (*shared.IsLikedOutput, error) {
+	liked, err := h.service.VentureService.IsLikedByAccount(ctx, input.ID, input.AccountID)
+	if err != nil {
+		h.logger.Error("failed to check if venture is liked by account", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while checking if the venture is liked by the account")
+	}
+
+	resp := &shared.IsLikedOutput{}
+	resp.Body.Message = "Venture like status fetched successfully"
+	resp.Body.Liked = liked
+
+	return resp, nil
+}

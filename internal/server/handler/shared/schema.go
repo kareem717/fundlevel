@@ -136,3 +136,17 @@ type SingleInvestmentResponse struct {
 		Investment *investment.RoundInvestment `json:"investment"`
 	}
 }
+
+type IsLikedOutput struct {
+	Body struct {
+		MessageResponse
+		Liked bool `json:"liked"`
+	}
+}
+
+type GetLikeCountOutput struct {
+	Body struct {
+		MessageResponse
+		Count int `json:"count"`
+	}
+}

@@ -32,6 +32,11 @@ type VentureService interface {
 	GetRoundsByCursor(ctx context.Context, ventureId int, limit int, cursor int) ([]round.Round, error)
 	GetRoundsByPage(ctx context.Context, ventureId int, pageSize int, page int) ([]round.Round, error)
 
+	CreateLike(ctx context.Context, params venture.CreateVentureLikeParams) (venture.VentureLike, error)
+	DeleteLike(ctx context.Context, ventureId int, accountId int) error
+	IsLikedByAccount(ctx context.Context, ventureId int, accountId int) (bool, error)
+	GetLikeCount(ctx context.Context, ventureId int) (int, error)
+
 	GetInvestmentsByCursor(ctx context.Context, ventureId int, limit int, cursor int) ([]investment.RoundInvestment, error)
 	GetInvestmentsByPage(ctx context.Context, ventureId int, pageSize int, page int) ([]investment.RoundInvestment, error)
 }
@@ -66,6 +71,11 @@ type RoundService interface {
 	GetById(ctx context.Context, id int) (round.Round, error)
 	GetByCursor(ctx context.Context, limit int, cursor int) ([]round.Round, error)
 	GetByPage(ctx context.Context, pageSize int, page int) ([]round.Round, error)
+
+	CreateLike(ctx context.Context, params round.CreateRoundLikeParams) (round.RoundLike, error)
+	DeleteLike(ctx context.Context, roundId int, accountId int) error
+	IsLikedByAccount(ctx context.Context, roundId int, accountId int) (bool, error)
+	GetLikeCount(ctx context.Context, roundId int) (int, error)
 
 	GetInvestmentsByCursor(ctx context.Context, roundId int, limit int, cursor int) ([]investment.RoundInvestment, error)
 	GetInvestmentsByPage(ctx context.Context, roundId int, pageSize int, page int) ([]investment.RoundInvestment, error)

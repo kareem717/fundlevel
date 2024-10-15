@@ -225,3 +225,66 @@ func (h *httpHandler) getById(ctx context.Context, input *shared.PathIDParam) (*
 
 	return resp, nil
 }
+
+type RoundLikeInput struct {
+	shared.PathIDParam
+	AccountID int `path:"accountId"`
+}
+
+func (h *httpHandler) createLike(ctx context.Context, input *RoundLikeInput) (*shared.MessageOutput, error) {
+	_, err := h.service.RoundService.CreateLike(ctx, round.CreateRoundLikeParams{
+		RoundID:   input.ID,
+		AccountID: input.AccountID,
+	})
+
+	if err != nil {
+		h.logger.Error("failed to create round like", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while creating the round like")
+	}
+
+	resp := &shared.MessageOutput{}
+	resp.Body.Message = "Round like created successfully"
+
+	return resp, nil
+}
+
+func (h *httpHandler) deleteLike(ctx context.Context, input *RoundLikeInput) (*shared.MessageOutput, error) {
+	err := h.service.RoundService.DeleteLike(ctx, input.ID, input.AccountID)
+	if err != nil {
+		h.logger.Error("failed to delete round like", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while deleting the round like")
+	}
+
+	resp := &shared.MessageOutput{}
+	resp.Body.Message = "Round like deleted successfully"
+
+	return resp, nil
+}
+
+func (h *httpHandler) isLikedByAccount(ctx context.Context, input *RoundLikeInput) (*shared.IsLikedOutput, error) {
+	liked, err := h.service.RoundService.IsLikedByAccount(ctx, input.ID, input.AccountID)
+	if err != nil {
+		h.logger.Error("failed to check if round is liked by account", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while checking if the round is liked by the account")
+	}
+
+	resp := &shared.IsLikedOutput{}
+	resp.Body.Message = "Round like status fetched successfully"
+	resp.Body.Liked = liked
+
+	return resp, nil
+}
+
+func (h *httpHandler) getLikeCount(ctx context.Context, input *shared.PathIDParam) (*shared.GetLikeCountOutput, error) {
+	count, err := h.service.RoundService.GetLikeCount(ctx, input.ID)
+	if err != nil {
+		h.logger.Error("failed to get round like count", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while getting the round like count")
+	}
+
+	resp := &shared.GetLikeCountOutput{}
+	resp.Body.Message = "Round like count fetched successfully"
+	resp.Body.Count = count
+
+	return resp, nil
+}

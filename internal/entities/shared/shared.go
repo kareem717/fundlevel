@@ -14,14 +14,6 @@ type Timestamps struct {
 	DeletedAt *time.Time `json:"deletedAt" bun:",soft_delete" format:"date-time"`
 }
 
-// Timestamps contains the timestamps for an entity.
-type DeletableTimestamps struct {
-	// CreatedAt is the timestamp of the creation.
-	CreatedAt time.Time `json:"createdAt" format:"date-time"`
-	// UpdatedAt is the timestamp of the last update. Null until the first update.
-	UpdatedAt *time.Time `json:"updatedAt" format:"date-time"`
-}
-
 type IntegerID struct {
 	ID int `json:"id" minimum:"1" bun:",pk"`
 }

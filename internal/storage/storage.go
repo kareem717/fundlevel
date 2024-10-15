@@ -28,6 +28,11 @@ type VentureRepository interface {
 	GetInvestmentsByCursor(ctx context.Context, ventureId int, paginationParams shared.CursorPagination) ([]investment.RoundInvestment, error)
 	// GetInvestmentsByPage gets all of the received investments on the rounds related to the venture using offset pagination
 	GetInvestmentsByPage(ctx context.Context, ventureId int, paginationParams shared.OffsetPagination) ([]investment.RoundInvestment, error)
+
+	GetLikeCount(ctx context.Context, ventureId int) (int, error)
+	CreateLike(ctx context.Context, params venture.CreateVentureLikeParams) (venture.VentureLike, error)
+	DeleteLike(ctx context.Context, ventureId int, accountId int) error
+	IsLikedByAccount(ctx context.Context, ventureId int, accountId int) (bool, error)
 }
 
 type RoundRepository interface {
@@ -37,6 +42,10 @@ type RoundRepository interface {
 	GetByCursor(ctx context.Context, paginationParams shared.CursorPagination) ([]round.Round, error)
 	GetByPage(ctx context.Context, paginationParams shared.OffsetPagination) ([]round.Round, error)
 
+	GetLikeCount(ctx context.Context, roundId int) (int, error)
+	CreateLike(ctx context.Context, params round.CreateRoundLikeParams) (round.RoundLike, error)
+	DeleteLike(ctx context.Context, roundId int, accountId int) error
+	IsLikedByAccount(ctx context.Context, roundId int, accountId int) (bool, error)
 	// GetInvestmentsByCursor gets all of the investments received on the round using cursor pagination
 	GetInvestmentsByCursor(ctx context.Context, roundId int, paginationParams shared.CursorPagination) ([]investment.RoundInvestment, error)
 	// GetInvestmentsByPage gets all of the investments received on the round using offset pagination

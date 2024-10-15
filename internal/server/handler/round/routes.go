@@ -91,4 +91,40 @@ func RegisterHumaRoutes(
 		Description: "Accept an investment.",
 		Tags:        []string{"Round", "Investments"},
 	}, handler.acceptInvestment)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "create-round-like",
+		Method:      http.MethodPost,
+		Path:        "/round/{id}/account/{accountId}/like",
+		Summary:     "Create a round like",
+		Description: "Create a round like.",
+		Tags:        []string{"Round", "Likes"},
+	}, handler.createLike)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "delete-round-like",
+		Method:      http.MethodDelete,
+		Path:        "/round/{id}/account/{accountId}/like",
+		Summary:     "Delete a round like",
+		Description: "Delete a round like.",
+		Tags:        []string{"Round", "Likes"},
+	}, handler.deleteLike)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-round-like-status",
+		Method:      http.MethodGet,
+		Path:        "/round/{id}/account/{accountId}/like",
+		Summary:     "Get a round like status",
+		Description: "Get a round like status.",
+		Tags:        []string{"Round", "Likes"},
+	}, handler.isLikedByAccount)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-round-like-count",
+		Method:      http.MethodGet,
+		Path:        "/round/{id}/like",
+		Summary:     "Get a round like count",
+		Description: "Get a round like count.",
+		Tags:        []string{"Round", "Likes"},
+	}, handler.getLikeCount)
 }
