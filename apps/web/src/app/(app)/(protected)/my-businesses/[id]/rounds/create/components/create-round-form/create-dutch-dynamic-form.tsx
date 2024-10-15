@@ -29,7 +29,7 @@ import { createDutchDynamicRoundSchema } from "@/actions/validations/rounds";
 import { createDutchDynamicRound } from "@/actions/rounds";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns"
-import { Unit, UnitSelect } from "@/components/app/input/unit-select";
+import { Unit, UnitSelect } from "@/components/ui/unit-select";
 import { VentureSelect } from "../venture-select";
 
 export interface CreateDutchDynamicRoundFormProps extends ComponentPropsWithoutRef<'form'> {

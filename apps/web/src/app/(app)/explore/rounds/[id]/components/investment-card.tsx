@@ -25,7 +25,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { CreateInvestmentForm, RoundInvestmentPrice } from "../../investments/create-investment-form";
+import { CreateInvestmentForm, RoundInvestmentPrice } from "../../../../../../components/app/investments/create-investment-form";
 
 export interface RoundViewInvestmentCardProps extends ComponentPropsWithoutRef<typeof Card> {
   purchasePercentage: number;

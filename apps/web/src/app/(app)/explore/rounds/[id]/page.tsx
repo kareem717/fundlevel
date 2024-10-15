@@ -1,9 +1,9 @@
 "use client"
 
-import { RoundViewHero } from "@/components/app/rounds/view/hero"
-import { RoundViewDetails } from "@/components/app/rounds/view/details"
+import { RoundViewHero } from "@/app/(app)/explore/rounds/[id]/components/hero"
+import { RoundViewDetails } from "@/app/(app)/explore/rounds/[id]/components/details"
 import { faker } from "@faker-js/faker";
-import { RoundViewInvestmentCard, MiniRoundViewInvestmentCard } from "@/components/app/rounds/view/investment-card";
+import { RoundViewInvestmentCard, MiniRoundViewInvestmentCard } from "@/app/(app)/explore/rounds/[id]/components/investment-card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { getRoundById } from "@/actions/rounds";
 import { notFound, useParams, useSearchParams } from "next/navigation";

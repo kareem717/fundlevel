@@ -8,8 +8,8 @@ import { GeistSans } from 'geist/font/sans';
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
   title: {
-    default: "waitq",
-    template: "%s | waitq",
+    default: "Fundlevel",
+    template: "%s | Fundlevel",
   },
   description: "Create and manage waitlists for your products.",
   keywords: ["waitlist", "waitlists", "email", "email list", "waitq", "waitq.sh", "landing page", "launch"],

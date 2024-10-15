@@ -1,30 +1,28 @@
-import { LogoDiv } from "@/components/ui/logo-div";
 import { Metadata } from "next";
+import { ExploreHeader } from "./components/explore-header";
+import { getAccount } from "@/actions/auth";
 
 export const metadata: Metadata = {
   title: {
-    default: "My Waitlist",
-    template: "%s - My Waitlist",
+    default: "Explore",
+    template: "%s - Explore",
   },
 };
 
-export default async function WaitlistLayout({
+export default async function ExploreLayout({
   children,
-  params
 }: {
   children: React.ReactNode;
-  params: { id: string }
 }) {
+  const accountResp = await getAccount();
+
+  const account = accountResp?.data;
   return (
     <div className="grid h-screen w-full overflow-hidden">
-      <div className="flex flex-col flex-1 overflow-hidden py-4 justify-center items-start gap-2 sm:gap-4">
-        <div className="flex flex-col items-start w-full sm:gap-2 px-2 sm:px-4 md:px-8">
-          <LogoDiv />
-        </div>
-        <div className="flex-1 overflow-auto px-4 md:px-8 md:py-8 w-full">
-          <div className="max-w-screen-lg mx-auto">
-            {children}
-          </div>
+      <div className="flex flex-col py-4 justify-start items-start gap-2 sm:gap-4">
+        <ExploreHeader account={account} className="px-20 border-b" />
+        <div className="px-20">
+          {children}
         </div>
       </div>
     </div>

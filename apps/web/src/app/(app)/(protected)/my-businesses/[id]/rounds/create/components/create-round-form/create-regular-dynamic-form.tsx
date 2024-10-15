@@ -25,14 +25,14 @@ import { useAction } from "next-safe-action/hooks";
 import { useRouter } from "next/navigation";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { InferType } from "yup";
-import { createFixedTotalRoundSchema } from "@/actions/validations/rounds";
-import { createFixedTotalRound } from "@/actions/rounds";
+import { createRegularDynamicRoundSchema } from "@/actions/validations/rounds";
+import { createRegularDynamicRound } from "@/actions/rounds";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns"
-import { Unit, UnitSelect } from "@/components/app/input/unit-select";
+import { Unit, UnitSelect } from "@/components/ui/unit-select";
 import { VentureSelect } from "../venture-select";
 
-export interface CreateFixedTotalRoundFormProps extends ComponentPropsWithoutRef<'form'> {
+export interface CreateRegularDynamicRoundFormProps extends ComponentPropsWithoutRef<'form'> {
   onSuccess?: () => void
   businessId: number;
   ventureId?: number;
@@ -47,7 +47,7 @@ const units: Unit[] = [
   { value: "JPY", label: "JPY", icon: <span className="text-sm">¥</span> },
 ]
 
-export const CreateFixedTotalRoundForm: FC<CreateFixedTotalRoundFormProps> = ({ className, onSuccess, businessId, ...props }) => {
+export const CreateRegularDynamicRoundForm: FC<CreateRegularDynamicRoundFormProps> = ({ className, onSuccess, businessId, ...props }) => {
   const router = useRouter()
 
   const tomorrow = new Date()
@@ -57,8 +57,8 @@ export const CreateFixedTotalRoundForm: FC<CreateFixedTotalRoundFormProps> = ({ 
   const afterTomorrow = new Date(tomorrow)
   afterTomorrow.setDate(afterTomorrow.getDate() + 1)
 
-  const form = useForm<InferType<typeof createFixedTotalRoundSchema>>({
-    resolver: yupResolver(createFixedTotalRoundSchema),
+  const form = useForm<InferType<typeof createRegularDynamicRoundSchema>>({
+    resolver: yupResolver(createRegularDynamicRoundSchema),
     defaultValues: {
       round: {
         beginsAt: tomorrow,
@@ -69,10 +69,13 @@ export const CreateFixedTotalRoundForm: FC<CreateFixedTotalRoundFormProps> = ({ 
         ventureId: 1,
         status: "active",
       },
+      regularDynamicRound: {
+        daysExtendOnBid: 1
+      }
     },
   })
 
-  const { executeAsync, isExecuting } = useAction(createFixedTotalRound, {
+  const { executeAsync, isExecuting } = useAction(createRegularDynamicRound, {
     onSuccess: () => {
       form.reset()
       toast.success("Done!", {
@@ -88,7 +91,7 @@ export const CreateFixedTotalRoundForm: FC<CreateFixedTotalRoundFormProps> = ({ 
     }
   })
 
-  const onSubmit = async (values: InferType<typeof createFixedTotalRoundSchema>) => {
+  const onSubmit = async (values: InferType<typeof createRegularDynamicRoundSchema>) => {
     await executeAsync(values)
   }
 
@@ -276,7 +279,26 @@ export const CreateFixedTotalRoundForm: FC<CreateFixedTotalRoundFormProps> = ({ 
             )}
           />
         </div>
-
+        <FormField
+          control={form.control}
+          name="regularDynamicRound.daysExtendOnBid"
+          render={({ field }) => (
+            <FormItem className="w-full">
+              <FormLabel>Days to extend on bid</FormLabel>
+              <FormControl>
+                <Input
+                  type="number"
+                  placeholder="1"
+                  {...field}
+                />
+              </FormControl>
+              <FormDescription>
+                When a bid is placed on, the round will be extended by the number of days specified here.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <Button type="submit" disabled={isExecuting} className="w-full">
           {isExecuting && (<Icons.spinner className="mr-2 h-4 w-4 animate-spin" />)}
           Create

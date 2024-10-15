@@ -24,7 +24,7 @@ import { createVentureSchema } from "@/actions/validations/ventures";
 import { Textarea } from "@/components/ui/textarea";
 import { InferType } from "yup";
 import { AddressInput } from "@/components/app/address-input";
-import { BusinessSelect } from "@/components/app/input/business-select";
+import { BusinessSelect } from "@/components/ui/business-select";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,

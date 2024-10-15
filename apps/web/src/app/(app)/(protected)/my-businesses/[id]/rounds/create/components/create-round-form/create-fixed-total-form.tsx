@@ -25,14 +25,14 @@ import { useAction } from "next-safe-action/hooks";
 import { useRouter } from "next/navigation";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { InferType } from "yup";
-import { createPartialTotalRoundSchema } from "@/actions/validations/rounds";
-import { createPartialTotalRound } from "@/actions/rounds";
+import { createFixedTotalRoundSchema } from "@/actions/validations/rounds";
+import { createFixedTotalRound } from "@/actions/rounds";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns"
-import { Unit, UnitSelect } from "@/components/app/input/unit-select";
+import { Unit, UnitSelect } from "@/components/ui/unit-select";
 import { VentureSelect } from "../venture-select";
 
-export interface CreatePartialTotalRoundFormProps extends ComponentPropsWithoutRef<'form'> {
+export interface CreateFixedTotalRoundFormProps extends ComponentPropsWithoutRef<'form'> {
   onSuccess?: () => void
   businessId: number;
   ventureId?: number;
@@ -47,7 +47,7 @@ const units: Unit[] = [
   { value: "JPY", label: "JPY", icon: <span className="text-sm">¥</span> },
 ]
 
-export const CreatePartialTotalRoundForm: FC<CreatePartialTotalRoundFormProps> = ({ className, onSuccess, businessId, ...props }) => {
+export const CreateFixedTotalRoundForm: FC<CreateFixedTotalRoundFormProps> = ({ className, onSuccess, businessId, ...props }) => {
   const router = useRouter()
 
   const tomorrow = new Date()
@@ -57,8 +57,8 @@ export const CreatePartialTotalRoundForm: FC<CreatePartialTotalRoundFormProps> =
   const afterTomorrow = new Date(tomorrow)
   afterTomorrow.setDate(afterTomorrow.getDate() + 1)
 
-  const form = useForm<InferType<typeof createPartialTotalRoundSchema>>({
-    resolver: yupResolver(createPartialTotalRoundSchema),
+  const form = useForm<InferType<typeof createFixedTotalRoundSchema>>({
+    resolver: yupResolver(createFixedTotalRoundSchema),
     defaultValues: {
       round: {
         beginsAt: tomorrow,
@@ -69,13 +69,10 @@ export const CreatePartialTotalRoundForm: FC<CreatePartialTotalRoundFormProps> =
         ventureId: 1,
         status: "active",
       },
-      partialTotalRound: {
-        investorCount: 1,
-      },
     },
   })
 
-  const { executeAsync, isExecuting } = useAction(createPartialTotalRound, {
+  const { executeAsync, isExecuting } = useAction(createFixedTotalRound, {
     onSuccess: () => {
       form.reset()
       toast.success("Done!", {
@@ -91,7 +88,7 @@ export const CreatePartialTotalRoundForm: FC<CreatePartialTotalRoundFormProps> =
     }
   })
 
-  const onSubmit = async (values: InferType<typeof createPartialTotalRoundSchema>) => {
+  const onSubmit = async (values: InferType<typeof createFixedTotalRoundSchema>) => {
     await executeAsync(values)
   }
 
@@ -279,26 +276,7 @@ export const CreatePartialTotalRoundForm: FC<CreatePartialTotalRoundFormProps> =
             )}
           />
         </div>
-        <FormField
-          control={form.control}
-          name="partialTotalRound.investorCount"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Number of investors</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  placeholder="10"
-                  {...field}
-                />
-              </FormControl>
-              <FormDescription>
-                The precentage you are offering to sell is divided by the number of investors you allow to invest in the round.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+
         <Button type="submit" disabled={isExecuting} className="w-full">
           {isExecuting && (<Icons.spinner className="mr-2 h-4 w-4 animate-spin" />)}
           Create
