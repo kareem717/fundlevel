@@ -8,25 +8,25 @@ import (
 	"fundlevel/internal/storage/postgres/shared"
 )
 
-func (s *AccountService) GetRoundInvestmentsByCursor(ctx context.Context, accountId int, limit int, cursor int) ([]investment.RoundInvestment, error) {
+func (s *AccountService) GetInvestmentsByCursor(ctx context.Context, accountId int, limit int, cursor int) ([]investment.RoundInvestment, error) {
 	paginationParams := shared.CursorPagination{
 		Limit:  limit,
 		Cursor: cursor,
 	}
 
-	return s.repositories.Account().GetRoundInvestmentsByCursor(ctx, accountId, paginationParams)
+	return s.repositories.Account().GetInvestmentsByCursor(ctx, accountId, paginationParams)
 }
 
-func (s *AccountService) GetRoundInvestmentsByPage(ctx context.Context, accountId int, pageSize int, page int) ([]investment.RoundInvestment, error) {
+func (s *AccountService) GetInvestmentsByPage(ctx context.Context, accountId int, pageSize int, page int) ([]investment.RoundInvestment, error) {
 	paginationParams := shared.OffsetPagination{
 		PageSize: pageSize,
 		Page:     page,
 	}
 
-	return s.repositories.Account().GetRoundInvestmentsByPage(ctx, accountId, paginationParams)
+	return s.repositories.Account().GetInvestmentsByPage(ctx, accountId, paginationParams)
 }
 
-func (s *AccountService) WithdrawRoundInvestment(ctx context.Context, accountId int, investmentId int) error {
+func (s *AccountService) WithdrawInvestment(ctx context.Context, accountId int, investmentId int) error {
 	currInvestment, err := s.repositories.Investment().GetById(ctx, investmentId)
 	if err != nil {
 		return err
@@ -47,7 +47,7 @@ func (s *AccountService) WithdrawRoundInvestment(ctx context.Context, accountId 
 	return nil
 }
 
-func (s *AccountService) DeleteRoundInvestment(ctx context.Context, accountId int, investmentId int) error {
+func (s *AccountService) DeleteInvestment(ctx context.Context, accountId int, investmentId int) error {
 	currInvestment, err := s.repositories.Investment().GetById(ctx, investmentId)
 	if err != nil {
 		return err
@@ -60,7 +60,7 @@ func (s *AccountService) DeleteRoundInvestment(ctx context.Context, accountId in
 	return s.repositories.Investment().Delete(ctx, investmentId)
 }
 
-func (s *AccountService) CreateRoundInvestment(ctx context.Context, params investment.CreateInvestmentParams) (investment.RoundInvestment, error) {
+func (s *AccountService) CreateInvestment(ctx context.Context, params investment.CreateInvestmentParams) (investment.RoundInvestment, error) {
 	// make sure the account isn't already invested in the round without a withdrawal
 	isInvested, err := s.repositories.Account().IsInvestedInRound(ctx, params.InvestorID, params.RoundID)
 	if err != nil {
@@ -75,5 +75,5 @@ func (s *AccountService) CreateRoundInvestment(ctx context.Context, params inves
 }
 
 func (s *AccountService) GetInvestmentById(ctx context.Context, accountId int, investmentId int) (investment.RoundInvestment, error) {
-	return s.repositories.Account().GetRoundInvestmentById(ctx, accountId, investmentId)
+	return s.repositories.Account().GetInvestmentById(ctx, accountId, investmentId)
 }

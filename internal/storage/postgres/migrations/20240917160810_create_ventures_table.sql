@@ -5,7 +5,8 @@ CREATE TABLE
         id serial PRIMARY KEY,
         NAME TEXT NOT NULL,
         description TEXT NOT NULL,
-        owner_account_id INT NOT NULL REFERENCES accounts (id),
+        business_id INTEGER NOT NULL REFERENCES businesses (id),
+        is_hidden BOOLEAN NOT NULL,
         created_at timestamptz DEFAULT CLOCK_TIMESTAMP(),
         updated_at timestamptz,
         deleted_at timestamptz

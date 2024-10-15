@@ -9,7 +9,7 @@ import (
 	"github.com/uptrace/bun/dialect/pgdialect"
 )
 
-func (r *AccountRepository) GetRoundInvestmentsByCursor(ctx context.Context, accountId int, paginationParams shared.CursorPagination) ([]investment.RoundInvestment, error) {
+func (r *AccountRepository) GetInvestmentsByCursor(ctx context.Context, accountId int, paginationParams shared.CursorPagination) ([]investment.RoundInvestment, error) {
 	resp := []investment.RoundInvestment{}
 
 	err := r.db.
@@ -25,7 +25,7 @@ func (r *AccountRepository) GetRoundInvestmentsByCursor(ctx context.Context, acc
 	return resp, err
 }
 
-func (r *AccountRepository) GetRoundInvestmentsByPage(ctx context.Context, accountId int, paginationParams shared.OffsetPagination) ([]investment.RoundInvestment, error) {
+func (r *AccountRepository) GetInvestmentsByPage(ctx context.Context, accountId int, paginationParams shared.OffsetPagination) ([]investment.RoundInvestment, error) {
 	resp := []investment.RoundInvestment{}
 	offset := (paginationParams.Page - 1) * paginationParams.PageSize
 
@@ -60,7 +60,7 @@ func (r *AccountRepository) IsInvestedInRound(ctx context.Context, accountId int
 	return exists, err
 }
 
-func (r *AccountRepository) GetRoundInvestmentById(ctx context.Context, accountId int, investmentId int) (investment.RoundInvestment, error) {
+func (r *AccountRepository) GetInvestmentById(ctx context.Context, accountId int, investmentId int) (investment.RoundInvestment, error) {
 	resp := investment.RoundInvestment{}
 
 	err := r.db.

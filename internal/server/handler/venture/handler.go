@@ -59,8 +59,8 @@ func (h *httpHandler) getByID(ctx context.Context, input *shared.PathIDParam) (*
 	return resp, nil
 }
 
-func (h *httpHandler) getOffsetPaginated(ctx context.Context, input *shared.OffsetPaginationRequest) (*shared.GetOffsetPaginatedVenturesOutput, error) {
-	ventures, err := h.service.VentureService.GetManyByPage(ctx, input.PageSize, input.Page)
+func (h *httpHandler) getByPage(ctx context.Context, input *shared.OffsetPaginationRequest) (*shared.GetOffsetPaginatedVenturesOutput, error) {
+	ventures, err := h.service.VentureService.GetByPage(ctx, input.PageSize, input.Page)
 
 	if err != nil {
 		switch {
@@ -84,9 +84,9 @@ func (h *httpHandler) getOffsetPaginated(ctx context.Context, input *shared.Offs
 	return resp, nil
 }
 
-func (h *httpHandler) getCursorPaginated(ctx context.Context, input *shared.CursorPaginationRequest) (*shared.GetCursorPaginatedVenturesOutput, error) {
+func (h *httpHandler) getByCursor(ctx context.Context, input *shared.CursorPaginationRequest) (*shared.GetCursorPaginatedVenturesOutput, error) {
 	limit := input.Limit + 1
-	ventures, err := h.service.VentureService.GetManyByCursor(ctx, limit, input.Cursor)
+	ventures, err := h.service.VentureService.GetByCursor(ctx, limit, input.Cursor)
 
 	if err != nil {
 		switch {
@@ -111,8 +111,8 @@ func (h *httpHandler) getCursorPaginated(ctx context.Context, input *shared.Curs
 	return resp, nil
 }
 
-func (h *httpHandler) getOffsetPaginatedFixedTotalRounds(ctx context.Context, input *shared.GetOffsetPaginatedByParentPathIDInput) (*shared.GetOffsetPaginatedFixedTotalRoundsOutput, error) {
-	rounds, err := h.service.VentureService.GetFixedTotalRoundsByPage(ctx, input.ID, input.PageSize, input.Page)
+func (h *httpHandler) getRoundsByPage(ctx context.Context, input *shared.GetOffsetPaginatedByParentPathIDInput) (*shared.GetOffsetPaginatedRoundsOutput, error) {
+	rounds, err := h.service.VentureService.GetRoundsByPage(ctx, input.ID, input.PageSize, input.Page)
 
 	if err != nil {
 		switch {
@@ -124,22 +124,22 @@ func (h *httpHandler) getOffsetPaginatedFixedTotalRounds(ctx context.Context, in
 		}
 	}
 
-	resp := &shared.GetOffsetPaginatedFixedTotalRoundsOutput{}
+	resp := &shared.GetOffsetPaginatedRoundsOutput{}
 	resp.Body.Message = "Rounds fetched successfully"
-	resp.Body.FixedTotalRounds = rounds
+	resp.Body.Rounds = rounds
 
 	if len(rounds) > input.PageSize {
 		resp.Body.HasMore = true
-		resp.Body.FixedTotalRounds = resp.Body.FixedTotalRounds[:input.PageSize]
+		resp.Body.Rounds = resp.Body.Rounds[:input.PageSize]
 	}
 
 	return resp, nil
 }
 
-func (h *httpHandler) getCursorPaginatedFixedTotalRounds(ctx context.Context, input *shared.GetCursorPaginatedByParentPathIDInput) (*shared.GetCursorPaginatedFixedTotalRoundsOutput, error) {
+func (h *httpHandler) getRoundsByCursor(ctx context.Context, input *shared.GetCursorPaginatedByParentPathIDInput) (*shared.GetCursorPaginatedRoundsOutput, error) {
 	limit := input.Limit + 1
 
-	rounds, err := h.service.VentureService.GetFixedTotalRoundsByCursor(ctx, input.ID, limit, input.Cursor)
+	rounds, err := h.service.VentureService.GetRoundsByCursor(ctx, input.ID, limit, input.Cursor)
 
 	if err != nil {
 		switch {
@@ -151,180 +151,21 @@ func (h *httpHandler) getCursorPaginatedFixedTotalRounds(ctx context.Context, in
 		}
 	}
 
-	resp := &shared.GetCursorPaginatedFixedTotalRoundsOutput{}
+	resp := &shared.GetCursorPaginatedRoundsOutput{}
 	resp.Body.Message = "Rounds fetched successfully"
-	resp.Body.FixedTotalRounds = rounds
+	resp.Body.Rounds = rounds
 
 	if len(rounds) == limit {
-		resp.Body.NextCursor = &rounds[input.Limit].Round.ID
+		resp.Body.NextCursor = &rounds[input.Limit].ID
 		resp.Body.HasMore = true
-		resp.Body.FixedTotalRounds = resp.Body.FixedTotalRounds[:input.Limit]
-	}
-
-	return resp, nil
-}
-
-func (h *httpHandler) getOffsetPaginatedRegularDynamicRounds(ctx context.Context, input *shared.GetOffsetPaginatedByParentPathIDInput) (*shared.GetOffsetPaginatedRegularDynamicRoundsOutput, error) {
-	rounds, err := h.service.VentureService.GetRegularDynamicRoundsByPage(ctx, input.ID, input.PageSize, input.Page)
-
-	if err != nil {
-		switch {
-		case errors.Is(err, sql.ErrNoRows):
-			return nil, huma.Error404NotFound("rounds not found")
-		default:
-			h.logger.Error("failed to fetch rounds", zap.Error(err))
-			return nil, huma.Error500InternalServerError("An error occurred while fetching the rounds")
-		}
-	}
-
-	resp := &shared.GetOffsetPaginatedRegularDynamicRoundsOutput{}
-	resp.Body.Message = "Rounds fetched successfully"
-	resp.Body.RegularDynamicRounds = rounds
-
-	if len(rounds) > input.PageSize {
-		resp.Body.HasMore = true
-		resp.Body.RegularDynamicRounds = resp.Body.RegularDynamicRounds[:input.PageSize]
-	}
-
-	return resp, nil
-}
-
-func (h *httpHandler) getCursorPaginatedRegularDynamicRounds(ctx context.Context, input *shared.GetCursorPaginatedByParentPathIDInput) (*shared.GetCursorPaginatedRegularDynamicRoundsOutput, error) {
-	limit := input.Limit + 1
-
-	rounds, err := h.service.VentureService.GetRegularDynamicRoundsByCursor(ctx, input.ID, limit, input.Cursor)
-
-	if err != nil {
-		switch {
-		case errors.Is(err, sql.ErrNoRows):
-			return nil, huma.Error404NotFound("rounds not found")
-		default:
-			h.logger.Error("failed to fetch rounds", zap.Error(err))
-			return nil, huma.Error500InternalServerError("An error occurred while fetching the rounds")
-		}
-	}
-
-	resp := &shared.GetCursorPaginatedRegularDynamicRoundsOutput{}
-	resp.Body.Message = "Rounds fetched successfully"
-	resp.Body.RegularDynamicRounds = rounds
-
-	if len(rounds) == limit {
-		resp.Body.NextCursor = &rounds[input.Limit].Round.ID
-		resp.Body.HasMore = true
-		resp.Body.RegularDynamicRounds = resp.Body.RegularDynamicRounds[:input.Limit]
-	}
-
-	return resp, nil
-}
-
-func (h *httpHandler) getOffsetPaginatedPartialTotalRounds(ctx context.Context, input *shared.GetOffsetPaginatedByParentPathIDInput) (*shared.GetOffsetPaginatedPartialTotalRoundsOutput, error) {
-	rounds, err := h.service.VentureService.GetPartialTotalRoundsByPage(ctx, input.ID, input.PageSize, input.Page)
-
-	if err != nil {
-		switch {
-		case errors.Is(err, sql.ErrNoRows):
-			return nil, huma.Error404NotFound("rounds not found")
-		default:
-			h.logger.Error("failed to fetch rounds", zap.Error(err))
-			return nil, huma.Error500InternalServerError("An error occurred while fetching the rounds")
-		}
-	}
-
-	resp := &shared.GetOffsetPaginatedPartialTotalRoundsOutput{}
-	resp.Body.Message = "Rounds fetched successfully"
-	resp.Body.PartialTotalRounds = rounds
-
-	if len(rounds) > input.PageSize {
-		resp.Body.HasMore = true
-		resp.Body.PartialTotalRounds = resp.Body.PartialTotalRounds[:input.PageSize]
-	}
-
-	return resp, nil
-}
-
-func (h *httpHandler) getCursorPaginatedPartialTotalRounds(ctx context.Context, input *shared.GetCursorPaginatedByParentPathIDInput) (*shared.GetCursorPaginatedPartialTotalRoundsOutput, error) {
-	limit := input.Limit + 1
-
-	rounds, err := h.service.VentureService.GetPartialTotalRoundsByCursor(ctx, input.ID, limit, input.Cursor)
-
-	if err != nil {
-		switch {
-		case errors.Is(err, sql.ErrNoRows):
-			return nil, huma.Error404NotFound("rounds not found")
-		default:
-			h.logger.Error("failed to fetch rounds", zap.Error(err))
-			return nil, huma.Error500InternalServerError("An error occurred while fetching the rounds")
-		}
-	}
-
-	resp := &shared.GetCursorPaginatedPartialTotalRoundsOutput{}
-	resp.Body.Message = "Rounds fetched successfully"
-	resp.Body.PartialTotalRounds = rounds
-
-	if len(rounds) == limit {
-		resp.Body.NextCursor = &rounds[input.Limit].Round.ID
-		resp.Body.HasMore = true
-		resp.Body.PartialTotalRounds = resp.Body.PartialTotalRounds[:input.Limit]
-	}
-
-	return resp, nil
-}
-
-func (h *httpHandler) getOffsetPaginatedDutchDynamicRounds(ctx context.Context, input *shared.GetOffsetPaginatedByParentPathIDInput) (*shared.GetOffsetPaginatedDutchDynamicRoundsOutput, error) {
-	rounds, err := h.service.VentureService.GetDutchDynamicRoundsByPage(ctx, input.ID, input.PageSize, input.Page)
-
-	if err != nil {
-		switch {
-		case errors.Is(err, sql.ErrNoRows):
-			return nil, huma.Error404NotFound("rounds not found")
-		default:
-			h.logger.Error("failed to fetch rounds", zap.Error(err))
-			return nil, huma.Error500InternalServerError("An error occurred while fetching the rounds")
-		}
-	}
-
-	resp := &shared.GetOffsetPaginatedDutchDynamicRoundsOutput{}
-	resp.Body.Message = "Rounds fetched successfully"
-	resp.Body.DutchDynamicRounds = rounds
-
-	if len(rounds) > input.PageSize {
-		resp.Body.HasMore = true
-		resp.Body.DutchDynamicRounds = resp.Body.DutchDynamicRounds[:input.PageSize]
-	}
-
-	return resp, nil
-}
-
-func (h *httpHandler) getCursorPaginatedDutchDynamicRounds(ctx context.Context, input *shared.GetCursorPaginatedByParentPathIDInput) (*shared.GetCursorPaginatedDutchDynamicRoundsOutput, error) {
-	limit := input.Limit + 1
-
-	rounds, err := h.service.VentureService.GetDutchDynamicRoundsByCursor(ctx, input.ID, limit, input.Cursor)
-
-	if err != nil {
-		switch {
-		case errors.Is(err, sql.ErrNoRows):
-			return nil, huma.Error404NotFound("rounds not found")
-		default:
-			h.logger.Error("failed to fetch rounds", zap.Error(err))
-			return nil, huma.Error500InternalServerError("An error occurred while fetching the rounds")
-		}
-	}
-
-	resp := &shared.GetCursorPaginatedDutchDynamicRoundsOutput{}
-	resp.Body.Message = "Rounds fetched successfully"
-	resp.Body.DutchDynamicRounds = rounds
-
-	if len(rounds) == limit {
-		resp.Body.NextCursor = &rounds[input.Limit].Round.ID
-		resp.Body.HasMore = true
-		resp.Body.DutchDynamicRounds = resp.Body.DutchDynamicRounds[:input.Limit]
+		resp.Body.Rounds = resp.Body.Rounds[:input.Limit]
 	}
 
 	return resp, nil
 }
 
 func (h *httpHandler) getOffsetPaginatedRoundInvestments(ctx context.Context, input *shared.GetOffsetPaginatedByParentPathIDInput) (*shared.GetOffsetPaginatedRoundInvestmentsOutput, error) {
-	rounds, err := h.service.VentureService.GetVentureRoundInvestmentsByPage(ctx, input.ID, input.PageSize, input.Page)
+	rounds, err := h.service.VentureService.GetInvestmentsByPage(ctx, input.ID, input.PageSize, input.Page)
 
 	if err != nil {
 		switch {
@@ -351,7 +192,7 @@ func (h *httpHandler) getOffsetPaginatedRoundInvestments(ctx context.Context, in
 func (h *httpHandler) getCursorPaginatedRoundInvestments(ctx context.Context, input *shared.GetCursorPaginatedByParentPathIDInput) (*shared.GetCursorPaginatedRoundInvestmentsOutput, error) {
 	limit := input.Limit + 1
 
-	rounds, err := h.service.VentureService.GetVentureRoundInvestmentsByCursor(ctx, input.ID, limit, input.Cursor)
+	rounds, err := h.service.VentureService.GetInvestmentsByCursor(ctx, input.ID, limit, input.Cursor)
 
 	if err != nil {
 		switch {
@@ -449,58 +290,6 @@ func (h *httpHandler) delete(ctx context.Context, input *shared.PathIDParam) (*D
 
 	resp := &DeleteVentureOutput{}
 	resp.Body.Message = "Venture deleted successfully"
-
-	return resp, nil
-}
-func (h *httpHandler) getRoundsByCursor(ctx context.Context, input *shared.GetCursorPaginatedByParentPathIDInput) (*shared.GetCursorPaginatedRoundsWithSubtypesOutput, error) {
-	limit := input.Limit + 1
-
-	rounds, err := h.service.VentureService.GetRoundsByCursor(ctx, input.ID, limit, input.Cursor)
-
-	if err != nil {
-		switch {
-		case errors.Is(err, sql.ErrNoRows):
-			return nil, huma.Error404NotFound("rounds not found")
-		default:
-			h.logger.Error("failed to fetch investments", zap.Error(err))
-			return nil, huma.Error500InternalServerError("An error occurred while fetching the investments")
-		}
-	}
-
-	resp := &shared.GetCursorPaginatedRoundsWithSubtypesOutput{}
-	resp.Body.Message = "Rounds fetched successfully"
-	resp.Body.RoundWithSubtypes = rounds
-
-	if len(rounds) == limit {
-		resp.Body.NextCursor = &rounds[len(rounds)-1].ID
-		resp.Body.HasMore = true
-		resp.Body.RoundWithSubtypes = resp.Body.RoundWithSubtypes[:len(resp.Body.RoundWithSubtypes)-1]
-	}
-
-	return resp, nil
-}
-
-func (h *httpHandler) getRoundsByPage(ctx context.Context, input *shared.GetOffsetPaginatedByParentPathIDInput) (*shared.GetOffsetPaginatedRoundsWithSubtypesOutput, error) {
-	rounds, err := h.service.VentureService.GetRoundsByPage(ctx, input.ID, input.PageSize, input.Page)
-
-	if err != nil {
-		switch {
-		case errors.Is(err, sql.ErrNoRows):
-			return nil, huma.Error404NotFound("investments not found")
-		default:
-			h.logger.Error("failed to fetch investments", zap.Error(err))
-			return nil, huma.Error500InternalServerError("An error occurred while fetching the investments")
-		}
-	}
-
-	resp := &shared.GetOffsetPaginatedRoundsWithSubtypesOutput{}
-	resp.Body.Message = "Rounds fetched successfully"
-	resp.Body.RoundWithSubtypes = rounds
-
-	if len(rounds) > input.PageSize {
-		resp.Body.HasMore = true
-		resp.Body.RoundWithSubtypes = resp.Body.RoundWithSubtypes[:len(resp.Body.RoundWithSubtypes)-1]
-	}
 
 	return resp, nil
 }

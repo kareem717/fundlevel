@@ -16,71 +16,40 @@ import (
 type VentureRepository interface {
 	Create(ctx context.Context, params venture.CreateVentureParams) (venture.Venture, error)
 	Delete(ctx context.Context, id int) error
-	GetManyByCursor(ctx context.Context, paginationParams shared.CursorPagination) ([]venture.Venture, error)
-	GetManyByPage(ctx context.Context, paginationParams shared.OffsetPagination) ([]venture.Venture, error)
+	GetByCursor(ctx context.Context, paginationParams shared.CursorPagination) ([]venture.Venture, error)
+	GetByPage(ctx context.Context, paginationParams shared.OffsetPagination) ([]venture.Venture, error)
 	Update(ctx context.Context, id int, params venture.UpdateVentureParams) (venture.Venture, error)
 	GetById(ctx context.Context, id int) (venture.Venture, error)
 
-	GetRoundsByCursor(ctx context.Context, ventureId int, paginationParams shared.CursorPagination) ([]round.RoundWithSubtypes, error)
-	GetRoundsByPage(ctx context.Context, ventureId int, paginationParams shared.OffsetPagination) ([]round.RoundWithSubtypes, error)
+	GetRoundsByCursor(ctx context.Context, ventureId int, paginationParams shared.CursorPagination) ([]round.Round, error)
+	GetRoundsByPage(ctx context.Context, ventureId int, paginationParams shared.OffsetPagination) ([]round.Round, error)
 
-	GetFixedTotalRoundsByCursor(ctx context.Context, ventureId int, paginationParams shared.CursorPagination) ([]round.FixedTotalRound, error)
-	GetFixedTotalRoundsByPage(ctx context.Context, ventureId int, paginationParams shared.OffsetPagination) ([]round.FixedTotalRound, error)
-
-	GetRegularDynamicRoundsByCursor(ctx context.Context, ventureId int, paginationParams shared.CursorPagination) ([]round.RegularDynamicRound, error)
-	GetRegularDynamicRoundsByPage(ctx context.Context, ventureId int, paginationParams shared.OffsetPagination) ([]round.RegularDynamicRound, error)
-
-	GetPartialTotalRoundsByCursor(ctx context.Context, ventureId int, paginationParams shared.CursorPagination) ([]round.PartialTotalRound, error)
-	GetPartialTotalRoundsByPage(ctx context.Context, ventureId int, paginationParams shared.OffsetPagination) ([]round.PartialTotalRound, error)
-
-	GetDutchDynamicRoundsByCursor(ctx context.Context, ventureId int, paginationParams shared.CursorPagination) ([]round.DutchDynamicRound, error)
-	GetDutchDynamicRoundsByPage(ctx context.Context, ventureId int, paginationParams shared.OffsetPagination) ([]round.DutchDynamicRound, error)
-
-	GetVentureRoundInvestmentsByCursor(ctx context.Context, ventureId int, paginationParams shared.CursorPagination) ([]investment.RoundInvestment, error)
-	GetVentureRoundInvestmentsByPage(ctx context.Context, ventureId int, paginationParams shared.OffsetPagination) ([]investment.RoundInvestment, error)
+	// GetInvestmentsByCursor gets all of the received investments on the rounds related to the venture using cursor pagination
+	GetInvestmentsByCursor(ctx context.Context, ventureId int, paginationParams shared.CursorPagination) ([]investment.RoundInvestment, error)
+	// GetInvestmentsByPage gets all of the received investments on the rounds related to the venture using offset pagination
+	GetInvestmentsByPage(ctx context.Context, ventureId int, paginationParams shared.OffsetPagination) ([]investment.RoundInvestment, error)
 }
 
 type RoundRepository interface {
+	Create(ctx context.Context, params round.CreateRoundParams) (round.Round, error)
 	Delete(ctx context.Context, id int) error
-	GetById(ctx context.Context, id int) (round.RoundWithSubtypes, error)
-	GetByCursor(ctx context.Context, paginationParams shared.CursorPagination) ([]round.RoundWithSubtypes, error)
-	GetByPage(ctx context.Context, paginationParams shared.OffsetPagination) ([]round.RoundWithSubtypes, error)
+	GetById(ctx context.Context, id int) (round.Round, error)
+	GetByCursor(ctx context.Context, paginationParams shared.CursorPagination) ([]round.Round, error)
+	GetByPage(ctx context.Context, paginationParams shared.OffsetPagination) ([]round.Round, error)
 
-	DeleteFixedTotalRound(ctx context.Context, id int) error
-	GetFixedTotalRoundById(ctx context.Context, id int) (round.FixedTotalRound, error)
-	GetFixedTotalRoundsByCursor(ctx context.Context, paginationParams shared.CursorPagination) ([]round.FixedTotalRound, error)
-	GetFixedTotalRoundsByPage(ctx context.Context, paginationParams shared.OffsetPagination) ([]round.FixedTotalRound, error)
-	CreateFixedTotalRound(ctx context.Context, params round.CreateFixedTotalRoundParams) (round.FixedTotalRound, error)
-
-	DeleteRegularDynamicRound(ctx context.Context, id int) error
-	GetRegularDynamicRoundById(ctx context.Context, id int) (round.RegularDynamicRound, error)
-	GetRegularDynamicRoundsByCursor(ctx context.Context, paginationParams shared.CursorPagination) ([]round.RegularDynamicRound, error)
-	GetRegularDynamicRoundsByPage(ctx context.Context, paginationParams shared.OffsetPagination) ([]round.RegularDynamicRound, error)
-	CreateRegularDynamicRound(ctx context.Context, params round.CreateRegularDynamicRoundParams) (round.RegularDynamicRound, error)
-
-	DeletePartialTotalRound(ctx context.Context, id int) error
-	GetPartialTotalRoundById(ctx context.Context, id int) (round.PartialTotalRound, error)
-	GetPartialTotalRoundsByCursor(ctx context.Context, paginationParams shared.CursorPagination) ([]round.PartialTotalRound, error)
-	GetPartialTotalRoundsByPage(ctx context.Context, paginationParams shared.OffsetPagination) ([]round.PartialTotalRound, error)
-	CreatePartialTotalRound(ctx context.Context, params round.CreatePartialTotalRoundParams) (round.PartialTotalRound, error)
-
-	DeleteDutchDynamicRound(ctx context.Context, id int) error
-	GetDutchDynamicRoundById(ctx context.Context, id int) (round.DutchDynamicRound, error)
-	GetDutchDynamicRoundsByCursor(ctx context.Context, paginationParams shared.CursorPagination) ([]round.DutchDynamicRound, error)
-	GetDutchDynamicRoundsByPage(ctx context.Context, paginationParams shared.OffsetPagination) ([]round.DutchDynamicRound, error)
-	CreateDutchDynamicRound(ctx context.Context, params round.CreateDutchDynamicRoundParams) (round.DutchDynamicRound, error)
-
-	GetRoundInvestmentsByCursor(ctx context.Context, roundId int, paginationParams shared.CursorPagination) ([]investment.RoundInvestment, error)
-	GetRoundInvestmentsByPage(ctx context.Context, roundId int, paginationParams shared.OffsetPagination) ([]investment.RoundInvestment, error)
+	// GetInvestmentsByCursor gets all of the investments received on the round using cursor pagination
+	GetInvestmentsByCursor(ctx context.Context, roundId int, paginationParams shared.CursorPagination) ([]investment.RoundInvestment, error)
+	// GetInvestmentsByPage gets all of the investments received on the round using offset pagination
+	GetInvestmentsByPage(ctx context.Context, roundId int, paginationParams shared.OffsetPagination) ([]investment.RoundInvestment, error)
 }
 
 type InvestmentRepository interface {
 	Create(ctx context.Context, params investment.CreateInvestmentParams) (investment.RoundInvestment, error)
 	Delete(ctx context.Context, id int) error
+	Update(ctx context.Context, id int, params investment.UpdateInvestmentParams) (investment.RoundInvestment, error)
 	GetById(ctx context.Context, id int) (investment.RoundInvestment, error)
 	GetByCursor(ctx context.Context, paginationParams shared.CursorPagination) ([]investment.RoundInvestment, error)
 	GetByPage(ctx context.Context, paginationParams shared.OffsetPagination) ([]investment.RoundInvestment, error)
-	Update(ctx context.Context, id int, params investment.UpdateInvestmentParams) (investment.RoundInvestment, error)
 	GetByRoundIdAndAccountId(ctx context.Context, roundId int, accountId int) (investment.RoundInvestment, error)
 }
 
@@ -90,12 +59,15 @@ type AccountRepository interface {
 	Update(ctx context.Context, id int, params account.UpdateAccountParams) (account.Account, error)
 	GetById(ctx context.Context, id int) (account.Account, error)
 
-	GetRoundInvestmentsByCursor(ctx context.Context, accountId int, paginationParams shared.CursorPagination) ([]investment.RoundInvestment, error)
-	GetRoundInvestmentsByPage(ctx context.Context, accountId int, paginationParams shared.OffsetPagination) ([]investment.RoundInvestment, error)
+	// GetInvestmentsByCursor gets all of the investments the account has made on rounds using cursor pagination
+	GetInvestmentsByCursor(ctx context.Context, accountId int, paginationParams shared.CursorPagination) ([]investment.RoundInvestment, error)
+	// GetInvestmentsByPage gets all of the investments the account has made on rounds using offset pagination
+	GetInvestmentsByPage(ctx context.Context, accountId int, paginationParams shared.OffsetPagination) ([]investment.RoundInvestment, error)
+	// IsInvestedInRound checks if the account has made an investment on the round
 	IsInvestedInRound(ctx context.Context, accountId int, roundId int) (bool, error)
-	GetRoundInvestmentById(ctx context.Context, accountId int, investmentId int) (investment.RoundInvestment, error)
+	GetInvestmentById(ctx context.Context, accountId int, investmentId int) (investment.RoundInvestment, error)
 
-	GetBusinessesByPage(ctx context.Context, accountId int) ([]business.Business, error)
+	GetBusinesses(ctx context.Context, accountId int) ([]business.Business, error)
 }
 
 type UserRepository interface {
@@ -107,17 +79,15 @@ type BusinessRepository interface {
 	GetById(ctx context.Context, id int) (business.Business, error)
 	Delete(ctx context.Context, id int) error
 
-	CreateMember(ctx context.Context, params business.CreateBusinessMemberParams) (business.BusinessMember, error)
-	DeleteMember(ctx context.Context, businessId int, accountId int) error
-	UpdateMember(ctx context.Context, businessId int, accountId int, params business.UpdateBusinessMemberParams) (business.BusinessMember, error)
-	GetMembersByPage(ctx context.Context, businessId int, paginationParams shared.OffsetPagination) ([]business.BusinessMember, error)
-
 	GetVenturesByCursor(ctx context.Context, businessId int, paginationParams shared.CursorPagination) ([]venture.Venture, error)
 	GetVenturesByPage(ctx context.Context, businessId int, paginationParams shared.OffsetPagination) ([]venture.Venture, error)
-	GetVentures(ctx context.Context, businessId int) ([]venture.VentureSimple, error)
 
-	GetRecievedRoundInvestmentsByCursor(ctx context.Context, businessId int, paginationParams shared.CursorPagination) ([]investment.RoundInvestment, error)
-	GetRoundsByFilterAndCursor(ctx context.Context, businessId int, filter round.RoundFilter, paginationParams shared.CursorPagination) ([]round.RoundWithSubtypes, error)
+	GetRoundsByPage(ctx context.Context, businessId int, paginationParams shared.OffsetPagination) ([]round.Round, error)
+	GetRoundsByCursor(ctx context.Context, businessId int, paginationParams shared.CursorPagination) ([]round.Round, error)
+
+	// GetInvestmentsByCursor gets all of the investments received on the rounds related to the business using cursor pagination
+	GetInvestmentsByCursor(ctx context.Context, businessId int, paginationParams shared.CursorPagination) ([]investment.RoundInvestment, error)
+	GetInvestmentsByPage(ctx context.Context, businessId int, paginationParams shared.OffsetPagination) ([]investment.RoundInvestment, error)
 }
 
 type RepositoryProvider interface {

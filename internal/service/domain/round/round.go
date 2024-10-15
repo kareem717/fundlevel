@@ -19,11 +19,18 @@ func NewRoundService(repositories storage.Repository) *RoundService {
 	}
 }
 
-func (s *RoundService) GetById(ctx context.Context, id int) (round.RoundWithSubtypes, error) {
+func (s *RoundService) Create(ctx context.Context, params round.CreateRoundParams) (round.Round, error) {
+	// Calculate the buy-in value for the round
+	params.BuyIn = float64(params.PercentageValue) / float64(params.InvestorCount)
+
+	return s.repositories.Round().Create(ctx, params)
+}
+
+func (s *RoundService) GetById(ctx context.Context, id int) (round.Round, error) {
 	return s.repositories.Round().GetById(ctx, id)
 }
 
-func (s *RoundService) GetByPage(ctx context.Context, pageSize int, page int) ([]round.RoundWithSubtypes, error) {
+func (s *RoundService) GetByPage(ctx context.Context, pageSize int, page int) ([]round.Round, error) {
 	paginationParams := shared.OffsetPagination{
 		PageSize: pageSize,
 		Page:     page,
@@ -32,11 +39,15 @@ func (s *RoundService) GetByPage(ctx context.Context, pageSize int, page int) ([
 	return s.repositories.Round().GetByPage(ctx, paginationParams)
 }
 
-func (s *RoundService) GetByCursor(ctx context.Context, limit int, cursor int) ([]round.RoundWithSubtypes, error) {
+func (s *RoundService) GetByCursor(ctx context.Context, limit int, cursor int) ([]round.Round, error) {
 	paginationParams := shared.CursorPagination{
 		Limit:  limit,
 		Cursor: cursor,
 	}
 
 	return s.repositories.Round().GetByCursor(ctx, paginationParams)
+}
+
+func (s *RoundService) Delete(ctx context.Context, id int) error {
+	return s.repositories.Round().Delete(ctx, id)
 }

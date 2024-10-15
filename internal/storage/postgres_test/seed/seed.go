@@ -110,8 +110,6 @@ type SeedResult struct {
 	VenturePartialTotalRounds PartialTotalRoundMap
 	// VentureDutchDynamicRounds is a map of the ids of the ventures to the ids of the dutch dynamic rounds that were seeded.
 	VentureDutchDynamicRounds DutchDynamicRoundMap
-	// VentureRoundInvestments is a map of the ids of the ventures to the ids of the round investments that were seeded.
-	RoundInvestments RoundInvestmentMap
 }
 
 // SeedDB seeds the database utilizing the configuration provided.
@@ -189,13 +187,6 @@ func SeedDB(db *sql.DB, config SeedConfig) (*SeedResult, error) {
 			roundIds = append(roundIds, round.RoundID)
 		}
 	}
-
-	roundInvestments, err := SeedRoundInvestments(db, roundIds, accountIds, config)
-	if err != nil {
-		return nil, err
-	}
-
-	result.RoundInvestments = roundInvestments
 
 	return &result, nil
 }

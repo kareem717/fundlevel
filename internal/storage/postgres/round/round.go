@@ -22,32 +22,24 @@ func NewRoundRepository(db bun.IDB, ctx context.Context) *RoundRepository {
 	}
 }
 
-func (r *RoundRepository) GetById(ctx context.Context, id int) (round.RoundWithSubtypes, error) {
-	resp := round.RoundWithSubtypes{}
+func (r *RoundRepository) GetById(ctx context.Context, id int) (round.Round, error) {
+	resp := round.Round{}
 
 	err := r.db.
 		NewSelect().
 		Model(&resp).
-		Relation("FixedTotalRound").
-		Relation("RegularDynamicRound").
-		Relation("PartialTotalRound").
-		Relation("DutchDynamicRound").
 		Where("id = ?", id).
 		Scan(ctx)
 
 	return resp, err
 }
 
-func (r *RoundRepository) GetByCursor(ctx context.Context, paginationParams shared.CursorPagination) ([]round.RoundWithSubtypes, error) {
-	resp := []round.RoundWithSubtypes{}
+func (r *RoundRepository) GetByCursor(ctx context.Context, paginationParams shared.CursorPagination) ([]round.Round, error) {
+	resp := []round.Round{}
 
 	err := r.db.
 		NewSelect().
 		Model(&resp).
-		Relation("FixedTotalRound").
-		Relation("RegularDynamicRound").
-		Relation("PartialTotalRound").
-		Relation("DutchDynamicRound").
 		Where("id >= ?", paginationParams.Cursor).
 		Order("id").
 		Limit(paginationParams.Limit).
@@ -56,17 +48,13 @@ func (r *RoundRepository) GetByCursor(ctx context.Context, paginationParams shar
 	return resp, err
 }
 
-func (r *RoundRepository) GetByPage(ctx context.Context, paginationParams shared.OffsetPagination) ([]round.RoundWithSubtypes, error) {
-	resp := []round.RoundWithSubtypes{}
+func (r *RoundRepository) GetByPage(ctx context.Context, paginationParams shared.OffsetPagination) ([]round.Round, error) {
+	resp := []round.Round{}
 	offset := (paginationParams.Page - 1) * paginationParams.PageSize
 
 	err := r.db.
 		NewSelect().
 		Model(&resp).
-		Relation("FixedTotalRound").
-		Relation("RegularDynamicRound").
-		Relation("PartialTotalRound").
-		Relation("DutchDynamicRound").
 		Order("id").
 		Offset(offset).
 		Limit(paginationParams.PageSize + 1).
@@ -88,4 +76,17 @@ func (r *RoundRepository) Delete(ctx context.Context, id int) error {
 	}
 
 	return err
+}
+
+func (r *RoundRepository) Create(ctx context.Context, params round.CreateRoundParams) (round.Round, error) {
+	resp := round.Round{}
+
+	err := r.db.
+		NewInsert().
+		Model(&params).
+		ModelTableExpr("rounds").
+		Returning("*").
+		Scan(ctx, &resp)
+
+	return resp, err
 }

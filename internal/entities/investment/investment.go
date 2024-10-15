@@ -35,7 +35,6 @@ type RoundInvestment struct {
 type CreateInvestmentParams struct {
 	RoundID    int `json:"roundId"`
 	InvestorID int `json:"investorId"`
-	Amount     int `json:"amount"`
 }
 
 type UpdateInvestmentParams struct {

@@ -163,10 +163,10 @@ func (h *httpHandler) delete(ctx context.Context, input *shared.PathIDParam) (*D
 	return resp, nil
 }
 
-func (h *httpHandler) getCursorPaginatedRoundInvestments(ctx context.Context, input *shared.GetCursorPaginatedByParentPathIDInput) (*shared.GetCursorPaginatedRoundInvestmentsOutput, error) {
+func (h *httpHandler) getInvestmentsByCursor(ctx context.Context, input *shared.GetCursorPaginatedByParentPathIDInput) (*shared.GetCursorPaginatedRoundInvestmentsOutput, error) {
 	limit := input.Limit + 1
 
-	investments, err := h.service.AccountService.GetRoundInvestmentsByCursor(ctx, input.ID, limit, input.Cursor)
+	investments, err := h.service.AccountService.GetInvestmentsByCursor(ctx, input.ID, limit, input.Cursor)
 
 	if err != nil {
 		switch {
@@ -191,8 +191,8 @@ func (h *httpHandler) getCursorPaginatedRoundInvestments(ctx context.Context, in
 	return resp, nil
 }
 
-func (h *httpHandler) getOffsetPaginatedRoundInvestments(ctx context.Context, input *shared.GetOffsetPaginatedByParentPathIDInput) (*shared.GetOffsetPaginatedRoundInvestmentsOutput, error) {
-	investments, err := h.service.AccountService.GetRoundInvestmentsByPage(ctx, input.ID, input.PageSize, input.Page)
+func (h *httpHandler) getInvestmentsByPage(ctx context.Context, input *shared.GetOffsetPaginatedByParentPathIDInput) (*shared.GetOffsetPaginatedRoundInvestmentsOutput, error) {
+	investments, err := h.service.AccountService.GetInvestmentsByPage(ctx, input.ID, input.PageSize, input.Page)
 
 	if err != nil {
 		switch {
@@ -216,8 +216,8 @@ func (h *httpHandler) getOffsetPaginatedRoundInvestments(ctx context.Context, in
 	return resp, nil
 }
 
-func (h *httpHandler) withdrawRoundInvestment(ctx context.Context, input *shared.ParentInvestmentIDParam) (*shared.MessageResponse, error) {
-	err := h.service.AccountService.WithdrawRoundInvestment(ctx, input.ID, input.InvestmentID)
+func (h *httpHandler) withdrawInvestment(ctx context.Context, input *shared.ParentInvestmentIDParam) (*shared.MessageResponse, error) {
+	err := h.service.AccountService.WithdrawInvestment(ctx, input.ID, input.InvestmentID)
 	if err != nil {
 		h.logger.Error("failed to withdraw investment", zap.Error(err))
 		return nil, huma.Error500InternalServerError("An error occurred while withdrawing the investment")
@@ -229,8 +229,8 @@ func (h *httpHandler) withdrawRoundInvestment(ctx context.Context, input *shared
 	return resp, nil
 }
 
-func (h *httpHandler) deleteRoundInvestment(ctx context.Context, input *shared.ParentInvestmentIDParam) (*shared.MessageResponse, error) {
-	err := h.service.AccountService.DeleteRoundInvestment(ctx, input.ID, input.InvestmentID)
+func (h *httpHandler) deleteInvestment(ctx context.Context, input *shared.ParentInvestmentIDParam) (*shared.MessageResponse, error) {
+	err := h.service.AccountService.DeleteInvestment(ctx, input.ID, input.InvestmentID)
 	if err != nil {
 		h.logger.Error("failed to delete investment", zap.Error(err))
 		return nil, huma.Error500InternalServerError("An error occurred while deleting the investment")
@@ -242,25 +242,18 @@ func (h *httpHandler) deleteRoundInvestment(ctx context.Context, input *shared.P
 	return resp, nil
 }
 
-type CreateRoundInvestmentInput struct {
+type CreateInvestmentInput struct {
 	Body investment.CreateInvestmentParams `json:"investment"`
 }
 
-type SingleRoundInvestmentResponse struct {
-	Body struct {
-		shared.MessageResponse
-		Investment *investment.RoundInvestment `json:"investment"`
-	}
-}
-
-func (h *httpHandler) createRoundInvestment(ctx context.Context, input *CreateRoundInvestmentInput) (*SingleRoundInvestmentResponse, error) {
-	investment, err := h.service.AccountService.CreateRoundInvestment(ctx, input.Body)
+func (h *httpHandler) createInvestment(ctx context.Context, input *CreateInvestmentInput) (*shared.SingleInvestmentResponse, error) {
+	investment, err := h.service.AccountService.CreateInvestment(ctx, input.Body)
 	if err != nil {
 		h.logger.Error("failed to create investment", zap.Error(err))
 		return nil, huma.Error500InternalServerError("An error occurred while creating the investment")
 	}
 
-	resp := &SingleRoundInvestmentResponse{}
+	resp := &shared.SingleInvestmentResponse{}
 	resp.Body.Message = "Investment created successfully"
 	resp.Body.Investment = &investment
 
@@ -297,7 +290,7 @@ func (h *httpHandler) getBusinesses(ctx context.Context, input *shared.PathIDPar
 type GetStripeCheckoutLinkInput struct {
 	shared.PathIDParam
 	InvestmentID int    `path:"investmentId"`
-	RedirectURL  string `query:"redirectUrl" required:"true"`
+	RedirectURL  string `query:"redirectUrl" required:"true" format:"url"`
 }
 
 type LinkOutput struct {
@@ -307,14 +300,20 @@ type LinkOutput struct {
 	}
 }
 
-func (h *httpHandler) investmentCheckoutLink(ctx context.Context, input *GetStripeCheckoutLinkInput) (*LinkOutput, error) {
+func (h *httpHandler) getInvestmentCheckoutLink(ctx context.Context, input *GetStripeCheckoutLinkInput) (*LinkOutput, error) {
 	investment, err := h.service.AccountService.GetInvestmentById(ctx, input.ID, input.InvestmentID)
 	if err != nil {
 		h.logger.Error("failed to get investment", zap.Error(err))
 		return nil, huma.Error500InternalServerError("Failed to get investment")
 	}
 
-	checkoutPrice := investment.Amount * 100
+	round, err := h.service.RoundService.GetById(ctx, investment.RoundID)
+	if err != nil {
+		h.logger.Error("failed to get round", zap.Error(err))
+		return nil, huma.Error500InternalServerError("Failed to get round")
+	}
+
+	checkoutPrice := int(round.BuyIn * 100)
 	sess, err := h.service.BillingService.CreateInvestmentCheckoutSession(ctx, checkoutPrice, input.RedirectURL, input.RedirectURL, investment.ID)
 	if err != nil {
 		h.logger.Error("failed to create stripe checkout session", zap.Error(err))

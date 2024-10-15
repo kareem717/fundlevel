@@ -7,5 +7,5 @@ import (
 )
 
 func (s *AccountService) GetBusinesses(ctx context.Context, accountId int) ([]business.Business, error) {
-	return s.repositories.Account().GetBusinessesByPage(ctx, accountId)
+	return s.repositories.Account().GetBusinesses(ctx, accountId)
 }

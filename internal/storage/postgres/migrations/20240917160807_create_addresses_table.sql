@@ -5,7 +5,7 @@ CREATE TABLE
         id SERIAL PRIMARY KEY,
         x_coordinate NUMERIC NOT NULL,
         y_coordinate NUMERIC NOT NULL,
-        line_1 VARCHAR(70),
+        line_1 VARCHAR(70) ,
         line_2 VARCHAR(70),
         city VARCHAR(50),
         region VARCHAR(50),
@@ -14,9 +14,9 @@ CREATE TABLE
         created_at timestamptz NOT NULL DEFAULT CLOCK_TIMESTAMP(),
         updated_at timestamptz,
         deleted_at timestamptz,
-        raw_json jsonb NULL,
-        district TEXT NULL,
-        region_code TEXT NULL,
+        raw_json jsonb,
+        district TEXT,
+        region_code TEXT,
         full_address TEXT NOT NULL
     );
 

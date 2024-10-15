@@ -47,49 +47,13 @@ func RegisterHumaRoutes(
 	}, handler.delete)
 
 	huma.Register(humaApi, huma.Operation{
-		OperationID: "create-business-member",
-		Method:      http.MethodPost,
-		Path:        "/business/{id}/members",
-		Summary:     "Create a business member",
-		Description: "Create a business member.",
-		Tags:        []string{"Businesses", "Members"},
-	}, handler.createMember)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "delete-business-member",
-		Method:      http.MethodDelete,
-		Path:        "/business/{businessId}/members/{id}",
-		Summary:     "Delete a business member",
-		Description: "Delete a business member.",
-		Tags:        []string{"Businesses", "Members"},
-	}, handler.deleteMember)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "update-business-member",
-		Method:      http.MethodPut,
-		Path:        "/business/{businessId}/members/{id}",
-		Summary:     "Update a business member",
-		Description: "Update a business member.",
-		Tags:        []string{"Businesses", "Members"},
-	}, handler.updateMember)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-business-members",
-		Method:      http.MethodGet,
-		Path:        "/business/{id}/members",
-		Summary:     "Get business members",
-		Description: "Get business members.",
-		Tags:        []string{"Businesses", "Members"},
-	}, handler.getMembersByPage)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-business-ventures",
+		OperationID: "get-business-ventures-by-cursor",
 		Method:      http.MethodGet,
 		Path:        "/business/{id}/ventures",
 		Summary:     "Get business ventures",
 		Description: "Get all of the ventures owned by a given business.",
 		Tags:        []string{"Businesses", "Ventures"},
-	}, handler.getCursorPaginatedVentures)
+	}, handler.getVenturesByCursor)
 
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "get-business-ventures-by-page",
@@ -98,23 +62,41 @@ func RegisterHumaRoutes(
 		Summary:     "Get business ventures",
 		Description: "Get all of the ventures owned by a given business.",
 		Tags:        []string{"Businesses", "Ventures"},
-	}, handler.getOffsetPaginatedVentures)
+	}, handler.getVenturesByPage)
 
 	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-business-recieved-round-investments-cursor",
+		OperationID: "get-business-investments-by-cursor",
 		Method:      http.MethodGet,
-		Path:        "/business/{id}/round-investments/recieved/cursor",
+		Path:        "/business/{id}/investments",
 		Summary:     "Get recieved round investments",
 		Description: "Get recieved round investments.",
 		Tags:        []string{"Businesses", "Investments"},
-	}, handler.getCursorPaginatedRecievedRoundInvestments)
+	}, handler.getInvestmentsByCursor)
 
 	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-business-rounds",
+		OperationID: "get-business-investments-by-page",
+		Method:      http.MethodGet,
+		Path:        "/business/{id}/investments/page",
+		Summary:     "Get recieved round investments",
+		Description: "Get recieved round investments.",
+		Tags:        []string{"Businesses", "Investments"},
+	}, handler.getInvestmentsByPage)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-business-rounds-by-cursor",
 		Method:      http.MethodGet,
 		Path:        "/business/{id}/rounds",
 		Summary:     "Get rounds",
 		Description: "Get rounds.",
 		Tags:        []string{"Businesses", "Rounds"},
-	}, handler.getRoundsByFilterAndCursor)
+	}, handler.getRoundsByCursor)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-business-rounds-by-page",
+		Method:      http.MethodGet,
+		Path:        "/business/{id}/rounds/page",
+		Summary:     "Get rounds",
+		Description: "Get rounds.",
+		Tags:        []string{"Businesses", "Rounds"},
+	}, handler.getRoundsByPage)
 }

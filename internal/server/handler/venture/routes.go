@@ -29,126 +29,54 @@ func RegisterHumaRoutes(
 	}, handler.getByID)
 
 	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-all-ventures-offset",
+		OperationID: "get-ventures-by-page",
 		Method:      http.MethodGet,
-		Path:        "/venture/offset",
+		Path:        "/venture/page",
 		Summary:     "Get offset paginated ventures",
 		Description: "Get offset paginated ventures.",
 		Tags:        []string{"Ventures"},
-	}, handler.getOffsetPaginated)
+	}, handler.getByPage)
 
 	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-all-ventures-cursor",
+		OperationID: "get-ventures-by-cursor",
 		Method:      http.MethodGet,
-		Path:        "/venture/cursor",
+		Path:        "/venture",
 		Summary:     "Get cursor paginated ventures",
 		Description: "Get cursor paginated ventures.",
 		Tags:        []string{"Ventures"},
-	}, handler.getCursorPaginated)
+	}, handler.getByCursor)
 
 	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-venture-rounds-cursor",
+		OperationID: "get-venture-rounds-by-cursor",
 		Method:      http.MethodGet,
-		Path:        "/venture/{id}/rounds/cursor",
+		Path:        "/venture/{id}/rounds",
 		Summary:     "Get cursor paginated rounds for a venture",
 		Description: "Get all rounds for a venture.",
 		Tags:        []string{"Ventures", "Rounds"},
-	}, handler.getCursorPaginatedFixedTotalRounds)
+	}, handler.getRoundsByCursor)
 
 	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-venture-rounds-offset",
+		OperationID: "get-venture-rounds-by-page",
 		Method:      http.MethodGet,
-		Path:        "/venture/{id}/rounds/offset",
+		Path:        "/venture/{id}/rounds/page",
 		Summary:     "Get offset paginated rounds for a venture",
 		Description: "Get all rounds for a venture.",
 		Tags:        []string{"Ventures", "Rounds"},
-	}, handler.getCursorPaginatedFixedTotalRounds)
+	}, handler.getRoundsByPage)
 
 	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-venture-fixed-total-rounds-cursor",
+		OperationID: "get-venture-round-investments-by-cursor",
 		Method:      http.MethodGet,
-		Path:        "/venture/{id}/rounds/total/fixed/cursor",
-		Summary:     "Get cursor paginated rounds for a venture",
-		Description: "Get all rounds for a venture.",
-		Tags:        []string{"Ventures", "Fixed Total Rounds"},
-	}, handler.getCursorPaginatedFixedTotalRounds)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-venture-fixed-total-rounds-offset",
-		Method:      http.MethodGet,
-		Path:        "/venture/{id}/rounds/total/fixed/offset",
-		Summary:     "Get offset paginated rounds for a venture",
-		Description: "Get all rounds for a venture.",
-		Tags:        []string{"Ventures", "Fixed Total Rounds"},
-	}, handler.getOffsetPaginatedFixedTotalRounds)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-venture-regular-dynamic-rounds-cursor",
-		Method:      http.MethodGet,
-		Path:        "/venture/{id}/rounds/dynamic/regular/cursor",
-		Summary:     "Get cursor paginated rounds for a venture",
-		Description: "Get all rounds for a venture.",
-		Tags:        []string{"Ventures", "Regular Dynamic Rounds"},
-	}, handler.getCursorPaginatedRegularDynamicRounds)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-venture-regular-dynamic-rounds-offset",
-		Method:      http.MethodGet,
-		Path:        "/venture/{id}/rounds/dynamic/regular/offset",
-		Summary:     "Get offset paginated rounds for a venture",
-		Description: "Get all rounds for a venture.",
-		Tags:        []string{"Ventures", "Regular Dynamic Rounds"},
-	}, handler.getOffsetPaginatedRegularDynamicRounds)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-venture-partial-total-rounds-cursor",
-		Method:      http.MethodGet,
-		Path:        "/venture/{id}/rounds/total/partial/cursor",
-		Summary:     "Get cursor paginated rounds for a venture",
-		Description: "Get all rounds for a venture.",
-		Tags:        []string{"Ventures", "Partial Total Rounds"},
-	}, handler.getCursorPaginatedPartialTotalRounds)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-venture-partial-total-rounds-offset",
-		Method:      http.MethodGet,
-		Path:        "/venture/{id}/rounds/total/partial/offset",
-		Summary:     "Get offset paginated rounds for a venture",
-		Description: "Get all rounds for a venture.",
-		Tags:        []string{"Ventures", "Partial Total Rounds"},
-	}, handler.getOffsetPaginatedPartialTotalRounds)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-venture-dutch-dynamic-rounds-cursor",
-		Method:      http.MethodGet,
-		Path:        "/venture/{id}/rounds/dynamic/dutch/cursor",
-		Summary:     "Get cursor paginated rounds for a venture",
-		Description: "Get all rounds for a venture.",
-		Tags:        []string{"Ventures", "Dutch Dynamic Rounds"},
-	}, handler.getCursorPaginatedDutchDynamicRounds)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-venture-dutch-dynamic-rounds-offset",
-		Method:      http.MethodGet,
-		Path:        "/venture/{id}/rounds/dynamic/dutch/offset",
-		Summary:     "Get offset paginated rounds for a venture",
-		Description: "Get all rounds for a venture.",
-		Tags:        []string{"Ventures", "Dutch Dynamic Rounds"},
-	}, handler.getOffsetPaginatedDutchDynamicRounds)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-venture-round-investments-cursor",
-		Method:      http.MethodGet,
-		Path:        "/venture/{id}/round-investments/cursor",
+		Path:        "/venture/{id}/round-investments",
 		Summary:     "Get cursor paginated round investments for a venture",
 		Description: "Get all round investments for a venture.",
 		Tags:        []string{"Ventures", "Round Investments"},
 	}, handler.getCursorPaginatedRoundInvestments)
 
 	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-venture-round-investments-offset",
+		OperationID: "get-venture-round-investments-by-page",
 		Method:      http.MethodGet,
-		Path:        "/venture/{id}/round-investments/offset",
+		Path:        "/venture/{id}/round-investments/page",
 		Summary:     "Get offset paginated round investments for a venture",
 		Description: "Get all round investments for a venture.",
 		Tags:        []string{"Ventures", "Round Investments"},

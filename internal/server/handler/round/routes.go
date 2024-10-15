@@ -23,18 +23,18 @@ func RegisterHumaRoutes(
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "get-round-by-cursor",
 		Method:      http.MethodGet,
-		Path:        "/round/cursor",
-		Summary:     "Get round by cursor",
-		Description: "Get round by cursor.",
+		Path:        "/round",
+		Summary:     "Get rounds by cursor",
+		Description: "Get rounds by cursor.",
 		Tags:        []string{"Round"},
 	}, handler.getByCursor)
 
 	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-round-by-page",
+		OperationID: "get-rounds-by-page",
 		Method:      http.MethodGet,
 		Path:        "/round/page",
-		Summary:     "Get round by page",
-		Description: "Get round by page.",
+		Summary:     "Get rounds by page",
+		Description: "Get rounds by page.",
 		Tags:        []string{"Round"},
 	}, handler.getByPage)
 
@@ -45,211 +45,50 @@ func RegisterHumaRoutes(
 		Summary:     "Get round by ID",
 		Description: "Get round by ID.",
 		Tags:        []string{"Round"},
-	}, handler.getRoundById)
+	}, handler.getById)
 
 	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-fixed-total-round-by-id",
-		Method:      http.MethodGet,
-		Path:        "/round/total/fixed/{id}",
-		Summary:     "Get fixed total round by ID",
-		Description: "Get fixed total round by the associated round ID.",
-		Tags:        []string{"Fixed Total Rounds"},
-	}, handler.getFixedTotalById)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-all-fixed-total-rounds-cursor",
-		Method:      http.MethodGet,
-		Path:        "/round/total/fixed/cursor",
-		Summary:     "Get cursor paginated fixed total rounds",
-		Description: "Get cursor paginated fixed total rounds.",
-		Tags:        []string{"Fixed Total Rounds"},
-	}, handler.getCursorPaginatedFixedTotalRounds)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-all-fixed-total-rounds-offset",
-		Method:      http.MethodGet,
-		Path:        "/round/total/fixed/offset",
-		Summary:     "Get offset paginated fixed total rounds",
-		Description: "Get offset paginated fixed total rounds.",
-		Tags:        []string{"Fixed Total Rounds"},
-	}, handler.getOffsetPaginatedFixedTotalRounds)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "create-fixed-total-round",
+		OperationID: "create-round",
 		Method:      http.MethodPost,
-		Path:        "/round/total/fixed",
-		Summary:     "Create a fixed total round",
-		Description: "Create a fixed total round.",
-		Tags:        []string{"Fixed Total Rounds"},
-	}, handler.createFixedTotalRound)
+		Path:        "/round",
+		Summary:     "Create a round",
+		Description: "Create a round.",
+		Tags:        []string{"Round"},
+	}, handler.create)
 
 	huma.Register(humaApi, huma.Operation{
-		OperationID: "delete-fixed-total-round",
+		OperationID: "delete-round",
 		Method:      http.MethodDelete,
-		Path:        "/round/total/fixed/{id}",
-		Summary:     "Delete a fixed total round",
-		Description: "Delete a fixed total round.",
-		Tags:        []string{"Fixed Total Rounds"},
-	}, handler.deleteFixedTotalRound)
+		Path:        "/round/{id}",
+		Summary:     "Delete a round",
+		Description: "Delete a round.",
+		Tags:        []string{"Round"},
+	}, handler.delete)
 
 	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-regular-dynamic-round-by-id",
+		OperationID: "get-round-investments-by-cursor",
 		Method:      http.MethodGet,
-		Path:        "/round/dynamic/regular/{id}",
-		Summary:     "Get regular dynamic round by ID",
-		Description: "Get regular dynamic round by the associated round ID.",
-		Tags:        []string{"Regular Dynamic Rounds"},
-	}, handler.getRegularDynamicById)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-all-regular-dynamic-rounds-cursor",
-		Method:      http.MethodGet,
-		Path:        "/round/dynamic/regular/cursor",
-		Summary:     "Get cursor paginated regular dynamic rounds",
-		Description: "Get cursor paginated regular dynamic rounds.",
-		Tags:        []string{"Regular Dynamic Rounds"},
-	}, handler.getCursorPaginatedRegularDynamicRounds)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-all-regular-dynamic-rounds-offset",
-		Method:      http.MethodGet,
-		Path:        "/round/dynamic/regular/offset",
-		Summary:     "Get offset paginated regular dynamic rounds",
-		Description: "Get offset paginated regular dynamic rounds.",
-		Tags:        []string{"Regular Dynamic Rounds"},
-	}, handler.getOffsetPaginatedRegularDynamicRounds)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "create-regular-dynamic-round",
-		Method:      http.MethodPost,
-		Path:        "/round/dynamic/regular",
-		Summary:     "Create a regular dynamic round",
-		Description: "Create a regular dynamic round.",
-		Tags:        []string{"Regular Dynamic Rounds"},
-	}, handler.createRegularDynamicRound)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "delete-regular-dynamic-round",
-		Method:      http.MethodDelete,
-		Path:        "/round/dynamic/regular/{id}",
-		Summary:     "Delete a regular dynamic round",
-		Description: "Delete a regular dynamic round.",
-		Tags:        []string{"Regular Dynamic Rounds"},
-	}, handler.deleteRegularDynamicRound)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-partial-total-round-by-id",
-		Method:      http.MethodGet,
-		Path:        "/round/total/partial/{id}",
-		Summary:     "Get partial total round by ID",
-		Description: "Get partial total round by the associated round ID.",
-		Tags:        []string{"Partial Total Rounds"},
-	}, handler.getPartialTotalById)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-all-partial-total-rounds-cursor",
-		Method:      http.MethodGet,
-		Path:        "/round/total/partial/cursor",
-		Summary:     "Get cursor paginated partial total rounds",
-		Description: "Get cursor paginated partial total rounds.",
-		Tags:        []string{"Partial Total Rounds"},
-	}, handler.getCursorPaginatedPartialTotalRounds)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-all-partial-total-rounds-offset",
-		Method:      http.MethodGet,
-		Path:        "/round/total/partial/offset",
-		Summary:     "Get offset paginated partial total rounds",
-		Description: "Get offset paginated partial total rounds.",
-		Tags:        []string{"Partial Total Rounds"},
-	}, handler.getOffsetPaginatedPartialTotalRounds)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "create-partial-total-round",
-		Method:      http.MethodPost,
-		Path:        "/round/total/partial",
-		Summary:     "Create a partial total round",
-		Description: "Create a partial total round.",
-		Tags:        []string{"Partial Total Rounds"},
-	}, handler.createPartialTotalRound)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "delete-partial-total-round",
-		Method:      http.MethodDelete,
-		Path:        "/round/total/partial/{id}",
-		Summary:     "Delete a partial total round",
-		Description: "Delete a partial total round.",
-		Tags:        []string{"Partial Total Rounds"},
-	}, handler.deletePartialTotalRound)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-dutch-dynamic-round-by-id",
-		Method:      http.MethodGet,
-		Path:        "/round/dynamic/dutch/{id}",
-		Summary:     "Get dutch dynamic round by ID",
-		Description: "Get partial total round by the associated round ID.",
-		Tags:        []string{"Dutch Dynamic Rounds"},
-	}, handler.getDutchDynamicById)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-all-dutch-dynamic-rounds-cursor",
-		Method:      http.MethodGet,
-		Path:        "/round/dynamic/dutch/cursor",
-		Summary:     "Get cursor paginated partial total rounds",
-		Description: "Get cursor paginated partial total rounds.",
-		Tags:        []string{"Dutch Dynamic Rounds"},
-	}, handler.getCursorPaginatedDutchDynamicRounds)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-all-dutch-dynamic-rounds-offset",
-		Method:      http.MethodGet,
-		Path:        "/round/dynamic/dutch/offset",
-		Summary:     "Get offset paginated dutch dynamic rounds",
-		Description: "Get offset paginated dutch dynamic rounds.",
-		Tags:        []string{"Dutch Dynamic Rounds"},
-	}, handler.getOffsetPaginatedDutchDynamicRounds)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "create-dutch-dynamic-round",
-		Method:      http.MethodPost,
-		Path:        "/round/dynamic/dutch",
-		Summary:     "Create a partial total round",
-		Description: "Create a partial total round.",
-		Tags:        []string{"Dutch Dynamic Rounds"},
-	}, handler.createDutchDynamicRound)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "delete-dutch-dynamic-round",
-		Method:      http.MethodDelete,
-		Path:        "/round/dynamic/dutch/{id}",
-		Summary:     "Delete a dutch dynamic round",
-		Description: "Delete a dutch dynamic round.",
-		Tags:        []string{"Dutch Dynamic Rounds"},
-	}, handler.deleteDutchDynamicRound)
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-round-round-investments-cursor",
-		Method:      http.MethodGet,
-		Path:        "/round/{id}/round-investments/cursor",
+		Path:        "/round/{id}/investments",
 		Summary:     "Get round investments",
 		Description: "Get round investments.",
 		Tags:        []string{"Round", "Investments"},
-	}, handler.getCursorPaginatedRoundInvestments)
+	}, handler.getInvestmentsByCursor)
 
 	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-round-round-investments-offset",
+		OperationID: "get-round-investments-by-page",
 		Method:      http.MethodGet,
-		Path:        "/round/{id}/round-investments/offset",
+		Path:        "/round/{id}/investments/page",
 		Summary:     "Get round investments",
 		Description: "Get round investments.",
 		Tags:        []string{"Round", "Investments"},
-	}, handler.getOffsetPaginatedRoundInvestments)
+	}, handler.getInvestmentsByPage)
 
 	huma.Register(humaApi, huma.Operation{
-		OperationID: "accept-round-investment",
+		OperationID: "accept-investment",
 		Method:      http.MethodPost,
-		Path:        "/round/{id}/round-investments/{investmentId}/accept",
-		Summary:     "Accept a round investment",
-		Description: "Accept a round investment.",
+		Path:        "/round/{id}/investments/{investmentId}/accept",
+		Summary:     "Accept an investment",
+		Description: "Accept an investment.",
 		Tags:        []string{"Round", "Investments"},
-	}, handler.acceptRoundInvestment)
+	}, handler.acceptInvestment)
 }

@@ -6,7 +6,6 @@ import (
 	"errors"
 
 	"fundlevel/internal/entities/business"
-	"fundlevel/internal/entities/round"
 	"fundlevel/internal/server/handler/shared"
 	"fundlevel/internal/service"
 
@@ -88,108 +87,10 @@ func (h *httpHandler) delete(ctx context.Context, input *shared.PathIDParam) (*D
 	return resp, nil
 }
 
-type CreateBusinessMemberRequest struct {
-	Body business.CreateBusinessMemberParams `json:"member"`
-}
-
-func (h *httpHandler) createMember(ctx context.Context, input *CreateBusinessMemberRequest) (*shared.SingleBusinessMemberResponse, error) {
-	member, err := h.service.BusinessService.CreateMember(ctx, input.Body)
-	if err != nil {
-		h.logger.Error("failed to create business member", zap.Error(err))
-		return nil, huma.Error500InternalServerError("An error occurred while creating the business member")
-	}
-
-	resp := &shared.SingleBusinessMemberResponse{}
-	resp.Body.Message = "Business member created successfully"
-	resp.Body.BusinessMember = &member
-
-	return resp, nil
-}
-
-type DeleteBusinessMemberOutput struct {
-	Body shared.MessageResponse
-}
-
-type ParentBusinessIDParam struct {
-	shared.PathIDParam
-	BusinessID int `path:"businessId" minimum:"1"`
-}
-
-func (h *httpHandler) deleteMember(ctx context.Context, input *ParentBusinessIDParam) (*DeleteBusinessMemberOutput, error) {
-	err := h.service.BusinessService.DeleteMember(ctx, input.BusinessID, input.ID)
-	if err != nil {
-		h.logger.Error("failed to delete business member", zap.Error(err))
-		return nil, huma.Error500InternalServerError("An error occurred while deleting the business member")
-	}
-
-	resp := &DeleteBusinessMemberOutput{}
-	resp.Body.Message = "Business member deleted successfully"
-
-	return resp, nil
-}
-
-type UpdateBusinessMemberRequest struct {
-	BusinessID int `path:"businessId" minimum:"1"`
-	shared.PathIDParam
-	Body business.UpdateBusinessMemberParams `json:"member"`
-}
-
-func (h *httpHandler) updateMember(ctx context.Context, input *UpdateBusinessMemberRequest) (*shared.SingleBusinessMemberResponse, error) {
-	member, err := h.service.BusinessService.UpdateMember(ctx, input.BusinessID, input.ID, input.Body)
-	if err != nil {
-		h.logger.Error("failed to update business member", zap.Error(err))
-		return nil, huma.Error500InternalServerError("An error occurred while updating the business member")
-	}
-
-	resp := &shared.SingleBusinessMemberResponse{}
-	resp.Body.Message = "Business member updated successfully"
-	resp.Body.BusinessMember = &member
-
-	return resp, nil
-}
-
-type GetOffsetPaginatedBusinessMembersResponse struct {
-	Body struct {
-		shared.MessageResponse
-		BusinessMembers []business.BusinessMember `json:"businessMembers"`
-		shared.OffsetPaginationResponse
-	}
-}
-
-func (h *httpHandler) getMembersByPage(ctx context.Context, input *shared.GetOffsetPaginatedByParentPathIDInput) (*GetOffsetPaginatedBusinessMembersResponse, error) {
-	members, err := h.service.BusinessService.GetMembersByPage(ctx, input.ID, input.PageSize, input.Page)
-	if err != nil {
-		switch {
-		case errors.Is(err, sql.ErrNoRows):
-			return nil, huma.Error404NotFound("Business members not found")
-		default:
-			h.logger.Error("failed to fetch business members", zap.Error(err))
-			return nil, huma.Error500InternalServerError("An error occurred while fetching the business members")
-		}
-	}
-
-	resp := &GetOffsetPaginatedBusinessMembersResponse{}
-	resp.Body.Message = "Business members fetched successfully"
-	resp.Body.BusinessMembers = members
-
-	if len(members) > input.PageSize {
-		resp.Body.HasMore = true
-		resp.Body.BusinessMembers = resp.Body.BusinessMembers[:input.PageSize]
-	}
-
-	return resp, nil
-}
-
-type GetRoundsByFilterAndCursorInput struct {
-	shared.PathIDParam
-	shared.CursorPaginationRequest
-	round.RoundFilter
-}
-
-func (h *httpHandler) getRoundsByFilterAndCursor(ctx context.Context, input *GetRoundsByFilterAndCursorInput) (*shared.GetCursorPaginatedRoundsWithSubtypesOutput, error) {
+func (h *httpHandler) getRoundsByCursor(ctx context.Context, input *shared.GetCursorPaginatedByParentPathIDInput) (*shared.GetCursorPaginatedRoundsOutput, error) {
 	limit := input.Limit + 1
 
-	rounds, err := h.service.BusinessService.GetRoundsByFilterAndCursor(ctx, input.ID, input.RoundFilter, limit, input.Cursor)
+	rounds, err := h.service.BusinessService.GetRoundsByCursor(ctx, input.ID, limit, input.Cursor)
 
 	if err != nil {
 		switch {
@@ -201,23 +102,48 @@ func (h *httpHandler) getRoundsByFilterAndCursor(ctx context.Context, input *Get
 		}
 	}
 
-	resp := &shared.GetCursorPaginatedRoundsWithSubtypesOutput{}
+	resp := &shared.GetCursorPaginatedRoundsOutput{}
 	resp.Body.Message = "Rounds fetched successfully"
-	resp.Body.RoundWithSubtypes = rounds
+	resp.Body.Rounds = rounds
 
 	if len(rounds) == limit {
 		resp.Body.NextCursor = &rounds[len(rounds)-1].ID
 		resp.Body.HasMore = true
-		resp.Body.RoundWithSubtypes = resp.Body.RoundWithSubtypes[:len(resp.Body.RoundWithSubtypes)-1]
+		resp.Body.Rounds = resp.Body.Rounds[:len(resp.Body.Rounds)-1]
 	}
 
 	return resp, nil
 }
 
-func (h *httpHandler) getCursorPaginatedRecievedRoundInvestments(ctx context.Context, input *shared.GetCursorPaginatedByParentPathIDInput) (*shared.GetCursorPaginatedRoundInvestmentsOutput, error) {
+func (h *httpHandler) getRoundsByPage(ctx context.Context, input *shared.GetOffsetPaginatedByParentPathIDInput) (*shared.GetOffsetPaginatedRoundsOutput, error) {
+	rounds, err := h.service.BusinessService.GetRoundsByPage(ctx, input.ID, input.PageSize, input.Page)
+
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("rounds not found")
+		default:
+			h.logger.Error("failed to fetch rounds", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the ventures")
+		}
+	}
+
+	resp := &shared.GetOffsetPaginatedRoundsOutput{}
+	resp.Body.Message = "Rounds fetched successfully"
+	resp.Body.Rounds = rounds
+
+	if len(rounds) > input.PageSize {
+		resp.Body.HasMore = true
+		resp.Body.Rounds = resp.Body.Rounds[:len(resp.Body.Rounds)-1]
+	}
+
+	return resp, nil
+}
+
+func (h *httpHandler) getInvestmentsByCursor(ctx context.Context, input *shared.GetCursorPaginatedByParentPathIDInput) (*shared.GetCursorPaginatedRoundInvestmentsOutput, error) {
 	limit := input.Limit + 1
 
-	investments, err := h.service.BusinessService.GetRecievedRoundInvestmentsByCursor(ctx, input.ID, limit, input.Cursor)
+	investments, err := h.service.BusinessService.GetInvestmentsByCursor(ctx, input.ID, limit, input.Cursor)
 
 	if err != nil {
 		switch {
@@ -242,7 +168,32 @@ func (h *httpHandler) getCursorPaginatedRecievedRoundInvestments(ctx context.Con
 	return resp, nil
 }
 
-func (h *httpHandler) getCursorPaginatedVentures(ctx context.Context, input *shared.GetCursorPaginatedByParentPathIDInput) (*shared.GetCursorPaginatedVenturesOutput, error) {
+func (h *httpHandler) getInvestmentsByPage(ctx context.Context, input *shared.GetOffsetPaginatedByParentPathIDInput) (*shared.GetOffsetPaginatedRoundInvestmentsOutput, error) {
+	investments, err := h.service.BusinessService.GetInvestmentsByPage(ctx, input.ID, input.PageSize, input.Page)
+
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("investments not found")
+		default:
+			h.logger.Error("failed to fetch investments", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the investments")
+		}
+	}
+
+	resp := &shared.GetOffsetPaginatedRoundInvestmentsOutput{}
+	resp.Body.Message = "Investments fetched successfully"
+	resp.Body.Investments = investments
+
+	if len(investments) > input.PageSize {
+		resp.Body.HasMore = true
+		resp.Body.Investments = resp.Body.Investments[:len(resp.Body.Investments)-1]
+	}
+
+	return resp, nil
+}
+
+func (h *httpHandler) getVenturesByCursor(ctx context.Context, input *shared.GetCursorPaginatedByParentPathIDInput) (*shared.GetCursorPaginatedVenturesOutput, error) {
 	limit := input.Limit + 1
 
 	ventures, err := h.service.BusinessService.GetVenturesByCursor(ctx, input.ID, limit, input.Cursor)
@@ -270,7 +221,7 @@ func (h *httpHandler) getCursorPaginatedVentures(ctx context.Context, input *sha
 	return resp, nil
 }
 
-func (h *httpHandler) getOffsetPaginatedVentures(ctx context.Context, input *shared.GetOffsetPaginatedByParentPathIDInput) (*shared.GetOffsetPaginatedVenturesOutput, error) {
+func (h *httpHandler) getVenturesByPage(ctx context.Context, input *shared.GetOffsetPaginatedByParentPathIDInput) (*shared.GetOffsetPaginatedVenturesOutput, error) {
 	ventures, err := h.service.BusinessService.GetVenturesByPage(ctx, input.ID, input.PageSize, input.Page)
 
 	if err != nil {

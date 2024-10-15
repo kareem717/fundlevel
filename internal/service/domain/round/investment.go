@@ -8,25 +8,25 @@ import (
 	"fundlevel/internal/storage/postgres/shared"
 )
 
-func (s *RoundService) GetRoundInvestmentsByCursor(ctx context.Context, roundId int, limit int, cursor int) ([]investment.RoundInvestment, error) {
+func (s *RoundService) GetInvestmentsByCursor(ctx context.Context, roundId int, limit int, cursor int) ([]investment.RoundInvestment, error) {
 	paginationParams := shared.CursorPagination{
 		Limit:  limit,
 		Cursor: cursor,
 	}
 
-	return s.repositories.Round().GetRoundInvestmentsByCursor(ctx, roundId, paginationParams)
+	return s.repositories.Round().GetInvestmentsByCursor(ctx, roundId, paginationParams)
 }
 
-func (s *RoundService) GetRoundInvestmentsByPage(ctx context.Context, roundId int, pageSize int, page int) ([]investment.RoundInvestment, error) {
+func (s *RoundService) GetInvestmentsByPage(ctx context.Context, roundId int, pageSize int, page int) ([]investment.RoundInvestment, error) {
 	paginationParams := shared.OffsetPagination{
 		PageSize: pageSize,
 		Page:     page,
 	}
 
-	return s.repositories.Round().GetRoundInvestmentsByPage(ctx, roundId, paginationParams)
+	return s.repositories.Round().GetInvestmentsByPage(ctx, roundId, paginationParams)
 }
 
-func (s *RoundService) AcceptRoundInvestment(ctx context.Context, roundId int, investmentId int) error {
+func (s *RoundService) AcceptInvestment(ctx context.Context, roundId int, investmentId int) error {
 	currInvestment, err := s.repositories.Investment().GetById(ctx, investmentId)
 	if err != nil {
 		return err

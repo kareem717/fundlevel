@@ -32,6 +32,10 @@ type MessageResponse struct {
 	Message string `json:"message"`
 }
 
+type MessageOutput struct {
+	Body MessageResponse
+}
+
 type CursorPaginationResponse struct {
 	NextCursor *int `json:"nextCursor"`
 	HasMore    bool `json:"hasMore"`
@@ -51,80 +55,18 @@ type GetCursorPaginatedByParentPathIDInput struct {
 	CursorPaginationRequest
 }
 
-type GetCursorPaginatedRoundsWithSubtypesOutput struct {
+type GetCursorPaginatedRoundsOutput struct {
 	Body struct {
 		MessageResponse
-		RoundWithSubtypes []round.RoundWithSubtypes `json:"roundsWithSubtypes"`
+		Rounds []round.Round `json:"rounds"`
 		CursorPaginationResponse
 	}
 }
 
-type GetOffsetPaginatedRoundsWithSubtypesOutput struct {
+type GetOffsetPaginatedRoundsOutput struct {
 	Body struct {
 		MessageResponse
-		RoundWithSubtypes []round.RoundWithSubtypes `json:"roundsWithSubtypes"`
-		OffsetPaginationResponse
-	}
-}
-
-type GetCursorPaginatedFixedTotalRoundsOutput struct {
-	Body struct {
-		MessageResponse
-		FixedTotalRounds []round.FixedTotalRound `json:"fixedTotalRounds"`
-		CursorPaginationResponse
-	}
-}
-
-type GetOffsetPaginatedFixedTotalRoundsOutput struct {
-	Body struct {
-		MessageResponse
-		FixedTotalRounds []round.FixedTotalRound `json:"fixedTotalRounds"`
-		OffsetPaginationResponse
-	}
-}
-type GetCursorPaginatedRegularDynamicRoundsOutput struct {
-	Body struct {
-		MessageResponse
-		RegularDynamicRounds []round.RegularDynamicRound `json:"regularDynamicRounds"`
-		CursorPaginationResponse
-	}
-}
-
-type GetOffsetPaginatedRegularDynamicRoundsOutput struct {
-	Body struct {
-		MessageResponse
-		RegularDynamicRounds []round.RegularDynamicRound `json:"regularDynamicRounds"`
-		OffsetPaginationResponse
-	}
-}
-type GetCursorPaginatedPartialTotalRoundsOutput struct {
-	Body struct {
-		MessageResponse
-		PartialTotalRounds []round.PartialTotalRound `json:"partialTotalRounds"`
-		CursorPaginationResponse
-	}
-}
-
-type GetOffsetPaginatedPartialTotalRoundsOutput struct {
-	Body struct {
-		MessageResponse
-		PartialTotalRounds []round.PartialTotalRound `json:"partialTotalRounds"`
-		OffsetPaginationResponse
-	}
-}
-
-type GetCursorPaginatedDutchDynamicRoundsOutput struct {
-	Body struct {
-		MessageResponse
-		DutchDynamicRounds []round.DutchDynamicRound `json:"dutchDynamicRounds"`
-		CursorPaginationResponse
-	}
-}
-
-type GetOffsetPaginatedDutchDynamicRoundsOutput struct {
-	Body struct {
-		MessageResponse
-		DutchDynamicRounds []round.DutchDynamicRound `json:"dutchDynamicRounds"`
+		Rounds []round.Round `json:"rounds"`
 		OffsetPaginationResponse
 	}
 }
@@ -180,17 +122,17 @@ type SingleBusinessResponse struct {
 	}
 }
 
-type SingleBusinessMemberResponse struct {
-	Body struct {
-		MessageResponse
-		BusinessMember *business.BusinessMember `json:"businessMember"`
-	}
-}
-
 type GetOffsetPaginatedBusinessesOutput struct {
 	Body struct {
 		MessageResponse
 		Businesses []business.Business `json:"businesses"`
 		OffsetPaginationResponse
+	}
+}
+
+type SingleInvestmentResponse struct {
+	Body struct {
+		MessageResponse
+		Investment *investment.RoundInvestment `json:"investment"`
 	}
 }

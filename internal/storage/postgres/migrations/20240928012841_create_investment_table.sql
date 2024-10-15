@@ -14,14 +14,12 @@ CREATE TABLE
         id SERIAL PRIMARY KEY,
         round_id INT NOT NULL REFERENCES rounds (id),
         investor_id INT NOT NULL REFERENCES accounts (id),
-        amount BIGINT NOT NULL,
         status investment_status NOT NULL DEFAULT 'pending',
         stripe_checkout_session_id TEXT,
         paid_at timestamptz,
         created_at timestamptz DEFAULT CLOCK_TIMESTAMP(),
         updated_at timestamptz,
         deleted_at timestamptz,
-        CONSTRAINT amount_check CHECK (amount>0),
         CONSTRAINT paid_at_check CHECK (
             (
                 paid_at IS NULL

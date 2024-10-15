@@ -102,47 +102,47 @@ func RegisterHumaRoutes(
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "create-round-investment",
 		Method:      http.MethodPost,
-		Path:        "/account/{id}/round-investments",
+		Path:        "/account/{id}/investments",
 		Summary:     "Create a round investment",
 		Description: "Create a round investment.",
 		Tags:        []string{"Accounts", "Investments"},
-	}, handler.createRoundInvestment)
+	}, handler.createInvestment)
 
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "delete-round-investment",
 		Method:      http.MethodDelete,
-		Path:        "/account/{id}/round-investments/{investmentId}",
+		Path:        "/account/{id}/investments/{investmentId}",
 		Summary:     "Delete a round investment",
 		Description: "Delete a round investment.",
 		Tags:        []string{"Accounts", "Investments"},
-	}, handler.deleteRoundInvestment)
+	}, handler.deleteInvestment)
 
 	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-account-round-investments-cursor",
+		OperationID: "get-account-investments-by-cursor",
 		Method:      http.MethodGet,
-		Path:        "/account/{id}/round-investments/cursor",
+		Path:        "/account/{id}/investments",
 		Summary:     "Get round investments",
 		Description: "Get round investments.",
 		Tags:        []string{"Accounts", "Investments"},
-	}, handler.getCursorPaginatedRoundInvestments)
+	}, handler.getInvestmentsByCursor)
 
 	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-round-investments-offset",
+		OperationID: "get-account-investments-by-page",
 		Method:      http.MethodGet,
-		Path:        "/account/{id}/round-investments/offset",
+		Path:        "/account/{id}/investments/page",
 		Summary:     "Get round investments",
 		Description: "Get round investments.",
 		Tags:        []string{"Accounts", "Investments"},
-	}, handler.getOffsetPaginatedRoundInvestments)
+	}, handler.getInvestmentsByPage)
 
 	huma.Register(humaApi, huma.Operation{
-		OperationID: "withdraw-round-investment",
+		OperationID: "withdraw-investment",
 		Method:      http.MethodPost,
-		Path:        "/account/{id}/round-investments/{investmentId}/withdraw",
-		Summary:     "Withdraw a round investment",
-		Description: "Withdraw a round investment.",
+		Path:        "/account/{id}/investments/{investmentId}/withdraw",
+		Summary:     "Withdraw a investment",
+		Description: "Withdraw a investment.",
 		Tags:        []string{"Accounts", "Investments"},
-	}, handler.withdrawRoundInvestment)
+	}, handler.withdrawInvestment)
 
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "get-account-businesses",
@@ -156,10 +156,10 @@ func RegisterHumaRoutes(
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "get-account-checkout-link",
 		Method:      http.MethodGet,
-		Path:        "/account/{id}/round-investments/{investmentId}/checkout",
+		Path:        "/account/{id}/investments/{investmentId}/checkout",
 		Summary:     "Get a stripe checkout link",
 		Description: "Get a stripe checkout link.",
 		Tags:        []string{"Accounts", "Investments"},
-	}, handler.investmentCheckoutLink)
+	}, handler.getInvestmentCheckoutLink)
 
 }

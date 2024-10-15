@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 
-	"fundlevel/internal/entities/address"
 	"fundlevel/internal/entities/venture"
 	"fundlevel/internal/storage/postgres/shared"
 
@@ -25,39 +24,13 @@ func NewVentureRepository(db bun.IDB, ctx context.Context) *VentureRepository {
 }
 
 func (r *VentureRepository) Create(ctx context.Context, params venture.CreateVentureParams) (venture.Venture, error) {
-	address := address.Address{}
 	resp := venture.Venture{}
 
-	err := r.db.RunInTx(ctx, nil, func(ctx context.Context, tx bun.Tx) error {
-		if params.Address != nil {
-			err := tx.NewInsert().
-				Model(params.Address).
-				ModelTableExpr("addresses").
-				Returning("*").
-				Scan(ctx, &address)
-
-			if err != nil {
-				return err
-			}
-
-			params.Venture.AddressID = &address.ID
-			resp.Address = &address
-		}
-
-		err := tx.NewInsert().
-			Model(&params.Venture).
-			ModelTableExpr("ventures").
-			Returning("*").
-			Scan(ctx, &resp)
-		if err != nil {
-			return err
-		}
-
-		return nil
-	})
-	if err != nil {
-		return resp, err
-	}
+	err := r.db.NewInsert().
+		Model(&params).
+		ModelTableExpr("ventures").
+		Returning("*").
+		Scan(ctx, &resp)
 
 	return resp, err
 }
@@ -99,20 +72,18 @@ func (r *VentureRepository) GetById(ctx context.Context, id int) (venture.Ventur
 	err := r.db.
 		NewSelect().
 		Model(&resp).
-		Relation("Address").
 		Where("id = ?", id).
 		Scan(ctx)
 
 	return resp, err
 }
 
-func (r *VentureRepository) GetManyByCursor(ctx context.Context, paginationParams shared.CursorPagination) ([]venture.Venture, error) {
+func (r *VentureRepository) GetByCursor(ctx context.Context, paginationParams shared.CursorPagination) ([]venture.Venture, error) {
 	resp := []venture.Venture{}
 
 	err := r.db.
 		NewSelect().
 		Model(&resp).
-		Relation("Address").
 		Where("id >= ?", paginationParams.Cursor).
 		Order("id").
 		Limit(paginationParams.Limit).
@@ -121,14 +92,13 @@ func (r *VentureRepository) GetManyByCursor(ctx context.Context, paginationParam
 	return resp, err
 }
 
-func (r *VentureRepository) GetManyByPage(ctx context.Context, paginationParams shared.OffsetPagination) ([]venture.Venture, error) {
+func (r *VentureRepository) GetByPage(ctx context.Context, paginationParams shared.OffsetPagination) ([]venture.Venture, error) {
 	resp := []venture.Venture{}
 	offset := (paginationParams.Page - 1) * paginationParams.PageSize
 
 	err := r.db.
 		NewSelect().
 		Model(&resp).
-		Relation("Address").
 		Order("id").
 		Offset(offset).
 		Limit(paginationParams.PageSize + 1).

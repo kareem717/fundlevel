@@ -104,7 +104,6 @@ func (t *transaction) Account() storage.AccountRepository {
 	return t.accountRepo
 }
 
-
 func (t *transaction) Round() storage.RoundRepository {
 	return t.roundRepo
 }

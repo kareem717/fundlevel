@@ -26,26 +26,14 @@ type VentureService interface {
 	Delete(ctx context.Context, id int) error
 	Update(ctx context.Context, id int, params venture.UpdateVentureParams) (venture.Venture, error)
 	GetById(ctx context.Context, id int) (venture.Venture, error)
-	GetManyByCursor(ctx context.Context, limit int, cursor int) ([]venture.Venture, error)
-	GetManyByPage(ctx context.Context, limit int, page int) ([]venture.Venture, error)
+	GetByCursor(ctx context.Context, limit int, cursor int) ([]venture.Venture, error)
+	GetByPage(ctx context.Context, limit int, page int) ([]venture.Venture, error)
 
-	GetRoundsByCursor(ctx context.Context, ventureId int, limit int, cursor int) ([]round.RoundWithSubtypes, error)
-	GetRoundsByPage(ctx context.Context, ventureId int, pageSize int, page int) ([]round.RoundWithSubtypes, error)
+	GetRoundsByCursor(ctx context.Context, ventureId int, limit int, cursor int) ([]round.Round, error)
+	GetRoundsByPage(ctx context.Context, ventureId int, pageSize int, page int) ([]round.Round, error)
 
-	GetFixedTotalRoundsByCursor(ctx context.Context, ventureId int, limit int, cursor int) ([]round.FixedTotalRound, error)
-	GetFixedTotalRoundsByPage(ctx context.Context, ventureId int, pageSize int, page int) ([]round.FixedTotalRound, error)
-
-	GetRegularDynamicRoundsByCursor(ctx context.Context, ventureId int, limit int, cursor int) ([]round.RegularDynamicRound, error)
-	GetRegularDynamicRoundsByPage(ctx context.Context, ventureId int, pageSize int, page int) ([]round.RegularDynamicRound, error)
-
-	GetPartialTotalRoundsByCursor(ctx context.Context, ventureId int, limit int, cursor int) ([]round.PartialTotalRound, error)
-	GetPartialTotalRoundsByPage(ctx context.Context, ventureId int, pageSize int, page int) ([]round.PartialTotalRound, error)
-
-	GetDutchDynamicRoundsByCursor(ctx context.Context, ventureId int, limit int, cursor int) ([]round.DutchDynamicRound, error)
-	GetDutchDynamicRoundsByPage(ctx context.Context, ventureId int, pageSize int, page int) ([]round.DutchDynamicRound, error)
-
-	GetVentureRoundInvestmentsByCursor(ctx context.Context, ventureId int, limit int, cursor int) ([]investment.RoundInvestment, error)
-	GetVentureRoundInvestmentsByPage(ctx context.Context, ventureId int, pageSize int, page int) ([]investment.RoundInvestment, error)
+	GetInvestmentsByCursor(ctx context.Context, ventureId int, limit int, cursor int) ([]investment.RoundInvestment, error)
+	GetInvestmentsByPage(ctx context.Context, ventureId int, pageSize int, page int) ([]investment.RoundInvestment, error)
 }
 
 type UserService interface {
@@ -58,11 +46,11 @@ type AccountService interface {
 	Update(ctx context.Context, id int, params account.UpdateAccountParams) (account.Account, error)
 	GetById(ctx context.Context, id int) (account.Account, error)
 
-	GetRoundInvestmentsByCursor(ctx context.Context, accountId int, limit int, cursor int) ([]investment.RoundInvestment, error)
-	GetRoundInvestmentsByPage(ctx context.Context, accountId int, pageSize int, page int) ([]investment.RoundInvestment, error)
-	WithdrawRoundInvestment(ctx context.Context, accountId int, investmentId int) error
-	DeleteRoundInvestment(ctx context.Context, accountId int, investmentId int) error
-	CreateRoundInvestment(ctx context.Context, params investment.CreateInvestmentParams) (investment.RoundInvestment, error)
+	GetInvestmentsByCursor(ctx context.Context, accountId int, limit int, cursor int) ([]investment.RoundInvestment, error)
+	GetInvestmentsByPage(ctx context.Context, accountId int, pageSize int, page int) ([]investment.RoundInvestment, error)
+	WithdrawInvestment(ctx context.Context, accountId int, investmentId int) error
+	DeleteInvestment(ctx context.Context, accountId int, investmentId int) error
+	CreateInvestment(ctx context.Context, params investment.CreateInvestmentParams) (investment.RoundInvestment, error)
 	GetInvestmentById(ctx context.Context, accountId int, investmentId int) (investment.RoundInvestment, error)
 
 	GetBusinesses(ctx context.Context, accountId int) ([]business.Business, error)
@@ -73,37 +61,15 @@ type HealthService interface {
 }
 
 type RoundService interface {
-	GetById(ctx context.Context, id int) (round.RoundWithSubtypes, error)
-	GetByCursor(ctx context.Context, limit int, cursor int) ([]round.RoundWithSubtypes, error)
-	GetByPage(ctx context.Context, pageSize int, page int) ([]round.RoundWithSubtypes, error)
+	Create(ctx context.Context, params round.CreateRoundParams) (round.Round, error)
+	Delete(ctx context.Context, id int) error
+	GetById(ctx context.Context, id int) (round.Round, error)
+	GetByCursor(ctx context.Context, limit int, cursor int) ([]round.Round, error)
+	GetByPage(ctx context.Context, pageSize int, page int) ([]round.Round, error)
 
-	CreateFixedTotalRound(ctx context.Context, params round.CreateFixedTotalRoundParams) (round.FixedTotalRound, error)
-	DeleteFixedTotalRound(ctx context.Context, id int) error
-	GetFixedTotalById(ctx context.Context, id int) (round.FixedTotalRound, error)
-	GetFixedTotalRoundsByCursor(ctx context.Context, limit int, cursor int) ([]round.FixedTotalRound, error)
-	GetFixedTotalRoundsByPage(ctx context.Context, pageSize int, page int) ([]round.FixedTotalRound, error)
-
-	CreateRegularDynamicRound(ctx context.Context, params round.CreateRegularDynamicRoundParams) (round.RegularDynamicRound, error)
-	DeleteRegularDynamicRound(ctx context.Context, id int) error
-	GetRegularDynamicById(ctx context.Context, id int) (round.RegularDynamicRound, error)
-	GetRegularDynamicRoundsByCursor(ctx context.Context, limit int, cursor int) ([]round.RegularDynamicRound, error)
-	GetRegularDynamicRoundsByPage(ctx context.Context, pageSize int, page int) ([]round.RegularDynamicRound, error)
-
-	CreatePartialTotalRound(ctx context.Context, params round.CreatePartialTotalRoundParams) (round.PartialTotalRound, error)
-	DeletePartialTotalRound(ctx context.Context, id int) error
-	GetPartialTotalById(ctx context.Context, id int) (round.PartialTotalRound, error)
-	GetPartialTotalRoundsByCursor(ctx context.Context, limit int, cursor int) ([]round.PartialTotalRound, error)
-	GetPartialTotalRoundsByPage(ctx context.Context, pageSize int, page int) ([]round.PartialTotalRound, error)
-
-	CreateDutchDynamicRound(ctx context.Context, params round.CreateDutchDynamicRoundParams) (round.DutchDynamicRound, error)
-	DeleteDutchDynamicRound(ctx context.Context, id int) error
-	GetDutchDynamicById(ctx context.Context, id int) (round.DutchDynamicRound, error)
-	GetDutchDynamicRoundsByCursor(ctx context.Context, limit int, cursor int) ([]round.DutchDynamicRound, error)
-	GetDutchDynamicRoundsByPage(ctx context.Context, pageSize int, page int) ([]round.DutchDynamicRound, error)
-
-	GetRoundInvestmentsByCursor(ctx context.Context, roundId int, limit int, cursor int) ([]investment.RoundInvestment, error)
-	GetRoundInvestmentsByPage(ctx context.Context, roundId int, pageSize int, page int) ([]investment.RoundInvestment, error)
-	AcceptRoundInvestment(ctx context.Context, roundId int, investmentId int) error
+	GetInvestmentsByCursor(ctx context.Context, roundId int, limit int, cursor int) ([]investment.RoundInvestment, error)
+	GetInvestmentsByPage(ctx context.Context, roundId int, pageSize int, page int) ([]investment.RoundInvestment, error)
+	AcceptInvestment(ctx context.Context, roundId int, investmentId int) error
 }
 
 type BusinessService interface {
@@ -111,16 +77,15 @@ type BusinessService interface {
 	Delete(ctx context.Context, id int) error
 	GetById(ctx context.Context, id int) (business.Business, error)
 
-	CreateMember(ctx context.Context, params business.CreateBusinessMemberParams) (business.BusinessMember, error)
-	DeleteMember(ctx context.Context, businessId int, accountId int) error
-	UpdateMember(ctx context.Context, businessId int, accountId int, params business.UpdateBusinessMemberParams) (business.BusinessMember, error)
-	GetMembersByPage(ctx context.Context, businessId int, pageSize int, page int) ([]business.BusinessMember, error)
-
 	GetVenturesByCursor(ctx context.Context, accountId int, limit int, cursor int) ([]venture.Venture, error)
 	GetVenturesByPage(ctx context.Context, accountId int, pageSize int, page int) ([]venture.Venture, error)
 
-	GetRecievedRoundInvestmentsByCursor(ctx context.Context, accountId int, limit int, cursor int) ([]investment.RoundInvestment, error)
-	GetRoundsByFilterAndCursor(ctx context.Context, accountId int, filter round.RoundFilter, limit int, cursor int) ([]round.RoundWithSubtypes, error)
+	GetRoundsByPage(ctx context.Context, businessId int, pageSize int, page int) ([]round.Round, error)
+	GetRoundsByCursor(ctx context.Context, businessId int, limit int, cursor int) ([]round.Round, error)
+
+	// GetInvestmentsByCursor gets all of the investments received on the rounds related to the business using cursor pagination
+	GetInvestmentsByCursor(ctx context.Context, businessId int, limit int, cursor int) ([]investment.RoundInvestment, error)
+	GetInvestmentsByPage(ctx context.Context, businessId int, pageSize int, page int) ([]investment.RoundInvestment, error)
 }
 
 type BillingService interface {

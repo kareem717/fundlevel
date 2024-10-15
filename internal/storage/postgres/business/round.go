@@ -5,38 +5,35 @@ import (
 
 	"fundlevel/internal/entities/round"
 	"fundlevel/internal/storage/postgres/shared"
-
-	"github.com/uptrace/bun"
 )
 
-func (r *BusinessRepository) GetRoundsByFilterAndCursor(ctx context.Context, businessId int, filter round.RoundFilter, paginationParams shared.CursorPagination) ([]round.RoundWithSubtypes, error) {
-	resp := []round.RoundWithSubtypes{}
+func (r *BusinessRepository) GetRoundsByCursor(ctx context.Context, businessId int, paginationParams shared.CursorPagination) ([]round.Round, error) {
+	resp := []round.Round{}
 
-	query := r.db.
+	err := r.db.
 		NewSelect().
 		Model(&resp).
-		Relation("FixedTotalRound").
-		Relation("DutchDynamicRound").
-		Relation("PartialTotalRound").
-		Relation("RegularDynamicRound").
-		Join("JOIN ventures on round_with_subtypes.venture_id = ventures.id").
-		Where("ventures.business_id = ?", businessId).
-		Where("round_with_subtypes.id >= ?", paginationParams.Cursor).
-		Order("round_with_subtypes.id").
-		Limit(paginationParams.Limit)
+		Where("business_id = ?", businessId).
+		Where("id >= ?", paginationParams.Cursor).
+		Order("id").
+		Limit(paginationParams.Limit).
+		Scan(ctx)
 
-	if len(filter.Status) > 0 {
-		query = query.Where("round_with_subtypes.status IN (?)", bun.In(filter.Status))
-	}
+	return resp, err
+}
 
-	if !filter.MinEndsAt.IsZero() {
-		query = query.Where("round_with_subtypes.ends_at >= ?", filter.MinEndsAt)
-	}
+func (r *BusinessRepository) GetRoundsByPage(ctx context.Context, businessId int, paginationParams shared.OffsetPagination) ([]round.Round, error) {
+	resp := []round.Round{}
+	offset := (paginationParams.Page - 1) * paginationParams.PageSize
 
-	if !filter.MaxEndsAt.IsZero() {
-		query = query.Where("round_with_subtypes.ends_at <= ?", filter.MaxEndsAt)
-	}
+	err := r.db.
+		NewSelect().
+		Model(&resp).
+		Where("business_id = ?", businessId).
+		Order("id").
+		Offset(offset).
+		Limit(paginationParams.PageSize).
+		Scan(ctx)
 
-	err := query.Scan(ctx)
 	return resp, err
 }

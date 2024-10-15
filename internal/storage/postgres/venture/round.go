@@ -7,16 +7,12 @@ import (
 	"fundlevel/internal/storage/postgres/shared"
 )
 
-func (r *VentureRepository) GetRoundsByCursor(ctx context.Context, ventureId int, paginationParams shared.CursorPagination) ([]round.RoundWithSubtypes, error) {
-	resp := []round.RoundWithSubtypes{}
+func (r *VentureRepository) GetRoundsByCursor(ctx context.Context, ventureId int, paginationParams shared.CursorPagination) ([]round.Round, error) {
+	resp := []round.Round{}
 
 	err := r.db.
 		NewSelect().
 		Model(&resp).
-		Relation("FixedTotalRound").
-		Relation("RegularDynamicRound").
-		Relation("PartialTotalRound").
-		Relation("DutchDynamicRound").
 		Where("round.venture_id = ?", ventureId).
 		Where("round.id >= ?", paginationParams.Cursor).
 		Order("round.id").
@@ -26,17 +22,13 @@ func (r *VentureRepository) GetRoundsByCursor(ctx context.Context, ventureId int
 	return resp, err
 }
 
-func (r *VentureRepository) GetRoundsByPage(ctx context.Context, ventureId int, paginationParams shared.OffsetPagination) ([]round.RoundWithSubtypes, error) {
-	resp := []round.RoundWithSubtypes{}
+func (r *VentureRepository) GetRoundsByPage(ctx context.Context, ventureId int, paginationParams shared.OffsetPagination) ([]round.Round, error) {
+	resp := []round.Round{}
 	offset := paginationParams.PageSize * (paginationParams.Page - 1)
 
 	err := r.db.
 		NewSelect().
 		Model(&resp).
-		Relation("FixedTotalRound").
-		Relation("RegularDynamicRound").
-		Relation("PartialTotalRound").
-		Relation("DutchDynamicRound").
 		Where("round.venture_id = ?", ventureId).
 		Order("round.id").
 		Offset(offset).
