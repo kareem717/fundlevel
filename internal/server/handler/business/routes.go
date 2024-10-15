@@ -92,6 +92,15 @@ func RegisterHumaRoutes(
 	}, handler.getCursorPaginatedVentures)
 
 	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-business-ventures-by-page",
+		Method:      http.MethodGet,
+		Path:        "/business/{id}/ventures/page",
+		Summary:     "Get business ventures",
+		Description: "Get all of the ventures owned by a given business.",
+		Tags:        []string{"Businesses", "Ventures"},
+	}, handler.getOffsetPaginatedVentures)
+
+	huma.Register(humaApi, huma.Operation{
 		OperationID: "get-business-recieved-round-investments-cursor",
 		Method:      http.MethodGet,
 		Path:        "/business/{id}/round-investments/recieved/cursor",

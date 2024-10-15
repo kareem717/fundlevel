@@ -35,13 +35,13 @@ type VentureParams struct {
 	IsHidden   bool     `json:"isHidden" readOnly:"true"`
 	TeamSize   TeamSize `json:"teamSize" enum:"0-1,2-10,11-50,51-200,201-500,501-1000,1000+"`
 	IsRemote   bool     `json:"isRemote" default:"false"`
-	AddressID  *int      `json:"addressId,omitempty" minimum:"1" readOnly:"true"`
+	AddressID  *int     `json:"addressId,omitempty" minimum:"1" readOnly:"true"`
 	UpdateVentureParams
 }
 
 // CreateVentureParams contains the parameters for creating a new venture.
 type CreateVentureParams struct {
-	Venture VentureParams               `json:"venture"`
+	Venture VentureParams                `json:"venture"`
 	Address *address.CreateAddressParams `json:"address,omitempty"`
 }
 
@@ -49,4 +49,13 @@ type CreateVentureParams struct {
 type UpdateVentureParams struct {
 	Name        string `json:"name" minLength:"3" maxLength:"100"`
 	Description string `json:"description" minLength:"3" maxLength:"5000"`
+}
+
+type VentureSimple struct {
+	bun.BaseModel `bun:"table:ventures"`
+
+	shared.IntegerID
+	Name string `json:"name"`
+
+	shared.Timestamps
 }

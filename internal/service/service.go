@@ -65,7 +65,7 @@ type AccountService interface {
 	CreateRoundInvestment(ctx context.Context, params investment.CreateInvestmentParams) (investment.RoundInvestment, error)
 	GetInvestmentById(ctx context.Context, accountId int, investmentId int) (investment.RoundInvestment, error)
 
-	GetBusinessesByPage(ctx context.Context, accountId int, pageSize int, page int) ([]business.Business, error)
+	GetBusinesses(ctx context.Context, accountId int) ([]business.Business, error)
 }
 
 type HealthService interface {

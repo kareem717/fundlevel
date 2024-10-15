@@ -22,24 +22,9 @@ ADD COLUMN is_remote BOOLEAN NOT NULL DEFAULT FALSE;
 ALTER TABLE ventures
 ADD COLUMN address_id INTEGER REFERENCES addresses (id);
 
-ALTER TABLE ventures
-ADD CONSTRAINT location_check CHECK (
-    (
-        is_remote
-        AND address_id IS NULL
-    )
-    OR (
-        (NOT is_remote)
-        AND address_id IS NOT NULL
-    )
-);
-
 -- +goose StatementEnd
 -- +goose Down
 -- +goose StatementBegin
-ALTER TABLE ventures
-DROP CONSTRAINT location_check;
-
 ALTER TABLE ventures
 DROP COLUMN address_id;
 

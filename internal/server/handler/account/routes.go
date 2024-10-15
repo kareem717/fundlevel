@@ -145,13 +145,13 @@ func RegisterHumaRoutes(
 	}, handler.withdrawRoundInvestment)
 
 	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-account-businesses-offset",
+		OperationID: "get-account-businesses",
 		Method:      http.MethodGet,
-		Path:        "/account/{id}/businesses/offset",
+		Path:        "/account/{id}/businesses",
 		Summary:     "Get businesses",
 		Description: "Get businesses.",
 		Tags:        []string{"Accounts", "Businesses"},
-	}, handler.getOffsetPaginatedBusinesses)
+	}, handler.getBusinesses)
 
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "get-account-checkout-link",

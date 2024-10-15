@@ -32,7 +32,7 @@ type BusinessParams struct {
 	FoundingDate   time.Time      `json:"foundingDate" format:"date-time"`
 	OwnerAccountID int            `json:"ownerAccountId" minimum:"1"`
 	Status         BusinessStatus `json:"status" enum:"pending,active,disabled"`
-	AddressID      int            `json:"addressId" minimum:"1" readOnly:"true"`
+	AddressID      int            `json:"addressId" minimum:"1" hidden:"true"`
 }
 type CreateBusinessParams struct {
 	Business BusinessParams        `json:"business"`

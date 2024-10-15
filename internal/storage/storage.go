@@ -95,7 +95,7 @@ type AccountRepository interface {
 	IsInvestedInRound(ctx context.Context, accountId int, roundId int) (bool, error)
 	GetRoundInvestmentById(ctx context.Context, accountId int, investmentId int) (investment.RoundInvestment, error)
 
-	GetBusinessesByPage(ctx context.Context, accountId int, paginationParams shared.OffsetPagination) ([]business.Business, error)
+	GetBusinessesByPage(ctx context.Context, accountId int) ([]business.Business, error)
 }
 
 type UserRepository interface {
@@ -114,6 +114,7 @@ type BusinessRepository interface {
 
 	GetVenturesByCursor(ctx context.Context, businessId int, paginationParams shared.CursorPagination) ([]venture.Venture, error)
 	GetVenturesByPage(ctx context.Context, businessId int, paginationParams shared.OffsetPagination) ([]venture.Venture, error)
+	GetVentures(ctx context.Context, businessId int) ([]venture.VentureSimple, error)
 
 	GetRecievedRoundInvestmentsByCursor(ctx context.Context, businessId int, paginationParams shared.CursorPagination) ([]investment.RoundInvestment, error)
 	GetRoundsByFilterAndCursor(ctx context.Context, businessId int, filter round.RoundFilter, paginationParams shared.CursorPagination) ([]round.RoundWithSubtypes, error)
