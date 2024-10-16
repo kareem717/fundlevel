@@ -13,3 +13,4 @@ type OffsetPagination struct {
 	Page     int `json:"page" default:"1" min:"1" required:"false"`
 	PageSize int `json:"pageSize" default:"10" min:"1" required:"false"`
 }
+

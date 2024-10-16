@@ -207,7 +207,7 @@ func (h *httpHandler) getInvestmentsByPage(ctx context.Context, input *shared.Ge
 	resp := &shared.GetOffsetPaginatedRoundInvestmentsOutput{}
 	resp.Body.Message = "Investments fetched successfully"
 	resp.Body.Investments = investments
-
+	
 	if len(investments) > input.PageSize {
 		resp.Body.HasMore = true
 		resp.Body.Investments = resp.Body.Investments[:len(resp.Body.Investments)-1]
