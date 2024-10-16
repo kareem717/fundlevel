@@ -1,15 +1,6 @@
-import { object, number, date, string, array } from "yup";
-import {
-	CreateFixedTotalRoundParams,
-	CreatePartialTotalRoundParams,
-	CreateRoundParams,
-	CreateRegularDynamicRoundParams,
-	CreateDutchDynamicRoundParams,
-	PartialTotalRoundParams,
-	RegularDynamicRoundParams,
-	DutchDynamicRoundParams,
-} from "../../lib/api";
-import { currency, dollarAmount } from "./shared";
+import { object, number, date } from "yup";
+import { CreateRoundParams } from "../../lib/api";
+import { currency } from "./shared";
 
 const tomorrow = new Date();
 tomorrow.setDate(tomorrow.getDate() + 1);
@@ -23,46 +14,8 @@ export const createRoundSchema = object<CreateRoundParams>()
 		percentageValue: number().min(1).required(),
 		valueCurrency: currency.required(),
 		ventureId: number().min(1).required(),
-		status: string()
-			.oneOf(["successful", "failed", "active"])
-			.default("active"),
+		investorCount: number().min(1).required(),
 	})
 	.test("is-valid-round-time", "End date must be after start date", (value) => {
 		return value.beginsAt < value.endsAt;
 	});
-
-export const createFixedTotalRoundSchema =
-	object<CreateFixedTotalRoundParams>().shape({
-		round: createRoundSchema,
-	});
-export const createPartialTotalRoundSchema =
-	object<CreatePartialTotalRoundParams>().shape({
-		round: createRoundSchema,
-		partialTotalRound: object<PartialTotalRoundParams>().shape({
-			investorCount: number().min(1).required(),
-		}),
-	});
-export const createRegularDynamicRoundSchema =
-	object<CreateRegularDynamicRoundParams>().shape({
-		round: createRoundSchema,
-		regularDynamicRound: object<RegularDynamicRoundParams>().shape({
-			daysExtendOnBid: number().min(1).required(),
-		}),
-	});
-export const createDutchDynamicRoundSchema =
-	object<CreateDutchDynamicRoundParams>().shape({
-		round: createRoundSchema,
-		dutchDynamicRound: object<DutchDynamicRoundParams>().shape({
-			valuationDollarDropRate: number().moreThan(0).required(),
-			valuationDropIntervalDays: number().min(1).required(),
-			valuationStopLoss: number().moreThan(0).required(),
-		}),
-	});
-
-export const roundFilterSchema = object().shape({
-	status: array().of(
-		string().oneOf(["active", "successful", "failed"]).required()
-	), // Corrected type for status
-	minEndsAt: date(),
-	maxEndsAt: date(),
-});

@@ -19,7 +19,6 @@ export const InvestmentIndexCard: FC<InvestmentIndexCardProps> = ({ investment, 
       <PatternBackground hash={createdAt.toString()} />
       <CardHeader className="flex flex-row items-center justify-between">
         <h3 className="text-lg font-semibold">{investment.roundId}</h3>
-        <h3 className="text-lg font-semibold">{investment.amount}</h3>
       </CardHeader>
       <CardContent>
         <span className="text-xs text-muted-foreground">

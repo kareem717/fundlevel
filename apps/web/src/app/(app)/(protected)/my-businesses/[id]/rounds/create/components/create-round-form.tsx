@@ -25,29 +25,29 @@ import { useAction } from "next-safe-action/hooks";
 import { useRouter } from "next/navigation";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { InferType } from "yup";
-import { createPartialTotalRoundSchema } from "@/actions/validations/rounds";
-import { createPartialTotalRound } from "@/actions/rounds";
+import { createRoundSchema } from "@/actions/validations/rounds";
+import { createRound } from "@/actions/rounds";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns"
 import { Unit, UnitSelect } from "@/components/ui/unit-select";
-import { VentureSelect } from "../venture-select";
+import { VentureSelect } from "./venture-select";
 
-export interface CreatePartialTotalRoundFormProps extends ComponentPropsWithoutRef<'form'> {
+export interface CreateRoundFormProps extends ComponentPropsWithoutRef<'form'> {
   onSuccess?: () => void
   businessId: number;
   ventureId?: number;
 }
 
 const units: Unit[] = [
-  { value: "USD", label: "USD", icon: <Icons.dollarSign className="h-4 w-4" /> },
-  { value: "EUR", label: "EUR", icon: <span className="text-sm">€</span> },
-  { value: "GBP", label: "GBP", icon: <span className="text-sm">£</span> },
-  { value: "CAD", label: "CAD", icon: <span className="text-sm">CA$</span> },
-  { value: "AUD", label: "AUD", icon: <span className="text-sm">AU$</span> },
-  { value: "JPY", label: "JPY", icon: <span className="text-sm">¥</span> },
+  { value: "usd", label: "USD", icon: <Icons.dollarSign className="h-4 w-4" /> },
+  { value: "eur", label: "EUR", icon: <span className="text-sm">€</span> },
+  { value: "gbp", label: "GBP", icon: <span className="text-sm">£</span> },
+  { value: "cad", label: "CAD", icon: <span className="text-sm">CA$</span> },
+  { value: "aud", label: "AUD", icon: <span className="text-sm">AU$</span> },
+  { value: "jpy", label: "JPY", icon: <span className="text-sm">¥</span> },
 ]
 
-export const CreatePartialTotalRoundForm: FC<CreatePartialTotalRoundFormProps> = ({ className, onSuccess, businessId, ...props }) => {
+export const CreateRoundForm: FC<CreateRoundFormProps> = ({ ventureId, className, onSuccess, businessId, ...props }) => {
   const router = useRouter()
 
   const tomorrow = new Date()
@@ -57,25 +57,20 @@ export const CreatePartialTotalRoundForm: FC<CreatePartialTotalRoundFormProps> =
   const afterTomorrow = new Date(tomorrow)
   afterTomorrow.setDate(afterTomorrow.getDate() + 1)
 
-  const form = useForm<InferType<typeof createPartialTotalRoundSchema>>({
-    resolver: yupResolver(createPartialTotalRoundSchema),
+  const form = useForm<InferType<typeof createRoundSchema>>({
+    resolver: yupResolver(createRoundSchema),
     defaultValues: {
-      round: {
-        beginsAt: tomorrow,
-        endsAt: afterTomorrow,
-        percentageOffered: 1,
-        percentageValue: 1000,
-        valueCurrency: "USD",
-        ventureId: 1,
-        status: "active",
-      },
-      partialTotalRound: {
-        investorCount: 1,
-      },
+      beginsAt: tomorrow,
+      endsAt: afterTomorrow,
+      percentageOffered: 1,
+      percentageValue: 1000,
+      valueCurrency: "usd",
+      ventureId: ventureId,
+      investorCount: 1,
     },
   })
 
-  const { executeAsync, isExecuting } = useAction(createPartialTotalRound, {
+  const { executeAsync, isExecuting } = useAction(createRound, {
     onSuccess: () => {
       form.reset()
       toast.success("Done!", {
@@ -91,33 +86,35 @@ export const CreatePartialTotalRoundForm: FC<CreatePartialTotalRoundFormProps> =
     }
   })
 
-  const onSubmit = async (values: InferType<typeof createPartialTotalRoundSchema>) => {
+  const onSubmit = async (values: InferType<typeof createRoundSchema>) => {
     await executeAsync(values)
   }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className={cn("space-y-8", className)} {...props}>
-        <FormField
-          control={form.control}
-          name="round.ventureId"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Venture</FormLabel>
-              <FormControl>
-                <VentureSelect onValueChange={(value) => field.onChange(parseInt(value))} businessId={businessId} />
-              </FormControl>
-              <FormDescription>
-                This is the venture you want to create a round for.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {!ventureId && (
+          <FormField
+            control={form.control}
+            name="ventureId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Venture</FormLabel>
+                <FormControl>
+                  <VentureSelect onValueChange={(value) => field.onChange(parseInt(value))} businessId={businessId} />
+                </FormControl>
+                <FormDescription>
+                  This is the venture you want to create a round for.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <FormField
             control={form.control}
-            name="round.percentageOffered"
+            name="percentageOffered"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Percentage Offered</FormLabel>
@@ -146,7 +143,7 @@ export const CreatePartialTotalRoundForm: FC<CreatePartialTotalRoundFormProps> =
           <div className="flex flex-row gap-1.5 justify-center items-start w-full">
             <FormField
               control={form.control}
-              name="round.percentageValue"
+              name="percentageValue"
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormLabel>Value</FormLabel>
@@ -166,7 +163,7 @@ export const CreatePartialTotalRoundForm: FC<CreatePartialTotalRoundFormProps> =
             />
             <FormField
               control={form.control}
-              name="round.valueCurrency"
+              name="valueCurrency"
               render={({ field }) => (
                 <FormItem className="w-min">
                   <FormLabel>Currency</FormLabel>
@@ -189,7 +186,7 @@ export const CreatePartialTotalRoundForm: FC<CreatePartialTotalRoundFormProps> =
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
           <FormField
             control={form.control}
-            name="round.beginsAt"
+            name="beginsAt"
             render={({ field }) => (
               <FormItem className="flex flex-col w-full">
                 <FormLabel>Starts At</FormLabel>
@@ -218,7 +215,7 @@ export const CreatePartialTotalRoundForm: FC<CreatePartialTotalRoundFormProps> =
                       selected={field.value}
                       onSelect={field.onChange}
                       disabled={(date) => {
-                        const afterStart = new Date(form.getValues("round.beginsAt"))
+                        const afterStart = new Date(form.getValues("beginsAt"))
                         afterStart.setDate(afterStart.getDate() + 1)
                         return date < afterStart
                       }}
@@ -235,7 +232,7 @@ export const CreatePartialTotalRoundForm: FC<CreatePartialTotalRoundFormProps> =
           />
           <FormField
             control={form.control}
-            name="round.endsAt"
+            name="endsAt"
             render={({ field }) => (
               <FormItem className="flex flex-col w-full">
                 <FormLabel>Ends At</FormLabel>
@@ -265,7 +262,7 @@ export const CreatePartialTotalRoundForm: FC<CreatePartialTotalRoundFormProps> =
                       onSelect={field.onChange}
                       disabled={(date) =>
                         // less than after tomorrow
-                        date < form.getValues("round.beginsAt")
+                        date < form.getValues("beginsAt")
                       }
                       initialFocus
                     />
@@ -281,7 +278,7 @@ export const CreatePartialTotalRoundForm: FC<CreatePartialTotalRoundFormProps> =
         </div>
         <FormField
           control={form.control}
-          name="partialTotalRound.investorCount"
+          name="investorCount"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Number of investors</FormLabel>

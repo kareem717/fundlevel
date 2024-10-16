@@ -1,13 +1,14 @@
 import { number, object, string } from "yup";
 
 export const currency = string().oneOf([
-	"USD",
-	"GBP",
-	"EUR",
-	"CAD",
-	"AUD",
-	"JPY",
+	"usd",
+	"gbp",
+	"eur",
+	"cad",
+	"aud",
+	"jpy",
 ]);
+
 
 export const dollarAmount = number().min(0).max(9999999999.99);
 

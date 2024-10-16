@@ -12,6 +12,7 @@ export default defineConfig({
 	types: {
 		dates: "types+transform",
 		enums: "javascript",
+		name: "PascalCase",
 	},
 	schemas: {
 		type: "form",

@@ -112,7 +112,13 @@ export const BusinessSchema = {
         address: {
             '$ref': '#/components/schemas/Address'
         },
+        addressId: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
         businessNumber: {
+            minLength: 1,
             type: 'string'
         },
         createdAt: {
@@ -132,7 +138,11 @@ export const BusinessSchema = {
             minimum: 1,
             type: 'integer'
         },
+        isRemote: {
+            type: 'boolean'
+        },
         name: {
+            minLength: 1,
             type: 'string'
         },
         ownerAccountId: {
@@ -144,34 +154,8 @@ export const BusinessSchema = {
             enum: ['pending', 'active', 'disabled'],
             type: 'string'
         },
-        updatedAt: {
-            format: 'date-time',
-            type: ['string', 'null']
-        }
-    },
-    required: ['address', 'id', 'name', 'businessNumber', 'foundingDate', 'ownerAccountId', 'status', 'createdAt', 'updatedAt', 'deletedAt'],
-    type: 'object'
-} as const;
-
-export const BusinessMemberSchema = {
-    additionalProperties: false,
-    properties: {
-        accountId: {
-            format: 'int64',
-            minimum: 1,
-            type: 'integer'
-        },
-        businessId: {
-            format: 'int64',
-            minimum: 1,
-            type: 'integer'
-        },
-        createdAt: {
-            format: 'date-time',
-            type: 'string'
-        },
-        role: {
-            enum: ['admin', 'member'],
+        teamSize: {
+            enum: ['0-1', '2-10', '11-50', '51-200', '201-500', '501-1000', '1000+'],
             type: 'string'
         },
         updatedAt: {
@@ -179,7 +163,7 @@ export const BusinessMemberSchema = {
             type: ['string', 'null']
         }
     },
-    required: ['businessId', 'accountId', 'role', 'createdAt', 'updatedAt'],
+    required: ['address', 'name', 'businessNumber', 'foundingDate', 'ownerAccountId', 'status', 'addressId', 'teamSize', 'isRemote', 'id', 'createdAt', 'updatedAt', 'deletedAt'],
     type: 'object'
 } as const;
 
@@ -187,13 +171,19 @@ export const BusinessParamsSchema = {
     additionalProperties: false,
     properties: {
         businessNumber: {
+            minLength: 1,
             type: 'string'
         },
         foundingDate: {
             format: 'date-time',
             type: 'string'
         },
+        isRemote: {
+            default: false,
+            type: 'boolean'
+        },
         name: {
+            minLength: 1,
             type: 'string'
         },
         ownerAccountId: {
@@ -201,12 +191,12 @@ export const BusinessParamsSchema = {
             minimum: 1,
             type: 'integer'
         },
-        status: {
-            enum: ['pending', 'active', 'disabled'],
+        teamSize: {
+            enum: ['0-1', '2-10', '11-50', '51-200', '201-500', '501-1000', '1000+'],
             type: 'string'
         }
     },
-    required: ['name', 'businessNumber', 'foundingDate', 'ownerAccountId', 'status'],
+    required: ['name', 'businessNumber', 'foundingDate', 'ownerAccountId', 'teamSize'],
     type: 'object'
 } as const;
 
@@ -288,34 +278,6 @@ export const CreateAddressParamsSchema = {
     type: 'object'
 } as const;
 
-export const CreateBusinessMemberParamsSchema = {
-    additionalProperties: false,
-    properties: {
-        '$schema': {
-            examples: ['https://example.com/schemas/CreateBusinessMemberParams.json'],
-            format: 'uri',
-            readOnly: true,
-            type: 'string'
-        },
-        accountId: {
-            format: 'int64',
-            minimum: 1,
-            type: 'integer'
-        },
-        businessId: {
-            format: 'int64',
-            minimum: 1,
-            type: 'integer'
-        },
-        role: {
-            enum: ['admin', 'member'],
-            type: 'string'
-        }
-    },
-    required: ['businessId', 'accountId', 'role'],
-    type: 'object'
-} as const;
-
 export const CreateBusinessParamsSchema = {
     additionalProperties: false,
     properties: {
@@ -336,43 +298,6 @@ export const CreateBusinessParamsSchema = {
     type: 'object'
 } as const;
 
-export const CreateDutchDynamicRoundParamsSchema = {
-    additionalProperties: false,
-    properties: {
-        '$schema': {
-            examples: ['https://example.com/schemas/CreateDutchDynamicRoundParams.json'],
-            format: 'uri',
-            readOnly: true,
-            type: 'string'
-        },
-        dutchDynamicRound: {
-            '$ref': '#/components/schemas/DutchDynamicRoundParams'
-        },
-        round: {
-            '$ref': '#/components/schemas/CreateRoundParams'
-        }
-    },
-    required: ['dutchDynamicRound', 'round'],
-    type: 'object'
-} as const;
-
-export const CreateFixedTotalRoundParamsSchema = {
-    additionalProperties: false,
-    properties: {
-        '$schema': {
-            examples: ['https://example.com/schemas/CreateFixedTotalRoundParams.json'],
-            format: 'uri',
-            readOnly: true,
-            type: 'string'
-        },
-        round: {
-            '$ref': '#/components/schemas/CreateRoundParams'
-        }
-    },
-    required: ['round'],
-    type: 'object'
-} as const;
-
 export const CreateInvestmentParamsSchema = {
     additionalProperties: false,
     properties: {
@@ -381,10 +306,6 @@ export const CreateInvestmentParamsSchema = {
             format: 'uri',
             readOnly: true,
             type: 'string'
-        },
-        amount: {
-            format: 'int64',
-            type: 'integer'
         },
         investorId: {
             format: 'int64',
@@ -395,53 +316,19 @@ export const CreateInvestmentParamsSchema = {
             type: 'integer'
         }
     },
-    required: ['roundId', 'investorId', 'amount'],
-    type: 'object'
-} as const;
-
-export const CreatePartialTotalRoundParamsSchema = {
-    additionalProperties: false,
-    properties: {
-        '$schema': {
-            examples: ['https://example.com/schemas/CreatePartialTotalRoundParams.json'],
-            format: 'uri',
-            readOnly: true,
-            type: 'string'
-        },
-        partialTotalRound: {
-            '$ref': '#/components/schemas/PartialTotalRoundParams'
-        },
-        round: {
-            '$ref': '#/components/schemas/CreateRoundParams'
-        }
-    },
-    required: ['partialTotalRound', 'round'],
-    type: 'object'
-} as const;
-
-export const CreateRegularDynamicRoundParamsSchema = {
-    additionalProperties: false,
-    properties: {
-        '$schema': {
-            examples: ['https://example.com/schemas/CreateRegularDynamicRoundParams.json'],
-            format: 'uri',
-            readOnly: true,
-            type: 'string'
-        },
-        regularDynamicRound: {
-            '$ref': '#/components/schemas/RegularDynamicRoundParams'
-        },
-        round: {
-            '$ref': '#/components/schemas/CreateRoundParams'
-        }
-    },
-    required: ['regularDynamicRound', 'round'],
+    required: ['roundId', 'investorId'],
     type: 'object'
 } as const;
 
 export const CreateRoundParamsSchema = {
     additionalProperties: false,
     properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/CreateRoundParams.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
         beginsAt: {
             format: 'date-time',
             type: 'string'
@@ -449,6 +336,11 @@ export const CreateRoundParamsSchema = {
         endsAt: {
             format: 'date-time',
             type: 'string'
+        },
+        investorCount: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
         },
         percentageOffered: {
             format: 'double',
@@ -461,12 +353,8 @@ export const CreateRoundParamsSchema = {
             minimum: 1,
             type: 'integer'
         },
-        status: {
-            enum: ['active', 'successful', 'failed'],
-            type: 'string'
-        },
         valueCurrency: {
-            enum: ['USD', 'GBP', 'EUR', 'CAD', 'AUD', 'JPY'],
+            enum: ['usd', 'gbp', 'eur', 'cad', 'aud', 'jpy'],
             type: 'string'
         },
         ventureId: {
@@ -475,7 +363,7 @@ export const CreateRoundParamsSchema = {
             type: 'integer'
         }
     },
-    required: ['ventureId', 'beginsAt', 'endsAt', 'percentageOffered', 'percentageValue', 'valueCurrency', 'status'],
+    required: ['ventureId', 'beginsAt', 'endsAt', 'percentageOffered', 'percentageValue', 'valueCurrency', 'investorCount'],
     type: 'object'
 } as const;
 
@@ -488,73 +376,23 @@ export const CreateVentureParamsSchema = {
             readOnly: true,
             type: 'string'
         },
-        address: {
-            '$ref': '#/components/schemas/CreateAddressParams'
+        businessId: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
         },
-        venture: {
-            '$ref': '#/components/schemas/VentureParams'
-        }
-    },
-    required: ['venture'],
-    type: 'object'
-} as const;
-
-export const DutchDynamicRoundSchema = {
-    additionalProperties: false,
-    properties: {
-        createdAt: {
-            format: 'date-time',
+        description: {
+            maxLength: 5000,
+            minLength: 3,
             type: 'string'
         },
-        deletedAt: {
-            format: 'date-time',
-            type: ['string', 'null']
-        },
-        round: {
-            '$ref': '#/components/schemas/Round'
-        },
-        roundId: {
-            format: 'int64',
-            type: 'integer'
-        },
-        updatedAt: {
-            format: 'date-time',
-            type: ['string', 'null']
-        },
-        valuationDollarDropRate: {
-            format: 'int64',
-            type: 'integer'
-        },
-        valuationDropIntervalDays: {
-            format: 'int64',
-            type: 'integer'
-        },
-        valuationStopLoss: {
-            format: 'int64',
-            type: 'integer'
+        name: {
+            maxLength: 100,
+            minLength: 3,
+            type: 'string'
         }
     },
-    required: ['roundId', 'round', 'valuationDollarDropRate', 'valuationStopLoss', 'valuationDropIntervalDays', 'createdAt', 'updatedAt', 'deletedAt'],
-    type: 'object'
-} as const;
-
-export const DutchDynamicRoundParamsSchema = {
-    additionalProperties: false,
-    properties: {
-        valuationDollarDropRate: {
-            format: 'int64',
-            type: 'integer'
-        },
-        valuationDropIntervalDays: {
-            format: 'int64',
-            type: 'integer'
-        },
-        valuationStopLoss: {
-            format: 'int64',
-            type: 'integer'
-        }
-    },
-    required: ['valuationDollarDropRate', 'valuationStopLoss', 'valuationDropIntervalDays'],
+    required: ['businessId', 'name', 'description'],
     type: 'object'
 } as const;
 
@@ -615,29 +453,6 @@ export const ErrorModelSchema = {
     type: 'object'
 } as const;
 
-export const FixedTotalRoundSchema = {
-    additionalProperties: false,
-    properties: {
-        createdAt: {
-            format: 'date-time',
-            type: 'string'
-        },
-        deletedAt: {
-            format: 'date-time',
-            type: ['string', 'null']
-        },
-        round: {
-            '$ref': '#/components/schemas/Round'
-        },
-        updatedAt: {
-            format: 'date-time',
-            type: ['string', 'null']
-        }
-    },
-    required: ['round', 'createdAt', 'updatedAt', 'deletedAt'],
-    type: 'object'
-} as const;
-
 export const GetBusinessesOutputBodySchema = {
     additionalProperties: false,
     properties: {
@@ -658,126 +473,6 @@ export const GetBusinessesOutputBodySchema = {
         }
     },
     required: ['businesses', 'message'],
-    type: 'object'
-} as const;
-
-export const GetCursorPaginatedDutchDynamicRoundsOutputBodySchema = {
-    additionalProperties: false,
-    properties: {
-        '$schema': {
-            examples: ['https://example.com/schemas/GetCursorPaginatedDutchDynamicRoundsOutputBody.json'],
-            format: 'uri',
-            readOnly: true,
-            type: 'string'
-        },
-        dutchDynamicRounds: {
-            items: {
-                '$ref': '#/components/schemas/DutchDynamicRound'
-            },
-            type: ['array', 'null']
-        },
-        hasMore: {
-            type: 'boolean'
-        },
-        message: {
-            type: 'string'
-        },
-        nextCursor: {
-            format: 'int64',
-            type: ['integer', 'null']
-        }
-    },
-    required: ['dutchDynamicRounds', 'message', 'nextCursor', 'hasMore'],
-    type: 'object'
-} as const;
-
-export const GetCursorPaginatedFixedTotalRoundsOutputBodySchema = {
-    additionalProperties: false,
-    properties: {
-        '$schema': {
-            examples: ['https://example.com/schemas/GetCursorPaginatedFixedTotalRoundsOutputBody.json'],
-            format: 'uri',
-            readOnly: true,
-            type: 'string'
-        },
-        fixedTotalRounds: {
-            items: {
-                '$ref': '#/components/schemas/FixedTotalRound'
-            },
-            type: ['array', 'null']
-        },
-        hasMore: {
-            type: 'boolean'
-        },
-        message: {
-            type: 'string'
-        },
-        nextCursor: {
-            format: 'int64',
-            type: ['integer', 'null']
-        }
-    },
-    required: ['fixedTotalRounds', 'message', 'nextCursor', 'hasMore'],
-    type: 'object'
-} as const;
-
-export const GetCursorPaginatedPartialTotalRoundsOutputBodySchema = {
-    additionalProperties: false,
-    properties: {
-        '$schema': {
-            examples: ['https://example.com/schemas/GetCursorPaginatedPartialTotalRoundsOutputBody.json'],
-            format: 'uri',
-            readOnly: true,
-            type: 'string'
-        },
-        hasMore: {
-            type: 'boolean'
-        },
-        message: {
-            type: 'string'
-        },
-        nextCursor: {
-            format: 'int64',
-            type: ['integer', 'null']
-        },
-        partialTotalRounds: {
-            items: {
-                '$ref': '#/components/schemas/PartialTotalRound'
-            },
-            type: ['array', 'null']
-        }
-    },
-    required: ['partialTotalRounds', 'message', 'nextCursor', 'hasMore'],
-    type: 'object'
-} as const;
-
-export const GetCursorPaginatedRegularDynamicRoundsOutputBodySchema = {
-    additionalProperties: false,
-    properties: {
-        '$schema': {
-            examples: ['https://example.com/schemas/GetCursorPaginatedRegularDynamicRoundsOutputBody.json'],
-            format: 'uri',
-            readOnly: true,
-            type: 'string'
-        },
-        hasMore: {
-            type: 'boolean'
-        },
-        message: {
-            type: 'string'
-        },
-        nextCursor: {
-            format: 'int64',
-            type: ['integer', 'null']
-        },
-        regularDynamicRounds: {
-            items: {
-                '$ref': '#/components/schemas/RegularDynamicRound'
-            },
-            type: ['array', 'null']
-        }
-    },
-    required: ['regularDynamicRounds', 'message', 'nextCursor', 'hasMore'],
     type: 'object'
 } as const;
 
@@ -811,11 +506,11 @@ export const GetCursorPaginatedRoundInvestmentsOutputBodySchema = {
     type: 'object'
 } as const;
 
-export const GetCursorPaginatedRoundsWithSubtypesOutputBodySchema = {
+export const GetCursorPaginatedRoundsOutputBodySchema = {
     additionalProperties: false,
     properties: {
         '$schema': {
-            examples: ['https://example.com/schemas/GetCursorPaginatedRoundsWithSubtypesOutputBody.json'],
+            examples: ['https://example.com/schemas/GetCursorPaginatedRoundsOutputBody.json'],
             format: 'uri',
             readOnly: true,
             type: 'string'
@@ -830,14 +525,14 @@ export const GetCursorPaginatedRoundsWithSubtypesOutputBodySchema = {
             format: 'int64',
             type: ['integer', 'null']
         },
-        roundsWithSubtypes: {
+        rounds: {
             items: {
-                '$ref': '#/components/schemas/RoundWithSubtypes'
+                '$ref': '#/components/schemas/Round'
             },
             type: ['array', 'null']
         }
     },
-    required: ['roundsWithSubtypes', 'message', 'nextCursor', 'hasMore'],
+    required: ['rounds', 'message', 'nextCursor', 'hasMore'],
     type: 'object'
 } as const;
 
@@ -871,133 +566,24 @@ export const GetCursorPaginatedVenturesOutputBodySchema = {
     type: 'object'
 } as const;
 
-export const GetOffsetPaginatedBusinessMembersResponseBodySchema = {
+export const GetLikeCountOutputBodySchema = {
     additionalProperties: false,
     properties: {
         '$schema': {
-            examples: ['https://example.com/schemas/GetOffsetPaginatedBusinessMembersResponseBody.json'],
+            examples: ['https://example.com/schemas/GetLikeCountOutputBody.json'],
             format: 'uri',
             readOnly: true,
             type: 'string'
         },
-        businessMembers: {
-            items: {
-                '$ref': '#/components/schemas/BusinessMember'
-            },
-            type: ['array', 'null']
-        },
-        hasMore: {
-            type: 'boolean'
+        count: {
+            format: 'int64',
+            type: 'integer'
         },
         message: {
             type: 'string'
         }
     },
-    required: ['businessMembers', 'message', 'hasMore'],
-    type: 'object'
-} as const;
-
-export const GetOffsetPaginatedDutchDynamicRoundsOutputBodySchema = {
-    additionalProperties: false,
-    properties: {
-        '$schema': {
-            examples: ['https://example.com/schemas/GetOffsetPaginatedDutchDynamicRoundsOutputBody.json'],
-            format: 'uri',
-            readOnly: true,
-            type: 'string'
-        },
-        dutchDynamicRounds: {
-            items: {
-                '$ref': '#/components/schemas/DutchDynamicRound'
-            },
-            type: ['array', 'null']
-        },
-        hasMore: {
-            type: 'boolean'
-        },
-        message: {
-            type: 'string'
-        }
-    },
-    required: ['dutchDynamicRounds', 'message', 'hasMore'],
-    type: 'object'
-} as const;
-
-export const GetOffsetPaginatedFixedTotalRoundsOutputBodySchema = {
-    additionalProperties: false,
-    properties: {
-        '$schema': {
-            examples: ['https://example.com/schemas/GetOffsetPaginatedFixedTotalRoundsOutputBody.json'],
-            format: 'uri',
-            readOnly: true,
-            type: 'string'
-        },
-        fixedTotalRounds: {
-            items: {
-                '$ref': '#/components/schemas/FixedTotalRound'
-            },
-            type: ['array', 'null']
-        },
-        hasMore: {
-            type: 'boolean'
-        },
-        message: {
-            type: 'string'
-        }
-    },
-    required: ['fixedTotalRounds', 'message', 'hasMore'],
-    type: 'object'
-} as const;
-
-export const GetOffsetPaginatedPartialTotalRoundsOutputBodySchema = {
-    additionalProperties: false,
-    properties: {
-        '$schema': {
-            examples: ['https://example.com/schemas/GetOffsetPaginatedPartialTotalRoundsOutputBody.json'],
-            format: 'uri',
-            readOnly: true,
-            type: 'string'
-        },
-        hasMore: {
-            type: 'boolean'
-        },
-        message: {
-            type: 'string'
-        },
-        partialTotalRounds: {
-            items: {
-                '$ref': '#/components/schemas/PartialTotalRound'
-            },
-            type: ['array', 'null']
-        }
-    },
-    required: ['partialTotalRounds', 'message', 'hasMore'],
-    type: 'object'
-} as const;
-
-export const GetOffsetPaginatedRegularDynamicRoundsOutputBodySchema = {
-    additionalProperties: false,
-    properties: {
-        '$schema': {
-            examples: ['https://example.com/schemas/GetOffsetPaginatedRegularDynamicRoundsOutputBody.json'],
-            format: 'uri',
-            readOnly: true,
-            type: 'string'
-        },
-        hasMore: {
-            type: 'boolean'
-        },
-        message: {
-            type: 'string'
-        },
-        regularDynamicRounds: {
-            items: {
-                '$ref': '#/components/schemas/RegularDynamicRound'
-            },
-            type: ['array', 'null']
-        }
-    },
-    required: ['regularDynamicRounds', 'message', 'hasMore'],
+    required: ['count', 'message'],
     type: 'object'
 } as const;
 
@@ -1027,11 +613,11 @@ export const GetOffsetPaginatedRoundInvestmentsOutputBodySchema = {
     type: 'object'
 } as const;
 
-export const GetOffsetPaginatedRoundsWithSubtypesOutputBodySchema = {
+export const GetOffsetPaginatedRoundsOutputBodySchema = {
     additionalProperties: false,
     properties: {
         '$schema': {
-            examples: ['https://example.com/schemas/GetOffsetPaginatedRoundsWithSubtypesOutputBody.json'],
+            examples: ['https://example.com/schemas/GetOffsetPaginatedRoundsOutputBody.json'],
             format: 'uri',
             readOnly: true,
             type: 'string'
@@ -1042,14 +628,14 @@ export const GetOffsetPaginatedRoundsWithSubtypesOutputBodySchema = {
         message: {
             type: 'string'
         },
-        roundsWithSubtypes: {
+        rounds: {
             items: {
-                '$ref': '#/components/schemas/RoundWithSubtypes'
+                '$ref': '#/components/schemas/Round'
             },
             type: ['array', 'null']
         }
     },
-    required: ['roundsWithSubtypes', 'message', 'hasMore'],
+    required: ['rounds', 'message', 'hasMore'],
     type: 'object'
 } as const;
 
@@ -1076,6 +662,26 @@ export const GetOffsetPaginatedVenturesOutputBodySchema = {
         }
     },
     required: ['ventures', 'message', 'hasMore'],
+    type: 'object'
+} as const;
+
+export const IsLikedOutputBodySchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/IsLikedOutputBody.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        liked: {
+            type: 'boolean'
+        },
+        message: {
+            type: 'string'
+        }
+    },
+    required: ['liked', 'message'],
     type: 'object'
 } as const;
 
@@ -1116,100 +722,17 @@ export const MessageResponseSchema = {
     type: 'object'
 } as const;
 
-export const PartialTotalRoundSchema = {
-    additionalProperties: false,
-    properties: {
-        createdAt: {
-            format: 'date-time',
-            type: 'string'
-        },
-        deletedAt: {
-            format: 'date-time',
-            type: ['string', 'null']
-        },
-        investorCount: {
-            format: 'int64',
-            type: 'integer'
-        },
-        round: {
-            '$ref': '#/components/schemas/Round'
-        },
-        roundId: {
-            format: 'int64',
-            type: 'integer'
-        },
-        updatedAt: {
-            format: 'date-time',
-            type: ['string', 'null']
-        }
-    },
-    required: ['roundId', 'round', 'investorCount', 'createdAt', 'updatedAt', 'deletedAt'],
-    type: 'object'
-} as const;
-
-export const PartialTotalRoundParamsSchema = {
-    additionalProperties: false,
-    properties: {
-        investorCount: {
-            format: 'int64',
-            type: 'integer'
-        }
-    },
-    required: ['investorCount'],
-    type: 'object'
-} as const;
-
-export const RegularDynamicRoundSchema = {
-    additionalProperties: false,
-    properties: {
-        createdAt: {
-            format: 'date-time',
-            type: 'string'
-        },
-        daysExtendOnBid: {
-            format: 'int64',
-            minimum: 1,
-            type: 'integer'
-        },
-        deletedAt: {
-            format: 'date-time',
-            type: ['string', 'null']
-        },
-        round: {
-            '$ref': '#/components/schemas/Round'
-        },
-        roundId: {
-            format: 'int64',
-            type: 'integer'
-        },
-        updatedAt: {
-            format: 'date-time',
-            type: ['string', 'null']
-        }
-    },
-    required: ['roundId', 'round', 'daysExtendOnBid', 'createdAt', 'updatedAt', 'deletedAt'],
-    type: 'object'
-} as const;
-
-export const RegularDynamicRoundParamsSchema = {
-    additionalProperties: false,
-    properties: {
-        daysExtendOnBid: {
-            format: 'int64',
-            minimum: 1,
-            type: 'integer'
-        }
-    },
-    required: ['daysExtendOnBid'],
-    type: 'object'
-} as const;
-
 export const RoundSchema = {
     additionalProperties: false,
     properties: {
         beginsAt: {
             format: 'date-time',
             type: 'string'
+        },
+        buyIn: {
+            format: 'double',
+            minimum: 1,
+            type: 'number'
         },
         createdAt: {
             format: 'date-time',
@@ -1224,6 +747,11 @@ export const RoundSchema = {
             type: 'string'
         },
         id: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
+        investorCount: {
             format: 'int64',
             minimum: 1,
             type: 'integer'
@@ -1248,7 +776,7 @@ export const RoundSchema = {
             type: ['string', 'null']
         },
         valueCurrency: {
-            enum: ['USD', 'GBP', 'EUR', 'CAD', 'AUD', 'JPY'],
+            enum: ['usd', 'gbp', 'eur', 'cad', 'aud', 'jpy'],
             type: 'string'
         },
         ventureId: {
@@ -1257,17 +785,13 @@ export const RoundSchema = {
             type: 'integer'
         }
     },
-    required: ['id', 'ventureId', 'beginsAt', 'endsAt', 'percentageOffered', 'percentageValue', 'valueCurrency', 'status', 'createdAt', 'updatedAt', 'deletedAt'],
+    required: ['ventureId', 'beginsAt', 'endsAt', 'percentageOffered', 'percentageValue', 'valueCurrency', 'status', 'investorCount', 'buyIn', 'id', 'createdAt', 'updatedAt', 'deletedAt'],
     type: 'object'
 } as const;
 
 export const RoundInvestmentSchema = {
     additionalProperties: false,
     properties: {
-        amount: {
-            format: 'int64',
-            type: 'integer'
-        },
         createdAt: {
             format: 'date-time',
             type: 'string'
@@ -1290,7 +814,6 @@ export const RoundInvestmentSchema = {
         },
         paidAt: {
             format: 'date-time',
-            readOnly: true,
             type: ['string', 'null']
         },
         round: {
@@ -1302,88 +825,14 @@ export const RoundInvestmentSchema = {
         },
         status: {
             enum: ['pending', 'accepted', 'rejected', 'withdrawn', 'successful', 'failed'],
-            readOnly: true,
             type: 'string'
-        },
-        stripeCheckoutSessionId: {
-            readOnly: true,
-            type: ['string', 'null']
         },
         updatedAt: {
             format: 'date-time',
             type: ['string', 'null']
         }
     },
-    required: ['round', 'investor', 'id', 'roundId', 'investorId', 'amount', 'status', 'stripeCheckoutSessionId', 'paidAt', 'createdAt', 'updatedAt', 'deletedAt'],
-    type: 'object'
-} as const;
-
-export const RoundWithSubtypesSchema = {
-    additionalProperties: false,
-    properties: {
-        beginsAt: {
-            format: 'date-time',
-            type: 'string'
-        },
-        createdAt: {
-            format: 'date-time',
-            type: 'string'
-        },
-        deletedAt: {
-            format: 'date-time',
-            type: ['string', 'null']
-        },
-        dutchDynamicRound: {
-            '$ref': '#/components/schemas/DutchDynamicRound'
-        },
-        endsAt: {
-            format: 'date-time',
-            type: 'string'
-        },
-        fixedTotalRound: {
-            '$ref': '#/components/schemas/FixedTotalRound'
-        },
-        id: {
-            format: 'int64',
-            minimum: 1,
-            type: 'integer'
-        },
-        partialTotalRound: {
-            '$ref': '#/components/schemas/PartialTotalRound'
-        },
-        percentageOffered: {
-            format: 'double',
-            maximum: 100,
-            minimum: 0,
-            type: 'number'
-        },
-        percentageValue: {
-            format: 'int64',
-            minimum: 1,
-            type: 'integer'
-        },
-        regularDynamicRound: {
-            '$ref': '#/components/schemas/RegularDynamicRound'
-        },
-        status: {
-            enum: ['active', 'successful', 'failed'],
-            type: 'string'
-        },
-        updatedAt: {
-            format: 'date-time',
-            type: ['string', 'null']
-        },
-        valueCurrency: {
-            enum: ['USD', 'GBP', 'EUR', 'CAD', 'AUD', 'JPY'],
-            type: 'string'
-        },
-        ventureId: {
-            format: 'int64',
-            minimum: 1,
-            type: 'integer'
-        }
-    },
-    required: ['fixedTotalRound', 'dutchDynamicRound', 'partialTotalRound', 'regularDynamicRound', 'id', 'ventureId', 'beginsAt', 'endsAt', 'percentageOffered', 'percentageValue', 'valueCurrency', 'status', 'createdAt', 'updatedAt', 'deletedAt'],
+    required: ['status', 'paidAt', 'round', 'investor', 'id', 'roundId', 'investorId', 'createdAt', 'updatedAt', 'deletedAt'],
     type: 'object'
 } as const;
 
@@ -1407,26 +856,6 @@ export const SingleAccountResponseBodySchema = {
     type: 'object'
 } as const;
 
-export const SingleBusinessMemberResponseBodySchema = {
-    additionalProperties: false,
-    properties: {
-        '$schema': {
-            examples: ['https://example.com/schemas/SingleBusinessMemberResponseBody.json'],
-            format: 'uri',
-            readOnly: true,
-            type: 'string'
-        },
-        businessMember: {
-            '$ref': '#/components/schemas/BusinessMember'
-        },
-        message: {
-            type: 'string'
-        }
-    },
-    required: ['businessMember', 'message'],
-    type: 'object'
-} as const;
-
 export const SingleBusinessResponseBodySchema = {
     additionalProperties: false,
     properties: {
@@ -1447,91 +876,11 @@ export const SingleBusinessResponseBodySchema = {
     type: 'object'
 } as const;
 
-export const SingleDutchDynamicRoundResponseBodySchema = {
+export const SingleInvestmentResponseBodySchema = {
     additionalProperties: false,
     properties: {
         '$schema': {
-            examples: ['https://example.com/schemas/SingleDutchDynamicRoundResponseBody.json'],
-            format: 'uri',
-            readOnly: true,
-            type: 'string'
-        },
-        message: {
-            type: 'string'
-        },
-        round: {
-            '$ref': '#/components/schemas/DutchDynamicRound'
-        }
-    },
-    required: ['round', 'message'],
-    type: 'object'
-} as const;
-
-export const SingleFixedTotalRoundResponseBodySchema = {
-    additionalProperties: false,
-    properties: {
-        '$schema': {
-            examples: ['https://example.com/schemas/SingleFixedTotalRoundResponseBody.json'],
-            format: 'uri',
-            readOnly: true,
-            type: 'string'
-        },
-        message: {
-            type: 'string'
-        },
-        round: {
-            '$ref': '#/components/schemas/FixedTotalRound'
-        }
-    },
-    required: ['round', 'message'],
-    type: 'object'
-} as const;
-
-export const SinglePartialTotalRoundResponseBodySchema = {
-    additionalProperties: false,
-    properties: {
-        '$schema': {
-            examples: ['https://example.com/schemas/SinglePartialTotalRoundResponseBody.json'],
-            format: 'uri',
-            readOnly: true,
-            type: 'string'
-        },
-        message: {
-            type: 'string'
-        },
-        round: {
-            '$ref': '#/components/schemas/PartialTotalRound'
-        }
-    },
-    required: ['round', 'message'],
-    type: 'object'
-} as const;
-
-export const SingleRegularDynamicRoundResponseBodySchema = {
-    additionalProperties: false,
-    properties: {
-        '$schema': {
-            examples: ['https://example.com/schemas/SingleRegularDynamicRoundResponseBody.json'],
-            format: 'uri',
-            readOnly: true,
-            type: 'string'
-        },
-        message: {
-            type: 'string'
-        },
-        round: {
-            '$ref': '#/components/schemas/RegularDynamicRound'
-        }
-    },
-    required: ['round', 'message'],
-    type: 'object'
-} as const;
-
-export const SingleRoundInvestmentResponseBodySchema = {
-    additionalProperties: false,
-    properties: {
-        '$schema': {
-            examples: ['https://example.com/schemas/SingleRoundInvestmentResponseBody.json'],
+            examples: ['https://example.com/schemas/SingleInvestmentResponseBody.json'],
             format: 'uri',
             readOnly: true,
             type: 'string'
@@ -1547,11 +896,11 @@ export const SingleRoundInvestmentResponseBodySchema = {
     type: 'object'
 } as const;
 
-export const SingleRoundWithSubtypesResponseBodySchema = {
+export const SingleRoundResponseBodySchema = {
     additionalProperties: false,
     properties: {
         '$schema': {
-            examples: ['https://example.com/schemas/SingleRoundWithSubtypesResponseBody.json'],
+            examples: ['https://example.com/schemas/SingleRoundResponseBody.json'],
             format: 'uri',
             readOnly: true,
             type: 'string'
@@ -1560,7 +909,7 @@ export const SingleRoundWithSubtypesResponseBodySchema = {
             type: 'string'
         },
         round: {
-            '$ref': '#/components/schemas/RoundWithSubtypes'
+            '$ref': '#/components/schemas/Round'
         }
     },
     required: ['round', 'message'],
@@ -1615,24 +964,6 @@ export const UpdateAccountParamsSchema = {
     type: 'object'
 } as const;
 
-export const UpdateBusinessMemberParamsSchema = {
-    additionalProperties: false,
-    properties: {
-        '$schema': {
-            examples: ['https://example.com/schemas/UpdateBusinessMemberParams.json'],
-            format: 'uri',
-            readOnly: true,
-            type: 'string'
-        },
-        role: {
-            enum: ['admin', 'member'],
-            type: 'string'
-        }
-    },
-    required: ['role'],
-    type: 'object'
-} as const;
-
 export const UpdateVentureParamsSchema = {
     additionalProperties: false,
     properties: {
@@ -1660,15 +991,6 @@ export const UpdateVentureParamsSchema = {
 export const VentureSchema = {
     additionalProperties: false,
     properties: {
-        address: {
-            '$ref': '#/components/schemas/Address'
-        },
-        addressId: {
-            format: 'int64',
-            minimum: 1,
-            readOnly: true,
-            type: 'integer'
-        },
         businessId: {
             format: 'int64',
             minimum: 1,
@@ -1693,20 +1015,11 @@ export const VentureSchema = {
             type: 'integer'
         },
         isHidden: {
-            readOnly: true,
-            type: 'boolean'
-        },
-        isRemote: {
-            default: false,
             type: 'boolean'
         },
         name: {
             maxLength: 100,
             minLength: 3,
-            type: 'string'
-        },
-        teamSize: {
-            enum: ['0-1', '2-10', '11-50', '51-200', '201-500', '501-1000', '1000+'],
             type: 'string'
         },
         updatedAt: {
@@ -1714,47 +1027,6 @@ export const VentureSchema = {
             type: ['string', 'null']
         }
     },
-    required: ['address', 'businessId', 'isHidden', 'teamSize', 'isRemote', 'name', 'description', 'id', 'createdAt', 'updatedAt', 'deletedAt'],
-    type: 'object'
-} as const;
-
-export const VentureParamsSchema = {
-    additionalProperties: false,
-    properties: {
-        addressId: {
-            format: 'int64',
-            minimum: 1,
-            readOnly: true,
-            type: 'integer'
-        },
-        businessId: {
-            format: 'int64',
-            minimum: 1,
-            type: 'integer'
-        },
-        description: {
-            maxLength: 5000,
-            minLength: 3,
-            type: 'string'
-        },
-        isHidden: {
-            readOnly: true,
-            type: 'boolean'
-        },
-        isRemote: {
-            default: false,
-            type: 'boolean'
-        },
-        name: {
-            maxLength: 100,
-            minLength: 3,
-            type: 'string'
-        },
-        teamSize: {
-            enum: ['0-1', '2-10', '11-50', '51-200', '201-500', '501-1000', '1000+'],
-            type: 'string'
-        }
-    },
-    required: ['businessId', 'isHidden', 'teamSize', 'isRemote', 'name', 'description'],
+    required: ['businessId', 'isHidden', 'name', 'description', 'id', 'createdAt', 'updatedAt', 'deletedAt'],
     type: 'object'
 } as const;

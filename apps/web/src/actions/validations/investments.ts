@@ -1,8 +1,7 @@
-import { number, object, string } from "yup";
+import { number, object } from "yup";
 import { CreateInvestmentParams } from "../../lib/api";
 
-export const createRoundInvestmentSchema =
+export const createInvestmentSchema =
 	object<CreateInvestmentParams>().shape({
-		amount: number().min(1).required(),
 		roundId: number().min(1).required(),
 	});

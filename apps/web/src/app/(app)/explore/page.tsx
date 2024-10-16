@@ -8,16 +8,9 @@ import { faker } from "@faker-js/faker"
 export default function ExplorePage() {
   const { resource } = useExploreNavbarStore()
 
-  const ventures: VentureIndexCard[] = Array.from({ length: 10 }).map(() => ({
-    ventureId: faker.number.int().toString(),
-    name: faker.company.name(),
-    createdAt: faker.date.past(),
-    href: faker.internet.url(),
-  }));
-
   if (resource === "Rounds") {
-    return <RoundIndex rounds={[]} />
+    return <RoundIndex />
   } else if (resource === "Ventures") {
-    return <VentureIndex ventures={ventures} />
+    return <VentureIndex />
   }
 }

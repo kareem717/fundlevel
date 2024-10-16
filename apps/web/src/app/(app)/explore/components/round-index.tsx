@@ -4,22 +4,22 @@ import { ComponentPropsWithoutRef, FC, useEffect, useState } from "react"
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { PatternBackground } from "@/components/app/pattern-background";
 import { timeSince, cn } from "@/lib/utils";
-import { FixedTotalRound, RoundWithSubtypes } from "@/lib/api";
+import { Round, } from "@/lib/api";
 import redirects from "@/lib/config/redirects";
 import Link from "next/link";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { getFixedTotalRoundsInfinite } from "@/actions/rounds";
+import { getRoundsInfinite } from "@/actions/rounds";
 import { useAction } from "next-safe-action/hooks";
 import { toast } from "sonner";
 import { useInView } from "react-intersection-observer";
 import { Icons } from "@/components/ui/icons";
 
 export interface RoundIndexCardProps extends ComponentPropsWithoutRef<"div"> {
-  round: FixedTotalRound
+  round: Round
 };
 
 export const RoundIndexCard: FC<RoundIndexCardProps> = ({ round, className, ...props }) => {
-  const { createdAt, round: { id } } = round
+  const { createdAt, id } = round
 
   return (
     <Link href={redirects.app.rounds.view.replace(":id", id.toString())}>
@@ -42,13 +42,13 @@ export interface RoundIndexProps extends ComponentPropsWithoutRef<"div"> {
 };
 
 export const RoundIndex: FC<RoundIndexProps> = ({ ...props }) => {
-  const [rounds, setRounds] = useState<(FixedTotalRound)[]>([])
+  const [rounds, setRounds] = useState<(Round)[]>([])
   const [cursor, setCursor] = useState<number>(1)
   const [hasMore, setHasMore] = useState(true)
 
-  const { execute, isExecuting } = useAction(getFixedTotalRoundsInfinite, {
+  const { execute, isExecuting } = useAction(getRoundsInfinite, {
     onSuccess: ({ data }) => {
-      setRounds((prev) => [...prev, ...(data?.fixedTotalRounds || [])])
+      setRounds((prev) => [...prev, ...(data?.rounds || [])])
       setHasMore(data?.hasMore || false)
 
       if (data?.nextCursor) {
@@ -77,7 +77,7 @@ export const RoundIndex: FC<RoundIndexProps> = ({ ...props }) => {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 py-16 md:py-20">
         <ScrollArea className="w-full h-full flex flex-col justify-between">
           {rounds.map((round) => (
-            <RoundIndexCard key={round.round.id} round={round} className="w-full" />
+            <RoundIndexCard key={round.id} round={round} className="w-full" />
           ))}
         </ScrollArea>
       </div>

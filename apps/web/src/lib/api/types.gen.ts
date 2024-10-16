@@ -31,14 +31,17 @@ export type Address = {
 
 export type Business = {
     address: Address;
+    addressId: number;
     businessNumber: string;
     createdAt: Date;
     deletedAt: (Date) | null;
     foundingDate: Date;
     id: number;
+    isRemote: boolean;
     name: string;
     ownerAccountId: number;
     status: 'pending' | 'active' | 'disabled';
+    teamSize: '0-1' | '2-10' | '11-50' | '51-200' | '201-500' | '501-1000' | '1000+';
     updatedAt: (Date) | null;
 };
 
@@ -50,27 +53,25 @@ export const status = {
     DISABLED: 'disabled'
 } as const;
 
-export type BusinessMember = {
-    accountId: number;
-    businessId: number;
-    createdAt: Date;
-    role: 'admin' | 'member';
-    updatedAt: (Date) | null;
-};
+export type teamSize = '0-1' | '2-10' | '11-50' | '51-200' | '201-500' | '501-1000' | '1000+';
 
-export type role = 'admin' | 'member';
-
-export const role = {
-    ADMIN: 'admin',
-    MEMBER: 'member'
+export const teamSize = {
+    _0_1: '0-1',
+    _2_10: '2-10',
+    _11_50: '11-50',
+    _51_200: '51-200',
+    _201_500: '201-500',
+    _501_1000: '501-1000',
+    _1000_: '1000+'
 } as const;
 
 export type BusinessParams = {
     businessNumber: string;
     foundingDate: Date;
+    isRemote?: boolean;
     name: string;
     ownerAccountId: number;
-    status: 'pending' | 'active' | 'disabled';
+    teamSize: '0-1' | '2-10' | '11-50' | '51-200' | '201-500' | '501-1000' | '1000+';
 };
 
 export type CreateAccountParams = {
@@ -98,16 +99,6 @@ export type CreateAddressParams = {
     yCoordinate: number;
 };
 
-export type CreateBusinessMemberParams = {
-    /**
-     * A URL to the JSON Schema for this object.
-     */
-    readonly $schema?: string;
-    accountId: number;
-    businessId: number;
-    role: 'admin' | 'member';
-};
-
 export type CreateBusinessParams = {
     /**
      * A URL to the JSON Schema for this object.
@@ -117,78 +108,38 @@ export type CreateBusinessParams = {
     business: BusinessParams;
 };
 
-export type CreateDutchDynamicRoundParams = {
-    /**
-     * A URL to the JSON Schema for this object.
-     */
-    readonly $schema?: string;
-    dutchDynamicRound: DutchDynamicRoundParams;
-    round: CreateRoundParams;
-};
-
-export type CreateFixedTotalRoundParams = {
-    /**
-     * A URL to the JSON Schema for this object.
-     */
-    readonly $schema?: string;
-    round: CreateRoundParams;
-};
-
 export type CreateInvestmentParams = {
     /**
      * A URL to the JSON Schema for this object.
      */
     readonly $schema?: string;
-    amount: number;
     investorId: number;
     roundId: number;
 };
 
-export type CreatePartialTotalRoundParams = {
-    /**
-     * A URL to the JSON Schema for this object.
-     */
-    readonly $schema?: string;
-    partialTotalRound: PartialTotalRoundParams;
-    round: CreateRoundParams;
-};
-
-export type CreateRegularDynamicRoundParams = {
-    /**
-     * A URL to the JSON Schema for this object.
-     */
-    readonly $schema?: string;
-    regularDynamicRound: RegularDynamicRoundParams;
-    round: CreateRoundParams;
-};
-
 export type CreateRoundParams = {
+    /**
+     * A URL to the JSON Schema for this object.
+     */
+    readonly $schema?: string;
     beginsAt: Date;
     endsAt: Date;
+    investorCount: number;
     percentageOffered: number;
     percentageValue: number;
-    status: 'active' | 'successful' | 'failed';
-    valueCurrency: 'USD' | 'GBP' | 'EUR' | 'CAD' | 'AUD' | 'JPY';
+    valueCurrency: 'usd' | 'gbp' | 'eur' | 'cad' | 'aud' | 'jpy';
     ventureId: number;
 };
 
-export type status2 = 'active' | 'successful' | 'failed';
-
-export const status2 = {
-    ACTIVE: 'active',
-    SUCCESSFUL: 'successful',
-    FAILED: 'failed'
-} as const;
-
-export type valueCurrency = 'USD' | 'GBP' | 'EUR' | 'CAD' | 'AUD' | 'JPY';
+export type valueCurrency = 'usd' | 'gbp' | 'eur' | 'cad' | 'aud' | 'jpy';
 
 export const valueCurrency = {
-    USD: 'USD',
-    GBP: 'GBP',
-    EUR: 'EUR',
-    CAD: 'CAD',
-    AUD: 'AUD',
-    JPY: 'JPY'
+    USD: 'usd',
+    GBP: 'gbp',
+    EUR: 'eur',
+    CAD: 'cad',
+    AUD: 'aud',
+    JPY: 'jpy'
 } as const;
 
 export type CreateVentureParams = {
@@ -196,25 +147,9 @@ export type CreateVentureParams = {
      * A URL to the JSON Schema for this object.
      */
     readonly $schema?: string;
-    address?: CreateAddressParams;
-    venture: VentureParams;
-};
-
-export type DutchDynamicRound = {
-    createdAt: Date;
-    deletedAt: (Date) | null;
-    round: Round;
-    roundId: number;
-    updatedAt: (Date) | null;
-    valuationDollarDropRate: number;
-    valuationDropIntervalDays: number;
-    valuationStopLoss: number;
-};
-
-export type DutchDynamicRoundParams = {
-    valuationDollarDropRate: number;
-    valuationDropIntervalDays: number;
-    valuationStopLoss: number;
+    businessId: number;
+    description: string;
+    name: string;
 };
 
 export type ErrorDetail = {
@@ -263,13 +198,6 @@ export type ErrorModel = {
     type?: string;
 };
 
-export type FixedTotalRound = {
-    createdAt: Date;
-    deletedAt: (Date) | null;
-    round: Round;
-    updatedAt: (Date) | null;
-};
-
 export type GetBusinessesOutputBody = {
     /**
      * A URL to the JSON Schema for this object.
@@ -277,50 +205,6 @@ export type GetBusinessesOutputBody = {
     readonly $schema?: string;
     businesses: Array<Business> | null;
     message: string;
-};
-
-export type GetCursorPaginatedDutchDynamicRoundsOutputBody = {
-    /**
-     * A URL to the JSON Schema for this object.
-     */
-    readonly $schema?: string;
-    dutchDynamicRounds: Array<DutchDynamicRound> | null;
-    hasMore: boolean;
-    message: string;
-    nextCursor: (number) | null;
-};
-
-export type GetCursorPaginatedFixedTotalRoundsOutputBody = {
-    /**
-     * A URL to the JSON Schema for this object.
-     */
-    readonly $schema?: string;
-    fixedTotalRounds: Array<FixedTotalRound> | null;
-    hasMore: boolean;
-    message: string;
-    nextCursor: (number) | null;
-};
-
-export type GetCursorPaginatedPartialTotalRoundsOutputBody = {
-    /**
-     * A URL to the JSON Schema for this object.
-     */
-    readonly $schema?: string;
-    hasMore: boolean;
-    message: string;
-    nextCursor: (number) | null;
-    partialTotalRounds: Array<PartialTotalRound> | null;
-};
-
-export type GetCursorPaginatedRegularDynamicRoundsOutputBody = {
-    /**
-     * A URL to the JSON Schema for this object.
-     */
-    readonly $schema?: string;
-    hasMore: boolean;
-    message: string;
-    nextCursor: (number) | null;
-    regularDynamicRounds: Array<RegularDynamicRound> | null;
 };
 
 export type GetCursorPaginatedRoundInvestmentsOutputBody = {
@@ -334,7 +218,7 @@ export type GetCursorPaginatedRoundInvestmentsOutputBody = {
     nextCursor: (number) | null;
 };
 
-export type GetCursorPaginatedRoundsWithSubtypesOutputBody = {
+export type GetCursorPaginatedRoundsOutputBody = {
     /**
      * A URL to the JSON Schema for this object.
      */
@@ -342,7 +226,7 @@ export type GetCursorPaginatedRoundsWithSubtypesOutputBody = {
     hasMore: boolean;
     message: string;
     nextCursor: (number) | null;
-    roundsWithSubtypes: Array<RoundWithSubtypes> | null;
+    rounds: Array<Round> | null;
 };
 
 export type GetCursorPaginatedVenturesOutputBody = {
@@ -356,54 +240,13 @@ export type GetCursorPaginatedVenturesOutputBody = {
     ventures: Array<Venture> | null;
 };
 
-export type GetOffsetPaginatedBusinessMembersResponseBody = {
+export type GetLikeCountOutputBody = {
     /**
      * A URL to the JSON Schema for this object.
      */
     readonly $schema?: string;
-    businessMembers: Array<BusinessMember> | null;
-    hasMore: boolean;
+    count: number;
     message: string;
-};
-
-export type GetOffsetPaginatedDutchDynamicRoundsOutputBody = {
-    /**
-     * A URL to the JSON Schema for this object.
-     */
-    readonly $schema?: string;
-    dutchDynamicRounds: Array<DutchDynamicRound> | null;
-    hasMore: boolean;
-    message: string;
-};
-
-export type GetOffsetPaginatedFixedTotalRoundsOutputBody = {
-    /**
-     * A URL to the JSON Schema for this object.
-     */
-    readonly $schema?: string;
-    fixedTotalRounds: Array<FixedTotalRound> | null;
-    hasMore: boolean;
-    message: string;
-};
-
-export type GetOffsetPaginatedPartialTotalRoundsOutputBody = {
-    /**
-     * A URL to the JSON Schema for this object.
-     */
-    readonly $schema?: string;
-    hasMore: boolean;
-    message: string;
-    partialTotalRounds: Array<PartialTotalRound> | null;
-};
-
-export type GetOffsetPaginatedRegularDynamicRoundsOutputBody = {
-    /**
-     * A URL to the JSON Schema for this object.
-     */
-    readonly $schema?: string;
-    hasMore: boolean;
-    message: string;
-    regularDynamicRounds: Array<RegularDynamicRound> | null;
 };
 
 export type GetOffsetPaginatedRoundInvestmentsOutputBody = {
@@ -416,14 +259,14 @@ export type GetOffsetPaginatedRoundInvestmentsOutputBody = {
     message: string;
 };
 
-export type GetOffsetPaginatedRoundsWithSubtypesOutputBody = {
+export type GetOffsetPaginatedRoundsOutputBody = {
     /**
      * A URL to the JSON Schema for this object.
      */
     readonly $schema?: string;
     hasMore: boolean;
     message: string;
-    roundsWithSubtypes: Array<RoundWithSubtypes> | null;
+    rounds: Array<Round> | null;
 };
 
 export type GetOffsetPaginatedVenturesOutputBody = {
@@ -434,6 +277,15 @@ export type GetOffsetPaginatedVenturesOutputBody = {
     hasMore: boolean;
     message: string;
     ventures: Array<Venture> | null;
+};
+
+export type IsLikedOutputBody = {
+    /**
+     * A URL to the JSON Schema for this object.
+     */
+    readonly $schema?: string;
+    liked: boolean;
+    message: string;
 };
 
 export type LinkOutputBody = {
@@ -453,58 +305,40 @@ export type MessageResponse = {
     message: string;
 };
 
-export type PartialTotalRound = {
-    createdAt: Date;
-    deletedAt: (Date) | null;
-    investorCount: number;
-    round: Round;
-    roundId: number;
-    updatedAt: (Date) | null;
-};
-
-export type PartialTotalRoundParams = {
-    investorCount: number;
-};
-
-export type RegularDynamicRound = {
-    createdAt: Date;
-    daysExtendOnBid: number;
-    deletedAt: (Date) | null;
-    round: Round;
-    roundId: number;
-    updatedAt: (Date) | null;
-};
-
-export type RegularDynamicRoundParams = {
-    daysExtendOnBid: number;
-};
-
 export type Round = {
     beginsAt: Date;
+    buyIn: number;
     createdAt: Date;
     deletedAt: (Date) | null;
     endsAt: Date;
     id: number;
+    investorCount: number;
     percentageOffered: number;
     percentageValue: number;
     status: 'active' | 'successful' | 'failed';
     updatedAt: (Date) | null;
-    valueCurrency: 'USD' | 'GBP' | 'EUR' | 'CAD' | 'AUD' | 'JPY';
+    valueCurrency: 'usd' | 'gbp' | 'eur' | 'cad' | 'aud' | 'jpy';
     ventureId: number;
 };
 
+export type status2 = 'active' | 'successful' | 'failed';
+
+export const status2 = {
+    ACTIVE: 'active',
+    SUCCESSFUL: 'successful',
+    FAILED: 'failed'
+} as const;
+
 export type RoundInvestment = {
-    amount: number;
     createdAt: Date;
     deletedAt: (Date) | null;
     id: number;
     investor: Account;
     investorId: number;
-    readonly paidAt: (Date) | null;
+    paidAt: (Date) | null;
     round: Round;
     roundId: number;
-    readonly status: 'pending' | 'accepted' | 'rejected' | 'withdrawn' | 'successful' | 'failed';
-    readonly stripeCheckoutSessionId: (string) | null;
+    status: 'pending' | 'accepted' | 'rejected' | 'withdrawn' | 'successful' | 'failed';
     updatedAt: (Date) | null;
 };
 
@@ -519,39 +353,12 @@ export const status3 = {
     FAILED: 'failed'
 } as const;
 
-export type RoundWithSubtypes = {
-    beginsAt: Date;
-    createdAt: Date;
-    deletedAt: (Date) | null;
-    dutchDynamicRound: DutchDynamicRound;
-    endsAt: Date;
-    fixedTotalRound: FixedTotalRound;
-    id: number;
-    partialTotalRound: PartialTotalRound;
-    percentageOffered: number;
-    percentageValue: number;
-    regularDynamicRound: RegularDynamicRound;
-    status: 'active' | 'successful' | 'failed';
-    updatedAt: (Date) | null;
-    valueCurrency: 'USD' | 'GBP' | 'EUR' | 'CAD' | 'AUD' | 'JPY';
-    ventureId: number;
-};
-
 export type SingleAccountResponseBody = {
     /**
      * A URL to the JSON Schema for this object.
      */
     readonly $schema?: string;
     account: Account;
-    message: string;
-};
-
-export type SingleBusinessMemberResponseBody = {
-    /**
-     * A URL to the JSON Schema for this object.
-     */
-    readonly $schema?: string;
-    businessMember: BusinessMember;
     message: string;
 };
 
@@ -564,43 +371,7 @@ export type SingleBusinessResponseBody = {
     message: string;
 };
 
-export type SingleDutchDynamicRoundResponseBody = {
-    /**
-     * A URL to the JSON Schema for this object.
-     */
-    readonly $schema?: string;
-    message: string;
-    round: DutchDynamicRound;
-};
-
-export type SingleFixedTotalRoundResponseBody = {
-    /**
-     * A URL to the JSON Schema for this object.
-     */
-    readonly $schema?: string;
-    message: string;
-    round: FixedTotalRound;
-};
-
-export type SinglePartialTotalRoundResponseBody = {
-    /**
-     * A URL to the JSON Schema for this object.
-     */
-    readonly $schema?: string;
-    message: string;
-    round: PartialTotalRound;
-};
-
-export type SingleRegularDynamicRoundResponseBody = {
-    /**
-     * A URL to the JSON Schema for this object.
-     */
-    readonly $schema?: string;
-    message: string;
-    round: RegularDynamicRound;
-};
-
-export type SingleRoundInvestmentResponseBody = {
+export type SingleInvestmentResponseBody = {
     /**
      * A URL to the JSON Schema for this object.
      */
@@ -609,13 +380,13 @@ export type SingleRoundInvestmentResponseBody = {
     message: string;
 };
 
-export type SingleRoundWithSubtypesResponseBody = {
+export type SingleRoundResponseBody = {
     /**
      * A URL to the JSON Schema for this object.
      */
     readonly $schema?: string;
     message: string;
-    round: RoundWithSubtypes;
+    round: Round;
 };
 
 export type SingleVentureResponseBody = {
@@ -636,14 +407,6 @@ export type UpdateAccountParams = {
     lastName: string;
 };
 
-export type UpdateBusinessMemberParams = {
-    /**
-     * A URL to the JSON Schema for this object.
-     */
-    readonly $schema?: string;
-    role: 'admin' | 'member';
-};
-
 export type UpdateVentureParams = {
     /**
      * A URL to the JSON Schema for this object.
@@ -654,40 +417,14 @@ export type UpdateVentureParams = {
 };
 
 export type Venture = {
-    address: Address;
-    readonly addressId?: number;
     businessId: number;
     createdAt: Date;
     deletedAt: (Date) | null;
     description: string;
     id: number;
-    readonly isHidden: boolean;
-    isRemote: boolean;
+    isHidden: boolean;
     name: string;
-    teamSize: '0-1' | '2-10' | '11-50' | '51-200' | '201-500' | '501-1000' | '1000+';
     updatedAt: (Date) | null;
-};
-
-export type teamSize = '0-1' | '2-10' | '11-50' | '51-200' | '201-500' | '501-1000' | '1000+';
-
-export const teamSize = {
-    _0_1: '0-1',
-    _2_10: '2-10',
-    _11_50: '11-50',
-    _51_200: '51-200',
-    _201_500: '201-500',
-    _501_1000: '501-1000',
-    _1000_: '1000+'
-} as const;
-
-export type VentureParams = {
-    readonly addressId?: number;
-    businessId: number;
-    description: string;
-    readonly isHidden: boolean;
-    isRemote: boolean;
-    name: string;
-    teamSize: '0-1' | '2-10' | '11-50' | '51-200' | '201-500' | '501-1000' | '1000+';
 };
 
 export type CreateAccountData = {
@@ -739,15 +476,7 @@ export type GetAccountBusinessesResponse = (GetBusinessesOutputBody);
 
 export type GetAccountBusinessesError = (ErrorModel);
 
-export type CreateRoundInvestmentData = {
-    body: CreateInvestmentParams;
-};
-
-export type CreateRoundInvestmentResponse = (SingleRoundInvestmentResponseBody);
-
-export type CreateRoundInvestmentError = (ErrorModel);
-
-export type GetAccountRoundInvestmentsCursorData = {
+export type GetAccountInvestmentsByCursorData = {
     path: {
         id: number;
     };
@@ -757,11 +486,19 @@ export type GetAccountRoundInvestmentsCursorData = {
     };
 };
 
-export type GetAccountRoundInvestmentsCursorResponse = (GetCursorPaginatedRoundInvestmentsOutputBody);
+export type GetAccountInvestmentsByCursorResponse = (GetCursorPaginatedRoundInvestmentsOutputBody);
 
-export type GetAccountRoundInvestmentsCursorError = (ErrorModel);
+export type GetAccountInvestmentsByCursorError = (ErrorModel);
 
-export type GetRoundInvestmentsOffsetData = {
+export type CreateRoundInvestmentData = {
+    body: CreateInvestmentParams;
+};
+
+export type CreateRoundInvestmentResponse = (SingleInvestmentResponseBody);
+
+export type CreateRoundInvestmentError = (ErrorModel);
+
+export type GetAccountInvestmentsByPageData = {
     path: {
         id: number;
     };
@@ -771,9 +508,9 @@ export type GetRoundInvestmentsOffsetData = {
     };
 };
 
-export type GetRoundInvestmentsOffsetResponse = (GetOffsetPaginatedRoundInvestmentsOutputBody);
+export type GetAccountInvestmentsByPageResponse = (GetOffsetPaginatedRoundInvestmentsOutputBody);
 
-export type GetRoundInvestmentsOffsetError = (ErrorModel);
+export type GetAccountInvestmentsByPageError = (ErrorModel);
 
 export type DeleteRoundInvestmentData = {
     path: {
@@ -800,16 +537,16 @@ export type GetAccountCheckoutLinkResponse = (LinkOutputBody);
 
 export type GetAccountCheckoutLinkError = (ErrorModel);
 
-export type WithdrawRoundInvestmentData = {
+export type WithdrawInvestmentData = {
     path: {
         id: number;
         investmentId: number;
     };
 };
 
-export type WithdrawRoundInvestmentResponse = (string);
+export type WithdrawInvestmentResponse = (string);
 
-export type WithdrawRoundInvestmentError = (ErrorModel);
+export type WithdrawInvestmentError = (ErrorModel);
 
 export type HandleStripeWebhookData = {
     body: unknown;
@@ -829,29 +566,6 @@ export type CreateBusinessData = {
 export type CreateBusinessResponse = (SingleBusinessResponseBody);
 
 export type CreateBusinessError = (ErrorModel);
-
-export type DeleteBusinessMemberData = {
-    path: {
-        businessId: number;
-        id: number;
-    };
-};
-
-export type DeleteBusinessMemberResponse = (MessageResponse);
-
-export type DeleteBusinessMemberError = (ErrorModel);
-
-export type UpdateBusinessMemberData = {
-    body: UpdateBusinessMemberParams;
-    path: {
-        businessId: number;
-        id: number;
-    };
-};
-
-export type UpdateBusinessMemberResponse = (SingleBusinessMemberResponseBody);
-
-export type UpdateBusinessMemberError = (ErrorModel);
 
 export type DeleteBusinessData = {
     path: {
@@ -873,7 +587,21 @@ export type GetBusinessByIdResponse = (SingleBusinessResponseBody);
 
 export type GetBusinessByIdError = (ErrorModel);
 
-export type GetBusinessMembersData = {
+export type GetBusinessInvestmentsByCursorData = {
+    path: {
+        id: number;
+    };
+    query?: {
+        cursor?: number;
+        limit?: number;
+    };
+};
+
+export type GetBusinessInvestmentsByCursorResponse = (GetCursorPaginatedRoundInvestmentsOutputBody);
+
+export type GetBusinessInvestmentsByCursorError = (ErrorModel);
+
+export type GetBusinessInvestmentsByPageData = {
     path: {
         id: number;
     };
@@ -883,19 +611,11 @@ export type GetBusinessMembersData = {
     };
 };
 
-export type GetBusinessMembersResponse = (GetOffsetPaginatedBusinessMembersResponseBody);
+export type GetBusinessInvestmentsByPageResponse = (GetOffsetPaginatedRoundInvestmentsOutputBody);
 
-export type GetBusinessMembersError = (ErrorModel);
+export type GetBusinessInvestmentsByPageError = (ErrorModel);
 
-export type CreateBusinessMemberData = {
-    body: CreateBusinessMemberParams;
-};
-
-export type CreateBusinessMemberResponse = (SingleBusinessMemberResponseBody);
-
-export type CreateBusinessMemberError = (ErrorModel);
-
-export type GetBusinessRecievedRoundInvestmentsCursorData = {
+export type GetBusinessRoundsByCursorData = {
     path: {
         id: number;
     };
@@ -905,28 +625,25 @@ export type GetBusinessRecievedRoundInvestmentsCursorData = {
     };
 };
 
-export type GetBusinessRecievedRoundInvestmentsCursorResponse = (GetCursorPaginatedRoundInvestmentsOutputBody);
+export type GetBusinessRoundsByCursorResponse = (GetCursorPaginatedRoundsOutputBody);
 
-export type GetBusinessRecievedRoundInvestmentsCursorError = (ErrorModel);
+export type GetBusinessRoundsByCursorError = (ErrorModel);
 
-export type GetBusinessRoundsData = {
+export type GetBusinessRoundsByPageData = {
     path: {
         id: number;
     };
     query?: {
-        cursor?: number;
-        limit?: number;
-        maxEndsAt?: Date;
-        minEndsAt?: Date;
-        status?: Array<('active' | 'successful' | 'failed')> | null;
+        page?: number;
+        pageSize?: number;
     };
 };
 
-export type GetBusinessRoundsResponse = (GetCursorPaginatedRoundsWithSubtypesOutputBody);
+export type GetBusinessRoundsByPageResponse = (GetOffsetPaginatedRoundsOutputBody);
 
-export type GetBusinessRoundsError = (ErrorModel);
+export type GetBusinessRoundsByPageError = (ErrorModel);
 
-export type GetBusinessVenturesData = {
+export type GetBusinessVenturesByCursorData = {
     path: {
         id: number;
     };
@@ -936,9 +653,9 @@ export type GetBusinessVenturesData = {
     };
 };
 
-export type GetBusinessVenturesResponse = (GetCursorPaginatedVenturesOutputBody);
+export type GetBusinessVenturesByCursorResponse = (GetCursorPaginatedVenturesOutputBody);
 
-export type GetBusinessVenturesError = (ErrorModel);
+export type GetBusinessVenturesByCursorError = (ErrorModel);
 
 export type GetBusinessVenturesByPageData = {
     path: {
@@ -965,220 +682,38 @@ export type GetRoundByCursorData = {
     };
 };
 
-export type GetRoundByCursorResponse = (GetCursorPaginatedRoundsWithSubtypesOutputBody);
+export type GetRoundByCursorResponse = (GetCursorPaginatedRoundsOutputBody);
 
 export type GetRoundByCursorError = (ErrorModel);
 
-export type CreateDutchDynamicRoundData = {
-    body: CreateDutchDynamicRoundParams;
+export type CreateRoundData = {
+    body: CreateRoundParams;
 };
 
-export type CreateDutchDynamicRoundResponse = (SingleDutchDynamicRoundResponseBody);
+export type CreateRoundResponse = (SingleRoundResponseBody);
 
-export type CreateDutchDynamicRoundError = (ErrorModel);
+export type CreateRoundError = (ErrorModel);
 
-export type GetAllDutchDynamicRoundsCursorData = {
-    query?: {
-        cursor?: number;
-        limit?: number;
-    };
-};
-
-export type GetAllDutchDynamicRoundsCursorResponse = (GetCursorPaginatedDutchDynamicRoundsOutputBody);
-
-export type GetAllDutchDynamicRoundsCursorError = (ErrorModel);
-
-export type GetAllDutchDynamicRoundsOffsetData = {
+export type GetRoundsByPageData = {
     query?: {
         page?: number;
         pageSize?: number;
     };
 };
 
-export type GetAllDutchDynamicRoundsOffsetResponse = (GetOffsetPaginatedDutchDynamicRoundsOutputBody);
+export type GetRoundsByPageResponse = (GetOffsetPaginatedRoundsOutputBody);
 
-export type GetAllDutchDynamicRoundsOffsetError = (ErrorModel);
+export type GetRoundsByPageError = (ErrorModel);
 
-export type DeleteDutchDynamicRoundData = {
+export type DeleteRoundData = {
     path: {
         id: number;
     };
 };
 
-export type DeleteDutchDynamicRoundResponse = (MessageResponse);
+export type DeleteRoundResponse = (string);
 
-export type DeleteDutchDynamicRoundError = (ErrorModel);
-
-export type GetDutchDynamicRoundByIdData = {
-    path: {
-        id: number;
-    };
-};
-
-export type GetDutchDynamicRoundByIdResponse = (SingleDutchDynamicRoundResponseBody);
-
-export type GetDutchDynamicRoundByIdError = (ErrorModel);
-
-export type CreateRegularDynamicRoundData = {
-    body: CreateRegularDynamicRoundParams;
-};
-
-export type CreateRegularDynamicRoundResponse = (SingleRegularDynamicRoundResponseBody);
-
-export type CreateRegularDynamicRoundError = (ErrorModel);
-
-export type GetAllRegularDynamicRoundsCursorData = {
-    query?: {
-        cursor?: number;
-        limit?: number;
-    };
-};
-
-export type GetAllRegularDynamicRoundsCursorResponse = (GetCursorPaginatedRegularDynamicRoundsOutputBody);
-
-export type GetAllRegularDynamicRoundsCursorError = (ErrorModel);
-
-export type GetAllRegularDynamicRoundsOffsetData = {
-    query?: {
-        page?: number;
-        pageSize?: number;
-    };
-};
-
-export type GetAllRegularDynamicRoundsOffsetResponse = (GetOffsetPaginatedRegularDynamicRoundsOutputBody);
-
-export type GetAllRegularDynamicRoundsOffsetError = (ErrorModel);
-
-export type DeleteRegularDynamicRoundData = {
-    path: {
-        id: number;
-    };
-};
-
-export type DeleteRegularDynamicRoundResponse = (MessageResponse);
-
-export type DeleteRegularDynamicRoundError = (ErrorModel);
-
-export type GetRegularDynamicRoundByIdData = {
-    path: {
-        id: number;
-    };
-};
-
-export type GetRegularDynamicRoundByIdResponse = (SingleRegularDynamicRoundResponseBody);
-
-export type GetRegularDynamicRoundByIdError = (ErrorModel);
-
-export type GetRoundByPageData = {
-    query?: {
-        page?: number;
-        pageSize?: number;
-    };
-};
-
-export type GetRoundByPageResponse = (GetOffsetPaginatedRoundsWithSubtypesOutputBody);
-
-export type GetRoundByPageError = (ErrorModel);
-
-export type CreateFixedTotalRoundData = {
-    body: CreateFixedTotalRoundParams;
-};
-
-export type CreateFixedTotalRoundResponse = (SingleFixedTotalRoundResponseBody);
-
-export type CreateFixedTotalRoundError = (ErrorModel);
-
-export type GetAllFixedTotalRoundsCursorData = {
-    query?: {
-        cursor?: number;
-        limit?: number;
-    };
-};
-
-export type GetAllFixedTotalRoundsCursorResponse = (GetCursorPaginatedFixedTotalRoundsOutputBody);
-
-export type GetAllFixedTotalRoundsCursorError = (ErrorModel);
-
-export type GetAllFixedTotalRoundsOffsetData = {
-    query?: {
-        page?: number;
-        pageSize?: number;
-    };
-};
-
-export type GetAllFixedTotalRoundsOffsetResponse = (GetOffsetPaginatedFixedTotalRoundsOutputBody);
-
-export type GetAllFixedTotalRoundsOffsetError = (ErrorModel);
-
-export type DeleteFixedTotalRoundData = {
-    path: {
-        id: number;
-    };
-};
-
-export type DeleteFixedTotalRoundResponse = (MessageResponse);
-
-export type DeleteFixedTotalRoundError = (ErrorModel);
-
-export type GetFixedTotalRoundByIdData = {
-    path: {
-        id: number;
-    };
-};
-
-export type GetFixedTotalRoundByIdResponse = (SingleFixedTotalRoundResponseBody);
-
-export type GetFixedTotalRoundByIdError = (ErrorModel);
-
-export type CreatePartialTotalRoundData = {
-    body: CreatePartialTotalRoundParams;
-};
-
-export type CreatePartialTotalRoundResponse = (SinglePartialTotalRoundResponseBody);
-
-export type CreatePartialTotalRoundError = (ErrorModel);
-
-export type GetAllPartialTotalRoundsCursorData = {
-    query?: {
-        cursor?: number;
-        limit?: number;
-    };
-};
-
-export type GetAllPartialTotalRoundsCursorResponse = (GetCursorPaginatedPartialTotalRoundsOutputBody);
-
-export type GetAllPartialTotalRoundsCursorError = (ErrorModel);
-
-export type GetAllPartialTotalRoundsOffsetData = {
-    query?: {
-        page?: number;
-        pageSize?: number;
-    };
-};
-
-export type GetAllPartialTotalRoundsOffsetResponse = (GetOffsetPaginatedPartialTotalRoundsOutputBody);
-
-export type GetAllPartialTotalRoundsOffsetError = (ErrorModel);
-
-export type DeletePartialTotalRoundData = {
-    path: {
-        id: number;
-    };
-};
-
-export type DeletePartialTotalRoundResponse = (MessageResponse);
-
-export type DeletePartialTotalRoundError = (ErrorModel);
-
-export type GetPartialTotalRoundByIdData = {
-    path: {
-        id: number;
-    };
-};
-
-export type GetPartialTotalRoundByIdResponse = (SinglePartialTotalRoundResponseBody);
-
-export type GetPartialTotalRoundByIdError = (ErrorModel);
+export type DeleteRoundError = (ErrorModel);
 
 export type GetRoundByIdData = {
     path: {
@@ -1186,11 +721,44 @@ export type GetRoundByIdData = {
     };
 };
 
-export type GetRoundByIdResponse = (SingleRoundWithSubtypesResponseBody);
+export type GetRoundByIdResponse = (SingleRoundResponseBody);
 
 export type GetRoundByIdError = (ErrorModel);
 
-export type GetRoundRoundInvestmentsCursorData = {
+export type DeleteRoundLikeData = {
+    path: {
+        accountId: number;
+        id: number;
+    };
+};
+
+export type DeleteRoundLikeResponse = (MessageResponse);
+
+export type DeleteRoundLikeError = (ErrorModel);
+
+export type GetRoundLikeStatusData = {
+    path: {
+        accountId: number;
+        id: number;
+    };
+};
+
+export type GetRoundLikeStatusResponse = (IsLikedOutputBody);
+
+export type GetRoundLikeStatusError = (ErrorModel);
+
+export type CreateRoundLikeData = {
+    path: {
+        accountId: number;
+        id: number;
+    };
+};
+
+export type CreateRoundLikeResponse = (MessageResponse);
+
+export type CreateRoundLikeError = (ErrorModel);
+
+export type GetRoundInvestmentsByCursorData = {
     path: {
         id: number;
     };
@@ -1200,11 +768,11 @@ export type GetRoundRoundInvestmentsCursorData = {
     };
 };
 
-export type GetRoundRoundInvestmentsCursorResponse = (GetCursorPaginatedRoundInvestmentsOutputBody);
+export type GetRoundInvestmentsByCursorResponse = (GetCursorPaginatedRoundInvestmentsOutputBody);
 
-export type GetRoundRoundInvestmentsCursorError = (ErrorModel);
+export type GetRoundInvestmentsByCursorError = (ErrorModel);
 
-export type GetRoundRoundInvestmentsOffsetData = {
+export type GetRoundInvestmentsByPageData = {
     path: {
         id: number;
     };
@@ -1214,20 +782,30 @@ export type GetRoundRoundInvestmentsOffsetData = {
     };
 };
 
-export type GetRoundRoundInvestmentsOffsetResponse = (GetOffsetPaginatedRoundInvestmentsOutputBody);
+export type GetRoundInvestmentsByPageResponse = (GetOffsetPaginatedRoundInvestmentsOutputBody);
 
-export type GetRoundRoundInvestmentsOffsetError = (ErrorModel);
+export type GetRoundInvestmentsByPageError = (ErrorModel);
 
-export type AcceptRoundInvestmentData = {
+export type AcceptInvestmentData = {
     path: {
         id: number;
         investmentId: number;
     };
 };
 
-export type AcceptRoundInvestmentResponse = (string);
+export type AcceptInvestmentResponse = (string);
 
-export type AcceptRoundInvestmentError = (ErrorModel);
+export type AcceptInvestmentError = (ErrorModel);
+
+export type GetRoundLikeCountData = {
+    path: {
+        id: number;
+    };
+};
+
+export type GetRoundLikeCountResponse = (GetLikeCountOutputBody);
+
+export type GetRoundLikeCountError = (ErrorModel);
 
 export type GetUserAccountData = {
     path: {
@@ -1239,6 +817,17 @@ export type GetUserAccountResponse = (SingleAccountResponseBody);
 
 export type GetUserAccountError = (ErrorModel);
 
+export type GetVenturesByCursorData = {
+    query?: {
+        cursor?: number;
+        limit?: number;
+    };
+};
+
+export type GetVenturesByCursorResponse = (GetCursorPaginatedVenturesOutputBody);
+
+export type GetVenturesByCursorError = (ErrorModel);
+
 export type CreateVentureData = {
     body: CreateVentureParams;
 };
@@ -1247,27 +836,16 @@ export type CreateVentureResponse = (SingleVentureResponseBody);
 
 export type CreateVentureError = (ErrorModel);
 
-export type GetAllVenturesCursorData = {
-    query?: {
-        cursor?: number;
-        limit?: number;
-    };
-};
-
-export type GetAllVenturesCursorResponse = (GetCursorPaginatedVenturesOutputBody);
-
-export type GetAllVenturesCursorError = (ErrorModel);
-
-export type GetAllVenturesOffsetData = {
+export type GetVenturesByPageData = {
     query?: {
         page?: number;
         pageSize?: number;
     };
 };
 
-export type GetAllVenturesOffsetResponse = (GetOffsetPaginatedVenturesOutputBody);
+export type GetVenturesByPageResponse = (GetOffsetPaginatedVenturesOutputBody);
 
-export type GetAllVenturesOffsetError = (ErrorModel);
+export type GetVenturesByPageError = (ErrorModel);
 
 export type DeleteVentureData = {
     path: {
@@ -1300,7 +878,50 @@ export type UpdateVentureResponse = (SingleVentureResponseBody);
 
 export type UpdateVentureError = (ErrorModel);
 
-export type GetVentureRoundInvestmentsCursorData = {
+export type DeleteVentureLikeData = {
+    path: {
+        accountId: number;
+        id: number;
+    };
+};
+
+export type DeleteVentureLikeResponse = (MessageResponse);
+
+export type DeleteVentureLikeError = (ErrorModel);
+
+export type GetVentureLikeStatusData = {
+    path: {
+        accountId: number;
+        id: number;
+    };
+};
+
+export type GetVentureLikeStatusResponse = (IsLikedOutputBody);
+
+export type GetVentureLikeStatusError = (ErrorModel);
+
+export type CreateVentureLikeData = {
+    path: {
+        accountId: number;
+        id: number;
+    };
+};
+
+export type CreateVentureLikeResponse = (MessageResponse);
+
+export type CreateVentureLikeError = (ErrorModel);
+
+export type GetVentureLikeCountData = {
+    path: {
+        id: number;
+    };
+};
+
+export type GetVentureLikeCountResponse = (GetLikeCountOutputBody);
+
+export type GetVentureLikeCountError = (ErrorModel);
+
+export type GetVentureRoundInvestmentsByCursorData = {
     path: {
         id: number;
     };
@@ -1310,11 +931,11 @@ export type GetVentureRoundInvestmentsCursorData = {
     };
 };
 
-export type GetVentureRoundInvestmentsCursorResponse = (GetCursorPaginatedRoundInvestmentsOutputBody);
+export type GetVentureRoundInvestmentsByCursorResponse = (GetCursorPaginatedRoundInvestmentsOutputBody);
 
-export type GetVentureRoundInvestmentsCursorError = (ErrorModel);
+export type GetVentureRoundInvestmentsByCursorError = (ErrorModel);
 
-export type GetVentureRoundInvestmentsOffsetData = {
+export type GetVentureRoundInvestmentsByPageData = {
     path: {
         id: number;
     };
@@ -1324,11 +945,11 @@ export type GetVentureRoundInvestmentsOffsetData = {
     };
 };
 
-export type GetVentureRoundInvestmentsOffsetResponse = (GetOffsetPaginatedRoundInvestmentsOutputBody);
+export type GetVentureRoundInvestmentsByPageResponse = (GetOffsetPaginatedRoundInvestmentsOutputBody);
 
-export type GetVentureRoundInvestmentsOffsetError = (ErrorModel);
+export type GetVentureRoundInvestmentsByPageError = (ErrorModel);
 
-export type GetVentureRoundsCursorData = {
+export type GetVentureRoundsByCursorData = {
     path: {
         id: number;
     };
@@ -1338,25 +959,11 @@ export type GetVentureRoundsCursorData = {
     };
 };
 
-export type GetVentureRoundsCursorResponse = (GetCursorPaginatedFixedTotalRoundsOutputBody);
+export type GetVentureRoundsByCursorResponse = (GetCursorPaginatedRoundsOutputBody);
 
-export type GetVentureRoundsCursorError = (ErrorModel);
+export type GetVentureRoundsByCursorError = (ErrorModel);
 
-export type GetVentureDutchDynamicRoundsCursorData = {
-    path: {
-        id: number;
-    };
-    query?: {
-        cursor?: number;
-        limit?: number;
-    };
-};
-
-export type GetVentureDutchDynamicRoundsCursorResponse = (GetCursorPaginatedDutchDynamicRoundsOutputBody);
-
-export type GetVentureDutchDynamicRoundsCursorError = (ErrorModel);
-
-export type GetVentureDutchDynamicRoundsOffsetData = {
+export type GetVentureRoundsByPageData = {
     path: {
         id: number;
     };
@@ -1366,107 +973,9 @@ export type GetVentureDutchDynamicRoundsOffsetData = {
     };
 };
 
-export type GetVentureDutchDynamicRoundsOffsetResponse = (GetOffsetPaginatedDutchDynamicRoundsOutputBody);
+export type GetVentureRoundsByPageResponse = (GetOffsetPaginatedRoundsOutputBody);
 
-export type GetVentureDutchDynamicRoundsOffsetError = (ErrorModel);
-
-export type GetVentureRegularDynamicRoundsCursorData = {
-    path: {
-        id: number;
-    };
-    query?: {
-        cursor?: number;
-        limit?: number;
-    };
-};
-
-export type GetVentureRegularDynamicRoundsCursorResponse = (GetCursorPaginatedRegularDynamicRoundsOutputBody);
-
-export type GetVentureRegularDynamicRoundsCursorError = (ErrorModel);
-
-export type GetVentureRegularDynamicRoundsOffsetData = {
-    path: {
-        id: number;
-    };
-    query?: {
-        page?: number;
-        pageSize?: number;
-    };
-};
-
-export type GetVentureRegularDynamicRoundsOffsetResponse = (GetOffsetPaginatedRegularDynamicRoundsOutputBody);
-
-export type GetVentureRegularDynamicRoundsOffsetError = (ErrorModel);
-
-export type GetVentureRoundsOffsetData = {
-    path: {
-        id: number;
-    };
-    query?: {
-        cursor?: number;
-        limit?: number;
-    };
-};
-
-export type GetVentureRoundsOffsetResponse = (GetCursorPaginatedFixedTotalRoundsOutputBody);
-
-export type GetVentureRoundsOffsetError = (ErrorModel);
-
-export type GetVentureFixedTotalRoundsCursorData = {
-    path: {
-        id: number;
-    };
-    query?: {
-        cursor?: number;
-        limit?: number;
-    };
-};
-
-export type GetVentureFixedTotalRoundsCursorResponse = (GetCursorPaginatedFixedTotalRoundsOutputBody);
-
-export type GetVentureFixedTotalRoundsCursorError = (ErrorModel);
-
-export type GetVentureFixedTotalRoundsOffsetData = {
-    path: {
-        id: number;
-    };
-    query?: {
-        page?: number;
-        pageSize?: number;
-    };
-};
-
-export type GetVentureFixedTotalRoundsOffsetResponse = (GetOffsetPaginatedFixedTotalRoundsOutputBody);
-
-export type GetVentureFixedTotalRoundsOffsetError = (ErrorModel);
-
-export type GetVenturePartialTotalRoundsCursorData = {
-    path: {
-        id: number;
-    };
-    query?: {
-        cursor?: number;
-        limit?: number;
-    };
-};
-
-export type GetVenturePartialTotalRoundsCursorResponse = (GetCursorPaginatedPartialTotalRoundsOutputBody);
-
-export type GetVenturePartialTotalRoundsCursorError = (ErrorModel);
-
-export type GetVenturePartialTotalRoundsOffsetData = {
-    path: {
-        id: number;
-    };
-    query?: {
-        page?: number;
-        pageSize?: number;
-    };
-};
-
-export type GetVenturePartialTotalRoundsOffsetResponse = (GetOffsetPaginatedPartialTotalRoundsOutputBody);
-
-export type GetVenturePartialTotalRoundsOffsetError = (ErrorModel);
+export type GetVentureRoundsByPageError = (ErrorModel);
 
 export type CreateAccountResponseTransformer = (data: any) => Promise<CreateAccountResponse>;
 
@@ -1565,9 +1074,9 @@ export const GetAccountBusinessesResponseTransformer: GetAccountBusinessesRespon
     return data;
 };
 
-export type CreateRoundInvestmentResponseTransformer = (data: any) => Promise<CreateRoundInvestmentResponse>;
+export type GetAccountInvestmentsByCursorResponseTransformer = (data: any) => Promise<GetAccountInvestmentsByCursorResponse>;
 
-export type SingleRoundInvestmentResponseBodyModelResponseTransformer = (data: any) => SingleRoundInvestmentResponseBody;
+export type GetCursorPaginatedRoundInvestmentsOutputBodyModelResponseTransformer = (data: any) => GetCursorPaginatedRoundInvestmentsOutputBody;
 
 export type RoundInvestmentModelResponseTransformer = (data: any) => RoundInvestment;
 
@@ -1614,22 +1123,6 @@ export const RoundInvestmentModelResponseTransformer: RoundInvestmentModelRespon
     return data;
 };
 
-export const SingleRoundInvestmentResponseBodyModelResponseTransformer: SingleRoundInvestmentResponseBodyModelResponseTransformer = data => {
-    if (data?.investment) {
-        RoundInvestmentModelResponseTransformer(data.investment);
-    }
-    return data;
-};
-
-export const CreateRoundInvestmentResponseTransformer: CreateRoundInvestmentResponseTransformer = async (data) => {
-    SingleRoundInvestmentResponseBodyModelResponseTransformer(data);
-    return data;
-};
-
-export type GetAccountRoundInvestmentsCursorResponseTransformer = (data: any) => Promise<GetAccountRoundInvestmentsCursorResponse>;
-
-export type GetCursorPaginatedRoundInvestmentsOutputBodyModelResponseTransformer = (data: any) => GetCursorPaginatedRoundInvestmentsOutputBody;
-
 export const GetCursorPaginatedRoundInvestmentsOutputBodyModelResponseTransformer: GetCursorPaginatedRoundInvestmentsOutputBodyModelResponseTransformer = data => {
     if (Array.isArray(data?.investments)) {
         data.investments.forEach(RoundInvestmentModelResponseTransformer);
@@ -1637,12 +1130,28 @@ export const GetCursorPaginatedRoundInvestmentsOutputBodyModelResponseTransforme
     return data;
 };
 
-export const GetAccountRoundInvestmentsCursorResponseTransformer: GetAccountRoundInvestmentsCursorResponseTransformer = async (data) => {
+export const GetAccountInvestmentsByCursorResponseTransformer: GetAccountInvestmentsByCursorResponseTransformer = async (data) => {
     GetCursorPaginatedRoundInvestmentsOutputBodyModelResponseTransformer(data);
     return data;
 };
 
-export type GetRoundInvestmentsOffsetResponseTransformer = (data: any) => Promise<GetRoundInvestmentsOffsetResponse>;
+export type CreateRoundInvestmentResponseTransformer = (data: any) => Promise<CreateRoundInvestmentResponse>;
+
+export type SingleInvestmentResponseBodyModelResponseTransformer = (data: any) => SingleInvestmentResponseBody;
+
+export const SingleInvestmentResponseBodyModelResponseTransformer: SingleInvestmentResponseBodyModelResponseTransformer = data => {
+    if (data?.investment) {
+        RoundInvestmentModelResponseTransformer(data.investment);
+    }
+    return data;
+};
+
+export const CreateRoundInvestmentResponseTransformer: CreateRoundInvestmentResponseTransformer = async (data) => {
+    SingleInvestmentResponseBodyModelResponseTransformer(data);
+    return data;
+};
+
+export type GetAccountInvestmentsByPageResponseTransformer = (data: any) => Promise<GetAccountInvestmentsByPageResponse>;
 
 export type GetOffsetPaginatedRoundInvestmentsOutputBodyModelResponseTransformer = (data: any) => GetOffsetPaginatedRoundInvestmentsOutputBody;
 
@@ -1653,7 +1162,7 @@ export const GetOffsetPaginatedRoundInvestmentsOutputBodyModelResponseTransforme
     return data;
 };
 
-export const GetRoundInvestmentsOffsetResponseTransformer: GetRoundInvestmentsOffsetResponseTransformer = async (data) => {
+export const GetAccountInvestmentsByPageResponseTransformer: GetAccountInvestmentsByPageResponseTransformer = async (data) => {
     GetOffsetPaginatedRoundInvestmentsOutputBodyModelResponseTransformer(data);
     return data;
 };
@@ -1674,34 +1183,6 @@ export const CreateBusinessResponseTransformer: CreateBusinessResponseTransforme
     return data;
 };
 
-export type UpdateBusinessMemberResponseTransformer = (data: any) => Promise<UpdateBusinessMemberResponse>;
-
-export type SingleBusinessMemberResponseBodyModelResponseTransformer = (data: any) => SingleBusinessMemberResponseBody;
-
-export type BusinessMemberModelResponseTransformer = (data: any) => BusinessMember;
-
-export const BusinessMemberModelResponseTransformer: BusinessMemberModelResponseTransformer = data => {
-    if (data?.createdAt) {
-        data.createdAt = new Date(data.createdAt);
-    }
-    if (data?.updatedAt) {
-        data.updatedAt = new Date(data.updatedAt);
-    }
-    return data;
-};
-
-export const SingleBusinessMemberResponseBodyModelResponseTransformer: SingleBusinessMemberResponseBodyModelResponseTransformer = data => {
-    if (data?.businessMember) {
-        BusinessMemberModelResponseTransformer(data.businessMember);
-    }
-    return data;
-};
-
-export const UpdateBusinessMemberResponseTransformer: UpdateBusinessMemberResponseTransformer = async (data) => {
-    SingleBusinessMemberResponseBodyModelResponseTransformer(data);
-    return data;
-};
-
 export type GetBusinessByIdResponseTransformer = (data: any) => Promise<GetBusinessByIdResponse>;
 
 export const GetBusinessByIdResponseTransformer: GetBusinessByIdResponseTransformer = async (data) => {
@@ -1709,167 +1190,59 @@ export const GetBusinessByIdResponseTransformer: GetBusinessByIdResponseTransfor
     return data;
 };
 
-export type GetBusinessMembersResponseTransformer = (data: any) => Promise<GetBusinessMembersResponse>;
+export type GetBusinessInvestmentsByCursorResponseTransformer = (data: any) => Promise<GetBusinessInvestmentsByCursorResponse>;
 
-export type GetOffsetPaginatedBusinessMembersResponseBodyModelResponseTransformer = (data: any) => GetOffsetPaginatedBusinessMembersResponseBody;
-
-export const GetOffsetPaginatedBusinessMembersResponseBodyModelResponseTransformer: GetOffsetPaginatedBusinessMembersResponseBodyModelResponseTransformer = data => {
-    if (Array.isArray(data?.businessMembers)) {
-        data.businessMembers.forEach(BusinessMemberModelResponseTransformer);
-    }
-    return data;
-};
-
-export const GetBusinessMembersResponseTransformer: GetBusinessMembersResponseTransformer = async (data) => {
-    GetOffsetPaginatedBusinessMembersResponseBodyModelResponseTransformer(data);
-    return data;
-};
-
-export type CreateBusinessMemberResponseTransformer = (data: any) => Promise<CreateBusinessMemberResponse>;
-
-export const CreateBusinessMemberResponseTransformer: CreateBusinessMemberResponseTransformer = async (data) => {
-    SingleBusinessMemberResponseBodyModelResponseTransformer(data);
-    return data;
-};
-
-export type GetBusinessRecievedRoundInvestmentsCursorResponseTransformer = (data: any) => Promise<GetBusinessRecievedRoundInvestmentsCursorResponse>;
-
-export const GetBusinessRecievedRoundInvestmentsCursorResponseTransformer: GetBusinessRecievedRoundInvestmentsCursorResponseTransformer = async (data) => {
+export const GetBusinessInvestmentsByCursorResponseTransformer: GetBusinessInvestmentsByCursorResponseTransformer = async (data) => {
     GetCursorPaginatedRoundInvestmentsOutputBodyModelResponseTransformer(data);
     return data;
 };
 
-export type GetBusinessRoundsResponseTransformer = (data: any) => Promise<GetBusinessRoundsResponse>;
+export type GetBusinessInvestmentsByPageResponseTransformer = (data: any) => Promise<GetBusinessInvestmentsByPageResponse>;
 
-export type GetCursorPaginatedRoundsWithSubtypesOutputBodyModelResponseTransformer = (data: any) => GetCursorPaginatedRoundsWithSubtypesOutputBody;
+export const GetBusinessInvestmentsByPageResponseTransformer: GetBusinessInvestmentsByPageResponseTransformer = async (data) => {
+    GetOffsetPaginatedRoundInvestmentsOutputBodyModelResponseTransformer(data);
+    return data;
+};
 
-export type RoundWithSubtypesModelResponseTransformer = (data: any) => RoundWithSubtypes;
+export type GetBusinessRoundsByCursorResponseTransformer = (data: any) => Promise<GetBusinessRoundsByCursorResponse>;
 
-export type DutchDynamicRoundModelResponseTransformer = (data: any) => DutchDynamicRound;
+export type GetCursorPaginatedRoundsOutputBodyModelResponseTransformer = (data: any) => GetCursorPaginatedRoundsOutputBody;
 
-export const DutchDynamicRoundModelResponseTransformer: DutchDynamicRoundModelResponseTransformer = data => {
-    if (data?.createdAt) {
-        data.createdAt = new Date(data.createdAt);
-    }
-    if (data?.deletedAt) {
-        data.deletedAt = new Date(data.deletedAt);
-    }
-    if (data?.round) {
-        RoundModelResponseTransformer(data.round);
-    }
-    if (data?.updatedAt) {
-        data.updatedAt = new Date(data.updatedAt);
+export const GetCursorPaginatedRoundsOutputBodyModelResponseTransformer: GetCursorPaginatedRoundsOutputBodyModelResponseTransformer = data => {
+    if (Array.isArray(data?.rounds)) {
+        data.rounds.forEach(RoundModelResponseTransformer);
     }
     return data;
 };
 
-export type FixedTotalRoundModelResponseTransformer = (data: any) => FixedTotalRound;
+export const GetBusinessRoundsByCursorResponseTransformer: GetBusinessRoundsByCursorResponseTransformer = async (data) => {
+    GetCursorPaginatedRoundsOutputBodyModelResponseTransformer(data);
+    return data;
+};
 
-export const FixedTotalRoundModelResponseTransformer: FixedTotalRoundModelResponseTransformer = data => {
-    if (data?.createdAt) {
-        data.createdAt = new Date(data.createdAt);
-    }
-    if (data?.deletedAt) {
-        data.deletedAt = new Date(data.deletedAt);
-    }
-    if (data?.round) {
-        RoundModelResponseTransformer(data.round);
-    }
-    if (data?.updatedAt) {
-        data.updatedAt = new Date(data.updatedAt);
+export type GetBusinessRoundsByPageResponseTransformer = (data: any) => Promise<GetBusinessRoundsByPageResponse>;
+
+export type GetOffsetPaginatedRoundsOutputBodyModelResponseTransformer = (data: any) => GetOffsetPaginatedRoundsOutputBody;
+
+export const GetOffsetPaginatedRoundsOutputBodyModelResponseTransformer: GetOffsetPaginatedRoundsOutputBodyModelResponseTransformer = data => {
+    if (Array.isArray(data?.rounds)) {
+        data.rounds.forEach(RoundModelResponseTransformer);
     }
     return data;
 };
 
-export type PartialTotalRoundModelResponseTransformer = (data: any) => PartialTotalRound;
-
-export const PartialTotalRoundModelResponseTransformer: PartialTotalRoundModelResponseTransformer = data => {
-    if (data?.createdAt) {
-        data.createdAt = new Date(data.createdAt);
-    }
-    if (data?.deletedAt) {
-        data.deletedAt = new Date(data.deletedAt);
-    }
-    if (data?.round) {
-        RoundModelResponseTransformer(data.round);
-    }
-    if (data?.updatedAt) {
-        data.updatedAt = new Date(data.updatedAt);
-    }
+export const GetBusinessRoundsByPageResponseTransformer: GetBusinessRoundsByPageResponseTransformer = async (data) => {
+    GetOffsetPaginatedRoundsOutputBodyModelResponseTransformer(data);
     return data;
 };
 
-export type RegularDynamicRoundModelResponseTransformer = (data: any) => RegularDynamicRound;
-
-export const RegularDynamicRoundModelResponseTransformer: RegularDynamicRoundModelResponseTransformer = data => {
-    if (data?.createdAt) {
-        data.createdAt = new Date(data.createdAt);
-    }
-    if (data?.deletedAt) {
-        data.deletedAt = new Date(data.deletedAt);
-    }
-    if (data?.round) {
-        RoundModelResponseTransformer(data.round);
-    }
-    if (data?.updatedAt) {
-        data.updatedAt = new Date(data.updatedAt);
-    }
-    return data;
-};
-
-export const RoundWithSubtypesModelResponseTransformer: RoundWithSubtypesModelResponseTransformer = data => {
-    if (data?.beginsAt) {
-        data.beginsAt = new Date(data.beginsAt);
-    }
-    if (data?.createdAt) {
-        data.createdAt = new Date(data.createdAt);
-    }
-    if (data?.deletedAt) {
-        data.deletedAt = new Date(data.deletedAt);
-    }
-    if (data?.dutchDynamicRound) {
-        DutchDynamicRoundModelResponseTransformer(data.dutchDynamicRound);
-    }
-    if (data?.endsAt) {
-        data.endsAt = new Date(data.endsAt);
-    }
-    if (data?.fixedTotalRound) {
-        FixedTotalRoundModelResponseTransformer(data.fixedTotalRound);
-    }
-    if (data?.partialTotalRound) {
-        PartialTotalRoundModelResponseTransformer(data.partialTotalRound);
-    }
-    if (data?.regularDynamicRound) {
-        RegularDynamicRoundModelResponseTransformer(data.regularDynamicRound);
-    }
-    if (data?.updatedAt) {
-        data.updatedAt = new Date(data.updatedAt);
-    }
-    return data;
-};
-
-export const GetCursorPaginatedRoundsWithSubtypesOutputBodyModelResponseTransformer: GetCursorPaginatedRoundsWithSubtypesOutputBodyModelResponseTransformer = data => {
-    if (Array.isArray(data?.roundsWithSubtypes)) {
-        data.roundsWithSubtypes.forEach(RoundWithSubtypesModelResponseTransformer);
-    }
-    return data;
-};
-
-export const GetBusinessRoundsResponseTransformer: GetBusinessRoundsResponseTransformer = async (data) => {
-    GetCursorPaginatedRoundsWithSubtypesOutputBodyModelResponseTransformer(data);
-    return data;
-};
-
-export type GetBusinessVenturesResponseTransformer = (data: any) => Promise<GetBusinessVenturesResponse>;
+export type GetBusinessVenturesByCursorResponseTransformer = (data: any) => Promise<GetBusinessVenturesByCursorResponse>;
 
 export type GetCursorPaginatedVenturesOutputBodyModelResponseTransformer = (data: any) => GetCursorPaginatedVenturesOutputBody;
 
 export type VentureModelResponseTransformer = (data: any) => Venture;
 
 export const VentureModelResponseTransformer: VentureModelResponseTransformer = data => {
-    if (data?.address) {
-        AddressModelResponseTransformer(data.address);
-    }
     if (data?.createdAt) {
         data.createdAt = new Date(data.createdAt);
     }
@@ -1889,7 +1262,7 @@ export const GetCursorPaginatedVenturesOutputBodyModelResponseTransformer: GetCu
     return data;
 };
 
-export const GetBusinessVenturesResponseTransformer: GetBusinessVenturesResponseTransformer = async (data) => {
+export const GetBusinessVenturesByCursorResponseTransformer: GetBusinessVenturesByCursorResponseTransformer = async (data) => {
     GetCursorPaginatedVenturesOutputBodyModelResponseTransformer(data);
     return data;
 };
@@ -1913,272 +1286,50 @@ export const GetBusinessVenturesByPageResponseTransformer: GetBusinessVenturesBy
 export type GetRoundByCursorResponseTransformer = (data: any) => Promise<GetRoundByCursorResponse>;
 
 export const GetRoundByCursorResponseTransformer: GetRoundByCursorResponseTransformer = async (data) => {
-    GetCursorPaginatedRoundsWithSubtypesOutputBodyModelResponseTransformer(data);
+    GetCursorPaginatedRoundsOutputBodyModelResponseTransformer(data);
     return data;
 };
 
-export type CreateDutchDynamicRoundResponseTransformer = (data: any) => Promise<CreateDutchDynamicRoundResponse>;
+export type CreateRoundResponseTransformer = (data: any) => Promise<CreateRoundResponse>;
 
-export type SingleDutchDynamicRoundResponseBodyModelResponseTransformer = (data: any) => SingleDutchDynamicRoundResponseBody;
+export type SingleRoundResponseBodyModelResponseTransformer = (data: any) => SingleRoundResponseBody;
 
-export const SingleDutchDynamicRoundResponseBodyModelResponseTransformer: SingleDutchDynamicRoundResponseBodyModelResponseTransformer = data => {
+export const SingleRoundResponseBodyModelResponseTransformer: SingleRoundResponseBodyModelResponseTransformer = data => {
     if (data?.round) {
-        DutchDynamicRoundModelResponseTransformer(data.round);
+        RoundModelResponseTransformer(data.round);
     }
     return data;
 };
 
-export const CreateDutchDynamicRoundResponseTransformer: CreateDutchDynamicRoundResponseTransformer = async (data) => {
-    SingleDutchDynamicRoundResponseBodyModelResponseTransformer(data);
+export const CreateRoundResponseTransformer: CreateRoundResponseTransformer = async (data) => {
+    SingleRoundResponseBodyModelResponseTransformer(data);
     return data;
 };
 
-export type GetAllDutchDynamicRoundsCursorResponseTransformer = (data: any) => Promise<GetAllDutchDynamicRoundsCursorResponse>;
+export type GetRoundsByPageResponseTransformer = (data: any) => Promise<GetRoundsByPageResponse>;
 
-export type GetCursorPaginatedDutchDynamicRoundsOutputBodyModelResponseTransformer = (data: any) => GetCursorPaginatedDutchDynamicRoundsOutputBody;
-
-export const GetCursorPaginatedDutchDynamicRoundsOutputBodyModelResponseTransformer: GetCursorPaginatedDutchDynamicRoundsOutputBodyModelResponseTransformer = data => {
-    if (Array.isArray(data?.dutchDynamicRounds)) {
-        data.dutchDynamicRounds.forEach(DutchDynamicRoundModelResponseTransformer);
-    }
-    return data;
-};
-
-export const GetAllDutchDynamicRoundsCursorResponseTransformer: GetAllDutchDynamicRoundsCursorResponseTransformer = async (data) => {
-    GetCursorPaginatedDutchDynamicRoundsOutputBodyModelResponseTransformer(data);
-    return data;
-};
-
-export type GetAllDutchDynamicRoundsOffsetResponseTransformer = (data: any) => Promise<GetAllDutchDynamicRoundsOffsetResponse>;
-
-export type GetOffsetPaginatedDutchDynamicRoundsOutputBodyModelResponseTransformer = (data: any) => GetOffsetPaginatedDutchDynamicRoundsOutputBody;
-
-export const GetOffsetPaginatedDutchDynamicRoundsOutputBodyModelResponseTransformer: GetOffsetPaginatedDutchDynamicRoundsOutputBodyModelResponseTransformer = data => {
-    if (Array.isArray(data?.dutchDynamicRounds)) {
-        data.dutchDynamicRounds.forEach(DutchDynamicRoundModelResponseTransformer);
-    }
-    return data;
-};
-
-export const GetAllDutchDynamicRoundsOffsetResponseTransformer: GetAllDutchDynamicRoundsOffsetResponseTransformer = async (data) => {
-    GetOffsetPaginatedDutchDynamicRoundsOutputBodyModelResponseTransformer(data);
-    return data;
-};
-
-export type GetDutchDynamicRoundByIdResponseTransformer = (data: any) => Promise<GetDutchDynamicRoundByIdResponse>;
-
-export const GetDutchDynamicRoundByIdResponseTransformer: GetDutchDynamicRoundByIdResponseTransformer = async (data) => {
-    SingleDutchDynamicRoundResponseBodyModelResponseTransformer(data);
-    return data;
-};
-
-export type CreateRegularDynamicRoundResponseTransformer = (data: any) => Promise<CreateRegularDynamicRoundResponse>;
-
-export type SingleRegularDynamicRoundResponseBodyModelResponseTransformer = (data: any) => SingleRegularDynamicRoundResponseBody;
-
-export const SingleRegularDynamicRoundResponseBodyModelResponseTransformer: SingleRegularDynamicRoundResponseBodyModelResponseTransformer = data => {
-    if (data?.round) {
-        RegularDynamicRoundModelResponseTransformer(data.round);
-    }
-    return data;
-};
-
-export const CreateRegularDynamicRoundResponseTransformer: CreateRegularDynamicRoundResponseTransformer = async (data) => {
-    SingleRegularDynamicRoundResponseBodyModelResponseTransformer(data);
-    return data;
-};
-
-export type GetAllRegularDynamicRoundsCursorResponseTransformer = (data: any) => Promise<GetAllRegularDynamicRoundsCursorResponse>;
-
-export type GetCursorPaginatedRegularDynamicRoundsOutputBodyModelResponseTransformer = (data: any) => GetCursorPaginatedRegularDynamicRoundsOutputBody;
-
-export const GetCursorPaginatedRegularDynamicRoundsOutputBodyModelResponseTransformer: GetCursorPaginatedRegularDynamicRoundsOutputBodyModelResponseTransformer = data => {
-    if (Array.isArray(data?.regularDynamicRounds)) {
-        data.regularDynamicRounds.forEach(RegularDynamicRoundModelResponseTransformer);
-    }
-    return data;
-};
-
-export const GetAllRegularDynamicRoundsCursorResponseTransformer: GetAllRegularDynamicRoundsCursorResponseTransformer = async (data) => {
-    GetCursorPaginatedRegularDynamicRoundsOutputBodyModelResponseTransformer(data);
-    return data;
-};
-
-export type GetAllRegularDynamicRoundsOffsetResponseTransformer = (data: any) => Promise<GetAllRegularDynamicRoundsOffsetResponse>;
-
-export type GetOffsetPaginatedRegularDynamicRoundsOutputBodyModelResponseTransformer = (data: any) => GetOffsetPaginatedRegularDynamicRoundsOutputBody;
-
-export const GetOffsetPaginatedRegularDynamicRoundsOutputBodyModelResponseTransformer: GetOffsetPaginatedRegularDynamicRoundsOutputBodyModelResponseTransformer = data => {
-    if (Array.isArray(data?.regularDynamicRounds)) {
-        data.regularDynamicRounds.forEach(RegularDynamicRoundModelResponseTransformer);
-    }
-    return data;
-};
-
-export const GetAllRegularDynamicRoundsOffsetResponseTransformer: GetAllRegularDynamicRoundsOffsetResponseTransformer = async (data) => {
-    GetOffsetPaginatedRegularDynamicRoundsOutputBodyModelResponseTransformer(data);
-    return data;
-};
-
-export type GetRegularDynamicRoundByIdResponseTransformer = (data: any) => Promise<GetRegularDynamicRoundByIdResponse>;
-
-export const GetRegularDynamicRoundByIdResponseTransformer: GetRegularDynamicRoundByIdResponseTransformer = async (data) => {
-    SingleRegularDynamicRoundResponseBodyModelResponseTransformer(data);
-    return data;
-};
-
-export type GetRoundByPageResponseTransformer = (data: any) => Promise<GetRoundByPageResponse>;
-
-export type GetOffsetPaginatedRoundsWithSubtypesOutputBodyModelResponseTransformer = (data: any) => GetOffsetPaginatedRoundsWithSubtypesOutputBody;
-
-export const GetOffsetPaginatedRoundsWithSubtypesOutputBodyModelResponseTransformer: GetOffsetPaginatedRoundsWithSubtypesOutputBodyModelResponseTransformer = data => {
-    if (Array.isArray(data?.roundsWithSubtypes)) {
-        data.roundsWithSubtypes.forEach(RoundWithSubtypesModelResponseTransformer);
-    }
-    return data;
-};
-
-export const GetRoundByPageResponseTransformer: GetRoundByPageResponseTransformer = async (data) => {
-    GetOffsetPaginatedRoundsWithSubtypesOutputBodyModelResponseTransformer(data);
-    return data;
-};
-
-export type CreateFixedTotalRoundResponseTransformer = (data: any) => Promise<CreateFixedTotalRoundResponse>;
-
-export type SingleFixedTotalRoundResponseBodyModelResponseTransformer = (data: any) => SingleFixedTotalRoundResponseBody;
-
-export const SingleFixedTotalRoundResponseBodyModelResponseTransformer: SingleFixedTotalRoundResponseBodyModelResponseTransformer = data => {
-    if (data?.round) {
-        FixedTotalRoundModelResponseTransformer(data.round);
-    }
-    return data;
-};
-
-export const CreateFixedTotalRoundResponseTransformer: CreateFixedTotalRoundResponseTransformer = async (data) => {
-    SingleFixedTotalRoundResponseBodyModelResponseTransformer(data);
-    return data;
-};
-
-export type GetAllFixedTotalRoundsCursorResponseTransformer = (data: any) => Promise<GetAllFixedTotalRoundsCursorResponse>;
-
-export type GetCursorPaginatedFixedTotalRoundsOutputBodyModelResponseTransformer = (data: any) => GetCursorPaginatedFixedTotalRoundsOutputBody;
-
-export const GetCursorPaginatedFixedTotalRoundsOutputBodyModelResponseTransformer: GetCursorPaginatedFixedTotalRoundsOutputBodyModelResponseTransformer = data => {
-    if (Array.isArray(data?.fixedTotalRounds)) {
-        data.fixedTotalRounds.forEach(FixedTotalRoundModelResponseTransformer);
-    }
-    return data;
-};
-
-export const GetAllFixedTotalRoundsCursorResponseTransformer: GetAllFixedTotalRoundsCursorResponseTransformer = async (data) => {
-    GetCursorPaginatedFixedTotalRoundsOutputBodyModelResponseTransformer(data);
-    return data;
-};
-
-export type GetAllFixedTotalRoundsOffsetResponseTransformer = (data: any) => Promise<GetAllFixedTotalRoundsOffsetResponse>;
-
-export type GetOffsetPaginatedFixedTotalRoundsOutputBodyModelResponseTransformer = (data: any) => GetOffsetPaginatedFixedTotalRoundsOutputBody;
-
-export const GetOffsetPaginatedFixedTotalRoundsOutputBodyModelResponseTransformer: GetOffsetPaginatedFixedTotalRoundsOutputBodyModelResponseTransformer = data => {
-    if (Array.isArray(data?.fixedTotalRounds)) {
-        data.fixedTotalRounds.forEach(FixedTotalRoundModelResponseTransformer);
-    }
-    return data;
-};
-
-export const GetAllFixedTotalRoundsOffsetResponseTransformer: GetAllFixedTotalRoundsOffsetResponseTransformer = async (data) => {
-    GetOffsetPaginatedFixedTotalRoundsOutputBodyModelResponseTransformer(data);
-    return data;
-};
-
-export type GetFixedTotalRoundByIdResponseTransformer = (data: any) => Promise<GetFixedTotalRoundByIdResponse>;
-
-export const GetFixedTotalRoundByIdResponseTransformer: GetFixedTotalRoundByIdResponseTransformer = async (data) => {
-    SingleFixedTotalRoundResponseBodyModelResponseTransformer(data);
-    return data;
-};
-
-export type CreatePartialTotalRoundResponseTransformer = (data: any) => Promise<CreatePartialTotalRoundResponse>;
-
-export type SinglePartialTotalRoundResponseBodyModelResponseTransformer = (data: any) => SinglePartialTotalRoundResponseBody;
-
-export const SinglePartialTotalRoundResponseBodyModelResponseTransformer: SinglePartialTotalRoundResponseBodyModelResponseTransformer = data => {
-    if (data?.round) {
-        PartialTotalRoundModelResponseTransformer(data.round);
-    }
-    return data;
-};
-
-export const CreatePartialTotalRoundResponseTransformer: CreatePartialTotalRoundResponseTransformer = async (data) => {
-    SinglePartialTotalRoundResponseBodyModelResponseTransformer(data);
-    return data;
-};
-
-export type GetAllPartialTotalRoundsCursorResponseTransformer = (data: any) => Promise<GetAllPartialTotalRoundsCursorResponse>;
-
-export type GetCursorPaginatedPartialTotalRoundsOutputBodyModelResponseTransformer = (data: any) => GetCursorPaginatedPartialTotalRoundsOutputBody;
-
-export const GetCursorPaginatedPartialTotalRoundsOutputBodyModelResponseTransformer: GetCursorPaginatedPartialTotalRoundsOutputBodyModelResponseTransformer = data => {
-    if (Array.isArray(data?.partialTotalRounds)) {
-        data.partialTotalRounds.forEach(PartialTotalRoundModelResponseTransformer);
-    }
-    return data;
-};
-
-export const GetAllPartialTotalRoundsCursorResponseTransformer: GetAllPartialTotalRoundsCursorResponseTransformer = async (data) => {
-    GetCursorPaginatedPartialTotalRoundsOutputBodyModelResponseTransformer(data);
-    return data;
-};
-
-export type GetAllPartialTotalRoundsOffsetResponseTransformer = (data: any) => Promise<GetAllPartialTotalRoundsOffsetResponse>;
-
-export type GetOffsetPaginatedPartialTotalRoundsOutputBodyModelResponseTransformer = (data: any) => GetOffsetPaginatedPartialTotalRoundsOutputBody;
-
-export const GetOffsetPaginatedPartialTotalRoundsOutputBodyModelResponseTransformer: GetOffsetPaginatedPartialTotalRoundsOutputBodyModelResponseTransformer = data => {
-    if (Array.isArray(data?.partialTotalRounds)) {
-        data.partialTotalRounds.forEach(PartialTotalRoundModelResponseTransformer);
-    }
-    return data;
-};
-
-export const GetAllPartialTotalRoundsOffsetResponseTransformer: GetAllPartialTotalRoundsOffsetResponseTransformer = async (data) => {
-    GetOffsetPaginatedPartialTotalRoundsOutputBodyModelResponseTransformer(data);
-    return data;
-};
-
-export type GetPartialTotalRoundByIdResponseTransformer = (data: any) => Promise<GetPartialTotalRoundByIdResponse>;
-
-export const GetPartialTotalRoundByIdResponseTransformer: GetPartialTotalRoundByIdResponseTransformer = async (data) => {
-    SinglePartialTotalRoundResponseBodyModelResponseTransformer(data);
+export const GetRoundsByPageResponseTransformer: GetRoundsByPageResponseTransformer = async (data) => {
+    GetOffsetPaginatedRoundsOutputBodyModelResponseTransformer(data);
     return data;
 };
 
 export type GetRoundByIdResponseTransformer = (data: any) => Promise<GetRoundByIdResponse>;
 
-export type SingleRoundWithSubtypesResponseBodyModelResponseTransformer = (data: any) => SingleRoundWithSubtypesResponseBody;
-
-export const SingleRoundWithSubtypesResponseBodyModelResponseTransformer: SingleRoundWithSubtypesResponseBodyModelResponseTransformer = data => {
-    if (data?.round) {
-        RoundWithSubtypesModelResponseTransformer(data.round);
-    }
-    return data;
-};
-
 export const GetRoundByIdResponseTransformer: GetRoundByIdResponseTransformer = async (data) => {
-    SingleRoundWithSubtypesResponseBodyModelResponseTransformer(data);
+    SingleRoundResponseBodyModelResponseTransformer(data);
     return data;
 };
 
-export type GetRoundRoundInvestmentsCursorResponseTransformer = (data: any) => Promise<GetRoundRoundInvestmentsCursorResponse>;
+export type GetRoundInvestmentsByCursorResponseTransformer = (data: any) => Promise<GetRoundInvestmentsByCursorResponse>;
 
-export const GetRoundRoundInvestmentsCursorResponseTransformer: GetRoundRoundInvestmentsCursorResponseTransformer = async (data) => {
+export const GetRoundInvestmentsByCursorResponseTransformer: GetRoundInvestmentsByCursorResponseTransformer = async (data) => {
     GetCursorPaginatedRoundInvestmentsOutputBodyModelResponseTransformer(data);
     return data;
 };
 
-export type GetRoundRoundInvestmentsOffsetResponseTransformer = (data: any) => Promise<GetRoundRoundInvestmentsOffsetResponse>;
+export type GetRoundInvestmentsByPageResponseTransformer = (data: any) => Promise<GetRoundInvestmentsByPageResponse>;
 
-export const GetRoundRoundInvestmentsOffsetResponseTransformer: GetRoundRoundInvestmentsOffsetResponseTransformer = async (data) => {
+export const GetRoundInvestmentsByPageResponseTransformer: GetRoundInvestmentsByPageResponseTransformer = async (data) => {
     GetOffsetPaginatedRoundInvestmentsOutputBodyModelResponseTransformer(data);
     return data;
 };
@@ -2187,6 +1338,13 @@ export type GetUserAccountResponseTransformer = (data: any) => Promise<GetUserAc
 
 export const GetUserAccountResponseTransformer: GetUserAccountResponseTransformer = async (data) => {
     SingleAccountResponseBodyModelResponseTransformer(data);
+    return data;
+};
+
+export type GetVenturesByCursorResponseTransformer = (data: any) => Promise<GetVenturesByCursorResponse>;
+
+export const GetVenturesByCursorResponseTransformer: GetVenturesByCursorResponseTransformer = async (data) => {
+    GetCursorPaginatedVenturesOutputBodyModelResponseTransformer(data);
     return data;
 };
 
@@ -2206,16 +1364,9 @@ export const CreateVentureResponseTransformer: CreateVentureResponseTransformer 
     return data;
 };
 
-export type GetAllVenturesCursorResponseTransformer = (data: any) => Promise<GetAllVenturesCursorResponse>;
+export type GetVenturesByPageResponseTransformer = (data: any) => Promise<GetVenturesByPageResponse>;
 
-export const GetAllVenturesCursorResponseTransformer: GetAllVenturesCursorResponseTransformer = async (data) => {
-    GetCursorPaginatedVenturesOutputBodyModelResponseTransformer(data);
-    return data;
-};
-
-export type GetAllVenturesOffsetResponseTransformer = (data: any) => Promise<GetAllVenturesOffsetResponse>;
-
-export const GetAllVenturesOffsetResponseTransformer: GetAllVenturesOffsetResponseTransformer = async (data) => {
+export const GetVenturesByPageResponseTransformer: GetVenturesByPageResponseTransformer = async (data) => {
     GetOffsetPaginatedVenturesOutputBodyModelResponseTransformer(data);
     return data;
 };
@@ -2234,86 +1385,30 @@ export const UpdateVentureResponseTransformer: UpdateVentureResponseTransformer 
     return data;
 };
 
-export type GetVentureRoundInvestmentsCursorResponseTransformer = (data: any) => Promise<GetVentureRoundInvestmentsCursorResponse>;
+export type GetVentureRoundInvestmentsByCursorResponseTransformer = (data: any) => Promise<GetVentureRoundInvestmentsByCursorResponse>;
 
-export const GetVentureRoundInvestmentsCursorResponseTransformer: GetVentureRoundInvestmentsCursorResponseTransformer = async (data) => {
+export const GetVentureRoundInvestmentsByCursorResponseTransformer: GetVentureRoundInvestmentsByCursorResponseTransformer = async (data) => {
     GetCursorPaginatedRoundInvestmentsOutputBodyModelResponseTransformer(data);
     return data;
 };
 
-export type GetVentureRoundInvestmentsOffsetResponseTransformer = (data: any) => Promise<GetVentureRoundInvestmentsOffsetResponse>;
+export type GetVentureRoundInvestmentsByPageResponseTransformer = (data: any) => Promise<GetVentureRoundInvestmentsByPageResponse>;
 
-export const GetVentureRoundInvestmentsOffsetResponseTransformer: GetVentureRoundInvestmentsOffsetResponseTransformer = async (data) => {
+export const GetVentureRoundInvestmentsByPageResponseTransformer: GetVentureRoundInvestmentsByPageResponseTransformer = async (data) => {
     GetOffsetPaginatedRoundInvestmentsOutputBodyModelResponseTransformer(data);
     return data;
 };
 
-export type GetVentureRoundsCursorResponseTransformer = (data: any) => Promise<GetVentureRoundsCursorResponse>;
+export type GetVentureRoundsByCursorResponseTransformer = (data: any) => Promise<GetVentureRoundsByCursorResponse>;
 
-export const GetVentureRoundsCursorResponseTransformer: GetVentureRoundsCursorResponseTransformer = async (data) => {
-    GetCursorPaginatedFixedTotalRoundsOutputBodyModelResponseTransformer(data);
+export const GetVentureRoundsByCursorResponseTransformer: GetVentureRoundsByCursorResponseTransformer = async (data) => {
+    GetCursorPaginatedRoundsOutputBodyModelResponseTransformer(data);
     return data;
 };
 
-export type GetVentureDutchDynamicRoundsCursorResponseTransformer = (data: any) => Promise<GetVentureDutchDynamicRoundsCursorResponse>;
+export type GetVentureRoundsByPageResponseTransformer = (data: any) => Promise<GetVentureRoundsByPageResponse>;
 
-export const GetVentureDutchDynamicRoundsCursorResponseTransformer: GetVentureDutchDynamicRoundsCursorResponseTransformer = async (data) => {
-    GetCursorPaginatedDutchDynamicRoundsOutputBodyModelResponseTransformer(data);
-    return data;
-};
-
-export type GetVentureDutchDynamicRoundsOffsetResponseTransformer = (data: any) => Promise<GetVentureDutchDynamicRoundsOffsetResponse>;
-
-export const GetVentureDutchDynamicRoundsOffsetResponseTransformer: GetVentureDutchDynamicRoundsOffsetResponseTransformer = async (data) => {
-    GetOffsetPaginatedDutchDynamicRoundsOutputBodyModelResponseTransformer(data);
-    return data;
-};
-
-export type GetVentureRegularDynamicRoundsCursorResponseTransformer = (data: any) => Promise<GetVentureRegularDynamicRoundsCursorResponse>;
-
-export const GetVentureRegularDynamicRoundsCursorResponseTransformer: GetVentureRegularDynamicRoundsCursorResponseTransformer = async (data) => {
-    GetCursorPaginatedRegularDynamicRoundsOutputBodyModelResponseTransformer(data);
-    return data;
-};
-
-export type GetVentureRegularDynamicRoundsOffsetResponseTransformer = (data: any) => Promise<GetVentureRegularDynamicRoundsOffsetResponse>;
-
-export const GetVentureRegularDynamicRoundsOffsetResponseTransformer: GetVentureRegularDynamicRoundsOffsetResponseTransformer = async (data) => {
-    GetOffsetPaginatedRegularDynamicRoundsOutputBodyModelResponseTransformer(data);
-    return data;
-};
-
-export type GetVentureRoundsOffsetResponseTransformer = (data: any) => Promise<GetVentureRoundsOffsetResponse>;
-
-export const GetVentureRoundsOffsetResponseTransformer: GetVentureRoundsOffsetResponseTransformer = async (data) => {
-    GetCursorPaginatedFixedTotalRoundsOutputBodyModelResponseTransformer(data);
-    return data;
-};
-
-export type GetVentureFixedTotalRoundsCursorResponseTransformer = (data: any) => Promise<GetVentureFixedTotalRoundsCursorResponse>;
-
-export const GetVentureFixedTotalRoundsCursorResponseTransformer: GetVentureFixedTotalRoundsCursorResponseTransformer = async (data) => {
-    GetCursorPaginatedFixedTotalRoundsOutputBodyModelResponseTransformer(data);
-    return data;
-};
-
-export type GetVentureFixedTotalRoundsOffsetResponseTransformer = (data: any) => Promise<GetVentureFixedTotalRoundsOffsetResponse>;
-
-export const GetVentureFixedTotalRoundsOffsetResponseTransformer: GetVentureFixedTotalRoundsOffsetResponseTransformer = async (data) => {
-    GetOffsetPaginatedFixedTotalRoundsOutputBodyModelResponseTransformer(data);
-    return data;
-};
-
-export type GetVenturePartialTotalRoundsCursorResponseTransformer = (data: any) => Promise<GetVenturePartialTotalRoundsCursorResponse>;
-
-export const GetVenturePartialTotalRoundsCursorResponseTransformer: GetVenturePartialTotalRoundsCursorResponseTransformer = async (data) => {
-    GetCursorPaginatedPartialTotalRoundsOutputBodyModelResponseTransformer(data);
-    return data;
-};
-
-export type GetVenturePartialTotalRoundsOffsetResponseTransformer = (data: any) => Promise<GetVenturePartialTotalRoundsOffsetResponse>;
-
-export const GetVenturePartialTotalRoundsOffsetResponseTransformer: GetVenturePartialTotalRoundsOffsetResponseTransformer = async (data) => {
-    GetOffsetPaginatedPartialTotalRoundsOutputBodyModelResponseTransformer(data);
+export const GetVentureRoundsByPageResponseTransformer: GetVentureRoundsByPageResponseTransformer = async (data) => {
+    GetOffsetPaginatedRoundsOutputBodyModelResponseTransformer(data);
     return data;
 };

@@ -3,7 +3,7 @@
 import { actionClient } from "@/lib/safe-action";
 import {
 	createBusiness as createBusinessApi,
-	getBusinessVentures as getBusinessVenturesApi,
+	getBusinessVenturesByCursor as getBusinessVenturesApi,
 	getBusinessById as getBusinessByIdApi,
 	getAccountBusinesses as getAccountBusinessesApi,
 	getBusinessVenturesByPage,
@@ -38,7 +38,6 @@ export const createBusiness = actionClient
 					business: {
 						...business,
 						ownerAccountId: account.id,
-						status: "pending",
 					},
 				},
 			});

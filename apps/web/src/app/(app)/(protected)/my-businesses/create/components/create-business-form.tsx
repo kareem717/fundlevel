@@ -26,6 +26,14 @@ import { AddressInput } from "@/components/app/address-input";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from "@/components/ui/select";
 
 export interface CreateBusinessFormProps extends ComponentPropsWithoutRef<'form'> {
   onSuccess?: () => void
@@ -75,6 +83,53 @@ export const CreateBusinessForm: FC<CreateBusinessFormProps> = ({ className, onS
                 This is the unique business number.
               </FormDescription>
               <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="business.teamSize"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Team Size</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a team size" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {["0-1", "2-10", "11-50", "51-200", "201-500", "501-1000", "1000+"].map((value) => (
+                    <SelectItem key={value} value={value}>{value}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormDescription>
+                This is the number of people on the team for this venture.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="business.isRemote"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+              <FormControl>
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+              <div className="space-y-1 leading-none">
+                <FormLabel>
+                  Is Remote
+                </FormLabel>
+                <FormDescription>
+                  Select this if this venture's main point of business is remote/online.
+                </FormDescription>
+              </div>
             </FormItem>
           )}
         />

@@ -23,16 +23,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { createVentureSchema } from "@/actions/validations/ventures";
 import { Textarea } from "@/components/ui/textarea";
 import { InferType } from "yup";
-import { AddressInput } from "@/components/app/address-input";
 import { BusinessSelect } from "@/components/ui/business-select";
-import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 
 export interface CreateVentureFormProps extends ComponentPropsWithoutRef<'form'> {
   onSuccess?: () => void
@@ -45,11 +36,7 @@ export const CreateVentureForm: FC<CreateVentureFormProps> = ({ className, onSuc
   const form = useForm<InferType<typeof createVentureSchema>>({
     resolver: yupResolver(createVentureSchema),
     defaultValues: {
-      venture: {
-        businessId,
-        isRemote: false,
-        teamSize: "0-1",
-      }
+      businessId,
     }
   })
 
@@ -80,7 +67,7 @@ export const CreateVentureForm: FC<CreateVentureFormProps> = ({ className, onSuc
         {businessId == undefined && (
           <FormField
             control={form.control}
-            name="venture.businessId"
+            name="businessId"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Business</FormLabel>
@@ -97,7 +84,7 @@ export const CreateVentureForm: FC<CreateVentureFormProps> = ({ className, onSuc
         )}
         <FormField
           control={form.control}
-          name="venture.name"
+          name="name"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Name</FormLabel>
@@ -113,54 +100,7 @@ export const CreateVentureForm: FC<CreateVentureFormProps> = ({ className, onSuc
         />
         <FormField
           control={form.control}
-          name="venture.teamSize"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Team Size</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a team size" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {["0-1", "2-10", "11-50", "51-200", "201-500", "501-1000", "1000+"].map((value) => (
-                    <SelectItem key={value} value={value}>{value}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormDescription>
-                This is the number of people on the team for this venture.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="venture.isRemote"
-          render={({ field }) => (
-            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-              <FormControl>
-                <Checkbox
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              </FormControl>
-              <div className="space-y-1 leading-none">
-                <FormLabel>
-                  Is Remote
-                </FormLabel>
-                <FormDescription>
-                  Select this if this venture's main point of business is remote/online.
-                </FormDescription>
-              </div>
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="venture.description"
+          name="description"
           render={({ field }) => (
             <FormItem>
               <FormLabel>
@@ -171,25 +111,6 @@ export const CreateVentureForm: FC<CreateVentureFormProps> = ({ className, onSuc
               </FormControl>
               <FormDescription>
                 Describe your venture to potential investors.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="address"
-          render={({ field: { onChange, value, ...fieldRest } }) => (
-            <FormItem>
-              <FormLabel>Address</FormLabel>
-              <FormControl>
-                <AddressInput
-                  onRetrieve={(val) => onChange(val)}
-                  {...fieldRest}
-                />
-              </FormControl>
-              <FormDescription>
-                The city where the business is located.
               </FormDescription>
               <FormMessage />
             </FormItem>
