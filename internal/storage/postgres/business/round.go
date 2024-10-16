@@ -13,7 +13,8 @@ func (r *BusinessRepository) GetRoundsByCursor(ctx context.Context, businessId i
 	err := r.db.
 		NewSelect().
 		Model(&resp).
-		Where("business_id = ?", businessId).
+		Join("JOIN ventures ON ventures.id = round.venture_id").
+		Where("ventures.business_id = ?", businessId).
 		Where("id >= ?", paginationParams.Cursor).
 		Order("id").
 		Limit(paginationParams.Limit).
@@ -29,7 +30,8 @@ func (r *BusinessRepository) GetRoundsByPage(ctx context.Context, businessId int
 	err := r.db.
 		NewSelect().
 		Model(&resp).
-		Where("business_id = ?", businessId).
+		Join("JOIN ventures ON ventures.id = round.venture_id").
+		Where("ventures.business_id = ?", businessId).
 		Order("id").
 		Offset(offset).
 		Limit(paginationParams.PageSize).
