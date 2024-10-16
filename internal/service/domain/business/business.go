@@ -19,6 +19,7 @@ func NewBusinessService(repositories storage.Repository) *BusinessService {
 }
 
 func (s *BusinessService) Create(ctx context.Context, params business.CreateBusinessParams) (business.Business, error) {
+	params.Business.Status = business.BusinessStatusPending
 	return s.repositories.Business().Create(ctx, params)
 }
 

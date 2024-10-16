@@ -1,6 +1,6 @@
 -- +goose Up
 -- +goose StatementBegin
-CREATE TYPE currency AS ENUM('USD', 'GBP', 'EUR', 'CAD', 'AUD', 'JPY');
+CREATE TYPE currency AS ENUM('usd', 'gbp', 'eur', 'cad', 'aud', 'jpy');
 
 CREATE TYPE round_status AS ENUM('active', 'successful', 'failed');
 

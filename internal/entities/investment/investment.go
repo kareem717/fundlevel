@@ -26,9 +26,11 @@ type RoundInvestment struct {
 	bun.BaseModel `bun:"table:round_investments"`
 	shared.IntegerID
 	CreateInvestmentParams
-	UpdateInvestmentParams
-	Round    *round.Round     `json:"round" bun:"rel:belongs-to,join:round_id=id" readonly:"true"`
-	Investor *account.Account `json:"investor" bun:"rel:belongs-to,join:investor_id=id" readonly:"true"`
+	Status                  InvestmentStatus `json:"status" enum:"pending,accepted,rejected,withdrawn,successful,failed"`
+	StripeCheckoutSessionID *string          `json:"stripeCheckoutSessionId" hidden:"true"`
+	PaidAt                  *time.Time       `json:"paidAt"`
+	Round                   *round.Round     `json:"round" bun:"rel:belongs-to,join:round_id=id"`
+	Investor                *account.Account `json:"investor" bun:"rel:belongs-to,join:investor_id=id"`
 	shared.Timestamps
 }
 
@@ -38,7 +40,7 @@ type CreateInvestmentParams struct {
 }
 
 type UpdateInvestmentParams struct {
-	Status                  InvestmentStatus `json:"status" enum:"pending,accepted,rejected,withdrawn,successful,failed" readOnly:"true"`
-	StripeCheckoutSessionID *string          `json:"stripeCheckoutSessionId" readOnly:"true"`
-	PaidAt                  *time.Time       `json:"paidAt" readOnly:"true"`
+	Status                  InvestmentStatus `json:"status" enum:"pending,accepted,rejected,withdrawn,successful,failed" hidden:"true"`
+	StripeCheckoutSessionID *string          `json:"stripeCheckoutSessionId" hidden:"true"`
+	PaidAt                  *time.Time       `json:"paidAt" hidden:"true"`
 }

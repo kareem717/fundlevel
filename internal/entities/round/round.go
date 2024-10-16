@@ -10,12 +10,12 @@ import (
 type Currency string
 
 const (
-	USD Currency = "USD"
-	GBP Currency = "GBP"
-	EUR Currency = "EUR"
-	CAD Currency = "CAD"
-	AUD Currency = "AUD"
-	JPY Currency = "JPY"
+	USD Currency = "usd"
+	GBP Currency = "gbp"
+	EUR Currency = "eur"
+	CAD Currency = "cad"
+	AUD Currency = "aud"
+	JPY Currency = "jpy"
 )
 
 type RoundStatus string
@@ -31,7 +31,15 @@ type Round struct {
 	bun.BaseModel `bun:"table:rounds"`
 
 	shared.IntegerID
-	CreateRoundParams
+	VentureID         int         `json:"ventureId" minimum:"1"`
+	BeginsAt          time.Time   `json:"beginsAt" format:"date-time"`
+	EndsAt            time.Time   `json:"endsAt" format:"date-time"`
+	PercentageOffered float64     `json:"percentageOffered" minimum:"0" maximum:"100"`
+	PercentageValue   int         `json:"percentageValue" minimum:"1"`
+	ValueCurrency     Currency    `json:"valueCurrency" enum:"usd,gbp,eur,cad,aud,jpy"`
+	Status            RoundStatus `json:"status" enum:"active,successful,failed"`
+	InvestorCount     int         `json:"investorCount" minimum:"1"`
+	BuyIn             float64     `json:"buyIn" minimum:"1"`
 
 	shared.Timestamps
 }
@@ -43,8 +51,8 @@ type CreateRoundParams struct {
 	EndsAt            time.Time   `json:"endsAt" format:"date-time"`
 	PercentageOffered float64     `json:"percentageOffered" minimum:"0" maximum:"100"`
 	PercentageValue   int         `json:"percentageValue" minimum:"1"`
-	ValueCurrency     Currency    `json:"valueCurrency" enum:"USD,GBP,EUR,CAD,AUD,JPY"`
-	Status            RoundStatus `json:"status" enum:"active,successful,failed"`
+	ValueCurrency     Currency    `json:"valueCurrency" enum:"usd,gbp,eur,cad,aud,jpy"`
+	Status            RoundStatus `json:"status" hidden:"true"`
 	InvestorCount     int         `json:"investorCount" minimum:"1"`
-	BuyIn             float64     `json:"buyIn" minimum:"1" readOnly:"true"`
+	BuyIn             float64     `json:"buyIn" minimum:"1" hidden:"true"`
 }

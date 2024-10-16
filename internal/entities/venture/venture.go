@@ -10,7 +10,9 @@ import (
 type Venture struct {
 	bun.BaseModel `bun:"table:ventures"`
 
-	CreateVentureParams
+	BusinessID int  `json:"businessId" minimum:"1"`
+	IsHidden   bool `json:"isHidden"`
+	UpdateVentureParams
 	shared.IntegerID
 	shared.Timestamps
 }
@@ -18,7 +20,7 @@ type Venture struct {
 // CreateVentureParams contains the parameters for creating a new venture.
 type CreateVentureParams struct {
 	BusinessID int  `json:"businessId" minimum:"1"`
-	IsHidden   bool `json:"isHidden" readOnly:"true"`
+	IsHidden   bool `json:"isHidden" hidden:"true"`
 	UpdateVentureParams
 }
 

@@ -22,7 +22,7 @@ func NewRoundService(repositories storage.Repository) *RoundService {
 func (s *RoundService) Create(ctx context.Context, params round.CreateRoundParams) (round.Round, error) {
 	// Calculate the buy-in value for the round
 	params.BuyIn = float64(params.PercentageValue) / float64(params.InvestorCount)
-
+	params.Status = round.Active
 	return s.repositories.Round().Create(ctx, params)
 }
 
