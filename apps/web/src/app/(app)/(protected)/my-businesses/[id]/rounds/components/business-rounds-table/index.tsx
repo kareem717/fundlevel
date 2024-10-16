@@ -1,7 +1,6 @@
 "use client"
 
 import {
-  ColumnDef,
   SortingState,
   VisibilityState,
   flexRender,
@@ -23,22 +22,25 @@ import {
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuCheckboxItem } from "@/components/ui/dropdown-menu"
-import { useState } from "react"
+import { ComponentPropsWithoutRef, FC, useState } from "react"
 import { useRouter } from "next/navigation"
 import { DataTablePagination } from "@/components/ui/data-table/pagination"
+import { Round } from "@/lib/api"
+import { columns as columnDef } from "./columns"
+import { cn } from "@/lib/utils"
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
-  data: TData[]
-  id: number
+export interface BusinessRoundsTableProps extends ComponentPropsWithoutRef<"div"> {
+  data: Round[]
+  businessId: number
 }
 
-export function BusinessRoundsTable<TData, TValue>({
-  columns,
+export const BusinessRoundsTable: FC<BusinessRoundsTableProps> = ({
   data,
-  id,
-}: DataTableProps<TData, TValue>) {
-  console.log(data)
+  businessId,
+  className,
+  ...props
+}) => {
+  const columns = columnDef(businessId)
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
     []
@@ -68,7 +70,7 @@ export function BusinessRoundsTable<TData, TValue>({
     onPaginationChange: (newPagination) => {
       setPagination(newPagination)
       // reload page with new pagination
-      router.push(`/my-businesses/${id}/ventures?page=${pagination.pageIndex + 1}&pageSize=${pagination.pageSize}`)
+      router.push(`/my-businesses/${businessId}/rounds?page=${pagination.pageIndex + 1}&pageSize=${pagination.pageSize}`)
     },
     state: {
       pagination,
@@ -80,7 +82,7 @@ export function BusinessRoundsTable<TData, TValue>({
   })
 
   return (
-    <div className="flex flex-col gap-4 w-full h-full">
+    <div className={cn("flex flex-col gap-4 w-full h-full", className)} {...props}>
       <div className="flex items-center py-4">
         <Input
           placeholder="Filter name..."

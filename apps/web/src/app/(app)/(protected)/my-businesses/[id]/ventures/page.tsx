@@ -13,8 +13,8 @@ export default async function BusinessVenturesPage({ params, searchParams }: { p
 	const resp = await getBusinessVentures({
 		businessId,
 		pagination: {
-			offset: searchParams.page ? parseInt(searchParams.page) : 1,
-			limit: searchParams.pageSize ? parseInt(searchParams.pageSize) : 10,
+			page: searchParams.page ? parseInt(searchParams.page) : 1,
+			pageSize: searchParams.pageSize ? parseInt(searchParams.pageSize) : 10,
 		},
 	})
 

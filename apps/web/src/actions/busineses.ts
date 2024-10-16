@@ -7,6 +7,7 @@ import {
 	getBusinessById as getBusinessByIdApi,
 	getAccountBusinesses as getAccountBusinessesApi,
 	getBusinessVenturesByPage,
+	getBusinessRoundsByPage as getBusinessRoundsByPageApi,
 } from "@/lib/api";
 import { createBusinessSchema } from "@/actions/validations/business";
 import {
@@ -121,3 +122,27 @@ export const getBusinessById = actionClient
 
 		return res.data;
 	});
+
+export const getBusinessRoundsByPage = actionClient
+	.schema(
+		object().shape({
+			businessId: intIdSchema.required(),
+			pagination: offsetPaginationSchema.required(),
+		})
+	)
+	.action(
+		async ({ parsedInput: { businessId, pagination }, ctx: { apiClient } }) => {
+			const res = await getBusinessRoundsByPageApi({
+				client: apiClient,
+				throwOnError: true,
+				query: {
+					...pagination,
+				},
+				path: {
+					id: businessId,
+				},
+			});
+
+			return res.data;
+		}
+	);

@@ -9,7 +9,6 @@ export const currency = string().oneOf([
 	"jpy",
 ]);
 
-
 export const dollarAmount = number().min(0).max(9999999999.99);
 
 export const intIdSchema = number().min(1).integer();
@@ -20,8 +19,8 @@ export const cursorPaginationSchema = object().shape({
 });
 
 export const offsetPaginationSchema = object().shape({
-	offset: number().min(0).default(0).optional(),
-	limit: number().min(1).max(100).default(10).optional(),
+	page: number().min(0).default(0).optional(),
+	pageSize: number().min(1).max(100).default(10).optional(),
 });
 
 export const getByParentIdWithCursorSchema = object().shape({

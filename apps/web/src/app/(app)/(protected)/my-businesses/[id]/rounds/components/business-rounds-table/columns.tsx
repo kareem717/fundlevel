@@ -7,21 +7,14 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Icons } from "@/components/ui/icons"
 import { DataTableColumnHeader } from "@/components/ui/data-table/column-header"
 import { titleCase } from "title-case"
-import { Address, Business, Round, Venture } from "@/lib/api"
+import { Round } from "@/lib/api"
 import Link from "next/link"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
 import { format } from "date-fns"
 
 export const columns = (businessId: number): ColumnDef<Round>[] => [
@@ -48,14 +41,20 @@ export const columns = (businessId: number): ColumnDef<Round>[] => [
     enableHiding: false,
   },
   {
-    accessorKey: "name",
+    accessorKey: "beginsAt",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Name" />
+      <DataTableColumnHeader column={column} title="Begins At" />
     ),
     cell: ({ row }) => {
-      const name = row.getValue("name") as string
-      return <div className="text-left font-medium">{titleCase(name)}</div>
+      const beginsAt = row.getValue("beginsAt") as Date
+      return <div className="text-left font-medium">{format(beginsAt, "PPP")}</div>
     },
+  },
+  {
+    accessorKey: "buyIn",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Buy In" />
+    ),
   },
   {
     accessorKey: "createdAt",
@@ -68,37 +67,88 @@ export const columns = (businessId: number): ColumnDef<Round>[] => [
     },
   },
   {
-    accessorKey: "businessNumber",
+    accessorKey: "deletedAt",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Business Number" />
+      <DataTableColumnHeader column={column} title="Deleted At" />
     ),
     cell: ({ row }) => {
-      const businessNumber = row.getValue("businessNumber") as string
-      return <div className="text-left font-medium">{businessNumber}</div>
+      const deletedAt = row.getValue("deletedAt") as Date | null
+      return <div className="text-left font-medium">{deletedAt ? format(deletedAt, "PPP") : "N/A"}</div>
     },
   },
   {
-    accessorKey: "address",
+    accessorKey: "endsAt",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Address" />
+      <DataTableColumnHeader column={column} title="Ends At" />
     ),
     cell: ({ row }) => {
-      const address = row.getValue("address") as Address
-      return (
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger>
-              <div className="text-left font-medium truncate max-w-32" title={address?.fullAddress || "N/A"}>
-                {address?.fullAddress || "N/A"}
-              </div>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>{address?.fullAddress || "N/A"}</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      )
+      const endsAt = row.getValue("endsAt") as Date
+      return <div className="text-left font-medium">{format(endsAt, "PPP")}</div>
     },
+  },
+  {
+    accessorKey: "id",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="ID" />
+    ),
+  },
+  {
+    accessorKey: "investorCount",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Investor Count" />
+    ),
+  },
+  {
+    accessorKey: "percentageOffered",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Percentage Offered" />
+    ),
+    cell: ({ row }) => {
+      const percentageOffered = row.getValue("percentageOffered") as number
+      return <div className="text-left font-medium">{percentageOffered}%</div>
+    },
+  },
+  {
+    accessorKey: "percentageValue",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Percentage Value" />
+    ),
+  },
+  {
+    accessorKey: "status",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Status" />
+    ),
+    cell: ({ row }) => {
+      const status = row.getValue("status") as "active" | "successful" | "failed"
+      return <div className="text-left font-medium">{titleCase(status)}</div>
+    },
+  },
+  {
+    accessorKey: "updatedAt",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Updated At" />
+    ),
+    cell: ({ row }) => {
+      const updatedAt = row.getValue("updatedAt") as Date | null
+      return <div className="text-left font-medium">{updatedAt ? format(updatedAt, "PPP") : "N/A"}</div>
+    },
+  },
+  {
+    accessorKey: "valueCurrency",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Value Currency" />
+    ),
+    cell: ({ row }) => {
+      const valueCurrency = row.getValue("valueCurrency") as "usd" | "gbp" | "eur" | "cad" | "aud" | "jpy"
+      return <div className="text-left font-medium">{valueCurrency.toUpperCase()}</div>
+    },
+  },
+  {
+    accessorKey: "ventureId",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Venture ID" />
+    ),
   },
   {
     id: "actions",
