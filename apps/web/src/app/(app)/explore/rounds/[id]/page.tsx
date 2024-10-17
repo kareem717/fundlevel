@@ -1,10 +1,9 @@
 import { RoundViewActions } from "./components/round-view-actions"
-import { faker } from "@faker-js/faker";
-import { RoundViewInvestmentCard, MiniRoundViewInvestmentCard } from "./components/round-investment-card";
+import { ConfirmInvestmentDialog } from "./components/confirm-investment-dialog";
 import { getRoundById, isRoundLiked } from "@/actions/rounds";
 import { notFound } from "next/navigation";
 import { getAccount } from "@/actions/auth";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -14,9 +13,16 @@ import {
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { cn } from "@/lib/utils";
 import { Icons } from "@/components/ui/icons";
 import { Separator } from "@/components/ui/separator";
+import { cn } from "@/lib/utils";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+import { env } from "@/env";
 
 export default async function RoundViewPage({ params }: { params: { id: string } }) {
   const parsedId = parseInt(params.id as string || ""); // Parse the id
@@ -51,6 +57,12 @@ export default async function RoundViewPage({ params }: { params: { id: string }
   const description = venture.description
 
   const isLargeDescription = description.length > 150;
+
+  const valuationAtPurchase = Math.round(round.percentageValue / (round.percentageOffered / 100));
+
+  const perInvestorPercentage = (round.investorCount > 1 ? round.percentageOffered / round.investorCount : round.percentageOffered).toFixed(3);
+  const buyInPrice = (round.buyIn * (1 + env.NEXT_PUBLIC_FEE_PERCENTAGE)).toFixed(2);
+
   return (
     <Card className="w-full relative max-w-screen-lg mx-auto">
       <CardHeader>
@@ -134,25 +146,98 @@ export default async function RoundViewPage({ params }: { params: { id: string }
               )}
             </div>
           </div>
-          <RoundViewInvestmentCard round={{
-            ...round,
-            venture: {
-              ...venture,
-              business
-            }
-          }} className="hidden md:block lg:w-1/3" />
+
+          <Card className={cn("w-full h-full hidden md:block lg:w-1/3")}>
+            <CardHeader>
+              <CardTitle>Own {perInvestorPercentage}%</CardTitle>
+            </CardHeader>
+            <TooltipProvider>
+              <CardContent className="bg-secondary mx-6 rounded-md flex flex-col items-center justify-center py-4 h-full">
+                <span className="font-semibold mb-6">
+                  Breakdown
+                </span>
+                <div className="flex flex-row justify-between items-center w-full">
+                  <Tooltip>
+                    <TooltipTrigger className="hover:underline text-left">
+                      Valuation:
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>The valuation of the venture at your current purchase price</p>
+                    </TooltipContent>
+                  </Tooltip>
+                  <span className="font-semibold">
+                    ${valuationAtPurchase}
+                  </span>
+                </div>
+                <div className="flex flex-row justify-between items-center w-full">
+                  <Tooltip>
+                    <TooltipTrigger className="hover:underline text-left">
+                      Percentage:
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>The venture is offering a total of {round.percentageOffered}%
+                        {round.investorCount > 1 && `, divided between ${round.investorCount} investors`}
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                  <span className="font-semibold">
+                    {perInvestorPercentage}%
+                  </span>
+                </div>
+                <div className="flex flex-row justify-between items-center w-full">
+                  <Tooltip>
+                    <TooltipTrigger className="hover:underline text-left">
+                      Buy in:
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>This is the cost for the percentage of the round that you want to buy at the current valuation</p>
+                    </TooltipContent>
+                  </Tooltip>
+                  <span className="font-semibold">
+                    ${round.buyIn}
+                  </span>
+                </div>
+                <div className="flex flex-row justify-between items-center w-full">
+                  <Tooltip>
+                    <TooltipTrigger className="hover:underline text-left">
+                      Fees:
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>This is the fee we charge to support Fundlevel</p>
+                    </TooltipContent>
+                  </Tooltip>
+                  <span className="font-semibold">
+                    ${(round.buyIn * env.NEXT_PUBLIC_FEE_PERCENTAGE).toFixed(2)}
+                  </span>
+                </div>
+                <Separator className="w-full bg-foreground my-2" />
+                <div className="flex flex-row justify-between items-center w-full font-semibold">
+                  <Tooltip>
+                    <TooltipTrigger className="hover:underline text-left">
+                      Total
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      This is your buy in price, calculated as {round.percentageOffered}% of ${valuationAtPurchase}
+                    </TooltipContent>
+                  </Tooltip>
+                  <span>
+                    {/* //TODO: localize currency symbol */}
+                    ${buyInPrice}
+                  </span>
+                </div>
+              </CardContent>
+            </TooltipProvider>
+            <CardFooter className="w-full mt-8">
+              <ConfirmInvestmentDialog roundId={round.id} />
+            </CardFooter>
+          </Card>
         </div>
       </CardContent>
-      <MiniRoundViewInvestmentCard
-        round={{
-          ...round,
-          venture: {
-            ...venture,
-            business
-          }
-        }}
-        className="md:hidden bottom-0 left-0 right-0 fixed"
-      />
+      <div
+        className={cn("w-full font-semibold py-2 px-4 sm:px-6 bg-background border-t md:hidden bottom-0 left-0 right-0 fixed")}
+      >
+        <ConfirmInvestmentDialog roundId={round.id} price={parseFloat(buyInPrice)} />
+      </div>
     </Card>
   )
 }
