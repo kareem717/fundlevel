@@ -31,4 +31,5 @@ type CreateVentureParams struct {
 type UpdateVentureParams struct {
 	Name        string `json:"name" minLength:"3" maxLength:"100"`
 	Description string `json:"description" minLength:"3" maxLength:"5000"`
+	Overview    string `json:"overview" minLength:"10" maxLength:"30"`
 }

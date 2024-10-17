@@ -7,6 +7,7 @@ CREATE TABLE
         description TEXT NOT NULL,
         business_id INTEGER NOT NULL REFERENCES businesses (id),
         is_hidden BOOLEAN NOT NULL,
+        overview VARCHAR(30) NOT NULL,
         created_at timestamptz DEFAULT CLOCK_TIMESTAMP(),
         updated_at timestamptz,
         deleted_at timestamptz
