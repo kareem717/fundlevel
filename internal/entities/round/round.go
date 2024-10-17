@@ -41,6 +41,7 @@ type Round struct {
 	Status            RoundStatus `json:"status" enum:"active,successful,failed"`
 	InvestorCount     int         `json:"investorCount" minimum:"1"`
 	BuyIn             float64     `json:"buyIn" minimum:"1"`
+	Description       string      `json:"description" minLength:"10" maxLength:"3000"`
 
 	Venture *venture.Venture `json:"venture" bun:"rel:belongs-to,join:venture_id=id"`
 
@@ -58,4 +59,5 @@ type CreateRoundParams struct {
 	Status            RoundStatus `json:"status" hidden:"true"`
 	InvestorCount     int         `json:"investorCount" minimum:"1"`
 	BuyIn             float64     `json:"buyIn" minimum:"1" hidden:"true"`
+	Description       string      `json:"description" minLength:"10" maxLength:"3000"`
 }
