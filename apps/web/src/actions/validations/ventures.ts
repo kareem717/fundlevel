@@ -6,10 +6,12 @@ export const createVentureSchema = object<CreateVentureParams>().shape({
 	businessId: number().required(),
 	description: string().min(3).max(5000).required(),
 	name: string().min(3).max(100).required(),
+	overview: string().min(10).max(30).required(),
 });
 
 export const updateVentureSchema = object<UpdateVentureParams>().shape({
 	id: intIdSchema.required(),
 	name: string().min(3).max(100).required(),
 	description: string().min(3).max(5000).required(),
+	overview: string().min(10).max(30).required(),
 });

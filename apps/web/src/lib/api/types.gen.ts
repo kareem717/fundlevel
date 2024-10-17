@@ -37,6 +37,8 @@ export type Business = {
     deletedAt: (Date) | null;
     foundingDate: Date;
     id: number;
+    industry: Industry;
+    industryId: number;
     isRemote: boolean;
     name: string;
     ownerAccountId: number;
@@ -68,6 +70,7 @@ export const teamSize = {
 export type BusinessParams = {
     businessNumber: string;
     foundingDate: Date;
+    industryId: number;
     isRemote?: boolean;
     name: string;
     ownerAccountId: number;
@@ -150,6 +153,7 @@ export type CreateVentureParams = {
     businessId: number;
     description: string;
     name: string;
+    overview: string;
 };
 
 export type ErrorDetail = {
@@ -279,6 +283,14 @@ export type GetOffsetPaginatedVenturesOutputBody = {
     ventures: Array<Venture> | null;
 };
 
+export type Industry = {
+    createdAt: Date;
+    deletedAt: (Date) | null;
+    id: number;
+    label: string;
+    updatedAt: (Date) | null;
+};
+
 export type IsLikedOutputBody = {
     /**
      * A URL to the JSON Schema for this object.
@@ -318,6 +330,7 @@ export type Round = {
     status: 'active' | 'successful' | 'failed';
     updatedAt: (Date) | null;
     valueCurrency: 'usd' | 'gbp' | 'eur' | 'cad' | 'aud' | 'jpy';
+    venture: Venture;
     ventureId: number;
 };
 
@@ -414,9 +427,11 @@ export type UpdateVentureParams = {
     readonly $schema?: string;
     description: string;
     name: string;
+    overview: string;
 };
 
 export type Venture = {
+    business: Business;
     businessId: number;
     createdAt: Date;
     deletedAt: (Date) | null;
@@ -424,6 +439,7 @@ export type Venture = {
     id: number;
     isHidden: boolean;
     name: string;
+    overview: string;
     updatedAt: (Date) | null;
 };
 
@@ -1053,6 +1069,21 @@ export const AddressModelResponseTransformer: AddressModelResponseTransformer = 
     return data;
 };
 
+export type IndustryModelResponseTransformer = (data: any) => Industry;
+
+export const IndustryModelResponseTransformer: IndustryModelResponseTransformer = data => {
+    if (data?.createdAt) {
+        data.createdAt = new Date(data.createdAt);
+    }
+    if (data?.deletedAt) {
+        data.deletedAt = new Date(data.deletedAt);
+    }
+    if (data?.updatedAt) {
+        data.updatedAt = new Date(data.updatedAt);
+    }
+    return data;
+};
+
 export const BusinessModelResponseTransformer: BusinessModelResponseTransformer = data => {
     if (data?.address) {
         AddressModelResponseTransformer(data.address);
@@ -1065,6 +1096,9 @@ export const BusinessModelResponseTransformer: BusinessModelResponseTransformer 
     }
     if (data?.foundingDate) {
         data.foundingDate = new Date(data.foundingDate);
+    }
+    if (data?.industry) {
+        IndustryModelResponseTransformer(data.industry);
     }
     if (data?.updatedAt) {
         data.updatedAt = new Date(data.updatedAt);
@@ -1092,6 +1126,24 @@ export type RoundInvestmentModelResponseTransformer = (data: any) => RoundInvest
 
 export type RoundModelResponseTransformer = (data: any) => Round;
 
+export type VentureModelResponseTransformer = (data: any) => Venture;
+
+export const VentureModelResponseTransformer: VentureModelResponseTransformer = data => {
+    if (data?.business) {
+        BusinessModelResponseTransformer(data.business);
+    }
+    if (data?.createdAt) {
+        data.createdAt = new Date(data.createdAt);
+    }
+    if (data?.deletedAt) {
+        data.deletedAt = new Date(data.deletedAt);
+    }
+    if (data?.updatedAt) {
+        data.updatedAt = new Date(data.updatedAt);
+    }
+    return data;
+};
+
 export const RoundModelResponseTransformer: RoundModelResponseTransformer = data => {
     if (data?.beginsAt) {
         data.beginsAt = new Date(data.beginsAt);
@@ -1107,6 +1159,9 @@ export const RoundModelResponseTransformer: RoundModelResponseTransformer = data
     }
     if (data?.updatedAt) {
         data.updatedAt = new Date(data.updatedAt);
+    }
+    if (data?.venture) {
+        VentureModelResponseTransformer(data.venture);
     }
     return data;
 };
@@ -1249,21 +1304,6 @@ export const GetBusinessRoundsByPageResponseTransformer: GetBusinessRoundsByPage
 export type GetBusinessVenturesByCursorResponseTransformer = (data: any) => Promise<GetBusinessVenturesByCursorResponse>;
 
 export type GetCursorPaginatedVenturesOutputBodyModelResponseTransformer = (data: any) => GetCursorPaginatedVenturesOutputBody;
-
-export type VentureModelResponseTransformer = (data: any) => Venture;
-
-export const VentureModelResponseTransformer: VentureModelResponseTransformer = data => {
-    if (data?.createdAt) {
-        data.createdAt = new Date(data.createdAt);
-    }
-    if (data?.deletedAt) {
-        data.deletedAt = new Date(data.deletedAt);
-    }
-    if (data?.updatedAt) {
-        data.updatedAt = new Date(data.updatedAt);
-    }
-    return data;
-};
 
 export const GetCursorPaginatedVenturesOutputBodyModelResponseTransformer: GetCursorPaginatedVenturesOutputBodyModelResponseTransformer = data => {
     if (Array.isArray(data?.ventures)) {

@@ -30,7 +30,7 @@ export default async function RoundViewPage({ params }: { params: { id: string }
     throw new Error("Something went wrong")
   }
 
-  const round = roundResp.data.round
+  const { venture: { business, ...venture }, ...round } = roundResp.data.round
 
   const accountResp = await getAccount();
   const account = accountResp?.data;
@@ -48,39 +48,19 @@ export default async function RoundViewPage({ params }: { params: { id: string }
     return text;
   };
 
-  const description = faker.lorem.paragraph({ min: 1000, max: 2000 })
+  const description = venture.description
 
   const isLargeDescription = description.length > 150;
-  const basicDetails = {
-    location: `${round.status} San Francisco, USA`,
-    amountSeeking: "$100k",
-    industry: "Tech Industry",
-    focus: "AI/ML Focus"
-  }
-
-  const roundLead = {
-    name: "John Doe",
-    title: "Founder",
-    description: "10 years in tech"
-  }
-
-  const ventureDetails = {
-    overview: "AI-driven solutions for healthcare",
-    team: "10 full-time employees",
-    previousFunding: "$10M round in 2022"
-  }
-
-
   return (
     <Card className="w-full relative max-w-screen-lg mx-auto">
       <CardHeader>
         <CardTitle className="flex flex-row items-center justify-between w-full">
-          Round in {basicDetails.location}
+          Round for {venture.name}
           <RoundViewActions className="w-full" roundId={round.id} isLiked={isLiked} isLoggedIn={!!account} />
         </CardTitle>
         <CardDescription>
           <span className="text-muted-foreground text-sm font-normal">
-            Seeking {basicDetails.amountSeeking} - {basicDetails.industry} Industry - {basicDetails.focus} Focus
+            Seeking {round.percentageValue} for {round.percentageOffered} through {round.investorCount} investors{round.investorCount > 1 ? "s" : ""}
           </span>
         </CardDescription>
       </CardHeader>
@@ -88,9 +68,9 @@ export default async function RoundViewPage({ params }: { params: { id: string }
         <div className="w-full flex flex-col lg:flex-row gap-4 h-full">
           <div className={cn("w-full flex flex-col px-2 lg:w-2/3 gap-4")}>
             <div className="flex flex-col gap-1 font-semibold">
-              Lead by {roundLead.name}
+              Lead by {business.name}
               <span className="text-muted-foreground text-xs font-normal">
-                {roundLead.title} - {roundLead.description}
+                {/* {roundLead.title} - {roundLead.description} */}
               </span>
             </div>
             <Separator className="w-full" />
@@ -100,7 +80,7 @@ export default async function RoundViewPage({ params }: { params: { id: string }
                 <div className="flex flex-col gap-1">
                   Company Overview
                   <span className="text-muted-foreground">
-                    {ventureDetails.overview}
+                    {venture.overview}
                   </span>
                 </div>
               </div>
@@ -109,11 +89,11 @@ export default async function RoundViewPage({ params }: { params: { id: string }
                 <div className="flex flex-col gap-1">
                   Team Size
                   <span className="text-muted-foreground">
-                    {ventureDetails.team}
+                    {business.teamSize}
                   </span>
                 </div>
               </div>
-              <div className="flex gap-4 items-center justify-start">
+              {/* <div className="flex gap-4 items-center justify-start">
                 <Icons.briefcase className="w-9 h-9 text-muted-foreground" />
                 <div className="flex flex-col gap-1">
                   Previous funding
@@ -121,7 +101,7 @@ export default async function RoundViewPage({ params }: { params: { id: string }
                     {ventureDetails.previousFunding}
                   </span>
                 </div>
-              </div>
+              </div> */}
             </div>
             <Separator className="w-full" />
             <div className="flex flex-col items-start justify-start">
@@ -154,11 +134,23 @@ export default async function RoundViewPage({ params }: { params: { id: string }
               )}
             </div>
           </div>
-          <RoundViewInvestmentCard round={round} className="hidden md:block lg:w-1/3" />
+          <RoundViewInvestmentCard round={{
+            ...round,
+            venture: {
+              ...venture,
+              business
+            }
+          }} className="hidden md:block lg:w-1/3" />
         </div>
       </CardContent>
       <MiniRoundViewInvestmentCard
-        round={round}
+        round={{
+          ...round,
+          venture: {
+            ...venture,
+            business
+          }
+        }}
         className="md:hidden bottom-0 left-0 right-0 fixed"
       />
     </Card>

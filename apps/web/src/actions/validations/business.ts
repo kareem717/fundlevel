@@ -12,5 +12,6 @@ export const createBusinessSchema = object<CreateBusinessParams>().shape({
 		teamSize: string()
 			.oneOf(["0-1", "2-10", "11-50", "51-200", "201-500", "501-1000", "1000+"])
 			.required(),
+		industryId: number().min(1).required(),
 	}),
 });

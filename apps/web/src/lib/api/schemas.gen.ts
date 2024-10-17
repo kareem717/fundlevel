@@ -138,6 +138,14 @@ export const BusinessSchema = {
             minimum: 1,
             type: 'integer'
         },
+        industry: {
+            '$ref': '#/components/schemas/Industry'
+        },
+        industryId: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
         isRemote: {
             type: 'boolean'
         },
@@ -163,7 +171,7 @@ export const BusinessSchema = {
             type: ['string', 'null']
         }
     },
-    required: ['address', 'name', 'businessNumber', 'foundingDate', 'ownerAccountId', 'status', 'addressId', 'teamSize', 'isRemote', 'id', 'createdAt', 'updatedAt', 'deletedAt'],
+    required: ['address', 'industry', 'name', 'businessNumber', 'foundingDate', 'ownerAccountId', 'status', 'addressId', 'teamSize', 'isRemote', 'industryId', 'id', 'createdAt', 'updatedAt', 'deletedAt'],
     type: 'object'
 } as const;
 
@@ -177,6 +185,11 @@ export const BusinessParamsSchema = {
         foundingDate: {
             format: 'date-time',
             type: 'string'
+        },
+        industryId: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
         },
         isRemote: {
             default: false,
@@ -196,7 +209,7 @@ export const BusinessParamsSchema = {
             type: 'string'
         }
     },
-    required: ['name', 'businessNumber', 'foundingDate', 'ownerAccountId', 'teamSize'],
+    required: ['name', 'businessNumber', 'foundingDate', 'ownerAccountId', 'teamSize', 'industryId'],
     type: 'object'
 } as const;
 
@@ -390,9 +403,14 @@ export const CreateVentureParamsSchema = {
             maxLength: 100,
             minLength: 3,
             type: 'string'
+        },
+        overview: {
+            maxLength: 30,
+            minLength: 10,
+            type: 'string'
         }
     },
-    required: ['businessId', 'name', 'description'],
+    required: ['businessId', 'name', 'description', 'overview'],
     type: 'object'
 } as const;
 
@@ -665,6 +683,36 @@ export const GetOffsetPaginatedVenturesOutputBodySchema = {
     type: 'object'
 } as const;
 
+export const IndustrySchema = {
+    additionalProperties: false,
+    properties: {
+        createdAt: {
+            format: 'date-time',
+            type: 'string'
+        },
+        deletedAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        },
+        id: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
+        label: {
+            maxLength: 30,
+            minLength: 3,
+            type: 'string'
+        },
+        updatedAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        }
+    },
+    required: ['id', 'label', 'createdAt', 'updatedAt', 'deletedAt'],
+    type: 'object'
+} as const;
+
 export const IsLikedOutputBodySchema = {
     additionalProperties: false,
     properties: {
@@ -779,13 +827,16 @@ export const RoundSchema = {
             enum: ['usd', 'gbp', 'eur', 'cad', 'aud', 'jpy'],
             type: 'string'
         },
+        venture: {
+            '$ref': '#/components/schemas/Venture'
+        },
         ventureId: {
             format: 'int64',
             minimum: 1,
             type: 'integer'
         }
     },
-    required: ['ventureId', 'beginsAt', 'endsAt', 'percentageOffered', 'percentageValue', 'valueCurrency', 'status', 'investorCount', 'buyIn', 'id', 'createdAt', 'updatedAt', 'deletedAt'],
+    required: ['ventureId', 'beginsAt', 'endsAt', 'percentageOffered', 'percentageValue', 'valueCurrency', 'status', 'investorCount', 'buyIn', 'venture', 'id', 'createdAt', 'updatedAt', 'deletedAt'],
     type: 'object'
 } as const;
 
@@ -982,15 +1033,23 @@ export const UpdateVentureParamsSchema = {
             maxLength: 100,
             minLength: 3,
             type: 'string'
+        },
+        overview: {
+            maxLength: 30,
+            minLength: 10,
+            type: 'string'
         }
     },
-    required: ['name', 'description'],
+    required: ['name', 'description', 'overview'],
     type: 'object'
 } as const;
 
 export const VentureSchema = {
     additionalProperties: false,
     properties: {
+        business: {
+            '$ref': '#/components/schemas/Business'
+        },
         businessId: {
             format: 'int64',
             minimum: 1,
@@ -1022,11 +1081,16 @@ export const VentureSchema = {
             minLength: 3,
             type: 'string'
         },
+        overview: {
+            maxLength: 30,
+            minLength: 10,
+            type: 'string'
+        },
         updatedAt: {
             format: 'date-time',
             type: ['string', 'null']
         }
     },
-    required: ['businessId', 'isHidden', 'name', 'description', 'id', 'createdAt', 'updatedAt', 'deletedAt'],
+    required: ['businessId', 'isHidden', 'business', 'name', 'description', 'overview', 'id', 'createdAt', 'updatedAt', 'deletedAt'],
     type: 'object'
 } as const;

@@ -79,7 +79,7 @@ export const MiniRoundViewInvestmentCard: FC<RoundViewInvestmentCardProps> = ({ 
 export const RoundViewInvestmentCard: FC<RoundViewInvestmentCardProps> = ({ className, round, buttonProps, ...props }) => {
   const valuationAtPurchase = Math.round(round.percentageValue / (round.percentageOffered / 100));
 
-  const perInvestorPercentage = round.investorCount > 1 ? round.percentageOffered / round.investorCount : round.percentageOffered;
+  const perInvestorPercentage = (round.investorCount > 1 ? round.percentageOffered / round.investorCount : round.percentageOffered).toFixed(3);
   return (
     <Card className={cn("w-full h-full", className)} {...props}>
       <CardHeader>
@@ -141,7 +141,7 @@ export const RoundViewInvestmentCard: FC<RoundViewInvestmentCardProps> = ({ clas
               </TooltipContent>
             </Tooltip>
             <span className="font-semibold">
-              ${round.buyIn * env.NEXT_PUBLIC_FEE_PERCENTAGE}
+              ${(round.buyIn * env.NEXT_PUBLIC_FEE_PERCENTAGE).toFixed(2)}
             </span>
           </div>
           <Separator className="w-full bg-foreground my-2" />
@@ -156,7 +156,7 @@ export const RoundViewInvestmentCard: FC<RoundViewInvestmentCardProps> = ({ clas
             </Tooltip>
             <span>
               {/* //TODO: localize currency symbol */}
-              ${round.buyIn * (1 + env.NEXT_PUBLIC_FEE_PERCENTAGE)}
+              ${(round.buyIn * (1 + env.NEXT_PUBLIC_FEE_PERCENTAGE)).toFixed(2)}
             </span>
           </div>
         </CardContent>
