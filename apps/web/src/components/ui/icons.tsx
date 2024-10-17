@@ -125,6 +125,7 @@ import {
   HandCoins,
   ArrowUpWideNarrow,
   Settings2,
+  BadgeInfo,
   ArrowDownWideNarrow,
 } from "lucide-react";
 
@@ -133,6 +134,7 @@ export type Icon = LucideIcon;
 export const Icons = {
   flag: Flag,
   arrowLeft: ArrowLeft,
+  badgeInfo: BadgeInfo,
   home: Home,
   map: Map,
   telescope: Telescope,

@@ -1,11 +1,12 @@
 "use server";
 
-import { actionClientWithAccount } from "@/lib/safe-action";
+import { actionClient, actionClientWithAccount } from "@/lib/safe-action";
 import {
 	createBusiness as createBusinessApi,
 	getBusinessVenturesByCursor as getBusinessVenturesApi,
 	getBusinessById as getBusinessByIdApi,
 	getAccountBusinesses as getAccountBusinessesApi,
+	getBusinessTotalFunding,
 	getBusinessVenturesByPage,
 	getBusinessRoundsByPage as getBusinessRoundsByPageApi,
 } from "@/lib/api";
@@ -146,3 +147,15 @@ export const getBusinessRoundsByPage = actionClientWithAccount
 			return res.data;
 		}
 	);
+
+export const getBusinessFunding = actionClient
+	.schema(intIdSchema.required())
+	.action(async ({ parsedInput, ctx: { apiClient } }) => {
+		const res = await getBusinessTotalFunding({
+			client: apiClient,
+			throwOnError: true,
+			path: { id: parsedInput },
+		});
+
+		return res.data;
+	});

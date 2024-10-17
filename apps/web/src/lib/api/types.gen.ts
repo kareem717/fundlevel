@@ -202,6 +202,15 @@ export type ErrorModel = {
     type?: string;
 };
 
+export type FundingOutputBody = {
+    /**
+     * A URL to the JSON Schema for this object.
+     */
+    readonly $schema?: string;
+    message: string;
+    totalFunding: number;
+};
+
 export type GetAllIndustriesResponseBody = {
     /**
      * A URL to the JSON Schema for this object.
@@ -611,6 +620,16 @@ export type GetBusinessByIdData = {
 export type GetBusinessByIdResponse = (SingleBusinessResponseBody);
 
 export type GetBusinessByIdError = (ErrorModel);
+
+export type GetBusinessTotalFundingData = {
+    path: {
+        id: number;
+    };
+};
+
+export type GetBusinessTotalFundingResponse = (FundingOutputBody);
+
+export type GetBusinessTotalFundingError = (ErrorModel);
 
 export type GetBusinessInvestmentsByCursorData = {
     path: {

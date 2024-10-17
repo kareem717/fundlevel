@@ -471,6 +471,27 @@ export const ErrorModelSchema = {
     type: 'object'
 } as const;
 
+export const FundingOutputBodySchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/FundingOutputBody.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        message: {
+            type: 'string'
+        },
+        totalFunding: {
+            format: 'int64',
+            type: 'integer'
+        }
+    },
+    required: ['totalFunding', 'message'],
+    type: 'object'
+} as const;
+
 export const GetAllIndustriesResponseBodySchema = {
     additionalProperties: false,
     properties: {

@@ -23,6 +23,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { env } from "@/env";
+import { BusinessOverview } from "@/components/ui/business-overview";
 
 export default async function RoundViewPage({ params }: { params: { id: string } }) {
   const parsedId = parseInt(params.id as string || ""); // Parse the id
@@ -47,21 +48,16 @@ export default async function RoundViewPage({ params }: { params: { id: string }
     isLiked = isLikedResp?.data?.liked ?? false;
   }
 
+  const valuationAtPurchase = Math.round(round.percentageValue / (round.percentageOffered / 100));
+  const perInvestorPercentage = (round.investorCount > 1 ? round.percentageOffered / round.investorCount : round.percentageOffered).toFixed(3);
+  const buyInPrice = (round.buyIn * (1 + env.NEXT_PUBLIC_FEE_PERCENTAGE)).toFixed(2);
+
   const truncate = (text: string, maxLength: number) => {
     if (text.length > maxLength) {
       return text.substring(0, maxLength) + "...";
     }
     return text;
   };
-
-  const description = venture.description
-
-  const isLargeDescription = description.length > 150;
-
-  const valuationAtPurchase = Math.round(round.percentageValue / (round.percentageOffered / 100));
-
-  const perInvestorPercentage = (round.investorCount > 1 ? round.percentageOffered / round.investorCount : round.percentageOffered).toFixed(3);
-  const buyInPrice = (round.buyIn * (1 + env.NEXT_PUBLIC_FEE_PERCENTAGE)).toFixed(2);
 
   return (
     <Card className="w-full relative max-w-screen-lg mx-auto">
@@ -86,41 +82,17 @@ export default async function RoundViewPage({ params }: { params: { id: string }
               </span>
             </div>
             <Separator className="w-full" />
-            <div className="flex flex-col gap-8 items-start justify-center">
-              <div className="flex gap-4 items-center justify-start">
-                <Icons.building className="w-9 h-9 text-muted-foreground" />
-                <div className="flex flex-col gap-1">
-                  Company Overview
-                  <span className="text-muted-foreground">
-                    {venture.overview}
-                  </span>
-                </div>
-              </div>
-              <div className="flex gap-4 items-center justify-start">
-                <Icons.users className="w-9 h-9 text-muted-foreground" />
-                <div className="flex flex-col gap-1">
-                  Team Size
-                  <span className="text-muted-foreground">
-                    {business.teamSize}
-                  </span>
-                </div>
-              </div>
-              {/* <div className="flex gap-4 items-center justify-start">
-                <Icons.briefcase className="w-9 h-9 text-muted-foreground" />
-                <div className="flex flex-col gap-1">
-                  Previous funding
-                  <span className="text-muted-foreground">
-                    {ventureDetails.previousFunding}
-                  </span>
-                </div>
-              </div> */}
-            </div>
+            <BusinessOverview
+              overview={venture.overview}
+              teamSize={business.teamSize}
+              businessId={business.id}
+            />
             <Separator className="w-full" />
             <div className="flex flex-col items-start justify-start">
               <p>
-                {truncate(description, 350)}
+                {truncate(venture.description, 350)}
               </p>
-              {isLargeDescription && (
+              {venture.description.length > 150 && (
                 <Dialog>
                   <DialogTrigger asChild>
                     <Button variant="outline" size="sm" className="mt-4">
@@ -137,7 +109,7 @@ export default async function RoundViewPage({ params }: { params: { id: string }
                       </DialogHeader>
                       <div className="max-h-[70dvh] w-full h-full">
                         <ScrollArea className="h-full w-full">
-                          {description}
+                          {venture.description}
                         </ScrollArea>
                       </div>
                     </DialogContent>
@@ -146,7 +118,6 @@ export default async function RoundViewPage({ params }: { params: { id: string }
               )}
             </div>
           </div>
-
           <Card className={cn("w-full h-full hidden md:block lg:w-1/3")}>
             <CardHeader>
               <CardTitle>Own {perInvestorPercentage}%</CardTitle>
