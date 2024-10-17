@@ -202,6 +202,15 @@ export type ErrorModel = {
     type?: string;
 };
 
+export type GetAllIndustriesResponseBody = {
+    /**
+     * A URL to the JSON Schema for this object.
+     */
+    readonly $schema?: string;
+    industries: Array<Industry> | null;
+    message: string;
+};
+
 export type GetBusinessesOutputBody = {
     /**
      * A URL to the JSON Schema for this object.
@@ -690,6 +699,10 @@ export type GetBusinessVenturesByPageError = (ErrorModel);
 export type HealthCheckResponse = (MessageResponse);
 
 export type HealthCheckError = (ErrorModel);
+
+export type GetAllIndustriesResponse = (GetAllIndustriesResponseBody);
+
+export type GetAllIndustriesError = (ErrorModel);
 
 export type GetInvestmentByIdData = {
     path: {
@@ -1330,6 +1343,22 @@ export const GetOffsetPaginatedVenturesOutputBodyModelResponseTransformer: GetOf
 
 export const GetBusinessVenturesByPageResponseTransformer: GetBusinessVenturesByPageResponseTransformer = async (data) => {
     GetOffsetPaginatedVenturesOutputBodyModelResponseTransformer(data);
+    return data;
+};
+
+export type GetAllIndustriesResponseTransformer = (data: any) => Promise<GetAllIndustriesResponse>;
+
+export type GetAllIndustriesResponseBodyModelResponseTransformer = (data: any) => GetAllIndustriesResponseBody;
+
+export const GetAllIndustriesResponseBodyModelResponseTransformer: GetAllIndustriesResponseBodyModelResponseTransformer = data => {
+    if (Array.isArray(data?.industries)) {
+        data.industries.forEach(IndustryModelResponseTransformer);
+    }
+    return data;
+};
+
+export const GetAllIndustriesResponseTransformer: GetAllIndustriesResponseTransformer = async (data) => {
+    GetAllIndustriesResponseBodyModelResponseTransformer(data);
     return data;
 };
 

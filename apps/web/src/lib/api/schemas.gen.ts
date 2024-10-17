@@ -471,6 +471,29 @@ export const ErrorModelSchema = {
     type: 'object'
 } as const;
 
+export const GetAllIndustriesResponseBodySchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/GetAllIndustriesResponseBody.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        industries: {
+            items: {
+                '$ref': '#/components/schemas/Industry'
+            },
+            type: ['array', 'null']
+        },
+        message: {
+            type: 'string'
+        }
+    },
+    required: ['industries', 'message'],
+    type: 'object'
+} as const;
+
 export const GetBusinessesOutputBodySchema = {
     additionalProperties: false,
     properties: {

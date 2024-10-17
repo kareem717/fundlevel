@@ -34,6 +34,7 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select";
+import { IndustrySelect } from "@/components/ui/industry-select";
 
 export interface CreateBusinessFormProps extends ComponentPropsWithoutRef<'form'> {
   onSuccess?: () => void
@@ -86,6 +87,7 @@ export const CreateBusinessForm: FC<CreateBusinessFormProps> = ({ className, onS
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="business.teamSize"
@@ -106,6 +108,21 @@ export const CreateBusinessForm: FC<CreateBusinessFormProps> = ({ className, onS
               </Select>
               <FormDescription>
                 This is the number of people on the team for this venture.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="business.industryId"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Industry</FormLabel>
+              <IndustrySelect onValueChange={field.onChange} />
+              <FormDescription>
+                This is the industry of the business.
               </FormDescription>
               <FormMessage />
             </FormItem>

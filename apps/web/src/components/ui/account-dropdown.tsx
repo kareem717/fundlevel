@@ -49,6 +49,9 @@ export const AccountDropdown: FC<AccountDropdownProps> = ({ account, className, 
         <DropdownMenuItem>
           <Link href={redirects.app.myBusinesses.index}>My Businesses</Link>
         </DropdownMenuItem>
+        <DropdownMenuItem>
+          <Link href={redirects.app.myBusinesses.create}>Create Business</Link>
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
