@@ -2,6 +2,7 @@ package round
 
 import (
 	"fundlevel/internal/entities/shared"
+	"fundlevel/internal/entities/venture"
 	"time"
 
 	"github.com/uptrace/bun"
@@ -40,6 +41,8 @@ type Round struct {
 	Status            RoundStatus `json:"status" enum:"active,successful,failed"`
 	InvestorCount     int         `json:"investorCount" minimum:"1"`
 	BuyIn             float64     `json:"buyIn" minimum:"1"`
+
+	Venture *venture.Venture `json:"venture" bun:"rel:belongs-to,join:venture_id=id"`
 
 	shared.Timestamps
 }
