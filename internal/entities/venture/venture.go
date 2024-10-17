@@ -1,6 +1,7 @@
 package venture
 
 import (
+	"fundlevel/internal/entities/business"
 	"fundlevel/internal/entities/shared"
 
 	"github.com/uptrace/bun"
@@ -10,8 +11,10 @@ import (
 type Venture struct {
 	bun.BaseModel `bun:"table:ventures"`
 
-	BusinessID int  `json:"businessId" minimum:"1"`
-	IsHidden   bool `json:"isHidden"`
+	BusinessID int                `json:"businessId" minimum:"1"`
+	IsHidden   bool               `json:"isHidden"`
+	Business   *business.Business `json:"business" bun:"rel:has-one,join:business_id=id"`
+
 	UpdateVentureParams
 	shared.IntegerID
 	shared.Timestamps
