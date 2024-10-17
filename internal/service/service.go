@@ -13,9 +13,9 @@ import (
 	"fundlevel/internal/service/domain/billing"
 	businessService "fundlevel/internal/service/domain/business"
 	healthService "fundlevel/internal/service/domain/health"
+	industryService "fundlevel/internal/service/domain/industry"
 	investmentService "fundlevel/internal/service/domain/investment"
 	roundService "fundlevel/internal/service/domain/round"
-	industryService "fundlevel/internal/service/domain/industry"
 	userService "fundlevel/internal/service/domain/user"
 	ventureService "fundlevel/internal/service/domain/venture"
 	"fundlevel/internal/storage"
@@ -102,6 +102,9 @@ type BusinessService interface {
 	// GetInvestmentsByCursor gets all of the investments received on the rounds related to the business using cursor pagination
 	GetInvestmentsByCursor(ctx context.Context, businessId int, limit int, cursor int) ([]investment.RoundInvestment, error)
 	GetInvestmentsByPage(ctx context.Context, businessId int, pageSize int, page int) ([]investment.RoundInvestment, error)
+
+	// GetTotalFunding gets the amount the business has successfully raised through rounds
+	GetTotalFunding(ctx context.Context, businessId int) (int, error)
 }
 
 type BillingService interface {

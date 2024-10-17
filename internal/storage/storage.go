@@ -102,6 +102,9 @@ type BusinessRepository interface {
 	// GetInvestmentsByCursor gets all of the investments received on the rounds related to the business using cursor pagination
 	GetInvestmentsByCursor(ctx context.Context, businessId int, paginationParams shared.CursorPagination) ([]investment.RoundInvestment, error)
 	GetInvestmentsByPage(ctx context.Context, businessId int, paginationParams shared.OffsetPagination) ([]investment.RoundInvestment, error)
+
+	// GetTotalFunding gets the amount the business has successfully raised through rounds
+	GetTotalFunding(ctx context.Context, businessId int) (int, error)
 }
 
 type RepositoryProvider interface {

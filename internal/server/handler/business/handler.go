@@ -245,3 +245,17 @@ func (h *httpHandler) getVenturesByPage(ctx context.Context, input *shared.GetOf
 
 	return resp, nil
 }
+
+func (h *httpHandler) getTotalFunding(ctx context.Context, input *shared.PathIDParam) (*shared.FundingOutput, error) {
+	totalFunding, err := h.service.BusinessService.GetTotalFunding(ctx, input.ID)
+	if err != nil {
+		h.logger.Error("failed to fetch total funding", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while fetching the total funding")
+	}
+
+	resp := &shared.FundingOutput{}
+	resp.Body.Message = "Total funding fetched successfully"
+	resp.Body.TotalFunding = totalFunding
+
+	return resp, nil
+}

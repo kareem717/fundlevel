@@ -2,8 +2,10 @@ package business
 
 import (
 	"context"
+	"database/sql"
 
 	"fundlevel/internal/entities/investment"
+	"fundlevel/internal/entities/round"
 	"fundlevel/internal/storage/postgres/shared"
 )
 
@@ -40,4 +42,29 @@ func (r *BusinessRepository) GetInvestmentsByPage(ctx context.Context, businessI
 		Scan(ctx)
 
 	return resp, err
+}
+
+func (r *BusinessRepository) GetTotalFunding(ctx context.Context, businessId int) (int, error) {
+	var totalFunding int
+
+	err := r.db.
+		NewSelect().
+		Model(&round.Round{}).
+		ColumnExpr("SUM(round.percentage_value)").
+		Join("JOIN ventures").
+		JoinOn("round.venture_id = ventures.id").
+		Where("round.status = ?", round.Successful).
+		Where("ventures.business_id = ?", businessId).
+		Group("ventures.business_id").
+		Scan(ctx, &totalFunding)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return 0, nil
+		}
+
+		return 0, err
+	}
+
+	return totalFunding, nil
 }

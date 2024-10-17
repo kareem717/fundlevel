@@ -24,6 +24,13 @@ type PathIDParam struct {
 	ID int `path:"id" minimum:"1"`
 }
 
+type FundingOutput struct {
+	Body struct {
+		MessageResponse
+		TotalFunding int `json:"totalFunding"`
+	}
+}
+
 type PathUserIDParam struct {
 	UserID uuid.UUID `path:"userId"`
 }

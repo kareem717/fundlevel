@@ -99,4 +99,13 @@ func RegisterHumaRoutes(
 		Description: "Get rounds.",
 		Tags:        []string{"Businesses", "Rounds"},
 	}, handler.getRoundsByPage)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-business-total-funding",
+		Method:      http.MethodGet,
+		Path:        "/business/{id}/funding",
+		Summary:     "Get total funding",
+		Description: "Get total funding.",
+		Tags:        []string{"Businesses", "Funding"},
+	}, handler.getTotalFunding)
 }

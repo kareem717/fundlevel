@@ -24,3 +24,4 @@ func (s *BusinessService) GetRoundsByPage(ctx context.Context, businessId int, p
 
 	return s.repositories.Business().GetRoundsByPage(ctx, businessId, paginationParams)
 }
+

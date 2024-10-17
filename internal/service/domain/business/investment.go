@@ -24,3 +24,7 @@ func (s *BusinessService) GetInvestmentsByPage(ctx context.Context, businessId i
 
 	return s.repositories.Business().GetInvestmentsByPage(ctx, businessId, paginationParams)
 }
+
+func (s *BusinessService) GetTotalFunding(ctx context.Context, businessId int) (int, error) {
+	return s.repositories.Business().GetTotalFunding(ctx, businessId)
+}
