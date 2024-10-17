@@ -3,7 +3,7 @@
 CREATE TYPE business_status AS ENUM('pending', 'active', 'disabled');
 
 CREATE TYPE team_size AS ENUM(
-    '0-1',
+    '1',
     '2-10',
     '11-50',
     '51-200',
@@ -20,7 +20,7 @@ CREATE TABLE
         founding_date DATE NOT NULL,
         owner_account_id INT NOT NULL REFERENCES accounts (id),
         status business_status NOT NULL DEFAULT 'pending',
-        team_size team_size NOT NULL DEFAULT '0-1',
+        team_size team_size NOT NULL DEFAULT '1',
         is_remote BOOLEAN NOT NULL DEFAULT FALSE,
         industry_id INTEGER NOT NULL REFERENCES industries (id),
         address_id INTEGER NOT NULL REFERENCES addresses (id),

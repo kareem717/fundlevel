@@ -20,7 +20,7 @@ const (
 type TeamSize string
 
 const (
-	TeamSize0_1      TeamSize = "0-1"
+	TeamSize1        TeamSize = "1"
 	TeamSize2_10     TeamSize = "2-10"
 	TeamSize11_50    TeamSize = "11-50"
 	TeamSize51_200   TeamSize = "51-200"
