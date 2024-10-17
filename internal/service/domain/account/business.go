@@ -6,6 +6,6 @@ import (
 	"fundlevel/internal/entities/business"
 )
 
-func (s *AccountService) GetBusinesses(ctx context.Context, accountId int) ([]business.Business, error) {
-	return s.repositories.Account().GetBusinesses(ctx, accountId)
+func (s *AccountService) GetAllBusinesses(ctx context.Context, accountId int) ([]business.Business, error) {
+	return s.repositories.Account().GetAllBusinesses(ctx, accountId)
 }

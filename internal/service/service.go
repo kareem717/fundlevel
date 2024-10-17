@@ -5,6 +5,7 @@ import (
 
 	"fundlevel/internal/entities/account"
 	"fundlevel/internal/entities/business"
+	"fundlevel/internal/entities/industry"
 	"fundlevel/internal/entities/investment"
 	"fundlevel/internal/entities/round"
 	"fundlevel/internal/entities/venture"
@@ -14,6 +15,7 @@ import (
 	healthService "fundlevel/internal/service/domain/health"
 	investmentService "fundlevel/internal/service/domain/investment"
 	roundService "fundlevel/internal/service/domain/round"
+	industryService "fundlevel/internal/service/domain/industry"
 	userService "fundlevel/internal/service/domain/user"
 	ventureService "fundlevel/internal/service/domain/venture"
 	"fundlevel/internal/storage"
@@ -58,7 +60,11 @@ type AccountService interface {
 	CreateInvestment(ctx context.Context, params investment.CreateInvestmentParams) (investment.RoundInvestment, error)
 	GetInvestmentById(ctx context.Context, accountId int, investmentId int) (investment.RoundInvestment, error)
 
-	GetBusinesses(ctx context.Context, accountId int) ([]business.Business, error)
+	GetAllBusinesses(ctx context.Context, accountId int) ([]business.Business, error)
+}
+
+type IndustryService interface {
+	GetAll(ctx context.Context) ([]industry.Industry, error)
 }
 
 type HealthService interface {
@@ -113,6 +119,7 @@ type Service struct {
 	RoundService      RoundService
 	AccountService    AccountService
 	HealthService     HealthService
+	IndustryService   IndustryService
 	UserService       UserService
 	BusinessService   BusinessService
 	BillingService    BillingService
@@ -126,6 +133,7 @@ func NewService(
 ) *Service {
 	return &Service{
 		VentureService:    ventureService.NewVentureService(repositories),
+		IndustryService:   industryService.NewIndustryService(repositories),
 		HealthService:     healthService.NewHealthService(repositories),
 		AccountService:    accountService.NewAccountService(repositories),
 		UserService:       userService.NewUserService(repositories),

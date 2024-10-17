@@ -267,8 +267,8 @@ type GetBusinessesOutput struct {
 	}
 }
 
-func (h *httpHandler) getBusinesses(ctx context.Context, input *shared.PathIDParam) (*GetBusinessesOutput, error) {
-	businesses, err := h.service.AccountService.GetBusinesses(ctx, input.ID)
+func (h *httpHandler) getAllBusinesses(ctx context.Context, input *shared.PathIDParam) (*GetBusinessesOutput, error) {
+	businesses, err := h.service.AccountService.GetAllBusinesses(ctx, input.ID)
 
 	if err != nil {
 		switch {

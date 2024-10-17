@@ -151,7 +151,7 @@ func RegisterHumaRoutes(
 		Summary:     "Get businesses",
 		Description: "Get businesses.",
 		Tags:        []string{"Accounts", "Businesses"},
-	}, handler.getBusinesses)
+	}, handler.getAllBusinesses)
 
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "get-account-checkout-link",

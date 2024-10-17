@@ -6,7 +6,7 @@ import (
 	"fundlevel/internal/entities/business"
 )
 
-func (r *AccountRepository) GetBusinesses(ctx context.Context, accountId int) ([]business.Business, error) {
+func (r *AccountRepository) GetAllBusinesses(ctx context.Context, accountId int) ([]business.Business, error) {
 	resp := []business.Business{}
 
 	err := r.db.

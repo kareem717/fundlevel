@@ -5,6 +5,7 @@ import (
 
 	"fundlevel/internal/entities/account"
 	"fundlevel/internal/entities/business"
+	"fundlevel/internal/entities/industry"
 	"fundlevel/internal/entities/investment"
 	"fundlevel/internal/entities/round"
 	"fundlevel/internal/entities/venture"
@@ -33,6 +34,10 @@ type VentureRepository interface {
 	CreateLike(ctx context.Context, params venture.CreateVentureLikeParams) (venture.VentureLike, error)
 	DeleteLike(ctx context.Context, ventureId int, accountId int) error
 	IsLikedByAccount(ctx context.Context, ventureId int, accountId int) (bool, error)
+}
+
+type IndustryRepository interface {
+	GetAll(ctx context.Context) ([]industry.Industry, error)
 }
 
 type RoundRepository interface {
@@ -76,7 +81,7 @@ type AccountRepository interface {
 	IsInvestedInRound(ctx context.Context, accountId int, roundId int) (bool, error)
 	GetInvestmentById(ctx context.Context, accountId int, investmentId int) (investment.RoundInvestment, error)
 
-	GetBusinesses(ctx context.Context, accountId int) ([]business.Business, error)
+	GetAllBusinesses(ctx context.Context, accountId int) ([]business.Business, error)
 }
 
 type UserRepository interface {
@@ -106,6 +111,7 @@ type RepositoryProvider interface {
 	Investment() InvestmentRepository
 	User() UserRepository
 	Business() BusinessRepository
+	Industry() IndustryRepository
 }
 
 type Transaction interface {
