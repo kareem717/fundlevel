@@ -9,6 +9,10 @@ CREATE TABLE
         deleted_at timestamptz
     );
 
+CREATE UNIQUE INDEX industries_label_idx ON industries (LABEL)
+WHERE
+    deleted_at IS NULL;
+
 CREATE TRIGGER sync_industries_updated_at BEFORE
 UPDATE ON industries FOR EACH ROW
 EXECUTE PROCEDURE sync_updated_at_column ();

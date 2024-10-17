@@ -30,6 +30,7 @@ func (r *RoundRepository) GetById(ctx context.Context, id int) (round.Round, err
 		Model(&resp).
 		Relation("Venture").
 		Relation("Venture.Business").
+		Relation("Venture.Business.Industry").
 		Where("round.id = ?", id).
 		Scan(ctx)
 
