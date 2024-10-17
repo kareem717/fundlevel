@@ -1,6 +1,6 @@
 "use server";
 
-import { actionClient } from "@/lib/safe-action";
+import { actionClientWithAccount } from "@/lib/safe-action";
 import {
 	createBusiness as createBusinessApi,
 	getBusinessVenturesByCursor as getBusinessVenturesApi,
@@ -20,7 +20,7 @@ import { object } from "yup";
 /**
  * Create a venture
  */
-export const createBusiness = actionClient
+export const createBusiness = actionClientWithAccount
 	.schema(createBusinessSchema)
 	.action(
 		async ({
@@ -45,7 +45,7 @@ export const createBusiness = actionClient
 		}
 	);
 
-export const getAccountBusinesses = actionClient.action(
+export const getAccountBusinesses = actionClientWithAccount.action(
 	async ({ ctx: { apiClient, account } }) => {
 		if (!account) {
 			throw new Error("User not found");
@@ -63,7 +63,7 @@ export const getAccountBusinesses = actionClient.action(
 	}
 );
 
-export const getBusinessVentures = actionClient
+export const getBusinessVentures = actionClientWithAccount
 	.schema(
 		object().shape({
 			businessId: intIdSchema.required(),
@@ -87,7 +87,7 @@ export const getBusinessVentures = actionClient
 		}
 	);
 
-export const getBusinessVenturesInfinite = actionClient
+export const getBusinessVenturesInfinite = actionClientWithAccount
 	.schema(
 		object().shape({
 			businessId: intIdSchema.required(),
@@ -111,7 +111,7 @@ export const getBusinessVenturesInfinite = actionClient
 		}
 	);
 
-export const getBusinessById = actionClient
+export const getBusinessById = actionClientWithAccount
 	.schema(intIdSchema.required())
 	.action(async ({ parsedInput: id, ctx: { apiClient } }) => {
 		const res = await getBusinessByIdApi({
@@ -123,7 +123,7 @@ export const getBusinessById = actionClient
 		return res.data;
 	});
 
-export const getBusinessRoundsByPage = actionClient
+export const getBusinessRoundsByPage = actionClientWithAccount
 	.schema(
 		object().shape({
 			businessId: intIdSchema.required(),

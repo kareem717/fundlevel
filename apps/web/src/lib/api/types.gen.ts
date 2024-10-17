@@ -675,6 +675,16 @@ export type HealthCheckResponse = (MessageResponse);
 
 export type HealthCheckError = (ErrorModel);
 
+export type GetInvestmentByIdData = {
+    path: {
+        id: number;
+    };
+};
+
+export type GetInvestmentByIdResponse = (SingleInvestmentResponseBody);
+
+export type GetInvestmentByIdError = (ErrorModel);
+
 export type GetRoundByCursorData = {
     query?: {
         cursor?: number;
@@ -1280,6 +1290,13 @@ export const GetOffsetPaginatedVenturesOutputBodyModelResponseTransformer: GetOf
 
 export const GetBusinessVenturesByPageResponseTransformer: GetBusinessVenturesByPageResponseTransformer = async (data) => {
     GetOffsetPaginatedVenturesOutputBodyModelResponseTransformer(data);
+    return data;
+};
+
+export type GetInvestmentByIdResponseTransformer = (data: any) => Promise<GetInvestmentByIdResponse>;
+
+export const GetInvestmentByIdResponseTransformer: GetInvestmentByIdResponseTransformer = async (data) => {
+    SingleInvestmentResponseBodyModelResponseTransformer(data);
     return data;
 };
 

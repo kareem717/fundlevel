@@ -1,11 +1,14 @@
 "use server";
 
-import { actionClient } from "@/lib/safe-action";
+import { actionClient, actionClientWithAccount } from "@/lib/safe-action";
 import {
 	createVenture as createVentureApi,
 	getVentureById as getVentureByIdApi,
 	updateVenture as updateVentureApi,
 	getVenturesByCursor,
+	getVentureLikeStatus,
+	createVentureLike,
+	deleteVentureLike,
 } from "@/lib/api";
 import {
 	cursorPaginationSchema,
@@ -19,7 +22,7 @@ import {
 /**
  * Create a venture
  */
-export const createVenture = actionClient
+export const createVenture = actionClientWithAccount
 	.schema(createVentureSchema)
 	.action(async ({ parsedInput, ctx: { apiClient } }) => {
 		await createVentureApi({
@@ -36,11 +39,7 @@ export const createVenture = actionClient
  */
 export const getVenturesInfinite = actionClient
 	.schema(cursorPaginationSchema)
-	.action(async ({ parsedInput, ctx: { apiClient, account } }) => {
-		if (!account) {
-			throw new Error("User not found");
-		}
-
+	.action(async ({ parsedInput, ctx: { apiClient } }) => {
 		const response = await getVenturesByCursor({
 			client: apiClient,
 			throwOnError: true,
@@ -70,7 +69,7 @@ export const getVentureById = actionClient
 /**
  * Update a venture
  */
-export const updateVenture = actionClient
+export const updateVenture = actionClientWithAccount
 	.schema(updateVentureSchema)
 	.action(async ({ parsedInput, ctx: { apiClient } }) => {
 		await updateVentureApi({
@@ -79,6 +78,59 @@ export const updateVenture = actionClient
 			body: parsedInput,
 			path: {
 				id: parsedInput.id,
+			},
+		});
+	});
+
+export const isVentureLiked = actionClientWithAccount
+	.schema(intIdSchema.required())
+	.action(async ({ parsedInput, ctx: { apiClient, account } }) => {
+		if (!account) {
+			throw new Error("User not found");
+		}
+
+		const response = await getVentureLikeStatus({
+			client: apiClient,
+			throwOnError: true,
+			path: {
+				id: parsedInput,
+				accountId: account.id,
+			},
+		});
+
+		return response.data;
+	});
+
+export const likeVenture = actionClientWithAccount
+	.schema(intIdSchema.required())
+	.action(async ({ parsedInput, ctx: { apiClient, account } }) => {
+		if (!account) {
+			throw new Error("User not found");
+		}
+
+		await createVentureLike({
+			client: apiClient,
+			throwOnError: true,
+			path: {
+				id: parsedInput,
+				accountId: account.id,
+			},
+		});
+	});
+
+export const unlikeVenture = actionClientWithAccount
+	.schema(intIdSchema.required())
+	.action(async ({ parsedInput, ctx: { apiClient, account } }) => {
+		if (!account) {
+			throw new Error("User not found");
+		}
+
+		await deleteVentureLike({
+			client: apiClient,
+			throwOnError: true,
+			path: {
+				id: parsedInput,
+				accountId: account.id,
 			},
 		});
 	});

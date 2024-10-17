@@ -41,17 +41,38 @@ const redirects = {
 		createAccount: "/create-account",
 	},
 	app: {
-		explore: "/explore",
+		explore: {
+			index: "/explore",
+			ventureView: "/explore/ventures/:id",
+			roundView: "/explore/rounds/:id",
+		},
 		settings: {
 			account: "/settings?tab=account",
 		},
-		ventures: {
-			myVentures: {
-				view: "/my-ventures/:id",
-				index: "/my-ventures",
+		investments: {
+			root: "/investments",
+			checkout: "/investments/:investmentId/checkout",
+		},
+		myBusinesses: {
+			index: "/my-businesses",
+			view: {
+				root: "/my-businesses/:id",
+				rounds: {
+					root: "/my-businesses/:id/rounds",
+					view: "/my-businesses/:id/rounds/:roundId",
+					create: "/my-businesses/:id/rounds/create",
+				},
+				investments: "/my-businesses/:id/investments",
+				ventures: {
+					root: "/my-businesses/:id/ventures",
+					view: {
+						root: "/my-businesses/:id/ventures/:ventureId",
+						edit: "/my-businesses/:id/ventures/:ventureId/edit",
+					},
+					create: "/my-businesses/:id/ventures/create",
+				},
 			},
-			create: "/ventures/create",
-			view: "/ventures/:id",
+			create: "/my-businesses/create",
 		},
 		rounds: {
 			myRounds: {
@@ -60,15 +81,6 @@ const redirects = {
 			},
 			create: "/rounds/create",
 			view: "/rounds/:id",
-		},
-		investments: {
-			myInvestments: {
-				root: "/my-investments",
-				recieved: {
-					root: "/my-investments/recieved",
-					view: "/my-investments/recieved/:id",
-				},
-			},
 		},
 	},
 	myVentureNav,

@@ -25,27 +25,20 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { CreateInvestmentForm, RoundInvestmentPrice } from "@/components/app/investments/create-investment-form";
+import { CreateInvestmentButton } from "@/components/ui/create-investment-button";
+import { Round } from "@/lib/api";
 
-export interface RoundViewInvestmentCardProps extends ComponentPropsWithoutRef<typeof Card> {
-  purchasePercentage: number;
-  purchasePrice: number;
-  currency: string;
+export interface MiniRoundViewInvestmentCardProps extends ComponentPropsWithoutRef<typeof Card> {
   roundId: number;
-  price: RoundInvestmentPrice
 };
 
-export const MiniRoundViewInvestmentCard: FC<RoundViewInvestmentCardProps> = ({ className, purchasePercentage, purchasePrice, currency, roundId, price, ...props }) => {
+export const MiniRoundViewInvestmentCard: FC<MiniRoundViewInvestmentCardProps> = ({ className, roundId, ...props }) => {
   const [isOpen, setIsOpen] = useState(false);
   return (
     <div
       className={cn("flex flex-row justify-between items-center w-full font-semibold py-2 px-4 sm:px-6 bg-background border-t", className)}
       {...props}
     >
-      <span>
-        {/* //TODO: localize currency symbol */}
-        ${purchasePrice}
-      </span>
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger asChild className="w-1/2">
           <Button className="w-full">
@@ -54,26 +47,30 @@ export const MiniRoundViewInvestmentCard: FC<RoundViewInvestmentCardProps> = ({ 
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Invest in Round</DialogTitle>
+            <DialogTitle>Confirm Investment</DialogTitle>
             <DialogDescription>
-              yap yap yap.....
+              This will begin the investment process. If your investment offer is accepted, you will be able to complete the payment.
             </DialogDescription>
           </DialogHeader>
-          <CreateInvestmentForm roundId={roundId} currency={currency} price={price} onSuccess={() => setIsOpen(false)} />
+          <CreateInvestmentButton roundId={roundId} onSuccess={() => setIsOpen(false)} />
         </DialogContent>
       </Dialog>
     </div>
   );
 };
 
-export const RoundViewInvestmentCard: FC<RoundViewInvestmentCardProps> = ({ className, purchasePercentage, purchasePrice, currency, roundId, price, ...props }) => {
-  const valuationAtPurchase = Math.round(purchasePrice / (purchasePercentage / 100));
+export interface RoundViewInvestmentCardProps extends ComponentPropsWithoutRef<typeof Card> {
+  round: Round;
+};
+
+export const RoundViewInvestmentCard: FC<RoundViewInvestmentCardProps> = ({ className, round, ...props }) => {
+  const valuationAtPurchase = Math.round(round.percentageValue / (round.percentageOffered / 100));
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <Card className={cn("w-full", className)} {...props}>
       <CardHeader>
-        <CardTitle>Invest for {purchasePercentage}%</CardTitle>
+        <CardTitle>Invest for {round.percentageOffered}%</CardTitle>
       </CardHeader>
       <TooltipProvider>
         <CardContent className="bg-secondary mx-6 rounded-md flex flex-col items-center justify-center py-4">
@@ -103,7 +100,7 @@ export const RoundViewInvestmentCard: FC<RoundViewInvestmentCardProps> = ({ clas
               </TooltipContent>
             </Tooltip>
             <span className="font-semibold">
-              {purchasePercentage}%
+              {round.percentageOffered}%
             </span>
           </div>
           <Separator className="w-full bg-foreground my-2" />
@@ -113,31 +110,31 @@ export const RoundViewInvestmentCard: FC<RoundViewInvestmentCardProps> = ({ clas
                 Total
               </TooltipTrigger>
               <TooltipContent>
-                This is your buy in price, calculated as {purchasePercentage}% of ${valuationAtPurchase}
+                This is your buy in price, calculated as {round.percentageOffered}% of ${valuationAtPurchase}
               </TooltipContent>
             </Tooltip>
             <span>
               {/* //TODO: localize currency symbol */}
-              ${purchasePrice}
+              ${round.buyIn}
             </span>
           </div>
         </CardContent>
       </TooltipProvider>
       <CardFooter className="w-full mt-8">
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
-          <DialogTrigger asChild className="w-full">
+          <DialogTrigger asChild className="w-1/2">
             <Button className="w-full">
               Invest
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Invest in Round</DialogTitle>
+              <DialogTitle>Confirm Investment</DialogTitle>
               <DialogDescription>
-                yap yap yap.....
+                This will begin the investment process. If your investment offer is accepted, you will be able to complete the payment.
               </DialogDescription>
             </DialogHeader>
-            <CreateInvestmentForm roundId={roundId} currency={currency} price={price} onSuccess={() => setIsOpen(false)} />
+            <CreateInvestmentButton roundId={round.id} onSuccess={() => setIsOpen(false)} />
           </DialogContent>
         </Dialog>
       </CardFooter>

@@ -8,11 +8,6 @@ import supabase from "@/lib/utils/supabase/server";
 import { ErrorModel, getUserAccount } from "./api";
 import { createClient } from "@hey-api/client-fetch";
 
-type ActionError = {
-	message: string;
-	statusCode: number;
-};
-
 const apiClient = (accessToken?: string) => {
 	return createClient({
 		// set default base url for requests made by this client
@@ -22,13 +17,80 @@ const apiClient = (accessToken?: string) => {
 		 * demonstrate local clients and their configuration taking precedence over
 		 * global configuration.
 		 */
-		headers: {
-			Authorization: `Bearer ${accessToken}`,
-		},
+		headers: accessToken
+			? {
+					Authorization: `Bearer ${accessToken}`,
+			  }
+			: undefined,
 	});
 };
 
 export const actionClient = createSafeActionClient({
+	validationAdapter: yupAdapter(),
+	handleServerError: async (error) => {
+		const err = JSON.parse(error.message) as ErrorModel; // Attempt to cast to ErrorModel
+		console.error(err);
+
+		return {
+			message: err.detail ?? DEFAULT_SERVER_ERROR_MESSAGE,
+			statusCode: err.status ?? 500,
+		};
+	},
+}).use(async ({ next }) => {
+	const client = apiClient();
+
+	return next({
+		ctx: {
+			apiClient: client,
+		},
+	});
+});
+
+export const actionClientWithUser = createSafeActionClient({
+	validationAdapter: yupAdapter(),
+	handleServerError: async (error) => {
+		const err = JSON.parse(error.message) as ErrorModel; // Attempt to cast to ErrorModel
+		console.error(err);
+
+		return {
+			message: err.detail ?? DEFAULT_SERVER_ERROR_MESSAGE,
+			statusCode: err.status ?? 500,
+		};
+	},
+}).use(async ({ next }) => {
+	const sb = supabase();
+
+	const {
+		data: { session },
+		error: sessionError,
+	} = await sb.auth.getSession();
+
+	if (sessionError) {
+		console.error("Error getting user session: ", sessionError);
+	}
+
+	const {
+		data: { user },
+		error,
+	} = await sb.auth.getUser();
+
+	if (error) {
+		console.error("Error getting user: ", error);
+	}
+
+	const client = apiClient(session?.access_token);
+
+	console.log("access_token", session?.access_token);
+	console.log("user_id", user?.id);
+	return next({
+		ctx: {
+			apiClient: apiClient(session?.access_token),
+			user,
+		},
+	});
+});
+
+export const actionClientWithAccount = createSafeActionClient({
 	validationAdapter: yupAdapter(),
 	handleServerError: async (error) => {
 		const err = JSON.parse(error.message) as ErrorModel; // Attempt to cast to ErrorModel

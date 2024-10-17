@@ -71,6 +71,9 @@ import {
 	type GetBusinessVenturesByPageResponse,
 	type HealthCheckError,
 	type HealthCheckResponse,
+	type GetInvestmentByIdData,
+	type GetInvestmentByIdError,
+	type GetInvestmentByIdResponse,
 	type GetRoundByCursorData,
 	type GetRoundByCursorError,
 	type GetRoundByCursorResponse,
@@ -167,6 +170,7 @@ import {
 	GetBusinessRoundsByPageResponseTransformer,
 	GetBusinessVenturesByCursorResponseTransformer,
 	GetBusinessVenturesByPageResponseTransformer,
+	GetInvestmentByIdResponseTransformer,
 	GetRoundByCursorResponseTransformer,
 	CreateRoundResponseTransformer,
 	GetRoundsByPageResponseTransformer,
@@ -566,6 +570,24 @@ export const healthCheck = <ThrowOnError extends boolean = false>(
 	>({
 		...options,
 		url: "/health",
+	});
+};
+
+/**
+ * Get investment by ID
+ * Get investment by ID.
+ */
+export const getInvestmentById = <ThrowOnError extends boolean = false>(
+	options: Options<GetInvestmentByIdData, ThrowOnError>
+) => {
+	return (options?.client ?? client).get<
+		GetInvestmentByIdResponse,
+		GetInvestmentByIdError,
+		ThrowOnError
+	>({
+		...options,
+		url: "/investment/{id}",
+		responseTransformer: GetInvestmentByIdResponseTransformer,
 	});
 };
 

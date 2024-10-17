@@ -1,6 +1,9 @@
 "use server";
 
-import { actionClient } from "@/lib/safe-action";
+import {
+	actionClientWithUser,
+	actionClientWithAccount,
+} from "@/lib/safe-action";
 import {
 	createAccountSchema,
 	updateAccountSchema,
@@ -8,13 +11,12 @@ import {
 import {
 	createAccount as createAccountApi,
 	updateAccount as updateAccountApi,
-	getUserAccount as getUserAccountApi,
 } from "@/lib/api";
 
 /**
  * Create a new account for the currently authenticated user
  */
-export const createAccount = actionClient
+export const createAccount = actionClientWithUser
 	.schema(createAccountSchema)
 	.action(
 		async ({
@@ -40,7 +42,7 @@ export const createAccount = actionClient
 /**
  * Update the currently authenticated account
  */
-export const updateAccount = actionClient
+export const updateAccount = actionClientWithAccount
 	.schema(updateAccountSchema)
 	.action(
 		async ({
@@ -68,13 +70,17 @@ export const updateAccount = actionClient
 /**
  * Get the currently authenticated account
  */
-export const getAccount = actionClient.action(async ({ ctx: { account } }) => {
-	return account;
-});
+export const getAccount = actionClientWithAccount.action(
+	async ({ ctx: { account } }) => {
+		return account;
+	}
+);
 
 /**
  * Get the currently authenticated user
  */
-export const getUser = actionClient.action(async ({ ctx: { user } }) => {
-	return user;
-});
+export const getUser = actionClientWithUser.action(
+	async ({ ctx: { user } }) => {
+		return user;
+	}
+);

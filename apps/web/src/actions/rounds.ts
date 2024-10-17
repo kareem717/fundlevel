@@ -1,11 +1,14 @@
 "use server";
 
-import { actionClient } from "@/lib/safe-action";
+import { actionClient, actionClientWithAccount } from "@/lib/safe-action";
 import {
 	getRoundById as getRoundByIdApi,
 	createRound as createRoundApi,
 	getRoundByCursor,
 	getRoundsByPage as getRoundsByPageApi,
+	createRoundLike,
+	getRoundLikeStatus,
+	deleteRoundLike,
 } from "@/lib/api";
 import {
 	cursorPaginationSchema,
@@ -16,13 +19,9 @@ import { createRoundSchema } from "./validations/rounds";
 /**
  * Create a venture
  */
-export const createRound = actionClient
+export const createRound = actionClientWithAccount
 	.schema(createRoundSchema)
-	.action(async ({ parsedInput, ctx: { apiClient, account } }) => {
-		if (!account) {
-			throw new Error("User not found");
-		}
-
+	.action(async ({ parsedInput, ctx: { apiClient } }) => {
 		await createRoundApi({
 			client: apiClient,
 			throwOnError: true,
@@ -37,11 +36,7 @@ export const createRound = actionClient
  */
 export const getRoundById = actionClient
 	.schema(intIdSchema.required())
-	.action(async ({ parsedInput, ctx: { apiClient, account } }) => {
-		if (!account) {
-			throw new Error("User not found");
-		}
-
+	.action(async ({ parsedInput, ctx: { apiClient } }) => {
 		const response = await getRoundByIdApi({
 			client: apiClient,
 			throwOnError: true,
@@ -87,4 +82,57 @@ export const getRoundsByPage = actionClient
 		});
 
 		return response.data.rounds;
+	});
+
+export const isRoundLiked = actionClientWithAccount
+	.schema(intIdSchema.required())
+	.action(async ({ parsedInput, ctx: { apiClient, account } }) => {
+		if (!account) {
+			throw new Error("User not found");
+		}
+
+		const response = await getRoundLikeStatus({
+			client: apiClient,
+			throwOnError: true,
+			path: {
+				id: parsedInput,
+				accountId: account.id,
+			},
+		});
+
+		return response.data;
+	});
+
+export const likeRound = actionClientWithAccount
+	.schema(intIdSchema.required())
+	.action(async ({ parsedInput, ctx: { apiClient, account } }) => {
+		if (!account) {
+			throw new Error("User not found");
+		}
+
+		await createRoundLike({
+			client: apiClient,
+			throwOnError: true,
+			path: {
+				id: parsedInput,
+				accountId: account.id,
+			},
+		});
+	});
+
+export const unlikeRound = actionClientWithAccount
+	.schema(intIdSchema.required())
+	.action(async ({ parsedInput, ctx: { apiClient, account } }) => {
+		if (!account) {
+			throw new Error("User not found");
+		}
+
+		await deleteRoundLike({
+			client: apiClient,
+			throwOnError: true,
+			path: {
+				id: parsedInput,
+				accountId: account.id,
+			},
+		});
 	});

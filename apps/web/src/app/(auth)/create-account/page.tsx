@@ -1,5 +1,5 @@
 import { getAccount } from "@/actions/auth";
-import { CreateAccountForm } from "@/app/(auth)/components/account/create-account-form";
+import { CreateAccountForm } from "@/components/forms/create-account-form";
 import redirects from "@/lib/config/redirects";
 import { redirect } from "next/navigation";
 

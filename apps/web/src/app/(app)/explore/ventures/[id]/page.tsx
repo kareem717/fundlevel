@@ -1,4 +1,3 @@
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { notFound } from "next/navigation";
 import { getVentureById } from "@/actions/ventures";
 
@@ -17,12 +16,10 @@ export default async function VentureViewPage({ params }: { params: { id: string
   const venture = ventureResp.data.venture
 
   return (
-    <div className="h-full max-h-screen w-full relative">
-      <ScrollArea className="h-full w-full pb-20 sm:pb-6 lg:pb-0">
-        <div className="w-full h-full flex flex-col md:grid grid-cols-1 md:grid-cols-3 grid-rows-3 gap-4 ">
-          {JSON.stringify(venture)}
-        </div>
-      </ScrollArea>
+    <div className="h-full max-h-screen w-full max-w-screen-lg relative">
+      <div className="w-full h-full flex flex-col md:grid grid-cols-1 md:grid-cols-3 grid-rows-3 gap-4 ">
+        {JSON.stringify(venture)}
+      </div>
     </div>
   )
 }

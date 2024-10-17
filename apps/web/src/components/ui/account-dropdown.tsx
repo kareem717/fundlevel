@@ -38,13 +38,17 @@ export const AccountDropdown: FC<AccountDropdownProps> = ({ account, className, 
         <DropdownMenuItem>
           <Link href={redirects.auth.logout}>Logout</Link>
         </DropdownMenuItem>
-        <DropdownMenuItem>Settings</DropdownMenuItem>
-        <DropdownMenuItem>My Investments</DropdownMenuItem>
+        <DropdownMenuItem>
+          <Link href={redirects.app.settings.account}>Settings</Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <Link href={redirects.app.investments.root}>My Investments</Link>
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuLabel>Business</DropdownMenuLabel>
-        <DropdownMenuItem>My Businesses</DropdownMenuItem>
-        <DropdownMenuItem>My Ventures</DropdownMenuItem>
-        <DropdownMenuItem>My Rounds</DropdownMenuItem>
+        <DropdownMenuItem>
+          <Link href={redirects.app.myBusinesses.index}>My Businesses</Link>
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

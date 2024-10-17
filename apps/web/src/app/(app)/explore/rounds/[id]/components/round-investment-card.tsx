@@ -25,65 +25,75 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { CreateInvestmentForm, RoundInvestmentPrice } from "../../../../../../components/app/investments/create-investment-form";
+import { CreateInvestmentButton } from "@/components/ui/create-investment-button";
+import { Round } from "@/lib/api";
+import { env } from "@/env";
+
+export interface ConfirmInvestmentDialogProps extends ComponentPropsWithoutRef<typeof Dialog> {
+  roundId: number;
+  price?: number;
+  buttonProps?: ComponentPropsWithoutRef<typeof Button>;
+}
+
+export const ConfirmInvestmentDialog: FC<ConfirmInvestmentDialogProps> = ({ roundId, price, buttonProps, ...props }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <Dialog open={isOpen} onOpenChange={setIsOpen} {...props}>
+      <DialogTrigger asChild className="w-1/2">
+        <Button className={cn("w-full", buttonProps?.className)} {...buttonProps}>
+          Invest{price && ` for $${price}`}
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Confirm Investment</DialogTitle>
+          <DialogDescription>
+            This will begin the investment process. If your investment offer is accepted, you will be able to complete the payment.
+          </DialogDescription>
+        </DialogHeader>
+        <CreateInvestmentButton roundId={roundId} onSuccess={() => setIsOpen(false)} />
+      </DialogContent>
+    </Dialog>
+  );
+}
 
 export interface RoundViewInvestmentCardProps extends ComponentPropsWithoutRef<typeof Card> {
-  purchasePercentage: number;
-  purchasePrice: number;
-  currency: string;
-  roundId: number;
-  price: RoundInvestmentPrice
+  round: Round
+  buttonProps?: ComponentPropsWithoutRef<typeof Button>;
 };
 
-export const MiniRoundViewInvestmentCard: FC<RoundViewInvestmentCardProps> = ({ className, purchasePercentage, purchasePrice, currency, roundId, price, ...props }) => {
-  const [isOpen, setIsOpen] = useState(false);
+export const MiniRoundViewInvestmentCard: FC<RoundViewInvestmentCardProps> = ({ className, round, buttonProps, ...props }) => {
+  const buyInPrice = round.buyIn * (1 + env.NEXT_PUBLIC_FEE_PERCENTAGE);
+
   return (
     <div
-      className={cn("flex flex-row justify-between items-center w-full font-semibold py-2 px-4 sm:px-6 bg-background border-t", className)}
+      className={cn("w-full font-semibold py-2 px-4 sm:px-6 bg-background border-t", className)}
       {...props}
     >
-      <span>
-        {/* //TODO: localize currency symbol */}
-        ${purchasePrice}
-      </span>
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogTrigger asChild className="w-1/2">
-          <Button className="w-full">
-            Invest
-          </Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Invest in Round</DialogTitle>
-            <DialogDescription>
-              yap yap yap.....
-            </DialogDescription>
-          </DialogHeader>
-          <CreateInvestmentForm roundId={roundId} currency={currency} price={price} onSuccess={() => setIsOpen(false)} />
-        </DialogContent>
-      </Dialog>
+      <ConfirmInvestmentDialog roundId={round.id} price={buyInPrice} buttonProps={buttonProps} />
     </div>
   );
 };
 
-export const RoundViewInvestmentCard: FC<RoundViewInvestmentCardProps> = ({ className, purchasePercentage, purchasePrice, currency, roundId, price, ...props }) => {
-  const valuationAtPurchase = Math.round(purchasePrice / (purchasePercentage / 100));
-  const [isOpen, setIsOpen] = useState(false);
+export const RoundViewInvestmentCard: FC<RoundViewInvestmentCardProps> = ({ className, round, buttonProps, ...props }) => {
+  const valuationAtPurchase = Math.round(round.percentageValue / (round.percentageOffered / 100));
 
+  const perInvestorPercentage = round.investorCount > 1 ? round.percentageOffered / round.investorCount : round.percentageOffered;
   return (
-    <Card className={cn("w-full", className)} {...props}>
+    <Card className={cn("w-full h-full", className)} {...props}>
       <CardHeader>
-        <CardTitle>Invest for {purchasePercentage}%</CardTitle>
+        <CardTitle>Own {perInvestorPercentage}%</CardTitle>
       </CardHeader>
       <TooltipProvider>
-        <CardContent className="bg-secondary mx-6 rounded-md flex flex-col items-center justify-center py-4">
+        <CardContent className="bg-secondary mx-6 rounded-md flex flex-col items-center justify-center py-4 h-full">
           <span className="font-semibold mb-6">
             Breakdown
           </span>
           <div className="flex flex-row justify-between items-center w-full">
             <Tooltip>
-              <TooltipTrigger className="hover:underline">
-                Current valuation:
+              <TooltipTrigger className="hover:underline text-left">
+                Valuation:
               </TooltipTrigger>
               <TooltipContent>
                 <p>The valuation of the venture at your current purchase price</p>
@@ -95,51 +105,64 @@ export const RoundViewInvestmentCard: FC<RoundViewInvestmentCardProps> = ({ clas
           </div>
           <div className="flex flex-row justify-between items-center w-full">
             <Tooltip>
-              <TooltipTrigger className="hover:underline">
-                Percentage purchased:
+              <TooltipTrigger className="hover:underline text-left">
+                Percentage:
               </TooltipTrigger>
               <TooltipContent>
-                <p>The percentage of the round that you are investing in</p>
+                <p>The venture is offering a total of {round.percentageOffered}%
+                  {round.investorCount > 1 && `, divided between ${round.investorCount} investors`}
+                </p>
               </TooltipContent>
             </Tooltip>
             <span className="font-semibold">
-              {purchasePercentage}%
+              {perInvestorPercentage}%
+            </span>
+          </div>
+          <div className="flex flex-row justify-between items-center w-full">
+            <Tooltip>
+              <TooltipTrigger className="hover:underline text-left">
+                Buy in:
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>This is the cost for the percentage of the round that you want to buy at the current valuation</p>
+              </TooltipContent>
+            </Tooltip>
+            <span className="font-semibold">
+              ${round.buyIn}
+            </span>
+          </div>
+          <div className="flex flex-row justify-between items-center w-full">
+            <Tooltip>
+              <TooltipTrigger className="hover:underline text-left">
+                Fees:
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>This is the fee we charge to support Fundlevel</p>
+              </TooltipContent>
+            </Tooltip>
+            <span className="font-semibold">
+              ${round.buyIn * env.NEXT_PUBLIC_FEE_PERCENTAGE}
             </span>
           </div>
           <Separator className="w-full bg-foreground my-2" />
           <div className="flex flex-row justify-between items-center w-full font-semibold">
             <Tooltip>
-              <TooltipTrigger className="hover:underline">
+              <TooltipTrigger className="hover:underline text-left">
                 Total
               </TooltipTrigger>
               <TooltipContent>
-                This is your buy in price, calculated as {purchasePercentage}% of ${valuationAtPurchase}
+                This is your buy in price, calculated as {round.percentageOffered}% of ${valuationAtPurchase}
               </TooltipContent>
             </Tooltip>
             <span>
               {/* //TODO: localize currency symbol */}
-              ${purchasePrice}
+              ${round.buyIn * (1 + env.NEXT_PUBLIC_FEE_PERCENTAGE)}
             </span>
           </div>
         </CardContent>
       </TooltipProvider>
       <CardFooter className="w-full mt-8">
-        <Dialog open={isOpen} onOpenChange={setIsOpen}>
-          <DialogTrigger asChild className="w-full">
-            <Button className="w-full">
-              Invest
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Invest in Round</DialogTitle>
-              <DialogDescription>
-                yap yap yap.....
-              </DialogDescription>
-            </DialogHeader>
-            <CreateInvestmentForm roundId={roundId} currency={currency} price={price} onSuccess={() => setIsOpen(false)} />
-          </DialogContent>
-        </Dialog>
+        <ConfirmInvestmentDialog roundId={round.id} buttonProps={buttonProps} />
       </CardFooter>
     </Card>
   );

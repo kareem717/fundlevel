@@ -6,7 +6,6 @@ import { Account } from "@/lib/api";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/ui/mode-toggle";
-import { ExploreSearch } from "./explore-search";
 import redirects from "@/lib/config/redirects";
 import { ExploreToggle } from "./explore-toggle";
 export interface ExploreHeaderProps extends ComponentPropsWithoutRef<"header"> {
@@ -33,7 +32,6 @@ export const ExploreHeader: FC<ExploreHeaderProps> = ({ account, className, ...p
           <ModeToggle variant="outline" />
         </div>
       </div>
-      {/* <ExploreSearch className="hidden md:block max-w-lg mx-auto" /> */}
     </header>
   );
 };
