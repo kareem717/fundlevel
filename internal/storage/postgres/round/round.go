@@ -28,7 +28,9 @@ func (r *RoundRepository) GetById(ctx context.Context, id int) (round.Round, err
 	err := r.db.
 		NewSelect().
 		Model(&resp).
-		Where("id = ?", id).
+		Relation("Venture").
+		Relation("Venture.Business").
+		Where("round.id = ?", id).
 		Scan(ctx)
 
 	return resp, err
