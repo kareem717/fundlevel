@@ -33,13 +33,13 @@ const truncate = (text: string, maxLength: number) => {
 };
 
 /**
- * Time since.
- * @description Returns a string representing the time since the
+ * Format time.
+ * @description Returns a string representing the time
  * given date down to the minute. Automatically pluralizes the time unit.
  * @arg {Date} then Date to compare.
  * @return {string} Time since the given date.
  */
-export function timeSince(then: Date) {
+export function formatTime(then: Date) {
 	const HOUR_IN_MINUTES = 60;
 	const DAY_IN_MINUTES = 24 * HOUR_IN_MINUTES;
 	const MONTH_IN_MINUTES = 30 * DAY_IN_MINUTES;
@@ -64,11 +64,11 @@ export function timeSince(then: Date) {
 	for (const unit of units) {
 		if (diffInMinutes >= unit.value) {
 			const count = Math.floor(diffInMinutes / unit.value);
-			return `${pluralize(count, unit.label)} ago`;
+			return `${pluralize(count, unit.label)}`;
 		}
 	}
 
-	return "less than a minute ago";
+	return "less than a minute";
 }
 
 /**

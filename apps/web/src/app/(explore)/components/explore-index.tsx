@@ -8,9 +8,125 @@ import { getRoundsInfinite } from "@/actions/rounds"
 import { Venture, Round } from "@/lib/api"
 import { toast } from "sonner"
 import { useInView } from "react-intersection-observer"
-import { VentureIndexCard } from "./venture-index-card"
-import { RoundIndexCard } from "./round-index-card"
 import { Icons } from "@/components/ui/icons"
+import Link from "next/link";
+import redirects from "@/lib/config/redirects";
+import { formatTime, cn, truncateText } from "@/lib/utils";
+import { Card, CardHeader, CardContent, CardFooter, CardTitle, CardDescription } from "@/components/ui/card";
+import { buttonVariants } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+
+export interface VentureIndexCardProps extends ComponentPropsWithoutRef<typeof Card> {
+  venture: Venture
+};
+
+export const VentureIndexCard: FC<VentureIndexCardProps> = ({ className, venture, ...props }) => {
+  const { id, name, description, overview, createdAt, business: { industry, ...business } } = venture
+
+  //TODO: get active round
+  const hasActiveRound = Math.random() > 0.5
+  const investorCount = Math.floor(Math.random() * 100)
+
+  return (
+    <Card className={cn("w-full", className)} {...props}>
+      <CardHeader>
+        <CardTitle>{name} </CardTitle>
+        <CardDescription className="flex flex-col gap-2">
+          {business.name} &middot; {overview}
+          <div className="flex flex-wrap gap-2">
+            {hasActiveRound && (
+              <>
+                <Badge>
+                  {/* //TODO: localize */}
+                  Raising ${Math.floor(Math.random() * 100)}k
+                </Badge>
+                <Badge>
+                  {/* //TODO: localize */}
+                  {investorCount} investor{investorCount > 1 ? "s" : ""}
+                </Badge>
+              </>
+            )}
+            <Badge variant="secondary">
+              {formatTime(createdAt).charAt(0).toUpperCase() + formatTime(createdAt).slice(1)} old
+            </Badge>
+          </div>
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="text-sm text-muted-foreground">
+        {truncateText(description, 150)}
+      </CardContent>
+      <CardFooter>
+        <Link
+          className={cn(buttonVariants(), "w-full")}
+          href={redirects.app.explore.ventureView.replace(":id", id.toString())}
+        >
+          View
+        </Link>
+      </CardFooter>
+    </Card>
+  );
+};
+
+export interface RoundIndexCardProps extends ComponentPropsWithoutRef<typeof Card> {
+  round: Round
+};
+
+export const RoundIndexCard: FC<RoundIndexCardProps> = ({ round, className, ...props }) => {
+  const {
+    id,
+    venture: {
+      business: { industry, ...business },
+      ...venture
+    },
+    endsAt,
+    description,
+    buyIn,
+    percentageOffered,
+    investorCount
+  } = round
+
+  const rawPercentage = percentageOffered / investorCount;
+  const perInvestorPercentage = rawPercentage % 1 !== 0 && rawPercentage.toFixed(2) !== rawPercentage.toString()
+    ? rawPercentage.toFixed(2)
+    : rawPercentage.toString();
+
+  return (
+    <Card className={cn("w-full", className)} {...props}>
+      <CardHeader>
+        <CardTitle>{venture.name} </CardTitle>
+        <CardDescription className="flex flex-col gap-2">
+          {business.name} &middot; {venture.overview}
+          <div className="flex flex-wrap gap-2">
+            <Badge>
+              {investorCount} investor{investorCount > 1 ? "s" : ""}
+            </Badge>
+            <Badge>
+              {/* //TODO: localize */}
+              {buyIn} buy in
+            </Badge>
+            <Badge>
+              {perInvestorPercentage}% per investor
+            </Badge>
+            <Badge variant="secondary">
+              {formatTime(endsAt).charAt(0).toUpperCase() + formatTime(endsAt).slice(1)} left
+            </Badge>
+          </div>
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="text-sm text-muted-foreground">
+        {truncateText(description, 150)}
+      </CardContent>
+      <CardFooter>
+        <Link
+          className={cn(buttonVariants(), "w-full")}
+          href={redirects.app.explore.roundView.replace(":id", id.toString())}
+        >
+          View
+        </Link>
+      </CardFooter>
+    </Card>
+  );
+};
 
 export interface ExploreIndexProps extends ComponentPropsWithoutRef<"div"> { };
 
@@ -84,9 +200,9 @@ export const ExploreIndex: FC<ExploreIndexProps> = memo(({ ...props }) => {
   const hasMore = resource === "Ventures" ? ventureState.hasMore : roundState.hasMore
 
   const content = resource === "Ventures" ? ventureState.ventures.map((venture, idx) => (
-    <VentureIndexCard key={idx} venture={venture} className="w-full aspect-square" />
+    <VentureIndexCard key={idx} venture={venture} className="w-full h-full" />
   )) : roundState.rounds.map((round, idx) => (
-    <RoundIndexCard key={idx} round={round} className="w-full aspect-square" />
+    <RoundIndexCard key={idx} round={round} className="w-full h-full" />
   ))
 
   return (
