@@ -96,13 +96,14 @@ type BusinessRepository interface {
 	Delete(ctx context.Context, id int) error
 
 	GetVenturesByCursor(ctx context.Context, businessId int, paginationParams shared.CursorPagination) ([]venture.Venture, error)
-	GetVenturesByPage(ctx context.Context, businessId int, paginationParams shared.OffsetPagination) ([]venture.Venture, error)
+	GetVenturesByPage(ctx context.Context, businessId int, paginationParams shared.OffsetPagination) ([]venture.Venture, int, error)
 
-	GetRoundsByPage(ctx context.Context, businessId int, paginationParams shared.OffsetPagination) ([]round.Round, error)
+	GetRoundsByPage(ctx context.Context, businessId int, paginationParams shared.OffsetPagination) ([]round.Round, int, error)
 	GetRoundsByCursor(ctx context.Context, businessId int, paginationParams shared.CursorPagination) ([]round.Round, error)
 
 	// GetInvestmentsByCursor gets all of the investments received on the rounds related to the business using cursor pagination
 	GetInvestmentsByCursor(ctx context.Context, businessId int, paginationParams shared.CursorPagination) ([]investment.RoundInvestment, error)
+	// GetInvestmentsByPage gets all of the investments received on the rounds related to the business using offset pagination
 	GetInvestmentsByPage(ctx context.Context, businessId int, paginationParams shared.OffsetPagination) ([]investment.RoundInvestment, error)
 
 	// GetTotalFunding gets the amount the business has successfully raised through rounds

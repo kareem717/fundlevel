@@ -95,9 +95,9 @@ type BusinessService interface {
 	GetById(ctx context.Context, id int) (business.Business, error)
 
 	GetVenturesByCursor(ctx context.Context, accountId int, limit int, cursor int) ([]venture.Venture, error)
-	GetVenturesByPage(ctx context.Context, accountId int, pageSize int, page int) ([]venture.Venture, error)
+	GetVenturesByPage(ctx context.Context, accountId int, pageSize int, page int) ([]venture.Venture, int, error)
 
-	GetRoundsByPage(ctx context.Context, businessId int, pageSize int, page int) ([]round.Round, error)
+	GetRoundsByPage(ctx context.Context, businessId int, pageSize int, page int) ([]round.Round, int, error)
 	GetRoundsByCursor(ctx context.Context, businessId int, limit int, cursor int) ([]round.Round, error)
 
 	// GetInvestmentsByCursor gets all of the investments received on the rounds related to the business using cursor pagination

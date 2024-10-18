@@ -116,7 +116,7 @@ func (h *httpHandler) getRoundsByCursor(ctx context.Context, input *shared.GetCu
 }
 
 func (h *httpHandler) getRoundsByPage(ctx context.Context, input *shared.GetOffsetPaginatedByParentPathIDInput) (*shared.GetOffsetPaginatedRoundsOutput, error) {
-	rounds, err := h.service.BusinessService.GetRoundsByPage(ctx, input.ID, input.PageSize, input.Page)
+	rounds, total, err := h.service.BusinessService.GetRoundsByPage(ctx, input.ID, input.PageSize, input.Page)
 
 	if err != nil {
 		switch {
@@ -131,7 +131,8 @@ func (h *httpHandler) getRoundsByPage(ctx context.Context, input *shared.GetOffs
 	resp := &shared.GetOffsetPaginatedRoundsOutput{}
 	resp.Body.Message = "Rounds fetched successfully"
 	resp.Body.Rounds = rounds
-
+	resp.Body.Total = total
+	
 	if len(rounds) > input.PageSize {
 		resp.Body.HasMore = true
 		resp.Body.Rounds = resp.Body.Rounds[:len(resp.Body.Rounds)-1]
@@ -222,7 +223,7 @@ func (h *httpHandler) getVenturesByCursor(ctx context.Context, input *shared.Get
 }
 
 func (h *httpHandler) getVenturesByPage(ctx context.Context, input *shared.GetOffsetPaginatedByParentPathIDInput) (*shared.GetOffsetPaginatedVenturesOutput, error) {
-	ventures, err := h.service.BusinessService.GetVenturesByPage(ctx, input.ID, input.PageSize, input.Page)
+	ventures, total, err := h.service.BusinessService.GetVenturesByPage(ctx, input.ID, input.PageSize, input.Page)
 
 	if err != nil {
 		switch {
@@ -237,7 +238,7 @@ func (h *httpHandler) getVenturesByPage(ctx context.Context, input *shared.GetOf
 	resp := &shared.GetOffsetPaginatedVenturesOutput{}
 	resp.Body.Message = "Ventures fetched successfully"
 	resp.Body.Ventures = ventures
-
+	resp.Body.Total = total
 	if len(ventures) > input.PageSize {
 		resp.Body.HasMore = true
 		resp.Body.Ventures = resp.Body.Ventures[:len(resp.Body.Ventures)-1]

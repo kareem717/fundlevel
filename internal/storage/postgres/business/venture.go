@@ -22,18 +22,19 @@ func (r *BusinessRepository) GetVenturesByCursor(ctx context.Context, businessId
 	return resp, err
 }
 
-func (r *BusinessRepository) GetVenturesByPage(ctx context.Context, businessId int, paginationParams shared.OffsetPagination) ([]venture.Venture, error) {
+func (r *BusinessRepository) GetVenturesByPage(ctx context.Context, businessId int, paginationParams shared.OffsetPagination) ([]venture.Venture, int, error) {
 	resp := []venture.Venture{}
 	offset := (paginationParams.Page - 1) * paginationParams.PageSize
 
-	err := r.db.
+	count, err := r.db.
 		NewSelect().
 		Model(&resp).
-		Where("business_id = ?", businessId).
-		Order("id").
+		Where("venture.business_id = ?", businessId).
+		Order("venture.id").
 		Offset(offset).
 		Limit(paginationParams.PageSize).
-		Scan(ctx)
+		GroupExpr("venture.id").
+		ScanAndCount(ctx)
 
-	return resp, err
+	return resp, count, err
 }

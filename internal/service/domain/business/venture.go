@@ -16,7 +16,7 @@ func (s *BusinessService) GetVenturesByCursor(ctx context.Context, businessId in
 	return s.repositories.Business().GetVenturesByCursor(ctx, businessId, paginationParams)
 }
 
-func (s *BusinessService) GetVenturesByPage(ctx context.Context, businessId int, pageSize int, page int) ([]venture.Venture, error) {
+func (s *BusinessService) GetVenturesByPage(ctx context.Context, businessId int, pageSize int, page int) ([]venture.Venture, int, error) {
 	paginationParams := shared.OffsetPagination{
 		PageSize: pageSize,
 		Page:     page,

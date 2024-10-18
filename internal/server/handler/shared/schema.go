@@ -56,6 +56,7 @@ type CursorPaginationResponse struct {
 
 type OffsetPaginationResponse struct {
 	HasMore bool `json:"hasMore"`
+	Total   int  `json:"total"`
 }
 
 type GetOffsetPaginatedByParentPathIDInput struct {

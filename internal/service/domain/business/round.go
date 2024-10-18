@@ -16,7 +16,7 @@ func (s *BusinessService) GetRoundsByCursor(ctx context.Context, businessId int,
 	return s.repositories.Business().GetRoundsByCursor(ctx, businessId, paginationParams)
 }
 
-func (s *BusinessService) GetRoundsByPage(ctx context.Context, businessId int, pageSize int, page int) ([]round.Round, error) {
+func (s *BusinessService) GetRoundsByPage(ctx context.Context, businessId int, pageSize int, page int) ([]round.Round, int, error) {
 	paginationParams := shared.OffsetPagination{
 		PageSize: pageSize,
 		Page:     page,

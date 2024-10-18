@@ -23,11 +23,11 @@ func (r *BusinessRepository) GetRoundsByCursor(ctx context.Context, businessId i
 	return resp, err
 }
 
-func (r *BusinessRepository) GetRoundsByPage(ctx context.Context, businessId int, paginationParams shared.OffsetPagination) ([]round.Round, error) {
+func (r *BusinessRepository) GetRoundsByPage(ctx context.Context, businessId int, paginationParams shared.OffsetPagination) ([]round.Round, int, error) {
 	resp := []round.Round{}
 	offset := (paginationParams.Page - 1) * paginationParams.PageSize
 
-	err := r.db.
+	count, err := r.db.
 		NewSelect().
 		Model(&resp).
 		Join("JOIN ventures ON ventures.id = round.venture_id").
@@ -35,7 +35,8 @@ func (r *BusinessRepository) GetRoundsByPage(ctx context.Context, businessId int
 		Order("round.id").
 		Offset(offset).
 		Limit(paginationParams.PageSize).
-		Scan(ctx)
+		GroupExpr("round.id").
+		ScanAndCount(ctx)
 
-	return resp, err
+	return resp, count, err
 }
