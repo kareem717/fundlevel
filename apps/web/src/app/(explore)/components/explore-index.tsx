@@ -1,6 +1,6 @@
 "use client"
 
-import { ComponentPropsWithoutRef, FC, memo, useEffect, useState } from "react"
+import { ComponentPropsWithoutRef, FC, memo, useCallback, useEffect, useState } from "react"
 import { useExploreNavbarStore } from "./use-explore-navbar"
 import { useAction } from "next-safe-action/hooks"
 import { getVenturesInfinite } from "@/actions/ventures"
@@ -15,6 +15,7 @@ import { formatTime, cn, truncateText, toFixedRound } from "@/lib/utils";
 import { Card, CardHeader, CardContent, CardFooter, CardTitle, CardDescription } from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { debounce } from 'lodash';
 
 export interface VentureIndexCardProps extends ComponentPropsWithoutRef<typeof Card> {
   venture: Venture
@@ -123,7 +124,7 @@ export const RoundIndexCard: FC<RoundIndexCardProps> = ({ round, className, ...p
 
 export interface ExploreIndexProps extends ComponentPropsWithoutRef<"div"> { };
 
-export const ExploreIndex: FC<ExploreIndexProps> = memo(({ ...props }) => {
+export const ExploreIndex: FC<ExploreIndexProps> = ({ ...props }) => {
   const [ventureState, setVentureState] = useState({
     ventures: [] as Venture[],
     cursor: 1,
@@ -177,18 +178,28 @@ export const ExploreIndex: FC<ExploreIndexProps> = memo(({ ...props }) => {
   const isExecuting = resource === "Ventures" ? isVenturesExecuting : isRoundsExecuting
 
   useEffect(() => {
-    if (inView) {
-      if (resource === "Ventures") {
-        if (!isVenturesExecuting && ventureState.hasMore) {
-          executeVentures({ cursor: ventureState.cursor, limit: 10 })
-        }
-      } else {
-        if (!isRoundsExecuting && roundState.hasMore) {
-          executeRounds({ cursor: roundState.cursor, limit: 10 })
+    const fetchData = () => {
+      if (inView) {
+        if (resource === "Ventures") {
+          if (!isVenturesExecuting && ventureState.hasMore) {
+            executeVentures({ cursor: ventureState.cursor, limit: 10 });
+          }
+        } else {
+          if (!isRoundsExecuting && roundState.hasMore) {
+            executeRounds({ cursor: roundState.cursor, limit: 10 });
+          }
         }
       }
-    }
-  }, [inView, resource])
+    };
+
+    const debouncedFetchData = debounce(fetchData, 1);
+
+    debouncedFetchData();
+
+    return () => {
+      debouncedFetchData.cancel();
+    };
+  }, [inView, resource, ventureState.cursor, roundState.cursor]);
 
   const hasMore = resource === "Ventures" ? ventureState.hasMore : roundState.hasMore
 
@@ -218,4 +229,4 @@ export const ExploreIndex: FC<ExploreIndexProps> = memo(({ ...props }) => {
       )}
     </div>
   );
-});
+}

@@ -41,6 +41,7 @@ export const createVenture = actionClientWithAccount
 export const getVenturesInfinite = actionClient
 	.schema(cursorPaginationSchema)
 	.action(async ({ parsedInput, ctx: { apiClient } }) => {
+		console.log(parsedInput)
 		const response = await getVenturesByCursor({
 			client: apiClient,
 			throwOnError: true,
