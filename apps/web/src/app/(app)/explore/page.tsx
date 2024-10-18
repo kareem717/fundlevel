@@ -1,4 +1,3 @@
-import { ExploreMobileFooter } from "./components/explore-mobile-footer"
 import { ExploreIndex } from "./components/explore-index"
 import { LogoDiv, SmallLogoDiv } from "@/components/ui/logo-div";
 import Link from "next/link";
@@ -25,7 +24,9 @@ export default async function ExplorePage() {
       </header>
       <div className="px-4 md:px-8 lg:px-20 w-full max-w-[3000px] mx-auto h-full">
         <ExploreIndex />
-        <ExploreMobileFooter className="sm:hidden fixed bottom-0 left-0 right-0" />
+        <div className="sm:hidden fixed bottom-0 left-0 right-0 flex items-center justify-center w-full border-t border-border p-2 bg-background">
+          <ExploreToggle className="w-full" />
+        </div>
       </div>
     </div>
   );
