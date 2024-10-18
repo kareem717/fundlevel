@@ -101,7 +101,7 @@ export const CreateBusinessForm: FC<CreateBusinessFormProps> = ({ className, onS
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {["0-1", "2-10", "11-50", "51-200", "201-500", "501-1000", "1000+"].map((value) => (
+                  {["1", "2-10", "11-50", "51-200", "201-500", "501-1000", "1000+"].map((value) => (
                     <SelectItem key={value} value={value}>{value}</SelectItem>
                   ))}
                 </SelectContent>

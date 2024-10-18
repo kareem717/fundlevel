@@ -43,7 +43,7 @@ export type Business = {
     name: string;
     ownerAccountId: number;
     status: 'pending' | 'active' | 'disabled';
-    teamSize: '0-1' | '2-10' | '11-50' | '51-200' | '201-500' | '501-1000' | '1000+';
+    teamSize: '1' | '2-10' | '11-50' | '51-200' | '201-500' | '501-1000' | '1000+';
     updatedAt: (Date) | null;
 };
 
@@ -55,10 +55,10 @@ export const status = {
     DISABLED: 'disabled'
 } as const;
 
-export type teamSize = '0-1' | '2-10' | '11-50' | '51-200' | '201-500' | '501-1000' | '1000+';
+export type teamSize = '1' | '2-10' | '11-50' | '51-200' | '201-500' | '501-1000' | '1000+';
 
 export const teamSize = {
-    _0_1: '0-1',
+    _1: '1',
     _2_10: '2-10',
     _11_50: '11-50',
     _51_200: '51-200',
@@ -74,7 +74,7 @@ export type BusinessParams = {
     isRemote?: boolean;
     name: string;
     ownerAccountId: number;
-    teamSize: '0-1' | '2-10' | '11-50' | '51-200' | '201-500' | '501-1000' | '1000+';
+    teamSize: '1' | '2-10' | '11-50' | '51-200' | '201-500' | '501-1000' | '1000+';
 };
 
 export type CreateAccountParams = {
@@ -1023,6 +1023,16 @@ export type GetVentureRoundsByCursorResponse = (GetCursorPaginatedRoundsOutputBo
 
 export type GetVentureRoundsByCursorError = (ErrorModel);
 
+export type GetVentureActiveRoundData = {
+    path: {
+        id: number;
+    };
+};
+
+export type GetVentureActiveRoundResponse = (SingleRoundResponseBody);
+
+export type GetVentureActiveRoundError = (ErrorModel);
+
 export type GetVentureRoundsByPageData = {
     path: {
         id: number;
@@ -1510,6 +1520,13 @@ export type GetVentureRoundsByCursorResponseTransformer = (data: any) => Promise
 
 export const GetVentureRoundsByCursorResponseTransformer: GetVentureRoundsByCursorResponseTransformer = async (data) => {
     GetCursorPaginatedRoundsOutputBodyModelResponseTransformer(data);
+    return data;
+};
+
+export type GetVentureActiveRoundResponseTransformer = (data: any) => Promise<GetVentureActiveRoundResponse>;
+
+export const GetVentureActiveRoundResponseTransformer: GetVentureActiveRoundResponseTransformer = async (data) => {
+    SingleRoundResponseBodyModelResponseTransformer(data);
     return data;
 };
 

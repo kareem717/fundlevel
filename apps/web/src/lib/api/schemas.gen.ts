@@ -163,7 +163,7 @@ export const BusinessSchema = {
             type: 'string'
         },
         teamSize: {
-            enum: ['0-1', '2-10', '11-50', '51-200', '201-500', '501-1000', '1000+'],
+            enum: ['1', '2-10', '11-50', '51-200', '201-500', '501-1000', '1000+'],
             type: 'string'
         },
         updatedAt: {
@@ -205,7 +205,7 @@ export const BusinessParamsSchema = {
             type: 'integer'
         },
         teamSize: {
-            enum: ['0-1', '2-10', '11-50', '51-200', '201-500', '501-1000', '1000+'],
+            enum: ['1', '2-10', '11-50', '51-200', '201-500', '501-1000', '1000+'],
             type: 'string'
         }
     },
@@ -381,7 +381,7 @@ export const CreateRoundParamsSchema = {
             type: 'integer'
         }
     },
-    required: ['ventureId', 'beginsAt', 'endsAt', 'percentageOffered', 'percentageValue', 'valueCurrency', 'investorCount', 'description'],
+    required: ['ventureId', 'beginsAt', 'endsAt', 'percentageOffered', 'valueCurrency', 'percentageValue', 'investorCount', 'description'],
     type: 'object'
 } as const;
 
