@@ -72,7 +72,8 @@ func (r *VentureRepository) GetById(ctx context.Context, id int) (venture.Ventur
 	err := r.db.
 		NewSelect().
 		Model(&resp).
-		Where("id = ?", id).
+		Relation("Business").
+		Where("venture.id = ?", id).
 		Scan(ctx)
 
 	return resp, err
