@@ -8,6 +8,7 @@ import {
 	getVenturesByCursor,
 	getVentureLikeStatus,
 	createVentureLike,
+	getVentureActiveRound as getVentureActiveRoundApi,
 	deleteVentureLike,
 } from "@/lib/api";
 import {
@@ -133,4 +134,18 @@ export const unlikeVenture = actionClientWithAccount
 				accountId: account.id,
 			},
 		});
+	});
+
+export const getVentureActiveRound = actionClient
+	.schema(intIdSchema.required())
+	.action(async ({ parsedInput, ctx: { apiClient } }) => {
+		const response = await getVentureActiveRoundApi({
+			client: apiClient,
+			throwOnError: true,
+			path: {
+				id: parsedInput,
+			},
+		});
+
+		return response.data;
 	});

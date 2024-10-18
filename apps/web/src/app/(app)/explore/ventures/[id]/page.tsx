@@ -1,12 +1,10 @@
 import { VentureViewActions } from "./components/venture-view-actions"
-import { getVentureById, isVentureLiked } from "@/actions/ventures";
+import { getVentureById } from "@/actions/ventures";
 import { notFound } from "next/navigation";
-import { getAccount } from "@/actions/auth";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle
 } from "@/components/ui/card";
@@ -23,6 +21,7 @@ import { Icons } from "@/components/ui/icons";
 import { Separator } from "@/components/ui/separator";
 import { cn, truncateText } from "@/lib/utils";
 import { BusinessOverview } from "@/components/ui/business-overview";
+import { VentureActiveRoundCard } from "./components/venture-active-round-card";
 
 export default async function VentureViewPage({ params }: { params: { id: string } }) {
   const parsedId = parseInt(params.id as string || ""); // Parse the id
@@ -37,15 +36,6 @@ export default async function VentureViewPage({ params }: { params: { id: string
   }
 
   const { business, ...venture } = ventureResp.data.venture
-
-  const accountResp = await getAccount();
-  const account = accountResp?.data;
-
-  let isLiked = false;
-  if (account) {
-    const isLikedResp = await isVentureLiked(venture.id);
-    isLiked = isLikedResp?.data?.liked ?? false;
-  }
 
   return (
     <Card className="w-full relative max-w-screen-lg mx-auto">
@@ -62,17 +52,19 @@ export default async function VentureViewPage({ params }: { params: { id: string
       </CardHeader>
       <CardContent className="flex flex-col gap-8 ">
         <div className="w-full flex flex-col lg:flex-row gap-4 h-full">
-          <div className={cn("w-full flex flex-col px-2 lg:w-2/3 gap-4")}>
+          <div className={cn("w-full flex flex-col px-2 gap-4")}>
             <div className="flex flex-col gap-1 font-semibold">
-              By {business.name}
+              By {business?.name}
             </div>
             <Separator className="w-full" />
+            <span className="text-lg font-semibold">Business Details</span>
             <BusinessOverview
               overview={venture.overview}
-              teamSize={business.teamSize}
-              businessId={business.id}
+              teamSize={business?.teamSize}
+              businessId={business?.id}
             />
             <Separator className="w-full" />
+            <span className="text-lg font-semibold">Venture Description</span>
             <div className="flex flex-col items-start justify-start">
               <p>
                 {truncateText(venture.description, 350)}
@@ -103,18 +95,7 @@ export default async function VentureViewPage({ params }: { params: { id: string
               )}
             </div>
           </div>
-          <Card className={cn("w-full h-full hidden md:block lg:w-1/3")}>
-            <CardHeader>
-              <CardTitle>Round</CardTitle>
-              <CardDescription>
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              this is where we display the active round
-            </CardContent>
-            <CardFooter>
-            </CardFooter>
-          </Card>
+          <VentureActiveRoundCard ventureId={venture.id} className="w-full h-full lg:max-w-96" />
         </div>
       </CardContent>
     </Card>

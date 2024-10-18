@@ -72,12 +72,14 @@ export default async function RoundViewPage({ params }: { params: { id: string }
               By {business.name}
             </div>
             <Separator className="w-full" />
+            <span className="text-lg font-semibold">Business Details</span>
             <BusinessOverview
               overview={venture.overview}
               teamSize={business.teamSize}
               businessId={business.id}
             />
             <Separator className="w-full" />
+            <span className="text-lg font-semibold">Round Description</span>
             <div className="flex flex-col items-start justify-start">
               <p>
                 {truncateText(venture.description, 350)}

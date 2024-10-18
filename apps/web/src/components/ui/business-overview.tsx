@@ -21,7 +21,8 @@ export const BusinessOverview: FC<BusinessOverviewProps> = memo(({ className, ov
     onSuccess: ({ data }) => {
       setPreviousFunding(0);
     },
-    onError: () => {
+    onError: (error) => {
+      console.log(error);
       toast.error("Failed to fetch previous funding");
       setPreviousFunding(0);
     }
@@ -29,7 +30,7 @@ export const BusinessOverview: FC<BusinessOverviewProps> = memo(({ className, ov
 
   useEffect(() => {
     execute(businessId);
-  }, []);
+  }, [businessId]);
 
   return (
     <div className={cn("flex flex-col gap-8 items-start justify-center", className)} {...props}>
