@@ -11,10 +11,6 @@ export default async function AuthLayout({
 				<div className="flex items-center">
 					<LogoDiv />
 				</div>
-				{/* <blockquote className="space-y-2">
-					<p className="text-lg">&quot;{AuthConfig.quote.text}&quot;</p>
-					<footer className="text-sm">{AuthConfig.quote.author}</footer>
-				</blockquote> */}
 			</div>
 			<main className="col-span-2 md:col-span-1 flex flex-col justify-center items-center">
 				{children}
