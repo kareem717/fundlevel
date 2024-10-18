@@ -11,7 +11,7 @@ import { useInView } from "react-intersection-observer"
 import { Icons } from "@/components/ui/icons"
 import Link from "next/link";
 import redirects from "@/lib/config/redirects";
-import { formatTime, cn, truncateText } from "@/lib/utils";
+import { formatTime, cn, truncateText, toFixedRound } from "@/lib/utils";
 import { Card, CardHeader, CardContent, CardFooter, CardTitle, CardDescription } from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -85,10 +85,7 @@ export const RoundIndexCard: FC<RoundIndexCardProps> = ({ round, className, ...p
     investorCount
   } = round
 
-  const rawPercentage = percentageOffered / investorCount;
-  const perInvestorPercentage = rawPercentage % 1 !== 0 && rawPercentage.toFixed(2) !== rawPercentage.toString()
-    ? rawPercentage.toFixed(2)
-    : rawPercentage.toString();
+  const perInvestorPercentage = toFixedRound(percentageOffered / investorCount, 2);
 
   return (
     <Card className={cn("w-full", className)} {...props}>

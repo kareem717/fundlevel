@@ -23,6 +23,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { format } from "date-fns"
+import redirects from "@/lib/config/redirects"
 
 export const columns: ColumnDef<Business>[] = [
   {
@@ -134,29 +135,26 @@ export const columns: ColumnDef<Business>[] = [
             >
               Copy business number
             </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link href={`/my-businesses/${business.id}`}>View details</Link>
-            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuLabel>Ventures</DropdownMenuLabel>
             <DropdownMenuItem asChild>
-              <Link href={`/my-businesses/${business.id}/ventures`}>View</Link>
+              <Link href={redirects.app.myBusinesses.view.ventures.root.replace(":id", business.id.toString())}>View</Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <Link href={`/my-businesses/${business.id}/ventures/create`}>Create</Link>
+              <Link href={redirects.app.myBusinesses.view.ventures.create.replace(":id", business.id.toString())}>Create</Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuLabel>Rounds</DropdownMenuLabel>
             <DropdownMenuItem asChild>
-              <Link href={`/my-businesses/${business.id}/rounds`}>View</Link>
+              <Link href={redirects.app.myBusinesses.view.rounds.root.replace(":id", business.id.toString())}>View</Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <Link href={`/my-businesses/${business.id}/rounds/create`}>Create</Link>
+              <Link href={redirects.app.myBusinesses.view.rounds.create.replace(":id", business.id.toString())}>Create</Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuLabel>Investments</DropdownMenuLabel>
             <DropdownMenuItem asChild>
-              <Link href={`/my-businesses/${business.id}/investments`}>View Received</Link>
+              <Link href={redirects.app.myBusinesses.view.investments.replace(":id", business.id.toString())}>View Received</Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

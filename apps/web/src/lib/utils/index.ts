@@ -25,13 +25,6 @@ export const registerService = <T>(name: string, initFn: () => T) => {
 	return initFn();
 };
 
-const truncate = (text: string, maxLength: number) => {
-	if (text.length > maxLength) {
-		return text.substring(0, maxLength) + "...";
-	}
-	return text;
-};
-
 /**
  * Format time.
  * @description Returns a string representing the time
@@ -39,7 +32,7 @@ const truncate = (text: string, maxLength: number) => {
  * @arg {Date} then Date to compare.
  * @return {string} Time since the given date.
  */
-export function formatTime(then: Date) {
+export const formatTime = (then: Date) => {
 	const HOUR_IN_MINUTES = 60;
 	const DAY_IN_MINUTES = 24 * HOUR_IN_MINUTES;
 	const MONTH_IN_MINUTES = 30 * DAY_IN_MINUTES;
@@ -85,3 +78,15 @@ export const truncateText = (text: string, maxLength: number) => {
 	}
 	return text;
 };
+
+
+/**
+ * Format percentage.
+ * @description Formats a number as a percentage string with up to specified decimal places.
+ * @arg {number} rawPercentage Number to format.
+ * @arg {number} toFixed Maximum number of decimal places to round to.
+ * @return {string} Formatted percentage.
+ */
+export const toFixedRound = (rawPercentage: number, toFixed: number) => rawPercentage % 1 !== 0 && rawPercentage.toFixed(toFixed) !== rawPercentage.toString()
+	? rawPercentage.toFixed(toFixed)
+	: rawPercentage.toString();

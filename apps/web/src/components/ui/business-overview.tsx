@@ -48,7 +48,7 @@ export const BusinessOverview: FC<BusinessOverviewProps> = memo(({ className, ov
         <div className="flex flex-col gap-1">
           Team Size
           <span className="text-muted-foreground">
-            {teamSize} people
+            {teamSize} {teamSize === "1" ? "person" : "people"}
           </span>
         </div>
       </div>

@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Icons } from "@/components/ui/icons";
 import { Separator } from "@/components/ui/separator";
-import { cn, truncateText } from "@/lib/utils";
+import { cn, toFixedRound, truncateText } from "@/lib/utils";
 import {
   Tooltip,
   TooltipContent,
@@ -49,8 +49,8 @@ export default async function RoundViewPage({ params }: { params: { id: string }
   }
 
   const valuationAtPurchase = Math.round(round.percentageValue / (round.percentageOffered / 100));
-  const perInvestorPercentage = (round.investorCount > 1 ? round.percentageOffered / round.investorCount : round.percentageOffered).toFixed(3);
-  const buyInPrice = (round.buyIn * (1 + env.NEXT_PUBLIC_FEE_PERCENTAGE)).toFixed(2);
+  const perInvestorPercentage = toFixedRound(round.investorCount > 1 ? round.percentageOffered / round.investorCount : round.percentageOffered, 3);
+  const buyInPrice = toFixedRound(round.buyIn * (1 + env.NEXT_PUBLIC_FEE_PERCENTAGE), 2);
 
   return (
     <Card className="w-full relative max-w-screen-lg mx-auto">

@@ -34,7 +34,6 @@ const redirects = {
 		myBusinesses: {
 			index: "/my-businesses",
 			view: {
-				root: "/my-businesses/:id",
 				rounds: {
 					root: "/my-businesses/:id/rounds",
 					view: "/my-businesses/:id/rounds/:roundId",
