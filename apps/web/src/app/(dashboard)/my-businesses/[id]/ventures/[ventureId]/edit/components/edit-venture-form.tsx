@@ -96,6 +96,24 @@ export const EditVentureForm: FC<EditVentureFormProps> = ({ className, onSuccess
             </FormItem>
           )}
         />
+        <FormField
+          control={form.control}
+          name="overview"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                Overview
+              </FormLabel>
+              <FormControl>
+                <Input  {...field} maxLength={30} />
+              </FormControl>
+              <FormDescription>
+                This should be a breif overview of the venture.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <Button type="submit" disabled={isExecuting} className="w-full">
           {isExecuting && (<Icons.spinner className="mr-2 h-4 w-4 animate-spin" />)}
           Update

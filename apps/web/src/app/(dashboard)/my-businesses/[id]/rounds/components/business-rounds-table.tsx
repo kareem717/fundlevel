@@ -1,7 +1,13 @@
 "use client"
 
+import { ColumnDef } from "@tanstack/react-table"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Icons } from "@/components/ui/icons"
+import { DataTableColumnHeader } from "@/components/ui/data-table"
+import { titleCase } from "title-case"
+import Link from "next/link"
+import { format } from "date-fns"
 import {
-  ColumnDef,
   VisibilityState,
   flexRender,
   getCoreRowModel,
@@ -18,39 +24,26 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Input } from "@/components/ui/input"
-import { ComponentPropsWithoutRef, FC, useEffect, useMemo, useState } from "react"
-import { DataTableColumnHeader, DataTablePagination } from "@/components/ui/data-table"
-import { Venture } from "@/lib/api"
-import { useAction } from "next-safe-action/hooks"
-import { getBusinessVentures } from "@/actions/busineses"
-import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuCheckboxItem,
 } from "@/components/ui/dropdown-menu"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Icons } from "@/components/ui/icons"
-import { titleCase } from "title-case"
-import Link from "next/link"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
-import { format } from "date-fns"
+import { ComponentPropsWithoutRef, FC, useEffect, useMemo, useState } from "react"
+import { DataTablePagination } from "@/components/ui/data-table"
+import { Round } from "@/lib/api"
+import { cn } from "@/lib/utils"
 import redirects from "@/lib/config/redirects"
-import { toast } from "sonner"
-import { truncateText } from "@/lib/utils"
+import { useAction } from "next-safe-action/hooks"
+import { getBusinessRoundsByPage } from "@/actions/busineses"
+import { Skeleton } from "@/components/ui/skeleton"
 
-export const columns: ColumnDef<Venture>[] = [
+export const columns: ColumnDef<Round>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -74,95 +67,113 @@ export const columns: ColumnDef<Venture>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "name",
+    accessorKey: "beginsAt",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Name" isSortable={false} />
+      <DataTableColumnHeader column={column} title="Begins At" />
     ),
     cell: ({ row }) => {
-      const name = row.original.name
-      return <div className="text-left font-medium">{titleCase(name)}</div>
+      const beginsAt = row.getValue("beginsAt") as Date
+      return <div className="text-left font-medium">{format(beginsAt, "PPP")}</div>
     },
+  },
+  {
+    accessorKey: "buyIn",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Buy In" />
+    ),
   },
   {
     accessorKey: "createdAt",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Created At" isSortable={false} />
+      <DataTableColumnHeader column={column} title="Created At" />
     ),
     cell: ({ row }) => {
-      const createdAt = row.original.createdAt
+      const createdAt = row.getValue("createdAt") as Date
       return <div className="text-left font-medium">{format(createdAt, "PPP")}</div>
     },
   },
   {
-    accessorKey: "description",
+    accessorKey: "deletedAt",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Description" isSortable={false} />
+      <DataTableColumnHeader column={column} title="Deleted At" />
     ),
     cell: ({ row }) => {
-      const description = truncateText(row.original.description, 40)
-      return <div className="text-left font-medium">{description}</div>
+      const deletedAt = row.getValue("deletedAt") as Date | null
+      return <div className="text-left font-medium">{deletedAt ? format(deletedAt, "PPP") : "N/A"}</div>
     },
   },
   {
-    accessorKey: "isHidden",
+    accessorKey: "endsAt",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Is Hidden" isSortable={false} />
+      <DataTableColumnHeader column={column} title="Ends At" />
     ),
     cell: ({ row }) => {
-      const isHidden = row.original.isHidden
-      return (
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger>
-              <div className="text-left font-medium truncate max-w-32" title={isHidden ? "Yes" : "No"}>
-                {isHidden ? "Yes" : "No"}
-              </div>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>
-                {isHidden ? "This venture is hidden from the public." : "This venture is visible to the public."}
-              </p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      )
+      const endsAt = row.getValue("endsAt") as Date
+      return <div className="text-left font-medium">{format(endsAt, "PPP")}</div>
     },
+  },
+  {
+    accessorKey: "id",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="ID" isSortable={false} />
+    ),
+  },
+  {
+    accessorKey: "investorCount",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Investor Count" isSortable={false} />
+    ),
+  },
+  {
+    accessorKey: "percentageOffered",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Percentage Offered" isSortable={false} />
+    ),
+    cell: ({ row }) => {
+      const percentageOffered = row.getValue("percentageOffered") as number
+      return <div className="text-left font-medium">{percentageOffered}%</div>
+    },
+  },
+  {
+    accessorKey: "percentageValue",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Percentage Value" isSortable={false} />
+    ),
+    cell: ({ row }) => {
+      const percentageValue = `${row.original.percentageValue} ${row.original.valueCurrency.toUpperCase()}`
+      return <div className="text-left font-medium">{percentageValue}</div>
+    },
+  },
+  {
+    accessorKey: "status",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Status" isSortable={false} />
+    ),
+    cell: ({ row }) => {
+      const status = row.getValue("status") as "active" | "successful" | "failed"
+      return <div className="text-left font-medium">{titleCase(status)}</div>
+    },
+  },
+  {
+    accessorKey: "updatedAt",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Updated At" isSortable={false} />
+    ),
+    cell: ({ row }) => {
+      const updatedAt = row.getValue("updatedAt") as Date | null
+      return <div className="text-left font-medium">{updatedAt ? format(updatedAt, "PPP") : "N/A"}</div>
+    },
+  },
+  {
+    accessorKey: "ventureId",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Venture ID" isSortable={false} />
+    ),
   },
   {
     id: "actions",
-    header: ({ table }) => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">Open menu</span>
-            <Icons.ellipsis className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          {table
-            .getAllColumns()
-            .filter(
-              (column) => column.getCanHide()
-            )
-            .map((column) => {
-              return (
-                <DropdownMenuCheckboxItem
-                  key={column.id}
-                  className="capitalize"
-                  checked={column.getIsVisible()}
-                  onCheckedChange={(value) =>
-                    column.toggleVisibility(!!value)
-                  }
-                >
-                  {column.id}
-                </DropdownMenuCheckboxItem>
-              )
-            })}
-        </DropdownMenuContent>
-      </DropdownMenu>
-    ),
     cell: ({ row }) => {
-      const venture = row.original
+      const round = row.original
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -174,23 +185,12 @@ export const columns: ColumnDef<Venture>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(venture.id.toString())}
+              onClick={() => navigator.clipboard.writeText(round.id.toString())}
             >
-              Copy venture ID
+              Copy round ID
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <Link
-                href={redirects.app.explore.ventureView.replace(":id", venture.id.toString())}
-              >
-                View public page
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link
-                href={redirects.app.myBusinesses.view.ventures.view.edit.replace(":id", venture.businessId.toString()).replace(":ventureId", venture.id.toString())}
-              >
-                Edit
-              </Link>
+              <Link href={redirects.app.explore.roundView.replace("[id]", round.id.toString())}>View public page</Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -199,15 +199,15 @@ export const columns: ColumnDef<Venture>[] = [
   },
 ]
 
-export interface BusinessVenturesTableProps extends ComponentPropsWithoutRef<typeof Table> {
+export interface BusinessRoundsTableProps extends ComponentPropsWithoutRef<typeof Table> {
   businessId: number
 }
 
-export const BusinessVenturesTable: FC<BusinessVenturesTableProps> = ({
+export const BusinessRoundsTable: FC<BusinessRoundsTableProps> = ({
   businessId,
   ...props
 }) => {
-  const [data, setData] = useState<Venture[]>([])
+  const [data, setData] = useState<Round[]>([])
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10,
@@ -219,9 +219,9 @@ export const BusinessVenturesTable: FC<BusinessVenturesTableProps> = ({
 
   const [rowSelection, setRowSelection] = useState({})
 
-  const { execute, isExecuting } = useAction(getBusinessVentures, {
+  const { execute, isExecuting } = useAction(getBusinessRoundsByPage, {
     onSuccess: ({ data }) => {
-      setData(data?.ventures || [])
+      setData(data?.rounds || [])
       setRowCount(data?.total || 0)
     },
     onError: (error) => {
@@ -270,9 +270,8 @@ export const BusinessVenturesTable: FC<BusinessVenturesTableProps> = ({
       rowSelection,
     },
   })
-
   return (
-    <div className="flex flex-col gap-4 w-full h-full">
+    <div className={"flex flex-col gap-4 w-full h-full"} {...props}>
       <div className="rounded-md border">
         <Table {...props}>
           <TableHeader>
@@ -315,11 +314,11 @@ export const BusinessVenturesTable: FC<BusinessVenturesTableProps> = ({
               </TableRow>
             )}
           </TableBody>
-        </Table >
-      </div >
+        </Table>
+      </div>
       <div className="flex items-center justify-end space-x-2 py-4">
         <DataTablePagination table={table} />
       </div>
-    </div >
+    </div>
   )
 }
