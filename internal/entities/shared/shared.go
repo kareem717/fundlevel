@@ -4,6 +4,17 @@ import (
 	"time"
 )
 
+type Currency string
+
+const (
+	USD Currency = "usd"
+	GBP Currency = "gbp"
+	EUR Currency = "eur"
+	CAD Currency = "cad"
+	AUD Currency = "aud"
+	JPY Currency = "jpy"
+)
+
 // Timestamps contains the timestamps for an entity.
 type Timestamps struct {
 	// CreatedAt is the timestamp of the creation.

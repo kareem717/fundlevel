@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 
+	"fundlevel/internal/entities/round"
 	"fundlevel/internal/entities/venture"
 	"fundlevel/internal/storage/postgres/shared"
 
@@ -87,7 +88,10 @@ func (r *VentureRepository) GetByCursor(ctx context.Context, paginationParams sh
 		Model(&resp).
 		Relation("Business").
 		Relation("Business.Industry").
+		Relation("ActiveRound").
 		Where("venture.id >= ?", paginationParams.Cursor).
+		Where("active_round IS NULL").
+		WhereOr("active_round.status = ?", round.Active).
 		Order("venture.id").
 		Limit(paginationParams.Limit).
 		Scan(ctx)

@@ -8,16 +8,6 @@ import (
 	"github.com/uptrace/bun"
 )
 
-type Currency string
-
-const (
-	USD Currency = "usd"
-	GBP Currency = "gbp"
-	EUR Currency = "eur"
-	CAD Currency = "cad"
-	AUD Currency = "aud"
-	JPY Currency = "jpy"
-)
 
 type RoundStatus string
 
@@ -37,7 +27,7 @@ type Round struct {
 	EndsAt            time.Time   `json:"endsAt" format:"date-time"`
 	PercentageOffered float64     `json:"percentageOffered" minimum:"0" maximum:"100"`
 	PercentageValue   int         `json:"percentageValue" minimum:"1"`
-	ValueCurrency     Currency    `json:"valueCurrency" enum:"usd,gbp,eur,cad,aud,jpy"`
+	ValueCurrency     shared.Currency    `json:"valueCurrency" enum:"usd,gbp,eur,cad,aud,jpy"`
 	Status            RoundStatus `json:"status" enum:"active,successful,failed"`
 	InvestorCount     int         `json:"investorCount" minimum:"1"`
 	BuyIn             float64     `json:"buyIn" minimum:"1"`
@@ -54,7 +44,7 @@ type CreateRoundParams struct {
 	BeginsAt          time.Time   `json:"beginsAt" format:"date-time"`
 	EndsAt            time.Time   `json:"endsAt" format:"date-time"`
 	PercentageOffered float64     `json:"percentageOffered" minimum:"0" maximum:"100"`
-	ValueCurrency     Currency    `json:"valueCurrency" enum:"usd,gbp,eur,cad,aud,jpy"`
+	ValueCurrency     shared.Currency `json:"valueCurrency" enum:"usd,gbp,eur,cad,aud,jpy"`
 	PercentageValue   int         `json:"percentageValue" minimum:"1"`
 	Status            RoundStatus `json:"status" hidden:"true"`
 	InvestorCount     int         `json:"investorCount" minimum:"1"`

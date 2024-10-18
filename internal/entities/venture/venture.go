@@ -11,9 +11,10 @@ import (
 type Venture struct {
 	bun.BaseModel `bun:"table:ventures"`
 
-	BusinessID int                `json:"businessId" minimum:"1"`
-	IsHidden   bool               `json:"isHidden"`
-	Business   *business.Business `json:"business" bun:"rel:has-one,join:business_id=id"`
+	BusinessID  int                `json:"businessId" minimum:"1"`
+	IsHidden    bool               `json:"isHidden"`
+	Business    *business.Business `json:"business" bun:"rel:has-one,join:business_id=id"`
+	ActiveRound *VentureRound      `json:"activeRound" bun:"rel:has-one,join:id=venture_id" required:"false"`
 
 	UpdateVentureParams
 	shared.IntegerID

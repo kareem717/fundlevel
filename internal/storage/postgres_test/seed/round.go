@@ -3,6 +3,7 @@ package seed
 import (
 	"database/sql"
 	"fundlevel/internal/entities/round"
+	"fundlevel/internal/entities/shared"
 	"math/rand"
 	"time"
 )
@@ -17,7 +18,7 @@ type FixedTotalRoundMap map[int][]FixedTotalRound
 // SeedFixedTotalRounds creates a single active rounds for a given list of venture ids that are
 // expected to already exist in the database
 func SeedFixedTotalRounds(db *sql.DB, ventureIds []int, seedConfig SeedConfig) (FixedTotalRoundMap, error) {
-	currencies := []round.Currency{round.USD, round.GBP, round.EUR, round.CAD, round.AUD, round.JPY}
+	currencies := []shared.Currency{shared.USD, shared.GBP, shared.EUR, shared.CAD, shared.AUD, shared.JPY}
 	inactiveStatuses := []round.RoundStatus{round.Successful, round.Failed}
 	fixedTotalRounds := make(FixedTotalRoundMap)
 
@@ -92,7 +93,7 @@ type RegularDynamicRoundMap map[int][]RegularDynamicRound
 // SeedRegularDynamicRounds creates a single active rounds for a given list of venture ids that are
 // expected to already exist in the database
 func SeedRegularDynamicRounds(db *sql.DB, ventureIds []int, seedConfig SeedConfig) (RegularDynamicRoundMap, error) {
-	currencies := []round.Currency{round.USD, round.GBP, round.EUR, round.CAD, round.AUD, round.JPY}
+	currencies := []shared.Currency{shared.USD, shared.GBP, shared.EUR, shared.CAD, shared.AUD, shared.JPY}
 	inactiveStatuses := []round.RoundStatus{round.Successful, round.Failed}
 	regularDynamicRounds := make(RegularDynamicRoundMap)
 
@@ -168,7 +169,7 @@ type PartialTotalRoundMap map[int][]PartialTotalRound
 // SeedRegularDynamicRounds creates a single active rounds for a given list of venture ids that are
 // expected to already exist in the database
 func SeedPartialTotalRounds(db *sql.DB, ventureIds []int, seedConfig SeedConfig) (PartialTotalRoundMap, error) {
-	currencies := []round.Currency{round.USD, round.GBP, round.EUR, round.CAD, round.AUD, round.JPY}
+	currencies := []shared.Currency{shared.USD, shared.GBP, shared.EUR, shared.CAD, shared.AUD, shared.JPY}
 	inactiveStatuses := []round.RoundStatus{round.Successful, round.Failed}
 	partialTotalRounds := make(PartialTotalRoundMap)
 
@@ -244,7 +245,7 @@ type DutchDynamicRoundMap map[int][]DutchDynamicRound
 // SeedRegularDynamicRounds creates a single active rounds for a given list of venture ids that are
 // expected to already exist in the database
 func SeedDutchDynamicRounds(db *sql.DB, ventureIds []int, seedConfig SeedConfig) (DutchDynamicRoundMap, error) {
-	currencies := []round.Currency{round.USD, round.GBP, round.EUR, round.CAD, round.AUD, round.JPY}
+	currencies := []shared.Currency{shared.USD, shared.GBP, shared.EUR, shared.CAD, shared.AUD, shared.JPY}
 	inactiveStatuses := []round.RoundStatus{round.Successful, round.Failed}
 	dutchDynamicRounds := make(DutchDynamicRoundMap)
 
