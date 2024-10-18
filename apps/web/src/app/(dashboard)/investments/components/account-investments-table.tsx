@@ -138,7 +138,7 @@ export const columns: ColumnDef<RoundInvestment>[] = [
               Copy investment ID
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <Link href={redirects.app.explore.roundView.replace(":roundId", investment.round.id.toString())}>
+              <Link href={redirects.app.explore.roundView.replace(":id", investment.round.id.toString())}>
                 View round
               </Link>
             </DropdownMenuItem>
