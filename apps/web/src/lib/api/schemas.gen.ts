@@ -1113,6 +1113,9 @@ export const UpdateVentureParamsSchema = {
 export const VentureSchema = {
     additionalProperties: false,
     properties: {
+        activeRound: {
+            '$ref': '#/components/schemas/VentureRound'
+        },
         business: {
             '$ref': '#/components/schemas/Business'
         },
@@ -1158,5 +1161,48 @@ export const VentureSchema = {
         }
     },
     required: ['businessId', 'isHidden', 'business', 'name', 'description', 'overview', 'id', 'createdAt', 'updatedAt', 'deletedAt'],
+    type: 'object'
+} as const;
+
+export const VentureRoundSchema = {
+    additionalProperties: false,
+    properties: {
+        buyIn: {
+            format: 'double',
+            minimum: 1,
+            type: 'number'
+        },
+        id: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
+        investorCount: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
+        percentageOffered: {
+            format: 'double',
+            maximum: 100,
+            minimum: 0,
+            type: 'number'
+        },
+        percentageValue: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
+        valueCurrency: {
+            enum: ['usd', 'gbp', 'eur', 'cad', 'aud', 'jpy'],
+            type: 'string'
+        },
+        ventureId: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        }
+    },
+    required: ['ventureId', 'percentageOffered', 'percentageValue', 'valueCurrency', 'investorCount', 'buyIn', 'id'],
     type: 'object'
 } as const;

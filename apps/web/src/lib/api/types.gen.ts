@@ -454,6 +454,7 @@ export type UpdateVentureParams = {
 };
 
 export type Venture = {
+    activeRound?: VentureRound;
     business: Business;
     businessId: number;
     createdAt: Date;
@@ -464,6 +465,16 @@ export type Venture = {
     name: string;
     overview: string;
     updatedAt: (Date) | null;
+};
+
+export type VentureRound = {
+    buyIn: number;
+    id: number;
+    investorCount: number;
+    percentageOffered: number;
+    percentageValue: number;
+    valueCurrency: 'usd' | 'gbp' | 'eur' | 'cad' | 'aud' | 'jpy';
+    ventureId: number;
 };
 
 export type CreateAccountData = {

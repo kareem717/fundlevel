@@ -112,6 +112,15 @@ export const withdrawInvestment = <ThrowOnError extends boolean = false>(options
 }); };
 
 /**
+ * Handle a stripe webhook
+ * Handle a stripe webhook.
+ */
+export const handleStripeWebhook = <ThrowOnError extends boolean = false>(options: Options<HandleStripeWebhookData, ThrowOnError>) => { return (options?.client ?? client).post<HandleStripeWebhookResponse, HandleStripeWebhookError, ThrowOnError>({
+    ...options,
+    url: '/billing/webhook'
+}); };
+
+/**
  * Create a business
  * Create a business.
  */

@@ -21,11 +21,7 @@ export interface VentureIndexCardProps extends ComponentPropsWithoutRef<typeof C
 };
 
 export const VentureIndexCard: FC<VentureIndexCardProps> = ({ className, venture, ...props }) => {
-  const { id, name, description, overview, createdAt, business: { industry, ...business } } = venture
-
-  //TODO: get active round
-  const hasActiveRound = Math.random() > 0.5
-  const investorCount = Math.floor(Math.random() * 100)
+  const { id, name, description, overview, createdAt, activeRound, business: { industry, ...business } } = venture
 
   return (
     <Card className={cn("w-full", className)} {...props}>
@@ -34,15 +30,15 @@ export const VentureIndexCard: FC<VentureIndexCardProps> = ({ className, venture
         <CardDescription className="flex flex-col gap-2">
           {business.name} &middot; {overview}
           <div className="flex flex-wrap gap-2">
-            {hasActiveRound && (
+            {activeRound && (
               <>
                 <Badge>
                   {/* //TODO: localize */}
-                  Raising ${Math.floor(Math.random() * 100)}k
+                  Raising ${toFixedRound(activeRound.percentageValue, 2)}
                 </Badge>
                 <Badge>
                   {/* //TODO: localize */}
-                  {investorCount} investor{investorCount > 1 ? "s" : ""}
+                  {activeRound.investorCount} investor{activeRound.investorCount > 1 ? "s" : ""}
                 </Badge>
               </>
             )}
