@@ -346,6 +346,11 @@ export const CreateRoundParamsSchema = {
             format: 'date-time',
             type: 'string'
         },
+        description: {
+            maxLength: 3000,
+            minLength: 10,
+            type: 'string'
+        },
         endsAt: {
             format: 'date-time',
             type: 'string'
@@ -376,7 +381,7 @@ export const CreateRoundParamsSchema = {
             type: 'integer'
         }
     },
-    required: ['ventureId', 'beginsAt', 'endsAt', 'percentageOffered', 'percentageValue', 'valueCurrency', 'investorCount'],
+    required: ['ventureId', 'beginsAt', 'endsAt', 'percentageOffered', 'percentageValue', 'valueCurrency', 'investorCount', 'description'],
     type: 'object'
 } as const;
 
@@ -834,6 +839,11 @@ export const RoundSchema = {
             format: 'date-time',
             type: ['string', 'null']
         },
+        description: {
+            maxLength: 3000,
+            minLength: 10,
+            type: 'string'
+        },
         endsAt: {
             format: 'date-time',
             type: 'string'
@@ -880,7 +890,7 @@ export const RoundSchema = {
             type: 'integer'
         }
     },
-    required: ['ventureId', 'beginsAt', 'endsAt', 'percentageOffered', 'percentageValue', 'valueCurrency', 'status', 'investorCount', 'buyIn', 'venture', 'id', 'createdAt', 'updatedAt', 'deletedAt'],
+    required: ['ventureId', 'beginsAt', 'endsAt', 'percentageOffered', 'percentageValue', 'valueCurrency', 'status', 'investorCount', 'buyIn', 'description', 'venture', 'id', 'createdAt', 'updatedAt', 'deletedAt'],
     type: 'object'
 } as const;
 

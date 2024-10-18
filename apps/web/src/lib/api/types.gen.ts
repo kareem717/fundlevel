@@ -126,6 +126,7 @@ export type CreateRoundParams = {
      */
     readonly $schema?: string;
     beginsAt: Date;
+    description: string;
     endsAt: Date;
     investorCount: number;
     percentageOffered: number;
@@ -340,6 +341,7 @@ export type Round = {
     buyIn: number;
     createdAt: Date;
     deletedAt: (Date) | null;
+    description: string;
     endsAt: Date;
     id: number;
     investorCount: number;

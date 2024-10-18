@@ -1,4 +1,4 @@
-import { object, number, date } from "yup";
+import { object, number, date, string } from "yup";
 import { CreateRoundParams } from "../../lib/api";
 import { currency } from "./shared";
 
@@ -14,6 +14,7 @@ export const createRoundSchema = object<CreateRoundParams>()
 		percentageValue: number().min(1).required(),
 		valueCurrency: currency.required(),
 		ventureId: number().min(1).required(),
+		description: string().min(10).max(3000).required(),
 		investorCount: number().min(1).required(),
 	})
 	.test("is-valid-round-time", "End date must be after start date", (value) => {

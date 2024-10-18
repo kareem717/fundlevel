@@ -31,6 +31,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns"
 import { Unit, UnitSelect } from "@/components/ui/unit-select";
 import { VentureSelect } from "./venture-select";
+import { Textarea } from "@/components/ui/textarea";
 
 export interface CreateRoundFormProps extends ComponentPropsWithoutRef<'form'> {
   onSuccess?: () => void
@@ -291,6 +292,22 @@ export const CreateRoundForm: FC<CreateRoundFormProps> = ({ ventureId, className
               </FormControl>
               <FormDescription>
                 The precentage you are offering to sell is divided by the number of investors you allow to invest in the round.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <Textarea  {...field} />
+              </FormControl>
+              <FormDescription>
+                This is the description of the round.
               </FormDescription>
               <FormMessage />
             </FormItem>

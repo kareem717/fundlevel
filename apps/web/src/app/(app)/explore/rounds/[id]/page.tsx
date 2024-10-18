@@ -76,10 +76,7 @@ export default async function RoundViewPage({ params }: { params: { id: string }
         <div className="w-full flex flex-col lg:flex-row gap-4 h-full">
           <div className={cn("w-full flex flex-col px-2 lg:w-2/3 gap-4")}>
             <div className="flex flex-col gap-1 font-semibold">
-              Lead by {business.name}
-              <span className="text-muted-foreground text-xs font-normal">
-                {/* {roundLead.title} - {roundLead.description} */}
-              </span>
+              By {business.name}
             </div>
             <Separator className="w-full" />
             <BusinessOverview
@@ -109,7 +106,7 @@ export default async function RoundViewPage({ params }: { params: { id: string }
                       </DialogHeader>
                       <div className="max-h-[70dvh] w-full h-full">
                         <ScrollArea className="h-full w-full">
-                          {venture.description}
+                          {round.description}
                         </ScrollArea>
                       </div>
                     </DialogContent>
