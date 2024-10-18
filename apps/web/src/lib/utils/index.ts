@@ -70,3 +70,18 @@ export function timeSince(then: Date) {
 
 	return "less than a minute ago";
 }
+
+/**
+ * Truncate text.
+ * @description Truncates text to the given max length. If the text is longer than the max
+ * length, it will be truncated to the max length and an ellipsis will be added.
+ * @arg {string} text Text to truncate.
+ * @arg {number} maxLength Maximum length of the text.
+ * @return {string} Truncated text.
+ */
+export const truncateText = (text: string, maxLength: number) => {
+	if (text.length > maxLength) {
+		return text.substring(0, maxLength) + "...";
+	}
+	return text;
+};

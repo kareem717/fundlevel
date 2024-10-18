@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Icons } from "@/components/ui/icons";
 import { Separator } from "@/components/ui/separator";
-import { cn } from "@/lib/utils";
+import { cn, truncateText } from "@/lib/utils";
 import {
   Tooltip,
   TooltipContent,
@@ -52,19 +52,12 @@ export default async function RoundViewPage({ params }: { params: { id: string }
   const perInvestorPercentage = (round.investorCount > 1 ? round.percentageOffered / round.investorCount : round.percentageOffered).toFixed(3);
   const buyInPrice = (round.buyIn * (1 + env.NEXT_PUBLIC_FEE_PERCENTAGE)).toFixed(2);
 
-  const truncate = (text: string, maxLength: number) => {
-    if (text.length > maxLength) {
-      return text.substring(0, maxLength) + "...";
-    }
-    return text;
-  };
-
   return (
     <Card className="w-full relative max-w-screen-lg mx-auto">
       <CardHeader>
         <CardTitle className="flex flex-row items-center justify-between w-full">
           Round for {venture.name}
-          <RoundViewActions className="w-full" roundId={round.id} isLiked={isLiked} isLoggedIn={!!account} />
+          <RoundViewActions roundId={round.id} isLiked={isLiked} />
         </CardTitle>
         <CardDescription>
           <span className="text-muted-foreground text-sm font-normal">
@@ -87,7 +80,7 @@ export default async function RoundViewPage({ params }: { params: { id: string }
             <Separator className="w-full" />
             <div className="flex flex-col items-start justify-start">
               <p>
-                {truncate(venture.description, 350)}
+                {truncateText(venture.description, 350)}
               </p>
               {venture.description.length > 150 && (
                 <Dialog>

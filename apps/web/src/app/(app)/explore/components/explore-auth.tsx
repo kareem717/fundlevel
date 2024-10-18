@@ -1,6 +1,6 @@
 "use client"
 
-import { ComponentPropsWithoutRef, FC, useEffect, useState, memo } from "react"
+import { ComponentPropsWithoutRef, FC, useEffect, useState } from "react"
 import { Account } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { AccountDropdown } from "@/components/ui/account-dropdown";
@@ -12,7 +12,7 @@ import { getAccount } from "@/actions/auth";
 
 export interface ExploreAuthProps extends ComponentPropsWithoutRef<"div"> { };
 
-export const ExploreAuth: FC<ExploreAuthProps> = memo(({ className, ...props }) => {
+export const ExploreAuth: FC<ExploreAuthProps> = ({ className, ...props }) => {
   const [account, setAccount] = useState<Account | undefined>(undefined);
 
   const { execute } = useAction(getAccount, {
@@ -38,4 +38,4 @@ export const ExploreAuth: FC<ExploreAuthProps> = memo(({ className, ...props }) 
       }
     </div>
   );
-});
+};

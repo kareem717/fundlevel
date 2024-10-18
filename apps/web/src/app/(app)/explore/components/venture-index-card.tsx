@@ -13,7 +13,6 @@ export const VentureIndexCard: FC<VentureIndexCardProps> = ({ className, venture
   const { id, name, createdAt } = venture
 
   return (
-    // TODO: Add a redirect to the venture page
     <Link href={redirects.app.explore.ventureView.replace(":id", id.toString())}>
       <Card className={cn("w-full", className)} {...props}>
         {/* //TODO: make look better */}

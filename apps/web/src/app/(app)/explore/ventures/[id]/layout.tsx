@@ -1,6 +1,6 @@
 import { NavBack } from "@/components/ui/nav-back"
 
-export default function RoundViewLayout({
+export default function VentureViewLayout({
   children,
   // modal
 }: {

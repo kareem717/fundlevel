@@ -15,22 +15,22 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { toast } from "sonner";
 import { useAction } from "next-safe-action/hooks";
-import { isRoundLiked, likeRound, unlikeRound } from "@/actions/rounds";
+import { isVentureLiked, likeVenture, unlikeVenture } from "@/actions/ventures";
 import { useRouter } from "next/navigation";
 import { Account } from "@/lib/api";
 import { getAccount } from "@/actions/auth";
 
-export interface RoundViewActionsProps extends ComponentPropsWithoutRef<typeof DropdownMenu> {
-  roundId: number;
-  isLiked: boolean;
+export interface VentureViewActionsProps extends ComponentPropsWithoutRef<typeof DropdownMenu> {
+  ventureId: number;
 };
 
-export const RoundViewActions: FC<RoundViewActionsProps> = ({ roundId, isLiked, ...props }) => {
-  const [liked, setLiked] = useState(isLiked);
-  const [account, setAccount] = useState<Account | null>(null);
+export const VentureViewActions: FC<VentureViewActionsProps> = ({ ventureId, ...props }) => {
+  const [liked, setLiked] = useState<boolean | undefined>(false);
+  const [account, setAccount] = useState<Account | undefined>(undefined);
+
   const router = useRouter();
 
-  const { execute: isLikedExecute, isExecuting: isLikedExecuting } = useAction(isRoundLiked, {
+  const { execute: isLikedExecute, isExecuting: isLikedExecuting } = useAction(isVentureLiked, {
     onSuccess: ({ data }) => {
       setLiked(data?.liked ?? false);
     },
@@ -39,7 +39,7 @@ export const RoundViewActions: FC<RoundViewActionsProps> = ({ roundId, isLiked, 
     },
   })
 
-  const { execute: likeExecute, isExecuting: isLikeExecuting } = useAction(likeRound, {
+  const { execute: likeExecute, isExecuting: isLikeExecuting } = useAction(likeVenture, {
     onSuccess: ({ data }) => {
       setLiked(true);
       toast.success("Round liked");
@@ -49,7 +49,7 @@ export const RoundViewActions: FC<RoundViewActionsProps> = ({ roundId, isLiked, 
     },
   })
 
-  const { execute: unlikeExecute, isExecuting: isUnlikeExecuting } = useAction(unlikeRound, {
+  const { execute: unlikeExecute, isExecuting: isUnlikeExecuting } = useAction(unlikeVenture, {
     onSuccess: ({ data }) => {
       setLiked(false);
       toast.success("Round unliked");
@@ -59,10 +59,9 @@ export const RoundViewActions: FC<RoundViewActionsProps> = ({ roundId, isLiked, 
     },
   })
 
-
   const { execute: getAccountExecute, isExecuting: isGetAccountExecuting } = useAction(getAccount, {
     onSuccess: ({ data }) => {
-      setAccount(data ?? null);
+      setAccount(data);
     },
     onError: (error) => {
       toast.error("Failed to get account");
@@ -71,7 +70,7 @@ export const RoundViewActions: FC<RoundViewActionsProps> = ({ roundId, isLiked, 
 
   useEffect(() => {
     getAccountExecute();
-    isLikedExecute(roundId);
+    isLikedExecute(ventureId);
   }, []);
 
 
@@ -89,9 +88,9 @@ export const RoundViewActions: FC<RoundViewActionsProps> = ({ roundId, isLiked, 
     }
 
     if (liked) {
-      unlikeExecute(roundId);
+      unlikeExecute(ventureId);
     } else {
-      likeExecute(roundId);
+      likeExecute(ventureId);
     }
   };
 
@@ -113,7 +112,7 @@ export const RoundViewActions: FC<RoundViewActionsProps> = ({ roundId, isLiked, 
         </DropdownMenuItem>
         <DropdownMenuItem disabled={isLoading} onClick={() => handleLike()}>
           <Icons.heart className={cn("mr-2 h-4 w-4 text-muted-foreground", liked && "text-red-500 fill-current")} />
-          {liked ? "Unlike" : "Like"}
+          {liked === undefined ? "Loading..." : liked ? "Unlike" : "Like"}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => {
           toast.info("Not yet implemented");
