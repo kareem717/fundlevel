@@ -280,6 +280,7 @@ export type GetOffsetPaginatedRoundInvestmentsOutputBody = {
     hasMore: boolean;
     investments: Array<RoundInvestment> | null;
     message: string;
+    total: number;
 };
 
 export type GetOffsetPaginatedRoundsOutputBody = {
@@ -290,6 +291,7 @@ export type GetOffsetPaginatedRoundsOutputBody = {
     hasMore: boolean;
     message: string;
     rounds: Array<Round> | null;
+    total: number;
 };
 
 export type GetOffsetPaginatedVenturesOutputBody = {
@@ -299,6 +301,7 @@ export type GetOffsetPaginatedVenturesOutputBody = {
     readonly $schema?: string;
     hasMore: boolean;
     message: string;
+    total: number;
     ventures: Array<Venture> | null;
 };
 

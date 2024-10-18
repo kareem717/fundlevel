@@ -674,9 +674,13 @@ export const GetOffsetPaginatedRoundInvestmentsOutputBodySchema = {
         },
         message: {
             type: 'string'
+        },
+        total: {
+            format: 'int64',
+            type: 'integer'
         }
     },
-    required: ['investments', 'message', 'hasMore'],
+    required: ['investments', 'message', 'hasMore', 'total'],
     type: 'object'
 } as const;
 
@@ -700,9 +704,13 @@ export const GetOffsetPaginatedRoundsOutputBodySchema = {
                 '$ref': '#/components/schemas/Round'
             },
             type: ['array', 'null']
+        },
+        total: {
+            format: 'int64',
+            type: 'integer'
         }
     },
-    required: ['rounds', 'message', 'hasMore'],
+    required: ['rounds', 'message', 'hasMore', 'total'],
     type: 'object'
 } as const;
 
@@ -721,6 +729,10 @@ export const GetOffsetPaginatedVenturesOutputBodySchema = {
         message: {
             type: 'string'
         },
+        total: {
+            format: 'int64',
+            type: 'integer'
+        },
         ventures: {
             items: {
                 '$ref': '#/components/schemas/Venture'
@@ -728,7 +740,7 @@ export const GetOffsetPaginatedVenturesOutputBodySchema = {
             type: ['array', 'null']
         }
     },
-    required: ['ventures', 'message', 'hasMore'],
+    required: ['ventures', 'message', 'hasMore', 'total'],
     type: 'object'
 } as const;
 

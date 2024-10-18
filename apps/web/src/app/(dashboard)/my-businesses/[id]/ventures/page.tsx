@@ -1,34 +1,17 @@
 import { buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
-import { BusinessesVenturesTable } from "./components/businesses-ventures-table";
-import { columns } from "./components/businesses-ventures-table/columns";
-import { getBusinessVentures } from "@/actions/busineses";
+import { BusinessVenturesTable } from "./components/business-ventures-table";
 import { Icons } from "@/components/ui/icons";
 import redirects from "@/lib/config/redirects";
 
-export default async function BusinessVenturesPage({ params, searchParams }: { params: { id: string }, searchParams: { page: string | undefined, pageSize: string | undefined } }) {
+export default async function BusinessVenturesPage({ params }: { params: { id: string } }) {
 	const businessId = parseInt(params.id)
 	if (isNaN(businessId)) {
 		throw new Error("Invalid business id")
 	}
 
-	const resp = await getBusinessVentures({
-		businessId,
-		pagination: {
-			page: searchParams.page ? parseInt(searchParams.page) : 1,
-			pageSize: searchParams.pageSize ? parseInt(searchParams.pageSize) : 10,
-		},
-	})
-
-	if (resp?.serverError || resp?.validationErrors) {
-		console.error(resp)
-		throw new Error(resp.serverError?.message || "Something went wrong")
-	}
-
-	const ventures = resp?.data?.ventures || []
-
 	return (
-		<div className="pt-4 sm:pt-6 md:pt-20 px-2 max-w-screen-lg mx-auto">
+		<div className="pt-4 sm:pt-6 md:pt-20 px-2 max-w-screen-lg mx-auto space-y-4">
 			<div className="flex justify-between items-center">
 				<h1 className="text-2xl font-bold">My Ventures</h1>
 				<Link
@@ -39,7 +22,9 @@ export default async function BusinessVenturesPage({ params, searchParams }: { p
 					Create
 				</Link>
 			</div>
-			<BusinessesVenturesTable columns={columns} data={ventures} id={businessId} />
+			<BusinessVenturesTable
+				businessId={businessId}
+			/>
 		</div>
 	);
 }
