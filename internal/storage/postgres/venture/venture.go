@@ -89,9 +89,10 @@ func (r *VentureRepository) GetByCursor(ctx context.Context, paginationParams sh
 		Relation("Business").
 		Relation("Business.Industry").
 		Relation("ActiveRound").
+		WhereGroup(" OR ", func(q *bun.SelectQuery) *bun.SelectQuery {
+			return q.Where("active_round IS NULL").WhereOr("active_round.status = ?", round.Active)
+		}).
 		Where("venture.id >= ?", paginationParams.Cursor).
-		Where("active_round IS NULL").
-		WhereOr("active_round.status = ?", round.Active).
 		Order("venture.id").
 		Limit(paginationParams.Limit).
 		Scan(ctx)
