@@ -360,6 +360,11 @@ func (h *httpHandler) isLikedByAccount(ctx context.Context, input *VentureLikeIn
 func (h *httpHandler) getActiveRound(ctx context.Context, input *shared.PathIDParam) (*shared.SingleRoundResponse, error) {
 	round, err := h.service.VentureService.GetActiveRound(ctx, input.ID)
 	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			resp := &shared.SingleRoundResponse{}
+			resp.Body.Message = "No active round found"
+			return resp, nil
+		}
 		h.logger.Error("failed to get active round", zap.Error(err))
 		return nil, huma.Error500InternalServerError("An error occurred while getting the active round")
 	}
