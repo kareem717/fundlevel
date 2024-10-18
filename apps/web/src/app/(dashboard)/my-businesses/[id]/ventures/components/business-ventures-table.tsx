@@ -145,6 +145,9 @@ export const columns: ColumnDef<Venture>[] = [
               (column) => column.getCanHide()
             )
             .map((column) => {
+              if (column.id === "actions") {
+                return null
+              }
               return (
                 <DropdownMenuCheckboxItem
                   key={column.id}

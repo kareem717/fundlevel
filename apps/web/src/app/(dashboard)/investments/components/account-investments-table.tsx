@@ -4,6 +4,7 @@ import { ColumnDef } from "@tanstack/react-table"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
+  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
@@ -117,6 +118,40 @@ export const columns: ColumnDef<RoundInvestment>[] = [
   },
   {
     id: "actions",
+    header: ({ table }) => (
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="h-8 w-8 p-0">
+            <span className="sr-only">Open menu</span>
+            <Icons.ellipsis className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          {table
+            .getAllColumns()
+            .filter(
+              (column) => column.getCanHide()
+            )
+            .map((column) => {
+              if (column.id === "actions") {
+                return null
+              }
+              return (
+                <DropdownMenuCheckboxItem
+                  key={column.id}
+                  className="capitalize"
+                  checked={column.getIsVisible()}
+                  onCheckedChange={(value) =>
+                    column.toggleVisibility(!!value)
+                  }
+                >
+                  {column.id}
+                </DropdownMenuCheckboxItem>
+              )
+            })}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    ),
     cell: ({ row }) => {
       const investment = row.original
       const [isDialogOpen, setIsDialogOpen] = useState(false)
