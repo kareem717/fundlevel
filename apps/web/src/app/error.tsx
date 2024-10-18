@@ -32,7 +32,7 @@ export default function Error({
         >
           Try again
         </Button>
-        <Link href={redirects.home} className={cn(buttonVariants({ variant: 'secondary' }), 'w-full')}>
+        <Link href={redirects.app.explore.index} className={cn(buttonVariants({ variant: 'secondary' }), 'w-full')}>
           Go back to home
         </Link>
       </div>

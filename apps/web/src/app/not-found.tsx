@@ -14,7 +14,7 @@ export default function NotFound() {
 			</div>
 			<p className="text-center text-xl text-muted-foreground">We couldn&#39;t find what you were looking for</p>
 			<Link
-				href={redirects.home}
+				href={redirects.app.explore.index}
 				className={cn(buttonVariants(), 'px-8')}
 			>
 				Return Home

@@ -23,7 +23,6 @@ import {
 import { Input } from "@/components/ui/input"
 import { DataTablePagination } from "@/components/ui/data-table"
 import { useState } from "react"
-import { Suspense } from "@/components/ui/suspense"
 
 interface InvestmentsTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]

@@ -7,44 +7,22 @@ export type Menu = {
 	icon: keyof typeof Icons;
 };
 
-const myVentureNav: Menu[] = [
-	{
-		href: "/my-ventures/:id",
-		label: "Overview",
-		pathIdentifier: "/my-ventures/:id",
-		icon: "home",
-	},
-	{
-		href: "/my-ventures/:id/rounds",
-		label: "Rounds",
-		pathIdentifier: "/my-ventures/:id/rounds",
-		icon: "chartPie",
-	},
-	{
-		href: "/my-ventures/:id/investments",
-		label: "Investments",
-		pathIdentifier: "/my-ventures/:id/investments",
-		icon: "chart",
-	},
-];
-
 const redirects = {
-	home: "/",
 	privacy: "/privacy-policy",
 	terms: "/terms-of-service",
 	auth: {
 		login: "/login",
 		logout: "/logout",
-		afterLogin: "/explore",
+		afterLogin: "/",
 		afterLogout: "/login",
 		callback: "/auth/callback",
 		createAccount: "/create-account",
 	},
 	app: {
 		explore: {
-			index: "/explore",
-			ventureView: "/explore/ventures/:id",
-			roundView: "/explore/rounds/:id",
+			index: "/",
+			ventureView: "/ventures/:id",
+			roundView: "/rounds/:id",
 		},
 		settings: {
 			account: "/settings?tab=account",
@@ -83,7 +61,6 @@ const redirects = {
 			view: "/rounds/:id",
 		},
 	},
-	myVentureNav,
 };
 
 export default redirects;

@@ -7,7 +7,7 @@ const BASE_URL = env.NEXT_PUBLIC_APP_URL;
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 	return [
 		{
-			url: `${BASE_URL}${redirects.home}`,
+			url: `${BASE_URL}${redirects.app.explore.index}`,
 			lastModified: new Date(),
 			// lastModified?: string | Date
 			// changeFrequency?:
