@@ -42,7 +42,7 @@ type Business struct {
 	OwnerAccountID int            `json:"ownerAccountId" minimum:"1"`
 	Status         BusinessStatus `json:"status" enum:"pending,active,disabled"`
 	AddressID      int            `json:"addressId" minimum:"1"`
-	TeamSize       TeamSize       `json:"teamSize" enum:"0-1,2-10,11-50,51-200,201-500,501-1000,1000+"`
+	TeamSize       TeamSize       `json:"teamSize" enum:"1,2-10,11-50,51-200,201-500,501-1000,1000+"`
 	IsRemote       bool           `json:"isRemote"`
 	IndustryId     int            `json:"industryId" minimum:"1"`
 	shared.Timestamps
@@ -55,7 +55,7 @@ type BusinessParams struct {
 	OwnerAccountID int            `json:"ownerAccountId" minimum:"1"`
 	Status         BusinessStatus `json:"status" hidden:"true"`
 	AddressID      int            `json:"addressId" minimum:"1" hidden:"true"`
-	TeamSize       TeamSize       `json:"teamSize" enum:"0-1,2-10,11-50,51-200,201-500,501-1000,1000+"`
+	TeamSize       TeamSize       `json:"teamSize" enum:"1,2-10,11-50,51-200,201-500,501-1000,1000+"`
 	IndustryId     int            `json:"industryId" minimum:"1"`
 	IsRemote       bool           `json:"isRemote" default:"false" required:"false"`
 }
