@@ -24,6 +24,8 @@ type VentureRepository interface {
 
 	GetRoundsByCursor(ctx context.Context, ventureId int, paginationParams shared.CursorPagination) ([]round.Round, error)
 	GetRoundsByPage(ctx context.Context, ventureId int, paginationParams shared.OffsetPagination) ([]round.Round, error)
+	HasActiveRound(ctx context.Context, ventureId int) (bool, error)
+	GetActiveRound(ctx context.Context, ventureId int) (round.Round, error)
 
 	// GetInvestmentsByCursor gets all of the received investments on the rounds related to the venture using cursor pagination
 	GetInvestmentsByCursor(ctx context.Context, ventureId int, paginationParams shared.CursorPagination) ([]investment.RoundInvestment, error)

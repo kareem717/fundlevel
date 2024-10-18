@@ -42,14 +42,14 @@ func (i *CreateRoundInput) Resolve(ctx huma.Context) []error {
 	return nil
 }
 
-func (h *httpHandler) create(ctx context.Context, input *CreateRoundInput) (*SingleRoundResponse, error) {
+func (h *httpHandler) create(ctx context.Context, input *CreateRoundInput) (*shared.SingleRoundResponse, error) {
 	round, err := h.service.RoundService.Create(ctx, input.Body)
 	if err != nil {
 		h.logger.Error("failed to create round", zap.Error(err))
 		return nil, huma.Error500InternalServerError("An error occurred while creating the round")
 	}
 
-	resp := &SingleRoundResponse{}
+	resp := &shared.SingleRoundResponse{}
 	resp.Body.Message = "Round created successfully"
 	resp.Body.Round = &round
 
@@ -200,14 +200,7 @@ func (h *httpHandler) getByPage(ctx context.Context, input *shared.OffsetPaginat
 	return resp, nil
 }
 
-type SingleRoundResponse struct {
-	Body struct {
-		shared.MessageResponse
-		Round *round.Round `json:"round"`
-	}
-}
-
-func (h *httpHandler) getById(ctx context.Context, input *shared.PathIDParam) (*SingleRoundResponse, error) {
+func (h *httpHandler) getById(ctx context.Context, input *shared.PathIDParam) (*shared.SingleRoundResponse, error) {
 	round, err := h.service.RoundService.GetById(ctx, input.ID)
 	if err != nil {
 		switch {
@@ -219,7 +212,7 @@ func (h *httpHandler) getById(ctx context.Context, input *shared.PathIDParam) (*
 		}
 	}
 
-	resp := &SingleRoundResponse{}
+	resp := &shared.SingleRoundResponse{}
 	resp.Body.Message = "Round fetched successfully"
 	resp.Body.Round = &round
 

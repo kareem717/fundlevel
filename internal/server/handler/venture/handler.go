@@ -356,3 +356,17 @@ func (h *httpHandler) isLikedByAccount(ctx context.Context, input *VentureLikeIn
 
 	return resp, nil
 }
+
+func (h *httpHandler) getActiveRound(ctx context.Context, input *shared.PathIDParam) (*shared.SingleRoundResponse, error) {
+	round, err := h.service.VentureService.GetActiveRound(ctx, input.ID)
+	if err != nil {
+		h.logger.Error("failed to get active round", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while getting the active round")
+	}
+
+	resp := &shared.SingleRoundResponse{}
+	resp.Body.Message = "Active round fetched successfully"
+	resp.Body.Round = &round
+
+	return resp, nil
+}

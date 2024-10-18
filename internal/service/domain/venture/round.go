@@ -24,3 +24,11 @@ func (s *VentureService) GetRoundsByPage(ctx context.Context, id int, pageSize i
 
 	return s.repositories.Venture().GetRoundsByPage(ctx, id, paginationParams)
 }
+
+func (s *VentureService) HasActiveRound(ctx context.Context, id int) (bool, error) {
+	return s.repositories.Venture().HasActiveRound(ctx, id)
+}
+
+func (s *VentureService) GetActiveRound(ctx context.Context, id int) (round.Round, error) {
+	return s.repositories.Venture().GetActiveRound(ctx, id)
+}

@@ -29,6 +29,11 @@ CREATE TABLE
         CONSTRAINT description_check CHECK (LENGTH(description)>=10)
     );
 
+CREATE UNIQUE INDEX idx_rounds_venture_id_status ON rounds (venture_id)
+WHERE
+    status='active'
+    AND deleted_at IS NULL;
+
 CREATE TRIGGER sync_rounds_updated_at BEFORE
 UPDATE ON rounds FOR EACH ROW
 EXECUTE PROCEDURE sync_updated_at_column ();

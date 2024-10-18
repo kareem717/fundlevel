@@ -145,4 +145,12 @@ func RegisterHumaRoutes(
 		Tags:        []string{"Ventures", "Likes"},
 	}, handler.getLikeCount)
 
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-venture-active-round",
+		Method:      http.MethodGet,
+		Path:        "/venture/{id}/rounds/active",
+		Summary:     "Get a venture active round",
+		Description: "Get a venture active round.",
+		Tags:        []string{"Ventures", "Rounds"},
+	}, handler.getActiveRound)
 }

@@ -33,6 +33,7 @@ type VentureService interface {
 
 	GetRoundsByCursor(ctx context.Context, ventureId int, limit int, cursor int) ([]round.Round, error)
 	GetRoundsByPage(ctx context.Context, ventureId int, pageSize int, page int) ([]round.Round, error)
+	GetActiveRound(ctx context.Context, ventureId int) (round.Round, error)
 
 	CreateLike(ctx context.Context, params venture.CreateVentureLikeParams) (venture.VentureLike, error)
 	DeleteLike(ctx context.Context, ventureId int, accountId int) error

@@ -37,3 +37,25 @@ func (r *VentureRepository) GetRoundsByPage(ctx context.Context, ventureId int, 
 
 	return resp, err
 }
+
+func (r *VentureRepository) HasActiveRound(ctx context.Context, ventureId int) (bool, error) {
+	return r.db.
+		NewSelect().
+		Model(&round.Round{}).
+		Where("round.venture_id = ?", ventureId).
+		Where("round.status = ?", "active").
+		Exists(ctx)
+}
+
+func (r *VentureRepository) GetActiveRound(ctx context.Context, ventureId int) (round.Round, error) {
+	resp := round.Round{}
+
+	err := r.db.
+		NewSelect().
+		Model(&resp).
+		Where("round.venture_id = ?", ventureId).
+		Where("round.status = ?", "active").
+		Scan(ctx)
+
+	return resp, err
+}

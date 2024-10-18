@@ -2,6 +2,7 @@ package round
 
 import (
 	"context"
+	"errors"
 	"fundlevel/internal/entities/round"
 	"fundlevel/internal/storage/postgres/shared"
 
@@ -21,8 +22,19 @@ func NewRoundService(repositories storage.Repository) *RoundService {
 
 func (s *RoundService) Create(ctx context.Context, params round.CreateRoundParams) (round.Round, error) {
 	// Calculate the buy-in value for the round
+
+	hasActiveRound, err := s.repositories.Venture().HasActiveRound(ctx, params.VentureID)
+	if err != nil {
+		return round.Round{}, err
+	}
+
+	if hasActiveRound {
+		return round.Round{}, errors.New("active round already exists")
+	}
+
 	params.BuyIn = float64(params.PercentageValue) / float64(params.InvestorCount)
 	params.Status = round.Active
+
 	return s.repositories.Round().Create(ctx, params)
 }
 

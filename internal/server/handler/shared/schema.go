@@ -31,6 +31,12 @@ type FundingOutput struct {
 	}
 }
 
+type SingleRoundResponse struct {
+	Body struct {
+		MessageResponse
+		Round *round.Round `json:"round"`
+	}
+}
 type PathUserIDParam struct {
 	UserID uuid.UUID `path:"userId"`
 }
