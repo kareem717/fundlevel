@@ -85,8 +85,10 @@ func (r *VentureRepository) GetByCursor(ctx context.Context, paginationParams sh
 	err := r.db.
 		NewSelect().
 		Model(&resp).
-		Where("id >= ?", paginationParams.Cursor).
-		Order("id").
+		Relation("Business").
+		Relation("Business.Industry").
+		Where("venture.id >= ?", paginationParams.Cursor).
+		Order("venture.id").
 		Limit(paginationParams.Limit).
 		Scan(ctx)
 
