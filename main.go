@@ -117,6 +117,7 @@ func main() {
 
 		hooks.OnStart(func() {
 			fmt.Printf("Starting server on port %d...\n", options.Port)
+			fmt.Printf("Allowed IPs: %+v\n", parsedAllowedIPs)
 			server.Serve(fmt.Sprintf(":%d", options.Port))
 		})
 	})
