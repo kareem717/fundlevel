@@ -6,6 +6,8 @@ import { columns } from "./components/businesses-table/columns";
 import { Icons } from "@/components/ui/icons";
 import redirects from "@/lib/config/redirects";
 
+export const dynamic = 'force-dynamic'
+
 export default async function MyBusinessesPage() {
 	const resp = await getAccountBusinesses()
 

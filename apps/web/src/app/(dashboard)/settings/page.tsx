@@ -8,6 +8,8 @@ import {
 } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
+export const dynamic = 'force-dynamic'
+
 const tabs = [
   {
     value: "account",
