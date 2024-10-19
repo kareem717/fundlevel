@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 
 	server "fundlevel/internal/server"
 	"fundlevel/internal/service"
@@ -27,11 +28,11 @@ type Options struct {
 	SupabaseHost       string `help:"Supabase Host" short:"s"`
 	SupabaseServiceKey string `help:"Supabase Service Key" short:"k"`
 
-	StripeAPIKey            string  `help:"Stripe API Key" short:"S"`
+	StripeAPIKey            string `help:"Stripe API Key" short:"S"`
 	FeePercentage           string `help:"Fee Percentage" short:"f"`
-	TransactionFeeProductID string  `help:"Transaction Fee Product ID" short:"T"`
-	InvestmentFeeProductID  string  `help:"Investment Fee Product ID" short:"I"`
-	StripeWebhookSecret     string  `help:"Stripe Webhook Secret" short:"W"`
+	TransactionFeeProductID string `help:"Transaction Fee Product ID" short:"T"`
+	InvestmentFeeProductID  string `help:"Investment Fee Product ID" short:"I"`
+	StripeWebhookSecret     string `help:"Stripe Webhook Secret" short:"W"`
 }
 
 func (o *Options) config() {
@@ -51,7 +52,7 @@ func (o *Options) config() {
 	o.InvestmentFeeProductID = os.Getenv("INVESTMENT_FEE_PRODUCT_ID")
 	o.StripeWebhookSecret = os.Getenv("STRIPE_WEBHOOK_SECRET")
 	o.FeePercentage = os.Getenv("FEE_PERCENTAGE")
-	
+
 }
 
 func main() {
@@ -59,6 +60,12 @@ func main() {
 	err := godotenv.Load(".env.local")
 	if err != nil {
 		fmt.Println("Error loading .env.local file")
+	}
+
+	allowedIPs := os.Getenv("ALLOWED_IPS")
+	parsedAllowedIPs := strings.Split(allowedIPs, ",")
+	if len(parsedAllowedIPs) == 0 {
+		panic("ALLOWED_IPS is not set")
 	}
 
 	cli := humacli.New(func(hooks humacli.Hooks, options *Options) {
@@ -105,6 +112,7 @@ func main() {
 			logger,
 			supabaseClient,
 			options.StripeWebhookSecret,
+			parsedAllowedIPs,
 		)
 
 		hooks.OnStart(func() {

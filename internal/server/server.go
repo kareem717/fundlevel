@@ -16,6 +16,7 @@ type Server struct {
 	logger         *zap.Logger
 	supabaseClient *supabase.Client
 	stripeWebhookSecret string
+	allowedIPs []string
 }
 
 func NewServer(
@@ -24,6 +25,7 @@ func NewServer(
 	logger *zap.Logger,
 	supabaseClient *supabase.Client,
 	stripeWebhookSecret string,
+	allowedIPs []string,
 ) *Server {
 	return &Server{
 		services:       services,
@@ -32,6 +34,7 @@ func NewServer(
 		logger:         logger,
 		supabaseClient: supabaseClient,
 		stripeWebhookSecret: stripeWebhookSecret,
+		allowedIPs: allowedIPs,
 	}
 }
 
