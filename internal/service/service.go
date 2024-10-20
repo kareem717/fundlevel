@@ -31,8 +31,8 @@ type VentureService interface {
 	GetByCursor(ctx context.Context, limit int, cursor int) ([]venture.Venture, error)
 	GetByPage(ctx context.Context, limit int, page int) ([]venture.Venture, error)
 
-	GetRoundsByCursor(ctx context.Context, ventureId int, limit int, cursor int) ([]round.Round, error)
-	GetRoundsByPage(ctx context.Context, ventureId int, pageSize int, page int) ([]round.Round, error)
+	GetRoundsByCursor(ctx context.Context, ventureId int, limit int, cursor int, filter round.RoundFilter) ([]round.Round, error)
+	GetRoundsByPage(ctx context.Context, ventureId int, pageSize int, page int, filter round.RoundFilter) ([]round.Round, int, error)
 	GetActiveRound(ctx context.Context, ventureId int) (round.Round, error)
 
 	CreateLike(ctx context.Context, params venture.CreateVentureLikeParams) (venture.VentureLike, error)
@@ -76,8 +76,8 @@ type RoundService interface {
 	Create(ctx context.Context, params round.CreateRoundParams) (round.Round, error)
 	Delete(ctx context.Context, id int) error
 	GetById(ctx context.Context, id int) (round.Round, error)
-	GetByCursor(ctx context.Context, limit int, cursor int) ([]round.Round, error)
-	GetByPage(ctx context.Context, pageSize int, page int) ([]round.Round, error)
+	GetByCursor(ctx context.Context, limit int, cursor int, filter round.RoundFilter) ([]round.Round, error)
+	GetByPage(ctx context.Context, pageSize int, page int, filter round.RoundFilter) ([]round.Round, int, error)
 
 	CreateLike(ctx context.Context, params round.CreateRoundLikeParams) (round.RoundLike, error)
 	DeleteLike(ctx context.Context, roundId int, accountId int) error
@@ -97,8 +97,8 @@ type BusinessService interface {
 	GetVenturesByCursor(ctx context.Context, accountId int, limit int, cursor int) ([]venture.Venture, error)
 	GetVenturesByPage(ctx context.Context, accountId int, pageSize int, page int) ([]venture.Venture, int, error)
 
-	GetRoundsByPage(ctx context.Context, businessId int, pageSize int, page int) ([]round.Round, int, error)
-	GetRoundsByCursor(ctx context.Context, businessId int, limit int, cursor int) ([]round.Round, error)
+	GetRoundsByPage(ctx context.Context, businessId int, pageSize int, page int, filter round.RoundFilter) ([]round.Round, int, error)
+	GetRoundsByCursor(ctx context.Context, businessId int, limit int, cursor int, filter round.RoundFilter) ([]round.Round, error)
 
 	// GetInvestmentsByCursor gets all of the investments received on the rounds related to the business using cursor pagination
 	GetInvestmentsByCursor(ctx context.Context, businessId int, limit int, cursor int) ([]investment.RoundInvestment, error)

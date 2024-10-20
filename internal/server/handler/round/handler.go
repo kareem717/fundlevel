@@ -164,10 +164,15 @@ func (h *httpHandler) acceptInvestment(ctx context.Context, input *shared.Parent
 	return resp, nil
 }
 
-func (h *httpHandler) getByCursor(ctx context.Context, input *shared.CursorPaginationRequest) (*shared.GetCursorPaginatedRoundsOutput, error) {
+type GetByCursorInput struct {
+	shared.CursorPaginationRequest
+	round.RoundFilter
+}
+
+func (h *httpHandler) getByCursor(ctx context.Context, input *GetByCursorInput) (*shared.GetCursorPaginatedRoundsOutput, error) {
 	limit := input.Limit + 1
 
-	rounds, err := h.service.RoundService.GetByCursor(ctx, limit, input.Cursor)
+	rounds, err := h.service.RoundService.GetByCursor(ctx, limit, input.Cursor, input.RoundFilter)
 
 	if err != nil {
 		switch {
@@ -192,8 +197,13 @@ func (h *httpHandler) getByCursor(ctx context.Context, input *shared.CursorPagin
 	return resp, nil
 }
 
-func (h *httpHandler) getByPage(ctx context.Context, input *shared.OffsetPaginationRequest) (*shared.GetOffsetPaginatedRoundsOutput, error) {
-	rounds, err := h.service.RoundService.GetByPage(ctx, input.PageSize, input.Page)
+type GetByPageInput struct {
+	shared.OffsetPaginationRequest
+	round.RoundFilter
+}
+
+func (h *httpHandler) getByPage(ctx context.Context, input *GetByPageInput) (*shared.GetOffsetPaginatedRoundsOutput, error) {
+	rounds, total, err := h.service.RoundService.GetByPage(ctx, input.PageSize, input.Page, input.RoundFilter)
 
 	if err != nil {
 		switch {
@@ -208,6 +218,7 @@ func (h *httpHandler) getByPage(ctx context.Context, input *shared.OffsetPaginat
 	resp := &shared.GetOffsetPaginatedRoundsOutput{}
 	resp.Body.Message = "Rounds fetched successfully"
 	resp.Body.Rounds = rounds
+	resp.Body.Total = total
 
 	if len(rounds) > input.PageSize {
 		resp.Body.HasMore = true

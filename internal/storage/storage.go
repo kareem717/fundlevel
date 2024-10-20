@@ -22,8 +22,8 @@ type VentureRepository interface {
 	Update(ctx context.Context, id int, params venture.UpdateVentureParams) (venture.Venture, error)
 	GetById(ctx context.Context, id int) (venture.Venture, error)
 
-	GetRoundsByCursor(ctx context.Context, ventureId int, paginationParams postgres.CursorPagination) ([]round.Round, error)
-	GetRoundsByPage(ctx context.Context, ventureId int, paginationParams postgres.OffsetPagination) ([]round.Round, error)
+	GetRoundsByCursor(ctx context.Context, ventureId int, paginationParams postgres.CursorPagination, filter round.RoundFilter) ([]round.Round, error)
+	GetRoundsByPage(ctx context.Context, ventureId int, paginationParams postgres.OffsetPagination, filter round.RoundFilter) ([]round.Round, int, error)
 	HasActiveRound(ctx context.Context, ventureId int) (bool, error)
 	GetActiveRound(ctx context.Context, ventureId int) (round.Round, error)
 
@@ -42,12 +42,13 @@ type IndustryRepository interface {
 	GetAll(ctx context.Context) ([]industry.Industry, error)
 }
 
+
 type RoundRepository interface {
 	Create(ctx context.Context, params round.CreateRoundParams) (round.Round, error)
 	Delete(ctx context.Context, id int) error
 	GetById(ctx context.Context, id int) (round.Round, error)
-	GetByCursor(ctx context.Context, paginationParams postgres.CursorPagination) ([]round.Round, error)
-	GetByPage(ctx context.Context, paginationParams postgres.OffsetPagination) ([]round.Round, error)
+	GetByCursor(ctx context.Context, paginationParams postgres.CursorPagination, filter round.RoundFilter) ([]round.Round, error)
+	GetByPage(ctx context.Context, paginationParams postgres.OffsetPagination, filter round.RoundFilter) ([]round.Round, int, error)
 
 	GetLikeCount(ctx context.Context, roundId int) (int, error)
 	CreateLike(ctx context.Context, params round.CreateRoundLikeParams) (round.RoundLike, error)
@@ -98,8 +99,8 @@ type BusinessRepository interface {
 	GetVenturesByCursor(ctx context.Context, businessId int, paginationParams postgres.CursorPagination) ([]venture.Venture, error)
 	GetVenturesByPage(ctx context.Context, businessId int, paginationParams postgres.OffsetPagination) ([]venture.Venture, int, error)
 
-	GetRoundsByPage(ctx context.Context, businessId int, paginationParams postgres.OffsetPagination) ([]round.Round, int, error)
-	GetRoundsByCursor(ctx context.Context, businessId int, paginationParams postgres.CursorPagination) ([]round.Round, error)
+	GetRoundsByPage(ctx context.Context, businessId int, paginationParams postgres.OffsetPagination, filter round.RoundFilter) ([]round.Round, int, error)
+	GetRoundsByCursor(ctx context.Context, businessId int, paginationParams postgres.CursorPagination, filter round.RoundFilter) ([]round.Round, error)
 
 	// GetInvestmentsByCursor gets all of the investments received on the rounds related to the business using cursor pagination
 	GetInvestmentsByCursor(ctx context.Context, businessId int, paginationParams postgres.CursorPagination) ([]investment.RoundInvestment, error)

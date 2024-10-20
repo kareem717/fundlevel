@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fundlevel/internal/entities/round"
+	"fundlevel/internal/storage/postgres/helper"
 	postgres "fundlevel/internal/storage/shared"
 
 	"github.com/uptrace/bun"
@@ -37,36 +38,53 @@ func (r *RoundRepository) GetById(ctx context.Context, id int) (round.Round, err
 	return resp, err
 }
 
-func (r *RoundRepository) GetByCursor(ctx context.Context, paginationParams postgres.CursorPagination) ([]round.Round, error) {
+func (r *RoundRepository) GetByCursor(
+	ctx context.Context,
+	paginationParams postgres.CursorPagination,
+	filter round.RoundFilter,
+) ([]round.Round, error) {
 	resp := []round.Round{}
 
-	err := r.db.
+	query := r.db.
 		NewSelect().
 		Model(&resp).
 		Relation("Venture").
 		Relation("Venture.Business").
 		Relation("Venture.Business.Industry").
-		Where("round.id >= ?", paginationParams.Cursor).
-		Order("round.id").
-		Limit(paginationParams.Limit).
-		Scan(ctx)
+		Limit(paginationParams.Limit)
+
+	query = helper.ApplyRoundFilter(query, filter)
+
+	cursorCondition := "round.id >= ?"
+	if filter.SortOrder != "asc" && paginationParams.Cursor > 0 {
+		cursorCondition = "round.id <= ?"
+	}
+
+	err := query.Where(cursorCondition, paginationParams.Cursor).Scan(ctx, &resp)
 
 	return resp, err
 }
 
-func (r *RoundRepository) GetByPage(ctx context.Context, paginationParams postgres.OffsetPagination) ([]round.Round, error) {
+func (r *RoundRepository) GetByPage(
+	ctx context.Context,
+	paginationParams postgres.OffsetPagination,
+	filter round.RoundFilter,
+) ([]round.Round, int, error) {
 	resp := []round.Round{}
 	offset := (paginationParams.Page - 1) * paginationParams.PageSize
 
-	err := r.db.
+	query := r.db.
 		NewSelect().
 		Model(&resp).
-		Order("id").
+		Relation("Venture").
+		Relation("Venture.Business").
+		Relation("Venture.Business.Industry").
 		Offset(offset).
-		Limit(paginationParams.PageSize + 1).
-		Scan(ctx)
+		Limit(paginationParams.PageSize + 1)
 
-	return resp, err
+	count, err := helper.ApplyRoundFilter(query, filter).ScanAndCount(ctx, &resp)
+
+	return resp, count, err
 }
 
 func (r *RoundRepository) Delete(ctx context.Context, id int) error {
@@ -84,7 +102,10 @@ func (r *RoundRepository) Delete(ctx context.Context, id int) error {
 	return err
 }
 
-func (r *RoundRepository) Create(ctx context.Context, params round.CreateRoundParams) (round.Round, error) {
+func (r *RoundRepository) Create(
+	ctx context.Context,
+	params round.CreateRoundParams,
+) (round.Round, error) {
 	resp := round.Round{}
 
 	err := r.db.
