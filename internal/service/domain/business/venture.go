@@ -4,11 +4,11 @@ import (
 	"context"
 
 	"fundlevel/internal/entities/venture"
-	"fundlevel/internal/storage/postgres/shared"
+	postgres "fundlevel/internal/storage/shared"
 )
 
 func (s *BusinessService) GetVenturesByCursor(ctx context.Context, businessId int, limit int, cursor int) ([]venture.Venture, error) {
-	paginationParams := shared.CursorPagination{
+	paginationParams := postgres.CursorPagination{
 		Limit:  limit,
 		Cursor: cursor,
 	}
@@ -17,7 +17,7 @@ func (s *BusinessService) GetVenturesByCursor(ctx context.Context, businessId in
 }
 
 func (s *BusinessService) GetVenturesByPage(ctx context.Context, businessId int, pageSize int, page int) ([]venture.Venture, int, error) {
-	paginationParams := shared.OffsetPagination{
+	paginationParams := postgres.OffsetPagination{
 		PageSize: pageSize,
 		Page:     page,
 	}

@@ -4,12 +4,12 @@ import (
 	"context"
 
 	"fundlevel/internal/entities/investment"
-	"fundlevel/internal/storage/postgres/shared"
+	postgres "fundlevel/internal/storage/shared"
 
 	"github.com/uptrace/bun/dialect/pgdialect"
 )
 
-func (r *AccountRepository) GetInvestmentsByCursor(ctx context.Context, accountId int, paginationParams shared.CursorPagination) ([]investment.RoundInvestment, error) {
+func (r *AccountRepository) GetInvestmentsByCursor(ctx context.Context, accountId int, paginationParams postgres.CursorPagination) ([]investment.RoundInvestment, error) {
 	resp := []investment.RoundInvestment{}
 
 	err := r.db.
@@ -25,7 +25,7 @@ func (r *AccountRepository) GetInvestmentsByCursor(ctx context.Context, accountI
 	return resp, err
 }
 
-func (r *AccountRepository) GetInvestmentsByPage(ctx context.Context, accountId int, paginationParams shared.OffsetPagination) ([]investment.RoundInvestment, error) {
+func (r *AccountRepository) GetInvestmentsByPage(ctx context.Context, accountId int, paginationParams postgres.OffsetPagination) ([]investment.RoundInvestment, error) {
 	resp := []investment.RoundInvestment{}
 	offset := (paginationParams.Page - 1) * paginationParams.PageSize
 

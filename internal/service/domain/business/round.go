@@ -4,11 +4,11 @@ import (
 	"context"
 
 	"fundlevel/internal/entities/round"
-	"fundlevel/internal/storage/postgres/shared"
+	postgres "fundlevel/internal/storage/shared"
 )
 
 func (s *BusinessService) GetRoundsByCursor(ctx context.Context, businessId int, limit int, cursor int) ([]round.Round, error) {
-	paginationParams := shared.CursorPagination{
+	paginationParams := postgres.CursorPagination{
 		Limit:  limit,
 		Cursor: cursor,
 	}
@@ -17,11 +17,10 @@ func (s *BusinessService) GetRoundsByCursor(ctx context.Context, businessId int,
 }
 
 func (s *BusinessService) GetRoundsByPage(ctx context.Context, businessId int, pageSize int, page int) ([]round.Round, int, error) {
-	paginationParams := shared.OffsetPagination{
+	paginationParams := postgres.OffsetPagination{
 		PageSize: pageSize,
 		Page:     page,
 	}
 
 	return s.repositories.Business().GetRoundsByPage(ctx, businessId, paginationParams)
 }
-

@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"fundlevel/internal/entities/investment"
-	"fundlevel/internal/storage/postgres/shared"
+	postgres "fundlevel/internal/storage/shared"
 
 	"github.com/uptrace/bun"
 )
@@ -56,7 +56,7 @@ func (r *InvestmentRepository) GetById(ctx context.Context, id int) (investment.
 	return resp, err
 }
 
-func (r *InvestmentRepository) GetByCursor(ctx context.Context, paginationParams shared.CursorPagination) ([]investment.RoundInvestment, error) {
+func (r *InvestmentRepository) GetByCursor(ctx context.Context, paginationParams postgres.CursorPagination) ([]investment.RoundInvestment, error) {
 	resp := []investment.RoundInvestment{}
 
 	err := r.db.
@@ -72,7 +72,7 @@ func (r *InvestmentRepository) GetByCursor(ctx context.Context, paginationParams
 	return resp, err
 }
 
-func (r *InvestmentRepository) GetByPage(ctx context.Context, paginationParams shared.OffsetPagination) ([]investment.RoundInvestment, error) {
+func (r *InvestmentRepository) GetByPage(ctx context.Context, paginationParams postgres.OffsetPagination) ([]investment.RoundInvestment, error) {
 	resp := []investment.RoundInvestment{}
 	offset := (paginationParams.Page - 1) * paginationParams.PageSize
 

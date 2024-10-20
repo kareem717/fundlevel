@@ -4,10 +4,10 @@ import (
 	"context"
 
 	"fundlevel/internal/entities/investment"
-	"fundlevel/internal/storage/postgres/shared"
+	postgres "fundlevel/internal/storage/shared"
 )
 
-func (r *RoundRepository) GetInvestmentsByCursor(ctx context.Context, roundId int, paginationParams shared.CursorPagination) ([]investment.RoundInvestment, error) {
+func (r *RoundRepository) GetInvestmentsByCursor(ctx context.Context, roundId int, paginationParams postgres.CursorPagination) ([]investment.RoundInvestment, error) {
 	resp := []investment.RoundInvestment{}
 
 	err := r.db.
@@ -23,7 +23,7 @@ func (r *RoundRepository) GetInvestmentsByCursor(ctx context.Context, roundId in
 	return resp, err
 }
 
-func (r *RoundRepository) GetInvestmentsByPage(ctx context.Context, roundId int, paginationParams shared.OffsetPagination) ([]investment.RoundInvestment, error) {
+func (r *RoundRepository) GetInvestmentsByPage(ctx context.Context, roundId int, paginationParams postgres.OffsetPagination) ([]investment.RoundInvestment, error) {
 	resp := []investment.RoundInvestment{}
 	offset := (paginationParams.Page - 1) * paginationParams.PageSize
 

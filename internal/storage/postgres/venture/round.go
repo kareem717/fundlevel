@@ -4,10 +4,10 @@ import (
 	"context"
 
 	"fundlevel/internal/entities/round"
-	"fundlevel/internal/storage/postgres/shared"
+	postgres "fundlevel/internal/storage/shared"
 )
 
-func (r *VentureRepository) GetRoundsByCursor(ctx context.Context, ventureId int, paginationParams shared.CursorPagination) ([]round.Round, error) {
+func (r *VentureRepository) GetRoundsByCursor(ctx context.Context, ventureId int, paginationParams postgres.CursorPagination) ([]round.Round, error) {
 	resp := []round.Round{}
 
 	err := r.db.
@@ -22,7 +22,7 @@ func (r *VentureRepository) GetRoundsByCursor(ctx context.Context, ventureId int
 	return resp, err
 }
 
-func (r *VentureRepository) GetRoundsByPage(ctx context.Context, ventureId int, paginationParams shared.OffsetPagination) ([]round.Round, error) {
+func (r *VentureRepository) GetRoundsByPage(ctx context.Context, ventureId int, paginationParams postgres.OffsetPagination) ([]round.Round, error) {
 	resp := []round.Round{}
 	offset := paginationParams.PageSize * (paginationParams.Page - 1)
 

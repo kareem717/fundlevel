@@ -4,7 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fundlevel/internal/entities/round"
-	"fundlevel/internal/storage/postgres/shared"
+	postgres "fundlevel/internal/storage/shared"
 
 	"github.com/uptrace/bun"
 )
@@ -37,7 +37,7 @@ func (r *RoundRepository) GetById(ctx context.Context, id int) (round.Round, err
 	return resp, err
 }
 
-func (r *RoundRepository) GetByCursor(ctx context.Context, paginationParams shared.CursorPagination) ([]round.Round, error) {
+func (r *RoundRepository) GetByCursor(ctx context.Context, paginationParams postgres.CursorPagination) ([]round.Round, error) {
 	resp := []round.Round{}
 
 	err := r.db.
@@ -54,7 +54,7 @@ func (r *RoundRepository) GetByCursor(ctx context.Context, paginationParams shar
 	return resp, err
 }
 
-func (r *RoundRepository) GetByPage(ctx context.Context, paginationParams shared.OffsetPagination) ([]round.Round, error) {
+func (r *RoundRepository) GetByPage(ctx context.Context, paginationParams postgres.OffsetPagination) ([]round.Round, error) {
 	resp := []round.Round{}
 	offset := (paginationParams.Page - 1) * paginationParams.PageSize
 

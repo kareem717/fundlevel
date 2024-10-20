@@ -5,11 +5,11 @@ import (
 	"errors"
 
 	"fundlevel/internal/entities/investment"
-	"fundlevel/internal/storage/postgres/shared"
+	postgres "fundlevel/internal/storage/shared"
 )
 
 func (s *RoundService) GetInvestmentsByCursor(ctx context.Context, roundId int, limit int, cursor int) ([]investment.RoundInvestment, error) {
-	paginationParams := shared.CursorPagination{
+	paginationParams := postgres.CursorPagination{
 		Limit:  limit,
 		Cursor: cursor,
 	}
@@ -18,7 +18,7 @@ func (s *RoundService) GetInvestmentsByCursor(ctx context.Context, roundId int, 
 }
 
 func (s *RoundService) GetInvestmentsByPage(ctx context.Context, roundId int, pageSize int, page int) ([]investment.RoundInvestment, error) {
-	paginationParams := shared.OffsetPagination{
+	paginationParams := postgres.OffsetPagination{
 		PageSize: pageSize,
 		Page:     page,
 	}

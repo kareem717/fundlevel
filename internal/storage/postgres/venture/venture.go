@@ -6,7 +6,7 @@ import (
 
 	"fundlevel/internal/entities/round"
 	"fundlevel/internal/entities/venture"
-	"fundlevel/internal/storage/postgres/shared"
+	postgres "fundlevel/internal/storage/shared"
 
 	"github.com/uptrace/bun"
 )
@@ -80,7 +80,7 @@ func (r *VentureRepository) GetById(ctx context.Context, id int) (venture.Ventur
 	return resp, err
 }
 
-func (r *VentureRepository) GetByCursor(ctx context.Context, paginationParams shared.CursorPagination) ([]venture.Venture, error) {
+func (r *VentureRepository) GetByCursor(ctx context.Context, paginationParams postgres.CursorPagination) ([]venture.Venture, error) {
 	resp := []venture.Venture{}
 
 	err := r.db.
@@ -100,7 +100,7 @@ func (r *VentureRepository) GetByCursor(ctx context.Context, paginationParams sh
 	return resp, err
 }
 
-func (r *VentureRepository) GetByPage(ctx context.Context, paginationParams shared.OffsetPagination) ([]venture.Venture, error) {
+func (r *VentureRepository) GetByPage(ctx context.Context, paginationParams postgres.OffsetPagination) ([]venture.Venture, error) {
 	resp := []venture.Venture{}
 	offset := (paginationParams.Page - 1) * paginationParams.PageSize
 

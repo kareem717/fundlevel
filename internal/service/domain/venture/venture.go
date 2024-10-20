@@ -5,7 +5,7 @@ import (
 
 	"fundlevel/internal/entities/venture"
 	"fundlevel/internal/storage"
-	"fundlevel/internal/storage/postgres/shared"
+	postgres "fundlevel/internal/storage/shared"
 )
 
 type VentureService struct {
@@ -24,7 +24,7 @@ func (s *VentureService) GetById(ctx context.Context, id int) (venture.Venture, 
 }
 
 func (s *VentureService) GetByCursor(ctx context.Context, limit int, cursor int) ([]venture.Venture, error) {
-	paginationParams := shared.CursorPagination{
+	paginationParams := postgres.CursorPagination{
 		Limit:  limit,
 		Cursor: cursor,
 	}
@@ -33,7 +33,7 @@ func (s *VentureService) GetByCursor(ctx context.Context, limit int, cursor int)
 }
 
 func (s *VentureService) GetByPage(ctx context.Context, pageSize int, page int) ([]venture.Venture, error) {
-	paginationParams := shared.OffsetPagination{
+	paginationParams := postgres.OffsetPagination{
 		PageSize: pageSize,
 		Page:     page,
 	}

@@ -4,10 +4,10 @@ import (
 	"context"
 
 	"fundlevel/internal/entities/venture"
-	"fundlevel/internal/storage/postgres/shared"
+	postgres "fundlevel/internal/storage/shared"
 )
 
-func (r *BusinessRepository) GetVenturesByCursor(ctx context.Context, businessId int, paginationParams shared.CursorPagination) ([]venture.Venture, error) {
+func (r *BusinessRepository) GetVenturesByCursor(ctx context.Context, businessId int, paginationParams postgres.CursorPagination) ([]venture.Venture, error) {
 	resp := []venture.Venture{}
 
 	err := r.db.
@@ -22,7 +22,7 @@ func (r *BusinessRepository) GetVenturesByCursor(ctx context.Context, businessId
 	return resp, err
 }
 
-func (r *BusinessRepository) GetVenturesByPage(ctx context.Context, businessId int, paginationParams shared.OffsetPagination) ([]venture.Venture, int, error) {
+func (r *BusinessRepository) GetVenturesByPage(ctx context.Context, businessId int, paginationParams postgres.OffsetPagination) ([]venture.Venture, int, error) {
 	resp := []venture.Venture{}
 	offset := (paginationParams.Page - 1) * paginationParams.PageSize
 
