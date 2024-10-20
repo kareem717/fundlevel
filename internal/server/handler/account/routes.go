@@ -106,6 +106,14 @@ func RegisterHumaRoutes(
 		Summary:     "Create a round investment",
 		Description: "Create a round investment.",
 		Tags:        []string{"Accounts", "Investments"},
+		Middlewares: huma.Middlewares{
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
+			},
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithAccount(humaApi)(ctx, next, logger, service)
+			},
+		},
 	}, handler.createInvestment)
 
 	huma.Register(humaApi, huma.Operation{
@@ -115,6 +123,14 @@ func RegisterHumaRoutes(
 		Summary:     "Delete a round investment",
 		Description: "Delete a round investment.",
 		Tags:        []string{"Accounts", "Investments"},
+		Middlewares: huma.Middlewares{
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
+			},
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithAccount(humaApi)(ctx, next, logger, service)
+			},
+		},
 	}, handler.deleteInvestment)
 
 	huma.Register(humaApi, huma.Operation{
@@ -124,6 +140,14 @@ func RegisterHumaRoutes(
 		Summary:     "Get round investments",
 		Description: "Get round investments.",
 		Tags:        []string{"Accounts", "Investments"},
+		Middlewares: huma.Middlewares{
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
+			},
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithAccount(humaApi)(ctx, next, logger, service)
+			},
+		},
 	}, handler.getInvestmentsByCursor)
 
 	huma.Register(humaApi, huma.Operation{
@@ -133,6 +157,14 @@ func RegisterHumaRoutes(
 		Summary:     "Get round investments",
 		Description: "Get round investments.",
 		Tags:        []string{"Accounts", "Investments"},
+		Middlewares: huma.Middlewares{
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
+			},
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithAccount(humaApi)(ctx, next, logger, service)
+			},
+		},
 	}, handler.getInvestmentsByPage)
 
 	huma.Register(humaApi, huma.Operation{
@@ -142,6 +174,14 @@ func RegisterHumaRoutes(
 		Summary:     "Withdraw a investment",
 		Description: "Withdraw a investment.",
 		Tags:        []string{"Accounts", "Investments"},
+		Middlewares: huma.Middlewares{
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
+			},
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithAccount(humaApi)(ctx, next, logger, service)
+			},
+		},
 	}, handler.withdrawInvestment)
 
 	huma.Register(humaApi, huma.Operation{
@@ -151,6 +191,14 @@ func RegisterHumaRoutes(
 		Summary:     "Get businesses",
 		Description: "Get businesses.",
 		Tags:        []string{"Accounts", "Businesses"},
+		Middlewares: huma.Middlewares{
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
+			},
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithAccount(humaApi)(ctx, next, logger, service)
+			},
+		},
 	}, handler.getAllBusinesses)
 
 	huma.Register(humaApi, huma.Operation{
@@ -160,6 +208,14 @@ func RegisterHumaRoutes(
 		Summary:     "Get a stripe checkout link",
 		Description: "Get a stripe checkout link.",
 		Tags:        []string{"Accounts", "Investments"},
+		Middlewares: huma.Middlewares{
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
+			},
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithAccount(humaApi)(ctx, next, logger, service)
+			},
+		},
 	}, handler.getInvestmentCheckoutLink)
 
 }

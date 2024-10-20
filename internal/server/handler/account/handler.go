@@ -68,9 +68,11 @@ type CreateAccountInput struct {
 
 func (h *httpHandler) create(ctx context.Context, input *CreateAccountInput) (*shared.SingleAccountResponse, error) {
 	if user := shared.GetAuthenticatedUser(ctx); user.ID != input.Body.UserID {
-		h.logger.Error("input user id does not match authenticated user id",
+		h.logger.Error(
+			"input user id does not match authenticated user id",
 			zap.Any("input user id", input.Body.UserID),
-			zap.Any("authenticated user id", user.ID))
+			zap.Any("authenticated user id", user.ID),
+		)
 
 		return nil, huma.Error403Forbidden("Cannot create account for another user")
 	}
@@ -164,6 +166,16 @@ func (h *httpHandler) delete(ctx context.Context, input *shared.PathIDParam) (*D
 }
 
 func (h *httpHandler) getInvestmentsByCursor(ctx context.Context, input *shared.GetCursorPaginatedByParentPathIDInput) (*shared.GetCursorPaginatedRoundInvestmentsOutput, error) {
+	if account := shared.GetAuthenticatedAccount(ctx); account.ID != input.ID {
+		h.logger.Error(
+			"input account id does not match authenticated account id",
+			zap.Any("input account id", input.ID),
+			zap.Any("authenticated account id", account.ID),
+		)
+
+		return nil, huma.Error403Forbidden("Cannot get investments for another account")
+	}
+
 	limit := input.Limit + 1
 
 	investments, err := h.service.AccountService.GetInvestmentsByCursor(ctx, input.ID, limit, input.Cursor)
@@ -192,6 +204,14 @@ func (h *httpHandler) getInvestmentsByCursor(ctx context.Context, input *shared.
 }
 
 func (h *httpHandler) getInvestmentsByPage(ctx context.Context, input *shared.GetOffsetPaginatedByParentPathIDInput) (*shared.GetOffsetPaginatedRoundInvestmentsOutput, error) {
+	if account := shared.GetAuthenticatedAccount(ctx); account.ID != input.ID {
+		h.logger.Error("input account id does not match authenticated account id",
+			zap.Any("input account id", input.ID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot get investments for another account")
+	}
+
 	investments, err := h.service.AccountService.GetInvestmentsByPage(ctx, input.ID, input.PageSize, input.Page)
 
 	if err != nil {
@@ -207,7 +227,7 @@ func (h *httpHandler) getInvestmentsByPage(ctx context.Context, input *shared.Ge
 	resp := &shared.GetOffsetPaginatedRoundInvestmentsOutput{}
 	resp.Body.Message = "Investments fetched successfully"
 	resp.Body.Investments = investments
-	
+
 	if len(investments) > input.PageSize {
 		resp.Body.HasMore = true
 		resp.Body.Investments = resp.Body.Investments[:len(resp.Body.Investments)-1]
@@ -217,6 +237,14 @@ func (h *httpHandler) getInvestmentsByPage(ctx context.Context, input *shared.Ge
 }
 
 func (h *httpHandler) withdrawInvestment(ctx context.Context, input *shared.ParentInvestmentIDParam) (*shared.MessageResponse, error) {
+	if account := shared.GetAuthenticatedAccount(ctx); account.ID != input.ID {
+		h.logger.Error("input account id does not match authenticated account id",
+			zap.Any("input account id", input.ID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot withdraw investment for another account")
+	}
+
 	err := h.service.AccountService.WithdrawInvestment(ctx, input.ID, input.InvestmentID)
 	if err != nil {
 		h.logger.Error("failed to withdraw investment", zap.Error(err))
@@ -230,6 +258,14 @@ func (h *httpHandler) withdrawInvestment(ctx context.Context, input *shared.Pare
 }
 
 func (h *httpHandler) deleteInvestment(ctx context.Context, input *shared.ParentInvestmentIDParam) (*shared.MessageResponse, error) {
+	if account := shared.GetAuthenticatedAccount(ctx); account.ID != input.ID {
+		h.logger.Error("input account id does not match authenticated account id",
+			zap.Any("input account id", input.ID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot delete investment for another account")
+	}
+
 	err := h.service.AccountService.DeleteInvestment(ctx, input.ID, input.InvestmentID)
 	if err != nil {
 		h.logger.Error("failed to delete investment", zap.Error(err))
@@ -247,6 +283,14 @@ type CreateInvestmentInput struct {
 }
 
 func (h *httpHandler) createInvestment(ctx context.Context, input *CreateInvestmentInput) (*shared.SingleInvestmentResponse, error) {
+	if account := shared.GetAuthenticatedAccount(ctx); account.ID != input.Body.InvestorID {
+		h.logger.Error("input account id does not match authenticated account id",
+			zap.Any("input account id", input.Body.InvestorID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot create investment for another account")
+	}
+
 	investment, err := h.service.AccountService.CreateInvestment(ctx, input.Body)
 	if err != nil {
 		h.logger.Error("failed to create investment", zap.Error(err))
@@ -268,6 +312,14 @@ type GetBusinessesOutput struct {
 }
 
 func (h *httpHandler) getAllBusinesses(ctx context.Context, input *shared.PathIDParam) (*GetBusinessesOutput, error) {
+	if account := shared.GetAuthenticatedAccount(ctx); account.ID != input.ID {
+		h.logger.Error("input account id does not match authenticated account id",
+			zap.Any("input account id", input.ID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot get businesses for another account")
+	}
+
 	businesses, err := h.service.AccountService.GetAllBusinesses(ctx, input.ID)
 
 	if err != nil {
@@ -301,6 +353,14 @@ type LinkOutput struct {
 }
 
 func (h *httpHandler) getInvestmentCheckoutLink(ctx context.Context, input *GetStripeCheckoutLinkInput) (*LinkOutput, error) {
+	if account := shared.GetAuthenticatedAccount(ctx); account.ID != input.ID {
+		h.logger.Error("input account id does not match authenticated account id",
+			zap.Any("input account id", input.ID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot get investment checkout link for another account")
+	}
+
 	investment, err := h.service.AccountService.GetInvestmentById(ctx, input.ID, input.InvestmentID)
 	if err != nil {
 		h.logger.Error("failed to get investment", zap.Error(err))

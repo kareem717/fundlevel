@@ -37,3 +37,4 @@ func GetAuthenticatedAccount(ctx context.Context) account.Account {
 
 	return account.Account{}
 }
+
