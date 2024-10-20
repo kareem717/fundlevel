@@ -386,3 +386,40 @@ func (h *httpHandler) getInvestmentCheckoutLink(ctx context.Context, input *GetS
 
 	return resp, nil
 }
+
+func (h *httpHandler) getInvestmentById(ctx context.Context, input *shared.PathIDParam) (*shared.SingleInvestmentResponse, error) {
+	account := shared.GetAuthenticatedAccount(ctx)
+
+	if account.ID != input.ID {
+		h.logger.Error("input account id does not match authenticated account id",
+			zap.Any("input account id", input.ID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot fetch investment for another account")
+	}
+
+	investment, err := h.service.InvestmentService.GetById(ctx, input.ID)
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("Investment not found")
+		default:
+			h.logger.Error("failed to fetch investment", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the investment")
+		}
+	}
+
+	if account.ID != investment.InvestorID {
+		h.logger.Error("input account id does not match authenticated account id",
+			zap.Any("input account id", investment.InvestorID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot fetch investment for another account")
+	}
+
+	resp := &shared.SingleInvestmentResponse{}
+	resp.Body.Message = "Investment fetched successfully"
+	resp.Body.Investment = &investment
+
+	return resp, nil
+}

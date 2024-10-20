@@ -6,7 +6,6 @@ import (
 	"fundlevel/internal/server/handler/business"
 	"fundlevel/internal/server/handler/health"
 	"fundlevel/internal/server/handler/industry"
-	"fundlevel/internal/server/handler/investment"
 	"fundlevel/internal/server/handler/round"
 	"fundlevel/internal/server/handler/user"
 	"fundlevel/internal/server/handler/venture"
@@ -55,6 +54,7 @@ func (s *Server) routes() chi.Router {
 		s.services,
 		humaApi,
 		s.logger,
+		s.supabaseClient,
 	)
 
 	account.RegisterHumaRoutes(
@@ -81,12 +81,14 @@ func (s *Server) routes() chi.Router {
 		s.services,
 		humaApi,
 		s.logger,
+		s.supabaseClient,
 	)
 
 	business.RegisterHumaRoutes(
 		s.services,
 		humaApi,
 		s.logger,
+		s.supabaseClient,
 	)
 
 	billing.RegisterHumaRoutes(
@@ -97,17 +99,11 @@ func (s *Server) routes() chi.Router {
 		s.supabaseClient,
 	)
 
-	investment.RegisterHumaRoutes(
-		s.services,
-		humaApi,
-		s.logger,
-		s.supabaseClient,
-	)
-
 	industry.RegisterHumaRoutes(
 		s.services,
 		humaApi,
 		s.logger,
+		
 	)
 
 	return r

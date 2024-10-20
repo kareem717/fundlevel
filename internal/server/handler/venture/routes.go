@@ -6,6 +6,7 @@ import (
 	"fundlevel/internal/service"
 
 	"github.com/danielgtaylor/huma/v2"
+	"github.com/supabase-community/supabase-go"
 	"go.uber.org/zap"
 )
 
@@ -13,11 +14,9 @@ func RegisterHumaRoutes(
 	service *service.Service,
 	humaApi huma.API,
 	logger *zap.Logger,
+	supabaseClient *supabase.Client,
 ) {
-	handler := &httpHandler{
-		service: service,
-		logger:  logger,
-	}
+	handler := newHTTPHandler(service, logger)
 
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "get-venture-by-id",

@@ -218,4 +218,20 @@ func RegisterHumaRoutes(
 		},
 	}, handler.getInvestmentCheckoutLink)
 
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-investment-by-id",
+		Method:      http.MethodGet,
+		Path:        "/account/{id}/investments/{investmentId}",
+		Summary:     "Get investment by ID",
+		Description: "Get investment by ID.",
+		Tags:        []string{"Accounts", "Investments"},
+		Middlewares: huma.Middlewares{
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
+			},
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithAccount(humaApi)(ctx, next, logger, service)
+			},
+		},
+	}, handler.getInvestmentById)
 }
