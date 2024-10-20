@@ -18,11 +18,8 @@ func RegisterHumaRoutes(
 	supabaseClient *supabase.Client,
 ) {
 
-	handler := &httpHandler{
-		service: service,
-		logger:  logger,
-	}
-
+	handler := newHTTPHandler(service, logger)
+	
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "get-business-by-id",
 		Method:      http.MethodGet,

@@ -3,6 +3,7 @@ package venture
 import (
 	"net/http"
 
+	"fundlevel/internal/server/middleware"
 	"fundlevel/internal/service"
 
 	"github.com/danielgtaylor/huma/v2"
@@ -88,6 +89,14 @@ func RegisterHumaRoutes(
 		Summary:     "Create a venture",
 		Description: "Create a venture.",
 		Tags:        []string{"Ventures"},
+		Middlewares: huma.Middlewares{
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
+			},
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithAccount(humaApi)(ctx, next, logger, service)
+			},
+		},
 	}, handler.create)
 
 	huma.Register(humaApi, huma.Operation{
@@ -97,6 +106,14 @@ func RegisterHumaRoutes(
 		Summary:     "Update a venture",
 		Description: "Update a venture.",
 		Tags:        []string{"Ventures"},
+		Middlewares: huma.Middlewares{
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
+			},
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithAccount(humaApi)(ctx, next, logger, service)
+			},
+		},
 	}, handler.update)
 
 	huma.Register(humaApi, huma.Operation{
@@ -106,6 +123,14 @@ func RegisterHumaRoutes(
 		Summary:     "Delete a venture",
 		Description: "Delete a venture.",
 		Tags:        []string{"Ventures"},
+		Middlewares: huma.Middlewares{
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
+			},
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithAccount(humaApi)(ctx, next, logger, service)
+			},
+		},
 	}, handler.delete)
 
 	huma.Register(humaApi, huma.Operation{
@@ -115,6 +140,14 @@ func RegisterHumaRoutes(
 		Summary:     "Create a venture like",
 		Description: "Create a venture like.",
 		Tags:        []string{"Ventures", "Likes"},
+		Middlewares: huma.Middlewares{
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
+			},
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithAccount(humaApi)(ctx, next, logger, service)
+			},
+		},
 	}, handler.createLike)
 
 	huma.Register(humaApi, huma.Operation{
@@ -124,6 +157,14 @@ func RegisterHumaRoutes(
 		Summary:     "Delete a venture like",
 		Description: "Delete a venture like.",
 		Tags:        []string{"Ventures", "Likes"},
+		Middlewares: huma.Middlewares{
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
+			},
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithAccount(humaApi)(ctx, next, logger, service)
+			},
+		},
 	}, handler.deleteLike)
 
 	huma.Register(humaApi, huma.Operation{
@@ -133,6 +174,14 @@ func RegisterHumaRoutes(
 		Summary:     "Get a venture like status",
 		Description: "Get a venture like status.",
 		Tags:        []string{"Ventures", "Likes"},
+		Middlewares: huma.Middlewares{
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
+			},
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithAccount(humaApi)(ctx, next, logger, service)
+			},
+		},
 	}, handler.isLikedByAccount)
 
 	huma.Register(humaApi, huma.Operation{

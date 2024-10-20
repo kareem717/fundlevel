@@ -222,6 +222,24 @@ type CreateVentureInput struct {
 }
 
 func (h *httpHandler) create(ctx context.Context, input *CreateVentureInput) (*SingleVentureResponse, error) {
+	business, err := h.service.BusinessService.GetById(ctx, input.Body.BusinessID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, huma.Error404NotFound("Business not found")
+		}
+
+		h.logger.Error("failed to fetch business", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while fetching the business")
+	}
+
+	if account := shared.GetAuthenticatedAccount(ctx); account.ID != business.OwnerAccountID {
+		h.logger.Error("input account id does not match authenticated account id",
+			zap.Any("input account id", business.OwnerAccountID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot create venture for business you do not own")
+	}
+
 	venture, err := h.service.VentureService.Create(ctx, input.Body)
 	if err != nil {
 		h.logger.Error("failed to create venture", zap.Error(err))
@@ -241,7 +259,7 @@ type UpdateVentureInput struct {
 }
 
 func (h *httpHandler) update(ctx context.Context, input *UpdateVentureInput) (*SingleVentureResponse, error) {
-	_, err := h.service.VentureService.GetById(ctx, input.ID)
+	ventureRecord, err := h.service.VentureService.GetById(ctx, input.ID)
 	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
@@ -250,6 +268,24 @@ func (h *httpHandler) update(ctx context.Context, input *UpdateVentureInput) (*S
 			h.logger.Error("failed to fetch venture", zap.Error(err))
 			return nil, huma.Error500InternalServerError("An error occurred while fetching the venture")
 		}
+	}
+
+	business, err := h.service.BusinessService.GetById(ctx, ventureRecord.BusinessID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, huma.Error404NotFound("Business not found")
+		}
+
+		h.logger.Error("failed to fetch business", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while fetching the business")
+	}
+
+	if account := shared.GetAuthenticatedAccount(ctx); account.ID != business.OwnerAccountID {
+		h.logger.Error("input account id does not match authenticated account id",
+			zap.Any("input account id", business.OwnerAccountID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot update venture for business you do not own")
 	}
 
 	venture, err := h.service.VentureService.Update(ctx, input.ID, input.Body)
@@ -271,7 +307,7 @@ type DeleteVentureOutput struct {
 }
 
 func (h *httpHandler) delete(ctx context.Context, input *shared.PathIDParam) (*DeleteVentureOutput, error) {
-	_, err := h.service.VentureService.GetById(ctx, input.ID)
+	ventureRecord, err := h.service.VentureService.GetById(ctx, input.ID)
 	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
@@ -280,6 +316,24 @@ func (h *httpHandler) delete(ctx context.Context, input *shared.PathIDParam) (*D
 			h.logger.Error("failed to fetch venture", zap.Error(err))
 			return nil, huma.Error500InternalServerError("An error occurred while fetching the venture")
 		}
+	}
+
+	business, err := h.service.BusinessService.GetById(ctx, ventureRecord.BusinessID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, huma.Error404NotFound("Business not found")
+		}
+
+		h.logger.Error("failed to fetch business", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while fetching the business")
+	}
+
+	if account := shared.GetAuthenticatedAccount(ctx); account.ID != business.OwnerAccountID {
+		h.logger.Error("input account id does not match authenticated account id",
+			zap.Any("input account id", business.OwnerAccountID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot delete venture for business you do not own")
 	}
 
 	err = h.service.VentureService.Delete(ctx, input.ID)
@@ -305,6 +359,14 @@ func (h *httpHandler) createLike(ctx context.Context, input *VentureLikeInput) (
 		AccountID: input.AccountID,
 	})
 
+	if account := shared.GetAuthenticatedAccount(ctx); account.ID != input.AccountID {
+		h.logger.Error("input account id does not match authenticated account id",
+			zap.Any("input account id", input.AccountID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot create like for another account")
+	}
+
 	if err != nil {
 		h.logger.Error("failed to create venture like", zap.Error(err))
 		return nil, huma.Error500InternalServerError("An error occurred while creating the venture like")
@@ -321,6 +383,14 @@ func (h *httpHandler) deleteLike(ctx context.Context, input *VentureLikeInput) (
 	if err != nil {
 		h.logger.Error("failed to delete venture like", zap.Error(err))
 		return nil, huma.Error500InternalServerError("An error occurred while deleting the venture like")
+	}
+
+	if account := shared.GetAuthenticatedAccount(ctx); account.ID != input.AccountID {
+		h.logger.Error("input account id does not match authenticated account id",
+			zap.Any("input account id", input.AccountID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot create like for another account")
 	}
 
 	resp := &shared.MessageOutput{}
@@ -348,6 +418,14 @@ func (h *httpHandler) isLikedByAccount(ctx context.Context, input *VentureLikeIn
 	if err != nil {
 		h.logger.Error("failed to check if venture is liked by account", zap.Error(err))
 		return nil, huma.Error500InternalServerError("An error occurred while checking if the venture is liked by the account")
+	}
+
+	if account := shared.GetAuthenticatedAccount(ctx); account.ID != input.AccountID {
+		h.logger.Error("input account id does not match authenticated account id",
+			zap.Any("input account id", input.AccountID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot create like for another account")
 	}
 
 	resp := &shared.IsLikedOutput{}
