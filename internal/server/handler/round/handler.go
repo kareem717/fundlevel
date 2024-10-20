@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"time"
 
 	"fundlevel/internal/entities/round"
 	"fundlevel/internal/server/handler/shared"
@@ -38,7 +39,23 @@ type CreateRoundInput struct {
 }
 
 func (i *CreateRoundInput) Resolve(ctx huma.Context) []error {
-	//TODO: implement db checks
+
+	if i.Body.BeginsAt.Before(time.Now().AddDate(0, 0, 1)) {
+		return []error{&huma.ErrorDetail{
+			Message:  "begins at must be in the future",
+			Location: "round.beginsAt",
+			Value:    i.Body.BeginsAt,
+		}}
+	}
+
+	if i.Body.EndsAt.Before(i.Body.BeginsAt) {
+		return []error{&huma.ErrorDetail{
+			Message:  "ends at must be after begins at",
+			Location: "round.endsAt",
+			Value:    i.Body.EndsAt,
+		}}
+	}
+
 	return nil
 }
 
