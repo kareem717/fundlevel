@@ -57,6 +57,14 @@ type CreateBusinessRequest struct {
 }
 
 func (h *httpHandler) create(ctx context.Context, input *CreateBusinessRequest) (*shared.SingleBusinessResponse, error) {
+	if account := shared.GetAuthenticatedAccount(ctx); account.ID != input.Body.Business.OwnerAccountID {
+		h.logger.Error("input account id does not match authenticated account id",
+			zap.Any("input account id", input.Body.Business.OwnerAccountID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot create business for another account")
+	}
+
 	business, err := h.service.BusinessService.Create(ctx, input.Body)
 	if err != nil {
 		h.logger.Error("failed to create business", zap.Error(err))
@@ -75,7 +83,25 @@ type DeleteBusinessOutput struct {
 }
 
 func (h *httpHandler) delete(ctx context.Context, input *shared.PathIDParam) (*DeleteBusinessOutput, error) {
-	err := h.service.BusinessService.Delete(ctx, input.ID)
+	business, err := h.service.BusinessService.GetById(ctx, input.ID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, huma.Error404NotFound("Business not found")
+		}
+
+		h.logger.Error("failed to fetch business", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while fetching the business")
+	}
+
+	if account := shared.GetAuthenticatedAccount(ctx); account.ID != business.OwnerAccountID {
+		h.logger.Error("input account id does not match authenticated account id",
+			zap.Any("input account id", input.ID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot delete business for another account")
+	}
+
+	err = h.service.BusinessService.Delete(ctx, business.ID)
 	if err != nil {
 		h.logger.Error("failed to delete business", zap.Error(err))
 		return nil, huma.Error500InternalServerError("An error occurred while deleting the business")
@@ -132,7 +158,7 @@ func (h *httpHandler) getRoundsByPage(ctx context.Context, input *shared.GetOffs
 	resp.Body.Message = "Rounds fetched successfully"
 	resp.Body.Rounds = rounds
 	resp.Body.Total = total
-	
+
 	if len(rounds) > input.PageSize {
 		resp.Body.HasMore = true
 		resp.Body.Rounds = resp.Body.Rounds[:len(resp.Body.Rounds)-1]
