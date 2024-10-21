@@ -3,6 +3,7 @@ package venture
 import (
 	"context"
 	"database/sql"
+	"fmt"
 
 	"fundlevel/internal/entities/round"
 	"fundlevel/internal/entities/venture"
@@ -80,10 +81,10 @@ func (r *VentureRepository) GetById(ctx context.Context, id int) (venture.Ventur
 	return resp, err
 }
 
-func (r *VentureRepository) GetByCursor(ctx context.Context, paginationParams postgres.CursorPagination) ([]venture.Venture, error) {
+func (r *VentureRepository) GetByCursor(ctx context.Context, paginationParams postgres.CursorPagination, filter venture.VentureFilter) ([]venture.Venture, error) {
 	resp := []venture.Venture{}
 
-	err := r.db.
+	query := r.db.
 		NewSelect().
 		Model(&resp).
 		Relation("Business").
@@ -92,25 +93,41 @@ func (r *VentureRepository) GetByCursor(ctx context.Context, paginationParams po
 		WhereGroup(" OR ", func(q *bun.SelectQuery) *bun.SelectQuery {
 			return q.Where("active_round IS NULL").WhereOr("active_round.status = ?", round.Active)
 		}).
-		Where("venture.id >= ?", paginationParams.Cursor).
-		Order("venture.id").
-		Limit(paginationParams.Limit).
-		Scan(ctx)
+		Limit(paginationParams.Limit)
+
+	if len(filter.SortOrder) > 0 {
+		query.OrderExpr(fmt.Sprintf("venture.id %s", filter.SortOrder))
+	}
+
+	cursorCondition := "venture.id >= ?"
+	if filter.SortOrder != "asc" && paginationParams.Cursor > 0 {
+		cursorCondition = "venture.id <= ?"
+	}
+
+	err := query.Where(cursorCondition, paginationParams.Cursor).Scan(ctx, &resp)
 
 	return resp, err
 }
 
-func (r *VentureRepository) GetByPage(ctx context.Context, paginationParams postgres.OffsetPagination) ([]venture.Venture, error) {
+func (r *VentureRepository) GetByPage(ctx context.Context, paginationParams postgres.OffsetPagination, filter venture.VentureFilter) ([]venture.Venture, int, error) {
 	resp := []venture.Venture{}
 	offset := (paginationParams.Page - 1) * paginationParams.PageSize
 
-	err := r.db.
+	query := r.db.
 		NewSelect().
 		Model(&resp).
-		Order("id").
 		Offset(offset).
-		Limit(paginationParams.PageSize + 1).
-		Scan(ctx)
+		Limit(paginationParams.PageSize + 1)
 
-	return resp, err
+	if len(filter.SortOrder) > 0 {
+		query.OrderExpr(fmt.Sprintf("venture.id %s", filter.SortOrder))
+	}
+
+	if len(filter.IsHidden) > 0 {
+		query.Where("venture.is_hidden IN (?)", bun.In(filter.IsHidden))
+	}
+
+	count, err := query.ScanAndCount(ctx, &resp)
+
+	return resp, count, err
 }

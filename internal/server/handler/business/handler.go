@@ -6,6 +6,7 @@ import (
 	"errors"
 
 	"fundlevel/internal/entities/business"
+	"fundlevel/internal/entities/venture"
 	"fundlevel/internal/server/handler/shared"
 	"fundlevel/internal/service"
 
@@ -220,10 +221,15 @@ func (h *httpHandler) getInvestmentsByPage(ctx context.Context, input *shared.Ge
 	return resp, nil
 }
 
-func (h *httpHandler) getVenturesByCursor(ctx context.Context, input *shared.GetCursorPaginatedByParentPathIDInput) (*shared.GetCursorPaginatedVenturesOutput, error) {
+type GetVenturesByParentAndCursorInput struct {
+	shared.GetCursorPaginatedByParentPathIDInput
+	venture.VentureFilter
+}
+
+func (h *httpHandler) getVenturesByCursor(ctx context.Context, input *GetVenturesByParentAndCursorInput) (*shared.GetCursorPaginatedVenturesOutput, error) {
 	limit := input.Limit + 1
 
-	ventures, err := h.service.BusinessService.GetVenturesByCursor(ctx, input.ID, limit, input.Cursor)
+	ventures, err := h.service.BusinessService.GetVenturesByCursor(ctx, input.ID, limit, input.Cursor, input.VentureFilter)
 
 	if err != nil {
 		switch {
@@ -248,8 +254,13 @@ func (h *httpHandler) getVenturesByCursor(ctx context.Context, input *shared.Get
 	return resp, nil
 }
 
-func (h *httpHandler) getVenturesByPage(ctx context.Context, input *shared.GetOffsetPaginatedByParentPathIDInput) (*shared.GetOffsetPaginatedVenturesOutput, error) {
-	ventures, total, err := h.service.BusinessService.GetVenturesByPage(ctx, input.ID, input.PageSize, input.Page)
+type GetVenturesByParentAndPageInput struct {
+	shared.GetOffsetPaginatedByParentPathIDInput
+	venture.VentureFilter
+}
+
+func (h *httpHandler) getVenturesByPage(ctx context.Context, input *GetVenturesByParentAndPageInput) (*shared.GetOffsetPaginatedVenturesOutput, error) {
+	ventures, total, err := h.service.BusinessService.GetVenturesByPage(ctx, input.ID, input.PageSize, input.Page, input.VentureFilter)
 
 	if err != nil {
 		switch {
@@ -265,6 +276,7 @@ func (h *httpHandler) getVenturesByPage(ctx context.Context, input *shared.GetOf
 	resp.Body.Message = "Ventures fetched successfully"
 	resp.Body.Ventures = ventures
 	resp.Body.Total = total
+
 	if len(ventures) > input.PageSize {
 		resp.Body.HasMore = true
 		resp.Body.Ventures = resp.Body.Ventures[:len(resp.Body.Ventures)-1]

@@ -28,8 +28,8 @@ type VentureService interface {
 	Delete(ctx context.Context, id int) error
 	Update(ctx context.Context, id int, params venture.UpdateVentureParams) (venture.Venture, error)
 	GetById(ctx context.Context, id int) (venture.Venture, error)
-	GetByCursor(ctx context.Context, limit int, cursor int) ([]venture.Venture, error)
-	GetByPage(ctx context.Context, limit int, page int) ([]venture.Venture, error)
+	GetByCursor(ctx context.Context, limit int, cursor int, filter venture.VentureFilter) ([]venture.Venture, error)
+	GetByPage(ctx context.Context, pageSize int, page int, filter venture.VentureFilter) ([]venture.Venture, int, error)
 
 	GetRoundsByCursor(ctx context.Context, ventureId int, limit int, cursor int, filter round.RoundFilter) ([]round.Round, error)
 	GetRoundsByPage(ctx context.Context, ventureId int, pageSize int, page int, filter round.RoundFilter) ([]round.Round, int, error)
@@ -94,8 +94,8 @@ type BusinessService interface {
 	Delete(ctx context.Context, id int) error
 	GetById(ctx context.Context, id int) (business.Business, error)
 
-	GetVenturesByCursor(ctx context.Context, accountId int, limit int, cursor int) ([]venture.Venture, error)
-	GetVenturesByPage(ctx context.Context, accountId int, pageSize int, page int) ([]venture.Venture, int, error)
+	GetVenturesByCursor(ctx context.Context, accountId int, limit int, cursor int, filter venture.VentureFilter) ([]venture.Venture, error)
+	GetVenturesByPage(ctx context.Context, accountId int, pageSize int, page int, filter venture.VentureFilter) ([]venture.Venture, int, error)
 
 	GetRoundsByPage(ctx context.Context, businessId int, pageSize int, page int, filter round.RoundFilter) ([]round.Round, int, error)
 	GetRoundsByCursor(ctx context.Context, businessId int, limit int, cursor int, filter round.RoundFilter) ([]round.Round, error)

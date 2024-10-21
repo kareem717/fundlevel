@@ -23,22 +23,22 @@ func (s *VentureService) GetById(ctx context.Context, id int) (venture.Venture, 
 	return s.repositories.Venture().GetById(ctx, id)
 }
 
-func (s *VentureService) GetByCursor(ctx context.Context, limit int, cursor int) ([]venture.Venture, error) {
+func (s *VentureService) GetByCursor(ctx context.Context, limit int, cursor int, filter venture.VentureFilter) ([]venture.Venture, error) {
 	paginationParams := postgres.CursorPagination{
 		Limit:  limit,
 		Cursor: cursor,
 	}
 
-	return s.repositories.Venture().GetByCursor(ctx, paginationParams)
+	return s.repositories.Venture().GetByCursor(ctx, paginationParams, filter)
 }
 
-func (s *VentureService) GetByPage(ctx context.Context, pageSize int, page int) ([]venture.Venture, error) {
+func (s *VentureService) GetByPage(ctx context.Context, pageSize int, page int, filter venture.VentureFilter) ([]venture.Venture, int, error) {
 	paginationParams := postgres.OffsetPagination{
 		PageSize: pageSize,
 		Page:     page,
 	}
 
-	return s.repositories.Venture().GetByPage(ctx, paginationParams)
+	return s.repositories.Venture().GetByPage(ctx, paginationParams, filter)
 }
 
 func (s *VentureService) Create(ctx context.Context, params venture.CreateVentureParams) (venture.Venture, error) {

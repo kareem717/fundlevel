@@ -59,8 +59,13 @@ func (h *httpHandler) getByID(ctx context.Context, input *shared.PathIDParam) (*
 	return resp, nil
 }
 
-func (h *httpHandler) getByPage(ctx context.Context, input *shared.OffsetPaginationRequest) (*shared.GetOffsetPaginatedVenturesOutput, error) {
-	ventures, err := h.service.VentureService.GetByPage(ctx, input.PageSize, input.Page)
+type GetVenturesByPageInput struct {
+	shared.OffsetPaginationRequest
+	venture.VentureFilter
+}
+
+func (h *httpHandler) getByPage(ctx context.Context, input *GetVenturesByPageInput) (*shared.GetOffsetPaginatedVenturesOutput, error) {
+	ventures, total, err := h.service.VentureService.GetByPage(ctx, input.PageSize, input.Page, input.VentureFilter)
 
 	if err != nil {
 		switch {
@@ -75,7 +80,7 @@ func (h *httpHandler) getByPage(ctx context.Context, input *shared.OffsetPaginat
 	resp := &shared.GetOffsetPaginatedVenturesOutput{}
 	resp.Body.Message = "Ventures fetched successfully"
 	resp.Body.Ventures = ventures
-
+	resp.Body.Total = total
 	if len(ventures) > input.PageSize {
 		resp.Body.HasMore = true
 		resp.Body.Ventures = resp.Body.Ventures[:input.PageSize]
@@ -84,9 +89,14 @@ func (h *httpHandler) getByPage(ctx context.Context, input *shared.OffsetPaginat
 	return resp, nil
 }
 
-func (h *httpHandler) getByCursor(ctx context.Context, input *shared.CursorPaginationRequest) (*shared.GetCursorPaginatedVenturesOutput, error) {
+type GetVenturesByCursorInput struct {
+	shared.CursorPaginationRequest
+	venture.VentureFilter
+}
+
+func (h *httpHandler) getByCursor(ctx context.Context, input *GetVenturesByCursorInput) (*shared.GetCursorPaginatedVenturesOutput, error) {
 	limit := input.Limit + 1
-	ventures, err := h.service.VentureService.GetByCursor(ctx, limit, input.Cursor)
+	ventures, err := h.service.VentureService.GetByCursor(ctx, limit, input.Cursor, input.VentureFilter)
 
 	if err != nil {
 		switch {

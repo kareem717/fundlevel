@@ -17,8 +17,8 @@ import (
 type VentureRepository interface {
 	Create(ctx context.Context, params venture.CreateVentureParams) (venture.Venture, error)
 	Delete(ctx context.Context, id int) error
-	GetByCursor(ctx context.Context, paginationParams postgres.CursorPagination) ([]venture.Venture, error)
-	GetByPage(ctx context.Context, paginationParams postgres.OffsetPagination) ([]venture.Venture, error)
+	GetByCursor(ctx context.Context, paginationParams postgres.CursorPagination, filter venture.VentureFilter) ([]venture.Venture, error)
+	GetByPage(ctx context.Context, paginationParams postgres.OffsetPagination, filter venture.VentureFilter) ([]venture.Venture, int, error)
 	Update(ctx context.Context, id int, params venture.UpdateVentureParams) (venture.Venture, error)
 	GetById(ctx context.Context, id int) (venture.Venture, error)
 
@@ -96,8 +96,8 @@ type BusinessRepository interface {
 	GetById(ctx context.Context, id int) (business.Business, error)
 	Delete(ctx context.Context, id int) error
 
-	GetVenturesByCursor(ctx context.Context, businessId int, paginationParams postgres.CursorPagination) ([]venture.Venture, error)
-	GetVenturesByPage(ctx context.Context, businessId int, paginationParams postgres.OffsetPagination) ([]venture.Venture, int, error)
+	GetVenturesByCursor(ctx context.Context, businessId int, paginationParams postgres.CursorPagination, filter venture.VentureFilter) ([]venture.Venture, error)
+	GetVenturesByPage(ctx context.Context, businessId int, paginationParams postgres.OffsetPagination, filter venture.VentureFilter) ([]venture.Venture, int, error)
 
 	GetRoundsByPage(ctx context.Context, businessId int, paginationParams postgres.OffsetPagination, filter round.RoundFilter) ([]round.Round, int, error)
 	GetRoundsByCursor(ctx context.Context, businessId int, paginationParams postgres.CursorPagination, filter round.RoundFilter) ([]round.Round, error)

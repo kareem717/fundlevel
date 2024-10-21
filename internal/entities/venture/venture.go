@@ -21,6 +21,11 @@ type Venture struct {
 	shared.Timestamps
 }
 
+type VentureFilter struct {
+	IsHidden []bool `query:"isHidden" required:"false"`
+	SortOrder string `query:"sortOrder" required:"false" enum:"asc,desc"`
+}
+
 // CreateVentureParams contains the parameters for creating a new venture.
 type CreateVentureParams struct {
 	BusinessID int  `json:"businessId" minimum:"1"`
