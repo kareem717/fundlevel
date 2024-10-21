@@ -2,7 +2,6 @@ package round
 
 import (
 	"context"
-	"errors"
 
 	"fundlevel/internal/entities/investment"
 	postgres "fundlevel/internal/storage/shared"
@@ -26,23 +25,3 @@ func (s *RoundService) GetInvestmentsByPage(ctx context.Context, roundId int, pa
 	return s.repositories.Round().GetInvestmentsByPage(ctx, roundId, paginationParams, filter)
 }
 
-func (s *RoundService) AcceptInvestment(ctx context.Context, roundId int, investmentId int) error {
-	currInvestment, err := s.repositories.Investment().GetById(ctx, investmentId)
-	if err != nil {
-		return err
-	}
-
-	if currInvestment.Status != investment.InvestmentStatusPending {
-		return errors.New("investment is not pending")
-	}
-
-	updateParams := investment.UpdateInvestmentParams{}
-	updateParams.Status = investment.InvestmentStatusAccepted
-
-	_, err = s.repositories.Investment().Update(ctx, investmentId, updateParams)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}

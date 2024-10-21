@@ -56,9 +56,6 @@ type AccountService interface {
 
 	GetInvestmentsByCursor(ctx context.Context, accountId int, limit int, cursor int, filter investment.InvestmentFilter) ([]investment.RoundInvestment, error)
 	GetInvestmentsByPage(ctx context.Context, accountId int, pageSize int, page int, filter investment.InvestmentFilter) ([]investment.RoundInvestment, int, error)
-	WithdrawInvestment(ctx context.Context, accountId int, investmentId int) error
-	DeleteInvestment(ctx context.Context, accountId int, investmentId int) error
-	CreateInvestment(ctx context.Context, params investment.CreateInvestmentParams) (investment.RoundInvestment, error)
 	GetInvestmentById(ctx context.Context, accountId int, investmentId int) (investment.RoundInvestment, error)
 
 	GetAllBusinesses(ctx context.Context, accountId int) ([]business.Business, error)
@@ -86,7 +83,6 @@ type RoundService interface {
 
 	GetInvestmentsByCursor(ctx context.Context, roundId int, limit int, cursor int, filter investment.InvestmentFilter) ([]investment.RoundInvestment, error)
 	GetInvestmentsByPage(ctx context.Context, roundId int, pageSize int, page int, filter investment.InvestmentFilter) ([]investment.RoundInvestment, int, error)
-	AcceptInvestment(ctx context.Context, roundId int, investmentId int) error
 }
 
 type BusinessService interface {
@@ -114,6 +110,10 @@ type BillingService interface {
 }
 
 type InvestmentService interface {
+	AcceptInvestment(ctx context.Context, investmentId int) error
+	WithdrawInvestment(ctx context.Context, investmentId int) error
+	DeleteInvestment(ctx context.Context, investmentId int) error
+	CreateInvestment(ctx context.Context, params investment.CreateInvestmentParams) (investment.RoundInvestment, error)
 	GetById(ctx context.Context, id int) (investment.RoundInvestment, error)
 	Update(ctx context.Context, id int, params investment.UpdateInvestmentParams) (investment.RoundInvestment, error)
 }

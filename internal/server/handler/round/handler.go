@@ -214,38 +214,6 @@ func (h *httpHandler) getInvestmentsByPage(ctx context.Context, input *shared.Ge
 	return resp, nil
 }
 
-func (h *httpHandler) acceptInvestment(ctx context.Context, input *shared.ParentInvestmentIDParam) (*shared.MessageResponse, error) {
-	round, err := h.service.RoundService.GetById(ctx, input.ID)
-	if err != nil {
-		switch {
-		case errors.Is(err, sql.ErrNoRows):
-			return nil, huma.Error404NotFound("round not found")
-		default:
-			h.logger.Error("failed to fetch round", zap.Error(err))
-			return nil, huma.Error500InternalServerError("An error occurred while fetching the round")
-		}
-	}
-
-	if account := shared.GetAuthenticatedAccount(ctx); account.ID != round.Venture.Business.OwnerAccountID {
-		h.logger.Error("business owner account id does not match authenticated account id",
-			zap.Any("business owner account id", round.Venture.Business.OwnerAccountID),
-			zap.Any("authenticated account id", account.ID))
-
-		return nil, huma.Error403Forbidden("Cannot accept investment for a round for a business you do not own")
-	}
-
-	err = h.service.RoundService.AcceptInvestment(ctx, input.ID, input.InvestmentID)
-	if err != nil {
-		h.logger.Error("failed to accept investment", zap.Error(err))
-		return nil, huma.Error500InternalServerError("An error occurred while accepting the investment")
-	}
-
-	resp := &shared.MessageResponse{}
-	resp.Message = "Investment accepted successfully"
-
-	return resp, nil
-}
-
 type GetByCursorInput struct {
 	shared.CursorPaginationRequest
 	round.RoundFilter

@@ -7,7 +7,6 @@ import (
 
 	"fundlevel/internal/entities/account"
 	"fundlevel/internal/entities/business"
-	"fundlevel/internal/entities/investment"
 	"fundlevel/internal/server/handler/shared"
 	"fundlevel/internal/service"
 
@@ -232,74 +231,6 @@ func (h *httpHandler) getInvestmentsByPage(ctx context.Context, input *shared.Ge
 		resp.Body.HasMore = true
 		resp.Body.Investments = resp.Body.Investments[:len(resp.Body.Investments)-1]
 	}
-
-	return resp, nil
-}
-
-func (h *httpHandler) withdrawInvestment(ctx context.Context, input *shared.ParentInvestmentIDParam) (*shared.MessageResponse, error) {
-	if account := shared.GetAuthenticatedAccount(ctx); account.ID != input.ID {
-		h.logger.Error("input account id does not match authenticated account id",
-			zap.Any("input account id", input.ID),
-			zap.Any("authenticated account id", account.ID))
-
-		return nil, huma.Error403Forbidden("Cannot withdraw investment for another account")
-	}
-
-	err := h.service.AccountService.WithdrawInvestment(ctx, input.ID, input.InvestmentID)
-	if err != nil {
-		h.logger.Error("failed to withdraw investment", zap.Error(err))
-		return nil, huma.Error500InternalServerError("An error occurred while withdrawing the investment")
-	}
-
-	resp := &shared.MessageResponse{}
-	resp.Message = "Investment withdrawn successfully"
-
-	return resp, nil
-}
-
-func (h *httpHandler) deleteInvestment(ctx context.Context, input *shared.ParentInvestmentIDParam) (*shared.MessageResponse, error) {
-	if account := shared.GetAuthenticatedAccount(ctx); account.ID != input.ID {
-		h.logger.Error("input account id does not match authenticated account id",
-			zap.Any("input account id", input.ID),
-			zap.Any("authenticated account id", account.ID))
-
-		return nil, huma.Error403Forbidden("Cannot delete investment for another account")
-	}
-
-	err := h.service.AccountService.DeleteInvestment(ctx, input.ID, input.InvestmentID)
-	if err != nil {
-		h.logger.Error("failed to delete investment", zap.Error(err))
-		return nil, huma.Error500InternalServerError("An error occurred while deleting the investment")
-	}
-
-	resp := &shared.MessageResponse{}
-	resp.Message = "Investment deleted successfully"
-
-	return resp, nil
-}
-
-type CreateInvestmentInput struct {
-	Body investment.CreateInvestmentParams `json:"investment"`
-}
-
-func (h *httpHandler) createInvestment(ctx context.Context, input *CreateInvestmentInput) (*shared.SingleInvestmentResponse, error) {
-	if account := shared.GetAuthenticatedAccount(ctx); account.ID != input.Body.InvestorID {
-		h.logger.Error("input account id does not match authenticated account id",
-			zap.Any("input account id", input.Body.InvestorID),
-			zap.Any("authenticated account id", account.ID))
-
-		return nil, huma.Error403Forbidden("Cannot create investment for another account")
-	}
-
-	investment, err := h.service.AccountService.CreateInvestment(ctx, input.Body)
-	if err != nil {
-		h.logger.Error("failed to create investment", zap.Error(err))
-		return nil, huma.Error500InternalServerError("An error occurred while creating the investment")
-	}
-
-	resp := &shared.SingleInvestmentResponse{}
-	resp.Body.Message = "Investment created successfully"
-	resp.Body.Investment = &investment
 
 	return resp, nil
 }

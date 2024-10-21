@@ -3,6 +3,7 @@ package round
 import (
 	"context"
 	"errors"
+	"fundlevel/internal/entities/business"
 	"fundlevel/internal/entities/round"
 	postgres "fundlevel/internal/storage/shared"
 
@@ -30,6 +31,15 @@ func (s *RoundService) Create(ctx context.Context, params round.CreateRoundParam
 
 	if hasActiveRound {
 		return round.Round{}, errors.New("active round already exists")
+	}
+
+	venture, err := s.repositories.Venture().GetById(ctx, params.VentureID)
+	if err != nil {
+		return round.Round{}, err
+	}
+
+	if venture.Business.Status != business.BusinessStatusActive {
+		return round.Round{}, errors.New("business is not active")
 	}
 
 	params.BuyIn = float64(params.PercentageValue) / float64(params.InvestorCount)

@@ -95,46 +95,7 @@ func RegisterHumaRoutes(
 		},
 	}, handler.delete)
 
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "create-round-investment",
-		Method:      http.MethodPost,
-		Path:        "/account/{id}/investments",
-		Summary:     "Create a round investment",
-		Description: "Create a round investment.",
-		Tags:        []string{"Accounts", "Investments"},
-		Security: []map[string][]string{
-			{"bearerAuth": {}},
-		},
-		Middlewares: huma.Middlewares{
-			func(ctx huma.Context, next func(huma.Context)) {
-				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
-			},
-			func(ctx huma.Context, next func(huma.Context)) {
-				middleware.WithAccount(humaApi)(ctx, next, logger, service)
-			},
-		},
-	}, handler.createInvestment)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "delete-round-investment",
-		Method:      http.MethodDelete,
-		Path:        "/account/{id}/investments/{investmentId}",
-		Summary:     "Delete a round investment",
-		Description: "Delete a round investment.",
-		Tags:        []string{"Accounts", "Investments"},
-		Security: []map[string][]string{
-			{"bearerAuth": {}},
-		},
-		Middlewares: huma.Middlewares{
-			func(ctx huma.Context, next func(huma.Context)) {
-				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
-			},
-			func(ctx huma.Context, next func(huma.Context)) {
-				middleware.WithAccount(humaApi)(ctx, next, logger, service)
-			},
-		},
-	}, handler.deleteInvestment)
-
+	
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "get-account-investments-by-cursor",
 		Method:      http.MethodGet,
@@ -174,26 +135,6 @@ func RegisterHumaRoutes(
 			},
 		},
 	}, handler.getInvestmentsByPage)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "withdraw-investment",
-		Method:      http.MethodPost,
-		Path:        "/account/{id}/investments/{investmentId}/withdraw",
-		Summary:     "Withdraw a investment",
-		Description: "Withdraw a investment.",
-		Tags:        []string{"Accounts", "Investments"},
-		Security: []map[string][]string{
-			{"bearerAuth": {}},
-		},
-		Middlewares: huma.Middlewares{
-			func(ctx huma.Context, next func(huma.Context)) {
-				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
-			},
-			func(ctx huma.Context, next func(huma.Context)) {
-				middleware.WithAccount(humaApi)(ctx, next, logger, service)
-			},
-		},
-	}, handler.withdrawInvestment)
 
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "get-account-businesses",

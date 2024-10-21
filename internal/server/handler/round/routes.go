@@ -127,25 +127,6 @@ func RegisterHumaRoutes(
 		},
 	}, handler.getInvestmentsByPage)
 
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "accept-investment",
-		Method:      http.MethodPost,
-		Path:        "/round/{id}/investments/{investmentId}/accept",
-		Summary:     "Accept an investment",
-		Description: "Accept an investment.",
-		Tags:        []string{"Round", "Investments"},
-		Security: []map[string][]string{
-			{"bearerAuth": {}},
-		},
-		Middlewares: huma.Middlewares{
-			func(ctx huma.Context, next func(huma.Context)) {
-				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
-			},
-			func(ctx huma.Context, next func(huma.Context)) {
-				middleware.WithAccount(humaApi)(ctx, next, logger, service)
-			},
-		},
-	}, handler.acceptInvestment)
 
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "create-round-like",
