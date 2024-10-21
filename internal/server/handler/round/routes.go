@@ -3,6 +3,7 @@ package round
 import (
 	"net/http"
 
+	"fundlevel/internal/server/middleware"
 	"fundlevel/internal/service"
 
 	"github.com/danielgtaylor/huma/v2"
@@ -53,6 +54,17 @@ func RegisterHumaRoutes(
 		Summary:     "Create a round",
 		Description: "Create a round.",
 		Tags:        []string{"Round"},
+		Security: []map[string][]string{
+			{"bearerAuth": {}},
+		},
+		Middlewares: huma.Middlewares{
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
+			},
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithAccount(humaApi)(ctx, next, logger, service)
+			},
+		},
 	}, handler.create)
 
 	huma.Register(humaApi, huma.Operation{
@@ -62,6 +74,17 @@ func RegisterHumaRoutes(
 		Summary:     "Delete a round",
 		Description: "Delete a round.",
 		Tags:        []string{"Round"},
+		Security: []map[string][]string{
+			{"bearerAuth": {}},
+		},
+		Middlewares: huma.Middlewares{
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
+			},
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithAccount(humaApi)(ctx, next, logger, service)
+			},
+		},
 	}, handler.delete)
 
 	huma.Register(humaApi, huma.Operation{
@@ -71,6 +94,17 @@ func RegisterHumaRoutes(
 		Summary:     "Get round investments",
 		Description: "Get round investments.",
 		Tags:        []string{"Round", "Investments"},
+		Security: []map[string][]string{
+			{"bearerAuth": {}},
+		},
+		Middlewares: huma.Middlewares{
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
+			},
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithAccount(humaApi)(ctx, next, logger, service)
+			},
+		},
 	}, handler.getInvestmentsByCursor)
 
 	huma.Register(humaApi, huma.Operation{
@@ -80,6 +114,17 @@ func RegisterHumaRoutes(
 		Summary:     "Get round investments",
 		Description: "Get round investments.",
 		Tags:        []string{"Round", "Investments"},
+		Security: []map[string][]string{
+			{"bearerAuth": {}},
+		},
+		Middlewares: huma.Middlewares{
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
+			},
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithAccount(humaApi)(ctx, next, logger, service)
+			},
+		},
 	}, handler.getInvestmentsByPage)
 
 	huma.Register(humaApi, huma.Operation{
@@ -89,6 +134,17 @@ func RegisterHumaRoutes(
 		Summary:     "Accept an investment",
 		Description: "Accept an investment.",
 		Tags:        []string{"Round", "Investments"},
+		Security: []map[string][]string{
+			{"bearerAuth": {}},
+		},
+		Middlewares: huma.Middlewares{
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
+			},
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithAccount(humaApi)(ctx, next, logger, service)
+			},
+		},
 	}, handler.acceptInvestment)
 
 	huma.Register(humaApi, huma.Operation{
@@ -98,6 +154,17 @@ func RegisterHumaRoutes(
 		Summary:     "Create a round like",
 		Description: "Create a round like.",
 		Tags:        []string{"Round", "Likes"},
+		Security: []map[string][]string{
+			{"bearerAuth": {}},
+		},
+		Middlewares: huma.Middlewares{
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
+			},
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithAccount(humaApi)(ctx, next, logger, service)
+			},
+		},
 	}, handler.createLike)
 
 	huma.Register(humaApi, huma.Operation{
@@ -107,6 +174,17 @@ func RegisterHumaRoutes(
 		Summary:     "Delete a round like",
 		Description: "Delete a round like.",
 		Tags:        []string{"Round", "Likes"},
+		Security: []map[string][]string{
+			{"bearerAuth": {}},
+		},
+		Middlewares: huma.Middlewares{
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
+			},
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithAccount(humaApi)(ctx, next, logger, service)
+			},
+		},
 	}, handler.deleteLike)
 
 	huma.Register(humaApi, huma.Operation{
@@ -116,6 +194,17 @@ func RegisterHumaRoutes(
 		Summary:     "Get a round like status",
 		Description: "Get a round like status.",
 		Tags:        []string{"Round", "Likes"},
+		Security: []map[string][]string{
+			{"bearerAuth": {}},
+		},
+		Middlewares: huma.Middlewares{
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
+			},
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithAccount(humaApi)(ctx, next, logger, service)
+			},
+		},
 	}, handler.isLikedByAccount)
 
 	huma.Register(humaApi, huma.Operation{

@@ -146,7 +146,6 @@ func (h *httpHandler) getRoundsByPage(ctx context.Context, input *shared.GetRoun
 	return resp, nil
 }
 
-
 func (h *httpHandler) getRoundsByCursor(ctx context.Context, input *shared.GetRoundsByParentAndCursorInput) (*shared.GetCursorPaginatedRoundsOutput, error) {
 	limit := input.Limit + 1
 
@@ -176,6 +175,27 @@ func (h *httpHandler) getRoundsByCursor(ctx context.Context, input *shared.GetRo
 }
 
 func (h *httpHandler) getOffsetPaginatedRoundInvestments(ctx context.Context, input *shared.GetInvestmentsByParentAndPageInput) (*shared.GetOffsetPaginatedRoundInvestmentsOutput, error) {
+	ventureRecord, err := h.service.VentureService.GetById(ctx, input.ID)
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("venture not found")
+		default:
+			h.logger.Error("failed to fetch venture", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the venture")
+		}
+	}
+
+	account := shared.GetAuthenticatedAccount(ctx)
+
+	if account.ID != ventureRecord.Business.OwnerAccountID {
+		h.logger.Error("business owner account id does not match authenticated account id",
+			zap.Any("business owner account id", ventureRecord.Business.OwnerAccountID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot fetch round investments for a venture you do not own")
+	}
+
 	rounds, total, err := h.service.VentureService.GetInvestmentsByPage(ctx, input.ID, input.PageSize, input.Page, input.InvestmentFilter)
 
 	if err != nil {
@@ -202,8 +222,28 @@ func (h *httpHandler) getOffsetPaginatedRoundInvestments(ctx context.Context, in
 }
 
 func (h *httpHandler) getCursorPaginatedRoundInvestments(ctx context.Context, input *shared.GetInvestmentsByParentAndCursorInput) (*shared.GetCursorPaginatedRoundInvestmentsOutput, error) {
-	limit := input.Limit + 1
+	ventureRecord, err := h.service.VentureService.GetById(ctx, input.ID)
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("venture not found")
+		default:
+			h.logger.Error("failed to fetch venture", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the venture")
+		}
+	}
 
+	account := shared.GetAuthenticatedAccount(ctx)
+
+	if account.ID != ventureRecord.Business.OwnerAccountID {
+		h.logger.Error("business owner account id does not match authenticated account id",
+			zap.Any("business owner account id", ventureRecord.Business.OwnerAccountID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot fetch round investments for a venture you do not own")
+	}
+
+	limit := input.Limit + 1
 	rounds, err := h.service.VentureService.GetInvestmentsByCursor(ctx, input.ID, limit, input.Cursor, input.InvestmentFilter)
 
 	if err != nil {
@@ -366,18 +406,38 @@ type VentureLikeInput struct {
 }
 
 func (h *httpHandler) createLike(ctx context.Context, input *VentureLikeInput) (*shared.MessageOutput, error) {
-	_, err := h.service.VentureService.CreateLike(ctx, venture.CreateVentureLikeParams{
-		VentureID: input.ID,
-		AccountID: input.AccountID,
-	})
+	account := shared.GetAuthenticatedAccount(ctx)
 
-	if account := shared.GetAuthenticatedAccount(ctx); account.ID != input.AccountID {
+	if account.ID != input.AccountID {
 		h.logger.Error("input account id does not match authenticated account id",
 			zap.Any("input account id", input.AccountID),
 			zap.Any("authenticated account id", account.ID))
 
 		return nil, huma.Error403Forbidden("Cannot create like for another account")
 	}
+
+	ventureRecord, err := h.service.VentureService.GetById(ctx, input.ID)
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("venture not found")
+		default:
+			h.logger.Error("failed to fetch venture", zap.Error(err))
+		}
+	}
+
+	if account.ID != ventureRecord.Business.OwnerAccountID {
+		h.logger.Error("business owner account id does not match authenticated account id",
+			zap.Any("business owner account id", ventureRecord.Business.OwnerAccountID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot create like for a business you do not own")
+	}
+
+	_, err = h.service.VentureService.CreateLike(ctx, venture.CreateVentureLikeParams{
+		VentureID: input.ID,
+		AccountID: input.AccountID,
+	})
 
 	if err != nil {
 		h.logger.Error("failed to create venture like", zap.Error(err))
@@ -391,18 +451,38 @@ func (h *httpHandler) createLike(ctx context.Context, input *VentureLikeInput) (
 }
 
 func (h *httpHandler) deleteLike(ctx context.Context, input *VentureLikeInput) (*shared.MessageOutput, error) {
-	err := h.service.VentureService.DeleteLike(ctx, input.ID, input.AccountID)
-	if err != nil {
-		h.logger.Error("failed to delete venture like", zap.Error(err))
-		return nil, huma.Error500InternalServerError("An error occurred while deleting the venture like")
-	}
+	account := shared.GetAuthenticatedAccount(ctx)
 
-	if account := shared.GetAuthenticatedAccount(ctx); account.ID != input.AccountID {
+	if account.ID != input.AccountID {
 		h.logger.Error("input account id does not match authenticated account id",
 			zap.Any("input account id", input.AccountID),
 			zap.Any("authenticated account id", account.ID))
 
-		return nil, huma.Error403Forbidden("Cannot create like for another account")
+		return nil, huma.Error500InternalServerError("An error occurred while deleting the venture like")
+	}
+
+	ventureRecord, err := h.service.VentureService.GetById(ctx, input.ID)
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("venture not found")
+		default:
+			h.logger.Error("failed to fetch venture", zap.Error(err))
+		}
+	}
+
+	if account.ID != ventureRecord.Business.OwnerAccountID {
+		h.logger.Error("business owner account id does not match authenticated account id",
+			zap.Any("business owner account id", ventureRecord.Business.OwnerAccountID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot delete like for a business you do not own")
+	}
+
+	err = h.service.VentureService.DeleteLike(ctx, input.ID, input.AccountID)
+	if err != nil {
+		h.logger.Error("failed to delete venture like", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while deleting the venture like")
 	}
 
 	resp := &shared.MessageOutput{}
@@ -425,7 +505,17 @@ func (h *httpHandler) getLikeCount(ctx context.Context, input *shared.PathIDPara
 	return resp, nil
 }
 
+// TODO: move to account handler
 func (h *httpHandler) isLikedByAccount(ctx context.Context, input *VentureLikeInput) (*shared.IsLikedOutput, error) {
+	account := shared.GetAuthenticatedAccount(ctx)
+	if account.ID != input.AccountID {
+		h.logger.Error("input account id does not match authenticated account id",
+			zap.Any("input account id", input.AccountID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot check if venture is liked by another account")
+	}
+
 	liked, err := h.service.VentureService.IsLikedByAccount(ctx, input.ID, input.AccountID)
 	if err != nil {
 		h.logger.Error("failed to check if venture is liked by account", zap.Error(err))

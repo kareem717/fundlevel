@@ -71,6 +71,17 @@ func RegisterHumaRoutes(
 		Summary:     "Get cursor paginated round investments for a venture",
 		Description: "Get all round investments for a venture.",
 		Tags:        []string{"Ventures", "Round Investments"},
+		Security: []map[string][]string{
+			{"bearerAuth": {}},
+		},
+		Middlewares: huma.Middlewares{
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
+			},
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithAccount(humaApi)(ctx, next, logger, service)
+			},
+		},
 	}, handler.getCursorPaginatedRoundInvestments)
 
 	huma.Register(humaApi, huma.Operation{
@@ -80,6 +91,17 @@ func RegisterHumaRoutes(
 		Summary:     "Get offset paginated round investments for a venture",
 		Description: "Get all round investments for a venture.",
 		Tags:        []string{"Ventures", "Round Investments"},
+		Security: []map[string][]string{
+			{"bearerAuth": {}},
+		},
+		Middlewares: huma.Middlewares{
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
+			},
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithAccount(humaApi)(ctx, next, logger, service)
+			},
+		},
 	}, handler.getOffsetPaginatedRoundInvestments)
 
 	huma.Register(humaApi, huma.Operation{

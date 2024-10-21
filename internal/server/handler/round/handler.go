@@ -60,6 +60,24 @@ func (i *CreateRoundInput) Resolve(ctx huma.Context) []error {
 }
 
 func (h *httpHandler) create(ctx context.Context, input *CreateRoundInput) (*shared.SingleRoundResponse, error) {
+	venture, err := h.service.VentureService.GetById(ctx, input.Body.VentureID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, huma.Error404NotFound("Venture ID not found")
+		}
+
+		h.logger.Error("failed to fetch venture", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while fetching the venture")
+	}
+
+	if account := shared.GetAuthenticatedAccount(ctx); account.ID != venture.Business.OwnerAccountID {
+		h.logger.Error("business owner account id does not match authenticated account id",
+			zap.Any("business owner account id", venture.Business.OwnerAccountID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot create round for a business you do not own")
+	}
+
 	round, err := h.service.RoundService.Create(ctx, input.Body)
 	if err != nil {
 		h.logger.Error("failed to create round", zap.Error(err))
@@ -74,7 +92,7 @@ func (h *httpHandler) create(ctx context.Context, input *CreateRoundInput) (*sha
 }
 
 func (h *httpHandler) delete(ctx context.Context, input *shared.PathIDParam) (*shared.MessageResponse, error) {
-	_, err := h.service.RoundService.GetById(ctx, input.ID)
+	round, err := h.service.RoundService.GetById(ctx, input.ID)
 	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
@@ -83,6 +101,14 @@ func (h *httpHandler) delete(ctx context.Context, input *shared.PathIDParam) (*s
 			h.logger.Error("failed to fetch round", zap.Error(err))
 			return nil, huma.Error500InternalServerError("An error occurred while fetching the round")
 		}
+	}
+
+	if account := shared.GetAuthenticatedAccount(ctx); account.ID != round.Venture.Business.OwnerAccountID {
+		h.logger.Error("business owner account id does not match authenticated account id",
+			zap.Any("business owner account id", round.Venture.Business.OwnerAccountID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot delete round for a business you do not own")
 	}
 
 	err = h.service.RoundService.Delete(ctx, input.ID)
@@ -98,6 +124,25 @@ func (h *httpHandler) delete(ctx context.Context, input *shared.PathIDParam) (*s
 }
 
 func (h *httpHandler) getInvestmentsByCursor(ctx context.Context, input *shared.GetInvestmentsByParentAndCursorInput) (*shared.GetCursorPaginatedRoundInvestmentsOutput, error) {
+	round, err := h.service.RoundService.GetById(ctx, input.ID)
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("round not found")
+		default:
+			h.logger.Error("failed to fetch round", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the round")
+		}
+	}
+
+	if account := shared.GetAuthenticatedAccount(ctx); account.ID != round.Venture.Business.OwnerAccountID {
+		h.logger.Error("business owner account id does not match authenticated account id",
+			zap.Any("business owner account id", round.Venture.Business.OwnerAccountID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot get investments for a round for a business you do not own")
+	}
+
 	limit := input.Limit + 1
 
 	investments, err := h.service.RoundService.GetInvestmentsByCursor(ctx, input.ID, limit, input.Cursor, input.InvestmentFilter)
@@ -126,6 +171,24 @@ func (h *httpHandler) getInvestmentsByCursor(ctx context.Context, input *shared.
 }
 
 func (h *httpHandler) getInvestmentsByPage(ctx context.Context, input *shared.GetInvestmentsByParentAndPageInput) (*shared.GetOffsetPaginatedRoundInvestmentsOutput, error) {
+	round, err := h.service.RoundService.GetById(ctx, input.ID)
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("round not found")
+		default:
+			h.logger.Error("failed to fetch round", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the round")
+		}
+	}
+
+	if account := shared.GetAuthenticatedAccount(ctx); account.ID != round.Venture.Business.OwnerAccountID {
+		h.logger.Error("business owner account id does not match authenticated account id",
+			zap.Any("business owner account id", round.Venture.Business.OwnerAccountID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot get investments for a round for a business you do not own")
+	}
 
 	investments, total, err := h.service.RoundService.GetInvestmentsByPage(ctx, input.ID, input.PageSize, input.Page, input.InvestmentFilter)
 
@@ -152,7 +215,26 @@ func (h *httpHandler) getInvestmentsByPage(ctx context.Context, input *shared.Ge
 }
 
 func (h *httpHandler) acceptInvestment(ctx context.Context, input *shared.ParentInvestmentIDParam) (*shared.MessageResponse, error) {
-	err := h.service.RoundService.AcceptInvestment(ctx, input.ID, input.InvestmentID)
+	round, err := h.service.RoundService.GetById(ctx, input.ID)
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("round not found")
+		default:
+			h.logger.Error("failed to fetch round", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the round")
+		}
+	}
+
+	if account := shared.GetAuthenticatedAccount(ctx); account.ID != round.Venture.Business.OwnerAccountID {
+		h.logger.Error("business owner account id does not match authenticated account id",
+			zap.Any("business owner account id", round.Venture.Business.OwnerAccountID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot accept investment for a round for a business you do not own")
+	}
+
+	err = h.service.RoundService.AcceptInvestment(ctx, input.ID, input.InvestmentID)
 	if err != nil {
 		h.logger.Error("failed to accept investment", zap.Error(err))
 		return nil, huma.Error500InternalServerError("An error occurred while accepting the investment")
@@ -253,7 +335,36 @@ type RoundLikeInput struct {
 }
 
 func (h *httpHandler) createLike(ctx context.Context, input *RoundLikeInput) (*shared.MessageOutput, error) {
-	_, err := h.service.RoundService.CreateLike(ctx, round.CreateRoundLikeParams{
+	account := shared.GetAuthenticatedAccount(ctx)
+
+	if account.ID != input.AccountID {
+		h.logger.Error("account id does not match authenticated account id",
+			zap.Any("authenticated account id", account.ID),
+			zap.Any("input account id", input.AccountID))
+
+		return nil, huma.Error403Forbidden("Cannot like for another account")
+	}
+
+	roundRecord, err := h.service.RoundService.GetById(ctx, input.ID)
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("Round not found")
+		default:
+			h.logger.Error("failed to fetch round", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the round")
+		}
+	}
+
+	if account.ID != roundRecord.Venture.Business.OwnerAccountID {
+		h.logger.Error("business owner account id does not match authenticated account id",
+			zap.Any("business owner account id", roundRecord.Venture.Business.OwnerAccountID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot like a round for a business you do not own")
+	}
+
+	_, err = h.service.RoundService.CreateLike(ctx, round.CreateRoundLikeParams{
 		RoundID:   input.ID,
 		AccountID: input.AccountID,
 	})
@@ -270,7 +381,36 @@ func (h *httpHandler) createLike(ctx context.Context, input *RoundLikeInput) (*s
 }
 
 func (h *httpHandler) deleteLike(ctx context.Context, input *RoundLikeInput) (*shared.MessageOutput, error) {
-	err := h.service.RoundService.DeleteLike(ctx, input.ID, input.AccountID)
+	account := shared.GetAuthenticatedAccount(ctx)
+
+	if account.ID != input.AccountID {
+		h.logger.Error("account id does not match authenticated account id",
+			zap.Any("authenticated account id", account.ID),
+			zap.Any("input account id", input.AccountID))
+
+		return nil, huma.Error403Forbidden("Cannot delete like for another account")
+	}
+
+	roundRecord, err := h.service.RoundService.GetById(ctx, input.ID)
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("Round not found")
+		default:
+			h.logger.Error("failed to fetch round", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the round")
+		}
+	}
+
+	if account.ID != roundRecord.Venture.Business.OwnerAccountID {
+		h.logger.Error("business owner account id does not match authenticated account id",
+			zap.Any("business owner account id", roundRecord.Venture.Business.OwnerAccountID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot delete like for a round for a business you do not own")
+	}
+
+	err = h.service.RoundService.DeleteLike(ctx, input.ID, input.AccountID)
 	if err != nil {
 		h.logger.Error("failed to delete round like", zap.Error(err))
 		return nil, huma.Error500InternalServerError("An error occurred while deleting the round like")
@@ -282,7 +422,18 @@ func (h *httpHandler) deleteLike(ctx context.Context, input *RoundLikeInput) (*s
 	return resp, nil
 }
 
+// TODO: move to account handler
 func (h *httpHandler) isLikedByAccount(ctx context.Context, input *RoundLikeInput) (*shared.IsLikedOutput, error) {
+	account := shared.GetAuthenticatedAccount(ctx)
+
+	if account.ID != input.AccountID {
+		h.logger.Error("account id does not match authenticated account id",
+			zap.Any("authenticated account id", account.ID),
+			zap.Any("input account id", input.AccountID))
+
+		return nil, huma.Error403Forbidden("Cannot check if round is liked by another account")
+	}
+
 	liked, err := h.service.RoundService.IsLikedByAccount(ctx, input.ID, input.AccountID)
 	if err != nil {
 		h.logger.Error("failed to check if round is liked by account", zap.Error(err))
