@@ -6,10 +6,13 @@ import (
 	"errors"
 	"fmt"
 	"fundlevel/internal/entities/investment"
-	"fundlevel/internal/service/domain/billing/stripe"
+	"fundlevel/internal/entities/shared"
 	"fundlevel/internal/storage"
 	"strconv"
 	"time"
+
+	"github.com/stripe/stripe-go/v79"
+	"github.com/stripe/stripe-go/v79/checkout/session"
 )
 
 type BillingServiceConfig struct {
@@ -17,6 +20,7 @@ type BillingServiceConfig struct {
 	FeePercentage           float64
 	TransactionFeeProductID string
 	InvestmentFeeProductID  string
+	stripeAPIKey            string
 }
 
 type BillingService struct {
@@ -25,33 +29,57 @@ type BillingService struct {
 	feePercentage           float64
 	transactionFeeProductID string
 	investmentFeeProductID  string
-	client                  *stripe.Client
+	stripeAPIKey            string
 }
+
+const (
+	InvestmentIDMetadataKey = "investmentId"
+)
 
 // NewBillingService returns a new instance of billing service.
 func NewBillingService(repositories storage.Repository, config BillingServiceConfig) *BillingService {
-	client := stripe.NewClient(config.APIKey)
-
 	return &BillingService{
 		repositories:            repositories,
 		apiKey:                  config.APIKey,
 		feePercentage:           config.FeePercentage,
 		transactionFeeProductID: config.TransactionFeeProductID,
 		investmentFeeProductID:  config.InvestmentFeeProductID,
-		client:                  client,
+		stripeAPIKey:            config.stripeAPIKey,
 	}
 }
 
-func (s *BillingService) CreateInvestmentCheckoutSession(ctx context.Context, price int, successURL string, cancelURL string, investmentId int) (string, error) {
-	resp, err := s.client.CreateCheckoutSession(
-		fmt.Sprintf("%d", investmentId),
-		price,
-		s.transactionFeeProductID,
-		s.investmentFeeProductID,
-		s.feePercentage,
-		successURL,
-		cancelURL,
-	)
+func (s *BillingService) CreateInvestmentCheckoutSession(ctx context.Context, price int, successURL string, cancelURL string, investmentId int, currency shared.Currency) (string, error) {
+	feeCents := (float64(price) * s.feePercentage)
+
+	stripe.Key = s.stripeAPIKey
+	checkoutParams := &stripe.CheckoutSessionParams{
+		SuccessURL: stripe.String(successURL),
+		CancelURL:  stripe.String(cancelURL),
+		LineItems: []*stripe.CheckoutSessionLineItemParams{
+			{
+				PriceData: &stripe.CheckoutSessionLineItemPriceDataParams{
+					Currency:   stripe.String(string(currency)),
+					UnitAmount: stripe.Int64(int64(price)),
+					Product:    stripe.String(s.transactionFeeProductID),
+				},
+				Quantity: stripe.Int64(1),
+			},
+			{
+				PriceData: &stripe.CheckoutSessionLineItemPriceDataParams{
+					Currency:   stripe.String(string(currency)),
+					UnitAmount: stripe.Int64(int64(feeCents)),
+					Product:    stripe.String(s.investmentFeeProductID),
+				},
+				Quantity: stripe.Int64(1),
+			},
+		},
+		Mode: stripe.String(string(stripe.CheckoutSessionModePayment)),
+		Metadata: map[string]string{
+			InvestmentIDMetadataKey: strconv.Itoa(investmentId),
+		},
+	}
+
+	resp, err := session.New(checkoutParams)
 	if err != nil {
 		return "", err
 	}
@@ -62,12 +90,12 @@ func (s *BillingService) CreateInvestmentCheckoutSession(ctx context.Context, pr
 func (s *BillingService) HandleInvestmentCheckoutSuccess(ctx context.Context, sessionID string) (string, error) {
 	now := time.Now()
 
-	session, err := s.client.GetSession(sessionID)
+	session, err := s.getStripeSession(sessionID)
 	if err != nil {
 		return "", err
 	}
 
-	investmentID, ok := session.Metadata[stripe.InvestmentIDMetadataKey]
+	investmentID, ok := session.Metadata[InvestmentIDMetadataKey]
 	if !ok {
 		return "", fmt.Errorf("investment ID not found in session metadata")
 	}
@@ -76,7 +104,6 @@ func (s *BillingService) HandleInvestmentCheckoutSuccess(ctx context.Context, se
 	if err != nil {
 		return "", fmt.Errorf("failed to convert investment ID to int: %w", err)
 	}
-
 
 	_, err = s.repositories.Investment().GetById(ctx, investmentId)
 	if err != nil {
@@ -100,4 +127,9 @@ func (s *BillingService) HandleInvestmentCheckoutSuccess(ctx context.Context, se
 	}
 
 	return session.SuccessURL, nil
+}
+
+func (s *BillingService) getStripeSession(sessionID string) (*stripe.CheckoutSession, error) {
+	stripe.Key = s.stripeAPIKey
+	return session.Get(sessionID, nil)
 }

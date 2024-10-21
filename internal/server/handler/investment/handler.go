@@ -99,7 +99,6 @@ func (h *httpHandler) withdrawInvestment(ctx context.Context, input *shared.Path
 		return nil, huma.Error403Forbidden("Cannot withdraw investment for another account")
 	}
 
-
 	if investmentResult.Status != investment.InvestmentStatusPending {
 		return nil, huma.Error400BadRequest("Investment is not pending")
 	}
@@ -170,6 +169,57 @@ func (h *httpHandler) createInvestment(ctx context.Context, input *CreateInvestm
 	resp := &shared.SingleInvestmentResponse{}
 	resp.Body.Message = "Investment created successfully"
 	resp.Body.Investment = &investment
+
+	return resp, nil
+}
+
+type GetStripeCheckoutLinkInput struct {
+	shared.PathIDParam
+	RedirectURL string `query:"redirectUrl" required:"true" format:"url"`
+}
+
+type LinkOutput struct {
+	Body struct {
+		Message string `json:"message"`
+		Link    string `json:"link"`
+	}
+}
+
+func (h *httpHandler) getInvestmentCheckoutLink(ctx context.Context, input *GetStripeCheckoutLinkInput) (*LinkOutput, error) {
+	investmentRecord, err := h.service.InvestmentService.GetById(ctx, input.ID)
+	if err != nil {
+		h.logger.Error("failed to get investment", zap.Error(err))
+		return nil, huma.Error500InternalServerError("Failed to get investment")
+	}
+
+	if investmentRecord.Status != investment.InvestmentStatusPending {
+		return nil, huma.Error400BadRequest("Investment is not pending")
+	}
+
+	if account := shared.GetAuthenticatedAccount(ctx); account.ID != investmentRecord.InvestorID {
+		h.logger.Error("input account id does not match authenticated account id",
+			zap.Any("input account id", investmentRecord.InvestorID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot get investment checkout link for a investment you did not make")
+	}
+
+	round, err := h.service.RoundService.GetById(ctx, investmentRecord.RoundID)
+	if err != nil {
+		h.logger.Error("failed to get round", zap.Error(err))
+		return nil, huma.Error500InternalServerError("Failed to get round")
+	}
+
+	checkoutPrice := int(round.BuyIn * 100)
+	sess, err := h.service.BillingService.CreateInvestmentCheckoutSession(ctx, checkoutPrice, input.RedirectURL, input.RedirectURL, investmentRecord.ID, round.ValueCurrency)
+	if err != nil {
+		h.logger.Error("failed to create stripe checkout session", zap.Error(err))
+		return nil, huma.Error500InternalServerError("Failed to create stripe checkout session")
+	}
+
+	resp := &LinkOutput{}
+	resp.Body.Message = "Stripe checkout link created successfully"
+	resp.Body.Link = sess
 
 	return resp, nil
 }

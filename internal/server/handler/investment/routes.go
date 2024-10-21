@@ -22,7 +22,7 @@ func RegisterHumaRoutes(
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "accept-investment",
 		Method:      http.MethodPut,
-		Path:        "/investment/{id}/accept",
+		Path:        "/investments/{id}/accept",
 		Summary:     "Accept an investment",
 		Description: "Accept an investment.",
 		Tags:        []string{"Investments"},
@@ -42,7 +42,7 @@ func RegisterHumaRoutes(
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "withdraw-investment",
 		Method:      http.MethodPost,
-		Path:        "/investment/{id}/withdraw",
+		Path:        "/investments/{id}/withdraw",
 		Summary:     "Withdraw a investment",
 		Description: "Withdraw a investment.",
 		Tags:        []string{"Investments"},
@@ -62,7 +62,7 @@ func RegisterHumaRoutes(
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "create-round-investment",
 		Method:      http.MethodPost,
-		Path:        "/investment",
+		Path:        "/investments",
 		Summary:     "Create a round investment",
 		Description: "Create a round investment.",
 		Tags:        []string{"Investments"},
@@ -82,7 +82,7 @@ func RegisterHumaRoutes(
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "delete-round-investment",
 		Method:      http.MethodDelete,
-		Path:        "/investment/{id}",
+		Path:        "/investments/{id}",
 		Summary:     "Delete a round investment",
 		Description: "Delete a round investment.",
 		Tags:        []string{"Investments"},
@@ -99,4 +99,23 @@ func RegisterHumaRoutes(
 		},
 	}, handler.deleteInvestment)
 
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-account-checkout-link",
+		Method:      http.MethodGet,
+		Path:        "/investments/{investmentId}/checkout",
+		Summary:     "Get a stripe checkout link",
+		Description: "Get a stripe checkout link.",
+		Tags:        []string{"Accounts", "Investments"},
+		Security: []map[string][]string{
+			{"bearerAuth": {}},
+		},
+		Middlewares: huma.Middlewares{
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
+			},
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithAccount(humaApi)(ctx, next, logger, service)
+			},
+		},
+	}, handler.getInvestmentCheckoutLink)
 }

@@ -270,53 +270,6 @@ func (h *httpHandler) getAllBusinesses(ctx context.Context, input *shared.PathID
 	return resp, nil
 }
 
-type GetStripeCheckoutLinkInput struct {
-	shared.PathIDParam
-	InvestmentID int    `path:"investmentId"`
-	RedirectURL  string `query:"redirectUrl" required:"true" format:"url"`
-}
-
-type LinkOutput struct {
-	Body struct {
-		Message string `json:"message"`
-		Link    string `json:"link"`
-	}
-}
-
-func (h *httpHandler) getInvestmentCheckoutLink(ctx context.Context, input *GetStripeCheckoutLinkInput) (*LinkOutput, error) {
-	if account := shared.GetAuthenticatedAccount(ctx); account.ID != input.ID {
-		h.logger.Error("input account id does not match authenticated account id",
-			zap.Any("input account id", input.ID),
-			zap.Any("authenticated account id", account.ID))
-
-		return nil, huma.Error403Forbidden("Cannot get investment checkout link for another account")
-	}
-
-	investment, err := h.service.AccountService.GetInvestmentById(ctx, input.ID, input.InvestmentID)
-	if err != nil {
-		h.logger.Error("failed to get investment", zap.Error(err))
-		return nil, huma.Error500InternalServerError("Failed to get investment")
-	}
-
-	round, err := h.service.RoundService.GetById(ctx, investment.RoundID)
-	if err != nil {
-		h.logger.Error("failed to get round", zap.Error(err))
-		return nil, huma.Error500InternalServerError("Failed to get round")
-	}
-
-	checkoutPrice := int(round.BuyIn * 100)
-	sess, err := h.service.BillingService.CreateInvestmentCheckoutSession(ctx, checkoutPrice, input.RedirectURL, input.RedirectURL, investment.ID)
-	if err != nil {
-		h.logger.Error("failed to create stripe checkout session", zap.Error(err))
-		return nil, huma.Error500InternalServerError("Failed to create stripe checkout session")
-	}
-
-	resp := &LinkOutput{}
-	resp.Body.Message = "Stripe checkout link created successfully"
-	resp.Body.Link = sess
-
-	return resp, nil
-}
 
 func (h *httpHandler) getInvestmentById(ctx context.Context, input *shared.PathIDParam) (*shared.SingleInvestmentResponse, error) {
 	account := shared.GetAuthenticatedAccount(ctx)

@@ -8,6 +8,7 @@ import (
 	"fundlevel/internal/entities/industry"
 	"fundlevel/internal/entities/investment"
 	"fundlevel/internal/entities/round"
+	"fundlevel/internal/entities/shared"
 	"fundlevel/internal/entities/venture"
 	accountService "fundlevel/internal/service/domain/account"
 	"fundlevel/internal/service/domain/billing"
@@ -105,7 +106,7 @@ type BusinessService interface {
 }
 
 type BillingService interface {
-	CreateInvestmentCheckoutSession(ctx context.Context, price int, successURL string, cancelURL string, investmentId int) (string, error)
+	CreateInvestmentCheckoutSession(ctx context.Context, price int, successURL string, cancelURL string, investmentId int, currency shared.Currency) (string, error)
 	HandleInvestmentCheckoutSuccess(ctx context.Context, sessionID string) (string, error)
 }
 

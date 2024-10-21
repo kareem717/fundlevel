@@ -156,25 +156,7 @@ func RegisterHumaRoutes(
 		},
 	}, handler.getAllBusinesses)
 
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-account-checkout-link",
-		Method:      http.MethodGet,
-		Path:        "/account/{id}/investments/{investmentId}/checkout",
-		Summary:     "Get a stripe checkout link",
-		Description: "Get a stripe checkout link.",
-		Tags:        []string{"Accounts", "Investments"},
-		Security: []map[string][]string{
-			{"bearerAuth": {}},
-		},
-		Middlewares: huma.Middlewares{
-			func(ctx huma.Context, next func(huma.Context)) {
-				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
-			},
-			func(ctx huma.Context, next func(huma.Context)) {
-				middleware.WithAccount(humaApi)(ctx, next, logger, service)
-			},
-		},
-	}, handler.getInvestmentCheckoutLink)
+
 
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "get-investment-by-id",
