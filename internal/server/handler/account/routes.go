@@ -102,6 +102,9 @@ func RegisterHumaRoutes(
 		Summary:     "Create a round investment",
 		Description: "Create a round investment.",
 		Tags:        []string{"Accounts", "Investments"},
+		Security: []map[string][]string{
+			{"bearerAuth": {}},
+		},
 		Middlewares: huma.Middlewares{
 			func(ctx huma.Context, next func(huma.Context)) {
 				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
@@ -119,6 +122,9 @@ func RegisterHumaRoutes(
 		Summary:     "Delete a round investment",
 		Description: "Delete a round investment.",
 		Tags:        []string{"Accounts", "Investments"},
+		Security: []map[string][]string{
+			{"bearerAuth": {}},
+		},
 		Middlewares: huma.Middlewares{
 			func(ctx huma.Context, next func(huma.Context)) {
 				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
@@ -136,6 +142,9 @@ func RegisterHumaRoutes(
 		Summary:     "Get round investments",
 		Description: "Get round investments.",
 		Tags:        []string{"Accounts", "Investments"},
+		Security: []map[string][]string{
+			{"bearerAuth": {}},
+		},
 		Middlewares: huma.Middlewares{
 			func(ctx huma.Context, next func(huma.Context)) {
 				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
@@ -153,6 +162,9 @@ func RegisterHumaRoutes(
 		Summary:     "Get round investments",
 		Description: "Get round investments.",
 		Tags:        []string{"Accounts", "Investments"},
+		Security: []map[string][]string{
+			{"bearerAuth": {}},
+		},
 		Middlewares: huma.Middlewares{
 			func(ctx huma.Context, next func(huma.Context)) {
 				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
@@ -170,6 +182,9 @@ func RegisterHumaRoutes(
 		Summary:     "Withdraw a investment",
 		Description: "Withdraw a investment.",
 		Tags:        []string{"Accounts", "Investments"},
+		Security: []map[string][]string{
+			{"bearerAuth": {}},
+		},
 		Middlewares: huma.Middlewares{
 			func(ctx huma.Context, next func(huma.Context)) {
 				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
@@ -187,6 +202,9 @@ func RegisterHumaRoutes(
 		Summary:     "Get businesses",
 		Description: "Get businesses.",
 		Tags:        []string{"Accounts", "Businesses"},
+		Security: []map[string][]string{
+			{"bearerAuth": {}},
+		},
 		Middlewares: huma.Middlewares{
 			func(ctx huma.Context, next func(huma.Context)) {
 				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
@@ -204,6 +222,9 @@ func RegisterHumaRoutes(
 		Summary:     "Get a stripe checkout link",
 		Description: "Get a stripe checkout link.",
 		Tags:        []string{"Accounts", "Investments"},
+		Security: []map[string][]string{
+			{"bearerAuth": {}},
+		},
 		Middlewares: huma.Middlewares{
 			func(ctx huma.Context, next func(huma.Context)) {
 				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
@@ -221,6 +242,9 @@ func RegisterHumaRoutes(
 		Summary:     "Get investment by ID",
 		Description: "Get investment by ID.",
 		Tags:        []string{"Accounts", "Investments"},
+		Security: []map[string][]string{
+			{"bearerAuth": {}},
+		},
 		Middlewares: huma.Middlewares{
 			func(ctx huma.Context, next func(huma.Context)) {
 				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)

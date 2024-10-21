@@ -89,6 +89,9 @@ func RegisterHumaRoutes(
 		Summary:     "Create a venture",
 		Description: "Create a venture.",
 		Tags:        []string{"Ventures"},
+		Security: []map[string][]string{
+			{"bearerAuth": {}},
+		},
 		Middlewares: huma.Middlewares{
 			func(ctx huma.Context, next func(huma.Context)) {
 				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
@@ -106,6 +109,9 @@ func RegisterHumaRoutes(
 		Summary:     "Update a venture",
 		Description: "Update a venture.",
 		Tags:        []string{"Ventures"},
+		Security: []map[string][]string{
+			{"bearerAuth": {}},
+		},
 		Middlewares: huma.Middlewares{
 			func(ctx huma.Context, next func(huma.Context)) {
 				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
@@ -123,6 +129,9 @@ func RegisterHumaRoutes(
 		Summary:     "Delete a venture",
 		Description: "Delete a venture.",
 		Tags:        []string{"Ventures"},
+		Security: []map[string][]string{
+			{"bearerAuth": {}},
+		},
 		Middlewares: huma.Middlewares{
 			func(ctx huma.Context, next func(huma.Context)) {
 				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
@@ -140,6 +149,9 @@ func RegisterHumaRoutes(
 		Summary:     "Create a venture like",
 		Description: "Create a venture like.",
 		Tags:        []string{"Ventures", "Likes"},
+		Security: []map[string][]string{
+			{"bearerAuth": {}},
+		},
 		Middlewares: huma.Middlewares{
 			func(ctx huma.Context, next func(huma.Context)) {
 				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
@@ -157,6 +169,9 @@ func RegisterHumaRoutes(
 		Summary:     "Delete a venture like",
 		Description: "Delete a venture like.",
 		Tags:        []string{"Ventures", "Likes"},
+		Security: []map[string][]string{
+			{"bearerAuth": {}},
+		},
 		Middlewares: huma.Middlewares{
 			func(ctx huma.Context, next func(huma.Context)) {
 				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
@@ -174,6 +189,9 @@ func RegisterHumaRoutes(
 		Summary:     "Get a venture like status",
 		Description: "Get a venture like status.",
 		Tags:        []string{"Ventures", "Likes"},
+		Security: []map[string][]string{
+			{"bearerAuth": {}},
+		},
 		Middlewares: huma.Middlewares{
 			func(ctx huma.Context, next func(huma.Context)) {
 				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)

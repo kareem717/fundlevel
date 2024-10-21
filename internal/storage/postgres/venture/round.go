@@ -37,7 +37,6 @@ func (r *VentureRepository) GetRoundsByPage(ctx context.Context, ventureId int, 
 		NewSelect().
 		Model(&resp).
 		Where("round.venture_id = ?", ventureId).
-		Order("round.id").
 		Offset(offset).
 		Limit(paginationParams.PageSize + 1)
 

@@ -175,8 +175,8 @@ func (h *httpHandler) getRoundsByCursor(ctx context.Context, input *shared.GetRo
 	return resp, nil
 }
 
-func (h *httpHandler) getOffsetPaginatedRoundInvestments(ctx context.Context, input *shared.GetOffsetPaginatedByParentPathIDInput) (*shared.GetOffsetPaginatedRoundInvestmentsOutput, error) {
-	rounds, err := h.service.VentureService.GetInvestmentsByPage(ctx, input.ID, input.PageSize, input.Page)
+func (h *httpHandler) getOffsetPaginatedRoundInvestments(ctx context.Context, input *shared.GetInvestmentsByParentAndPageInput) (*shared.GetOffsetPaginatedRoundInvestmentsOutput, error) {
+	rounds, total, err := h.service.VentureService.GetInvestmentsByPage(ctx, input.ID, input.PageSize, input.Page, input.InvestmentFilter)
 
 	if err != nil {
 		switch {
@@ -191,6 +191,7 @@ func (h *httpHandler) getOffsetPaginatedRoundInvestments(ctx context.Context, in
 	resp := &shared.GetOffsetPaginatedRoundInvestmentsOutput{}
 	resp.Body.Message = "Round investments fetched successfully"
 	resp.Body.Investments = rounds
+	resp.Body.Total = total
 
 	if len(rounds) > input.PageSize {
 		resp.Body.HasMore = true
@@ -200,10 +201,10 @@ func (h *httpHandler) getOffsetPaginatedRoundInvestments(ctx context.Context, in
 	return resp, nil
 }
 
-func (h *httpHandler) getCursorPaginatedRoundInvestments(ctx context.Context, input *shared.GetCursorPaginatedByParentPathIDInput) (*shared.GetCursorPaginatedRoundInvestmentsOutput, error) {
+func (h *httpHandler) getCursorPaginatedRoundInvestments(ctx context.Context, input *shared.GetInvestmentsByParentAndCursorInput) (*shared.GetCursorPaginatedRoundInvestmentsOutput, error) {
 	limit := input.Limit + 1
 
-	rounds, err := h.service.VentureService.GetInvestmentsByCursor(ctx, input.ID, limit, input.Cursor)
+	rounds, err := h.service.VentureService.GetInvestmentsByCursor(ctx, input.ID, limit, input.Cursor, input.InvestmentFilter)
 
 	if err != nil {
 		switch {

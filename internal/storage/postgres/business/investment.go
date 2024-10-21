@@ -6,42 +6,49 @@ import (
 
 	"fundlevel/internal/entities/investment"
 	"fundlevel/internal/entities/round"
+	"fundlevel/internal/storage/postgres/helper"
 	postgres "fundlevel/internal/storage/shared"
 )
 
-func (r *BusinessRepository) GetInvestmentsByCursor(ctx context.Context, businessId int, paginationParams postgres.CursorPagination) ([]investment.RoundInvestment, error) {
+func (r *BusinessRepository) GetInvestmentsByCursor(ctx context.Context, businessId int, paginationParams postgres.CursorPagination, filter investment.InvestmentFilter) ([]investment.RoundInvestment, error) {
 	resp := []investment.RoundInvestment{}
 
-	err := r.db.
+	query := r.db.
 		NewSelect().
 		Model(&resp).
 		Join("JOIN ventures").
 		JoinOn("round.venture_id = ventures.id").
 		Where("ventures.business_id = ?", businessId).
-		Where("round_investment.id >= ?", paginationParams.Cursor).
-		Order("round_investment.id").
-		Limit(paginationParams.Limit).
-		Scan(ctx)
+		Limit(paginationParams.Limit)
+
+	query = helper.ApplyInvestmentFilter(query, filter)
+
+	cursorCondition := "round_investment.id >= ?"
+	if filter.SortOrder != "asc" && paginationParams.Cursor > 0 {
+		cursorCondition = "round_investment.id <= ?"
+	}
+
+	err := query.Where(cursorCondition, paginationParams.Cursor).Scan(ctx, &resp)
 
 	return resp, err
 }
 
-func (r *BusinessRepository) GetInvestmentsByPage(ctx context.Context, businessId int, paginationParams postgres.OffsetPagination) ([]investment.RoundInvestment, error) {
+func (r *BusinessRepository) GetInvestmentsByPage(ctx context.Context, businessId int, paginationParams postgres.OffsetPagination, filter investment.InvestmentFilter) ([]investment.RoundInvestment, int, error) {
 	resp := []investment.RoundInvestment{}
 	offset := (paginationParams.Page - 1) * paginationParams.PageSize
 
-	err := r.db.
+	query := r.db.
 		NewSelect().
 		Model(&resp).
 		Join("JOIN ventures").
 		JoinOn("round.venture_id = ventures.id").
 		Where("ventures.business_id = ?", businessId).
-		Order("round_investment.id").
 		Offset(offset).
-		Limit(paginationParams.PageSize).
-		Scan(ctx)
+		Limit(paginationParams.PageSize + 1)
 
-	return resp, err
+	count, err := helper.ApplyInvestmentFilter(query, filter).ScanAndCount(ctx, &resp)
+
+	return resp, count, err
 }
 
 func (r *BusinessRepository) GetTotalFunding(ctx context.Context, businessId int) (int, error) {

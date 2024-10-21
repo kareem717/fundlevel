@@ -2,7 +2,9 @@ package helper
 
 import (
 	"fmt"
+	"fundlevel/internal/entities/investment"
 	"fundlevel/internal/entities/round"
+	"fundlevel/internal/entities/venture"
 	"time"
 
 	"github.com/uptrace/bun"
@@ -81,7 +83,37 @@ func ApplyRoundFilter(query *bun.SelectQuery, filter round.RoundFilter) *bun.Sel
 	if filter.SortBy != "" {
 		query.OrderExpr(fmt.Sprintf("%s, round.id %s", filter.SortBy, filter.SortOrder))
 	} else {
-		query.Order("round.id")
+		query.Order(fmt.Sprintf("round.id %s", filter.SortOrder))
+	}
+
+	return query
+}
+
+func ApplyInvestmentFilter(query *bun.SelectQuery, filter investment.InvestmentFilter) *bun.SelectQuery {
+	ApplyTimeRangeFilter(query, "round_investment.paid_at", filter.MinPaidAt, filter.MaxPaidAt)
+
+	if len(filter.Status) > 0 {
+		query.Where("round_investment.status IN (?)", bun.In(filter.Status))
+	}
+
+	if filter.SortBy != "" {
+		query.OrderExpr(fmt.Sprintf("%s, round_investment.id %s", filter.SortBy, filter.SortOrder))
+	} else {
+		query.Order(fmt.Sprintf("round_investment.id %s", filter.SortOrder))
+	}
+
+	return query
+}
+
+func ApplyVentureFilter(query *bun.SelectQuery, filter venture.VentureFilter) *bun.SelectQuery {
+	if filter.SortBy != "" {
+		query.OrderExpr(fmt.Sprintf("%s, venture.id %s", filter.SortBy, filter.SortOrder))
+	} else {
+		query.OrderExpr(fmt.Sprintf("venture.id %s", filter.SortOrder))
+	}
+
+	if len(filter.IsHidden) > 0 {
+		query.Where("venture.is_hidden IN (?)", bun.In(filter.IsHidden))
 	}
 
 	return query

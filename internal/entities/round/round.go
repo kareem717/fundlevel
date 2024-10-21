@@ -53,7 +53,7 @@ type RoundFilter struct {
 
 	ValueCurrencies shared.Currency `query:"valueCurrencies" enum:"usd,gbp,eur,cad,aud,jpy" required:"false"`
 
-	Status []RoundStatus `query:"status" enum:"active,successful,failed" required:"false"`
+	Status []string `query:"status" enum:"active,successful,failed" required:"false"`
 
 	MinimumInvestorCount int `query:"minimumInvestorCount" minimum:"1" required:"false"`
 	MaximumInvestorCount int `query:"maximumInvestorCount" minimum:"1" required:"false"`

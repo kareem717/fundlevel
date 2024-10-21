@@ -165,7 +165,7 @@ func (h *httpHandler) delete(ctx context.Context, input *shared.PathIDParam) (*D
 	return resp, nil
 }
 
-func (h *httpHandler) getInvestmentsByCursor(ctx context.Context, input *shared.GetCursorPaginatedByParentPathIDInput) (*shared.GetCursorPaginatedRoundInvestmentsOutput, error) {
+func (h *httpHandler) getInvestmentsByCursor(ctx context.Context, input *shared.GetInvestmentsByParentAndCursorInput) (*shared.GetCursorPaginatedRoundInvestmentsOutput, error) {
 	if account := shared.GetAuthenticatedAccount(ctx); account.ID != input.ID {
 		h.logger.Error(
 			"input account id does not match authenticated account id",
@@ -178,7 +178,7 @@ func (h *httpHandler) getInvestmentsByCursor(ctx context.Context, input *shared.
 
 	limit := input.Limit + 1
 
-	investments, err := h.service.AccountService.GetInvestmentsByCursor(ctx, input.ID, limit, input.Cursor)
+	investments, err := h.service.AccountService.GetInvestmentsByCursor(ctx, input.ID, limit, input.Cursor, input.InvestmentFilter)
 
 	if err != nil {
 		switch {
@@ -203,7 +203,7 @@ func (h *httpHandler) getInvestmentsByCursor(ctx context.Context, input *shared.
 	return resp, nil
 }
 
-func (h *httpHandler) getInvestmentsByPage(ctx context.Context, input *shared.GetOffsetPaginatedByParentPathIDInput) (*shared.GetOffsetPaginatedRoundInvestmentsOutput, error) {
+func (h *httpHandler) getInvestmentsByPage(ctx context.Context, input *shared.GetInvestmentsByParentAndPageInput) (*shared.GetOffsetPaginatedRoundInvestmentsOutput, error) {
 	if account := shared.GetAuthenticatedAccount(ctx); account.ID != input.ID {
 		h.logger.Error("input account id does not match authenticated account id",
 			zap.Any("input account id", input.ID),
@@ -212,7 +212,7 @@ func (h *httpHandler) getInvestmentsByPage(ctx context.Context, input *shared.Ge
 		return nil, huma.Error403Forbidden("Cannot get investments for another account")
 	}
 
-	investments, err := h.service.AccountService.GetInvestmentsByPage(ctx, input.ID, input.PageSize, input.Page)
+	investments, total, err := h.service.AccountService.GetInvestmentsByPage(ctx, input.ID, input.PageSize, input.Page, input.InvestmentFilter)
 
 	if err != nil {
 		switch {
@@ -227,7 +227,7 @@ func (h *httpHandler) getInvestmentsByPage(ctx context.Context, input *shared.Ge
 	resp := &shared.GetOffsetPaginatedRoundInvestmentsOutput{}
 	resp.Body.Message = "Investments fetched successfully"
 	resp.Body.Investments = investments
-
+	resp.Body.Total = total
 	if len(investments) > input.PageSize {
 		resp.Body.HasMore = true
 		resp.Body.Investments = resp.Body.Investments[:len(resp.Body.Investments)-1]

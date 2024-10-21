@@ -40,8 +40,8 @@ type VentureService interface {
 	IsLikedByAccount(ctx context.Context, ventureId int, accountId int) (bool, error)
 	GetLikeCount(ctx context.Context, ventureId int) (int, error)
 
-	GetInvestmentsByCursor(ctx context.Context, ventureId int, limit int, cursor int) ([]investment.RoundInvestment, error)
-	GetInvestmentsByPage(ctx context.Context, ventureId int, pageSize int, page int) ([]investment.RoundInvestment, error)
+	GetInvestmentsByCursor(ctx context.Context, ventureId int, limit int, cursor int, filter investment.InvestmentFilter) ([]investment.RoundInvestment, error)
+	GetInvestmentsByPage(ctx context.Context, ventureId int, pageSize int, page int, filter investment.InvestmentFilter) ([]investment.RoundInvestment, int, error)
 }
 
 type UserService interface {
@@ -54,8 +54,8 @@ type AccountService interface {
 	Update(ctx context.Context, id int, params account.UpdateAccountParams) (account.Account, error)
 	GetById(ctx context.Context, id int) (account.Account, error)
 
-	GetInvestmentsByCursor(ctx context.Context, accountId int, limit int, cursor int) ([]investment.RoundInvestment, error)
-	GetInvestmentsByPage(ctx context.Context, accountId int, pageSize int, page int) ([]investment.RoundInvestment, error)
+	GetInvestmentsByCursor(ctx context.Context, accountId int, limit int, cursor int, filter investment.InvestmentFilter) ([]investment.RoundInvestment, error)
+	GetInvestmentsByPage(ctx context.Context, accountId int, pageSize int, page int, filter investment.InvestmentFilter) ([]investment.RoundInvestment, int, error)
 	WithdrawInvestment(ctx context.Context, accountId int, investmentId int) error
 	DeleteInvestment(ctx context.Context, accountId int, investmentId int) error
 	CreateInvestment(ctx context.Context, params investment.CreateInvestmentParams) (investment.RoundInvestment, error)
@@ -84,8 +84,8 @@ type RoundService interface {
 	IsLikedByAccount(ctx context.Context, roundId int, accountId int) (bool, error)
 	GetLikeCount(ctx context.Context, roundId int) (int, error)
 
-	GetInvestmentsByCursor(ctx context.Context, roundId int, limit int, cursor int) ([]investment.RoundInvestment, error)
-	GetInvestmentsByPage(ctx context.Context, roundId int, pageSize int, page int) ([]investment.RoundInvestment, error)
+	GetInvestmentsByCursor(ctx context.Context, roundId int, limit int, cursor int, filter investment.InvestmentFilter) ([]investment.RoundInvestment, error)
+	GetInvestmentsByPage(ctx context.Context, roundId int, pageSize int, page int, filter investment.InvestmentFilter) ([]investment.RoundInvestment, int, error)
 	AcceptInvestment(ctx context.Context, roundId int, investmentId int) error
 }
 
@@ -101,8 +101,8 @@ type BusinessService interface {
 	GetRoundsByCursor(ctx context.Context, businessId int, limit int, cursor int, filter round.RoundFilter) ([]round.Round, error)
 
 	// GetInvestmentsByCursor gets all of the investments received on the rounds related to the business using cursor pagination
-	GetInvestmentsByCursor(ctx context.Context, businessId int, limit int, cursor int) ([]investment.RoundInvestment, error)
-	GetInvestmentsByPage(ctx context.Context, businessId int, pageSize int, page int) ([]investment.RoundInvestment, error)
+	GetInvestmentsByCursor(ctx context.Context, businessId int, limit int, cursor int, filter investment.InvestmentFilter) ([]investment.RoundInvestment, error)
+	GetInvestmentsByPage(ctx context.Context, businessId int, pageSize int, page int, filter investment.InvestmentFilter) ([]investment.RoundInvestment, int, error)
 
 	// GetTotalFunding gets the amount the business has successfully raised through rounds
 	GetTotalFunding(ctx context.Context, businessId int) (int, error)

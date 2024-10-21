@@ -2,12 +2,10 @@ package business
 
 import (
 	"context"
-	"fmt"
 
 	"fundlevel/internal/entities/venture"
+	"fundlevel/internal/storage/postgres/helper"
 	postgres "fundlevel/internal/storage/shared"
-
-	"github.com/uptrace/bun"
 )
 
 func (r *BusinessRepository) GetVenturesByCursor(
@@ -24,10 +22,7 @@ func (r *BusinessRepository) GetVenturesByCursor(
 		Where("venture.business_id = ?", businessId).
 		Limit(paginationParams.Limit)
 
-	if len(filter.SortOrder) > 0 {
-		query.OrderExpr(fmt.Sprintf("venture.id %s", filter.SortOrder))
-	}
-
+	query = helper.ApplyVentureFilter(query, filter)
 	cursorCondition := "venture.id >= ?"
 	if filter.SortOrder != "asc" && paginationParams.Cursor > 0 {
 		cursorCondition = "venture.id <= ?"
@@ -54,13 +49,7 @@ func (r *BusinessRepository) GetVenturesByPage(
 		Offset(offset).
 		Limit(paginationParams.PageSize)
 
-	if len(filter.SortOrder) > 0 {
-		query.OrderExpr(fmt.Sprintf("venture.id %s", filter.SortOrder))
-	}
-
-	if len(filter.IsHidden) > 0 {
-		query.Where("venture.is_hidden IN (?)", bun.In(filter.IsHidden))
-	}
+	query = helper.ApplyVentureFilter(query, filter)
 
 	count, err := query.ScanAndCount(ctx, &resp)
 

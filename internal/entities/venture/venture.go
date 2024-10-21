@@ -23,7 +23,8 @@ type Venture struct {
 
 type VentureFilter struct {
 	IsHidden []bool `query:"isHidden" required:"false"`
-	SortOrder string `query:"sortOrder" required:"false" enum:"asc,desc"`
+	SortBy    string `query:"sortBy" required:"false" enum:"created_at"`
+	SortOrder string `query:"sortOrder" required:"false" enum:"asc,desc" default:"asc"`
 }
 
 // CreateVentureParams contains the parameters for creating a new venture.

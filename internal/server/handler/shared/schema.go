@@ -33,6 +33,18 @@ type GetRoundsByParentAndPageInput struct {
 	GetOffsetPaginatedByParentPathIDInput
 	round.RoundFilter
 }
+
+
+type GetInvestmentsByParentAndCursorInput struct {
+	GetCursorPaginatedByParentPathIDInput
+	investment.InvestmentFilter
+}
+
+type GetInvestmentsByParentAndPageInput struct {
+	GetOffsetPaginatedByParentPathIDInput
+	investment.InvestmentFilter
+}
+
 type FundingOutput struct {
 	Body struct {
 		MessageResponse

@@ -36,6 +36,9 @@ func RegisterHumaRoutes(
 		Summary:     "Create a business",
 		Description: "Create a business.",
 		Tags:        []string{"Businesses"},
+		Security: []map[string][]string{
+			{"bearerAuth": {}},
+		},
 		Middlewares: huma.Middlewares{
 			func(ctx huma.Context, next func(huma.Context)) {
 				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
@@ -53,6 +56,9 @@ func RegisterHumaRoutes(
 		Summary:     "Delete a business",
 		Description: "Delete a business.",
 		Tags:        []string{"Businesses"},
+		Security: []map[string][]string{
+			{"bearerAuth": {}},
+		},
 		Middlewares: huma.Middlewares{
 			func(ctx huma.Context, next func(huma.Context)) {
 				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
