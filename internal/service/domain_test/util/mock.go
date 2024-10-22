@@ -19,7 +19,7 @@ func SetupTestService(t *testing.T, dbSeedConfig seed.SeedConfig, ctx context.Co
 	repo := postgres.NewRepository(db, ctx)
 
 	service := service.NewService(repo, billing.BillingServiceConfig{
-		APIKey:        "test",
+		StripeAPIKey:    "test",
 		FeePercentage: 0.033333,
 	})
 

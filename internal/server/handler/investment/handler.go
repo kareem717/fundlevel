@@ -214,8 +214,8 @@ func (h *httpHandler) getInvestmentCheckoutLink(ctx context.Context, input *GetS
 		return nil, huma.Error500InternalServerError("Failed to get investment")
 	}
 
-	if investmentRecord.Status != investment.InvestmentStatusPending {
-		return nil, huma.Error400BadRequest("Investment is not pending")
+	if investmentRecord.Status != investment.InvestmentStatusAccepted {
+		return nil, huma.Error400BadRequest("Investment has not been accepted")
 	}
 
 	if account := shared.GetAuthenticatedAccount(ctx); account.ID != investmentRecord.InvestorID {

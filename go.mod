@@ -13,7 +13,7 @@ require (
 	github.com/lib/pq v1.10.9
 	github.com/pressly/goose/v3 v3.22.1
 	github.com/stretchr/testify v1.9.0
-	github.com/stripe/stripe-go/v79 v79.12.0
+	github.com/stripe/stripe-go/v80 v80.2.0
 	github.com/supabase-community/gotrue-go v1.2.1
 	github.com/supabase-community/supabase-go v0.0.4
 	github.com/testcontainers/testcontainers-go v0.33.0

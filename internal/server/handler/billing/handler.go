@@ -9,8 +9,8 @@ import (
 	"net/http"
 
 	"github.com/danielgtaylor/huma/v2"
-	"github.com/stripe/stripe-go/v79"
-	"github.com/stripe/stripe-go/v79/webhook"
+	"github.com/stripe/stripe-go/v80"
+	"github.com/stripe/stripe-go/v80/webhook"
 	"go.uber.org/zap"
 )
 

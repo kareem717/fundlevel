@@ -102,10 +102,10 @@ func RegisterHumaRoutes(
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "get-account-checkout-link",
 		Method:      http.MethodGet,
-		Path:        "/investments/{investmentId}/checkout",
+		Path:        "/investments/{id}/checkout",
 		Summary:     "Get a stripe checkout link",
 		Description: "Get a stripe checkout link.",
-		Tags:        []string{"Accounts", "Investments"},
+		Tags:        []string{"Investments"},
 		Security: []map[string][]string{
 			{"bearerAuth": {}},
 		},

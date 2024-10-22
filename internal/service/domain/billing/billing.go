@@ -11,21 +11,20 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/stripe/stripe-go/v79"
-	"github.com/stripe/stripe-go/v79/checkout/session"
+	"github.com/stripe/stripe-go/v80"
+	"github.com/stripe/stripe-go/v80/checkout/session"
+	"github.com/stripe/stripe-go/v80/paymentintent"
 )
 
 type BillingServiceConfig struct {
-	APIKey                  string
 	FeePercentage           float64
 	TransactionFeeProductID string
 	InvestmentFeeProductID  string
-	stripeAPIKey            string
+	StripeAPIKey            string
 }
 
 type BillingService struct {
 	repositories            storage.Repository
-	apiKey                  string
 	feePercentage           float64
 	transactionFeeProductID string
 	investmentFeeProductID  string
@@ -40,11 +39,10 @@ const (
 func NewBillingService(repositories storage.Repository, config BillingServiceConfig) *BillingService {
 	return &BillingService{
 		repositories:            repositories,
-		apiKey:                  config.APIKey,
 		feePercentage:           config.FeePercentage,
 		transactionFeeProductID: config.TransactionFeeProductID,
 		investmentFeeProductID:  config.InvestmentFeeProductID,
-		stripeAPIKey:            config.stripeAPIKey,
+		stripeAPIKey:            config.StripeAPIKey,
 	}
 }
 
@@ -52,6 +50,7 @@ func (s *BillingService) CreateInvestmentCheckoutSession(ctx context.Context, pr
 	feeCents := (float64(price) * s.feePercentage)
 
 	stripe.Key = s.stripeAPIKey
+	fmt.Println(stripe.Key)
 	checkoutParams := &stripe.CheckoutSessionParams{
 		SuccessURL: stripe.String(successURL),
 		CancelURL:  stripe.String(cancelURL),
@@ -74,7 +73,7 @@ func (s *BillingService) CreateInvestmentCheckoutSession(ctx context.Context, pr
 			},
 		},
 		PaymentIntentData: &stripe.CheckoutSessionPaymentIntentDataParams{
-			ApplicationFeeAmount: stripe.Int64(int64(feeCents)),
+			CaptureMethod: stripe.String(string(stripe.PaymentIntentCaptureMethodManual)),
 		},
 		Mode: stripe.String(string(stripe.CheckoutSessionModePayment)),
 		Metadata: map[string]string{
@@ -93,6 +92,8 @@ func (s *BillingService) CreateInvestmentCheckoutSession(ctx context.Context, pr
 func (s *BillingService) HandleInvestmentCheckoutSuccess(ctx context.Context, sessionID string) (string, error) {
 	now := time.Now()
 
+	stripe.Key = s.stripeAPIKey
+
 	session, err := s.getStripeSession(sessionID)
 	if err != nil {
 		return "", err
@@ -103,33 +104,53 @@ func (s *BillingService) HandleInvestmentCheckoutSuccess(ctx context.Context, se
 		return "", fmt.Errorf("investment ID not found in session metadata")
 	}
 
-	investmentId, err := strconv.Atoi(investmentID)
-	if err != nil {
-		return "", fmt.Errorf("failed to convert investment ID to int: %w", err)
-	}
+	paymentIntent := session.PaymentIntent
 
-	_, err = s.repositories.Investment().GetById(ctx, investmentId)
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return "", fmt.Errorf("investment not found")
+	err = s.repositories.RunInTx(ctx, func(ctx context.Context, tx storage.Transaction) error {
+		params := &stripe.PaymentIntentCaptureParams{}
+		_, err := paymentintent.Capture(paymentIntent.ID, params)
+		if err != nil {
+			return err
 		}
-		return "", fmt.Errorf("failed to get investment: %w", err)
-	}
 
-	updateParams := investment.UpdateInvestmentParams{
-		// Status is updated to success as this is intended to be the final step - if desired we can delay this step
-		Status:                  investment.InvestmentStatusSuccessful,
-		PaidAt:                  &now,
-		StripeCheckoutSessionID: &session.ID,
-	}
+		investmentId, err := strconv.Atoi(investmentID)
+		if err != nil {
+			return fmt.Errorf("failed to convert investment ID to int: %w", err)
+		}
 
-	_, err = s.repositories.Investment().Update(ctx, investmentId, updateParams)
+		_, err = s.repositories.Investment().GetById(ctx, investmentId)
+		if err != nil {
+			if errors.Is(err, sql.ErrNoRows) {
+				return fmt.Errorf("investment not found")
+			}
+			return fmt.Errorf("failed to get investment: %w", err)
+		}
+
+		updateParams := investment.UpdateInvestmentParams{
+			// Status is updated to success as this is intended to be the final step - if desired we can delay this step
+			Status:                  investment.InvestmentStatusSuccessful,
+			PaidAt:                  &now,
+			StripeCheckoutSessionID: &session.ID,
+		}
+
+		_, err = s.repositories.Investment().Update(ctx, investmentId, updateParams)
+		if err != nil {
+			// TODO: figure out how to reverse the transaction if it fails
+			return fmt.Errorf("failed to update investment: %w", err)
+		}
+
+		return nil
+	})
+
 	if err != nil {
-		// TODO: figure out how to reverse the transaction if it fails
-		return "", fmt.Errorf("failed to update investment: %w", err)
+		params := &stripe.PaymentIntentCancelParams{}
+		_, err := paymentintent.Cancel(paymentIntent.ID, params)
+		if err != nil {
+			return "", err
+		}
 	}
 
-	return session.SuccessURL, nil
+	return session.SuccessURL, err
 }
 
 func (s *BillingService) getStripeSession(sessionID string) (*stripe.CheckoutSession, error) {
