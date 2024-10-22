@@ -3,8 +3,9 @@ package round
 import (
 	"context"
 	"errors"
+	"fundlevel/internal/entities/business"
 	"fundlevel/internal/entities/round"
-	"fundlevel/internal/storage/postgres/shared"
+	postgres "fundlevel/internal/storage/shared"
 
 	"fundlevel/internal/storage"
 )
@@ -32,6 +33,15 @@ func (s *RoundService) Create(ctx context.Context, params round.CreateRoundParam
 		return round.Round{}, errors.New("active round already exists")
 	}
 
+	venture, err := s.repositories.Venture().GetById(ctx, params.VentureID)
+	if err != nil {
+		return round.Round{}, err
+	}
+
+	if venture.Business.Status != business.BusinessStatusActive {
+		return round.Round{}, errors.New("business is not active")
+	}
+
 	params.BuyIn = float64(params.PercentageValue) / float64(params.InvestorCount)
 	params.Status = round.Active
 
@@ -42,22 +52,22 @@ func (s *RoundService) GetById(ctx context.Context, id int) (round.Round, error)
 	return s.repositories.Round().GetById(ctx, id)
 }
 
-func (s *RoundService) GetByPage(ctx context.Context, pageSize int, page int) ([]round.Round, error) {
-	paginationParams := shared.OffsetPagination{
+func (s *RoundService) GetByPage(ctx context.Context, pageSize int, page int, filter round.RoundFilter) ([]round.Round, int, error) {
+	paginationParams := postgres.OffsetPagination{
 		PageSize: pageSize,
 		Page:     page,
 	}
 
-	return s.repositories.Round().GetByPage(ctx, paginationParams)
+	return s.repositories.Round().GetByPage(ctx, paginationParams, filter)
 }
 
-func (s *RoundService) GetByCursor(ctx context.Context, limit int, cursor int) ([]round.Round, error) {
-	paginationParams := shared.CursorPagination{
+func (s *RoundService) GetByCursor(ctx context.Context, limit int, cursor int, filter round.RoundFilter) ([]round.Round, error) {
+	paginationParams := postgres.CursorPagination{
 		Limit:  limit,
 		Cursor: cursor,
 	}
 
-	return s.repositories.Round().GetByCursor(ctx, paginationParams)
+	return s.repositories.Round().GetByCursor(ctx, paginationParams, filter)
 }
 
 func (s *RoundService) Delete(ctx context.Context, id int) error {

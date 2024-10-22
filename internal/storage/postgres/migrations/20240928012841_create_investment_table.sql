@@ -30,7 +30,6 @@ CREATE TABLE
                 AND stripe_checkout_session_id IS NOT NULL
             )
         )
-        -- //TODO: add paid_at/signed_at and status checks: i.e. cant be accepted if those are null etc.
     );
 
 CREATE TRIGGER sync_round_investments_updated_at BEFORE

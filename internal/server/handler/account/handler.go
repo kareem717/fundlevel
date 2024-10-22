@@ -7,7 +7,6 @@ import (
 
 	"fundlevel/internal/entities/account"
 	"fundlevel/internal/entities/business"
-	"fundlevel/internal/entities/investment"
 	"fundlevel/internal/server/handler/shared"
 	"fundlevel/internal/service"
 
@@ -68,9 +67,11 @@ type CreateAccountInput struct {
 
 func (h *httpHandler) create(ctx context.Context, input *CreateAccountInput) (*shared.SingleAccountResponse, error) {
 	if user := shared.GetAuthenticatedUser(ctx); user.ID != input.Body.UserID {
-		h.logger.Error("input user id does not match authenticated user id",
+		h.logger.Error(
+			"input user id does not match authenticated user id",
 			zap.Any("input user id", input.Body.UserID),
-			zap.Any("authenticated user id", user.ID))
+			zap.Any("authenticated user id", user.ID),
+		)
 
 		return nil, huma.Error403Forbidden("Cannot create account for another user")
 	}
@@ -163,10 +164,20 @@ func (h *httpHandler) delete(ctx context.Context, input *shared.PathIDParam) (*D
 	return resp, nil
 }
 
-func (h *httpHandler) getInvestmentsByCursor(ctx context.Context, input *shared.GetCursorPaginatedByParentPathIDInput) (*shared.GetCursorPaginatedRoundInvestmentsOutput, error) {
+func (h *httpHandler) getInvestmentsByCursor(ctx context.Context, input *shared.GetInvestmentsByParentAndCursorInput) (*shared.GetCursorPaginatedRoundInvestmentsOutput, error) {
+	if account := shared.GetAuthenticatedAccount(ctx); account.ID != input.ID {
+		h.logger.Error(
+			"input account id does not match authenticated account id",
+			zap.Any("input account id", input.ID),
+			zap.Any("authenticated account id", account.ID),
+		)
+
+		return nil, huma.Error403Forbidden("Cannot get investments for another account")
+	}
+
 	limit := input.Limit + 1
 
-	investments, err := h.service.AccountService.GetInvestmentsByCursor(ctx, input.ID, limit, input.Cursor)
+	investments, err := h.service.AccountService.GetInvestmentsByCursor(ctx, input.ID, limit, input.Cursor, input.InvestmentFilter)
 
 	if err != nil {
 		switch {
@@ -191,8 +202,16 @@ func (h *httpHandler) getInvestmentsByCursor(ctx context.Context, input *shared.
 	return resp, nil
 }
 
-func (h *httpHandler) getInvestmentsByPage(ctx context.Context, input *shared.GetOffsetPaginatedByParentPathIDInput) (*shared.GetOffsetPaginatedRoundInvestmentsOutput, error) {
-	investments, err := h.service.AccountService.GetInvestmentsByPage(ctx, input.ID, input.PageSize, input.Page)
+func (h *httpHandler) getInvestmentsByPage(ctx context.Context, input *shared.GetInvestmentsByParentAndPageInput) (*shared.GetOffsetPaginatedRoundInvestmentsOutput, error) {
+	if account := shared.GetAuthenticatedAccount(ctx); account.ID != input.ID {
+		h.logger.Error("input account id does not match authenticated account id",
+			zap.Any("input account id", input.ID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot get investments for another account")
+	}
+
+	investments, total, err := h.service.AccountService.GetInvestmentsByPage(ctx, input.ID, input.PageSize, input.Page, input.InvestmentFilter)
 
 	if err != nil {
 		switch {
@@ -207,55 +226,11 @@ func (h *httpHandler) getInvestmentsByPage(ctx context.Context, input *shared.Ge
 	resp := &shared.GetOffsetPaginatedRoundInvestmentsOutput{}
 	resp.Body.Message = "Investments fetched successfully"
 	resp.Body.Investments = investments
-	
+	resp.Body.Total = total
 	if len(investments) > input.PageSize {
 		resp.Body.HasMore = true
 		resp.Body.Investments = resp.Body.Investments[:len(resp.Body.Investments)-1]
 	}
-
-	return resp, nil
-}
-
-func (h *httpHandler) withdrawInvestment(ctx context.Context, input *shared.ParentInvestmentIDParam) (*shared.MessageResponse, error) {
-	err := h.service.AccountService.WithdrawInvestment(ctx, input.ID, input.InvestmentID)
-	if err != nil {
-		h.logger.Error("failed to withdraw investment", zap.Error(err))
-		return nil, huma.Error500InternalServerError("An error occurred while withdrawing the investment")
-	}
-
-	resp := &shared.MessageResponse{}
-	resp.Message = "Investment withdrawn successfully"
-
-	return resp, nil
-}
-
-func (h *httpHandler) deleteInvestment(ctx context.Context, input *shared.ParentInvestmentIDParam) (*shared.MessageResponse, error) {
-	err := h.service.AccountService.DeleteInvestment(ctx, input.ID, input.InvestmentID)
-	if err != nil {
-		h.logger.Error("failed to delete investment", zap.Error(err))
-		return nil, huma.Error500InternalServerError("An error occurred while deleting the investment")
-	}
-
-	resp := &shared.MessageResponse{}
-	resp.Message = "Investment deleted successfully"
-
-	return resp, nil
-}
-
-type CreateInvestmentInput struct {
-	Body investment.CreateInvestmentParams `json:"investment"`
-}
-
-func (h *httpHandler) createInvestment(ctx context.Context, input *CreateInvestmentInput) (*shared.SingleInvestmentResponse, error) {
-	investment, err := h.service.AccountService.CreateInvestment(ctx, input.Body)
-	if err != nil {
-		h.logger.Error("failed to create investment", zap.Error(err))
-		return nil, huma.Error500InternalServerError("An error occurred while creating the investment")
-	}
-
-	resp := &shared.SingleInvestmentResponse{}
-	resp.Body.Message = "Investment created successfully"
-	resp.Body.Investment = &investment
 
 	return resp, nil
 }
@@ -268,6 +243,14 @@ type GetBusinessesOutput struct {
 }
 
 func (h *httpHandler) getAllBusinesses(ctx context.Context, input *shared.PathIDParam) (*GetBusinessesOutput, error) {
+	if account := shared.GetAuthenticatedAccount(ctx); account.ID != input.ID {
+		h.logger.Error("input account id does not match authenticated account id",
+			zap.Any("input account id", input.ID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot get businesses for another account")
+	}
+
 	businesses, err := h.service.AccountService.GetAllBusinesses(ctx, input.ID)
 
 	if err != nil {
@@ -287,42 +270,40 @@ func (h *httpHandler) getAllBusinesses(ctx context.Context, input *shared.PathID
 	return resp, nil
 }
 
-type GetStripeCheckoutLinkInput struct {
-	shared.PathIDParam
-	InvestmentID int    `path:"investmentId"`
-	RedirectURL  string `query:"redirectUrl" required:"true" format:"url"`
-}
 
-type LinkOutput struct {
-	Body struct {
-		Message string `json:"message"`
-		Link    string `json:"link"`
+func (h *httpHandler) getInvestmentById(ctx context.Context, input *shared.PathIDParam) (*shared.SingleInvestmentResponse, error) {
+	account := shared.GetAuthenticatedAccount(ctx)
+
+	if account.ID != input.ID {
+		h.logger.Error("input account id does not match authenticated account id",
+			zap.Any("input account id", input.ID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot fetch investment for another account")
 	}
-}
 
-func (h *httpHandler) getInvestmentCheckoutLink(ctx context.Context, input *GetStripeCheckoutLinkInput) (*LinkOutput, error) {
-	investment, err := h.service.AccountService.GetInvestmentById(ctx, input.ID, input.InvestmentID)
+	investment, err := h.service.InvestmentService.GetById(ctx, input.ID)
 	if err != nil {
-		h.logger.Error("failed to get investment", zap.Error(err))
-		return nil, huma.Error500InternalServerError("Failed to get investment")
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("Investment not found")
+		default:
+			h.logger.Error("failed to fetch investment", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the investment")
+		}
 	}
 
-	round, err := h.service.RoundService.GetById(ctx, investment.RoundID)
-	if err != nil {
-		h.logger.Error("failed to get round", zap.Error(err))
-		return nil, huma.Error500InternalServerError("Failed to get round")
+	if account.ID != investment.InvestorID {
+		h.logger.Error("input account id does not match authenticated account id",
+			zap.Any("input account id", investment.InvestorID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot fetch investment for another account")
 	}
 
-	checkoutPrice := int(round.BuyIn * 100)
-	sess, err := h.service.BillingService.CreateInvestmentCheckoutSession(ctx, checkoutPrice, input.RedirectURL, input.RedirectURL, investment.ID)
-	if err != nil {
-		h.logger.Error("failed to create stripe checkout session", zap.Error(err))
-		return nil, huma.Error500InternalServerError("Failed to create stripe checkout session")
-	}
-
-	resp := &LinkOutput{}
-	resp.Body.Message = "Stripe checkout link created successfully"
-	resp.Body.Link = sess
+	resp := &shared.SingleInvestmentResponse{}
+	resp.Body.Message = "Investment fetched successfully"
+	resp.Body.Investment = &investment
 
 	return resp, nil
 }

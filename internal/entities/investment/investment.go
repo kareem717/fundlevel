@@ -44,3 +44,12 @@ type UpdateInvestmentParams struct {
 	StripeCheckoutSessionID *string          `json:"stripeCheckoutSessionId" hidden:"true"`
 	PaidAt                  *time.Time       `json:"paidAt" hidden:"true"`
 }
+
+type InvestmentFilter struct {
+	Status    []string           `query:"status" required:"false" enum:"pending,accepted,rejected,withdrawn,successful,failed"`
+	MinPaidAt time.Time          `query:"minPaidAt" required:"false" format:"date-time"`
+	MaxPaidAt time.Time          `query:"maxPaidAt" required:"false" format:"date-time"`
+
+	SortBy    string             `query:"sortBy" required:"false" enum:"paid_at,created_at"`
+	SortOrder string             `query:"sortOrder" required:"false" enum:"asc,desc" default:"asc"`
+}

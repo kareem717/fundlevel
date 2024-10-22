@@ -1,4 +1,4 @@
-package shared
+package postgres
 
 // CursorPagination is a pagination strategy that uses a cursor and limit to paginate results
 // which does not allow for skipping results but is more efficient

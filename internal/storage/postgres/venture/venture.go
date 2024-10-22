@@ -6,7 +6,8 @@ import (
 
 	"fundlevel/internal/entities/round"
 	"fundlevel/internal/entities/venture"
-	"fundlevel/internal/storage/postgres/shared"
+	"fundlevel/internal/storage/postgres/helper"
+	postgres "fundlevel/internal/storage/shared"
 
 	"github.com/uptrace/bun"
 )
@@ -80,10 +81,10 @@ func (r *VentureRepository) GetById(ctx context.Context, id int) (venture.Ventur
 	return resp, err
 }
 
-func (r *VentureRepository) GetByCursor(ctx context.Context, paginationParams shared.CursorPagination) ([]venture.Venture, error) {
+func (r *VentureRepository) GetByCursor(ctx context.Context, paginationParams postgres.CursorPagination, filter venture.VentureFilter) ([]venture.Venture, error) {
 	resp := []venture.Venture{}
 
-	err := r.db.
+	query := r.db.
 		NewSelect().
 		Model(&resp).
 		Relation("Business").
@@ -92,25 +93,33 @@ func (r *VentureRepository) GetByCursor(ctx context.Context, paginationParams sh
 		WhereGroup(" OR ", func(q *bun.SelectQuery) *bun.SelectQuery {
 			return q.Where("active_round IS NULL").WhereOr("active_round.status = ?", round.Active)
 		}).
-		Where("venture.id >= ?", paginationParams.Cursor).
-		Order("venture.id").
-		Limit(paginationParams.Limit).
-		Scan(ctx)
+		Limit(paginationParams.Limit)
+
+	query = helper.ApplyVentureFilter(query, filter)
+
+	cursorCondition := "venture.id >= ?"
+	if filter.SortOrder != "asc" && paginationParams.Cursor > 0 {
+		cursorCondition = "venture.id <= ?"
+	}
+
+	err := query.Where(cursorCondition, paginationParams.Cursor).Scan(ctx, &resp)
 
 	return resp, err
 }
 
-func (r *VentureRepository) GetByPage(ctx context.Context, paginationParams shared.OffsetPagination) ([]venture.Venture, error) {
+func (r *VentureRepository) GetByPage(ctx context.Context, paginationParams postgres.OffsetPagination, filter venture.VentureFilter) ([]venture.Venture, int, error) {
 	resp := []venture.Venture{}
 	offset := (paginationParams.Page - 1) * paginationParams.PageSize
 
-	err := r.db.
+	query := r.db.
 		NewSelect().
 		Model(&resp).
-		Order("id").
 		Offset(offset).
-		Limit(paginationParams.PageSize + 1).
-		Scan(ctx)
+		Limit(paginationParams.PageSize + 1)
 
-	return resp, err
+	query = helper.ApplyVentureFilter(query, filter)
+
+	count, err := query.ScanAndCount(ctx, &resp)
+
+	return resp, count, err
 }

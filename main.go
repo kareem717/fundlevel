@@ -90,10 +90,10 @@ func main() {
 			panic(fmt.Sprintf("Failed to parse FEE_PERCENTAGE: %v", err))
 		}
 		services := service.NewService(repositories, billing.BillingServiceConfig{
-			APIKey:                  options.StripeAPIKey,
 			FeePercentage:           feePercentage,
 			TransactionFeeProductID: options.TransactionFeeProductID,
 			InvestmentFeeProductID:  options.InvestmentFeeProductID,
+			StripeAPIKey:            options.StripeAPIKey,
 		})
 
 		supabaseClient, err := supabase.NewClient(

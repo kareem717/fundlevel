@@ -3,8 +3,11 @@ package business
 import (
 	"net/http"
 
+	"fundlevel/internal/server/middleware"
 	"fundlevel/internal/service"
+
 	"github.com/danielgtaylor/huma/v2"
+	"github.com/supabase-community/supabase-go"
 	"go.uber.org/zap"
 )
 
@@ -12,13 +15,11 @@ func RegisterHumaRoutes(
 	service *service.Service,
 	humaApi huma.API,
 	logger *zap.Logger,
+	supabaseClient *supabase.Client,
 ) {
 
-	handler := &httpHandler{
-		service: service,
-		logger:  logger,
-	}
-
+	handler := newHTTPHandler(service, logger)
+	
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "get-business-by-id",
 		Method:      http.MethodGet,
@@ -35,6 +36,17 @@ func RegisterHumaRoutes(
 		Summary:     "Create a business",
 		Description: "Create a business.",
 		Tags:        []string{"Businesses"},
+		Security: []map[string][]string{
+			{"bearerAuth": {}},
+		},
+		Middlewares: huma.Middlewares{
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
+			},
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithAccount(humaApi)(ctx, next, logger, service)
+			},
+		},
 	}, handler.create)
 
 	huma.Register(humaApi, huma.Operation{
@@ -44,6 +56,17 @@ func RegisterHumaRoutes(
 		Summary:     "Delete a business",
 		Description: "Delete a business.",
 		Tags:        []string{"Businesses"},
+		Security: []map[string][]string{
+			{"bearerAuth": {}},
+		},
+		Middlewares: huma.Middlewares{
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
+			},
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithAccount(humaApi)(ctx, next, logger, service)
+			},
+		},
 	}, handler.delete)
 
 	huma.Register(humaApi, huma.Operation{

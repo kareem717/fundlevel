@@ -17,12 +17,8 @@ func RegisterHumaRoutes(
 	supabaseClient *supabase.Client,
 ) {
 
-	handler := &httpHandler{
-		service: service,
-		logger:  logger,
-	}
+	handler := newHTTPHandler(service, logger)
 
-	// this route breaks the pattern of other routes becuase we don't manage user entities ourselves
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "get-user-account",
 		Method:      http.MethodGet,

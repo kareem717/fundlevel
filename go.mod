@@ -6,7 +6,6 @@ require (
 	github.com/alexlast/bunzap v0.1.0
 	github.com/danielgtaylor/huma/v2 v2.22.1
 	github.com/go-chi/chi/v5 v5.1.0
-	github.com/go-chi/cors v1.2.1
 	github.com/go-faker/faker/v4 v4.5.0
 	github.com/google/uuid v1.6.0
 	github.com/jackc/pgx/v5 v5.7.1
@@ -14,7 +13,7 @@ require (
 	github.com/lib/pq v1.10.9
 	github.com/pressly/goose/v3 v3.22.1
 	github.com/stretchr/testify v1.9.0
-	github.com/stripe/stripe-go/v79 v79.12.0
+	github.com/stripe/stripe-go/v80 v80.2.0
 	github.com/supabase-community/gotrue-go v1.2.1
 	github.com/supabase-community/supabase-go v0.0.4
 	github.com/testcontainers/testcontainers-go v0.33.0

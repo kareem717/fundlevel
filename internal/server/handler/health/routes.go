@@ -15,10 +15,7 @@ func RegisterHumaRoutes(
 	logger *zap.Logger,
 ) {
 
-	handler := &httpHandler{
-		service: service,
-		logger:  logger,
-	}
+	handler := newHTTPHandler(service, logger)
 
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "health-check",

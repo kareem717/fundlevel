@@ -4,25 +4,25 @@ import (
 	"context"
 
 	"fundlevel/internal/entities/round"
-	"fundlevel/internal/storage/postgres/shared"
+	postgres "fundlevel/internal/storage/shared"
 )
 
-func (s *VentureService) GetRoundsByCursor(ctx context.Context, id int, limit int, cursor int) ([]round.Round, error) {
-	paginationParams := shared.CursorPagination{
+func (s *VentureService) GetRoundsByCursor(ctx context.Context, id int, limit int, cursor int, filter round.RoundFilter) ([]round.Round, error) {
+	paginationParams := postgres.CursorPagination{
 		Limit:  limit,
 		Cursor: cursor,
 	}
 
-	return s.repositories.Venture().GetRoundsByCursor(ctx, id, paginationParams)
+	return s.repositories.Venture().GetRoundsByCursor(ctx, id, paginationParams, filter)
 }
 
-func (s *VentureService) GetRoundsByPage(ctx context.Context, id int, pageSize int, page int) ([]round.Round, error) {
-	paginationParams := shared.OffsetPagination{
+func (s *VentureService) GetRoundsByPage(ctx context.Context, id int, pageSize int, page int, filter round.RoundFilter) ([]round.Round, int, error) {
+	paginationParams := postgres.OffsetPagination{
 		PageSize: pageSize,
 		Page:     page,
 	}
 
-	return s.repositories.Venture().GetRoundsByPage(ctx, id, paginationParams)
+	return s.repositories.Venture().GetRoundsByPage(ctx, id, paginationParams, filter)
 }
 
 func (s *VentureService) HasActiveRound(ctx context.Context, id int) (bool, error) {

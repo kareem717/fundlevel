@@ -11,17 +11,38 @@ import (
 )
 
 type OffsetPaginationRequest struct {
-	Page     int `query:"page" required:"false" default:"1"`
-	PageSize int `query:"pageSize" required:"false" default:"10"`
+	Page     int `query:"page" required:"false" minimum:"1" default:"1"`
+	PageSize int `query:"pageSize" required:"false" minimum:"1" default:"10"`
 }
 
 type CursorPaginationRequest struct {
-	Cursor int `query:"cursor" required:"false" default:"1"`
-	Limit  int `query:"limit" required:"false" default:"10"`
+	Cursor int `query:"cursor" required:"false" minimum:"1"`
+	Limit  int `query:"limit" required:"false" minimum:"1" default:"10"`
 }
 
 type PathIDParam struct {
 	ID int `path:"id" minimum:"1"`
+}
+
+type GetRoundsByParentAndCursorInput struct {
+	GetCursorPaginatedByParentPathIDInput
+	round.RoundFilter
+}
+
+type GetRoundsByParentAndPageInput struct {
+	GetOffsetPaginatedByParentPathIDInput
+	round.RoundFilter
+}
+
+
+type GetInvestmentsByParentAndCursorInput struct {
+	GetCursorPaginatedByParentPathIDInput
+	investment.InvestmentFilter
+}
+
+type GetInvestmentsByParentAndPageInput struct {
+	GetOffsetPaginatedByParentPathIDInput
+	investment.InvestmentFilter
 }
 
 type FundingOutput struct {

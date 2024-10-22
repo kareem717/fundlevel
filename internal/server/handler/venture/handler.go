@@ -59,8 +59,13 @@ func (h *httpHandler) getByID(ctx context.Context, input *shared.PathIDParam) (*
 	return resp, nil
 }
 
-func (h *httpHandler) getByPage(ctx context.Context, input *shared.OffsetPaginationRequest) (*shared.GetOffsetPaginatedVenturesOutput, error) {
-	ventures, err := h.service.VentureService.GetByPage(ctx, input.PageSize, input.Page)
+type GetVenturesByPageInput struct {
+	shared.OffsetPaginationRequest
+	venture.VentureFilter
+}
+
+func (h *httpHandler) getByPage(ctx context.Context, input *GetVenturesByPageInput) (*shared.GetOffsetPaginatedVenturesOutput, error) {
+	ventures, total, err := h.service.VentureService.GetByPage(ctx, input.PageSize, input.Page, input.VentureFilter)
 
 	if err != nil {
 		switch {
@@ -75,7 +80,7 @@ func (h *httpHandler) getByPage(ctx context.Context, input *shared.OffsetPaginat
 	resp := &shared.GetOffsetPaginatedVenturesOutput{}
 	resp.Body.Message = "Ventures fetched successfully"
 	resp.Body.Ventures = ventures
-
+	resp.Body.Total = total
 	if len(ventures) > input.PageSize {
 		resp.Body.HasMore = true
 		resp.Body.Ventures = resp.Body.Ventures[:input.PageSize]
@@ -84,9 +89,14 @@ func (h *httpHandler) getByPage(ctx context.Context, input *shared.OffsetPaginat
 	return resp, nil
 }
 
-func (h *httpHandler) getByCursor(ctx context.Context, input *shared.CursorPaginationRequest) (*shared.GetCursorPaginatedVenturesOutput, error) {
+type GetVenturesByCursorInput struct {
+	shared.CursorPaginationRequest
+	venture.VentureFilter
+}
+
+func (h *httpHandler) getByCursor(ctx context.Context, input *GetVenturesByCursorInput) (*shared.GetCursorPaginatedVenturesOutput, error) {
 	limit := input.Limit + 1
-	ventures, err := h.service.VentureService.GetByCursor(ctx, limit, input.Cursor)
+	ventures, err := h.service.VentureService.GetByCursor(ctx, limit, input.Cursor, input.VentureFilter)
 
 	if err != nil {
 		switch {
@@ -111,8 +121,8 @@ func (h *httpHandler) getByCursor(ctx context.Context, input *shared.CursorPagin
 	return resp, nil
 }
 
-func (h *httpHandler) getRoundsByPage(ctx context.Context, input *shared.GetOffsetPaginatedByParentPathIDInput) (*shared.GetOffsetPaginatedRoundsOutput, error) {
-	rounds, err := h.service.VentureService.GetRoundsByPage(ctx, input.ID, input.PageSize, input.Page)
+func (h *httpHandler) getRoundsByPage(ctx context.Context, input *shared.GetRoundsByParentAndPageInput) (*shared.GetOffsetPaginatedRoundsOutput, error) {
+	rounds, total, err := h.service.VentureService.GetRoundsByPage(ctx, input.ID, input.PageSize, input.Page, input.RoundFilter)
 
 	if err != nil {
 		switch {
@@ -127,7 +137,7 @@ func (h *httpHandler) getRoundsByPage(ctx context.Context, input *shared.GetOffs
 	resp := &shared.GetOffsetPaginatedRoundsOutput{}
 	resp.Body.Message = "Rounds fetched successfully"
 	resp.Body.Rounds = rounds
-
+	resp.Body.Total = total
 	if len(rounds) > input.PageSize {
 		resp.Body.HasMore = true
 		resp.Body.Rounds = resp.Body.Rounds[:input.PageSize]
@@ -136,10 +146,10 @@ func (h *httpHandler) getRoundsByPage(ctx context.Context, input *shared.GetOffs
 	return resp, nil
 }
 
-func (h *httpHandler) getRoundsByCursor(ctx context.Context, input *shared.GetCursorPaginatedByParentPathIDInput) (*shared.GetCursorPaginatedRoundsOutput, error) {
+func (h *httpHandler) getRoundsByCursor(ctx context.Context, input *shared.GetRoundsByParentAndCursorInput) (*shared.GetCursorPaginatedRoundsOutput, error) {
 	limit := input.Limit + 1
 
-	rounds, err := h.service.VentureService.GetRoundsByCursor(ctx, input.ID, limit, input.Cursor)
+	rounds, err := h.service.VentureService.GetRoundsByCursor(ctx, input.ID, limit, input.Cursor, input.RoundFilter)
 
 	if err != nil {
 		switch {
@@ -164,8 +174,29 @@ func (h *httpHandler) getRoundsByCursor(ctx context.Context, input *shared.GetCu
 	return resp, nil
 }
 
-func (h *httpHandler) getOffsetPaginatedRoundInvestments(ctx context.Context, input *shared.GetOffsetPaginatedByParentPathIDInput) (*shared.GetOffsetPaginatedRoundInvestmentsOutput, error) {
-	rounds, err := h.service.VentureService.GetInvestmentsByPage(ctx, input.ID, input.PageSize, input.Page)
+func (h *httpHandler) getOffsetPaginatedRoundInvestments(ctx context.Context, input *shared.GetInvestmentsByParentAndPageInput) (*shared.GetOffsetPaginatedRoundInvestmentsOutput, error) {
+	ventureRecord, err := h.service.VentureService.GetById(ctx, input.ID)
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("venture not found")
+		default:
+			h.logger.Error("failed to fetch venture", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the venture")
+		}
+	}
+
+	account := shared.GetAuthenticatedAccount(ctx)
+
+	if account.ID != ventureRecord.Business.OwnerAccountID {
+		h.logger.Error("business owner account id does not match authenticated account id",
+			zap.Any("business owner account id", ventureRecord.Business.OwnerAccountID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot fetch round investments for a venture you do not own")
+	}
+
+	rounds, total, err := h.service.VentureService.GetInvestmentsByPage(ctx, input.ID, input.PageSize, input.Page, input.InvestmentFilter)
 
 	if err != nil {
 		switch {
@@ -180,6 +211,7 @@ func (h *httpHandler) getOffsetPaginatedRoundInvestments(ctx context.Context, in
 	resp := &shared.GetOffsetPaginatedRoundInvestmentsOutput{}
 	resp.Body.Message = "Round investments fetched successfully"
 	resp.Body.Investments = rounds
+	resp.Body.Total = total
 
 	if len(rounds) > input.PageSize {
 		resp.Body.HasMore = true
@@ -189,10 +221,30 @@ func (h *httpHandler) getOffsetPaginatedRoundInvestments(ctx context.Context, in
 	return resp, nil
 }
 
-func (h *httpHandler) getCursorPaginatedRoundInvestments(ctx context.Context, input *shared.GetCursorPaginatedByParentPathIDInput) (*shared.GetCursorPaginatedRoundInvestmentsOutput, error) {
-	limit := input.Limit + 1
+func (h *httpHandler) getCursorPaginatedRoundInvestments(ctx context.Context, input *shared.GetInvestmentsByParentAndCursorInput) (*shared.GetCursorPaginatedRoundInvestmentsOutput, error) {
+	ventureRecord, err := h.service.VentureService.GetById(ctx, input.ID)
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("venture not found")
+		default:
+			h.logger.Error("failed to fetch venture", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the venture")
+		}
+	}
 
-	rounds, err := h.service.VentureService.GetInvestmentsByCursor(ctx, input.ID, limit, input.Cursor)
+	account := shared.GetAuthenticatedAccount(ctx)
+
+	if account.ID != ventureRecord.Business.OwnerAccountID {
+		h.logger.Error("business owner account id does not match authenticated account id",
+			zap.Any("business owner account id", ventureRecord.Business.OwnerAccountID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot fetch round investments for a venture you do not own")
+	}
+
+	limit := input.Limit + 1
+	rounds, err := h.service.VentureService.GetInvestmentsByCursor(ctx, input.ID, limit, input.Cursor, input.InvestmentFilter)
 
 	if err != nil {
 		switch {
@@ -222,6 +274,24 @@ type CreateVentureInput struct {
 }
 
 func (h *httpHandler) create(ctx context.Context, input *CreateVentureInput) (*SingleVentureResponse, error) {
+	business, err := h.service.BusinessService.GetById(ctx, input.Body.BusinessID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, huma.Error404NotFound("Business not found")
+		}
+
+		h.logger.Error("failed to fetch business", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while fetching the business")
+	}
+
+	if account := shared.GetAuthenticatedAccount(ctx); account.ID != business.OwnerAccountID {
+		h.logger.Error("input account id does not match authenticated account id",
+			zap.Any("input account id", business.OwnerAccountID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot create venture for business you do not own")
+	}
+
 	venture, err := h.service.VentureService.Create(ctx, input.Body)
 	if err != nil {
 		h.logger.Error("failed to create venture", zap.Error(err))
@@ -241,7 +311,7 @@ type UpdateVentureInput struct {
 }
 
 func (h *httpHandler) update(ctx context.Context, input *UpdateVentureInput) (*SingleVentureResponse, error) {
-	_, err := h.service.VentureService.GetById(ctx, input.ID)
+	ventureRecord, err := h.service.VentureService.GetById(ctx, input.ID)
 	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
@@ -250,6 +320,24 @@ func (h *httpHandler) update(ctx context.Context, input *UpdateVentureInput) (*S
 			h.logger.Error("failed to fetch venture", zap.Error(err))
 			return nil, huma.Error500InternalServerError("An error occurred while fetching the venture")
 		}
+	}
+
+	business, err := h.service.BusinessService.GetById(ctx, ventureRecord.BusinessID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, huma.Error404NotFound("Business not found")
+		}
+
+		h.logger.Error("failed to fetch business", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while fetching the business")
+	}
+
+	if account := shared.GetAuthenticatedAccount(ctx); account.ID != business.OwnerAccountID {
+		h.logger.Error("input account id does not match authenticated account id",
+			zap.Any("input account id", business.OwnerAccountID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot update venture for business you do not own")
 	}
 
 	venture, err := h.service.VentureService.Update(ctx, input.ID, input.Body)
@@ -271,7 +359,7 @@ type DeleteVentureOutput struct {
 }
 
 func (h *httpHandler) delete(ctx context.Context, input *shared.PathIDParam) (*DeleteVentureOutput, error) {
-	_, err := h.service.VentureService.GetById(ctx, input.ID)
+	ventureRecord, err := h.service.VentureService.GetById(ctx, input.ID)
 	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
@@ -280,6 +368,24 @@ func (h *httpHandler) delete(ctx context.Context, input *shared.PathIDParam) (*D
 			h.logger.Error("failed to fetch venture", zap.Error(err))
 			return nil, huma.Error500InternalServerError("An error occurred while fetching the venture")
 		}
+	}
+
+	business, err := h.service.BusinessService.GetById(ctx, ventureRecord.BusinessID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, huma.Error404NotFound("Business not found")
+		}
+
+		h.logger.Error("failed to fetch business", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while fetching the business")
+	}
+
+	if account := shared.GetAuthenticatedAccount(ctx); account.ID != business.OwnerAccountID {
+		h.logger.Error("input account id does not match authenticated account id",
+			zap.Any("input account id", business.OwnerAccountID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot delete venture for business you do not own")
 	}
 
 	err = h.service.VentureService.Delete(ctx, input.ID)
@@ -300,7 +406,35 @@ type VentureLikeInput struct {
 }
 
 func (h *httpHandler) createLike(ctx context.Context, input *VentureLikeInput) (*shared.MessageOutput, error) {
-	_, err := h.service.VentureService.CreateLike(ctx, venture.CreateVentureLikeParams{
+	account := shared.GetAuthenticatedAccount(ctx)
+
+	if account.ID != input.AccountID {
+		h.logger.Error("input account id does not match authenticated account id",
+			zap.Any("input account id", input.AccountID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot create like for another account")
+	}
+
+	ventureRecord, err := h.service.VentureService.GetById(ctx, input.ID)
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("venture not found")
+		default:
+			h.logger.Error("failed to fetch venture", zap.Error(err))
+		}
+	}
+
+	if account.ID != ventureRecord.Business.OwnerAccountID {
+		h.logger.Error("business owner account id does not match authenticated account id",
+			zap.Any("business owner account id", ventureRecord.Business.OwnerAccountID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot create like for a business you do not own")
+	}
+
+	_, err = h.service.VentureService.CreateLike(ctx, venture.CreateVentureLikeParams{
 		VentureID: input.ID,
 		AccountID: input.AccountID,
 	})
@@ -317,7 +451,35 @@ func (h *httpHandler) createLike(ctx context.Context, input *VentureLikeInput) (
 }
 
 func (h *httpHandler) deleteLike(ctx context.Context, input *VentureLikeInput) (*shared.MessageOutput, error) {
-	err := h.service.VentureService.DeleteLike(ctx, input.ID, input.AccountID)
+	account := shared.GetAuthenticatedAccount(ctx)
+
+	if account.ID != input.AccountID {
+		h.logger.Error("input account id does not match authenticated account id",
+			zap.Any("input account id", input.AccountID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error500InternalServerError("An error occurred while deleting the venture like")
+	}
+
+	ventureRecord, err := h.service.VentureService.GetById(ctx, input.ID)
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("venture not found")
+		default:
+			h.logger.Error("failed to fetch venture", zap.Error(err))
+		}
+	}
+
+	if account.ID != ventureRecord.Business.OwnerAccountID {
+		h.logger.Error("business owner account id does not match authenticated account id",
+			zap.Any("business owner account id", ventureRecord.Business.OwnerAccountID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot delete like for a business you do not own")
+	}
+
+	err = h.service.VentureService.DeleteLike(ctx, input.ID, input.AccountID)
 	if err != nil {
 		h.logger.Error("failed to delete venture like", zap.Error(err))
 		return nil, huma.Error500InternalServerError("An error occurred while deleting the venture like")
@@ -343,11 +505,29 @@ func (h *httpHandler) getLikeCount(ctx context.Context, input *shared.PathIDPara
 	return resp, nil
 }
 
+// TODO: move to account handler
 func (h *httpHandler) isLikedByAccount(ctx context.Context, input *VentureLikeInput) (*shared.IsLikedOutput, error) {
+	account := shared.GetAuthenticatedAccount(ctx)
+	if account.ID != input.AccountID {
+		h.logger.Error("input account id does not match authenticated account id",
+			zap.Any("input account id", input.AccountID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot check if venture is liked by another account")
+	}
+
 	liked, err := h.service.VentureService.IsLikedByAccount(ctx, input.ID, input.AccountID)
 	if err != nil {
 		h.logger.Error("failed to check if venture is liked by account", zap.Error(err))
 		return nil, huma.Error500InternalServerError("An error occurred while checking if the venture is liked by the account")
+	}
+
+	if account := shared.GetAuthenticatedAccount(ctx); account.ID != input.AccountID {
+		h.logger.Error("input account id does not match authenticated account id",
+			zap.Any("input account id", input.AccountID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot create like for another account")
 	}
 
 	resp := &shared.IsLikedOutput{}
