@@ -7,7 +7,7 @@ import (
 	"fundlevel/internal/storage/postgres/helper"
 	postgres "fundlevel/internal/storage/shared"
 
-	"github.com/uptrace/bun/dialect/pgdialect"
+	"github.com/uptrace/bun"
 )
 
 func (r *AccountRepository) GetInvestmentsByCursor(ctx context.Context, accountId int, paginationParams postgres.CursorPagination, filter investment.InvestmentFilter) ([]investment.RoundInvestment, error) {
@@ -61,7 +61,7 @@ func (r *AccountRepository) IsInvestedInRound(ctx context.Context, accountId int
 		Model(&investment.RoundInvestment{}).
 		Where("round_investment.investor_id = ?", accountId).
 		Where("round_investment.round_id = ?", roundId).
-		WhereOr("round_investment.status = ANY(?)", pgdialect.Array(stringStatusArray)).
+		WhereOr("round_investment.status IN (?)", bun.In(stringStatusArray)).
 		Exists(ctx)
 
 	return exists, err

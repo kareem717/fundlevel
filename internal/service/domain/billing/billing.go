@@ -73,6 +73,9 @@ func (s *BillingService) CreateInvestmentCheckoutSession(ctx context.Context, pr
 				Quantity: stripe.Int64(1),
 			},
 		},
+		PaymentIntentData: &stripe.CheckoutSessionPaymentIntentDataParams{
+			ApplicationFeeAmount: stripe.Int64(int64(feeCents)),
+		},
 		Mode: stripe.String(string(stripe.CheckoutSessionModePayment)),
 		Metadata: map[string]string{
 			InvestmentIDMetadataKey: strconv.Itoa(investmentId),

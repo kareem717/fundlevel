@@ -100,7 +100,7 @@ func (h *httpHandler) withdrawInvestment(ctx context.Context, input *shared.Path
 	}
 
 	if investmentResult.Status != investment.InvestmentStatusPending {
-		return nil, huma.Error400BadRequest("Investment is not pending")
+		return nil, huma.Error400BadRequest("Cannot withdraw investment that is not pending")
 	}
 
 	err = h.service.InvestmentService.WithdrawInvestment(ctx, input.ID)
@@ -152,12 +152,34 @@ type CreateInvestmentInput struct {
 }
 
 func (h *httpHandler) createInvestment(ctx context.Context, input *CreateInvestmentInput) (*shared.SingleInvestmentResponse, error) {
-	if account := shared.GetAuthenticatedAccount(ctx); account.ID != input.Body.InvestorID {
+	account := shared.GetAuthenticatedAccount(ctx);
+
+	if account.ID != input.Body.InvestorID {
 		h.logger.Error("input account id does not match authenticated account id",
 			zap.Any("input account id", input.Body.InvestorID),
 			zap.Any("authenticated account id", account.ID))
 
 		return nil, huma.Error403Forbidden("Cannot create investment for another account")
+	}
+
+	round, err := h.service.RoundService.GetById(ctx, input.Body.RoundID)
+	if err != nil {
+		h.logger.Error("failed to get round", zap.Error(err))
+		return nil, huma.Error500InternalServerError("Failed to get round")
+	}
+
+	if account.ID == round.Venture.Business.OwnerAccountID {
+		return nil, huma.Error400BadRequest("Business owners cannot invest in their own rounds")
+	}
+
+	isInvested, err := h.service.AccountService.IsInvestedInRound(ctx, input.Body.InvestorID, input.Body.RoundID)
+	if err != nil {
+		h.logger.Error("failed to check if account is invested in round", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while checking if the account is invested in the round")
+	}
+
+	if isInvested {
+		return nil, huma.Error400BadRequest("You already have a pending investment in this round, complete or withdraw that investment before creating a new one")
 	}
 
 	investment, err := h.service.InvestmentService.CreateInvestment(ctx, input.Body)

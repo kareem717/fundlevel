@@ -42,7 +42,6 @@ type IndustryRepository interface {
 	GetAll(ctx context.Context) ([]industry.Industry, error)
 }
 
-
 type RoundRepository interface {
 	Create(ctx context.Context, params round.CreateRoundParams) (round.Round, error)
 	Delete(ctx context.Context, id int) error
@@ -81,7 +80,7 @@ type AccountRepository interface {
 	GetInvestmentsByCursor(ctx context.Context, accountId int, paginationParams postgres.CursorPagination, filter investment.InvestmentFilter) ([]investment.RoundInvestment, error)
 	// GetInvestmentsByPage gets all of the investments the account has made on rounds using offset pagination
 	GetInvestmentsByPage(ctx context.Context, accountId int, paginationParams postgres.OffsetPagination, filter investment.InvestmentFilter) ([]investment.RoundInvestment, int, error)
-	// IsInvestedInRound checks if the account has made an investment on the round
+	// GetRoundInvestment attempts to get an investment on a round made by the account that is not withdrawn
 	IsInvestedInRound(ctx context.Context, accountId int, roundId int) (bool, error)
 	GetInvestmentById(ctx context.Context, accountId int, investmentId int) (investment.RoundInvestment, error)
 

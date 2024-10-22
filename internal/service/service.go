@@ -58,6 +58,7 @@ type AccountService interface {
 	GetInvestmentsByCursor(ctx context.Context, accountId int, limit int, cursor int, filter investment.InvestmentFilter) ([]investment.RoundInvestment, error)
 	GetInvestmentsByPage(ctx context.Context, accountId int, pageSize int, page int, filter investment.InvestmentFilter) ([]investment.RoundInvestment, int, error)
 	GetInvestmentById(ctx context.Context, accountId int, investmentId int) (investment.RoundInvestment, error)
+	IsInvestedInRound(ctx context.Context, accountId int, roundId int) (bool, error)
 
 	GetAllBusinesses(ctx context.Context, accountId int) ([]business.Business, error)
 }

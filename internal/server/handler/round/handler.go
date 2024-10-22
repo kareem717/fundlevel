@@ -78,6 +78,10 @@ func (h *httpHandler) create(ctx context.Context, input *CreateRoundInput) (*sha
 		return nil, huma.Error403Forbidden("Cannot create round for a business you do not own")
 	}
 
+	if venture.IsHidden {
+		return nil, huma.Error400BadRequest("Cannot create round for a hidden venture")
+	}
+
 	round, err := h.service.RoundService.Create(ctx, input.Body)
 	if err != nil {
 		h.logger.Error("failed to create round", zap.Error(err))
