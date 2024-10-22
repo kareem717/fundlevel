@@ -144,7 +144,7 @@ export const CreateBusinessForm: FC<CreateBusinessFormProps> = ({ className, onS
                   Is Remote
                 </FormLabel>
                 <FormDescription>
-                  Select this if this venture's main point of business is remote/online.
+                  Select this if this venture&#39;s main point of business is remote/online.
                 </FormDescription>
               </div>
             </FormItem>
@@ -213,13 +213,13 @@ export const CreateBusinessForm: FC<CreateBusinessFormProps> = ({ className, onS
         <FormField
           control={form.control}
           name="address"
-          render={({ field: { onChange, value, ...fieldRest } }) => (
+          render={({ field}) => (
             <FormItem>
               <FormLabel>Address</FormLabel>
               <FormControl>
                 <AddressInput
-                  onRetrieve={(val) => onChange(val)}
-                  {...fieldRest}
+                  onRetrieve={(val) => field.onChange(val)}
+                  onChange={field.onChange}
                 />
               </FormControl>
               <FormDescription>

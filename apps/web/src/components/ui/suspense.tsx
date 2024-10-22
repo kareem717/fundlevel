@@ -1,6 +1,6 @@
 "use client"
 
-import { ComponentPropsWithoutRef, FC, Suspense as ReactSuspense, memo } from "react"
+import { ComponentPropsWithoutRef, FC, Suspense as ReactSuspense } from "react"
 import { Skeleton } from "./skeleton";
 import { cn } from "@/lib/utils";
 
@@ -19,7 +19,7 @@ export const Suspense: FC<SuspenseProps> = ({
 }) => {
   const aspectRatio = orientation === "landscape" ? "aspect-[16/9]" : "aspect-[9/16]"
 
-  const DefaultFallback = memo(() => (
+  const DefaultFallback: FC = () => (
     <Skeleton
       className={cn(
         "w-full max-w-lg",
@@ -28,7 +28,7 @@ export const Suspense: FC<SuspenseProps> = ({
       )}
       {...fallbackProps}
     />
-  ));
+  );
 
   return (
     <ReactSuspense fallback={fallback || <DefaultFallback />} {...props}>

@@ -34,27 +34,27 @@ export const VentureViewActions: FC<VentureViewActionsProps> = ({ ventureId, ...
     onSuccess: ({ data }) => {
       setLiked(data?.liked ?? false);
     },
-    onError: (error) => {
+    onError: () => {
       toast.error("Failed to check if round is liked");
     },
   })
 
   const { execute: likeExecute, isExecuting: isLikeExecuting } = useAction(likeVenture, {
-    onSuccess: ({ data }) => {
+    onSuccess: () => {
       setLiked(true);
       toast.success("Round liked");
     },
-    onError: (error) => {
+    onError: () => {
       toast.error("Failed to like round");
     },
   })
 
   const { execute: unlikeExecute, isExecuting: isUnlikeExecuting } = useAction(unlikeVenture, {
-    onSuccess: ({ data }) => {
+    onSuccess: () => {
       setLiked(false);
       toast.success("Round unliked");
     },
-    onError: (error) => {
+    onError: () => {
       toast.error("Failed to unlike round");
     },
   })
@@ -63,7 +63,7 @@ export const VentureViewActions: FC<VentureViewActionsProps> = ({ ventureId, ...
     onSuccess: ({ data }) => {
       setAccount(data);
     },
-    onError: (error) => {
+    onError: () => {
       toast.error("Failed to get account");
     },
   })
@@ -71,7 +71,7 @@ export const VentureViewActions: FC<VentureViewActionsProps> = ({ ventureId, ...
   useEffect(() => {
     getAccountExecute();
     isLikedExecute(ventureId);
-  }, []);
+  });
 
 
   //TODO: add better loading state

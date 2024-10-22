@@ -1,4 +1,4 @@
-import { ComponentPropsWithoutRef, FC, ReactNode, useState, useEffect } from "react"
+import { ComponentPropsWithoutRef, FC, useState, useEffect } from "react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { cn } from "@/lib/utils"
 import { Business } from "@/lib/api"
@@ -31,7 +31,7 @@ export const BusinessSelect: FC<BusinessSelectProps> = ({ triggerProps, ...props
     } else {
       execute()
     }
-  }, [props.businesses])
+  }, [props.businesses, execute])
 
   return (
     <Select

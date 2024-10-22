@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Account } from "@/lib/api";
 import { Button } from "./button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Icons } from "./icons";
 import { cn } from "@/lib/utils";
 import Link from "next/link";

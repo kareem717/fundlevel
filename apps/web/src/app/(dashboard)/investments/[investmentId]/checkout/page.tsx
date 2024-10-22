@@ -3,7 +3,8 @@ import { InvestmentCheckoutDisclaimer } from "./components/investment-checkout-d
 import { notFound } from "next/navigation"
 import { FormLayout } from "@/components/layouts/form-layout"
 
-export default async function InvestmentCheckoutPage({ params }: { params: { investmentId: string } }) {
+export default async function InvestmentCheckoutPage(props: { params: Promise<{ investmentId: string }> }) {
+  const params = await props.params;
   const investmentId = parseInt(params.investmentId)
   if (isNaN(investmentId)) {
     throw notFound()

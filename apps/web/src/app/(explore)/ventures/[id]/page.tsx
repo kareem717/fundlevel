@@ -23,7 +23,8 @@ import { cn, truncateText } from "@/lib/utils";
 import { BusinessOverview } from "@/components/ui/business-overview";
 import { VentureActiveRoundCard } from "./components/venture-active-round-card";
 
-export default async function VentureViewPage({ params }: { params: { id: string } }) {
+export default async function VentureViewPage(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const parsedId = parseInt(params.id as string || ""); // Parse the id
   if (isNaN(parsedId)) {
     notFound();

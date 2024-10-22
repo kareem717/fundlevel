@@ -20,7 +20,6 @@ export const VentureSelectItems: FC<VentureSelectItemsProps> = ({ businessId, cl
   const [cursor, setCursor] = useState<number | null>(1)
   const [hasMore, setHasMore] = useState(true)
 
-
   const { execute, isExecuting } = useAction(getBusinessVenturesInfinite, {
     onSuccess: ({ data }) => {
       const newData = data?.ventures ?? []
@@ -32,7 +31,7 @@ export const VentureSelectItems: FC<VentureSelectItemsProps> = ({ businessId, cl
         setHasMore(false) // Set cursor to null if no more data
       }
     },
-    onError: ({ error }) => {
+    onError: () => {
       toast.error("Something went wrong", {
         description: "An error occurred while fetching ventures",
       })
@@ -47,7 +46,7 @@ export const VentureSelectItems: FC<VentureSelectItemsProps> = ({ businessId, cl
     if (cursor && inView && !isExecuting) {
       execute({ businessId, pagination: { cursor, limit: 10 } })
     }
-  }, [inView])
+  }, [inView, cursor, businessId, execute, isExecuting])
 
   return (
     <SelectContent className={className} {...props}>

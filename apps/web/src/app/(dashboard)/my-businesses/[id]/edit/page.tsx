@@ -1,6 +1,6 @@
 import { FormLayout } from "@/components/layouts/form-layout";
 
-export default function BusinessEditPage({ params }: { params: { id: string } }) {
+export default async function BusinessEditPage() {
   return (
     <FormLayout
       title="Edit Business"

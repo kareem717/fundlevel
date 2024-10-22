@@ -4,8 +4,9 @@ import { BusinessVenturesTable } from "./components/business-ventures-table";
 import { Icons } from "@/components/ui/icons";
 import redirects from "@/lib/config/redirects";
 
-export default async function BusinessVenturesPage({ params }: { params: { id: string } }) {
-	return (
+export default async function BusinessVenturesPage(props: { params: Promise<{ id: string }> }) {
+    const params = await props.params;
+    return (
 		<div className="pt-4 sm:pt-6 md:pt-20 px-2 max-w-screen-lg mx-auto space-y-4">
 			<div className="flex justify-between items-center">
 				<h1 className="text-2xl font-bold">My Ventures</h1>

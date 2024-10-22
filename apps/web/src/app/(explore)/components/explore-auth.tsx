@@ -26,7 +26,7 @@ export const ExploreAuth: FC<ExploreAuthProps> = ({ className, ...props }) => {
 
   useEffect(() => {
     execute();
-  }, []);
+  }, [execute]);
 
   return (
     <div className={cn("flex items-center justify-center gap-2", className)} {...props}>

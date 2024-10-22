@@ -4,7 +4,6 @@ import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
 import { ComponentPropsWithoutRef, FC } from "react"
 import { Icons } from "./icons"
-import { cn } from "@/lib/utils"
 
 export interface ModeToggleProps extends ComponentPropsWithoutRef<typeof Button> {
 

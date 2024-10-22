@@ -1,5 +1,5 @@
 import { env } from "@/env";
-import supabase from "@/lib/utils/supabase/server";
+import { createClient } from "@/lib/utils/supabase/server";
 import { NextResponse } from "next/server";
 import redirects from "@/lib/config/redirects";
 
@@ -21,7 +21,8 @@ export async function GET(request: Request) {
 		);
 	} else if (code) {
 		try {
-			await supabase().auth.exchangeCodeForSession(code);
+			const sb = await createClient();
+			await sb.auth.exchangeCodeForSession(code);
 		} catch (error) {
 			return NextResponse.redirect(
 				`${env.NEXT_PUBLIC_APP_URL}/auth/error?error=An+error+occurred+while+authenticating`

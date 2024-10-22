@@ -1,6 +1,6 @@
 "use client"
 
-import { memo, ComponentPropsWithoutRef, FC, useEffect, useState } from "react"
+import { ComponentPropsWithoutRef, FC, useEffect, useState } from "react"
 import { Icons } from "@/components/ui/icons"
 import { cn } from "@/lib/utils"
 import { Skeleton } from "./skeleton";
@@ -14,11 +14,11 @@ export interface BusinessOverviewProps extends ComponentPropsWithoutRef<"div"> {
   businessId: number;
 };
 
-export const BusinessOverview: FC<BusinessOverviewProps> = memo(({ className, overview, teamSize, businessId, ...props }) => {
+export const BusinessOverview: FC<BusinessOverviewProps> = ({ className, overview, teamSize, businessId, ...props }) => {
   const [previousFunding, setPreviousFunding] = useState<number | undefined>(undefined);
 
   const { execute } = useAction(getBusinessFunding, {
-    onSuccess: ({ data }) => {
+    onSuccess: () => {
       setPreviousFunding(0);
     },
     onError: (error) => {
@@ -30,7 +30,7 @@ export const BusinessOverview: FC<BusinessOverviewProps> = memo(({ className, ov
 
   useEffect(() => {
     execute(businessId);
-  }, [businessId]);
+  }, [businessId, execute]);
 
   return (
     <div className={cn("flex flex-col gap-8 items-start justify-center", className)} {...props}>
@@ -80,4 +80,4 @@ export const BusinessOverview: FC<BusinessOverviewProps> = memo(({ className, ov
       </div>
     </div>
   );
-});
+};

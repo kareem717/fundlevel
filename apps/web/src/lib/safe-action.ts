@@ -4,7 +4,7 @@ import {
 } from "next-safe-action";
 import { yupAdapter } from "next-safe-action/adapters/yup";
 import { env } from "@/env";
-import supabase from "@/lib/utils/supabase/server";
+import { createClient as createSupabaseServerClient } from "@/lib/utils/supabase/server";
 import { ErrorModel, getUserAccount } from "./api";
 import { createClient } from "@hey-api/client-fetch";
 
@@ -58,7 +58,7 @@ export const actionClientWithUser = createSafeActionClient({
 		};
 	},
 }).use(async ({ next }) => {
-	const sb = supabase();
+	const sb = await createSupabaseServerClient();
 
 	const {
 		data: { session },
@@ -77,8 +77,6 @@ export const actionClientWithUser = createSafeActionClient({
 	if (error) {
 		console.error("Error getting user: ", error);
 	}
-
-	const client = apiClient(session?.access_token);
 
 	console.log("access_token", session?.access_token);
 	console.log("user_id", user?.id);
@@ -102,7 +100,7 @@ export const actionClientWithAccount = createSafeActionClient({
 		};
 	},
 }).use(async ({ next }) => {
-	const sb = supabase();
+	const sb = await createSupabaseServerClient();
 
 	const {
 		data: { session },

@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -14,10 +13,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner"
 import { updateAccount } from "@/actions/auth";
-import { ComponentPropsWithoutRef, FC, useState } from "react";
+import { ComponentPropsWithoutRef, FC } from "react";
 import { Icons } from "@/components/ui/icons";
 import { useAction } from "next-safe-action/hooks";
-import { Account } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { InferType } from "yup";
 import { updateAccountSchema } from "@/actions/validations/account";

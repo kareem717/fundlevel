@@ -1,7 +1,8 @@
 import { FormLayout } from "@/components/layouts/form-layout";
 import { CreateVentureForm } from "./components/create-venture-form";
 
-export default function BusinessVentureCreatePage({ params }: { params: { id: string } }) {
+export default async function BusinessVentureCreatePage(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const businessId = parseInt(params.id)
   if (isNaN(businessId)) {
     throw new Error("Invalid business ID")

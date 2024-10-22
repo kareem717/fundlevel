@@ -1,15 +1,19 @@
 import { notFound } from "next/navigation";
 import { getBusinessById } from "@/actions/busineses";
 import { getAccount } from "@/actions/auth";
-import { cloneElement } from "react";
 
-export default async function BusinessLayout({
-  children,
-  params,
-}: {
-  children: React.ReactNode;
-  params: { id: string };
-}) {
+export default async function BusinessLayout(
+  props: {
+    children: React.ReactNode;
+    params: Promise<{ id: string }>;
+  }
+) {
+  const params = await props.params;
+
+  const {
+    children
+  } = props;
+
   const parsedId = parseInt(params.id);
   if (isNaN(parsedId)) {
     throw notFound();

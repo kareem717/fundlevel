@@ -28,7 +28,8 @@ const tabs = [
   },
 ]
 
-export default async function SettingsPage({ params }: { params: { tab: string } }) {
+export default async function SettingsPage(props: { params: Promise<{ tab: string }> }) {
+  const params = await props.params;
   const tab = tabs.find((t) => t.value === params.tab) || tabs[0];
 
   return (
