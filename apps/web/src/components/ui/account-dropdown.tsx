@@ -8,14 +8,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Account } from "@/lib/api";
-import { Button } from "./button";
+import { buttonVariants } from "./button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Icons } from "./icons";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import redirects from "@/lib/config/redirects";
 
-export interface AccountDropdownProps extends ComponentPropsWithoutRef<typeof Button> {
+export interface AccountDropdownProps extends ComponentPropsWithoutRef<typeof DropdownMenuTrigger> {
   account: Account
 };
 
@@ -24,14 +24,12 @@ export const AccountDropdown: FC<AccountDropdownProps> = ({ account, className, 
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button className={cn("flex items-center justify-center gap-2", className)} variant="outline" {...props}>
-          <Icons.menu className="size-5" />
-          <Avatar className="size-7">
-            {/* <AvatarImage src="https://github.com/shadcn.png" /> */}
-            <AvatarFallback >{intials.toUpperCase()}</AvatarFallback>
-          </Avatar>
-        </Button>
+      <DropdownMenuTrigger className={cn("flex items-center justify-center gap-2", buttonVariants({ variant: "outline" }), className)} {...props}>
+        <Icons.menu className="size-5" />
+        <Avatar className="size-7">
+          {/* <AvatarImage src="https://github.com/shadcn.png" /> */}
+          <AvatarFallback >{intials.toUpperCase()}</AvatarFallback>
+        </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
@@ -53,6 +51,6 @@ export const AccountDropdown: FC<AccountDropdownProps> = ({ account, className, 
           <Link href={redirects.app.myBusinesses.create}>Create Business</Link>
         </DropdownMenuItem>
       </DropdownMenuContent>
-    </DropdownMenu>
+    </DropdownMenu >
   );
 };
