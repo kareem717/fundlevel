@@ -1,7 +1,8 @@
 import { EditVentureForm } from "./components/edit-venture-form";
 import { FormLayout } from "@/components/layouts/form-layout";
 
-export default function BusinessVentureEditPage({ params }: { params: { id: string, ventureId: number } }) {
+export default async function BusinessVentureEditPage(props: { params: Promise<{ id: string, ventureId: number }> }) {
+  const params = await props.params;
   // the layout already verified the ventureId for us 
 
   return (

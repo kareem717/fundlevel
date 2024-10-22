@@ -35,7 +35,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Icons } from "./icons"
-import { FC } from "react"
 
 interface DataTableViewOptionsProps<TData> {
   table: TableType<TData>

@@ -3,7 +3,15 @@ import { getVentureById } from "@/actions/ventures";
 import { NavBack } from "@/components/ui/nav-back";
 import { notFound } from "next/navigation";
 
-export default async function BusinessVentureLayout({ children, params }: { children: React.ReactNode, params: { id: string, ventureId: string } }) {
+export default async function BusinessVentureLayout(
+  props: { children: React.ReactNode, params: Promise<{ id: string, ventureId: string }> }
+) {
+  const params = await props.params;
+
+  const {
+    children
+  } = props;
+
   const ventureId = parseInt(params.ventureId)
   if (isNaN(ventureId)) {
     return notFound()

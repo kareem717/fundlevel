@@ -1,6 +1,6 @@
 "use client"
 
-import { ComponentPropsWithoutRef, FC, memo, useCallback, useEffect, useState } from "react"
+import { ComponentPropsWithoutRef, FC, useEffect, useState } from "react"
 import { useExploreNavbarStore } from "./use-explore-navbar"
 import { useAction } from "next-safe-action/hooks"
 import { getVenturesInfinite } from "@/actions/ventures"
@@ -22,14 +22,16 @@ export interface VentureIndexCardProps extends ComponentPropsWithoutRef<typeof C
 };
 
 export const VentureIndexCard: FC<VentureIndexCardProps> = ({ className, venture, ...props }) => {
-  const { id, name, description, overview, createdAt, activeRound, business: { industry, ...business } } = venture
+  const { id, name, description, overview, createdAt, activeRound, business } = venture
 
   return (
     <Card className={cn("w-full", className)} {...props}>
       <CardHeader>
         <CardTitle>{name} </CardTitle>
-        <CardDescription className="flex flex-col gap-2">
-          {business.name} &middot; {overview}
+        <div className="flex flex-col gap-2">
+          <CardDescription className="flex flex-col gap-2">
+            {business.name} &middot; {overview}
+          </CardDescription>
           <div className="flex flex-wrap gap-2">
             {activeRound && (
               <>
@@ -47,7 +49,7 @@ export const VentureIndexCard: FC<VentureIndexCardProps> = ({ className, venture
               {formatTime(createdAt).charAt(0).toUpperCase() + formatTime(createdAt).slice(1)} old
             </Badge>
           </div>
-        </CardDescription>
+        </div>
       </CardHeader>
       <CardContent className="text-sm text-muted-foreground">
         {truncateText(description, 150)}
@@ -60,7 +62,7 @@ export const VentureIndexCard: FC<VentureIndexCardProps> = ({ className, venture
           View
         </Link>
       </CardFooter>
-    </Card>
+    </Card >
   );
 };
 
@@ -72,7 +74,7 @@ export const RoundIndexCard: FC<RoundIndexCardProps> = ({ round, className, ...p
   const {
     id,
     venture: {
-      business: { industry, ...business },
+      business,
       ...venture
     },
     endsAt,
@@ -88,8 +90,10 @@ export const RoundIndexCard: FC<RoundIndexCardProps> = ({ round, className, ...p
     <Card className={cn("w-full", className)} {...props}>
       <CardHeader>
         <CardTitle>{venture.name} </CardTitle>
-        <CardDescription className="flex flex-col gap-2">
-          {business.name} &middot; {venture.overview}
+        <div className="flex flex-col gap-2">
+          <CardDescription className="flex flex-col gap-2">
+            {business.name} &middot; {venture.overview}
+          </CardDescription>
           <div className="flex flex-wrap gap-2">
             <Badge>
               {investorCount} investor{investorCount > 1 ? "s" : ""}
@@ -105,7 +109,7 @@ export const RoundIndexCard: FC<RoundIndexCardProps> = ({ round, className, ...p
               {formatTime(endsAt).charAt(0).toUpperCase() + formatTime(endsAt).slice(1)} left
             </Badge>
           </div>
-        </CardDescription>
+        </div>
       </CardHeader>
       <CardContent className="text-sm text-muted-foreground">
         {truncateText(description, 150)}
@@ -199,7 +203,19 @@ export const ExploreIndex: FC<ExploreIndexProps> = ({ ...props }) => {
     return () => {
       debouncedFetchData.cancel();
     };
-  }, [inView, resource, ventureState.cursor, roundState.cursor]);
+    // Add the missing dependencies here
+  }, [
+    inView,
+    resource,
+    ventureState.cursor,
+    roundState.cursor,
+    executeVentures,
+    executeRounds,
+    isVenturesExecuting,
+    isRoundsExecuting,
+    ventureState.hasMore,
+    roundState.hasMore
+  ]);
 
   const hasMore = resource === "Ventures" ? ventureState.hasMore : roundState.hasMore
 

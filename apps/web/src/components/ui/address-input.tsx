@@ -41,16 +41,16 @@ export const AddressInput: FC<AddressInputProps> = ({
         yCoordinate: String(geo.coordinates[1]),
         line1: vals.address_line1,
         line2: vals.address_line2,
-        // @ts-ignore
+        // @ts-expect-error: 'place' is not a recognized property in the type definition
         city: vals.place,
-        // @ts-ignore
+        // @ts-expect-error: 'region' is not a recognized property in the type definition
         region: vals.region,
-        // @ts-ignore
+        // @ts-expect-error: 'region_code' is not a recognized property in the type definition
         regionCode: vals.region_code,
         country: vals.country,
         fullAddress: vals.full_address || vals.place_name,
         rawJson: res,
-        // @ts-ignore
+        // @ts-expect-error: 'district' is not a recognized property in the type definition
         district: vals.district,
       });
       setAddress(parse);
@@ -64,7 +64,7 @@ export const AddressInput: FC<AddressInputProps> = ({
 
   return (
     <>
-      {/* @ts-ignore */}
+      {/* // @ts-expect-error: AddressAutofill component has type issues */}
       <AddressAutofill
         accessToken={env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
         onRetrieve={handleRetrieve}
@@ -87,7 +87,7 @@ export const AddressInput: FC<AddressInputProps> = ({
               className={cn("bg-background", className)}
               {...props}
             />
-          ) as any
+          ) as React.ReactElement
         }
       </AddressAutofill>
     </>

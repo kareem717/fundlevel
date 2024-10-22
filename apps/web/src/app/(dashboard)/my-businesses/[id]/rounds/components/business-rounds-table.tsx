@@ -269,7 +269,7 @@ export const BusinessRoundsTable: FC<BusinessRoundsTableProps> = ({
         pageSize: pagination.pageSize,
       },
     })
-  }, [pagination.pageIndex, pagination.pageSize, businessId])
+  }, [pagination.pageIndex, pagination.pageSize, businessId, execute])
 
   const columnsMemo = useMemo(
     () =>
@@ -279,7 +279,7 @@ export const BusinessRoundsTable: FC<BusinessRoundsTableProps> = ({
           cell: () => <Skeleton className="h-8 w-full" />,
         }))
         : columns,
-    [isExecuting, columns]
+    [isExecuting]
   );
 
   const table = useReactTable({

@@ -38,7 +38,7 @@ export const VentureActiveRoundCard: FC<VentureActiveRoundCardProps> = ({ ventur
 
   useEffect(() => {
     execute(ventureId);
-  }, []);
+  }, [execute, ventureId]);
 
   if (isExecuting) {
     return <Skeleton className={cn("w-96 aspect-square", className)} />;

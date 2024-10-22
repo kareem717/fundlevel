@@ -18,7 +18,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Input } from "@/components/ui/input"
 import { ComponentPropsWithoutRef, FC, useEffect, useMemo, useState } from "react"
 import { DataTableColumnHeader, DataTablePagination } from "@/components/ui/data-table"
 import { Venture } from "@/lib/api"
@@ -32,7 +31,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -47,7 +45,6 @@ import {
 } from "@/components/ui/tooltip"
 import { format } from "date-fns"
 import redirects from "@/lib/config/redirects"
-import { toast } from "sonner"
 import { truncateText } from "@/lib/utils"
 
 export const columns: ColumnDef<Venture>[] = [
@@ -240,7 +237,7 @@ export const BusinessVenturesTable: FC<BusinessVenturesTableProps> = ({
         pageSize: pagination.pageSize,
       },
     })
-  }, [pagination.pageIndex, pagination.pageSize, businessId])
+  }, [pagination.pageIndex, pagination.pageSize, businessId, execute])
 
   const columnsMemo = useMemo(
     () =>
@@ -250,7 +247,7 @@ export const BusinessVenturesTable: FC<BusinessVenturesTableProps> = ({
           cell: () => <Skeleton className="h-8 w-full" />,
         }))
         : columns,
-    [isExecuting, columns]
+    [isExecuting]
   );
 
   const table = useReactTable({

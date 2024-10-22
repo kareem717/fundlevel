@@ -6,6 +6,7 @@ import { ComponentPropsWithoutRef, FC } from "react";
 import { Icons } from "@/components/ui/icons";
 import { createInvestment } from "@/actions/investments";
 import { useAction } from "next-safe-action/hooks";
+import { cn } from "@/lib/utils";
 
 export interface CreateInvestmentButtonProps extends ComponentPropsWithoutRef<"button"> {
   roundId: number;
@@ -33,7 +34,7 @@ export const CreateInvestmentButton: FC<CreateInvestmentButtonProps> = ({ roundI
   }
 
   return (
-    <Button className="w-full flex justify-center items-center" disabled={isExecuting} onClick={handleInvest}>
+    <Button className={cn("w-full flex justify-center items-center", className)} disabled={isExecuting} onClick={handleInvest} {...props}>
       {isExecuting && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />} Invest
     </Button>
   );

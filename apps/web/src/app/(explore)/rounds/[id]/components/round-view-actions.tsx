@@ -34,27 +34,27 @@ export const RoundViewActions: FC<RoundViewActionsProps> = ({ roundId, isLiked, 
     onSuccess: ({ data }) => {
       setLiked(data?.liked ?? false);
     },
-    onError: (error) => {
+    onError: () => {
       toast.error("Failed to check if round is liked");
     },
   })
 
   const { execute: likeExecute, isExecuting: isLikeExecuting } = useAction(likeRound, {
-    onSuccess: ({ data }) => {
+    onSuccess: () => {
       setLiked(true);
       toast.success("Round liked");
     },
-    onError: (error) => {
+    onError: () => {
       toast.error("Failed to like round");
     },
   })
 
   const { execute: unlikeExecute, isExecuting: isUnlikeExecuting } = useAction(unlikeRound, {
-    onSuccess: ({ data }) => {
+    onSuccess: () => {
       setLiked(false);
       toast.success("Round unliked");
     },
-    onError: (error) => {
+    onError: () => {
       toast.error("Failed to unlike round");
     },
   })
@@ -64,7 +64,7 @@ export const RoundViewActions: FC<RoundViewActionsProps> = ({ roundId, isLiked, 
     onSuccess: ({ data }) => {
       setAccount(data ?? null);
     },
-    onError: (error) => {
+    onError: () => {
       toast.error("Failed to get account");
     },
   })
@@ -72,7 +72,7 @@ export const RoundViewActions: FC<RoundViewActionsProps> = ({ roundId, isLiked, 
   useEffect(() => {
     getAccountExecute();
     isLikedExecute(roundId);
-  }, []);
+  }, [getAccountExecute, isLikedExecute, roundId]);
 
 
   //TODO: add better loading state

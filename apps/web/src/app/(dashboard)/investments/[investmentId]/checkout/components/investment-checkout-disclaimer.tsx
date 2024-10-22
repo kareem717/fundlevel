@@ -37,7 +37,7 @@ export const InvestmentCheckoutDisclaimer: FC<InvestmentCheckoutDisclaimerProps>
         router.push(data.link);
       }
     },
-    onError: (error) => {
+    onError: () => {
       toast.error("Something went wrong");
     },
   });

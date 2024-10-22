@@ -1,6 +1,6 @@
 "use client"
 
-import { ColumnDef } from "@tanstack/react-table"
+import { ColumnDef, Row } from "@tanstack/react-table"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -18,16 +18,14 @@ import { RoundInvestment } from "@/lib/api"
 import { format } from "date-fns"
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { WithdrawInvestmentButton } from "./withdraw-investment-button"
+import { WithdrawInvestmentButton } from "./withdraw-investment-dialog"
 import Link from "next/link"
 import redirects from "@/lib/config/redirects"
 import {
@@ -52,6 +50,80 @@ import { ComponentPropsWithoutRef, FC, useEffect, useMemo, useState } from "reac
 import { useAction } from "next-safe-action/hooks"
 import { getAccountInvestmentsByPage } from "@/actions/investments"
 import { Skeleton } from "@/components/ui/skeleton"
+
+const ActionsCell: FC<{ row: Row<RoundInvestment> }> = ({ row }) => {
+  const investment = row.original
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+
+  return (
+    <DropdownMenu open={isDropdownOpen} onOpenChange={() => { }}>
+      <DropdownMenuTrigger onClick={() => setIsDropdownOpen(true)} asChild>
+        <Button variant="ghost" className="h-8 w-8 p-0">
+          <span className="sr-only">Open menu</span>
+          <Icons.ellipsis className="h-4 w-4" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+        <DropdownMenuItem
+          onClick={() => navigator.clipboard.writeText(investment.id.toString())}
+        >
+          Copy investment ID
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href={redirects.app.explore.roundView.replace(":id", investment.round.id.toString())}>
+            View round
+          </Link>
+        </DropdownMenuItem>
+        {investment.status === "pending" && (
+          <>
+            <DropdownMenuItem onClick={() => setIsDialogOpen(true)} >
+              Withdraw
+            </DropdownMenuItem>
+            <AlertDialog open={isDialogOpen}>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Withdraw investment</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. Your investment application will be cancelled,
+                    and you will have to reapply if you want to invest in the same round.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel
+                    className="w-full"
+                    onClick={() => {
+                      setIsDialogOpen(false)
+                      setIsDropdownOpen(false)
+                    }}
+                  >
+                    Cancel
+                  </AlertDialogCancel>
+                  <WithdrawInvestmentButton
+                    investmentId={investment.id}
+                    onSuccess={() => {
+                      setIsDialogOpen(false)
+                      setIsDropdownOpen(false)
+                    }}
+                    className="w-full"
+                  />
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </>
+        )}
+        {investment.status === "accepted" && !investment.paidAt && (
+          <DropdownMenuItem asChild>
+            <Link href={redirects.app.investments.checkout.replace(":investmentId", investment.id.toString())}>
+              Checkout
+            </Link>
+          </DropdownMenuItem>
+        )}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
 
 export const columns: ColumnDef<RoundInvestment>[] = [
   {
@@ -152,79 +224,7 @@ export const columns: ColumnDef<RoundInvestment>[] = [
         </DropdownMenuContent>
       </DropdownMenu>
     ),
-    cell: ({ row }) => {
-      const investment = row.original
-      const [isDialogOpen, setIsDialogOpen] = useState(false)
-      const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-
-      return (
-        <DropdownMenu open={isDropdownOpen} onOpenChange={() => { }}>
-          <DropdownMenuTrigger onClick={() => setIsDropdownOpen(true)}>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <Icons.ellipsis className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(investment.id.toString())}
-            >
-              Copy investment ID
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link href={redirects.app.explore.roundView.replace(":id", investment.round.id.toString())}>
-                View round
-              </Link>
-            </DropdownMenuItem>
-            {investment.status === "pending" && (
-              <>
-                <DropdownMenuItem onClick={() => setIsDialogOpen(true)} >
-                  Withdraw
-                </DropdownMenuItem>
-                <AlertDialog open={isDialogOpen}>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Withdraw investment</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        This action cannot be undone. Your investment application will be cancelled,
-                        and you will have to reapply if you want to invest in the same round.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel
-                        className="w-full"
-                        onClick={() => {
-                          setIsDialogOpen(false)
-                          setIsDropdownOpen(false)
-                        }}
-                      >
-                        Cancel
-                      </AlertDialogCancel>
-                      <WithdrawInvestmentButton
-                        investmentId={investment.id}
-                        onSuccess={() => {
-                          setIsDialogOpen(false)
-                          setIsDropdownOpen(false)
-                        }}
-                        className="w-full"
-                      />
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              </>
-            )}
-            {investment.status === "accepted" && !investment.paidAt && (
-              <DropdownMenuItem asChild>
-                <Link href={redirects.app.investments.checkout.replace(":investmentId", investment.id.toString())}>
-                  Checkout
-                </Link>
-              </DropdownMenuItem>
-            )}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      )
-    },
+    cell: ({ row }) => <ActionsCell row={row} />,
   },
 ]
 
@@ -259,7 +259,7 @@ export const AccountInvestmentsTable: FC<AccountInvestmentsTableProps> = () => {
       page: pagination.pageIndex + 1,
       pageSize: pagination.pageSize,
     })
-  }, [pagination.pageIndex, pagination.pageSize])
+  }, [pagination.pageIndex, pagination.pageSize, execute])
 
   const columnsMemo = useMemo(
     () =>
@@ -269,7 +269,7 @@ export const AccountInvestmentsTable: FC<AccountInvestmentsTableProps> = () => {
           cell: () => <Skeleton className="h-8 w-full" />,
         }))
         : columns,
-    [isExecuting, columns]
+    [isExecuting]
   );
 
   const table = useReactTable({

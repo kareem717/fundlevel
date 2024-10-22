@@ -7,15 +7,13 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Icons } from "@/components/ui/icons"
 import { DataTableColumnHeader } from "@/components/ui/data-table"
 import { titleCase } from "title-case"
-import { Address, Business, Round, RoundInvestment, Venture } from "@/lib/api"
-import Link from "next/link"
+import { Address, RoundInvestment } from "@/lib/api"
 import {
   Tooltip,
   TooltipContent,
@@ -25,7 +23,7 @@ import {
 import { format } from "date-fns"
 import { toast } from "sonner"
 
-export const columns = (businessId: number): ColumnDef<RoundInvestment>[] => [
+export const columns: ColumnDef<RoundInvestment>[] = [
   {
     id: "select",
     header: ({ table }) => (

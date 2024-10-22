@@ -1,11 +1,10 @@
 import { LoginForm } from "@/components/forms/login-form";
 import redirects from "@/lib/config/redirects";
 import { redirect } from "next/navigation";
-import createClient from "@/lib/utils/supabase/server";
+import { createClient } from "@/lib/utils/supabase/server";
 
 export default async function LoginPage() {
-
-	const supabase = createClient();
+	const supabase = await createClient();
 	const { data: { user } } = await supabase.auth.getUser();
 
 	if (user) {

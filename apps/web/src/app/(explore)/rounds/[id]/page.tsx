@@ -25,7 +25,8 @@ import {
 import { env } from "@/env";
 import { BusinessOverview } from "@/components/ui/business-overview";
 
-export default async function RoundViewPage({ params }: { params: { id: string } }) {
+export default async function RoundViewPage(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const parsedId = parseInt(params.id as string || ""); // Parse the id
   if (isNaN(parsedId)) {
     notFound();
