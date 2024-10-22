@@ -72,7 +72,7 @@ export const RoundViewActions: FC<RoundViewActionsProps> = ({ roundId, isLiked, 
   useEffect(() => {
     getAccountExecute();
     isLikedExecute(roundId);
-  });
+  }, [getAccountExecute, isLikedExecute, roundId]);
 
 
   //TODO: add better loading state

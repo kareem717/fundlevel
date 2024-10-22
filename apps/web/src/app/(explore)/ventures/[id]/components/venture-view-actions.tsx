@@ -71,7 +71,7 @@ export const VentureViewActions: FC<VentureViewActionsProps> = ({ ventureId, ...
   useEffect(() => {
     getAccountExecute();
     isLikedExecute(ventureId);
-  });
+  }, [getAccountExecute, isLikedExecute, ventureId]);
 
 
   //TODO: add better loading state

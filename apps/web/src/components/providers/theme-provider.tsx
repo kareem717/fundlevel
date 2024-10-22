@@ -9,7 +9,7 @@ export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
 
   useEffect(() => {
     setIsMounted(true);
-  });
+  }, []);
 
   if (!isMounted) {
     return null;
