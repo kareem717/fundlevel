@@ -58,7 +58,7 @@ const ActionsCell: FC<{ row: Row<RoundInvestment> }> = ({ row }) => {
 
   return (
     <DropdownMenu open={isDropdownOpen} onOpenChange={() => { }}>
-      <DropdownMenuTrigger onClick={() => setIsDropdownOpen(true)}>
+      <DropdownMenuTrigger onClick={() => setIsDropdownOpen(true)} asChild>
         <Button variant="ghost" className="h-8 w-8 p-0">
           <span className="sr-only">Open menu</span>
           <Icons.ellipsis className="h-4 w-4" />
