@@ -33,6 +33,7 @@ type Options struct {
 	TransactionFeeProductID string `help:"Transaction Fee Product ID" short:"T"`
 	InvestmentFeeProductID  string `help:"Investment Fee Product ID" short:"I"`
 	StripeWebhookSecret     string `help:"Stripe Webhook Secret" short:"W"`
+	StripeConnectWebhookSecret string `help:"Stripe Connect Webhook Secret" short:"C"`
 }
 
 func (o *Options) config() {
@@ -51,6 +52,7 @@ func (o *Options) config() {
 	o.TransactionFeeProductID = os.Getenv("TRANSACTION_FEE_PRODUCT_ID")
 	o.InvestmentFeeProductID = os.Getenv("INVESTMENT_FEE_PRODUCT_ID")
 	o.StripeWebhookSecret = os.Getenv("STRIPE_WEBHOOK_SECRET")
+	o.StripeConnectWebhookSecret = os.Getenv("STRIPE_CONNECT_WEBHOOK_SECRET")
 	o.FeePercentage = os.Getenv("FEE_PERCENTAGE")
 
 }
@@ -112,6 +114,7 @@ func main() {
 			logger,
 			supabaseClient,
 			options.StripeWebhookSecret,
+			options.StripeConnectWebhookSecret,
 			parsedAllowedIPs,
 		)
 

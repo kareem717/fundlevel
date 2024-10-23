@@ -3,7 +3,7 @@ package billing
 import (
 	"bytes"
 	"context"
-	"encoding/json"
+	"fundlevel/internal/server/handler/shared"
 	"fundlevel/internal/service"
 	"io"
 	"net/http"
@@ -36,17 +36,7 @@ func newHTTPHandler(service *service.Service, logger *zap.Logger, webhookSecret 
 	}
 }
 
-type HandleStripeWebhookInput struct {
-	Signature string `header:"Stripe-Signature"`
-	Body      json.RawMessage
-}
-
-type HandleStripeWebhookOutput struct {
-	RedirectURL *string `header:"Location"`
-	Status      int
-}
-
-func (h *httpHandler) handleStripeWebhook(ctx context.Context, input *HandleStripeWebhookInput) (*HandleStripeWebhookOutput, error) {
+func (h *httpHandler) handleStripeWebhook(ctx context.Context, input *shared.HandleStripeWebhookInput) (*shared.HandleStripeWebhookOutput, error) {
 	reader := bytes.NewReader(input.Body)
 
 	payload, err := io.ReadAll(reader)
@@ -61,11 +51,11 @@ func (h *httpHandler) handleStripeWebhook(ctx context.Context, input *HandleStri
 		return nil, huma.Error400BadRequest("Webhook signature verification failed")
 	}
 
-	resp := &HandleStripeWebhookOutput{}
+	resp := &shared.HandleStripeWebhookOutput{}
 
 	switch event.Type {
 	case stripe.EventTypeCheckoutSessionCompleted:
-		eventBody, err := parseStripeWebhook[stripe.CheckoutSession](event)
+		eventBody, err := shared.ParseStripeWebhook[stripe.CheckoutSession](event)
 		if err != nil {
 			h.logger.Error("failed to parse webhook json", zap.Error(err), zap.String("eventType", string(event.Type)))
 			return nil, huma.Error500InternalServerError("Failed to parse webhook json")
@@ -85,14 +75,4 @@ func (h *httpHandler) handleStripeWebhook(ctx context.Context, input *HandleStri
 	}
 
 	return resp, nil
-}
-
-func parseStripeWebhook[T any](event stripe.Event) (*T, error) {
-	var data T
-	err := json.Unmarshal(event.Data.Raw, &data)
-	if err != nil {
-		return nil, err
-	}
-
-	return &data, nil
 }

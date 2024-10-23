@@ -53,3 +53,11 @@ func (s *BusinessService) Delete(ctx context.Context, id int) error {
 func (s *BusinessService) GetById(ctx context.Context, id int) (business.Business, error) {
 	return s.repositories.Business().GetById(ctx, id)
 }
+
+func (s *BusinessService) GetByStripeConnectedAccountId(ctx context.Context, stripeConnectedAccountId string) (business.Business, error) {
+	return s.repositories.Business().GetByStripeConnectedAccountId(ctx, stripeConnectedAccountId)
+}
+
+func (s *BusinessService) Update(ctx context.Context, id int, params business.UpdateBusinessParams) (business.Business, error) {
+	return s.repositories.Business().Update(ctx, id, params)
+}

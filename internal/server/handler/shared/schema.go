@@ -1,6 +1,7 @@
 package shared
 
 import (
+	"encoding/json"
 	"fundlevel/internal/entities/account"
 	"fundlevel/internal/entities/business"
 	"fundlevel/internal/entities/investment"
@@ -31,6 +32,15 @@ type URLOutput struct {
 	}
 }
 
+type HandleStripeWebhookInput struct {
+	Signature string `header:"Stripe-Signature"`
+	Body      json.RawMessage
+}
+
+type HandleStripeWebhookOutput struct {
+	RedirectURL *string `header:"Location"`
+	Status      int
+}
 type GetRoundsByParentAndCursorInput struct {
 	GetCursorPaginatedByParentPathIDInput
 	round.RoundFilter

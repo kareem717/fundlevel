@@ -92,6 +92,9 @@ type BusinessService interface {
 	Create(ctx context.Context, params business.CreateBusinessParams) (business.Business, error)
 	Delete(ctx context.Context, id int) error
 	GetById(ctx context.Context, id int) (business.Business, error)
+	Update(ctx context.Context, id int, params business.UpdateBusinessParams) (business.Business, error)
+	GetByStripeConnectedAccountId(ctx context.Context, stripeConnectedAccountId string) (business.Business, error)
+
 
 	GetVenturesByCursor(ctx context.Context, accountId int, limit int, cursor int, filter venture.VentureFilter) ([]venture.Venture, error)
 	GetVenturesByPage(ctx context.Context, accountId int, pageSize int, page int, filter venture.VentureFilter) ([]venture.Venture, int, error)
@@ -143,7 +146,7 @@ func NewService(
 	config billing.BillingServiceConfig,
 ) *Service {
 	billingService := billing.NewBillingService(repositories, config)
-	
+
 	return &Service{
 		VentureService:    ventureService.NewVentureService(repositories),
 		IndustryService:   industryService.NewIndustryService(repositories),

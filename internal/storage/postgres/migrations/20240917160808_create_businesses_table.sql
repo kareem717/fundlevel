@@ -23,7 +23,7 @@ CREATE TABLE
         team_size team_size NOT NULL DEFAULT '1',
         is_remote BOOLEAN NOT NULL DEFAULT FALSE,
         stripe_connected_account_id TEXT NOT NULL,
-        completed_connect_account_onboarding_at timestamptz,
+        stripe_account_enabled BOOLEAN NOT NULL DEFAULT FALSE,
         industry_id INTEGER NOT NULL REFERENCES industries (id),
         address_id INTEGER NOT NULL REFERENCES addresses (id),
         created_at timestamptz DEFAULT CLOCK_TIMESTAMP(),
