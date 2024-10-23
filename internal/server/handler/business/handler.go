@@ -169,6 +169,24 @@ func (h *httpHandler) getRoundsByPage(ctx context.Context, input *shared.GetRoun
 }
 
 func (h *httpHandler) getInvestmentsByCursor(ctx context.Context, input *shared.GetInvestmentsByParentAndCursorInput) (*shared.GetCursorPaginatedRoundInvestmentsOutput, error) {
+	business, err := h.service.BusinessService.GetById(ctx, input.ID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, huma.Error404NotFound("Business not found")
+		}
+
+		h.logger.Error("failed to fetch business", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while fetching the business")
+	}
+
+	if account := shared.GetAuthenticatedAccount(ctx); account.ID != business.OwnerAccountID {
+		h.logger.Error("input account id does not match authenticated account id",
+			zap.Any("input account id", input.ID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot access investments for another account")
+	}
+
 	limit := input.Limit + 1
 
 	investments, err := h.service.BusinessService.GetInvestmentsByCursor(ctx, input.ID, limit, input.Cursor, input.InvestmentFilter)
@@ -197,6 +215,24 @@ func (h *httpHandler) getInvestmentsByCursor(ctx context.Context, input *shared.
 }
 
 func (h *httpHandler) getInvestmentsByPage(ctx context.Context, input *shared.GetInvestmentsByParentAndPageInput) (*shared.GetOffsetPaginatedRoundInvestmentsOutput, error) {
+	business, err := h.service.BusinessService.GetById(ctx, input.ID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, huma.Error404NotFound("Business not found")
+		}
+
+		h.logger.Error("failed to fetch business", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while fetching the business")
+	}
+
+	if account := shared.GetAuthenticatedAccount(ctx); account.ID != business.OwnerAccountID {
+		h.logger.Error("input account id does not match authenticated account id",
+			zap.Any("input account id", input.ID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot access investments for another account")
+	}
+
 	investments, total, err := h.service.BusinessService.GetInvestmentsByPage(ctx, input.ID, input.PageSize, input.Page, input.InvestmentFilter)
 
 	if err != nil {
@@ -295,6 +331,45 @@ func (h *httpHandler) getTotalFunding(ctx context.Context, input *shared.PathIDP
 	resp := &shared.FundingOutput{}
 	resp.Body.Message = "Total funding fetched successfully"
 	resp.Body.TotalFunding = totalFunding
+
+	return resp, nil
+}
+
+type OnboardStripeConnectedAccountInput struct {
+	shared.PathIDParam
+	Body struct {
+		ReturnURL  string `json:"returnURL"`
+		RefreshURL string `json:"refreshURL"`
+	} `json:"body"`
+}
+
+func (h *httpHandler) onboardStripeConnectedAccount(ctx context.Context, input *OnboardStripeConnectedAccountInput) (*shared.URLOutput, error) {
+	business, err := h.service.BusinessService.GetById(ctx, input.ID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, huma.Error404NotFound("Business not found")
+		}
+
+		h.logger.Error("failed to fetch business", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while fetching the business")
+	}
+
+	if account := shared.GetAuthenticatedAccount(ctx); account.ID != business.OwnerAccountID {
+		h.logger.Error("input account id does not match authenticated account id",
+			zap.Any("input account id", input.ID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Connected account cannot be onboarded for another account")
+	}
+
+	link, err := h.service.BillingService.CreateAccountLink(ctx, business.StripeConnectedAccountID, input.Body.ReturnURL, input.Body.RefreshURL)
+	if err != nil {
+		return nil, huma.Error500InternalServerError("An error occurred while creating the account link")
+	}
+
+	resp := &shared.URLOutput{}
+	resp.Body.Message = "Account link created successfully"
+	resp.Body.URL = link
 
 	return resp, nil
 }

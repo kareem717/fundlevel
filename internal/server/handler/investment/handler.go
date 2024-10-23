@@ -200,14 +200,8 @@ type GetStripeCheckoutLinkInput struct {
 	RedirectURL string `query:"redirectUrl" required:"true" format:"url"`
 }
 
-type LinkOutput struct {
-	Body struct {
-		Message string `json:"message"`
-		Link    string `json:"link"`
-	}
-}
 
-func (h *httpHandler) getInvestmentCheckoutLink(ctx context.Context, input *GetStripeCheckoutLinkInput) (*LinkOutput, error) {
+func (h *httpHandler) getInvestmentCheckoutLink(ctx context.Context, input *GetStripeCheckoutLinkInput) (*shared.URLOutput, error) {
 	investmentRecord, err := h.service.InvestmentService.GetById(ctx, input.ID)
 	if err != nil {
 		h.logger.Error("failed to get investment", zap.Error(err))
@@ -239,9 +233,9 @@ func (h *httpHandler) getInvestmentCheckoutLink(ctx context.Context, input *GetS
 		return nil, huma.Error500InternalServerError("Failed to create stripe checkout session")
 	}
 
-	resp := &LinkOutput{}
+	resp := &shared.URLOutput{}
 	resp.Body.Message = "Stripe checkout link created successfully"
-	resp.Body.Link = sess
+	resp.Body.URL = sess
 
 	return resp, nil
 }

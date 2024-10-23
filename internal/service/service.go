@@ -22,6 +22,7 @@ import (
 	"fundlevel/internal/storage"
 
 	"github.com/google/uuid"
+	"github.com/stripe/stripe-go/v80"
 )
 
 type VentureService interface {
@@ -109,6 +110,10 @@ type BusinessService interface {
 type BillingService interface {
 	CreateInvestmentCheckoutSession(ctx context.Context, price int, successURL string, cancelURL string, investmentId int, currency shared.Currency) (string, error)
 	HandleInvestmentCheckoutSuccess(ctx context.Context, sessionID string) (string, error)
+
+	CreateAccountLink(ctx context.Context, accountID string, returnURL string, refreshURL string) (string, error)
+	CreateStripeConnectedAccount(ctx context.Context) (stripe.Account, error)
+	DeleteStripeConnectedAccount(ctx context.Context, accountID string) error
 }
 
 type InvestmentService interface {
@@ -137,6 +142,8 @@ func NewService(
 	repositories storage.Repository,
 	config billing.BillingServiceConfig,
 ) *Service {
+	billingService := billing.NewBillingService(repositories, config)
+	
 	return &Service{
 		VentureService:    ventureService.NewVentureService(repositories),
 		IndustryService:   industryService.NewIndustryService(repositories),
@@ -144,8 +151,8 @@ func NewService(
 		AccountService:    accountService.NewAccountService(repositories),
 		UserService:       userService.NewUserService(repositories),
 		RoundService:      roundService.NewRoundService(repositories),
-		BusinessService:   businessService.NewBusinessService(repositories),
-		BillingService:    billing.NewBillingService(repositories, config),
+		BusinessService:   businessService.NewBusinessService(repositories, billingService),
+		BillingService:    billingService,
 		InvestmentService: investmentService.NewInvestmentService(repositories),
 	}
 }

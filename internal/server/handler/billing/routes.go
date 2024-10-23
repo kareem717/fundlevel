@@ -1,8 +1,8 @@
 package billing
 
 import (
-	"net/http"
 	"fundlevel/internal/service"
+	"net/http"
 
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/supabase-community/supabase-go"
@@ -27,5 +27,4 @@ func RegisterHumaRoutes(
 		Tags:         []string{"Billing"},
 		MaxBodyBytes: 64 * 1024,
 	}, handler.handleStripeWebhook)
-
 }

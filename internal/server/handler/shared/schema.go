@@ -24,6 +24,13 @@ type PathIDParam struct {
 	ID int `path:"id" minimum:"1"`
 }
 
+type URLOutput struct {
+	Body struct {
+		MessageResponse
+		URL string `json:"url"`
+	}
+}
+
 type GetRoundsByParentAndCursorInput struct {
 	GetCursorPaginatedByParentPathIDInput
 	round.RoundFilter
@@ -33,7 +40,6 @@ type GetRoundsByParentAndPageInput struct {
 	GetOffsetPaginatedByParentPathIDInput
 	round.RoundFilter
 }
-
 
 type GetInvestmentsByParentAndCursorInput struct {
 	GetCursorPaginatedByParentPathIDInput
