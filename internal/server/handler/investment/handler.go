@@ -227,7 +227,15 @@ func (h *httpHandler) getInvestmentCheckoutLink(ctx context.Context, input *GetS
 	}
 
 	checkoutPrice := int(round.BuyIn * 100)
-	sess, err := h.service.BillingService.CreateInvestmentCheckoutSession(ctx, checkoutPrice, input.RedirectURL, input.RedirectURL, investmentRecord.ID, round.ValueCurrency)
+	sess, err := h.service.BillingService.CreateInvestmentCheckoutSession(
+		ctx,
+		checkoutPrice,
+		input.RedirectURL,
+		input.RedirectURL,
+		investmentRecord.ID,
+		round.ValueCurrency,
+		round.Venture.Business.StripeConnectedAccountID,
+	)
 	if err != nil {
 		h.logger.Error("failed to create stripe checkout session", zap.Error(err))
 		return nil, huma.Error500InternalServerError("Failed to create stripe checkout session")

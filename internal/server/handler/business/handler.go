@@ -453,3 +453,36 @@ func (h *httpHandler) handleStripeWebhook(ctx context.Context, input *shared.Han
 
 	return nil, nil
 }
+
+func (h *httpHandler) getStripeDashboardURL(ctx context.Context, input *shared.PathIDParam) (*shared.URLOutput, error) {
+	account := shared.GetAuthenticatedAccount(ctx)
+
+	business, err := h.service.BusinessService.GetById(ctx, input.ID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, huma.Error404NotFound("Business not found")
+		}
+
+		h.logger.Error("failed to fetch business", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while fetching the business")
+	}
+
+	if business.OwnerAccountID != account.ID {
+		h.logger.Error("input account id does not match authenticated account id",
+			zap.Any("input account id", input.ID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot access stripe dashboard url for another account")
+	}
+
+	url, err := h.service.BusinessService.GetStripeDashboardURL(ctx, input.ID)
+	if err != nil {
+		return nil, huma.Error500InternalServerError("An error occurred while fetching the stripe dashboard url")
+	}
+
+	resp := &shared.URLOutput{}
+	resp.Body.Message = "Stripe dashboard url fetched successfully"
+	resp.Body.URL = url
+
+	return resp, nil
+}

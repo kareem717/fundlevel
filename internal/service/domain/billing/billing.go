@@ -15,6 +15,7 @@ import (
 	"github.com/stripe/stripe-go/v80/account"
 	"github.com/stripe/stripe-go/v80/accountlink"
 	"github.com/stripe/stripe-go/v80/checkout/session"
+	"github.com/stripe/stripe-go/v80/loginlink"
 	"github.com/stripe/stripe-go/v80/paymentintent"
 )
 
@@ -48,7 +49,15 @@ func NewBillingService(repositories storage.Repository, config BillingServiceCon
 	}
 }
 
-func (s *BillingService) CreateInvestmentCheckoutSession(ctx context.Context, price int, successURL string, cancelURL string, investmentId int, currency shared.Currency) (string, error) {
+func (s *BillingService) CreateInvestmentCheckoutSession(
+	ctx context.Context,
+	price int,
+	successURL string,
+	cancelURL string,
+	investmentId int,
+	currency shared.Currency,
+	businessStripeAccountID string,
+) (string, error) {
 	feeCents := (float64(price) * s.feePercentage)
 
 	stripe.Key = s.stripeAPIKey
@@ -61,21 +70,16 @@ func (s *BillingService) CreateInvestmentCheckoutSession(ctx context.Context, pr
 				PriceData: &stripe.CheckoutSessionLineItemPriceDataParams{
 					Currency:   stripe.String(string(currency)),
 					UnitAmount: stripe.Int64(int64(price)),
-					Product:    stripe.String(s.transactionFeeProductID),
-				},
-				Quantity: stripe.Int64(1),
-			},
-			{
-				PriceData: &stripe.CheckoutSessionLineItemPriceDataParams{
-					Currency:   stripe.String(string(currency)),
-					UnitAmount: stripe.Int64(int64(feeCents)),
 					Product:    stripe.String(s.investmentFeeProductID),
 				},
 				Quantity: stripe.Int64(1),
 			},
 		},
 		PaymentIntentData: &stripe.CheckoutSessionPaymentIntentDataParams{
-			CaptureMethod: stripe.String(string(stripe.PaymentIntentCaptureMethodManual)),
+			ApplicationFeeAmount: stripe.Int64(int64(feeCents)),
+			TransferData: &stripe.CheckoutSessionPaymentIntentDataTransferDataParams{
+				Destination: stripe.String(businessStripeAccountID),
+			},
 		},
 		Mode: stripe.String(string(stripe.CheckoutSessionModePayment)),
 		Metadata: map[string]string{
@@ -109,12 +113,6 @@ func (s *BillingService) HandleInvestmentCheckoutSuccess(ctx context.Context, se
 	paymentIntent := session.PaymentIntent
 
 	err = s.repositories.RunInTx(ctx, func(ctx context.Context, tx storage.Transaction) error {
-		params := &stripe.PaymentIntentCaptureParams{}
-		_, err := paymentintent.Capture(paymentIntent.ID, params)
-		if err != nil {
-			return err
-		}
-
 		investmentId, err := strconv.Atoi(investmentID)
 		if err != nil {
 			return fmt.Errorf("failed to convert investment ID to int: %w", err)
@@ -137,9 +135,16 @@ func (s *BillingService) HandleInvestmentCheckoutSuccess(ctx context.Context, se
 
 		_, err = s.repositories.Investment().Update(ctx, investmentId, updateParams)
 		if err != nil {
-			// TODO: figure out how to reverse the transaction if it fails
 			return fmt.Errorf("failed to update investment: %w", err)
 		}
+
+		//! This is where we capture the payment
+		_, err = paymentintent.Capture(paymentIntent.ID, &stripe.PaymentIntentCaptureParams{})
+		if err != nil {
+			return err
+		}
+
+		//TODO: update round state
 
 		return nil
 	})
@@ -202,6 +207,25 @@ func (s *BillingService) CreateStripeConnectedAccount(ctx context.Context) (stri
 	}
 
 	return *account, nil
+}
+
+func (s *BillingService) GetStripeConnectedAccountDashboardURL(ctx context.Context, accountID string) (string, error) {
+	stripe.Key = s.stripeAPIKey
+
+	account, err := account.GetByID(accountID, nil)
+	if err != nil {
+		return "", err
+	}
+
+	params := &stripe.LoginLinkParams{
+		Account: stripe.String(account.ID),
+	}
+	result, err := loginlink.New(params)
+	if err != nil {
+		return "", err
+	}
+
+	return result.URL, nil
 }
 
 func (s *BillingService) DeleteStripeConnectedAccount(ctx context.Context, accountID string) error {

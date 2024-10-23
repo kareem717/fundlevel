@@ -95,6 +95,7 @@ type BusinessService interface {
 	Update(ctx context.Context, id int, params business.UpdateBusinessParams) (business.Business, error)
 	GetByStripeConnectedAccountId(ctx context.Context, stripeConnectedAccountId string) (business.Business, error)
 
+	GetStripeDashboardURL(ctx context.Context, businessId int) (string, error)
 
 	GetVenturesByCursor(ctx context.Context, accountId int, limit int, cursor int, filter venture.VentureFilter) ([]venture.Venture, error)
 	GetVenturesByPage(ctx context.Context, accountId int, pageSize int, page int, filter venture.VentureFilter) ([]venture.Venture, int, error)
@@ -111,12 +112,13 @@ type BusinessService interface {
 }
 
 type BillingService interface {
-	CreateInvestmentCheckoutSession(ctx context.Context, price int, successURL string, cancelURL string, investmentId int, currency shared.Currency) (string, error)
+	CreateInvestmentCheckoutSession(ctx context.Context, price int, successURL string, cancelURL string, investmentId int, currency shared.Currency, businessStripeAccountID string) (string, error)
 	HandleInvestmentCheckoutSuccess(ctx context.Context, sessionID string) (string, error)
 
 	CreateAccountLink(ctx context.Context, accountID string, returnURL string, refreshURL string) (string, error)
 	CreateStripeConnectedAccount(ctx context.Context) (stripe.Account, error)
 	DeleteStripeConnectedAccount(ctx context.Context, accountID string) error
+	GetStripeConnectedAccountDashboardURL(ctx context.Context, accountID string) (string, error)
 }
 
 type InvestmentService interface {

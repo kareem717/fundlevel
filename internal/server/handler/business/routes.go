@@ -182,4 +182,24 @@ func RegisterHumaRoutes(
 		Description: "Handle Stripe connected account webhook.",
 		Tags:        []string{"Businesses"},
 	}, handler.handleStripeWebhook)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-stripe-dashboard-url",
+		Method:      http.MethodGet,
+		Path:        "/business/{id}/stripe-dashboard-url",
+		Summary:     "Get Stripe dashboard url",
+		Description: "Get Stripe dashboard url.",
+		Tags:        []string{"Businesses"},
+		Security: []map[string][]string{
+			{"bearerAuth": {}},
+		},
+		Middlewares: huma.Middlewares{
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
+			},
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithAccount(humaApi)(ctx, next, logger, service)
+			},
+		},
+	}, handler.getStripeDashboardURL)
 }

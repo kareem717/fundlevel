@@ -73,3 +73,12 @@ func (s *BusinessService) GetByStripeConnectedAccountId(ctx context.Context, str
 func (s *BusinessService) Update(ctx context.Context, id int, params business.UpdateBusinessParams) (business.Business, error) {
 	return s.repositories.Business().Update(ctx, id, params)
 }
+
+func (s *BusinessService) GetStripeDashboardURL(ctx context.Context, businessId int) (string, error) {
+	business, err := s.repositories.Business().GetById(ctx, businessId)
+	if err != nil {
+		return "", err
+	}
+
+	return s.billingService.GetStripeConnectedAccountDashboardURL(ctx, business.StripeConnectedAccountID)
+}
