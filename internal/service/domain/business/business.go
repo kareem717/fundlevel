@@ -47,7 +47,19 @@ func (s *BusinessService) Create(ctx context.Context, params business.CreateBusi
 }
 
 func (s *BusinessService) Delete(ctx context.Context, id int) error {
-	return s.repositories.Business().Delete(ctx, id)
+	return s.repositories.RunInTx(ctx, func(ctx context.Context, tx storage.Transaction) error {
+		business, err := s.repositories.Business().GetById(ctx, id)
+		if err != nil {
+			return err
+		}
+
+		err = s.repositories.Business().Delete(ctx, id)
+		if err != nil {
+			return err
+		}
+
+		return s.billingService.DeleteStripeConnectedAccount(ctx, business.StripeConnectedAccountID)
+	})
 }
 
 func (s *BusinessService) GetById(ctx context.Context, id int) (business.Business, error) {
