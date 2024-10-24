@@ -43,6 +43,7 @@ export type Business = {
     name: string;
     ownerAccountId: number;
     status: 'pending' | 'active' | 'disabled';
+    stripeConnectedAccountId: string;
     teamSize: '1' | '2-10' | '11-50' | '51-200' | '201-500' | '501-1000' | '1000+';
     updatedAt: (Date) | null;
 };
@@ -322,21 +323,21 @@ export type IsLikedOutputBody = {
     message: string;
 };
 
-export type LinkOutputBody = {
-    /**
-     * A URL to the JSON Schema for this object.
-     */
-    readonly $schema?: string;
-    link: string;
-    message: string;
-};
-
 export type MessageResponse = {
     /**
      * A URL to the JSON Schema for this object.
      */
     readonly $schema?: string;
     message: string;
+};
+
+export type OnboardStripeConnectedAccountInputBody = {
+    /**
+     * A URL to the JSON Schema for this object.
+     */
+    readonly $schema?: string;
+    refreshURL: string;
+    returnURL: string;
 };
 
 export type Round = {
@@ -432,6 +433,15 @@ export type SingleVentureResponseBody = {
     readonly $schema?: string;
     message: string;
     venture: Venture;
+};
+
+export type UrlOutputBody = {
+    /**
+     * A URL to the JSON Schema for this object.
+     */
+    readonly $schema?: string;
+    message: string;
+    url: string;
 };
 
 export type UpdateAccountParams = {
@@ -533,6 +543,11 @@ export type GetAccountInvestmentsByCursorData = {
     query?: {
         cursor?: number;
         limit?: number;
+        maxPaidAt?: Date;
+        minPaidAt?: Date;
+        sortBy?: 'paid_at' | 'created_at';
+        sortOrder?: 'asc' | 'desc';
+        status?: Array<('pending' | 'accepted' | 'rejected' | 'withdrawn' | 'successful' | 'failed')> | null;
     };
 };
 
@@ -540,21 +555,18 @@ export type GetAccountInvestmentsByCursorResponse = (GetCursorPaginatedRoundInve
 
 export type GetAccountInvestmentsByCursorError = (ErrorModel);
 
-export type CreateRoundInvestmentData = {
-    body: CreateInvestmentParams;
-};
-
-export type CreateRoundInvestmentResponse = (SingleInvestmentResponseBody);
-
-export type CreateRoundInvestmentError = (ErrorModel);
-
 export type GetAccountInvestmentsByPageData = {
     path: {
         id: number;
     };
     query?: {
+        maxPaidAt?: Date;
+        minPaidAt?: Date;
         page?: number;
         pageSize?: number;
+        sortBy?: 'paid_at' | 'created_at';
+        sortOrder?: 'asc' | 'desc';
+        status?: Array<('pending' | 'accepted' | 'rejected' | 'withdrawn' | 'successful' | 'failed')> | null;
     };
 };
 
@@ -562,41 +574,15 @@ export type GetAccountInvestmentsByPageResponse = (GetOffsetPaginatedRoundInvest
 
 export type GetAccountInvestmentsByPageError = (ErrorModel);
 
-export type DeleteRoundInvestmentData = {
+export type GetInvestmentByIdData = {
     path: {
         id: number;
-        investmentId: number;
     };
 };
 
-export type DeleteRoundInvestmentResponse = (string);
+export type GetInvestmentByIdResponse = (SingleInvestmentResponseBody);
 
-export type DeleteRoundInvestmentError = (ErrorModel);
-
-export type GetAccountCheckoutLinkData = {
-    path: {
-        id: number;
-        investmentId: number;
-    };
-    query: {
-        redirectUrl: string;
-    };
-};
-
-export type GetAccountCheckoutLinkResponse = (LinkOutputBody);
-
-export type GetAccountCheckoutLinkError = (ErrorModel);
-
-export type WithdrawInvestmentData = {
-    path: {
-        id: number;
-        investmentId: number;
-    };
-};
-
-export type WithdrawInvestmentResponse = (string);
-
-export type WithdrawInvestmentError = (ErrorModel);
+export type GetInvestmentByIdError = (ErrorModel);
 
 export type HandleStripeWebhookData = {
     body: unknown;
@@ -616,6 +602,17 @@ export type CreateBusinessData = {
 export type CreateBusinessResponse = (SingleBusinessResponseBody);
 
 export type CreateBusinessError = (ErrorModel);
+
+export type HandleStripeConnectedAccountWebhookData = {
+    body: unknown;
+    headers?: {
+        'Stripe-Signature'?: string;
+    };
+};
+
+export type HandleStripeConnectedAccountWebhookResponse = (void);
+
+export type HandleStripeConnectedAccountWebhookError = (ErrorModel);
 
 export type DeleteBusinessData = {
     path: {
@@ -654,6 +651,11 @@ export type GetBusinessInvestmentsByCursorData = {
     query?: {
         cursor?: number;
         limit?: number;
+        maxPaidAt?: Date;
+        minPaidAt?: Date;
+        sortBy?: 'paid_at' | 'created_at';
+        sortOrder?: 'asc' | 'desc';
+        status?: Array<('pending' | 'accepted' | 'rejected' | 'withdrawn' | 'successful' | 'failed')> | null;
     };
 };
 
@@ -666,8 +668,13 @@ export type GetBusinessInvestmentsByPageData = {
         id: number;
     };
     query?: {
+        maxPaidAt?: Date;
+        minPaidAt?: Date;
         page?: number;
         pageSize?: number;
+        sortBy?: 'paid_at' | 'created_at';
+        sortOrder?: 'asc' | 'desc';
+        status?: Array<('pending' | 'accepted' | 'rejected' | 'withdrawn' | 'successful' | 'failed')> | null;
     };
 };
 
@@ -682,6 +689,22 @@ export type GetBusinessRoundsByCursorData = {
     query?: {
         cursor?: number;
         limit?: number;
+        maximumBeginsAt?: Date;
+        maximumBuyIn?: number;
+        maximumEndsAt?: Date;
+        maximumInvestorCount?: number;
+        maximumPercentageOffered?: number;
+        maximumPercentageValue?: number;
+        minimumBeginsAt?: Date;
+        minimumBuyIn?: number;
+        minimumEndsAt?: Date;
+        minimumInvestorCount?: number;
+        minimumPercentageOffered?: number;
+        minimumPercentageValue?: number;
+        sortBy?: 'begins_at' | 'ends_at' | 'percentage_offered' | 'percentage_value' | 'value_currency' | 'status' | 'investor_count' | 'buy_in' | 'created_at';
+        sortOrder?: 'asc' | 'desc';
+        status?: Array<('active' | 'successful' | 'failed')> | null;
+        valueCurrencies?: 'usd' | 'gbp' | 'eur' | 'cad' | 'aud' | 'jpy';
     };
 };
 
@@ -694,8 +717,24 @@ export type GetBusinessRoundsByPageData = {
         id: number;
     };
     query?: {
+        maximumBeginsAt?: Date;
+        maximumBuyIn?: number;
+        maximumEndsAt?: Date;
+        maximumInvestorCount?: number;
+        maximumPercentageOffered?: number;
+        maximumPercentageValue?: number;
+        minimumBeginsAt?: Date;
+        minimumBuyIn?: number;
+        minimumEndsAt?: Date;
+        minimumInvestorCount?: number;
+        minimumPercentageOffered?: number;
+        minimumPercentageValue?: number;
         page?: number;
         pageSize?: number;
+        sortBy?: 'begins_at' | 'ends_at' | 'percentage_offered' | 'percentage_value' | 'value_currency' | 'status' | 'investor_count' | 'buy_in' | 'created_at';
+        sortOrder?: 'asc' | 'desc';
+        status?: Array<('active' | 'successful' | 'failed')> | null;
+        valueCurrencies?: 'usd' | 'gbp' | 'eur' | 'cad' | 'aud' | 'jpy';
     };
 };
 
@@ -703,13 +742,37 @@ export type GetBusinessRoundsByPageResponse = (GetOffsetPaginatedRoundsOutputBod
 
 export type GetBusinessRoundsByPageError = (ErrorModel);
 
+export type GetStripeDashboardUrlData = {
+    path: {
+        id: number;
+    };
+};
+
+export type GetStripeDashboardUrlResponse = (UrlOutputBody);
+
+export type GetStripeDashboardUrlError = (ErrorModel);
+
+export type OnboardStripeConnectedAccountData = {
+    body: OnboardStripeConnectedAccountInputBody;
+    path: {
+        id: number;
+    };
+};
+
+export type OnboardStripeConnectedAccountResponse = (UrlOutputBody);
+
+export type OnboardStripeConnectedAccountError = (ErrorModel);
+
 export type GetBusinessVenturesByCursorData = {
     path: {
         id: number;
     };
     query?: {
         cursor?: number;
+        isHidden?: Array<(boolean)> | null;
         limit?: number;
+        sortBy?: 'created_at';
+        sortOrder?: 'asc' | 'desc';
     };
 };
 
@@ -722,8 +785,11 @@ export type GetBusinessVenturesByPageData = {
         id: number;
     };
     query?: {
+        isHidden?: Array<(boolean)> | null;
         page?: number;
         pageSize?: number;
+        sortBy?: 'created_at';
+        sortOrder?: 'asc' | 'desc';
     };
 };
 
@@ -739,20 +805,77 @@ export type GetAllIndustriesResponse = (GetAllIndustriesResponseBody);
 
 export type GetAllIndustriesError = (ErrorModel);
 
-export type GetInvestmentByIdData = {
+export type CreateRoundInvestmentData = {
+    body: CreateInvestmentParams;
+};
+
+export type CreateRoundInvestmentResponse = (SingleInvestmentResponseBody);
+
+export type CreateRoundInvestmentError = (ErrorModel);
+
+export type DeleteRoundInvestmentData = {
     path: {
         id: number;
     };
 };
 
-export type GetInvestmentByIdResponse = (SingleInvestmentResponseBody);
+export type DeleteRoundInvestmentResponse = (string);
 
-export type GetInvestmentByIdError = (ErrorModel);
+export type DeleteRoundInvestmentError = (ErrorModel);
+
+export type AcceptInvestmentData = {
+    path: {
+        id: number;
+    };
+};
+
+export type AcceptInvestmentResponse = (string);
+
+export type AcceptInvestmentError = (ErrorModel);
+
+export type GetAccountCheckoutLinkData = {
+    path: {
+        id: number;
+    };
+    query: {
+        redirectUrl: string;
+    };
+};
+
+export type GetAccountCheckoutLinkResponse = (UrlOutputBody);
+
+export type GetAccountCheckoutLinkError = (ErrorModel);
+
+export type WithdrawInvestmentData = {
+    path: {
+        id: number;
+    };
+};
+
+export type WithdrawInvestmentResponse = (string);
+
+export type WithdrawInvestmentError = (ErrorModel);
 
 export type GetRoundByCursorData = {
     query?: {
         cursor?: number;
         limit?: number;
+        maximumBeginsAt?: Date;
+        maximumBuyIn?: number;
+        maximumEndsAt?: Date;
+        maximumInvestorCount?: number;
+        maximumPercentageOffered?: number;
+        maximumPercentageValue?: number;
+        minimumBeginsAt?: Date;
+        minimumBuyIn?: number;
+        minimumEndsAt?: Date;
+        minimumInvestorCount?: number;
+        minimumPercentageOffered?: number;
+        minimumPercentageValue?: number;
+        sortBy?: 'begins_at' | 'ends_at' | 'percentage_offered' | 'percentage_value' | 'value_currency' | 'status' | 'investor_count' | 'buy_in' | 'created_at';
+        sortOrder?: 'asc' | 'desc';
+        status?: Array<('active' | 'successful' | 'failed')> | null;
+        valueCurrencies?: 'usd' | 'gbp' | 'eur' | 'cad' | 'aud' | 'jpy';
     };
 };
 
@@ -770,8 +893,24 @@ export type CreateRoundError = (ErrorModel);
 
 export type GetRoundsByPageData = {
     query?: {
+        maximumBeginsAt?: Date;
+        maximumBuyIn?: number;
+        maximumEndsAt?: Date;
+        maximumInvestorCount?: number;
+        maximumPercentageOffered?: number;
+        maximumPercentageValue?: number;
+        minimumBeginsAt?: Date;
+        minimumBuyIn?: number;
+        minimumEndsAt?: Date;
+        minimumInvestorCount?: number;
+        minimumPercentageOffered?: number;
+        minimumPercentageValue?: number;
         page?: number;
         pageSize?: number;
+        sortBy?: 'begins_at' | 'ends_at' | 'percentage_offered' | 'percentage_value' | 'value_currency' | 'status' | 'investor_count' | 'buy_in' | 'created_at';
+        sortOrder?: 'asc' | 'desc';
+        status?: Array<('active' | 'successful' | 'failed')> | null;
+        valueCurrencies?: 'usd' | 'gbp' | 'eur' | 'cad' | 'aud' | 'jpy';
     };
 };
 
@@ -839,6 +978,11 @@ export type GetRoundInvestmentsByCursorData = {
     query?: {
         cursor?: number;
         limit?: number;
+        maxPaidAt?: Date;
+        minPaidAt?: Date;
+        sortBy?: 'paid_at' | 'created_at';
+        sortOrder?: 'asc' | 'desc';
+        status?: Array<('pending' | 'accepted' | 'rejected' | 'withdrawn' | 'successful' | 'failed')> | null;
     };
 };
 
@@ -851,25 +995,19 @@ export type GetRoundInvestmentsByPageData = {
         id: number;
     };
     query?: {
+        maxPaidAt?: Date;
+        minPaidAt?: Date;
         page?: number;
         pageSize?: number;
+        sortBy?: 'paid_at' | 'created_at';
+        sortOrder?: 'asc' | 'desc';
+        status?: Array<('pending' | 'accepted' | 'rejected' | 'withdrawn' | 'successful' | 'failed')> | null;
     };
 };
 
 export type GetRoundInvestmentsByPageResponse = (GetOffsetPaginatedRoundInvestmentsOutputBody);
 
 export type GetRoundInvestmentsByPageError = (ErrorModel);
-
-export type AcceptInvestmentData = {
-    path: {
-        id: number;
-        investmentId: number;
-    };
-};
-
-export type AcceptInvestmentResponse = (string);
-
-export type AcceptInvestmentError = (ErrorModel);
 
 export type GetRoundLikeCountData = {
     path: {
@@ -894,7 +1032,10 @@ export type GetUserAccountError = (ErrorModel);
 export type GetVenturesByCursorData = {
     query?: {
         cursor?: number;
+        isHidden?: Array<(boolean)> | null;
         limit?: number;
+        sortBy?: 'created_at';
+        sortOrder?: 'asc' | 'desc';
     };
 };
 
@@ -912,8 +1053,11 @@ export type CreateVentureError = (ErrorModel);
 
 export type GetVenturesByPageData = {
     query?: {
+        isHidden?: Array<(boolean)> | null;
         page?: number;
         pageSize?: number;
+        sortBy?: 'created_at';
+        sortOrder?: 'asc' | 'desc';
     };
 };
 
@@ -1002,6 +1146,11 @@ export type GetVentureRoundInvestmentsByCursorData = {
     query?: {
         cursor?: number;
         limit?: number;
+        maxPaidAt?: Date;
+        minPaidAt?: Date;
+        sortBy?: 'paid_at' | 'created_at';
+        sortOrder?: 'asc' | 'desc';
+        status?: Array<('pending' | 'accepted' | 'rejected' | 'withdrawn' | 'successful' | 'failed')> | null;
     };
 };
 
@@ -1014,8 +1163,13 @@ export type GetVentureRoundInvestmentsByPageData = {
         id: number;
     };
     query?: {
+        maxPaidAt?: Date;
+        minPaidAt?: Date;
         page?: number;
         pageSize?: number;
+        sortBy?: 'paid_at' | 'created_at';
+        sortOrder?: 'asc' | 'desc';
+        status?: Array<('pending' | 'accepted' | 'rejected' | 'withdrawn' | 'successful' | 'failed')> | null;
     };
 };
 
@@ -1030,6 +1184,22 @@ export type GetVentureRoundsByCursorData = {
     query?: {
         cursor?: number;
         limit?: number;
+        maximumBeginsAt?: Date;
+        maximumBuyIn?: number;
+        maximumEndsAt?: Date;
+        maximumInvestorCount?: number;
+        maximumPercentageOffered?: number;
+        maximumPercentageValue?: number;
+        minimumBeginsAt?: Date;
+        minimumBuyIn?: number;
+        minimumEndsAt?: Date;
+        minimumInvestorCount?: number;
+        minimumPercentageOffered?: number;
+        minimumPercentageValue?: number;
+        sortBy?: 'begins_at' | 'ends_at' | 'percentage_offered' | 'percentage_value' | 'value_currency' | 'status' | 'investor_count' | 'buy_in' | 'created_at';
+        sortOrder?: 'asc' | 'desc';
+        status?: Array<('active' | 'successful' | 'failed')> | null;
+        valueCurrencies?: 'usd' | 'gbp' | 'eur' | 'cad' | 'aud' | 'jpy';
     };
 };
 
@@ -1052,8 +1222,24 @@ export type GetVentureRoundsByPageData = {
         id: number;
     };
     query?: {
+        maximumBeginsAt?: Date;
+        maximumBuyIn?: number;
+        maximumEndsAt?: Date;
+        maximumInvestorCount?: number;
+        maximumPercentageOffered?: number;
+        maximumPercentageValue?: number;
+        minimumBeginsAt?: Date;
+        minimumBuyIn?: number;
+        minimumEndsAt?: Date;
+        minimumInvestorCount?: number;
+        minimumPercentageOffered?: number;
+        minimumPercentageValue?: number;
         page?: number;
         pageSize?: number;
+        sortBy?: 'begins_at' | 'ends_at' | 'percentage_offered' | 'percentage_value' | 'value_currency' | 'status' | 'investor_count' | 'buy_in' | 'created_at';
+        sortOrder?: 'asc' | 'desc';
+        status?: Array<('active' | 'successful' | 'failed')> | null;
+        valueCurrencies?: 'usd' | 'gbp' | 'eur' | 'cad' | 'aud' | 'jpy';
     };
 };
 
@@ -1258,22 +1444,6 @@ export const GetAccountInvestmentsByCursorResponseTransformer: GetAccountInvestm
     return data;
 };
 
-export type CreateRoundInvestmentResponseTransformer = (data: any) => Promise<CreateRoundInvestmentResponse>;
-
-export type SingleInvestmentResponseBodyModelResponseTransformer = (data: any) => SingleInvestmentResponseBody;
-
-export const SingleInvestmentResponseBodyModelResponseTransformer: SingleInvestmentResponseBodyModelResponseTransformer = data => {
-    if (data?.investment) {
-        RoundInvestmentModelResponseTransformer(data.investment);
-    }
-    return data;
-};
-
-export const CreateRoundInvestmentResponseTransformer: CreateRoundInvestmentResponseTransformer = async (data) => {
-    SingleInvestmentResponseBodyModelResponseTransformer(data);
-    return data;
-};
-
 export type GetAccountInvestmentsByPageResponseTransformer = (data: any) => Promise<GetAccountInvestmentsByPageResponse>;
 
 export type GetOffsetPaginatedRoundInvestmentsOutputBodyModelResponseTransformer = (data: any) => GetOffsetPaginatedRoundInvestmentsOutputBody;
@@ -1287,6 +1457,22 @@ export const GetOffsetPaginatedRoundInvestmentsOutputBodyModelResponseTransforme
 
 export const GetAccountInvestmentsByPageResponseTransformer: GetAccountInvestmentsByPageResponseTransformer = async (data) => {
     GetOffsetPaginatedRoundInvestmentsOutputBodyModelResponseTransformer(data);
+    return data;
+};
+
+export type GetInvestmentByIdResponseTransformer = (data: any) => Promise<GetInvestmentByIdResponse>;
+
+export type SingleInvestmentResponseBodyModelResponseTransformer = (data: any) => SingleInvestmentResponseBody;
+
+export const SingleInvestmentResponseBodyModelResponseTransformer: SingleInvestmentResponseBodyModelResponseTransformer = data => {
+    if (data?.investment) {
+        RoundInvestmentModelResponseTransformer(data.investment);
+    }
+    return data;
+};
+
+export const GetInvestmentByIdResponseTransformer: GetInvestmentByIdResponseTransformer = async (data) => {
+    SingleInvestmentResponseBodyModelResponseTransformer(data);
     return data;
 };
 
@@ -1407,9 +1593,9 @@ export const GetAllIndustriesResponseTransformer: GetAllIndustriesResponseTransf
     return data;
 };
 
-export type GetInvestmentByIdResponseTransformer = (data: any) => Promise<GetInvestmentByIdResponse>;
+export type CreateRoundInvestmentResponseTransformer = (data: any) => Promise<CreateRoundInvestmentResponse>;
 
-export const GetInvestmentByIdResponseTransformer: GetInvestmentByIdResponseTransformer = async (data) => {
+export const CreateRoundInvestmentResponseTransformer: CreateRoundInvestmentResponseTransformer = async (data) => {
     SingleInvestmentResponseBodyModelResponseTransformer(data);
     return data;
 };
