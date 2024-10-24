@@ -1,15 +1,14 @@
 "use client"
 
-import * as React from "react"
+import { ComponentPropsWithoutRef, FC, useEffect } from "react"
+import { Business } from "@/lib/api"
 import { ChevronsUpDown, Plus } from "lucide-react"
-
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
@@ -18,21 +17,39 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import Link from "next/link"
+import redirects from "@/lib/config/redirects"
+import { create } from "zustand";
 
-export function TeamSwitcher({
-  teams,
-}: {
-  teams: {
-    name: string
-    logo: React.ElementType
-    plan: string
-  }[]
-}) {
+export const useBusiness = create<{
+  business: Business | null;
+  businesses: Business[];
+  setBusiness: (business: Business | null) => void;
+  setBusinesses: (businesses: Business[]) => void;
+}>((set) => ({
+  business: null,
+  businesses: [],
+  setBusiness: (business) => set({ business }),
+  setBusinesses: (businesses) => set({ businesses }),
+}));
+
+export interface BusinessSwitcherProps extends ComponentPropsWithoutRef<typeof SidebarMenu> {
+  businesses: Business[];
+}
+
+export const BusinessSwitcher: FC<BusinessSwitcherProps> = ({ businesses: businessData, ...props }) => {
   const { isMobile } = useSidebar()
-  const [activeTeam, setActiveTeam] = React.useState(teams[0])
+  const { business, setBusiness, businesses, setBusinesses } = useBusiness()
+
+  useEffect(() => {
+    setBusinesses(businessData)
+    if (!business) {
+      setBusiness(businessData[0])
+    }
+  }, [business, businessData, setBusiness])
 
   return (
-    <SidebarMenu>
+    <SidebarMenu {...props}>
       <SidebarMenuItem>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -41,13 +58,15 @@ export function TeamSwitcher({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                <activeTeam.logo className="size-4" />
+                <span className="text-lg uppercase">
+                  {business?.name[0]}
+                </span>
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">
-                  {activeTeam.name}
+                  {business?.name}
                 </span>
-                <span className="truncate text-xs">{activeTeam.plan}</span>
+                {/* <span className="truncate text-xs">{business.plan}</span> */}
               </div>
               <ChevronsUpDown className="ml-auto" />
             </SidebarMenuButton>
@@ -59,19 +78,19 @@ export function TeamSwitcher({
             sideOffset={4}
           >
             <DropdownMenuLabel className="text-xs text-muted-foreground">
-              Teams
+              Businesses
             </DropdownMenuLabel>
-            {teams.map((team, index) => (
+            {businesses.map((business) => (
               <DropdownMenuItem
-                key={team.name}
-                onClick={() => setActiveTeam(team)}
+                key={business.name}
+                onClick={() => setBusiness(business)}
                 className="gap-2 p-2"
               >
                 <div className="flex size-6 items-center justify-center rounded-sm border">
-                  <team.logo className="size-4 shrink-0" />
+                  {business?.name[0]}
                 </div>
-                {team.name}
-                <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
+                {business.name}
+                {/* <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut> */}
               </DropdownMenuItem>
             ))}
             <DropdownMenuSeparator />
@@ -79,11 +98,16 @@ export function TeamSwitcher({
               <div className="flex size-6 items-center justify-center rounded-md border bg-background">
                 <Plus className="size-4" />
               </div>
-              <div className="font-medium text-muted-foreground">Add team</div>
+              <Link
+                href={redirects.app.myBusinesses.create}
+                className="font-medium text-muted-foreground"
+              >
+                Add business
+              </Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
-    </SidebarMenu>
+    </SidebarMenu >
   )
 }
