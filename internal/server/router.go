@@ -2,6 +2,7 @@ package http
 
 import (
 	"fundlevel/internal/server/handler/account"
+	"fundlevel/internal/server/handler/analytic"
 	"fundlevel/internal/server/handler/billing"
 	"fundlevel/internal/server/handler/business"
 	"fundlevel/internal/server/handler/health"
@@ -111,6 +112,13 @@ func (s *Server) routes() chi.Router {
 		s.services,
 		humaApi,
 		s.logger,
+		s.supabaseClient,
+	)
+
+	analytic.RegisterHumaRoutes(
+		s.services,
+		s.logger,
+		humaApi,
 		s.supabaseClient,
 	)
 

@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"fundlevel/internal/entities/account"
+	"fundlevel/internal/entities/analytic"
 	"fundlevel/internal/entities/business"
 	"fundlevel/internal/entities/industry"
 	"fundlevel/internal/entities/investment"
@@ -113,6 +114,16 @@ type BusinessRepository interface {
 	GetTotalFunding(ctx context.Context, businessId int) (int, error)
 }
 
+type ImpressionRepository interface {
+	CreateRoundImpression(ctx context.Context, params analytic.CreateRoundImpressionParams) error
+	CreateVentureImpression(ctx context.Context, params analytic.CreateVentureImpressionParams) error
+	CreateBusinessImpression(ctx context.Context, params analytic.CreateBusinessImpressionParams) error
+
+	GetRoundImpressionCount(ctx context.Context, roundId int) (int, error)
+	GetVentureImpressionCount(ctx context.Context, ventureId int) (int, error)
+	GetBusinessImpressionCount(ctx context.Context, businessId int) (int, error)
+}
+
 type RepositoryProvider interface {
 	Venture() VentureRepository
 	Account() AccountRepository
@@ -120,6 +131,7 @@ type RepositoryProvider interface {
 	Investment() InvestmentRepository
 	User() UserRepository
 	Business() BusinessRepository
+	Impression() ImpressionRepository
 	Industry() IndustryRepository
 }
 

@@ -8,6 +8,7 @@ import (
 	"fundlevel/internal/storage"
 	"fundlevel/internal/storage/postgres/account"
 	"fundlevel/internal/storage/postgres/business"
+	"fundlevel/internal/storage/postgres/impression"
 	"fundlevel/internal/storage/postgres/industry"
 	"fundlevel/internal/storage/postgres/investment"
 	"fundlevel/internal/storage/postgres/round"
@@ -94,6 +95,7 @@ type transaction struct {
 	investmentRepo *investment.InvestmentRepository
 	industryRepo   *industry.IndustryRepository
 	businessRepo   *business.BusinessRepository
+	impressionRepo *impression.ImpressionRepository
 	tx             *bun.Tx
 	ctx            context.Context
 }
@@ -126,6 +128,10 @@ func (t *transaction) Industry() storage.IndustryRepository {
 	return t.industryRepo
 }
 
+func (t *transaction) Impression() storage.ImpressionRepository {
+	return t.impressionRepo
+}
+
 func (t *transaction) Commit() error {
 	return t.tx.Commit()
 }
@@ -147,6 +153,7 @@ func (t *transaction) SubTransaction() (storage.Transaction, error) {
 		userRepo:       user.NewUserRepository(tx, t.ctx),
 		investmentRepo: investment.NewInvestmentRepository(tx, t.ctx),
 		industryRepo:   industry.NewIndustryRepository(tx, t.ctx),
+		impressionRepo: impression.NewImpressionRepository(tx, t.ctx),
 		businessRepo:   business.NewBusinessRepository(tx, t.ctx),
 		tx:             &tx,
 	}, nil
@@ -158,6 +165,7 @@ type Repository struct {
 	roundRepo      *round.RoundRepository
 	userRepo       *user.UserRepository
 	investmentRepo *investment.InvestmentRepository
+	impressionRepo *impression.ImpressionRepository
 	businessRepo   *business.BusinessRepository
 	industryRepo   *industry.IndustryRepository
 	db             *bun.DB
@@ -209,6 +217,7 @@ func NewRepository(db *bun.DB, ctx context.Context) *Repository {
 		investmentRepo: investment.NewInvestmentRepository(db, ctx),
 		industryRepo:   industry.NewIndustryRepository(db, ctx),
 		businessRepo:   business.NewBusinessRepository(db, ctx),
+		impressionRepo: impression.NewImpressionRepository(db, ctx),
 		db:             db,
 		ctx:            ctx,
 	}
@@ -242,6 +251,10 @@ func (r *Repository) Business() storage.BusinessRepository {
 	return r.businessRepo
 }
 
+func (r *Repository) Impression() storage.ImpressionRepository {
+	return r.impressionRepo
+}
+
 func (r *Repository) HealthCheck(ctx context.Context) error {
 	return r.db.PingContext(ctx)
 }
@@ -260,6 +273,7 @@ func (r *Repository) NewTransaction() (storage.Transaction, error) {
 		investmentRepo: investment.NewInvestmentRepository(tx, r.ctx),
 		industryRepo:   industry.NewIndustryRepository(tx, r.ctx),
 		businessRepo:   business.NewBusinessRepository(tx, r.ctx),
+		impressionRepo: impression.NewImpressionRepository(tx, r.ctx),
 		tx:             &tx,
 		ctx:            r.ctx,
 	}, nil
