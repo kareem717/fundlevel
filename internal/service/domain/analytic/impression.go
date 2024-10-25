@@ -41,3 +41,5 @@ func (s *AnalyticService) GetVentureImpressionCount(ctx context.Context, venture
 func (s *AnalyticService) GetBusinessImpressionCount(ctx context.Context, businessID int) (int, error) {
 	return s.repositories.Impression().GetBusinessImpressionCount(ctx, businessID)
 }
+
+

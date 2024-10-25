@@ -32,11 +32,6 @@ type VentureRepository interface {
 	GetInvestmentsByCursor(ctx context.Context, ventureId int, paginationParams postgres.CursorPagination, filter investment.InvestmentFilter) ([]investment.RoundInvestment, error)
 	// GetInvestmentsByPage gets all of the received investments on the rounds related to the venture using offset pagination
 	GetInvestmentsByPage(ctx context.Context, ventureId int, paginationParams postgres.OffsetPagination, filter investment.InvestmentFilter) ([]investment.RoundInvestment, int, error)
-
-	GetLikeCount(ctx context.Context, ventureId int) (int, error)
-	CreateLike(ctx context.Context, params venture.CreateVentureLikeParams) (venture.VentureLike, error)
-	DeleteLike(ctx context.Context, ventureId int, accountId int) error
-	IsLikedByAccount(ctx context.Context, ventureId int, accountId int) (bool, error)
 }
 
 type IndustryRepository interface {
@@ -49,11 +44,6 @@ type RoundRepository interface {
 	GetById(ctx context.Context, id int) (round.Round, error)
 	GetByCursor(ctx context.Context, paginationParams postgres.CursorPagination, filter round.RoundFilter) ([]round.Round, error)
 	GetByPage(ctx context.Context, paginationParams postgres.OffsetPagination, filter round.RoundFilter) ([]round.Round, int, error)
-
-	GetLikeCount(ctx context.Context, roundId int) (int, error)
-	CreateLike(ctx context.Context, params round.CreateRoundLikeParams) (round.RoundLike, error)
-	DeleteLike(ctx context.Context, roundId int, accountId int) error
-	IsLikedByAccount(ctx context.Context, roundId int, accountId int) (bool, error)
 
 	// GetInvestmentsByCursor gets all of the investments received on the round using cursor pagination
 	GetInvestmentsByCursor(ctx context.Context, roundId int, paginationParams postgres.CursorPagination, filter investment.InvestmentFilter) ([]investment.RoundInvestment, error)
@@ -114,6 +104,23 @@ type BusinessRepository interface {
 	GetTotalFunding(ctx context.Context, businessId int) (int, error)
 }
 
+type FavouriteRepository interface {
+	CreateVentureFavourite(ctx context.Context, params analytic.CreateVentureFavouriteParams) error
+	DeleteVentureFavourite(ctx context.Context, ventureId int, accountId int) error
+	IsVentureFavouritedByAccount(ctx context.Context, ventureId int, accountId int) (bool, error)
+	GetVentureFavouriteCount(ctx context.Context, ventureId int) (int, error)
+
+	CreateBusinessFavourite(ctx context.Context, params analytic.CreateBusinessFavouriteParams) error
+	DeleteBusinessFavourite(ctx context.Context, businessId int, accountId int) error
+	IsBusinessFavouritedByAccount(ctx context.Context, businessId int, accountId int) (bool, error)
+	GetBusinessFavouriteCount(ctx context.Context, businessId int) (int, error)
+
+	CreateRoundFavourite(ctx context.Context, params analytic.CreateRoundFavouriteParams) error
+	DeleteRoundFavourite(ctx context.Context, roundId int, accountId int) error
+	IsRoundFavouritedByAccount(ctx context.Context, roundId int, accountId int) (bool, error)
+	GetRoundFavouriteCount(ctx context.Context, roundId int) (int, error)
+}
+
 type ImpressionRepository interface {
 	CreateRoundImpression(ctx context.Context, params analytic.CreateRoundImpressionParams) error
 	CreateVentureImpression(ctx context.Context, params analytic.CreateVentureImpressionParams) error
@@ -133,6 +140,7 @@ type RepositoryProvider interface {
 	Business() BusinessRepository
 	Impression() ImpressionRepository
 	Industry() IndustryRepository
+	Favourite() FavouriteRepository
 }
 
 type Transaction interface {

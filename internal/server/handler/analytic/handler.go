@@ -196,3 +196,386 @@ func (h *httpHandler) getBusinessImpressionCount(ctx context.Context, input *sha
 
 	return resp, nil
 }
+
+type FavouriteInput struct {
+	shared.PathIDParam
+	AccountID int `path:"accountId" minimum:"1"`
+}
+
+func (h *httpHandler) createRoundFavourite(ctx context.Context, input *FavouriteInput) (*shared.MessageOutput, error) {
+	account := shared.GetAuthenticatedAccount(ctx)
+
+	if account.ID != input.AccountID {
+		h.logger.Error("account id does not match authenticated account id",
+			zap.Any("authenticated account id", account.ID),
+			zap.Any("input account id", input.AccountID))
+
+		return nil, huma.Error403Forbidden("Cannot like for another account")
+	}
+
+	roundRecord, err := h.service.RoundService.GetById(ctx, input.ID)
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("Round not found")
+		default:
+			h.logger.Error("failed to fetch round", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the round")
+		}
+	}
+
+	if account.ID != roundRecord.Venture.Business.OwnerAccountID {
+		h.logger.Error("business owner account id does not match authenticated account id",
+			zap.Any("business owner account id", roundRecord.Venture.Business.OwnerAccountID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot like a round for a business you do not own")
+	}
+
+	err = h.service.AnalyticService.CreateRoundFavourite(ctx, analytic.CreateRoundFavouriteParams{
+		RoundID:   input.ID,
+		AccountID: input.AccountID,
+	})
+
+	if err != nil {
+		h.logger.Error("failed to create round like", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while creating the round like")
+	}
+
+	resp := &shared.MessageOutput{}
+	resp.Body.Message = "Round favourited successfully"
+
+	return resp, nil
+}
+
+func (h *httpHandler) deleteRoundFavourite(ctx context.Context, input *FavouriteInput) (*shared.MessageOutput, error) {
+	account := shared.GetAuthenticatedAccount(ctx)
+
+	if account.ID != input.AccountID {
+		h.logger.Error("account id does not match authenticated account id",
+			zap.Any("authenticated account id", account.ID),
+			zap.Any("input account id", input.AccountID))
+
+		return nil, huma.Error403Forbidden("Cannot delete like for another account")
+	}
+
+	roundRecord, err := h.service.RoundService.GetById(ctx, input.ID)
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("Round not found")
+		default:
+			h.logger.Error("failed to fetch round", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the round")
+		}
+	}
+
+	if account.ID != roundRecord.Venture.Business.OwnerAccountID {
+		h.logger.Error("business owner account id does not match authenticated account id",
+			zap.Any("business owner account id", roundRecord.Venture.Business.OwnerAccountID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot delete like for a round for a business you do not own")
+	}
+
+	err = h.service.AnalyticService.DeleteRoundFavourite(ctx, input.ID, input.AccountID)
+	if err != nil {
+		h.logger.Error("failed to delete round like", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while deleting the round like")
+	}
+
+	resp := &shared.MessageOutput{}
+	resp.Body.Message = "Round favourited deleted successfully"
+
+	return resp, nil
+}
+
+func (h *httpHandler) isRoundFavouritedByAccount(ctx context.Context, input *FavouriteInput) (*shared.IsFavouritedOutput, error) {
+	account := shared.GetAuthenticatedAccount(ctx)
+
+	if account.ID != input.AccountID {
+		h.logger.Error("account id does not match authenticated account id",
+			zap.Any("authenticated account id", account.ID),
+			zap.Any("input account id", input.AccountID))
+
+		return nil, huma.Error403Forbidden("Cannot check if round is liked by another account")
+	}
+
+	favourited, err := h.service.AnalyticService.IsRoundFavouritedByAccount(ctx, input.ID, input.AccountID)
+	if err != nil {
+		h.logger.Error("failed to check if round is liked by account", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while checking if the round is liked by the account")
+	}
+
+	resp := &shared.IsFavouritedOutput{}
+	resp.Body.Message = "Round favourited status fetched successfully"
+	resp.Body.Favourited = favourited
+
+	return resp, nil
+}
+
+func (h *httpHandler) getRoundFavouriteCount(ctx context.Context, input *shared.PathIDParam) (*shared.GetLikeCountOutput, error) {
+	count, err := h.service.AnalyticService.GetRoundFavouriteCount(ctx, input.ID)
+	if err != nil {
+		h.logger.Error("failed to get round like count", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while getting the round like count")
+	}
+
+	resp := &shared.GetLikeCountOutput{}
+	resp.Body.Message = "Round favourited count fetched successfully"
+	resp.Body.Count = count
+
+	return resp, nil
+}
+
+func (h *httpHandler) createVentureFavourite(ctx context.Context, input *FavouriteInput) (*shared.MessageOutput, error) {
+	account := shared.GetAuthenticatedAccount(ctx)
+
+	if account.ID != input.AccountID {
+		h.logger.Error("account id does not match authenticated account id",
+			zap.Any("authenticated account id", account.ID),
+			zap.Any("input account id", input.AccountID))
+
+		return nil, huma.Error403Forbidden("Cannot like for another account")
+	}
+
+	ventureRecord, err := h.service.VentureService.GetById(ctx, input.ID)
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("Venture not found")
+		default:
+			h.logger.Error("failed to fetch venture", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the venture")
+		}
+	}
+
+	if account.ID != ventureRecord.Business.OwnerAccountID {
+		h.logger.Error("business owner account id does not match authenticated account id",
+			zap.Any("business owner account id", ventureRecord.Business.OwnerAccountID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot like a venture for a business you do not own")
+	}
+
+	err = h.service.AnalyticService.CreateVentureFavourite(ctx, analytic.CreateVentureFavouriteParams{
+		VentureID: input.ID,
+		AccountID: input.AccountID,
+	})
+
+	if err != nil {
+		h.logger.Error("failed to create venture like", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while creating the venture like")
+	}
+
+	resp := &shared.MessageOutput{}
+	resp.Body.Message = "Venture favourited successfully"
+
+	return resp, nil
+}
+
+func (h *httpHandler) deleteVentureFavourite(ctx context.Context, input *FavouriteInput) (*shared.MessageOutput, error) {
+	account := shared.GetAuthenticatedAccount(ctx)
+
+	if account.ID != input.AccountID {
+		h.logger.Error("account id does not match authenticated account id",
+			zap.Any("authenticated account id", account.ID),
+			zap.Any("input account id", input.AccountID))
+
+		return nil, huma.Error403Forbidden("Cannot delete like for another account")
+	}
+
+	ventureRecord, err := h.service.VentureService.GetById(ctx, input.ID)
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("Venture not found")
+		default:
+			h.logger.Error("failed to fetch venture", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the venture")
+		}
+	}
+
+	if account.ID != ventureRecord.Business.OwnerAccountID {
+		h.logger.Error("business owner account id does not match authenticated account id",
+			zap.Any("business owner account id", ventureRecord.Business.OwnerAccountID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot delete like for a venture for a business you do not own")
+	}
+
+	err = h.service.AnalyticService.DeleteVentureFavourite(ctx, input.ID, input.AccountID)
+	if err != nil {
+		h.logger.Error("failed to delete venture like", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while deleting the venture like")
+	}
+
+	resp := &shared.MessageOutput{}
+	resp.Body.Message = "Venture favourited deleted successfully"
+
+	return resp, nil
+}
+
+func (h *httpHandler) isVentureFavouritedByAccount(ctx context.Context, input *FavouriteInput) (*shared.IsFavouritedOutput, error) {
+	account := shared.GetAuthenticatedAccount(ctx)
+
+	if account.ID != input.AccountID {
+		h.logger.Error("account id does not match authenticated account id",
+			zap.Any("authenticated account id", account.ID),
+			zap.Any("input account id", input.AccountID))
+
+		return nil, huma.Error403Forbidden("Cannot check if venture is liked by another account")
+	}
+
+	favourited, err := h.service.AnalyticService.IsVentureFavouritedByAccount(ctx, input.ID, input.AccountID)
+	if err != nil {
+		h.logger.Error("failed to check if venture is liked by account", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while checking if the venture is liked by the account")
+	}
+
+	resp := &shared.IsFavouritedOutput{}
+	resp.Body.Message = "Venture favourited status fetched successfully"
+	resp.Body.Favourited = favourited
+
+	return resp, nil
+}
+
+func (h *httpHandler) getVentureFavouriteCount(ctx context.Context, input *shared.PathIDParam) (*shared.GetLikeCountOutput, error) {
+	count, err := h.service.AnalyticService.GetVentureFavouriteCount(ctx, input.ID)
+	if err != nil {
+		h.logger.Error("failed to get venture like count", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while getting the venture like count")
+	}
+
+	resp := &shared.GetLikeCountOutput{}
+	resp.Body.Message = "Venture favourited count fetched successfully"
+	resp.Body.Count = count
+
+	return resp, nil
+}
+
+func (h *httpHandler) createBusinessFavourite(ctx context.Context, input *FavouriteInput) (*shared.MessageOutput, error) {
+	account := shared.GetAuthenticatedAccount(ctx)
+
+	if account.ID != input.AccountID {
+		h.logger.Error("account id does not match authenticated account id",
+			zap.Any("authenticated account id", account.ID),
+			zap.Any("input account id", input.AccountID))
+
+		return nil, huma.Error403Forbidden("Cannot like for another account")
+	}
+
+	businessRecord, err := h.service.BusinessService.GetById(ctx, input.ID)
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("Business not found")
+		default:
+			h.logger.Error("failed to fetch business", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the business")
+		}
+	}
+
+	if account.ID != businessRecord.OwnerAccountID {
+		h.logger.Error("business owner account id does not match authenticated account id",
+			zap.Any("business owner account id", businessRecord.OwnerAccountID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot like a business you do not own")
+	}
+
+	err = h.service.AnalyticService.CreateBusinessFavourite(ctx, analytic.CreateBusinessFavouriteParams{
+		BusinessID: input.ID,
+		AccountID:  input.AccountID,
+	})
+
+	if err != nil {
+		h.logger.Error("failed to create business like", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while creating the business like")
+	}
+
+	resp := &shared.MessageOutput{}
+	resp.Body.Message = "Business favourited successfully"
+
+	return resp, nil
+}
+
+func (h *httpHandler) deleteBusinessFavourite(ctx context.Context, input *FavouriteInput) (*shared.MessageOutput, error) {
+	account := shared.GetAuthenticatedAccount(ctx)
+
+	if account.ID != input.AccountID {
+		h.logger.Error("account id does not match authenticated account id",
+			zap.Any("authenticated account id", account.ID),
+			zap.Any("input account id", input.AccountID))
+
+		return nil, huma.Error403Forbidden("Cannot delete like for another account")
+	}
+
+	businessRecord, err := h.service.BusinessService.GetById(ctx, input.ID)
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("Business not found")
+		default:
+			h.logger.Error("failed to fetch business", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the business")
+		}
+	}
+
+	if account.ID != businessRecord.OwnerAccountID {
+		h.logger.Error("business owner account id does not match authenticated account id",
+			zap.Any("business owner account id", businessRecord.OwnerAccountID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot delete like for a business you do not own")
+	}
+
+	err = h.service.AnalyticService.DeleteBusinessFavourite(ctx, input.ID, input.AccountID)
+	if err != nil {
+		h.logger.Error("failed to delete business like", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while deleting the business like")
+	}
+
+	resp := &shared.MessageOutput{}
+	resp.Body.Message = "Business favourited deleted successfully"
+
+	return resp, nil
+}
+
+func (h *httpHandler) isBusinessFavouritedByAccount(ctx context.Context, input *FavouriteInput) (*shared.IsFavouritedOutput, error) {
+	account := shared.GetAuthenticatedAccount(ctx)
+
+	if account.ID != input.AccountID {
+		h.logger.Error("account id does not match authenticated account id",
+			zap.Any("authenticated account id", account.ID),
+			zap.Any("input account id", input.AccountID))
+
+		return nil, huma.Error403Forbidden("Cannot check if business is liked by another account")
+	}
+
+	favourited, err := h.service.AnalyticService.IsBusinessFavouritedByAccount(ctx, input.ID, input.AccountID)
+	if err != nil {
+		h.logger.Error("failed to check if business is liked by account", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while checking if the business is liked by the account")
+	}
+
+	resp := &shared.IsFavouritedOutput{}
+	resp.Body.Message = "Business favourited status fetched successfully"
+	resp.Body.Favourited = favourited
+
+	return resp, nil
+}
+
+func (h *httpHandler) getBusinessFavouriteCount(ctx context.Context, input *shared.PathIDParam) (*shared.GetLikeCountOutput, error) {
+	count, err := h.service.AnalyticService.GetBusinessFavouriteCount(ctx, input.ID)
+	if err != nil {
+		h.logger.Error("failed to get business like count", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while getting the business like count")
+	}
+
+	resp := &shared.GetLikeCountOutput{}
+	resp.Body.Message = "Business favourited count fetched successfully"
+	resp.Body.Count = count
+
+	return resp, nil
+}

@@ -39,11 +39,6 @@ type VentureService interface {
 	GetRoundsByPage(ctx context.Context, ventureId int, pageSize int, page int, filter round.RoundFilter) ([]round.Round, int, error)
 	GetActiveRound(ctx context.Context, ventureId int) (round.Round, error)
 
-	CreateLike(ctx context.Context, params venture.CreateVentureLikeParams) (venture.VentureLike, error)
-	DeleteLike(ctx context.Context, ventureId int, accountId int) error
-	IsLikedByAccount(ctx context.Context, ventureId int, accountId int) (bool, error)
-	GetLikeCount(ctx context.Context, ventureId int) (int, error)
-
 	GetInvestmentsByCursor(ctx context.Context, ventureId int, limit int, cursor int, filter investment.InvestmentFilter) ([]investment.RoundInvestment, error)
 	GetInvestmentsByPage(ctx context.Context, ventureId int, pageSize int, page int, filter investment.InvestmentFilter) ([]investment.RoundInvestment, int, error)
 }
@@ -80,11 +75,6 @@ type RoundService interface {
 	GetById(ctx context.Context, id int) (round.Round, error)
 	GetByCursor(ctx context.Context, limit int, cursor int, filter round.RoundFilter) ([]round.Round, error)
 	GetByPage(ctx context.Context, pageSize int, page int, filter round.RoundFilter) ([]round.Round, int, error)
-
-	CreateLike(ctx context.Context, params round.CreateRoundLikeParams) (round.RoundLike, error)
-	DeleteLike(ctx context.Context, roundId int, accountId int) error
-	IsLikedByAccount(ctx context.Context, roundId int, accountId int) (bool, error)
-	GetLikeCount(ctx context.Context, roundId int) (int, error)
 
 	GetInvestmentsByCursor(ctx context.Context, roundId int, limit int, cursor int, filter investment.InvestmentFilter) ([]investment.RoundInvestment, error)
 	GetInvestmentsByPage(ctx context.Context, roundId int, pageSize int, page int, filter investment.InvestmentFilter) ([]investment.RoundInvestment, int, error)
@@ -136,11 +126,26 @@ type AnalyticService interface {
 	CreateRoundImpression(ctx context.Context, params analytic.CreateRoundImpressionParams) error
 	GetRoundImpressionCount(ctx context.Context, roundId int) (int, error)
 
+	CreateRoundFavourite(ctx context.Context, params analytic.CreateRoundFavouriteParams) error
+	DeleteRoundFavourite(ctx context.Context, roundId int, accountId int) error
+	IsRoundFavouritedByAccount(ctx context.Context, roundId int, accountId int) (bool, error)
+	GetRoundFavouriteCount(ctx context.Context, roundId int) (int, error)
+
 	CreateVentureImpression(ctx context.Context, params analytic.CreateVentureImpressionParams) error
 	GetVentureImpressionCount(ctx context.Context, ventureId int) (int, error)
 
+	CreateVentureFavourite(ctx context.Context, params analytic.CreateVentureFavouriteParams) error
+	DeleteVentureFavourite(ctx context.Context, ventureId int, accountId int) error
+	IsVentureFavouritedByAccount(ctx context.Context, ventureId int, accountId int) (bool, error)
+	GetVentureFavouriteCount(ctx context.Context, ventureId int) (int, error)
+
 	CreateBusinessImpression(ctx context.Context, params analytic.CreateBusinessImpressionParams) error
 	GetBusinessImpressionCount(ctx context.Context, businessId int) (int, error)
+
+	CreateBusinessFavourite(ctx context.Context, params analytic.CreateBusinessFavouriteParams) error
+	DeleteBusinessFavourite(ctx context.Context, businessId int, accountId int) error
+	IsBusinessFavouritedByAccount(ctx context.Context, businessId int, accountId int) (bool, error)
+	GetBusinessFavouriteCount(ctx context.Context, businessId int) (int, error)
 }
 
 type Service struct {

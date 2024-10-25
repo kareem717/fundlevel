@@ -188,10 +188,10 @@ type SingleInvestmentResponse struct {
 	}
 }
 
-type IsLikedOutput struct {
+type IsFavouritedOutput struct {
 	Body struct {
 		MessageResponse
-		Liked bool `json:"liked"`
+		Favourited bool `json:"favourited"`
 	}
 }
 
