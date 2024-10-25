@@ -104,7 +104,19 @@ type BusinessRepository interface {
 	GetTotalFunding(ctx context.Context, businessId int) (int, error)
 }
 
-type FavouriteRepository interface {
+type AnalyticRepository interface {
+	GetDailyAggregatedBusinessAnalytics(ctx context.Context, businessId int, minDayOfYear int, maxDayOfYear int) ([]analytic.SimplifiedDailyAggregatedBusinessAnalytics, error)
+	GetDailyAggregatedVentureAnalytics(ctx context.Context, ventureId int, minDayOfYear int, maxDayOfYear int) ([]analytic.SimplifiedDailyAggregatedVentureAnalytics, error)
+	GetDailyAggregatedRoundAnalytics(ctx context.Context, roundId int, minDayOfYear int, maxDayOfYear int) ([]analytic.SimplifiedDailyAggregatedRoundAnalytics, error)
+
+	CreateRoundImpression(ctx context.Context, params analytic.CreateRoundImpressionParams) error
+	CreateVentureImpression(ctx context.Context, params analytic.CreateVentureImpressionParams) error
+	CreateBusinessImpression(ctx context.Context, params analytic.CreateBusinessImpressionParams) error
+
+	GetRoundImpressionCount(ctx context.Context, roundId int) (int, error)
+	GetVentureImpressionCount(ctx context.Context, ventureId int) (int, error)
+	GetBusinessImpressionCount(ctx context.Context, businessId int) (int, error)
+
 	CreateVentureFavourite(ctx context.Context, params analytic.CreateVentureFavouriteParams) error
 	DeleteVentureFavourite(ctx context.Context, ventureId int, accountId int) error
 	IsVentureFavouritedByAccount(ctx context.Context, ventureId int, accountId int) (bool, error)
@@ -121,16 +133,6 @@ type FavouriteRepository interface {
 	GetRoundFavouriteCount(ctx context.Context, roundId int) (int, error)
 }
 
-type ImpressionRepository interface {
-	CreateRoundImpression(ctx context.Context, params analytic.CreateRoundImpressionParams) error
-	CreateVentureImpression(ctx context.Context, params analytic.CreateVentureImpressionParams) error
-	CreateBusinessImpression(ctx context.Context, params analytic.CreateBusinessImpressionParams) error
-
-	GetRoundImpressionCount(ctx context.Context, roundId int) (int, error)
-	GetVentureImpressionCount(ctx context.Context, ventureId int) (int, error)
-	GetBusinessImpressionCount(ctx context.Context, businessId int) (int, error)
-}
-
 type RepositoryProvider interface {
 	Venture() VentureRepository
 	Account() AccountRepository
@@ -138,9 +140,8 @@ type RepositoryProvider interface {
 	Investment() InvestmentRepository
 	User() UserRepository
 	Business() BusinessRepository
-	Impression() ImpressionRepository
+	Analytic() AnalyticRepository
 	Industry() IndustryRepository
-	Favourite() FavouriteRepository
 }
 
 type Transaction interface {

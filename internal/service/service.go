@@ -146,6 +146,10 @@ type AnalyticService interface {
 	DeleteBusinessFavourite(ctx context.Context, businessId int, accountId int) error
 	IsBusinessFavouritedByAccount(ctx context.Context, businessId int, accountId int) (bool, error)
 	GetBusinessFavouriteCount(ctx context.Context, businessId int) (int, error)
+
+	GetDailyAggregatedBusinessAnalytics(ctx context.Context, businessId int, minDayOfYear int, maxDayOfYear int) ([]analytic.SimplifiedDailyAggregatedBusinessAnalytics, error)
+	GetDailyAggregatedVentureAnalytics(ctx context.Context, ventureId int, minDayOfYear int, maxDayOfYear int) ([]analytic.SimplifiedDailyAggregatedVentureAnalytics, error)
+	GetDailyAggregatedRoundAnalytics(ctx context.Context, roundId int, minDayOfYear int, maxDayOfYear int) ([]analytic.SimplifiedDailyAggregatedRoundAnalytics, error)
 }
 
 type Service struct {

@@ -1,25 +1,12 @@
-package favourite
+package analytic
 
 import (
 	"context"
 
 	"fundlevel/internal/entities/analytic"
-
-	"github.com/uptrace/bun"
 )
 
-type FavouriteRepository struct {
-	db  bun.IDB
-	ctx context.Context
-}
-
-func NewFavouriteRepository(db bun.IDB, ctx context.Context) *FavouriteRepository {
-	return &FavouriteRepository{
-		db:  db,
-		ctx: ctx,
-	}
-}
-func (r *FavouriteRepository) IsVentureFavouritedByAccount(ctx context.Context, ventureId int, accountId int) (bool, error) {
+func (r *AnalyticRepository) IsVentureFavouritedByAccount(ctx context.Context, ventureId int, accountId int) (bool, error) {
 	return r.db.
 		NewSelect().
 		Model(&analytic.VentureFavourite{}).
@@ -28,7 +15,7 @@ func (r *FavouriteRepository) IsVentureFavouritedByAccount(ctx context.Context, 
 		Exists(ctx)
 }
 
-func (r *FavouriteRepository) CreateVentureFavourite(ctx context.Context, params analytic.CreateVentureFavouriteParams) error {
+func (r *AnalyticRepository) CreateVentureFavourite(ctx context.Context, params analytic.CreateVentureFavouriteParams) error {
 	_, err := r.db.NewInsert().
 		Model(&params).
 		ModelTableExpr("venture_favourites").
@@ -37,7 +24,7 @@ func (r *FavouriteRepository) CreateVentureFavourite(ctx context.Context, params
 	return err
 }
 
-func (r *FavouriteRepository) DeleteVentureFavourite(ctx context.Context, ventureId int, accountId int) error {
+func (r *AnalyticRepository) DeleteVentureFavourite(ctx context.Context, ventureId int, accountId int) error {
 	_, err := r.db.
 		NewDelete().
 		Model(&analytic.VentureFavourite{}).
@@ -48,7 +35,7 @@ func (r *FavouriteRepository) DeleteVentureFavourite(ctx context.Context, ventur
 	return err
 }
 
-func (r *FavouriteRepository) GetVentureFavouriteCount(ctx context.Context, ventureId int) (int, error) {
+func (r *AnalyticRepository) GetVentureFavouriteCount(ctx context.Context, ventureId int) (int, error) {
 	return r.db.
 		NewSelect().
 		Model(&analytic.VentureFavourite{}).
@@ -56,7 +43,7 @@ func (r *FavouriteRepository) GetVentureFavouriteCount(ctx context.Context, vent
 		Count(ctx)
 }
 
-func (r *FavouriteRepository) IsRoundFavouritedByAccount(ctx context.Context, roundId int, accountId int) (bool, error) {
+func (r *AnalyticRepository) IsRoundFavouritedByAccount(ctx context.Context, roundId int, accountId int) (bool, error) {
 	return r.db.
 		NewSelect().
 		Model(&analytic.RoundFavourite{}).
@@ -65,7 +52,7 @@ func (r *FavouriteRepository) IsRoundFavouritedByAccount(ctx context.Context, ro
 		Exists(ctx)
 }
 
-func (r *FavouriteRepository) CreateRoundFavourite(ctx context.Context, params analytic.CreateRoundFavouriteParams) error {
+func (r *AnalyticRepository) CreateRoundFavourite(ctx context.Context, params analytic.CreateRoundFavouriteParams) error {
 	_, err := r.db.NewInsert().
 		Model(&params).
 		ModelTableExpr("round_favourites").
@@ -74,7 +61,7 @@ func (r *FavouriteRepository) CreateRoundFavourite(ctx context.Context, params a
 	return err
 }
 
-func (r *FavouriteRepository) DeleteRoundFavourite(ctx context.Context, roundId int, accountId int) error {
+func (r *AnalyticRepository) DeleteRoundFavourite(ctx context.Context, roundId int, accountId int) error {
 	_, err := r.db.
 		NewDelete().
 		Model(&analytic.RoundFavourite{}).
@@ -85,7 +72,7 @@ func (r *FavouriteRepository) DeleteRoundFavourite(ctx context.Context, roundId 
 	return err
 }
 
-func (r *FavouriteRepository) GetRoundFavouriteCount(ctx context.Context, roundId int) (int, error) {
+func (r *AnalyticRepository) GetRoundFavouriteCount(ctx context.Context, roundId int) (int, error) {
 	return r.db.
 		NewSelect().
 		Model(&analytic.RoundFavourite{}).
@@ -93,7 +80,7 @@ func (r *FavouriteRepository) GetRoundFavouriteCount(ctx context.Context, roundI
 		Count(ctx)
 }
 
-func (r *FavouriteRepository) IsBusinessFavouritedByAccount(ctx context.Context, businessId int, accountId int) (bool, error) {
+func (r *AnalyticRepository) IsBusinessFavouritedByAccount(ctx context.Context, businessId int, accountId int) (bool, error) {
 	return r.db.
 		NewSelect().
 		Model(&analytic.BusinessFavourite{}).
@@ -102,7 +89,7 @@ func (r *FavouriteRepository) IsBusinessFavouritedByAccount(ctx context.Context,
 		Exists(ctx)
 }
 
-func (r *FavouriteRepository) CreateBusinessFavourite(ctx context.Context, params analytic.CreateBusinessFavouriteParams) error {
+func (r *AnalyticRepository) CreateBusinessFavourite(ctx context.Context, params analytic.CreateBusinessFavouriteParams) error {
 	_, err := r.db.NewInsert().
 		Model(&params).
 		ModelTableExpr("business_favourites").
@@ -111,7 +98,7 @@ func (r *FavouriteRepository) CreateBusinessFavourite(ctx context.Context, param
 	return err
 }
 
-func (r *FavouriteRepository) DeleteBusinessFavourite(ctx context.Context, businessId int, accountId int) error {
+func (r *AnalyticRepository) DeleteBusinessFavourite(ctx context.Context, businessId int, accountId int) error {
 	_, err := r.db.
 		NewDelete().
 		Model(&analytic.BusinessFavourite{}).
@@ -122,7 +109,7 @@ func (r *FavouriteRepository) DeleteBusinessFavourite(ctx context.Context, busin
 	return err
 }
 
-func (r *FavouriteRepository) GetBusinessFavouriteCount(ctx context.Context, businessId int) (int, error) {
+func (r *AnalyticRepository) GetBusinessFavouriteCount(ctx context.Context, businessId int) (int, error) {
 	return r.db.
 		NewSelect().
 		Model(&analytic.BusinessFavourite{}).

@@ -7,9 +7,8 @@ import (
 
 	"fundlevel/internal/storage"
 	"fundlevel/internal/storage/postgres/account"
+	"fundlevel/internal/storage/postgres/analytic"
 	"fundlevel/internal/storage/postgres/business"
-	"fundlevel/internal/storage/postgres/favourite"
-	"fundlevel/internal/storage/postgres/impression"
 	"fundlevel/internal/storage/postgres/industry"
 	"fundlevel/internal/storage/postgres/investment"
 	"fundlevel/internal/storage/postgres/round"
@@ -93,11 +92,10 @@ type transaction struct {
 	accountRepo    *account.AccountRepository
 	roundRepo      *round.RoundRepository
 	userRepo       *user.UserRepository
-	favouriteRepo  *favourite.FavouriteRepository
 	investmentRepo *investment.InvestmentRepository
 	industryRepo   *industry.IndustryRepository
 	businessRepo   *business.BusinessRepository
-	impressionRepo *impression.ImpressionRepository
+	analyticRepo  *analytic.AnalyticRepository
 	tx             *bun.Tx
 	ctx            context.Context
 }
@@ -118,12 +116,12 @@ func (t *transaction) User() storage.UserRepository {
 	return t.userRepo
 }
 
-func (t *transaction) Favourite() storage.FavouriteRepository {
-	return t.favouriteRepo
-}
-
 func (t *transaction) Business() storage.BusinessRepository {
 	return t.businessRepo
+}
+
+func (t *transaction) Analytic() storage.AnalyticRepository {
+	return t.analyticRepo
 }
 
 func (t *transaction) Investment() storage.InvestmentRepository {
@@ -134,9 +132,6 @@ func (t *transaction) Industry() storage.IndustryRepository {
 	return t.industryRepo
 }
 
-func (t *transaction) Impression() storage.ImpressionRepository {
-	return t.impressionRepo
-}
 
 func (t *transaction) Commit() error {
 	return t.tx.Commit()
@@ -157,10 +152,9 @@ func (t *transaction) SubTransaction() (storage.Transaction, error) {
 		accountRepo:    account.NewAccountRepository(tx, t.ctx),
 		roundRepo:      round.NewRoundRepository(tx, t.ctx),
 		userRepo:       user.NewUserRepository(tx, t.ctx),
-		favouriteRepo:  favourite.NewFavouriteRepository(tx, t.ctx),
+		analyticRepo:   analytic.NewAnalyticRepository(tx, t.ctx),
 		investmentRepo: investment.NewInvestmentRepository(tx, t.ctx),
 		industryRepo:   industry.NewIndustryRepository(tx, t.ctx),
-		impressionRepo: impression.NewImpressionRepository(tx, t.ctx),
 		businessRepo:   business.NewBusinessRepository(tx, t.ctx),
 		tx:             &tx,
 	}, nil
@@ -170,12 +164,11 @@ type Repository struct {
 	ventureRepo    *venture.VentureRepository
 	accountRepo    *account.AccountRepository
 	roundRepo      *round.RoundRepository
-	favouriteRepo  *favourite.FavouriteRepository
 	userRepo       *user.UserRepository
 	investmentRepo *investment.InvestmentRepository
-	impressionRepo *impression.ImpressionRepository
-	businessRepo   *business.BusinessRepository
 	industryRepo   *industry.IndustryRepository
+	businessRepo   *business.BusinessRepository
+	analyticRepo   *analytic.AnalyticRepository
 	db             *bun.DB
 	ctx            context.Context
 }
@@ -222,11 +215,10 @@ func NewRepository(db *bun.DB, ctx context.Context) *Repository {
 		accountRepo:    account.NewAccountRepository(db, ctx),
 		roundRepo:      round.NewRoundRepository(db, ctx),
 		userRepo:       user.NewUserRepository(db, ctx),
-		favouriteRepo:  favourite.NewFavouriteRepository(db, ctx),
 		investmentRepo: investment.NewInvestmentRepository(db, ctx),
 		industryRepo:   industry.NewIndustryRepository(db, ctx),
 		businessRepo:   business.NewBusinessRepository(db, ctx),
-		impressionRepo: impression.NewImpressionRepository(db, ctx),
+		analyticRepo:  analytic.NewAnalyticRepository(db, ctx),
 		db:             db,
 		ctx:            ctx,
 	}
@@ -236,9 +228,6 @@ func (r *Repository) Venture() storage.VentureRepository {
 	return r.ventureRepo
 }
 
-func (r *Repository) Favourite() storage.FavouriteRepository {
-	return r.favouriteRepo
-}
 
 func (r *Repository) Account() storage.AccountRepository {
 	return r.accountRepo
@@ -264,8 +253,8 @@ func (r *Repository) Business() storage.BusinessRepository {
 	return r.businessRepo
 }
 
-func (r *Repository) Impression() storage.ImpressionRepository {
-	return r.impressionRepo
+func (r *Repository) Analytic() storage.AnalyticRepository {
+	return r.analyticRepo
 }
 
 func (r *Repository) HealthCheck(ctx context.Context) error {
@@ -281,13 +270,12 @@ func (r *Repository) NewTransaction() (storage.Transaction, error) {
 	return &transaction{
 		ventureRepo:    venture.NewVentureRepository(tx, r.ctx),
 		accountRepo:    account.NewAccountRepository(tx, r.ctx),
-		favouriteRepo:  favourite.NewFavouriteRepository(tx, r.ctx),
 		userRepo:       user.NewUserRepository(tx, r.ctx),
 		roundRepo:      round.NewRoundRepository(tx, r.ctx),
 		investmentRepo: investment.NewInvestmentRepository(tx, r.ctx),
 		industryRepo:   industry.NewIndustryRepository(tx, r.ctx),
 		businessRepo:   business.NewBusinessRepository(tx, r.ctx),
-		impressionRepo: impression.NewImpressionRepository(tx, r.ctx),
+		analyticRepo:   analytic.NewAnalyticRepository(tx, r.ctx),
 		tx:             &tx,
 		ctx:            r.ctx,
 	}, nil

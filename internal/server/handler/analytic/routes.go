@@ -282,4 +282,64 @@ func RegisterHumaRoutes(
 		Description: "Get a business favourite count.",
 		Tags:        []string{"Analytic", "Businesses", "Favourites"},
 	}, handler.getBusinessFavouriteCount)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-daily-aggregated-round-analytics",
+		Method:      http.MethodGet,
+		Path:        "/analytic/rounds/{id}",
+		Summary:     "Get daily aggregated round analytics",
+		Description: "Get daily aggregated round analytics.",
+		Tags:        []string{"Analytic", "Rounds"},
+		Security: []map[string][]string{
+			{"bearerAuth": {}},
+		},
+		Middlewares: huma.Middlewares{
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
+			},
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithAccount(humaApi)(ctx, next, logger, service)
+			},
+		},
+	}, handler.getDailyAggregatedRoundAnalytics)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-daily-aggregated-venture-analytics",
+		Method:      http.MethodGet,
+		Path:        "/analytic/ventures/{id}",
+		Summary:     "Get daily aggregated venture analytics",
+		Description: "Get daily aggregated venture analytics.",
+		Tags:        []string{"Analytic", "Ventures"},
+		Security: []map[string][]string{
+			{"bearerAuth": {}},
+		},
+		Middlewares: huma.Middlewares{
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
+			},
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithAccount(humaApi)(ctx, next, logger, service)
+			},
+		},
+	}, handler.getDailyAggregatedVentureAnalytics)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-daily-aggregated-business-analytics",
+		Method:      http.MethodGet,
+		Path:        "/analytic/businesses/{id}",
+		Summary:     "Get daily aggregated business analytics",
+		Description: "Get daily aggregated business analytics.",
+		Tags:        []string{"Analytic", "Businesses"},
+		Security: []map[string][]string{
+			{"bearerAuth": {}},
+		},
+		Middlewares: huma.Middlewares{
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
+			},
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithAccount(humaApi)(ctx, next, logger, service)
+			},
+		},
+	}, handler.getDailyAggregatedBusinessAnalytics)
 }

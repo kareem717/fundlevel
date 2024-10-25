@@ -579,3 +579,126 @@ func (h *httpHandler) getBusinessFavouriteCount(ctx context.Context, input *shar
 
 	return resp, nil
 }
+
+type GetDailyAggregatedAnalyticsInput struct {
+	shared.PathIDParam
+	MinDayOfYear int `query:"minDayOfYear" min:"0" max:"366" multipleOf:"1" default:"0" required:"false"`
+	MaxDayOfYear int `query:"maxDayOfYear" min:"0" max:"366" multipleOf:"1" default:"366" required:"false"`
+}
+
+type GetDailyAggregatedBusinessAnalyticsOutput struct {
+	Body struct {
+		shared.MessageResponse
+		Analytics []analytic.SimplifiedDailyAggregatedBusinessAnalytics `json:"analytics"`
+	} `json:"body"`
+}
+
+func (h *httpHandler) getDailyAggregatedBusinessAnalytics(ctx context.Context, input *GetDailyAggregatedAnalyticsInput) (*GetDailyAggregatedBusinessAnalyticsOutput, error) {
+	business, err := h.service.BusinessService.GetById(ctx, input.ID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			h.logger.Error("tried to get daily aggregated business analytics for a non-existent business", zap.Error(err), zap.Int("business_id", input.ID))
+		} else {
+			h.logger.Error("failed to get business", zap.Error(err), zap.Int("business_id", input.ID))
+		}
+
+		return nil, huma.Error500InternalServerError("An error occurred while getting the business")
+	}
+
+	account := shared.GetAuthenticatedAccount(ctx)
+
+	if business.OwnerAccountID != account.ID {
+		h.logger.Error("account does not own business", zap.Int("business_id", input.ID), zap.Int("account_id", account.ID))
+		return nil, huma.Error403Forbidden("Account does not own business")
+	}
+
+	businessAnalytics, err := h.service.AnalyticService.GetDailyAggregatedBusinessAnalytics(ctx, business.ID, input.MinDayOfYear, input.MaxDayOfYear)
+	if err != nil {
+		h.logger.Error("failed to get daily aggregated business analytics", zap.Error(err), zap.Int("business_id", input.ID))
+		return nil, huma.Error500InternalServerError("An error occurred while getting the daily aggregated business analytics")
+	}
+
+	resp := &GetDailyAggregatedBusinessAnalyticsOutput{}
+	resp.Body.Message = "Daily aggregated business analytics fetched successfully"
+	resp.Body.Analytics = businessAnalytics
+
+	return resp, nil
+}
+
+type GetDailyAggregatedVentureAnalyticsOutput struct {
+	Body struct {
+		shared.MessageResponse
+		Analytics []analytic.SimplifiedDailyAggregatedVentureAnalytics `json:"analytics"`
+	} `json:"body"`
+}
+
+func (h *httpHandler) getDailyAggregatedVentureAnalytics(ctx context.Context, input *GetDailyAggregatedAnalyticsInput) (*GetDailyAggregatedVentureAnalyticsOutput, error) {
+	venture, err := h.service.VentureService.GetById(ctx, input.ID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			h.logger.Error("tried to get daily aggregated venture analytics for a non-existent venture", zap.Error(err), zap.Int("venture_id", input.ID))
+		} else {
+			h.logger.Error("failed to get venture", zap.Error(err), zap.Int("venture_id", input.ID))
+		}
+
+		return nil, huma.Error500InternalServerError("An error occurred while getting the venture")
+	}
+
+	account := shared.GetAuthenticatedAccount(ctx)
+
+	if venture.Business.OwnerAccountID != account.ID {
+		h.logger.Error("account does not own venture", zap.Int("venture_id", input.ID), zap.Int("account_id", account.ID))
+		return nil, huma.Error403Forbidden("Account does not own venture")
+	}
+
+	ventureAnalytics, err := h.service.AnalyticService.GetDailyAggregatedVentureAnalytics(ctx, venture.ID, input.MinDayOfYear, input.MaxDayOfYear)
+	if err != nil {
+		h.logger.Error("failed to get daily aggregated venture analytics", zap.Error(err), zap.Int("venture_id", input.ID))
+		return nil, huma.Error500InternalServerError("An error occurred while getting the daily aggregated venture analytics")
+	}
+
+	resp := &GetDailyAggregatedVentureAnalyticsOutput{}
+	resp.Body.Message = "Daily aggregated venture analytics fetched successfully"
+	resp.Body.Analytics = ventureAnalytics
+
+	return resp, nil
+}
+
+type GetDailyAggregatedRoundAnalyticsOutput struct {
+	Body struct {
+		shared.MessageResponse
+		Analytics []analytic.SimplifiedDailyAggregatedRoundAnalytics `json:"analytics"`
+	} `json:"body"`
+}
+
+func (h *httpHandler) getDailyAggregatedRoundAnalytics(ctx context.Context, input *GetDailyAggregatedAnalyticsInput) (*GetDailyAggregatedRoundAnalyticsOutput, error) {
+	round, err := h.service.RoundService.GetById(ctx, input.ID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			h.logger.Error("tried to get daily aggregated round analytics for a non-existent round", zap.Error(err), zap.Int("round_id", input.ID))
+		} else {
+			h.logger.Error("failed to get round", zap.Error(err), zap.Int("round_id", input.ID))
+		}
+
+		return nil, huma.Error500InternalServerError("An error occurred while getting the round")
+	}
+
+	account := shared.GetAuthenticatedAccount(ctx)
+
+	if round.Venture.Business.OwnerAccountID != account.ID {
+		h.logger.Error("account does not own round", zap.Int("round_id", input.ID), zap.Int("account_id", account.ID))
+		return nil, huma.Error403Forbidden("Account does not own round")
+	}
+
+	roundAnalytics, err := h.service.AnalyticService.GetDailyAggregatedRoundAnalytics(ctx, round.ID, input.MinDayOfYear, input.MaxDayOfYear)
+	if err != nil {
+		h.logger.Error("failed to get daily aggregated round analytics", zap.Error(err), zap.Int("round_id", input.ID))
+		return nil, huma.Error500InternalServerError("An error occurred while getting the daily aggregated round analytics")
+	}
+
+	resp := &GetDailyAggregatedRoundAnalyticsOutput{}
+	resp.Body.Message = "Daily aggregated round analytics fetched successfully"
+	resp.Body.Analytics = roundAnalytics
+
+	return resp, nil
+}
