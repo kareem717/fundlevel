@@ -22,6 +22,7 @@ import (
 	"fundlevel/internal/storage"
 
 	"github.com/google/uuid"
+	"github.com/stripe/stripe-go/v80"
 )
 
 type VentureService interface {
@@ -91,6 +92,10 @@ type BusinessService interface {
 	Create(ctx context.Context, params business.CreateBusinessParams) (business.Business, error)
 	Delete(ctx context.Context, id int) error
 	GetById(ctx context.Context, id int) (business.Business, error)
+	Update(ctx context.Context, id int, params business.UpdateBusinessParams) (business.Business, error)
+	GetByStripeConnectedAccountId(ctx context.Context, stripeConnectedAccountId string) (business.Business, error)
+
+	GetStripeDashboardURL(ctx context.Context, businessId int) (string, error)
 
 	GetVenturesByCursor(ctx context.Context, accountId int, limit int, cursor int, filter venture.VentureFilter) ([]venture.Venture, error)
 	GetVenturesByPage(ctx context.Context, accountId int, pageSize int, page int, filter venture.VentureFilter) ([]venture.Venture, int, error)
@@ -107,8 +112,13 @@ type BusinessService interface {
 }
 
 type BillingService interface {
-	CreateInvestmentCheckoutSession(ctx context.Context, price int, successURL string, cancelURL string, investmentId int, currency shared.Currency) (string, error)
+	CreateInvestmentCheckoutSession(ctx context.Context, price int, successURL string, cancelURL string, investmentId int, currency shared.Currency, businessStripeAccountID string) (string, error)
 	HandleInvestmentCheckoutSuccess(ctx context.Context, sessionID string) (string, error)
+
+	CreateAccountLink(ctx context.Context, accountID string, returnURL string, refreshURL string) (string, error)
+	CreateStripeConnectedAccount(ctx context.Context) (stripe.Account, error)
+	DeleteStripeConnectedAccount(ctx context.Context, accountID string) error
+	GetStripeConnectedAccountDashboardURL(ctx context.Context, accountID string) (string, error)
 }
 
 type InvestmentService interface {
@@ -137,6 +147,8 @@ func NewService(
 	repositories storage.Repository,
 	config billing.BillingServiceConfig,
 ) *Service {
+	billingService := billing.NewBillingService(repositories, config)
+
 	return &Service{
 		VentureService:    ventureService.NewVentureService(repositories),
 		IndustryService:   industryService.NewIndustryService(repositories),
@@ -144,8 +156,8 @@ func NewService(
 		AccountService:    accountService.NewAccountService(repositories),
 		UserService:       userService.NewUserService(repositories),
 		RoundService:      roundService.NewRoundService(repositories),
-		BusinessService:   businessService.NewBusinessService(repositories),
-		BillingService:    billing.NewBillingService(repositories, config),
+		BusinessService:   businessService.NewBusinessService(repositories, billingService),
+		BillingService:    billingService,
 		InvestmentService: investmentService.NewInvestmentService(repositories),
 	}
 }

@@ -1,6 +1,7 @@
 package shared
 
 import (
+	"encoding/json"
 	"fundlevel/internal/entities/account"
 	"fundlevel/internal/entities/business"
 	"fundlevel/internal/entities/investment"
@@ -24,6 +25,22 @@ type PathIDParam struct {
 	ID int `path:"id" minimum:"1"`
 }
 
+type URLOutput struct {
+	Body struct {
+		MessageResponse
+		URL string `json:"url"`
+	}
+}
+
+type HandleStripeWebhookInput struct {
+	Signature string `header:"Stripe-Signature"`
+	Body      json.RawMessage
+}
+
+type HandleStripeWebhookOutput struct {
+	RedirectURL *string `header:"Location"`
+	Status      int
+}
 type GetRoundsByParentAndCursorInput struct {
 	GetCursorPaginatedByParentPathIDInput
 	round.RoundFilter
@@ -33,7 +50,6 @@ type GetRoundsByParentAndPageInput struct {
 	GetOffsetPaginatedByParentPathIDInput
 	round.RoundFilter
 }
-
 
 type GetInvestmentsByParentAndCursorInput struct {
 	GetCursorPaginatedByParentPathIDInput

@@ -79,3 +79,30 @@ func (r *BusinessRepository) Delete(ctx context.Context, id int) error {
 
 	return err
 }
+
+func (r *BusinessRepository) GetByStripeConnectedAccountId(ctx context.Context, stripeConnectedAccountId string) (business.Business, error) {
+	resp := business.Business{}
+
+	err := r.db.NewSelect().
+		Model(&resp).
+		Where("stripe_connected_account_id = ?", stripeConnectedAccountId).
+		Scan(ctx)
+
+	return resp, err
+}
+
+func (r *BusinessRepository) Update(ctx context.Context, id int, params business.UpdateBusinessParams) (business.Business, error) {
+	resp := business.Business{}
+
+	err :=
+		r.db.
+			NewUpdate().
+			Model(&params).
+			ModelTableExpr("businesses").
+			Where("id = ?", id).
+			Returning("*").
+			OmitZero().
+			Scan(ctx, &resp)
+
+	return resp, err
+}

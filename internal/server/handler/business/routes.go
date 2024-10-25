@@ -16,10 +16,10 @@ func RegisterHumaRoutes(
 	humaApi huma.API,
 	logger *zap.Logger,
 	supabaseClient *supabase.Client,
+	webhookSecret string,
 ) {
+	handler := newHTTPHandler(service, logger, webhookSecret)
 
-	handler := newHTTPHandler(service, logger)
-	
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "get-business-by-id",
 		Method:      http.MethodGet,
@@ -94,6 +94,17 @@ func RegisterHumaRoutes(
 		Summary:     "Get recieved round investments",
 		Description: "Get recieved round investments.",
 		Tags:        []string{"Businesses", "Investments"},
+		Security: []map[string][]string{
+			{"bearerAuth": {}},
+		},
+		Middlewares: huma.Middlewares{
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
+			},
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithAccount(humaApi)(ctx, next, logger, service)
+			},
+		},
 	}, handler.getInvestmentsByCursor)
 
 	huma.Register(humaApi, huma.Operation{
@@ -103,6 +114,17 @@ func RegisterHumaRoutes(
 		Summary:     "Get recieved round investments",
 		Description: "Get recieved round investments.",
 		Tags:        []string{"Businesses", "Investments"},
+		Security: []map[string][]string{
+			{"bearerAuth": {}},
+		},
+		Middlewares: huma.Middlewares{
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
+			},
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithAccount(humaApi)(ctx, next, logger, service)
+			},
+		},
 	}, handler.getInvestmentsByPage)
 
 	huma.Register(humaApi, huma.Operation{
@@ -131,4 +153,53 @@ func RegisterHumaRoutes(
 		Description: "Get total funding.",
 		Tags:        []string{"Businesses", "Funding"},
 	}, handler.getTotalFunding)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "onboard-stripe-connected-account",
+		Method:      http.MethodPost,
+		Path:        "/business/{id}/stripe-onboard",
+		Summary:     "Onboard Stripe connected account",
+		Description: "Onboard Stripe connected account.",
+		Tags:        []string{"Businesses"},
+		Security: []map[string][]string{
+			{"bearerAuth": {}},
+		},
+		Middlewares: huma.Middlewares{
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
+			},
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithAccount(humaApi)(ctx, next, logger, service)
+			},
+		},
+	}, handler.onboardStripeConnectedAccount)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "handle-stripe-connected-account-webhook",
+		Method:      http.MethodPost,
+		Path:        "/business/stripe-webhook",
+		Summary:     "Handle Stripe connected account webhook",
+		Description: "Handle Stripe connected account webhook.",
+		Tags:        []string{"Businesses"},
+	}, handler.handleStripeWebhook)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-stripe-dashboard-url",
+		Method:      http.MethodGet,
+		Path:        "/business/{id}/stripe-dashboard-url",
+		Summary:     "Get Stripe dashboard url",
+		Description: "Get Stripe dashboard url.",
+		Tags:        []string{"Businesses"},
+		Security: []map[string][]string{
+			{"bearerAuth": {}},
+		},
+		Middlewares: huma.Middlewares{
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
+			},
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithAccount(humaApi)(ctx, next, logger, service)
+			},
+		},
+	}, handler.getStripeDashboardURL)
 }

@@ -4,29 +4,81 @@ import (
 	"context"
 
 	"fundlevel/internal/entities/business"
+	"fundlevel/internal/service/domain/billing"
 	"fundlevel/internal/storage"
 )
 
 type BusinessService struct {
-	repositories storage.Repository
+	repositories   storage.Repository
+	billingService *billing.BillingService
 }
 
 // NewBusinessService returns a new instance of business service.
-func NewBusinessService(repositories storage.Repository) *BusinessService {
+func NewBusinessService(repositories storage.Repository, billingService *billing.BillingService) *BusinessService {
 	return &BusinessService{
-		repositories: repositories,
+		repositories:   repositories,
+		billingService: billingService,
 	}
 }
 
 func (s *BusinessService) Create(ctx context.Context, params business.CreateBusinessParams) (business.Business, error) {
 	params.Business.Status = business.BusinessStatusPending
-	return s.repositories.Business().Create(ctx, params)
+	resp := business.Business{}
+
+	err := s.repositories.RunInTx(ctx, func(ctx context.Context, tx storage.Transaction) error {
+		stripeConnectedAccount, err := s.billingService.CreateStripeConnectedAccount(ctx)
+		if err != nil {
+			return err
+		}
+
+		params.Business.StripeConnectedAccountID = stripeConnectedAccount.ID
+
+		// TODO: We need to delete the stripe connected account if the business creation fails
+		business, err := s.repositories.Business().Create(ctx, params)
+		if err != nil {
+			return err
+		}
+		resp = business
+
+		return nil
+	})
+
+	return resp, err
 }
 
 func (s *BusinessService) Delete(ctx context.Context, id int) error {
-	return s.repositories.Business().Delete(ctx, id)
+	return s.repositories.RunInTx(ctx, func(ctx context.Context, tx storage.Transaction) error {
+		business, err := s.repositories.Business().GetById(ctx, id)
+		if err != nil {
+			return err
+		}
+
+		err = s.repositories.Business().Delete(ctx, id)
+		if err != nil {
+			return err
+		}
+
+		return s.billingService.DeleteStripeConnectedAccount(ctx, business.StripeConnectedAccountID)
+	})
 }
 
 func (s *BusinessService) GetById(ctx context.Context, id int) (business.Business, error) {
 	return s.repositories.Business().GetById(ctx, id)
+}
+
+func (s *BusinessService) GetByStripeConnectedAccountId(ctx context.Context, stripeConnectedAccountId string) (business.Business, error) {
+	return s.repositories.Business().GetByStripeConnectedAccountId(ctx, stripeConnectedAccountId)
+}
+
+func (s *BusinessService) Update(ctx context.Context, id int, params business.UpdateBusinessParams) (business.Business, error) {
+	return s.repositories.Business().Update(ctx, id, params)
+}
+
+func (s *BusinessService) GetStripeDashboardURL(ctx context.Context, businessId int) (string, error) {
+	business, err := s.repositories.Business().GetById(ctx, businessId)
+	if err != nil {
+		return "", err
+	}
+
+	return s.billingService.GetStripeConnectedAccountDashboardURL(ctx, business.StripeConnectedAccountID)
 }

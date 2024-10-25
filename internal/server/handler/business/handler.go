@@ -1,9 +1,11 @@
 package business
 
 import (
+	"bytes"
 	"context"
 	"database/sql"
 	"errors"
+	"io"
 
 	"fundlevel/internal/entities/business"
 	"fundlevel/internal/entities/venture"
@@ -11,15 +13,18 @@ import (
 	"fundlevel/internal/service"
 
 	"github.com/danielgtaylor/huma/v2"
+	"github.com/stripe/stripe-go/v80"
+	"github.com/stripe/stripe-go/v80/webhook"
 	"go.uber.org/zap"
 )
 
 type httpHandler struct {
-	service *service.Service
-	logger  *zap.Logger
+	service       *service.Service
+	logger        *zap.Logger
+	webhookSecret string
 }
 
-func newHTTPHandler(service *service.Service, logger *zap.Logger) *httpHandler {
+func newHTTPHandler(service *service.Service, logger *zap.Logger, webhookSecret string) *httpHandler {
 	if service == nil {
 		panic("service is nil")
 	}
@@ -29,8 +34,9 @@ func newHTTPHandler(service *service.Service, logger *zap.Logger) *httpHandler {
 	}
 
 	return &httpHandler{
-		service: service,
-		logger:  logger,
+		service:       service,
+		logger:        logger,
+		webhookSecret: webhookSecret,
 	}
 }
 
@@ -169,6 +175,24 @@ func (h *httpHandler) getRoundsByPage(ctx context.Context, input *shared.GetRoun
 }
 
 func (h *httpHandler) getInvestmentsByCursor(ctx context.Context, input *shared.GetInvestmentsByParentAndCursorInput) (*shared.GetCursorPaginatedRoundInvestmentsOutput, error) {
+	business, err := h.service.BusinessService.GetById(ctx, input.ID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, huma.Error404NotFound("Business not found")
+		}
+
+		h.logger.Error("failed to fetch business", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while fetching the business")
+	}
+
+	if account := shared.GetAuthenticatedAccount(ctx); account.ID != business.OwnerAccountID {
+		h.logger.Error("input account id does not match authenticated account id",
+			zap.Any("input account id", input.ID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot access investments for another account")
+	}
+
 	limit := input.Limit + 1
 
 	investments, err := h.service.BusinessService.GetInvestmentsByCursor(ctx, input.ID, limit, input.Cursor, input.InvestmentFilter)
@@ -197,6 +221,24 @@ func (h *httpHandler) getInvestmentsByCursor(ctx context.Context, input *shared.
 }
 
 func (h *httpHandler) getInvestmentsByPage(ctx context.Context, input *shared.GetInvestmentsByParentAndPageInput) (*shared.GetOffsetPaginatedRoundInvestmentsOutput, error) {
+	business, err := h.service.BusinessService.GetById(ctx, input.ID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, huma.Error404NotFound("Business not found")
+		}
+
+		h.logger.Error("failed to fetch business", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while fetching the business")
+	}
+
+	if account := shared.GetAuthenticatedAccount(ctx); account.ID != business.OwnerAccountID {
+		h.logger.Error("input account id does not match authenticated account id",
+			zap.Any("input account id", input.ID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot access investments for another account")
+	}
+
 	investments, total, err := h.service.BusinessService.GetInvestmentsByPage(ctx, input.ID, input.PageSize, input.Page, input.InvestmentFilter)
 
 	if err != nil {
@@ -295,6 +337,152 @@ func (h *httpHandler) getTotalFunding(ctx context.Context, input *shared.PathIDP
 	resp := &shared.FundingOutput{}
 	resp.Body.Message = "Total funding fetched successfully"
 	resp.Body.TotalFunding = totalFunding
+
+	return resp, nil
+}
+
+type OnboardStripeConnectedAccountInput struct {
+	shared.PathIDParam
+	Body struct {
+		ReturnURL  string `json:"returnURL"`
+		RefreshURL string `json:"refreshURL"`
+	} `json:"body"`
+}
+
+func (h *httpHandler) onboardStripeConnectedAccount(ctx context.Context, input *OnboardStripeConnectedAccountInput) (*shared.URLOutput, error) {
+	business, err := h.service.BusinessService.GetById(ctx, input.ID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, huma.Error404NotFound("Business not found")
+		}
+
+		h.logger.Error("failed to fetch business", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while fetching the business")
+	}
+
+	if account := shared.GetAuthenticatedAccount(ctx); account.ID != business.OwnerAccountID {
+		h.logger.Error("input account id does not match authenticated account id",
+			zap.Any("input account id", input.ID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Connected account cannot be onboarded for another account")
+	}
+
+	link, err := h.service.BillingService.CreateAccountLink(ctx, business.StripeConnectedAccountID, input.Body.ReturnURL, input.Body.RefreshURL)
+	if err != nil {
+		return nil, huma.Error500InternalServerError("An error occurred while creating the account link")
+	}
+
+	resp := &shared.URLOutput{}
+	resp.Body.Message = "Account link created successfully"
+	resp.Body.URL = link
+
+	return resp, nil
+}
+
+func (h *httpHandler) handleStripeWebhook(ctx context.Context, input *shared.HandleStripeWebhookInput) (*struct{}, error) {
+	reader := bytes.NewReader(input.Body)
+
+	payload, err := io.ReadAll(reader)
+	if err != nil {
+		h.logger.Error("failed to read webhook body", zap.Error(err))
+		return nil, huma.Error500InternalServerError("Failed to read webhook body")
+	}
+
+	event, err := webhook.ConstructEvent(payload, input.Signature, h.webhookSecret)
+	if err != nil {
+		h.logger.Error("webhook signature verification failed", zap.Error(err))
+		return nil, huma.Error400BadRequest("Webhook signature verification failed")
+	}
+
+	switch event.Type {
+	case stripe.EventTypeAccountUpdated:
+		eventBody, err := shared.ParseStripeWebhook[stripe.Account](event)
+		if err != nil {
+			h.logger.Error("failed to parse webhook json", zap.Error(err), zap.String("eventType", string(event.Type)))
+			return nil, huma.Error500InternalServerError("Failed to parse webhook json")
+		}
+
+		stripeConnectedAccountId := eventBody.ID
+
+		businessRecord, err := h.service.BusinessService.GetByStripeConnectedAccountId(ctx, stripeConnectedAccountId)
+		if err != nil {
+			if errors.Is(err, sql.ErrNoRows) {
+				h.logger.Error("business not found", zap.String("stripeConnectedAccountId", stripeConnectedAccountId))
+				return nil, huma.Error404NotFound("Business not found")
+			}
+
+			h.logger.Error("failed to fetch business", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the business")
+		}
+
+		if eventBody.Requirements.DisabledReason != "" {
+			h.logger.Error("business is disabled", zap.String("stripeConnectedAccountId", stripeConnectedAccountId), zap.String("disabledReason", string(eventBody.Requirements.DisabledReason)))
+
+			if businessRecord.StripeAccountEnabled {
+				_, err = h.service.BusinessService.Update(ctx, businessRecord.ID, business.UpdateBusinessParams{
+					StripeAccountEnabled: false,
+				})
+
+				if err != nil {
+					h.logger.Error("failed to update business", zap.Error(err))
+					return nil, huma.Error500InternalServerError("An error occurred while changing the business's stripe account enabled status")
+				}
+			}
+
+			return nil, huma.Error400BadRequest("Business is disabled")
+		}
+
+		if len(eventBody.Requirements.CurrentlyDue) > 0 {
+			h.logger.Error("business requires additional information", zap.String("stripeConnectedAccountId", stripeConnectedAccountId))
+			return nil, huma.Error400BadRequest("Business requires additional information")
+		}
+		_, err = h.service.BusinessService.Update(ctx, businessRecord.ID, business.UpdateBusinessParams{
+			StripeAccountEnabled: true,
+		})
+
+		if err != nil {
+			h.logger.Error("failed to update business", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while changing the business's stripe account enabled status")
+		}
+
+	default:
+		h.logger.Error("unhandled event type", zap.String("eventType", string(event.Type)))
+		return nil, huma.Error501NotImplemented("Unhandled event type")
+	}
+
+	return nil, nil
+}
+
+func (h *httpHandler) getStripeDashboardURL(ctx context.Context, input *shared.PathIDParam) (*shared.URLOutput, error) {
+	account := shared.GetAuthenticatedAccount(ctx)
+
+	business, err := h.service.BusinessService.GetById(ctx, input.ID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, huma.Error404NotFound("Business not found")
+		}
+
+		h.logger.Error("failed to fetch business", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while fetching the business")
+	}
+
+	if business.OwnerAccountID != account.ID {
+		h.logger.Error("input account id does not match authenticated account id",
+			zap.Any("input account id", input.ID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot access stripe dashboard url for another account")
+	}
+
+	url, err := h.service.BusinessService.GetStripeDashboardURL(ctx, input.ID)
+	if err != nil {
+		return nil, huma.Error500InternalServerError("An error occurred while fetching the stripe dashboard url")
+	}
+
+	resp := &shared.URLOutput{}
+	resp.Body.Message = "Stripe dashboard url fetched successfully"
+	resp.Body.URL = url
 
 	return resp, nil
 }

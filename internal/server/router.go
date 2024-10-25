@@ -90,6 +90,7 @@ func (s *Server) routes() chi.Router {
 		humaApi,
 		s.logger,
 		s.supabaseClient,
+		s.stripeConnectWebhookSecret,
 	)
 
 	billing.RegisterHumaRoutes(
@@ -104,7 +105,6 @@ func (s *Server) routes() chi.Router {
 		s.services,
 		humaApi,
 		s.logger,
-		
 	)
 
 	investment.RegisterHumaRoutes(

@@ -94,6 +94,8 @@ type UserRepository interface {
 type BusinessRepository interface {
 	Create(ctx context.Context, params business.CreateBusinessParams) (business.Business, error)
 	GetById(ctx context.Context, id int) (business.Business, error)
+	GetByStripeConnectedAccountId(ctx context.Context, stripeConnectedAccountId string) (business.Business, error)
+	Update(ctx context.Context, id int, params business.UpdateBusinessParams) (business.Business, error)
 	Delete(ctx context.Context, id int) error
 
 	GetVenturesByCursor(ctx context.Context, businessId int, paginationParams postgres.CursorPagination, filter venture.VentureFilter) ([]venture.Venture, error)

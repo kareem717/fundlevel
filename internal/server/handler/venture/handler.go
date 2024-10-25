@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 
+	"fundlevel/internal/entities/business"
 	"fundlevel/internal/entities/venture"
 	"fundlevel/internal/server/handler/shared"
 	"fundlevel/internal/service"
@@ -274,7 +275,7 @@ type CreateVentureInput struct {
 }
 
 func (h *httpHandler) create(ctx context.Context, input *CreateVentureInput) (*SingleVentureResponse, error) {
-	business, err := h.service.BusinessService.GetById(ctx, input.Body.BusinessID)
+	businessRecord, err := h.service.BusinessService.GetById(ctx, input.Body.BusinessID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, huma.Error404NotFound("Business not found")
@@ -284,12 +285,16 @@ func (h *httpHandler) create(ctx context.Context, input *CreateVentureInput) (*S
 		return nil, huma.Error500InternalServerError("An error occurred while fetching the business")
 	}
 
-	if account := shared.GetAuthenticatedAccount(ctx); account.ID != business.OwnerAccountID {
+	if account := shared.GetAuthenticatedAccount(ctx); account.ID != businessRecord.OwnerAccountID {
 		h.logger.Error("input account id does not match authenticated account id",
-			zap.Any("input account id", business.OwnerAccountID),
+			zap.Any("input account id", businessRecord.OwnerAccountID),
 			zap.Any("authenticated account id", account.ID))
 
 		return nil, huma.Error403Forbidden("Cannot create venture for business you do not own")
+	}
+
+	if businessRecord.Status != business.BusinessStatusActive {
+		input.Body.IsHidden = true
 	}
 
 	venture, err := h.service.VentureService.Create(ctx, input.Body)
