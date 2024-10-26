@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"strconv"
-	"strings"
 
 	server "fundlevel/internal/server"
 	"fundlevel/internal/service"
@@ -64,12 +63,6 @@ func main() {
 		fmt.Println("Error loading .env.local file")
 	}
 
-	allowedIPs := os.Getenv("ALLOWED_IPS")
-	parsedAllowedIPs := strings.Split(allowedIPs, ",")
-	if len(parsedAllowedIPs) == 0 {
-		panic("ALLOWED_IPS is not set")
-	}
-
 	cli := humacli.New(func(hooks humacli.Hooks, options *Options) {
 		options.config()
 
@@ -115,12 +108,10 @@ func main() {
 			supabaseClient,
 			options.StripeWebhookSecret,
 			options.StripeConnectWebhookSecret,
-			parsedAllowedIPs,
 		)
 
 		hooks.OnStart(func() {
 			fmt.Printf("Starting server on port %d...\n", options.Port)
-			fmt.Printf("Allowed IPs: %+v\n", parsedAllowedIPs)
 			server.Serve(fmt.Sprintf(":%d", options.Port))
 		})
 	})

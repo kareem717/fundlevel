@@ -17,7 +17,6 @@ type Server struct {
 	supabaseClient             *supabase.Client
 	stripeWebhookSecret        string
 	stripeConnectWebhookSecret string
-	allowedIPs                 []string
 }
 
 func NewServer(
@@ -27,7 +26,6 @@ func NewServer(
 	supabaseClient *supabase.Client,
 	stripeWebhookSecret string,
 	stripeConnectWebhookSecret string,
-	allowedIPs []string,
 ) *Server {
 	return &Server{
 		services:                   services,
@@ -37,7 +35,6 @@ func NewServer(
 		supabaseClient:             supabaseClient,
 		stripeWebhookSecret:        stripeWebhookSecret,
 		stripeConnectWebhookSecret: stripeConnectWebhookSecret,
-		allowedIPs:                 allowedIPs,
 	}
 }
 
