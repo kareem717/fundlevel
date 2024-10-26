@@ -270,7 +270,6 @@ func (h *httpHandler) getAllBusinesses(ctx context.Context, input *shared.PathID
 	return resp, nil
 }
 
-
 func (h *httpHandler) getInvestmentById(ctx context.Context, input *shared.PathIDParam) (*shared.SingleInvestmentResponse, error) {
 	account := shared.GetAuthenticatedAccount(ctx)
 

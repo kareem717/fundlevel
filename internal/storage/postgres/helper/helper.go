@@ -10,35 +10,38 @@ import (
 	"github.com/uptrace/bun"
 )
 
-// ApplyTimeRangeFilter applies a time range filter to a select query.
-func ApplyTimeRangeFilter(query *bun.SelectQuery, field string, min, max time.Time) {
-	if !min.IsZero() {
+// ApplyRangeFilter applies a range filter to a select query.
+func ApplyRangeFilter[T any](query *bun.SelectQuery, field string, min, max T, isZero func(T) bool) {
+	if !isZero(min) {
 		query.Where(fmt.Sprintf("%s >= ?", field), min)
 	}
 
-	if !max.IsZero() {
+	if !isZero(max) {
 		query.Where(fmt.Sprintf("%s <= ?", field), max)
 	}
+}
+
+// ApplyTimeRangeFilter applies a time range filter to a select query.
+func ApplyTimeRangeFilter(query *bun.SelectQuery, field string, min, max time.Time) {
+	ApplyRangeFilter(query, field, min, max, func(t time.Time) bool { return t.IsZero() })
 }
 
 // ApplyFloatRangeFilter applies a range filter to a select query.
 func ApplyFloatRangeFilter(query *bun.SelectQuery, field string, min, max float64) {
-	if min != 0 {
-		query.Where(fmt.Sprintf("%s >= ?", field), min)
-	}
-
-	if max != 0 {
-		query.Where(fmt.Sprintf("%s <= ?", field), max)
-	}
+	ApplyRangeFilter(query, field, min, max, func(f float64) bool { return f == 0 })
 }
 
 // ApplyIntRangeFilter applies a range filter to a select query.
 func ApplyIntRangeFilter(query *bun.SelectQuery, field string, min, max int) {
-	ApplyFloatRangeFilter(query, field, float64(min), float64(max))
+	ApplyRangeFilter(query, field, min, max, func(i int) bool { return i == 0 })
 }
 
-func ApplyEqualFilter(query *bun.SelectQuery, field string, value any) {
+func ApplyEqualFilter[T any](query *bun.SelectQuery, field string, value T) {
 	query.Where(fmt.Sprintf("%s = ?", field), value)
+}
+
+func ApplyInArrayFilter[T any](query *bun.SelectQuery, field string, values []T) {
+	query.Where(fmt.Sprintf("%s IN (?)", field), bun.In(values))
 }
 
 func ApplyRoundFilter(query *bun.SelectQuery, filter round.RoundFilter) *bun.SelectQuery {

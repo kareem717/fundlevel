@@ -3,6 +3,8 @@
 CREATE TABLE
     chats (
         id serial PRIMARY KEY,
+        -- breaks normalization but makes queries faster
+        last_message_at timestamptz,
         created_at timestamptz NOT NULL DEFAULT CLOCK_TIMESTAMP(),
         updated_at timestamptz,
         deleted_at timestamptz
