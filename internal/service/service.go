@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"fundlevel/internal/entities/account"
+	"fundlevel/internal/entities/analytic"
 	"fundlevel/internal/entities/business"
 	"fundlevel/internal/entities/industry"
 	"fundlevel/internal/entities/investment"
@@ -11,6 +12,7 @@ import (
 	"fundlevel/internal/entities/shared"
 	"fundlevel/internal/entities/venture"
 	accountService "fundlevel/internal/service/domain/account"
+	analyticService "fundlevel/internal/service/domain/analytic"
 	"fundlevel/internal/service/domain/billing"
 	businessService "fundlevel/internal/service/domain/business"
 	healthService "fundlevel/internal/service/domain/health"
@@ -36,11 +38,6 @@ type VentureService interface {
 	GetRoundsByCursor(ctx context.Context, ventureId int, limit int, cursor int, filter round.RoundFilter) ([]round.Round, error)
 	GetRoundsByPage(ctx context.Context, ventureId int, pageSize int, page int, filter round.RoundFilter) ([]round.Round, int, error)
 	GetActiveRound(ctx context.Context, ventureId int) (round.Round, error)
-
-	CreateLike(ctx context.Context, params venture.CreateVentureLikeParams) (venture.VentureLike, error)
-	DeleteLike(ctx context.Context, ventureId int, accountId int) error
-	IsLikedByAccount(ctx context.Context, ventureId int, accountId int) (bool, error)
-	GetLikeCount(ctx context.Context, ventureId int) (int, error)
 
 	GetInvestmentsByCursor(ctx context.Context, ventureId int, limit int, cursor int, filter investment.InvestmentFilter) ([]investment.RoundInvestment, error)
 	GetInvestmentsByPage(ctx context.Context, ventureId int, pageSize int, page int, filter investment.InvestmentFilter) ([]investment.RoundInvestment, int, error)
@@ -78,11 +75,6 @@ type RoundService interface {
 	GetById(ctx context.Context, id int) (round.Round, error)
 	GetByCursor(ctx context.Context, limit int, cursor int, filter round.RoundFilter) ([]round.Round, error)
 	GetByPage(ctx context.Context, pageSize int, page int, filter round.RoundFilter) ([]round.Round, int, error)
-
-	CreateLike(ctx context.Context, params round.CreateRoundLikeParams) (round.RoundLike, error)
-	DeleteLike(ctx context.Context, roundId int, accountId int) error
-	IsLikedByAccount(ctx context.Context, roundId int, accountId int) (bool, error)
-	GetLikeCount(ctx context.Context, roundId int) (int, error)
 
 	GetInvestmentsByCursor(ctx context.Context, roundId int, limit int, cursor int, filter investment.InvestmentFilter) ([]investment.RoundInvestment, error)
 	GetInvestmentsByPage(ctx context.Context, roundId int, pageSize int, page int, filter investment.InvestmentFilter) ([]investment.RoundInvestment, int, error)
@@ -130,12 +122,43 @@ type InvestmentService interface {
 	Update(ctx context.Context, id int, params investment.UpdateInvestmentParams) (investment.RoundInvestment, error)
 }
 
+type AnalyticService interface {
+	CreateRoundImpression(ctx context.Context, params analytic.CreateRoundImpressionParams) error
+	GetRoundImpressionCount(ctx context.Context, roundId int) (int, error)
+
+	CreateRoundFavourite(ctx context.Context, params analytic.CreateRoundFavouriteParams) error
+	DeleteRoundFavourite(ctx context.Context, roundId int, accountId int) error
+	IsRoundFavouritedByAccount(ctx context.Context, roundId int, accountId int) (bool, error)
+	GetRoundFavouriteCount(ctx context.Context, roundId int) (int, error)
+
+	CreateVentureImpression(ctx context.Context, params analytic.CreateVentureImpressionParams) error
+	GetVentureImpressionCount(ctx context.Context, ventureId int) (int, error)
+
+	CreateVentureFavourite(ctx context.Context, params analytic.CreateVentureFavouriteParams) error
+	DeleteVentureFavourite(ctx context.Context, ventureId int, accountId int) error
+	IsVentureFavouritedByAccount(ctx context.Context, ventureId int, accountId int) (bool, error)
+	GetVentureFavouriteCount(ctx context.Context, ventureId int) (int, error)
+
+	CreateBusinessImpression(ctx context.Context, params analytic.CreateBusinessImpressionParams) error
+	GetBusinessImpressionCount(ctx context.Context, businessId int) (int, error)
+
+	CreateBusinessFavourite(ctx context.Context, params analytic.CreateBusinessFavouriteParams) error
+	DeleteBusinessFavourite(ctx context.Context, businessId int, accountId int) error
+	IsBusinessFavouritedByAccount(ctx context.Context, businessId int, accountId int) (bool, error)
+	GetBusinessFavouriteCount(ctx context.Context, businessId int) (int, error)
+
+	GetDailyAggregatedBusinessAnalytics(ctx context.Context, businessId int, minDayOfYear int, maxDayOfYear int) ([]analytic.SimplifiedDailyAggregatedBusinessAnalytics, error)
+	GetDailyAggregatedVentureAnalytics(ctx context.Context, ventureId int, minDayOfYear int, maxDayOfYear int) ([]analytic.SimplifiedDailyAggregatedVentureAnalytics, error)
+	GetDailyAggregatedRoundAnalytics(ctx context.Context, roundId int, minDayOfYear int, maxDayOfYear int) ([]analytic.SimplifiedDailyAggregatedRoundAnalytics, error)
+}
+
 type Service struct {
 	VentureService    VentureService
 	RoundService      RoundService
 	AccountService    AccountService
 	HealthService     HealthService
 	IndustryService   IndustryService
+	AnalyticService   AnalyticService
 	UserService       UserService
 	BusinessService   BusinessService
 	BillingService    BillingService
@@ -153,6 +176,7 @@ func NewService(
 		VentureService:    ventureService.NewVentureService(repositories),
 		IndustryService:   industryService.NewIndustryService(repositories),
 		HealthService:     healthService.NewHealthService(repositories),
+		AnalyticService:   analyticService.NewAnalyticService(repositories),
 		AccountService:    accountService.NewAccountService(repositories),
 		UserService:       userService.NewUserService(repositories),
 		RoundService:      roundService.NewRoundService(repositories),
