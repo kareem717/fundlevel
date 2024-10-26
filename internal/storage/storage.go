@@ -6,6 +6,7 @@ import (
 	"fundlevel/internal/entities/account"
 	"fundlevel/internal/entities/analytic"
 	"fundlevel/internal/entities/business"
+	"fundlevel/internal/entities/chat"
 	"fundlevel/internal/entities/industry"
 	"fundlevel/internal/entities/investment"
 	"fundlevel/internal/entities/round"
@@ -75,6 +76,8 @@ type AccountRepository interface {
 	IsInvestedInRound(ctx context.Context, accountId int, roundId int) (bool, error)
 	GetInvestmentById(ctx context.Context, accountId int, investmentId int) (investment.RoundInvestment, error)
 
+	GetChatsByCursor(ctx context.Context, accountId int, pagination postgres.TimeCursorPagination) ([]chat.Chat, error)
+
 	GetAllBusinesses(ctx context.Context, accountId int) ([]business.Business, error)
 }
 
@@ -133,11 +136,24 @@ type AnalyticRepository interface {
 	GetRoundFavouriteCount(ctx context.Context, roundId int) (int, error)
 }
 
+type ChatRepository interface {
+	CreateMessage(ctx context.Context, params chat.CreateMessageParams) (chat.ChatMessage, error)
+	UpdateMessage(ctx context.Context, id int, params chat.UpdateMessageParams) (chat.ChatMessage, error)
+	DeleteMessage(ctx context.Context, id int) error
+	GetMessages(ctx context.Context, chatID int, filter chat.MessageFilter) ([]chat.ChatMessage, error)
+
+	GetMessagesByCursor(ctx context.Context, chatID int, pagination postgres.TimeCursorPagination) ([]chat.ChatMessage, error)
+	Update(ctx context.Context, chatID int, chat chat.UpdateChatParams) (chat.Chat, error)
+	Create(ctx context.Context, params chat.CreateChatParams) (chat.Chat, error)
+	Delete(ctx context.Context, id int) error
+}
+
 type RepositoryProvider interface {
 	Venture() VentureRepository
 	Account() AccountRepository
 	Round() RoundRepository
 	Investment() InvestmentRepository
+	Chat() ChatRepository
 	User() UserRepository
 	Business() BusinessRepository
 	Analytic() AnalyticRepository

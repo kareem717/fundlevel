@@ -6,6 +6,7 @@ import (
 	"fundlevel/internal/entities/account"
 	"fundlevel/internal/entities/analytic"
 	"fundlevel/internal/entities/business"
+	"fundlevel/internal/entities/chat"
 	"fundlevel/internal/entities/industry"
 	"fundlevel/internal/entities/investment"
 	"fundlevel/internal/entities/round"
@@ -22,7 +23,8 @@ import (
 	userService "fundlevel/internal/service/domain/user"
 	ventureService "fundlevel/internal/service/domain/venture"
 	"fundlevel/internal/storage"
-
+	chatService "fundlevel/internal/service/domain/chat"
+	postgres "fundlevel/internal/storage/shared"
 	"github.com/google/uuid"
 	"github.com/stripe/stripe-go/v80"
 )
@@ -59,6 +61,8 @@ type AccountService interface {
 	IsInvestedInRound(ctx context.Context, accountId int, roundId int) (bool, error)
 
 	GetAllBusinesses(ctx context.Context, accountId int) ([]business.Business, error)
+
+	GetChatsByCursor(ctx context.Context, accountId int, pagination postgres.TimeCursorPagination) ([]chat.Chat, error)
 }
 
 type IndustryService interface {
@@ -152,6 +156,18 @@ type AnalyticService interface {
 	GetDailyAggregatedRoundAnalytics(ctx context.Context, roundId int, minDayOfYear int, maxDayOfYear int) ([]analytic.SimplifiedDailyAggregatedRoundAnalytics, error)
 }
 
+type ChatService interface {
+	CreateMessage(ctx context.Context, params chat.CreateMessageParams) (chat.ChatMessage, error)
+	UpdateMessage(ctx context.Context, id int, params chat.UpdateMessageParams) (chat.ChatMessage, error)
+	DeleteMessage(ctx context.Context, id int) error
+	GetMessages(ctx context.Context, chatID int, filter chat.MessageFilter) ([]chat.ChatMessage, error)
+	GetMessagesByCursor(ctx context.Context, chatID int, pagination postgres.TimeCursorPagination) ([]chat.ChatMessage, error)
+
+	Create(ctx context.Context, params chat.CreateChatParams) (chat.Chat, error)
+	Update(ctx context.Context, chatID int, params chat.UpdateChatParams) (chat.Chat, error)
+	Delete(ctx context.Context, chatID int) error
+}
+
 type Service struct {
 	VentureService    VentureService
 	RoundService      RoundService
@@ -163,6 +179,7 @@ type Service struct {
 	BusinessService   BusinessService
 	BillingService    BillingService
 	InvestmentService InvestmentService
+	ChatService       ChatService
 }
 
 // NewService implementation for storage of all services.
@@ -183,5 +200,6 @@ func NewService(
 		BusinessService:   businessService.NewBusinessService(repositories, billingService),
 		BillingService:    billingService,
 		InvestmentService: investmentService.NewInvestmentService(repositories),
+		ChatService:       chatService.NewChatService(repositories),
 	}
 }

@@ -23,7 +23,7 @@ func (r *ChatRepository) Create(ctx context.Context, params chat.CreateChatParam
 	resp := chat.Chat{}
 	err := r.db.RunInTx(ctx, nil, func(ctx context.Context, tx bun.Tx) error {
 		err := tx.NewInsert().
-			Model(&params).
+			Model(&resp).
 			ModelTableExpr("chats").
 			Returning("*").
 			Scan(ctx, &resp)
@@ -40,6 +40,10 @@ func (r *ChatRepository) Create(ctx context.Context, params chat.CreateChatParam
 			Model(&accountChats).
 			ModelTableExpr("account_chats").
 			Exec(ctx)
+
+		if err != nil {
+			return err
+		}
 
 		rowsAffected, err := queryResp.RowsAffected()
 		if err != nil {
@@ -88,7 +92,7 @@ func (r *ChatRepository) GetMessages(ctx context.Context, chatID int, filter cha
 	return resp, err
 }
 
-func (r *ChatRepository) DeleteChat(ctx context.Context, chatID int) error {
+func (r *ChatRepository) Delete(ctx context.Context, chatID int) error {
 	_, err := r.db.NewDelete().
 		Model(&chat.Chat{}).
 		Where("id = ?", chatID).
@@ -97,7 +101,7 @@ func (r *ChatRepository) DeleteChat(ctx context.Context, chatID int) error {
 	return err
 }
 
-func (r *ChatRepository) UpdateChat(ctx context.Context, chatID int, params chat.UpdateChatParams) (chat.Chat, error) {
+func (r *ChatRepository) Update(ctx context.Context, chatID int, params chat.UpdateChatParams) (chat.Chat, error) {
 	resp := chat.Chat{}
 
 	err := r.db.NewUpdate().
