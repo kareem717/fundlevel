@@ -2,10 +2,12 @@ package service
 
 import (
 	"context"
+	"time"
 
 	"fundlevel/internal/entities/account"
 	"fundlevel/internal/entities/analytic"
 	"fundlevel/internal/entities/business"
+	"fundlevel/internal/entities/chat"
 	"fundlevel/internal/entities/industry"
 	"fundlevel/internal/entities/investment"
 	"fundlevel/internal/entities/round"
@@ -15,6 +17,7 @@ import (
 	analyticService "fundlevel/internal/service/domain/analytic"
 	"fundlevel/internal/service/domain/billing"
 	businessService "fundlevel/internal/service/domain/business"
+	chatService "fundlevel/internal/service/domain/chat"
 	healthService "fundlevel/internal/service/domain/health"
 	industryService "fundlevel/internal/service/domain/industry"
 	investmentService "fundlevel/internal/service/domain/investment"
@@ -59,6 +62,8 @@ type AccountService interface {
 	IsInvestedInRound(ctx context.Context, accountId int, roundId int) (bool, error)
 
 	GetAllBusinesses(ctx context.Context, accountId int) ([]business.Business, error)
+
+	GetChatsByCursor(ctx context.Context, accountId int, limit int, cursor time.Time) ([]chat.Chat, error)
 }
 
 type IndustryService interface {
@@ -152,6 +157,21 @@ type AnalyticService interface {
 	GetDailyAggregatedRoundAnalytics(ctx context.Context, roundId int, minDayOfYear int, maxDayOfYear int) ([]analytic.SimplifiedDailyAggregatedRoundAnalytics, error)
 }
 
+type ChatService interface {
+	CreateMessage(ctx context.Context, params chat.CreateMessageParams) (chat.ChatMessage, error)
+	UpdateMessage(ctx context.Context, id int, params chat.UpdateMessageParams) (chat.ChatMessage, error)
+	DeleteMessage(ctx context.Context, id int) error
+	GetMessageById(ctx context.Context, id int) (chat.ChatMessage, error)
+	GetMessages(ctx context.Context, chatID int, filter chat.MessageFilter, limit int, cursor time.Time) ([]chat.ChatMessage, error)
+
+	Create(ctx context.Context, params chat.CreateChatParams) (chat.Chat, error)
+	Update(ctx context.Context, chatID int, params chat.UpdateChatParams) (chat.Chat, error)
+	Delete(ctx context.Context, chatID int) error
+	GetChatById(ctx context.Context, id int) (chat.Chat, error)
+	
+	IsAccountInChat(ctx context.Context, chatID int, accountID int) (bool, error)	
+}
+
 type Service struct {
 	VentureService    VentureService
 	RoundService      RoundService
@@ -163,6 +183,7 @@ type Service struct {
 	BusinessService   BusinessService
 	BillingService    BillingService
 	InvestmentService InvestmentService
+	ChatService       ChatService
 }
 
 // NewService implementation for storage of all services.
@@ -183,5 +204,6 @@ func NewService(
 		BusinessService:   businessService.NewBusinessService(repositories, billingService),
 		BillingService:    billingService,
 		InvestmentService: investmentService.NewInvestmentService(repositories),
+		ChatService:       chatService.NewChatService(repositories),
 	}
 }

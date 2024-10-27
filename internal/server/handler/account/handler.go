@@ -7,6 +7,7 @@ import (
 
 	"fundlevel/internal/entities/account"
 	"fundlevel/internal/entities/business"
+	"fundlevel/internal/entities/chat"
 	"fundlevel/internal/server/handler/shared"
 	"fundlevel/internal/service"
 
@@ -270,7 +271,6 @@ func (h *httpHandler) getAllBusinesses(ctx context.Context, input *shared.PathID
 	return resp, nil
 }
 
-
 func (h *httpHandler) getInvestmentById(ctx context.Context, input *shared.PathIDParam) (*shared.SingleInvestmentResponse, error) {
 	account := shared.GetAuthenticatedAccount(ctx)
 
@@ -304,6 +304,54 @@ func (h *httpHandler) getInvestmentById(ctx context.Context, input *shared.PathI
 	resp := &shared.SingleInvestmentResponse{}
 	resp.Body.Message = "Investment fetched successfully"
 	resp.Body.Investment = &investment
+
+	return resp, nil
+}
+
+type GetChatsRequest struct {
+	shared.PathIDParam
+	shared.TimeCursorPaginationRequest
+}
+
+type GetChatsOutput struct {
+	Body struct {
+		shared.TimeCursorPaginationResponse
+		shared.MessageResponse
+		Chats []chat.Chat `json:"chats"`
+	}
+}
+
+func (h *httpHandler) getChats(ctx context.Context, input *GetChatsRequest) (*GetChatsOutput, error) {
+	if account := shared.GetAuthenticatedAccount(ctx); account.ID != input.ID {
+		h.logger.Error("input account id does not match authenticated account id",
+			zap.Any("input account id", input.ID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot get chats for another account")
+	}
+
+	chats, err := h.service.AccountService.GetChatsByCursor(ctx, input.ID, input.Limit, input.Cursor)
+	if err != nil {
+		h.logger.Error("failed to fetch chats", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while fetching the chats")
+	}
+
+	resp := &GetChatsOutput{}
+	resp.Body.Message = "Chats fetched successfully"
+	resp.Body.Chats = chats
+
+	if len(chats) == input.Limit {
+		// Whatsapp like pagination
+		lastChat := chats[len(chats)-1]
+		if lastChat.LastMessageAt == nil {
+			resp.Body.NextCursor = &lastChat.CreatedAt
+		} else {
+			resp.Body.NextCursor = lastChat.LastMessageAt
+		}
+
+		resp.Body.HasNext = true
+		resp.Body.Chats = resp.Body.Chats[:len(resp.Body.Chats)-1]
+	}
 
 	return resp, nil
 }
