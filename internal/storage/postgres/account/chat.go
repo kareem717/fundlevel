@@ -9,15 +9,18 @@ import (
 
 func (r *AccountRepository) GetChatsByCursor(ctx context.Context, accountID int, pagination shared.TimeCursorPagination) ([]chat.Chat, error) {
 	resp := []chat.Chat{}
-	
-	err := r.db.NewSelect().
+
+	query := r.db.NewSelect().
 		Model(&resp).
-		Join("account_chats").
-		Where("account_chats.account_id = ?", accountID).
-		Where("chat.last_message_at <= ?", pagination.Cursor).
-		OrderExpr("chat.last_message_at DESC").
-		Limit(pagination.Limit).
-		Scan(ctx)
+		Where("chat.created_by_account_id = ? OR chat.created_for_account_id = ?", accountID, accountID).
+		OrderExpr("chat.last_message_at, chat.created_at DESC").
+		Limit(pagination.Limit)
+
+	if !pagination.Cursor.IsZero() {
+		query.Where("chat.last_message_at <= ? OR (chat.last_message_at IS NULL AND chat.created_at <= ?)", pagination.Cursor, pagination.Cursor)
+	}
+
+	err := query.Scan(ctx)
 
 	return resp, err
 }

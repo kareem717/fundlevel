@@ -36,12 +36,16 @@ func ApplyIntRangeFilter(query *bun.SelectQuery, field string, min, max int) {
 	ApplyRangeFilter(query, field, min, max, func(i int) bool { return i == 0 })
 }
 
-func ApplyEqualFilter[T any](query *bun.SelectQuery, field string, value T) {
-	query.Where(fmt.Sprintf("%s = ?", field), value)
+func ApplyEqualFilter[T any](query *bun.SelectQuery, field string, value T, isZero func(T) bool) {
+	if !isZero(value) {
+		query.Where(fmt.Sprintf("%s = ?", field), value)
+	}
 }
 
 func ApplyInArrayFilter[T any](query *bun.SelectQuery, field string, values []T) {
-	query.Where(fmt.Sprintf("%s IN (?)", field), bun.In(values))
+	if len(values) > 0 {
+		query.Where(fmt.Sprintf("%s IN (?)", field), bun.In(values))
+	}
 }
 
 func ApplyRoundFilter(query *bun.SelectQuery, filter round.RoundFilter) *bun.SelectQuery {

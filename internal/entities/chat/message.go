@@ -8,15 +8,15 @@ import (
 )
 
 type ChatMessage struct {
-	bun.BaseModel   `bun:"table:chat_messages"`
-	SenderAccountID int `json:"senderAccountId" minimum:"1"`
-	UpdateChatParams
+	bun.BaseModel `bun:"table:chat_messages"`
+	CreateMessageParams
+	ReadAt *time.Time `json:"readAt" format:"date-time"`
 	shared.IntegerID
 	shared.Timestamps
 }
 
 type CreateMessageParams struct {
-	ChatID          int    `json:"chatId" minimum:"1"`
+	ChatID          int    `json:"chatId" minimum:"1" hidden:"true"`
 	Content         string `json:"content" minLength:"1" maxLength:"1000"`
 	SenderAccountID int    `json:"senderAccountId" minimum:"1"`
 }
@@ -27,8 +27,8 @@ type UpdateMessageParams struct {
 }
 
 type MessageFilter struct {
-	SenderAccountIDs []int     `json:"senderAccountIds" minItems:"1" maxItems:"2" uniqueItems:"true" minimum:"1" required:"false"`
-	Read             []bool    `json:"read" uniqueItems:"true" minItems:"1" maxItems:"2" required:"false"`
-	MinCreatedAt     time.Time `json:"minCreatedAt" format:"date-time" required:"false"`
-	MaxCreatedAt     time.Time `json:"maxCreatedAt" format:"date-time" required:"false"`
+	SenderAccountIDs []int     `query:"senderAccountIds" minItems:"1" maxItems:"2" uniqueItems:"true" minimum:"1" required:"false"`
+	Read             bool      `query:"read" required:"false"`
+	MinCreatedAt     time.Time `query:"minCreatedAt" format:"date-time" required:"false"`
+	MaxCreatedAt     time.Time `query:"maxCreatedAt" format:"date-time" required:"false"`
 }

@@ -7,6 +7,7 @@ import (
 	"fundlevel/internal/entities/investment"
 	"fundlevel/internal/entities/round"
 	"fundlevel/internal/entities/venture"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -30,6 +31,16 @@ type URLOutput struct {
 		MessageResponse
 		URL string `json:"url"`
 	}
+}
+
+type TimeCursorPaginationResponse struct {
+	NextCursor *time.Time `json:"nextCursor"`
+	HasNext    bool      `json:"hasNext"`
+}
+
+type TimeCursorPaginationRequest struct {
+	Cursor time.Time `query:"cursor" required:"false"`
+	Limit  int       `query:"limit" required:"false" minimum:"1" default:"10"`
 }
 
 type HandleStripeWebhookInput struct {

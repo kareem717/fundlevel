@@ -140,12 +140,16 @@ type ChatRepository interface {
 	CreateMessage(ctx context.Context, params chat.CreateMessageParams) (chat.ChatMessage, error)
 	UpdateMessage(ctx context.Context, id int, params chat.UpdateMessageParams) (chat.ChatMessage, error)
 	DeleteMessage(ctx context.Context, id int) error
-	GetMessages(ctx context.Context, chatID int, filter chat.MessageFilter) ([]chat.ChatMessage, error)
+	GetMessageById(ctx context.Context, messageId int) (chat.ChatMessage, error)
 
-	GetMessagesByCursor(ctx context.Context, chatID int, pagination postgres.TimeCursorPagination) ([]chat.ChatMessage, error)
+	GetChatMessages(ctx context.Context, chatID int, filter chat.MessageFilter, pagination postgres.TimeCursorPagination) ([]chat.ChatMessage, error)
 	Update(ctx context.Context, chatID int, chat chat.UpdateChatParams) (chat.Chat, error)
 	Create(ctx context.Context, params chat.CreateChatParams) (chat.Chat, error)
 	Delete(ctx context.Context, id int) error
+	GetById(ctx context.Context, chatID int) (chat.Chat, error)
+	GetChatByAccountIds(ctx context.Context, accountIdOne int, accountIdTwo int) (chat.Chat, error)
+
+	IsAccountInChat(ctx context.Context, chatID int, accountID int) (bool, error)
 }
 
 type RepositoryProvider interface {

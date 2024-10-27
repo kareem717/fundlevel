@@ -2,7 +2,6 @@ package chat
 
 import (
 	"context"
-	"errors"
 
 	"fundlevel/internal/entities/chat"
 )
@@ -12,6 +11,7 @@ func (r *ChatRepository) CreateMessage(ctx context.Context, params chat.CreateMe
 
 	err := r.db.NewInsert().
 		Model(&params).
+		ModelTableExpr("chat_messages").
 		Returning("*").
 		Scan(ctx, &resp)
 
@@ -23,6 +23,7 @@ func (r *ChatRepository) UpdateMessage(ctx context.Context, id int, params chat.
 
 	err := r.db.NewUpdate().
 		Model(&params).
+		ModelTableExpr("chat_messages").
 		Where("id = ?", id).
 		OmitZero().
 		Returning("*").
@@ -32,20 +33,18 @@ func (r *ChatRepository) UpdateMessage(ctx context.Context, id int, params chat.
 }
 
 func (r *ChatRepository) DeleteMessage(ctx context.Context, id int) error {
-
-	execResp, err := r.db.NewDelete().
+	_, err := r.db.NewDelete().
 		Model(&chat.ChatMessage{}).
 		Where("id = ?", id).
 		Exec(ctx)
 
-	rowsAffected, err := execResp.RowsAffected()
-	if err != nil {
-		return err
-	}
-
-	if rowsAffected == 0 {
-		return errors.New("no rows affected")
-	}
-
 	return err
+}
+
+func (r *ChatRepository) GetMessageById(ctx context.Context, messageId int) (chat.ChatMessage, error) {
+	resp := chat.ChatMessage{}
+
+	err := r.db.NewSelect().Model(&resp).Where("id = ?", messageId).Scan(ctx)
+
+	return resp, err
 }

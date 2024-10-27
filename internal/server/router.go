@@ -5,6 +5,7 @@ import (
 	"fundlevel/internal/server/handler/analytic"
 	"fundlevel/internal/server/handler/billing"
 	"fundlevel/internal/server/handler/business"
+	"fundlevel/internal/server/handler/chat"
 	"fundlevel/internal/server/handler/health"
 	"fundlevel/internal/server/handler/industry"
 	"fundlevel/internal/server/handler/investment"
@@ -95,6 +96,13 @@ func (s *Server) routes() chi.Router {
 	)
 
 	analytic.RegisterHumaRoutes(
+		s.services,
+		s.logger,
+		humaApi,
+		s.supabaseClient,
+	)
+
+	chat.RegisterHumaRoutes(
 		s.services,
 		s.logger,
 		humaApi,

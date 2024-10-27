@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"time"
 
 	"fundlevel/internal/entities/account"
 	"fundlevel/internal/entities/analytic"
@@ -16,6 +17,7 @@ import (
 	analyticService "fundlevel/internal/service/domain/analytic"
 	"fundlevel/internal/service/domain/billing"
 	businessService "fundlevel/internal/service/domain/business"
+	chatService "fundlevel/internal/service/domain/chat"
 	healthService "fundlevel/internal/service/domain/health"
 	industryService "fundlevel/internal/service/domain/industry"
 	investmentService "fundlevel/internal/service/domain/investment"
@@ -23,8 +25,7 @@ import (
 	userService "fundlevel/internal/service/domain/user"
 	ventureService "fundlevel/internal/service/domain/venture"
 	"fundlevel/internal/storage"
-	chatService "fundlevel/internal/service/domain/chat"
-	postgres "fundlevel/internal/storage/shared"
+
 	"github.com/google/uuid"
 	"github.com/stripe/stripe-go/v80"
 )
@@ -62,7 +63,7 @@ type AccountService interface {
 
 	GetAllBusinesses(ctx context.Context, accountId int) ([]business.Business, error)
 
-	GetChatsByCursor(ctx context.Context, accountId int, pagination postgres.TimeCursorPagination) ([]chat.Chat, error)
+	GetChatsByCursor(ctx context.Context, accountId int, limit int, cursor time.Time) ([]chat.Chat, error)
 }
 
 type IndustryService interface {
@@ -160,12 +161,15 @@ type ChatService interface {
 	CreateMessage(ctx context.Context, params chat.CreateMessageParams) (chat.ChatMessage, error)
 	UpdateMessage(ctx context.Context, id int, params chat.UpdateMessageParams) (chat.ChatMessage, error)
 	DeleteMessage(ctx context.Context, id int) error
-	GetMessages(ctx context.Context, chatID int, filter chat.MessageFilter) ([]chat.ChatMessage, error)
-	GetMessagesByCursor(ctx context.Context, chatID int, pagination postgres.TimeCursorPagination) ([]chat.ChatMessage, error)
+	GetMessageById(ctx context.Context, id int) (chat.ChatMessage, error)
+	GetMessages(ctx context.Context, chatID int, filter chat.MessageFilter, limit int, cursor time.Time) ([]chat.ChatMessage, error)
 
 	Create(ctx context.Context, params chat.CreateChatParams) (chat.Chat, error)
 	Update(ctx context.Context, chatID int, params chat.UpdateChatParams) (chat.Chat, error)
 	Delete(ctx context.Context, chatID int) error
+	GetChatById(ctx context.Context, id int) (chat.Chat, error)
+	
+	IsAccountInChat(ctx context.Context, chatID int, accountID int) (bool, error)	
 }
 
 type Service struct {

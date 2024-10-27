@@ -2,7 +2,6 @@ package chat
 
 import (
 	"context"
-	"errors"
 	"fundlevel/internal/entities/chat"
 	"fundlevel/internal/storage/postgres/helper"
 	"fundlevel/internal/storage/shared"
@@ -21,71 +20,39 @@ func NewChatRepository(db bun.IDB, ctx context.Context) *ChatRepository {
 
 func (r *ChatRepository) Create(ctx context.Context, params chat.CreateChatParams) (chat.Chat, error) {
 	resp := chat.Chat{}
-	err := r.db.RunInTx(ctx, nil, func(ctx context.Context, tx bun.Tx) error {
-		err := tx.NewInsert().
-			Model(&resp).
-			ModelTableExpr("chats").
-			Returning("*").
-			Scan(ctx, &resp)
 
-		accountChats := []chat.AccountChat{}
-		for _, accountID := range params.AccountIDs {
-			accountChats = append(accountChats, chat.AccountChat{
-				AccountID: accountID,
-				ChatID:    resp.ID,
-			})
-		}
-
-		queryResp, err := tx.NewInsert().
-			Model(&accountChats).
-			ModelTableExpr("account_chats").
-			Exec(ctx)
-
-		if err != nil {
-			return err
-		}
-
-		rowsAffected, err := queryResp.RowsAffected()
-		if err != nil {
-			return err
-		}
-
-		if rowsAffected != int64(len(accountChats)) {
-			return errors.New("failed to create account chats")
-		}
-
-		return nil
-	})
+	err := r.db.NewInsert().
+		Model(&params).
+		ModelTableExpr("chats").
+		Returning("*").
+		Scan(ctx, &resp)
 
 	return resp, err
 }
 
-func (r *ChatRepository) GetMessagesByCursor(ctx context.Context, chatID int, pagination shared.TimeCursorPagination) ([]chat.ChatMessage, error) {
-	resp := []chat.ChatMessage{}
-	err := r.db.NewSelect().
-		Model(&resp).
-		Where("chat_messages.chat_id = ?", chatID).
-		Where("chat_messages.created_at <= ?", pagination.Cursor).
-		OrderExpr("chat_messages.created_at DESC").
-		Limit(pagination.Limit).
-		Scan(ctx)
-
-	return resp, err
-}
-
-func (r *ChatRepository) GetMessages(ctx context.Context, chatID int, filter chat.MessageFilter) ([]chat.ChatMessage, error) {
+func (r *ChatRepository) GetChatMessages(ctx context.Context, chatID int, filter chat.MessageFilter, pagination shared.TimeCursorPagination) ([]chat.ChatMessage, error) {
 	resp := []chat.ChatMessage{}
 
 	query := r.db.NewSelect().
 		Model(&resp).
-		Join("INNER JOIN chats ON chats.id = chat_message.chat_id").
-		Where("chats.id = ?", chatID)
+		Join("INNER JOIN chats").
+		JoinOn("chats.id = chat_message.chat_id AND chats.id = ?", chatID).
+		OrderExpr("chat_message.created_at DESC").
+		Limit(pagination.Limit)
 
-	helper.ApplyTimeRangeFilter(query, "chat_messages.created_at", filter.MinCreatedAt, filter.MaxCreatedAt)
+	if !pagination.Cursor.IsZero() {
+		query.Where("chat_message.created_at <= ?", pagination.Cursor)
+	}
 
-	helper.ApplyInArrayFilter(query, "chat_messages.sender_account_id", filter.SenderAccountIDs)
+	helper.ApplyTimeRangeFilter(query, "chat_message.created_at", filter.MinCreatedAt, filter.MaxCreatedAt)
 
-	helper.ApplyInArrayFilter(query, "chat_messages.read", filter.Read)
+	helper.ApplyInArrayFilter(query, "chat_message.sender_account_id", filter.SenderAccountIDs)
+
+	if filter.Read == true {
+		query.Where("chat_message.read_at IS NOT NULL")
+	} else if filter.Read == false {
+		query.Where("chat_message.read_at IS NULL")
+	}
 
 	err := query.Scan(ctx)
 
@@ -111,6 +78,35 @@ func (r *ChatRepository) Update(ctx context.Context, chatID int, params chat.Upd
 		Returning("*").
 		OmitZero().
 		Scan(ctx, &resp)
+
+	return resp, err
+}
+
+func (r *ChatRepository) GetById(ctx context.Context, id int) (chat.Chat, error) {
+	resp := chat.Chat{}
+	err := r.db.NewSelect().Model(&resp).Where("id = ?", id).Scan(ctx)
+
+	return resp, err
+}
+
+func (r *ChatRepository) IsAccountInChat(ctx context.Context, chatID int, accountID int) (bool, error) {
+	exists, err := r.db.NewSelect().
+		Model(&chat.Chat{}).
+		Where("id = ? AND (created_by_account_id = ? OR created_for_account_id = ?)", chatID, accountID, accountID).
+		Exists(ctx)
+
+	return exists, err
+}
+
+func (r *ChatRepository) GetChatByAccountIds(ctx context.Context, accountIdOne int, accountIdTwo int) (chat.Chat, error) {
+	resp := chat.Chat{}
+	err := r.db.NewSelect().
+		Model(&resp).
+		Where(
+			"(created_by_account_id = ? AND created_for_account_id = ?) OR (created_by_account_id = ? AND created_for_account_id = ?)",
+			accountIdOne, accountIdTwo, accountIdTwo, accountIdOne,
+		).
+		Scan(ctx)
 
 	return resp, err
 }

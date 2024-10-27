@@ -11,23 +11,18 @@ import (
 type Chat struct {
 	bun.BaseModel `bun:"table:chats"`
 
-	LastMessageAt time.Time `json:"lastMessageAt"`
+	LastMessageAt *time.Time `json:"lastMessageAt"`
+
+	CreateChatParams
 	shared.IntegerID
 	shared.Timestamps
-}
-
-type AccountChat struct {
-	bun.BaseModel `bun:"table:account_chats"`
-
-	AccountID int `json:"accountId" minimum:"1"`
-	ChatID    int `json:"chatId" minimum:"1"`
 }
 
 type UpdateChatParams struct {
 	LastMessageAt time.Time `json:"lastMessageAt"`
 }
 
-
 type CreateChatParams struct {
-	AccountIDs []int `json:"accountIds" minItems:"2" maxItems:"2" minimum:"1" uniqueItems:"true"`
+	CreatedByAccountID  int `json:"createdByAccountId" minimum:"1"`
+	CreatedForAccountID int `json:"createdForAccountId" minimum:"1"`
 }
