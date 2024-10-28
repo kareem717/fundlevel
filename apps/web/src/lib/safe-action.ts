@@ -78,8 +78,9 @@ export const actionClientWithUser = createSafeActionClient({
 		console.error("Error getting user: ", error);
 	}
 
-	console.log("access_token", session?.access_token);
-	console.log("user_id", user?.id);
+	// console.log("access_token", session?.access_token);
+	// console.log("user_id", user?.id);
+
 	return next({
 		ctx: {
 			apiClient: apiClient(session?.access_token),
@@ -140,8 +141,8 @@ export const actionClientWithAccount = createSafeActionClient({
 		account = data?.account;
 	}
 
-	console.log("access_token", session?.access_token);
-	console.log("user_id", user?.id);
+	// console.log("access_token", session?.access_token);
+	// console.log("user_id", user?.id);
 	return next({
 		ctx: {
 			apiClient: apiClient(session?.access_token),

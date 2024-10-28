@@ -8,14 +8,14 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import redirects from "@/lib/config/redirects";
 import { useAction } from "next-safe-action/hooks";
-import { getAccount } from "@/actions/auth";
+import { getAccountCached } from "@/actions/auth";
 
 export interface ExploreAuthProps extends ComponentPropsWithoutRef<"div"> { };
 
 export const ExploreAuth: FC<ExploreAuthProps> = ({ className, ...props }) => {
   const [account, setAccount] = useState<Account | undefined>(undefined);
 
-  const { execute } = useAction(getAccount, {
+  const { execute } = useAction(getAccountCached, {
     onSuccess: ({ data }) => {
       setAccount(data);
     },
