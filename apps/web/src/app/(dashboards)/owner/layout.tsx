@@ -49,6 +49,8 @@ export default async function DashboardLayout({
   try {
     const businessesResponse = await getAccountBusinesses();
     if (!businessesResponse?.data?.businesses || businessesResponse.data.businesses?.length === 0) {
+      console.log('No businesses found, redirecting to create business')
+      // TODO: cant redirect in try catch
       redirect(redirects.app.myBusinesses.create);
     }
 
