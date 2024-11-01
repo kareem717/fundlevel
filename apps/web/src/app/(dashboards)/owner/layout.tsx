@@ -1,25 +1,16 @@
 import { AppSidebar } from "./components/app-sidebar"
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
-import { Separator } from "@/components/ui/separator"
-import {
   SidebarInset,
   SidebarProvider,
-  SidebarTrigger,
 } from "@/components/ui/sidebar"
 import { Metadata } from "next"
 import { redirect } from "next/navigation";
 import redirects from "@/lib/config/redirects";
 import AuthProvider from "@/components/providers/auth-provider";
-import { getAccount, getUser } from "@/actions/auth";
+import { getAccountCached, getUserCached } from "@/actions/auth";
 import { getAccountBusinesses } from "@/actions/busineses"
 import { DashboardBreadcrumb } from "./components/dashboard-breadcrumb."
+import { Business } from "@/lib/api";
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -30,25 +21,46 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode
 }) {
-  const userResponse = await getUser();
-  if (!userResponse?.data) {
-    redirect(redirects.auth.login);
+  let user
+  try {
+    const userResponse = await getUserCached();
+    if (!userResponse?.data) {
+      redirect(redirects.auth.login);
+    }
+
+    user = userResponse.data
+  } catch (error) {
+    console.error('Error fetching user data:', error);
   }
 
-  const accountResponse = await getAccount();
-  if (!accountResponse?.data) {
-    redirect(redirects.auth.createAccount);
+  let account
+  try {
+    const accountResponse = await getAccountCached();
+    if (!accountResponse?.data) {
+      redirect(redirects.auth.createAccount);
+    }
+
+    account = accountResponse.data
+  } catch (error) {
+    console.error('Error fetching account data:', error);
   }
 
-  const businessesResponse = await getAccountBusinesses();
-  if (!businessesResponse?.data?.businesses || businessesResponse.data.businesses?.length === 0) {
-    redirect(redirects.app.myBusinesses.create);
+  let busineses: Business[] = []
+  try {
+    const businessesResponse = await getAccountBusinesses();
+    if (!businessesResponse?.data?.businesses || businessesResponse.data.businesses?.length === 0) {
+      redirect(redirects.app.myBusinesses.create);
+    }
+
+    busineses = businessesResponse.data.businesses
+  } catch (error) {
+    console.error('Error fetching businesses data:', error);
   }
 
   return (
-    <AuthProvider user={userResponse.data} account={accountResponse.data}>
+    <AuthProvider user={user} account={account}>
       <SidebarProvider>
-        <AppSidebar businesses={businessesResponse.data.businesses} />
+        <AppSidebar businesses={busineses} />
         <SidebarInset>
           <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
             <DashboardBreadcrumb />

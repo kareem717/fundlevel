@@ -46,7 +46,7 @@ export const BusinessSwitcher: FC<BusinessSwitcherProps> = ({ businesses: busine
     if (!business) {
       setBusiness(businessData[0])
     }
-  }, [business, businessData, setBusiness])
+  }, [business, businessData, setBusiness, setBusinesses])
 
   return (
     <SidebarMenu {...props}>

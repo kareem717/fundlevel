@@ -12,7 +12,7 @@ import {
 	createAccount as createAccountApi,
 	updateAccount as updateAccountApi,
 } from "@/lib/api";
-
+import { cache } from "react";
 /**
  * Create a new account for the currently authenticated user
  */
@@ -72,15 +72,21 @@ export const updateAccount = actionClientWithAccount
  */
 export const getAccount = actionClientWithAccount.action(
 	async ({ ctx: { account } }) => {
+		console.log("getAccoutn")
 		return account;
 	}
 );
+
+export const getAccountCached = cache(getAccount);
 
 /**
  * Get the currently authenticated user
  */
 export const getUser = actionClientWithUser.action(
 	async ({ ctx: { user } }) => {
+		console.log("gettingUser")
 		return user;
 	}
 );
+
+export const getUserCached = cache(getUser);
