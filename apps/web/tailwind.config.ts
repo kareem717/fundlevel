@@ -61,6 +61,16 @@ const config = {
 					DEFAULT: "hsl(var(--card))",
 					foreground: "hsl(var(--card-foreground))",
 				},
+				sidebar: {
+					DEFAULT: "hsl(var(--sidebar-background))",
+					foreground: "hsl(var(--sidebar-foreground))",
+					primary: "hsl(var(--sidebar-primary))",
+					"primary-foreground": "hsl(var(--sidebar-primary-foreground))",
+					accent: "hsl(var(--sidebar-accent))",
+					"accent-foreground": "hsl(var(--sidebar-accent-foreground))",
+					border: "hsl(var(--sidebar-border))",
+					ring: "hsl(var(--sidebar-ring))",
+				},
 			},
 			borderRadius: {
 				lg: "var(--radius)",
@@ -69,26 +79,50 @@ const config = {
 			},
 			keyframes: {
 				"accordion-down": {
-					from: { height: "0" },
-					to: { height: "var(--radix-accordion-content-height)" },
+					from: {
+						height: "0",
+					},
+					to: {
+						height: "var(--radix-accordion-content-height)",
+					},
 				},
 				"accordion-up": {
-					from: { height: "var(--radix-accordion-content-height)" },
-					to: { height: "0" },
+					from: {
+						height: "var(--radix-accordion-content-height)",
+					},
+					to: {
+						height: "0",
+					},
 				},
 				"collapsible-down": {
-					from: { height: "0" },
-					to: { height: "var(--radix-collapsible-content-height)" },
+					from: {
+						height: "0",
+					},
+					to: {
+						height: "var(--radix-collapsible-content-height)",
+					},
 				},
 				"collapsible-up": {
-					from: { height: "var(--radix-collapsible-content-height)" },
-					to: { height: "0" },
+					from: {
+						height: "var(--radix-collapsible-content-height)",
+					},
+					to: {
+						height: "0",
+					},
 				},
 				shake: {
-					"0%, 100%": { transform: "translateX(0)" },
-					"25%": { transform: "translateX(-5px)" },
-					"50%": { transform: "translateX(5px)" },
-					"75%": { transform: "translateX(-5px)" },
+					"0%, 100%": {
+						transform: "translateX(0)",
+					},
+					"25%": {
+						transform: "translateX(-5px)",
+					},
+					"50%": {
+						transform: "translateX(5px)",
+					},
+					"75%": {
+						transform: "translateX(-5px)",
+					},
 				},
 				"background-shine": {
 					from: {

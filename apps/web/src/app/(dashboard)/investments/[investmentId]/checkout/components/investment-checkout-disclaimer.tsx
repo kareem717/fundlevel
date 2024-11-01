@@ -33,8 +33,8 @@ export const InvestmentCheckoutDisclaimer: FC<InvestmentCheckoutDisclaimerProps>
 
   const { execute, isExecuting } = useAction(getInvestmentCheckoutLink, {
     onSuccess: ({ data }) => {
-      if (data?.link) {
-        router.push(data.link);
+      if (data?.url) {
+        router.push(data.url);
       }
     },
     onError: () => {

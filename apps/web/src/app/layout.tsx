@@ -11,8 +11,16 @@ export const metadata: Metadata = {
     default: "Fundlevel",
     template: "%s | Fundlevel",
   },
-  description: "Create and manage waitlists for your products.",
-  keywords: ["waitlist", "waitlists", "email", "email list", "waitq", "waitq.sh", "landing page", "launch"],
+  description: "Building the future of finance.",
+  keywords: [
+    "fundlevel", "fundlevel.com", "finance",
+    "investing", "investment", "investment management",
+    "investment platform", "investment software", "investment technology",
+    "investment tools", "investment services", "investment products",
+    "investment management software", "investment management technology",
+    "investment management tools", "investment management services",
+    "investment management products",
+  ],
   twitter: {
     card: "summary_large_image",
   },
@@ -32,8 +40,8 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-            {children}
-            <Toaster />
+          {children}
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

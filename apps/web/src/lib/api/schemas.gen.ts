@@ -162,6 +162,9 @@ export const BusinessSchema = {
             enum: ['pending', 'active', 'disabled'],
             type: 'string'
         },
+        stripeConnectedAccountId: {
+            type: 'string'
+        },
         teamSize: {
             enum: ['1', '2-10', '11-50', '51-200', '201-500', '501-1000', '1000+'],
             type: 'string'
@@ -171,7 +174,7 @@ export const BusinessSchema = {
             type: ['string', 'null']
         }
     },
-    required: ['address', 'industry', 'name', 'businessNumber', 'foundingDate', 'ownerAccountId', 'status', 'addressId', 'teamSize', 'isRemote', 'industryId', 'id', 'createdAt', 'updatedAt', 'deletedAt'],
+    required: ['address', 'industry', 'name', 'businessNumber', 'foundingDate', 'ownerAccountId', 'status', 'addressId', 'teamSize', 'stripeConnectedAccountId', 'isRemote', 'industryId', 'id', 'createdAt', 'updatedAt', 'deletedAt'],
     type: 'object'
 } as const;
 
@@ -794,26 +797,6 @@ export const IsLikedOutputBodySchema = {
     type: 'object'
 } as const;
 
-export const LinkOutputBodySchema = {
-    additionalProperties: false,
-    properties: {
-        '$schema': {
-            examples: ['https://example.com/schemas/LinkOutputBody.json'],
-            format: 'uri',
-            readOnly: true,
-            type: 'string'
-        },
-        link: {
-            type: 'string'
-        },
-        message: {
-            type: 'string'
-        }
-    },
-    required: ['message', 'link'],
-    type: 'object'
-} as const;
-
 export const MessageResponseSchema = {
     additionalProperties: false,
     properties: {
@@ -828,6 +811,26 @@ export const MessageResponseSchema = {
         }
     },
     required: ['message'],
+    type: 'object'
+} as const;
+
+export const OnboardStripeConnectedAccountInputBodySchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/OnboardStripeConnectedAccountInputBody.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        refreshURL: {
+            type: 'string'
+        },
+        returnURL: {
+            type: 'string'
+        }
+    },
+    required: ['returnURL', 'refreshURL'],
     type: 'object'
 } as const;
 
@@ -1050,6 +1053,26 @@ export const SingleVentureResponseBodySchema = {
         }
     },
     required: ['venture', 'message'],
+    type: 'object'
+} as const;
+
+export const URLOutputBodySchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/URLOutputBody.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        message: {
+            type: 'string'
+        },
+        url: {
+            type: 'string'
+        }
+    },
+    required: ['url', 'message'],
     type: 'object'
 } as const;
 
