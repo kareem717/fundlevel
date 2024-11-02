@@ -10,7 +10,7 @@ export interface BusinessStatisticOverviewProps extends ComponentPropsWithoutRef
 
 export const BusinessStatisticOverview: FC<BusinessStatisticOverviewProps> = ({ className, ...props }) => {
   return (
-    <div className={cn("grid grid-rows-3 lg:grid-cols-3 lg:grid-rows-1 gap-4 [&>div]:h-min", className)} {...props}>
+    <div className={cn("grid grid-rows-3 lg:grid-cols-3 lg:grid-rows-1 gap-4 [&>div]:h-full", className)} {...props}>
       <StatisticCard
         title="Total Funding"
         value="$100,000"

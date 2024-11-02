@@ -31,6 +31,16 @@ const redirects = {
 			root: "/investments",
 			checkout: "/investments/:investmentId/checkout",
 		},
+		businessDashboard: {
+			root: "/owner",
+			investors: {
+				root: "/owner/investors",
+				offers: "/owner/investors/offers",
+			},
+			financials: "/owner/financials",
+			rounds: "/owner/rounds",
+			ventures: "/owner/ventures",
+		},
 		myBusinesses: {
 			index: "/my-businesses",
 			view: {
