@@ -1,3 +1,9 @@
+import { RecievedInvestmentsTable } from "./components/recieved-investments-table";
+
 export default function OffersPage() {
-	return <div>Offers</div>;
+	return (
+		<div>
+			<RecievedInvestmentsTable />
+		</div>
+	);
 }
