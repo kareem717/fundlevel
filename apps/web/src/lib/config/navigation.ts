@@ -38,22 +38,22 @@ const businessDashboardNavigation: NavigationMenu[] = [
 			},
 			{
 				title: "Financials",
-				url: redirects.app.businessDashboard.investors,
+				url: redirects.app.businessDashboard.financials,
 				icon: Icons.dollarSign,
 			},
 			{
 				title: "Rounds",
-				url: redirects.app.businessDashboard.investors,
+				url: redirects.app.businessDashboard.rounds,
 				icon: Icons.chart,
 			},
 			{
 				title: "Ventures",
-				url: redirects.app.businessDashboard.investors,
+				url: redirects.app.businessDashboard.ventures,
 				icon: Icons.store,
 			},
 			{
 				title: "Members",
-				url: redirects.app.businessDashboard.investors,
+				url: redirects.app.businessDashboard.members,
 				icon: Icons.users,
 			},
 		],
