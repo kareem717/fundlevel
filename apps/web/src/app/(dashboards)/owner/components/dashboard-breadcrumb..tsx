@@ -14,7 +14,7 @@ import { usePathname } from "next/navigation"
 import { dashboardBreadcrumbConfig } from "@/lib/config/dashboard"
 
 export interface DashboardBreadcrumbProps extends ComponentPropsWithoutRef<"div"> {
-
+  
 };
 
 export const DashboardBreadcrumb: FC<DashboardBreadcrumbProps> = ({ className, ...props }) => {

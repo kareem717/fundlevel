@@ -1,7 +1,7 @@
 import { ChartWrapper } from "@/components/ui/chart-wrapper";
-import { BusinessImpressionAnalytics } from "./components/impression-analytics";
+import { BusinessImpressionAnalytics } from "./components/impression-analytics-chart";
 import { KeyInvestorsTable } from "./components/key-investors-table";
-import { BusinessRaiseRate } from "./components/raise-rate";
+import { BusinessRaiseRate } from "./components/raise-rate-chart";
 import { BusinessStatisticOverview } from "./components/statistic-overview";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 
