@@ -2,15 +2,20 @@ import { Icons } from "@/components/ui/icons";
 import { LucideIcon } from "lucide-react";
 import redirects from "./redirects";
 
-export type NavigationItem = {
-	title: string;
-	url: string;
-	icon?: LucideIcon;
-	items?: {
-		title: string;
-		url: string;
-	}[];
-};
+export type NavigationItem =
+	| {
+			title: string;
+			icon?: LucideIcon;
+			items: {
+				title: string;
+				url: string;
+			}[];
+	  }
+	| {
+			title: string;
+			url: string;
+			icon?: LucideIcon;
+	  };
 
 export type NavigationMenu = {
 	name: string;
@@ -33,8 +38,17 @@ const businessDashboardNavigation: NavigationMenu[] = [
 			},
 			{
 				title: "Investors",
-				url: redirects.app.businessDashboard.investors,
 				icon: Icons.handCoins,
+				items: [
+					{
+						title: "Overview",
+						url: redirects.app.businessDashboard.investors.root,
+					},
+					{
+						title: "Offers",
+						url: redirects.app.businessDashboard.investors.offers,
+					},
+				],
 			},
 			{
 				title: "Financials",
@@ -50,11 +64,6 @@ const businessDashboardNavigation: NavigationMenu[] = [
 				title: "Ventures",
 				url: redirects.app.businessDashboard.ventures,
 				icon: Icons.store,
-			},
-			{
-				title: "Members",
-				url: redirects.app.businessDashboard.members,
-				icon: Icons.users,
 			},
 		],
 	},

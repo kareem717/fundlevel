@@ -33,11 +33,13 @@ const redirects = {
 		},
 		businessDashboard: {
 			root: "/owner",
-			investors: "/owner/investors",
+			investors: {
+				root: "/owner/investors",
+				offers: "/owner/investors/offers",
+			},
 			financials: "/owner/financials",
 			rounds: "/owner/rounds",
 			ventures: "/owner/ventures",
-			members: "/owner/members",
 		},
 		myBusinesses: {
 			index: "/my-businesses",
