@@ -27,39 +27,42 @@ export default async function DashboardLayout({
   let user
   try {
     const userResponse = await getUserCached();
-    if (!userResponse?.data) {
-      redirect(redirects.auth.login);
-    }
 
-    user = userResponse.data
+
+    user = userResponse?.data
   } catch (error) {
     console.error('Error fetching user data:', error);
+  }
+
+  if (!user) {
+    redirect(redirects.auth.login);
   }
 
   let account
   try {
     const accountResponse = await getAccountCached();
-    if (!accountResponse?.data) {
-      redirect(redirects.auth.createAccount);
-    }
 
-    account = accountResponse.data
+    account = accountResponse?.data
   } catch (error) {
     console.error('Error fetching account data:', error);
+  }
+
+  if (!account) {
+    redirect(redirects.auth.createAccount);
   }
 
   let busineses: Business[] = []
   try {
     const businessesResponse = await getAccountBusinesses();
-    if (!businessesResponse?.data?.businesses || businessesResponse.data.businesses?.length === 0) {
-      console.log('No businesses found, redirecting to create business')
-      // TODO: cant redirect in try catch
-      redirect(redirects.app.myBusinesses.create);
-    }
 
-    busineses = businessesResponse.data.businesses
+    busineses = businessesResponse?.data?.businesses || []
   } catch (error) {
     console.error('Error fetching businesses data:', error);
+  }
+
+  if (!busineses || busineses?.length === 0) {
+    console.log('No businesses found, redirecting to create business')
+    redirect(redirects.app.myBusinesses.create);
   }
 
 
