@@ -1,20 +1,19 @@
 "use client";
 
-import { EmptySectionCard } from "@/components/ui/empty-section-card";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Round } from "@/lib/api";
-import redirects from "@/lib/config/redirects";
 import { cn } from "@/lib/utils";
 import { ComponentPropsWithoutRef, FC, useEffect, useState } from "react"
 
-export interface ActiveRoundsSectionProps extends ComponentPropsWithoutRef<"section"> {
+export interface PastRoundsSectionProps extends ComponentPropsWithoutRef<"section"> {
 
 };
 
-export const ActiveRoundsSection: FC<ActiveRoundsSectionProps> = ({ className, ...props }) => {
-  const [rounds, setRounds] = useState<Round[]>([]);
+export const PastRoundsSection: FC<PastRoundsSectionProps> = ({ className, ...props }) => {
+  const [rounds] = useState<Round[]>([]);
   const [isExecuting, setIsExecuting] = useState(true);
+
 
   useEffect(() => {
     //simulate loading
@@ -23,30 +22,16 @@ export const ActiveRoundsSection: FC<ActiveRoundsSectionProps> = ({ className, .
     }, 1000);
   }, []);
 
-
+  if (!isExecuting && rounds.length === 0) return null;
   return (
     <section className={cn("flex flex-col gap-4", className)} {...props}>
-      <Label className="text-2xl font-semibold">Active Rounds</Label>
+      <Label className="text-2xl font-semibold">Past Rounds</Label>
       {isExecuting ? (
         <div className="grid grid-flow-col gap-4">
           {Array.from({ length: 5 }).map((_, index) => (
             <Skeleton key={index} className="w-full aspect-square" />
           ))}
         </div>
-      ) : rounds.length === 0 ? (
-        <EmptySectionCard
-          title="No rounds... yet!"
-          description="Create a round to start raising capital"
-          button={{
-            label: "Create Round",
-            href: redirects.app.rounds.create,
-          }}
-          icon="chart"
-          image={{
-            src: "/filler.jpeg",
-            alt: "No rounds",
-          }}
-        />
       ) : (
         <>
           Rounds

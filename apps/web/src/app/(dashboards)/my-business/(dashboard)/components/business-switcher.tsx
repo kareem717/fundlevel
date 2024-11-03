@@ -82,7 +82,7 @@ export const BusinessSwitcher: FC<BusinessSwitcherProps> = ({ businesses: busine
             </DropdownMenuLabel>
             {businesses.map((business) => (
               <DropdownMenuItem
-                key={business.name}
+                key={business.id}
                 onClick={() => setBusiness(business)}
                 className="gap-2 p-2"
               >

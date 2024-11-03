@@ -31,13 +31,9 @@ import {
   DropdownMenuCheckboxItem,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/ui/icons"
-import redirects from "@/lib/config/redirects"
-import Link from "next/link"
-import { cn } from "@/lib/utils"
 
 type Investor = {
   name: string

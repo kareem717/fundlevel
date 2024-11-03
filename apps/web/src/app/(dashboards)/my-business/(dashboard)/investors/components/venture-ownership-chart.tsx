@@ -1,7 +1,7 @@
 "use client"
 
 import { ComponentPropsWithoutRef, FC } from "react"
-import { Area, AreaChart, CartesianGrid, Label, LabelList, XAxis } from "recharts"
+import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
 import {
   ChartConfig,
   ChartContainer,
