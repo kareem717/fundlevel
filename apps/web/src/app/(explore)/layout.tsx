@@ -4,7 +4,7 @@ import { ExploreFooter } from "./components/layout/footer";
 
 export default function ExploreLayout({ children }: { children: ReactNode }) {
   return (
-    <div>
+    <div className="flex flex-col">
       <ExploreNav />
       {children}
       {/* <ExploreFooter /> */}
