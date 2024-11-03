@@ -12,9 +12,9 @@ export function ExploreNav() {
     <header className="block z-50 min-h-[100px] w-full bg-background">
       <div className="fixed top-0 bg-background border-b border-border w-full">
         <div className="container flex justify-between items-center py-4">
-          <LogoDiv className="hidden lg:flex my-auto" />
-          <SmallLogoDiv className="lg:hidden my-auto" />
-          <ExploreToggle className="hidden sm:block" />
+          <LogoDiv className="hidden lg:flex" />
+          <SmallLogoDiv className="lg:hidden" />
+          <ExploreToggle className="hidden sm:flex" />
           <div className="flex items-center justify-center gap-2">
             <Link
               href={redirects.app.myBusinesses.create}
@@ -27,9 +27,9 @@ export function ExploreNav() {
           </div>
         </div>
       </div>
-      <div className="sm:hidden fixed bottom-0 left-0 right-0 flex items-center justify-center w-full border-t border-border p-2 bg-background">
+      {/* <div className="sm:hidden fixed bottom-0 left-0 right-0 flex items-center justify-center w-full border-t border-border p-2 bg-background">
         <ExploreToggle className="w-full" />
-      </div>
+      </div> */}
     </header>
   );
 }
