@@ -1,7 +1,7 @@
 "use client"
 
 import { ComponentPropsWithoutRef, FC } from "react"
-import { ExploreResource, useExploreNavbarStore } from "./use-explore-navbar"
+import { ExploreResource, useExploreNavbarStore } from "../../use-explore-navbar"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { cn } from "@/lib/utils"
 
