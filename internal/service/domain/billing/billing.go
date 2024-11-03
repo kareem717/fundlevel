@@ -189,19 +189,7 @@ func (s *BillingService) CreateAccountLink(ctx context.Context, accountID string
 func (s *BillingService) CreateStripeConnectedAccount(ctx context.Context) (stripe.Account, error) {
 	stripe.Key = s.stripeAPIKey
 
-	account, err := account.New(&stripe.AccountParams{
-		Controller: &stripe.AccountControllerParams{
-			StripeDashboard: &stripe.AccountControllerStripeDashboardParams{
-				Type: stripe.String("express"),
-			},
-			Fees: &stripe.AccountControllerFeesParams{
-				Payer: stripe.String("application"),
-			},
-			Losses: &stripe.AccountControllerLossesParams{
-				Payments: stripe.String("application"),
-			},
-		},
-	})
+	account, err := account.New(&stripe.AccountParams{})
 	if err != nil {
 		return stripe.Account{}, err
 	}
