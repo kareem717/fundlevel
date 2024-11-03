@@ -27,6 +27,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { cn } from "@/lib/utils";
+import { WheelGesturesPlugin } from "embla-carousel-wheel-gestures";
 
 export default function FilterBar() {
   const [showSearch, setShowSearch] = React.useState(false);
@@ -52,70 +53,52 @@ export default function FilterBar() {
   ];
 
   return (
-    <div className="w-full py-10">
-      <div className="container">
-        <div className="grid grid-cols-6 gap-10 items-center w-full">
-          <div className="relative max-w-md md:max-w-2xl lg:max-w-3xl mx-auto col-span-5">
-            <Carousel className="w-full" opts={{ loop: true }}>
-              <CarouselContent>
-                {industries.map((industry, index) => (
-                  <CarouselItem className="basis-1/10" key={index}>
-                    <button
-                      className={cn(
-                        "flex flex-col rounded-md bg-muted items-center justify-center p-3 gap-2 w-full h-full hover:bg-muted/80 transition-colors",
-                        selectedIndustry === industry.label &&
-                          "border-b-2 border-primary"
-                      )}
-                      onClick={() => setSelectedIndustry(industry.label)}
-                    >
-                      {industry.icon}
-                      <span className="text-xs">{industry.label}</span>
-                    </button>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <div className="absolute left-0 top-1/2 z-10 bg-gradient-to-l from-transparent via-background/90 to-background w-10 h-full -translate-y-1/2">
-                <CarouselPrevious />
-              </div>
-              <div className="absolute right-0 top-1/2 z-10 bg-gradient-to-r from-transparent via-background/90 to-background w-10 h-full -translate-y-1/2">
-                <CarouselNext />
-              </div>
-            </Carousel>
-          </div>
+    <div className="w-full bg-background container">
+      <div className="flex flex-row gap-6 items-center justify-evenly w-full max-w-4xl">
+        <div className="relative flex-grow px-14">
+          <Carousel
+            className="max-w-sm sm:max-w-md md:max-w-2xl lg:max-w-5xl"
+            opts={{ loop: true, dragFree: true, duration: 15 }}
+            plugins={[WheelGesturesPlugin()]}
+          >
+            <CarouselContent>
+              {industries.map((industry, index) => (
+                <CarouselItem className="basis-1/10" key={index}>
+                  <button
+                    className={cn(
+                      "flex flex-col rounded-md bg-muted items-center justify-center p-3 gap-2 w-full h-full hover:bg-muted/80 transition-colors",
+                      selectedIndustry === industry.label &&
+                        "border-b-2 border-primary"
+                    )}
+                    onClick={() => setSelectedIndustry(industry.label)}
+                  >
+                    {industry.icon}
+                    <span className="text-xs">{industry.label}</span>
+                  </button>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <div className="absolute left-0 top-1/2 z-10 bg-gradient-to-l from-transparent via-background/90 to-background w-10 h-full -translate-y-1/2">
+              <CarouselPrevious />
+            </div>
+            <div className="absolute right-0 top-1/2 z-10 bg-gradient-to-r from-transparent via-background/90 to-background w-10 h-full -translate-y-1/2">
+              <CarouselNext />
+            </div>
+          </Carousel>
+        </div>
 
-          <div className="flex items-center gap-2 col-span-1">
-            {showSearch ? (
-              <div className="flex items-center gap-2">
-                <Input
-                  className="w-[200px]"
-                  placeholder="Search industries..."
-                  autoFocus
-                />
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowSearch(false)}
-                >
-                  Cancel
-                </Button>
-              </div>
-            ) : (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setShowSearch(true)}
-              >
-                <Search className="h-4 w-4" />
-              </Button>
-            )}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setShowFilter(true)}
-            >
-              <Filter className="h-4 w-4" />
-            </Button>
-          </div>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" onClick={() => setShowFilter(true)}>
+            Filter
+            <Filter className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => setShowSearch(true)}
+          >
+            <Search className="h-4 w-4" />
+          </Button>
         </div>
       </div>
 
