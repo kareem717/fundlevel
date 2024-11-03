@@ -32,6 +32,6 @@ export async function GET(request: Request) {
 
 	// URL to redirect to after sign up process completes
 	return NextResponse.redirect(
-		`${env.NEXT_PUBLIC_APP_URL}${redirects.auth.afterLogin}`
+		`${env.NEXT_PUBLIC_APP_URL}${redirects.auth.createAccount}`
 	);
 }
