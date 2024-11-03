@@ -13,10 +13,16 @@ import {
 } from "@/components/ui/carousel";
 import { useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
+import { Venture } from "@/lib/api";
 
-export function VentureList() {
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
+type VentureListProps = {
+  title: string;
+  ventures: Venture[];
+};
+
+export function VentureList({ title, ventures }: VentureListProps) {
   const [api, setApi] = useState<CarouselApi>();
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
 
   useEffect(() => {
     if (!api) return;
@@ -27,9 +33,9 @@ export function VentureList() {
   }, [api]);
 
   return (
-    <div className="w-full py-10">
+    <div className="w-full py-6">
       <div className="container">
-        <h2 className="text-2xl font-bold mb-6">Featured Ventures</h2>
+        <h2 className="text-2xl font-semibold mb-6 md:mb-8">{title}</h2>
         <div className="relative">
           <Carousel
             className="w-full"
@@ -39,9 +45,9 @@ export function VentureList() {
             }}
           >
             <CarouselContent>
-              {[...Array(5)].map((_, index) => (
-                <CarouselItem key={index} className="sm:basis-1/2 md:basis-1/3">
-                  <VentureCard />
+              {ventures?.map((venture) => (
+                <CarouselItem key={venture.id} className="md:basis-1/3">
+                  <VentureCard venture={venture} />
                 </CarouselItem>
               ))}
               <CarouselItem className="sm:basis-1/2 md:basis-1/3">
