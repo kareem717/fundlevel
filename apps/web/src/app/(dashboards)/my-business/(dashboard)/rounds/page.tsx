@@ -1,10 +1,4 @@
-import { buttonVariants } from "@/components/ui/button";
-import { Icons } from "@/components/ui/icons";
 import { QuickSearch } from "@/components/ui/quick-search";
-import { Round } from "@/lib/api";
-import redirects from "@/lib/config/redirects";
-import { cn } from "@/lib/utils";
-import Link from "next/link";
 import { ActiveRoundsSection } from "./components/active-rounds-section";
 import { PastRoundsSection } from "./components/past-rounds-section";
 

@@ -19,10 +19,8 @@ export interface DynamicBreadcrumbProps extends ComponentPropsWithoutRef<typeof 
 };
 
 export const DynamicBreadcrumb: FC<DynamicBreadcrumbProps> = ({ className, items, ...props }) => {
-
-
   return (
-    <Breadcrumb {...props}>
+    <Breadcrumb className={className} {...props}>
       <BreadcrumbList>
         {items.slice(0, -1).map((item, index) => (
           <>

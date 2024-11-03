@@ -13,7 +13,7 @@ export interface VenturesSectionProps extends ComponentPropsWithoutRef<"section"
 };
 
 export const VenturesSection: FC<VenturesSectionProps> = ({ className, ...props }) => {
-  const [ventures, setVentures] = useState<Venture[]>([]);
+  const [ventures] = useState<Venture[]>([]);
   const [isExecuting, setIsExecuting] = useState(true);
 
   useEffect(() => {

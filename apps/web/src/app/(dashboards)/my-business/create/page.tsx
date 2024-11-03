@@ -1,8 +1,7 @@
 import { LogoDiv } from "@/components/ui/logo-div";
 import { CreateBusinessForm } from "./components/create-business-form";
-import { NavBack } from "@/components/ui/nav-back";
 
-
+export const dynamic = "force-dynamic";
 
 export default function CreateBusiness() {
   return (

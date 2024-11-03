@@ -1,10 +1,8 @@
 "use client";
 
-import { EmptySectionCard } from "@/components/ui/empty-section-card";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Round } from "@/lib/api";
-import redirects from "@/lib/config/redirects";
 import { cn } from "@/lib/utils";
 import { ComponentPropsWithoutRef, FC, useEffect, useState } from "react"
 
@@ -13,7 +11,7 @@ export interface PastRoundsSectionProps extends ComponentPropsWithoutRef<"sectio
 };
 
 export const PastRoundsSection: FC<PastRoundsSectionProps> = ({ className, ...props }) => {
-  const [rounds, setRounds] = useState<Round[]>([]);
+  const [rounds] = useState<Round[]>([]);
   const [isExecuting, setIsExecuting] = useState(true);
 
 

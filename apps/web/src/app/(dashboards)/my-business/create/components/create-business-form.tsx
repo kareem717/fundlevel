@@ -5,7 +5,6 @@ import { cn } from "@/lib/utils";
 import { ComponentPropsWithoutRef } from "react"
 import { useForm } from "react-hook-form"
 import {
-  Form,
   FormControl,
   FormDescription,
   FormField,
@@ -53,7 +52,7 @@ export const CreateBusinessForm = ({ className, ...props }: CreateBusinessFormPr
     }
   })
 
-  const { executeAsync, isExecuting } = useAction(createBusiness, {
+  const { executeAsync } = useAction(createBusiness, {
     onSuccess: () => {
       form.reset()
       toast.success("Done!", {

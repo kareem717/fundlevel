@@ -13,7 +13,7 @@ export interface ActiveRoundsSectionProps extends ComponentPropsWithoutRef<"sect
 };
 
 export const ActiveRoundsSection: FC<ActiveRoundsSectionProps> = ({ className, ...props }) => {
-  const [rounds, setRounds] = useState<Round[]>([]);
+  const [rounds] = useState<Round[]>([]);
   const [isExecuting, setIsExecuting] = useState(true);
 
   useEffect(() => {

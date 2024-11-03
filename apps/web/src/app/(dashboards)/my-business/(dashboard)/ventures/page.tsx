@@ -1,11 +1,6 @@
-import { buttonVariants } from "@/components/ui/button";
-import { Icons } from "@/components/ui/icons";
 import { QuickSearch } from "@/components/ui/quick-search";
-import { Round } from "@/lib/api";
-import redirects from "@/lib/config/redirects";
-import { cn } from "@/lib/utils";
-import Link from "next/link";
 import { VenturesSection } from "./components/ventures-section";
+
 
 export default function BusinessRoundsPage() {
   return (
