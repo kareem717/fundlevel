@@ -1,6 +1,6 @@
 module fundlevel
 
-go 1.23.0
+go 1.23.2
 
 require (
 	github.com/alexlast/bunzap v0.1.0
