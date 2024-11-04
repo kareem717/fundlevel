@@ -6,6 +6,7 @@ import { ThumbsDown } from "lucide-react";
 import { toast } from "sonner";
 
 export function DislikeButton() {
+ 
   const handleClick = () => {
     toast.success("Disliked");
   };
