@@ -73,8 +73,8 @@ type CreateRoundParams struct {
 	PercentageOffered float64         `json:"percentageOffered" minimum:"0" maximum:"100"`
 	ValueCurrency     shared.Currency `json:"valueCurrency" enum:"usd,gbp,eur,cad,aud,jpy"`
 	PercentageValue   int             `json:"percentageValue" minimum:"1"`
-	Status            RoundStatus     `json:"status" hidden:"true"`
+	Status            RoundStatus     `json:"status" hidden:"true" required:"false"`
 	InvestorCount     int             `json:"investorCount" minimum:"1"`
-	BuyIn             float64         `json:"buyIn" minimum:"1" hidden:"true"`
+	BuyIn             float64         `json:"buyIn" minimum:"1" hidden:"true" required:"false"`
 	Description       string          `json:"description" minLength:"10" maxLength:"3000"`
 }

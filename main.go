@@ -21,17 +21,17 @@ import (
 type Options struct {
 	Port               int    `help:"Port to listen on" short:"p" default:"8080"`
 	DatabaseURL        string `help:"Database URL" short:"d"`
-	APIName            string `help:"API Name" short:"n"`
+	APIName            string `help:"API Name" short:"a"`
 	APIVersion         string `help:"API Version" short:"v"`
 	BaseURL            string `help:"Base API URL" short:"B"`
 	SupabaseHost       string `help:"Supabase Host" short:"s"`
 	SupabaseServiceKey string `help:"Supabase Service Key" short:"k"`
 
-	StripeAPIKey            string `help:"Stripe API Key" short:"S"`
-	FeePercentage           string `help:"Fee Percentage" short:"f"`
-	TransactionFeeProductID string `help:"Transaction Fee Product ID" short:"T"`
-	InvestmentFeeProductID  string `help:"Investment Fee Product ID" short:"I"`
-	StripeWebhookSecret     string `help:"Stripe Webhook Secret" short:"W"`
+	StripeAPIKey               string `help:"Stripe API Key" short:"S"`
+	FeePercentage              string `help:"Fee Percentage" short:"f"`
+	TransactionFeeProductID    string `help:"Transaction Fee Product ID" short:"T"`
+	InvestmentFeeProductID     string `help:"Investment Fee Product ID" short:"I"`
+	StripeWebhookSecret        string `help:"Stripe Webhook Secret" short:"W"`
 	StripeConnectWebhookSecret string `help:"Stripe Connect Webhook Secret" short:"C"`
 }
 
@@ -41,8 +41,6 @@ func (o *Options) config() {
 	}
 
 	o.DatabaseURL = os.Getenv("DATABASE_URL")
-	o.APIName = os.Getenv("API_NAME")
-	o.APIVersion = os.Getenv("API_VERSION")
 	o.BaseURL = os.Getenv("BASE_API_URL")
 	o.SupabaseHost = os.Getenv("SUPABASE_HOST")
 	o.SupabaseServiceKey = os.Getenv("SUPABASE_SERVICE_KEY")
@@ -101,13 +99,15 @@ func main() {
 		}
 
 		server := server.NewServer(
-			services,
-			options.APIName,
-			options.APIVersion,
-			logger,
-			supabaseClient,
-			options.StripeWebhookSecret,
-			options.StripeConnectWebhookSecret,
+			&server.ServerConfig{
+				Services:                   services,
+				APIName:                    options.APIName,
+				APIVersion:                 options.APIVersion,
+				Logger:                     logger,
+				SupabaseClient:             supabaseClient,
+				StripeWebhookSecret:        options.StripeWebhookSecret,
+				StripeConnectWebhookSecret: options.StripeConnectWebhookSecret,
+			},
 		)
 
 		hooks.OnStart(func() {

@@ -16,7 +16,7 @@ type ChatMessage struct {
 }
 
 type CreateMessageParams struct {
-	ChatID          int    `json:"chatId" minimum:"1" hidden:"true"`
+	ChatID          int    `json:"chatId" minimum:"1" hidden:"true" required:"false"`
 	Content         string `json:"content" minLength:"1" maxLength:"1000"`
 	SenderAccountID int    `json:"senderAccountId" minimum:"1"`
 }

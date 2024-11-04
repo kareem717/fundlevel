@@ -9,6 +9,16 @@ import (
 	"go.uber.org/zap"
 )
 
+type ServerConfig struct {
+	APIName                    string
+	APIVersion                 string
+	StripeWebhookSecret        string
+	StripeConnectWebhookSecret string
+	Logger                     *zap.Logger
+	SupabaseClient             *supabase.Client
+	Services                   *service.Service
+}
+
 type Server struct {
 	services                   *service.Service
 	apiName                    string
@@ -19,22 +29,15 @@ type Server struct {
 	stripeConnectWebhookSecret string
 }
 
-func NewServer(
-	services *service.Service,
-	apiName, apiVersion string,
-	logger *zap.Logger,
-	supabaseClient *supabase.Client,
-	stripeWebhookSecret string,
-	stripeConnectWebhookSecret string,
-) *Server {
+func NewServer(config *ServerConfig) *Server {
 	return &Server{
-		services:                   services,
-		apiName:                    apiName,
-		apiVersion:                 apiVersion,
-		logger:                     logger,
-		supabaseClient:             supabaseClient,
-		stripeWebhookSecret:        stripeWebhookSecret,
-		stripeConnectWebhookSecret: stripeConnectWebhookSecret,
+		services:                   config.Services,
+		apiName:                    config.APIName,
+		apiVersion:                 config.APIVersion,
+		logger:                     config.Logger,
+		supabaseClient:             config.SupabaseClient,
+		stripeWebhookSecret:        config.StripeWebhookSecret,
+		stripeConnectWebhookSecret: config.StripeConnectWebhookSecret,
 	}
 }
 

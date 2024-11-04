@@ -44,8 +44,8 @@ type Business struct {
 	AddressID                int            `json:"addressId" minimum:"1"`
 	TeamSize                 TeamSize       `json:"teamSize" enum:"1,2-10,11-50,51-200,201-500,501-1000,1000+"`
 	StripeConnectedAccountID string         `json:"stripeConnectedAccountId"`
-	StripeAccountEnabled     bool           `json:"stripeAccountEnabled" hidden:"true"`
-	IsRemote                 bool           `json:"isRemote"`
+	StripeAccountEnabled     bool           `json:"stripeAccountEnabled" hidden:"true" required:"false"`
+	IsRemote                 bool           `json:"isRemote" default:"false" required:"false"`
 	IndustryId               int            `json:"industryId" minimum:"1"`
 	shared.Timestamps
 }
@@ -55,11 +55,11 @@ type BusinessParams struct {
 	BusinessNumber           string         `json:"businessNumber" minLength:"1"`
 	FoundingDate             time.Time      `json:"foundingDate" format:"date-time"`
 	OwnerAccountID           int            `json:"ownerAccountId" minimum:"1"`
-	Status                   BusinessStatus `json:"status" hidden:"true"`
-	AddressID                int            `json:"addressId" minimum:"1" hidden:"true"`
+	Status                   BusinessStatus `json:"status" hidden:"true" required:"false"`
+	AddressID                int            `json:"addressId" minimum:"1" hidden:"true" required:"false"`
 	TeamSize                 TeamSize       `json:"teamSize" enum:"1,2-10,11-50,51-200,201-500,501-1000,1000+"`
-	StripeConnectedAccountID string         `json:"stripeConnectedAccountId" hidden:"true"`
-	StripeAccountEnabled     bool           `json:"stripeAccountEnabled" hidden:"true"`
+	StripeConnectedAccountID string         `json:"stripeConnectedAccountId" hidden:"true" required:"false"`
+	StripeAccountEnabled     bool           `json:"stripeAccountEnabled" hidden:"true" required:"false"`
 	IndustryId               int            `json:"industryId" minimum:"1"`
 	IsRemote                 bool           `json:"isRemote" default:"false" required:"false"`
 }
@@ -71,9 +71,9 @@ type CreateBusinessParams struct {
 
 type UpdateBusinessParams struct {
 	Name                 string         `json:"name" minLength:"1"`
-	Status               BusinessStatus `json:"status" hidden:"true"`
+	Status               BusinessStatus `json:"status" hidden:"true" required:"false"`
 	TeamSize             TeamSize       `json:"teamSize" enum:"1,2-10,11-50,51-200,201-500,501-1000,1000+"`
 	IndustryId           int            `json:"industryId" minimum:"1"`
 	IsRemote             bool           `json:"isRemote" default:"false" required:"false"`
-	StripeAccountEnabled bool           `json:"stripeAccountEnabled" hidden:"true"`
+	StripeAccountEnabled bool           `json:"stripeAccountEnabled" hidden:"true" required:"false"`
 }
