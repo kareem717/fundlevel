@@ -1,12 +1,9 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ThumbsDown, ThumbsUp } from "lucide-react";
-import Image from "next/image";
 import { DislikeButton } from "./dislike-button";
 import { FavouriteButton } from "./favourite-button";
 import { Venture } from "@/lib/api";
-import { isVentureLiked } from "@/actions/ventures";
 
 type VentureCardProps = {
   venture: Venture;

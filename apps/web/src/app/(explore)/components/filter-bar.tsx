@@ -9,15 +9,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import {
   Filter,
   Search,
-  Smartphone,
   Cpu,
-  Mail,
-  ShoppingCart,
-  Wrench,
 } from "lucide-react";
 import {
   Carousel,
@@ -34,10 +29,9 @@ import { useEffect, useState } from "react";
 import { Industry } from "@/lib/api";
 import { toast } from "sonner";
 
-import { icons } from "lucide-react";
-
 export default function FilterBar() {
-  const [showSearch, setShowSearch] = React.useState(false);
+  
+  const [, setShowSearch] = React.useState(false);
   const [showFilter, setShowFilter] = React.useState(false);
   const [selectedIndustry, setSelectedIndustry] = React.useState("");
   const [industries, setIndustries] = useState<Industry[]>([]);
@@ -73,7 +67,7 @@ export default function FilterBar() {
                     className={cn(
                       "flex flex-col rounded-md bg-muted items-center justify-center p-3 gap-2 w-full h-full hover:bg-muted/80 transition-colors",
                       selectedIndustry === industry.label &&
-                        "border-b-2 border-primary"
+                      "border-b-2 border-primary"
                     )}
                     onClick={() => setSelectedIndustry(industry.label)}
                   >

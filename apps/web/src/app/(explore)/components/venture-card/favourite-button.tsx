@@ -6,18 +6,17 @@ import { Heart } from "lucide-react";
 import { toast } from "sonner";
 import { likeVenture } from "@/actions/ventures";
 import { useOptimisticAction } from "next-safe-action/hooks";
-import { Venture } from "@/lib/api";
 
 type FavouriteButtonProps = {
   ventureId: number;
 };
 
 export function FavouriteButton({ ventureId }: FavouriteButtonProps) {
-  const { execute, result, optimisticState } = useOptimisticAction(
+  const { execute, optimisticState } = useOptimisticAction(
     likeVenture,
     {
       currentState: false,
-      updateFn: (state, input) => !state,
+      updateFn: (state) => !state,
       onSuccess: () => {
         toast.success("Favourited");
       },
