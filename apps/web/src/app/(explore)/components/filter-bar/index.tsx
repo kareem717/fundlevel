@@ -28,29 +28,34 @@ import {
 } from "@/components/ui/carousel";
 import { cn } from "@/lib/utils";
 import { WheelGesturesPlugin } from "embla-carousel-wheel-gestures";
+import { useAction } from "next-safe-action/hooks";
+import { getAllIndustries } from "@/actions/industries";
+import { useEffect, useState } from "react";
+import { Industry } from "@/lib/api";
+import { toast } from "sonner";
+
+import { icons } from "lucide-react";
 
 export default function FilterBar() {
   const [showSearch, setShowSearch] = React.useState(false);
   const [showFilter, setShowFilter] = React.useState(false);
   const [selectedIndustry, setSelectedIndustry] = React.useState("");
+  const [industries, setIndustries] = useState<Industry[]>([]);
 
-  const industries = [
-    { icon: <Smartphone className="h-5 w-5" />, label: "Technology" },
-    { icon: <Cpu className="h-5 w-5" />, label: "AI & Machine Learning" },
-    { icon: <Mail className="h-5 w-5" />, label: "Software & Services" },
-    { icon: <ShoppingCart className="h-5 w-5" />, label: "E-commerce" },
-    { icon: <Wrench className="h-5 w-5" />, label: "Manufacturing" },
-    { icon: <Smartphone className="h-5 w-5" />, label: "Fintech" },
-    { icon: <Cpu className="h-5 w-5" />, label: "Biotech" },
-    { icon: <Mail className="h-5 w-5" />, label: "Healthcare" },
-    { icon: <ShoppingCart className="h-5 w-5" />, label: "Real Estate" },
-    { icon: <Wrench className="h-5 w-5" />, label: "Clean Energy" },
-    { icon: <Smartphone className="h-5 w-5" />, label: "Cybersecurity" },
-    { icon: <Cpu className="h-5 w-5" />, label: "Cloud Computing" },
-    { icon: <Mail className="h-5 w-5" />, label: "Digital Media" },
-    { icon: <ShoppingCart className="h-5 w-5" />, label: "Agriculture" },
-    { icon: <Wrench className="h-5 w-5" />, label: "Transportation" },
-  ];
+  const { execute, status } = useAction(getAllIndustries, {
+    onSuccess: (data) => {
+      setIndustries(data.data?.industries || []);
+    },
+    onError: (error) => {
+      toast.error(error.error.serverError?.message || "Something went wrong");
+    },
+  });
+
+  status === "executing";
+
+  useEffect(() => {
+    execute();
+  }, [execute]);
 
   return (
     <div className="w-full bg-background container">
@@ -72,7 +77,7 @@ export default function FilterBar() {
                     )}
                     onClick={() => setSelectedIndustry(industry.label)}
                   >
-                    {industry.icon}
+                    <Cpu className="h-5 w-5" />
                     <span className="text-xs">{industry.label}</span>
                   </button>
                 </CarouselItem>
@@ -114,7 +119,7 @@ export default function FilterBar() {
                 variant="ghost"
                 className="justify-start gap-2"
               >
-                {industry.icon}
+                <Cpu className="h-5 w-5" />
                 {industry.label}
               </Button>
             ))}

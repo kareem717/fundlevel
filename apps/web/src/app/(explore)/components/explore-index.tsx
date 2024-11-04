@@ -129,6 +129,7 @@ export const RoundIndexCard: FC<RoundIndexCardProps> = ({ round, className, ...p
 export interface ExploreIndexProps extends ComponentPropsWithoutRef<"div"> { };
 
 export const ExploreIndex: FC<ExploreIndexProps> = ({ ...props }) => {
+  
   const [ventureState, setVentureState] = useState({
     ventures: [] as Venture[],
     cursor: 1,

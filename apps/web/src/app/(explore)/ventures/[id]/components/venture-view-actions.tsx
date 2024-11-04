@@ -32,7 +32,7 @@ export const VentureViewActions: FC<VentureViewActionsProps> = ({ ventureId, ...
 
   const { execute: isLikedExecute, isExecuting: isLikedExecuting } = useAction(isVentureLiked, {
     onSuccess: ({ data }) => {
-      setLiked(data?.liked ?? false);
+      setLiked(data?.favourited ?? false);
     },
     onError: () => {
       toast.error("Failed to check if round is liked");

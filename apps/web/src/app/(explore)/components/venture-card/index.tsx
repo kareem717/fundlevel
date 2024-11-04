@@ -12,11 +12,7 @@ type VentureCardProps = {
   venture: Venture;
 };
 
-export async function VentureCard({ venture }: VentureCardProps) {
-
-  const isLiked = await isVentureLiked(venture.id);
-
-
+export function VentureCard({ venture }: VentureCardProps) {
   return (
     <Card className="w-full max-w-[400px] overflow-hidden bg-white z-10">
       <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
@@ -27,7 +23,8 @@ export async function VentureCard({ venture }: VentureCardProps) {
               {venture.name}
             </h2>
             <p className="text-sm sm:text-base text-muted-foreground">
-              {venture.business.address.city}, {venture.business.address.country}
+              Toronto, Canada
+              {/* {venture.business.address.city}, {venture.business.address.country} */}
             </p>
           </div>
         </div>
@@ -81,7 +78,7 @@ export async function VentureCard({ venture }: VentureCardProps) {
             More Details
           </Button>
           <div className="flex gap-1 sm:gap-2">
-            <FavouriteButton />
+            <FavouriteButton ventureId={venture.id} />
             <DislikeButton />
           </div>
         </div>
