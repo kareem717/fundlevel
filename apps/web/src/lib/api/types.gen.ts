@@ -39,7 +39,7 @@ export type Business = {
     id: number;
     industry: Industry;
     industryId: number;
-    isRemote: boolean;
+    isRemote?: boolean;
     name: string;
     ownerAccountId: number;
     status: 'pending' | 'active' | 'disabled';

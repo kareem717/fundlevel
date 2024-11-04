@@ -147,6 +147,7 @@ export const BusinessSchema = {
             type: 'integer'
         },
         isRemote: {
+            default: false,
             type: 'boolean'
         },
         name: {
@@ -174,7 +175,7 @@ export const BusinessSchema = {
             type: ['string', 'null']
         }
     },
-    required: ['address', 'industry', 'name', 'businessNumber', 'foundingDate', 'ownerAccountId', 'status', 'addressId', 'teamSize', 'stripeConnectedAccountId', 'isRemote', 'industryId', 'id', 'createdAt', 'updatedAt', 'deletedAt'],
+    required: ['address', 'industry', 'name', 'businessNumber', 'foundingDate', 'ownerAccountId', 'status', 'addressId', 'teamSize', 'stripeConnectedAccountId', 'industryId', 'id', 'createdAt', 'updatedAt', 'deletedAt'],
     type: 'object'
 } as const;
 

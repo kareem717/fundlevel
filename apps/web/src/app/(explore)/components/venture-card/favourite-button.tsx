@@ -9,15 +9,14 @@ import { useOptimisticAction } from "next-safe-action/hooks";
 import { Venture } from "@/lib/api";
 
 type FavouriteButtonProps = {
-  venture: Venture;
-  isLiked: boolean;
+  ventureId: number;
 };
 
-export function FavouriteButton({ isLiked, venture }: FavouriteButtonProps) {
+export function FavouriteButton({ ventureId }: FavouriteButtonProps) {
   const { execute, result, optimisticState } = useOptimisticAction(
     likeVenture,
     {
-      currentState: isLiked,
+      currentState: false,
       updateFn: (state, input) => !state,
       onSuccess: () => {
         toast.success("Favourited");
@@ -32,7 +31,7 @@ export function FavouriteButton({ isLiked, venture }: FavouriteButtonProps) {
   );
 
   const handleClick = () => {
-    execute(venture.id);
+    execute(ventureId);
   };
 
   return (
