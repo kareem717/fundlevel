@@ -216,6 +216,84 @@ export const BusinessParamsSchema = {
     type: 'object'
 } as const;
 
+export const ChatSchema = {
+    additionalProperties: false,
+    properties: {
+        createdAt: {
+            format: 'date-time',
+            type: 'string'
+        },
+        createdByAccountId: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
+        createdForAccountId: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
+        deletedAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        },
+        id: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
+        lastMessageAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        },
+        updatedAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        }
+    },
+    required: ['lastMessageAt', 'createdByAccountId', 'createdForAccountId', 'id', 'createdAt', 'updatedAt', 'deletedAt'],
+    type: 'object'
+} as const;
+
+export const ChatMessageSchema = {
+    additionalProperties: false,
+    properties: {
+        content: {
+            maxLength: 1000,
+            minLength: 1,
+            type: 'string'
+        },
+        createdAt: {
+            format: 'date-time',
+            type: 'string'
+        },
+        deletedAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        },
+        id: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
+        readAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        },
+        senderAccountId: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
+        updatedAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        }
+    },
+    required: ['readAt', 'content', 'senderAccountId', 'id', 'createdAt', 'updatedAt', 'deletedAt'],
+    type: 'object'
+} as const;
+
 export const CreateAccountParamsSchema = {
     additionalProperties: false,
     properties: {
@@ -314,6 +392,78 @@ export const CreateBusinessParamsSchema = {
     type: 'object'
 } as const;
 
+export const CreateChatParamsSchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/CreateChatParams.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        createdByAccountId: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
+        createdForAccountId: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        }
+    },
+    required: ['createdByAccountId', 'createdForAccountId'],
+    type: 'object'
+} as const;
+
+export const CreateChatResponseBodySchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/CreateChatResponseBody.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        createdAt: {
+            format: 'date-time',
+            type: 'string'
+        },
+        createdByAccountId: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
+        createdForAccountId: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
+        deletedAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        },
+        id: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
+        lastMessageAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        },
+        message: {
+            type: 'string'
+        },
+        updatedAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        }
+    },
+    required: ['lastMessageAt', 'createdByAccountId', 'createdForAccountId', 'id', 'createdAt', 'updatedAt', 'deletedAt', 'message'],
+    type: 'object'
+} as const;
+
 export const CreateInvestmentParamsSchema = {
     additionalProperties: false,
     properties: {
@@ -333,6 +483,30 @@ export const CreateInvestmentParamsSchema = {
         }
     },
     required: ['roundId', 'investorId'],
+    type: 'object'
+} as const;
+
+export const CreateMessageParamsSchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/CreateMessageParams.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        content: {
+            maxLength: 1000,
+            minLength: 1,
+            type: 'string'
+        },
+        senderAccountId: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        }
+    },
+    required: ['content', 'senderAccountId'],
     type: 'object'
 } as const;
 
@@ -546,6 +720,66 @@ export const GetBusinessesOutputBodySchema = {
     type: 'object'
 } as const;
 
+export const GetChatMessagesResponseBodySchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/GetChatMessagesResponseBody.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        hasNext: {
+            type: 'boolean'
+        },
+        message: {
+            type: 'string'
+        },
+        messages: {
+            items: {
+                '$ref': '#/components/schemas/ChatMessage'
+            },
+            type: ['array', 'null']
+        },
+        nextCursor: {
+            format: 'date-time',
+            type: ['string', 'null']
+        }
+    },
+    required: ['messages', 'message', 'nextCursor', 'hasNext'],
+    type: 'object'
+} as const;
+
+export const GetChatsOutputBodySchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/GetChatsOutputBody.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        chats: {
+            items: {
+                '$ref': '#/components/schemas/Chat'
+            },
+            type: ['array', 'null']
+        },
+        hasNext: {
+            type: 'boolean'
+        },
+        message: {
+            type: 'string'
+        },
+        nextCursor: {
+            format: 'date-time',
+            type: ['string', 'null']
+        }
+    },
+    required: ['chats', 'nextCursor', 'hasNext', 'message'],
+    type: 'object'
+} as const;
+
 export const GetCursorPaginatedRoundInvestmentsOutputBodySchema = {
     additionalProperties: false,
     properties: {
@@ -633,6 +867,75 @@ export const GetCursorPaginatedVenturesOutputBodySchema = {
         }
     },
     required: ['ventures', 'message', 'nextCursor', 'hasMore'],
+    type: 'object'
+} as const;
+
+export const GetDailyAggregatedBusinessAnalyticsOutputBodySchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/GetDailyAggregatedBusinessAnalyticsOutputBody.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        analytics: {
+            items: {
+                '$ref': '#/components/schemas/SimplifiedDailyAggregatedBusinessAnalytics'
+            },
+            type: ['array', 'null']
+        },
+        message: {
+            type: 'string'
+        }
+    },
+    required: ['analytics', 'message'],
+    type: 'object'
+} as const;
+
+export const GetDailyAggregatedRoundAnalyticsOutputBodySchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/GetDailyAggregatedRoundAnalyticsOutputBody.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        analytics: {
+            items: {
+                '$ref': '#/components/schemas/SimplifiedDailyAggregatedRoundAnalytics'
+            },
+            type: ['array', 'null']
+        },
+        message: {
+            type: 'string'
+        }
+    },
+    required: ['analytics', 'message'],
+    type: 'object'
+} as const;
+
+export const GetDailyAggregatedVentureAnalyticsOutputBodySchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/GetDailyAggregatedVentureAnalyticsOutputBody.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        analytics: {
+            items: {
+                '$ref': '#/components/schemas/SimplifiedDailyAggregatedVentureAnalytics'
+            },
+            type: ['array', 'null']
+        },
+        message: {
+            type: 'string'
+        }
+    },
+    required: ['analytics', 'message'],
     type: 'object'
 } as const;
 
@@ -747,6 +1050,46 @@ export const GetOffsetPaginatedVenturesOutputBodySchema = {
     type: 'object'
 } as const;
 
+export const ImpressionCountOutputBodySchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/ImpressionCountOutputBody.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        count: {
+            format: 'int64',
+            type: 'integer'
+        },
+        message: {
+            type: 'string'
+        }
+    },
+    required: ['count', 'message'],
+    type: 'object'
+} as const;
+
+export const ImpressionInputBodySchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/ImpressionInputBody.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        accountId: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        }
+    },
+    required: ['accountId'],
+    type: 'object'
+} as const;
+
 export const IndustrySchema = {
     additionalProperties: false,
     properties: {
@@ -777,23 +1120,23 @@ export const IndustrySchema = {
     type: 'object'
 } as const;
 
-export const IsLikedOutputBodySchema = {
+export const IsFavouritedOutputBodySchema = {
     additionalProperties: false,
     properties: {
         '$schema': {
-            examples: ['https://example.com/schemas/IsLikedOutputBody.json'],
+            examples: ['https://example.com/schemas/IsFavouritedOutputBody.json'],
             format: 'uri',
             readOnly: true,
             type: 'string'
         },
-        liked: {
+        favourited: {
             type: 'boolean'
         },
         message: {
             type: 'string'
         }
     },
-    required: ['liked', 'message'],
+    required: ['favourited', 'message'],
     type: 'object'
 } as const;
 
@@ -956,6 +1299,78 @@ export const RoundInvestmentSchema = {
     type: 'object'
 } as const;
 
+export const SimplifiedDailyAggregatedBusinessAnalyticsSchema = {
+    additionalProperties: false,
+    properties: {
+        dayOfYear: {
+            format: 'int64',
+            type: 'integer'
+        },
+        favouritedCount: {
+            format: 'int64',
+            type: 'integer'
+        },
+        impressionsCount: {
+            format: 'int64',
+            type: 'integer'
+        },
+        uniquesImpressionsCount: {
+            format: 'int64',
+            type: 'integer'
+        }
+    },
+    required: ['dayOfYear', 'impressionsCount', 'uniquesImpressionsCount', 'favouritedCount'],
+    type: 'object'
+} as const;
+
+export const SimplifiedDailyAggregatedRoundAnalyticsSchema = {
+    additionalProperties: false,
+    properties: {
+        dayOfYear: {
+            format: 'int64',
+            type: 'integer'
+        },
+        favouritedCount: {
+            format: 'int64',
+            type: 'integer'
+        },
+        impressionsCount: {
+            format: 'int64',
+            type: 'integer'
+        },
+        uniquesImpressionsCount: {
+            format: 'int64',
+            type: 'integer'
+        }
+    },
+    required: ['dayOfYear', 'impressionsCount', 'uniquesImpressionsCount', 'favouritedCount'],
+    type: 'object'
+} as const;
+
+export const SimplifiedDailyAggregatedVentureAnalyticsSchema = {
+    additionalProperties: false,
+    properties: {
+        dayOfYear: {
+            format: 'int64',
+            type: 'integer'
+        },
+        favouritedCount: {
+            format: 'int64',
+            type: 'integer'
+        },
+        impressionsCount: {
+            format: 'int64',
+            type: 'integer'
+        },
+        uniquesImpressionsCount: {
+            format: 'int64',
+            type: 'integer'
+        }
+    },
+    required: ['dayOfYear', 'impressionsCount', 'uniquesImpressionsCount', 'favouritedCount'],
+    type: 'object'
+} as const;
+
 export const SingleAccountResponseBodySchema = {
     additionalProperties: false,
     properties: {
@@ -1101,6 +1516,29 @@ export const UpdateAccountParamsSchema = {
         }
     },
     required: ['firstName', 'lastName'],
+    type: 'object'
+} as const;
+
+export const UpdateMessageParamsSchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/UpdateMessageParams.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        content: {
+            maxLength: 1000,
+            minLength: 1,
+            type: 'string'
+        },
+        readAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        }
+    },
+    required: ['content', 'readAt'],
     type: 'object'
 } as const;
 

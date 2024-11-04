@@ -6,10 +6,10 @@ import {
 	getVentureById as getVentureByIdApi,
 	updateVenture as updateVentureApi,
 	getVenturesByCursor,
-	getVentureLikeStatus,
-	createVentureLike,
+	getVentureFavouriteStatus,
+	createVentureFavourite,
 	getVentureActiveRound as getVentureActiveRoundApi,
-	deleteVentureLike,
+	deleteVentureFavourite,
 } from "@/lib/api";
 import {
 	cursorPaginationSchema,
@@ -42,11 +42,14 @@ export const getVenturesInfinite = actionClient
 	.schema(cursorPaginationSchema)
 	.action(async ({ parsedInput, ctx: { apiClient } }) => {
 		console.log(parsedInput)
+		
 		const response = await getVenturesByCursor({
 			client: apiClient,
 			throwOnError: true,
 			query: parsedInput,
 		});
+
+		console.log("response", response)
 
 		return response.data;
 	});
@@ -91,7 +94,7 @@ export const isVentureLiked = actionClientWithAccount
 			throw new Error("User not found");
 		}
 
-		const response = await getVentureLikeStatus({
+		const response = await getVentureFavouriteStatus({
 			client: apiClient,
 			throwOnError: true,
 			path: {
@@ -110,7 +113,7 @@ export const likeVenture = actionClientWithAccount
 			throw new Error("User not found");
 		}
 
-		await createVentureLike({
+		await createVentureFavourite({
 			client: apiClient,
 			throwOnError: true,
 			path: {
@@ -127,7 +130,7 @@ export const unlikeVenture = actionClientWithAccount
 			throw new Error("User not found");
 		}
 
-		await deleteVentureLike({
+		await deleteVentureFavourite({
 			client: apiClient,
 			throwOnError: true,
 			path: {

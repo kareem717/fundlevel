@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { Icons } from "@/components/ui/icons";
 import { useInView } from "react-intersection-observer";
 import { getBusinessVenturesInfinite } from "@/actions/busineses";
+
 export interface VentureSelectItemsProps extends ComponentPropsWithoutRef<typeof SelectContent> {
   businessId: number
 };
@@ -57,5 +58,28 @@ export const VentureSelectItems: FC<VentureSelectItemsProps> = ({ businessId, cl
         {isExecuting && <Icons.spinner className="h-4 w-4 animate-spin" />}
       </div>}
     </SelectContent>
+  );
+};
+
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { cn } from "@/lib/utils";
+
+export interface VentureSelectProps extends ComponentPropsWithoutRef<typeof Select> {
+  triggerProps?: ComponentPropsWithoutRef<typeof SelectTrigger>
+  businessId: number;
+};
+
+export const VentureSelect: FC<VentureSelectProps> = ({ triggerProps, businessId, ...props }) => {
+  return (
+    <Select {...props}>
+      <SelectTrigger className={cn("w-full", triggerProps?.className)} {...triggerProps}>
+        <SelectValue placeholder="Select a venture" />
+      </SelectTrigger>
+      <VentureSelectItems businessId={businessId} />
+    </Select>
   );
 };

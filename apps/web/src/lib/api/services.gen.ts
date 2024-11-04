@@ -21,6 +21,9 @@ import {
 	type GetAccountBusinessesData,
 	type GetAccountBusinessesError,
 	type GetAccountBusinessesResponse,
+	type GetAccountChatsData,
+	type GetAccountChatsError,
+	type GetAccountChatsResponse,
 	type GetAccountInvestmentsByCursorData,
 	type GetAccountInvestmentsByCursorError,
 	type GetAccountInvestmentsByCursorResponse,
@@ -30,6 +33,63 @@ import {
 	type GetInvestmentByIdData,
 	type GetInvestmentByIdError,
 	type GetInvestmentByIdResponse,
+	type GetDailyAggregatedBusinessAnalyticsData,
+	type GetDailyAggregatedBusinessAnalyticsError,
+	type GetDailyAggregatedBusinessAnalyticsResponse,
+	type DeleteBusinessFavouriteData,
+	type DeleteBusinessFavouriteError,
+	type DeleteBusinessFavouriteResponse,
+	type GetBusinessFavouriteStatusData,
+	type GetBusinessFavouriteStatusError,
+	type GetBusinessFavouriteStatusResponse,
+	type CreateBusinessFavouriteData,
+	type CreateBusinessFavouriteError,
+	type CreateBusinessFavouriteResponse,
+	type GetBusinessFavouriteCountData,
+	type GetBusinessFavouriteCountError,
+	type GetBusinessFavouriteCountResponse,
+	type GetBusinessImpressionCountData,
+	type GetBusinessImpressionCountError,
+	type GetBusinessImpressionCountResponse,
+	type CreateBusinessImpressionData,
+	type CreateBusinessImpressionError,
+	type CreateBusinessImpressionResponse,
+	type GetDailyAggregatedRoundAnalyticsData,
+	type GetDailyAggregatedRoundAnalyticsError,
+	type GetDailyAggregatedRoundAnalyticsResponse,
+	type DeleteRoundFavouriteData,
+	type DeleteRoundFavouriteError,
+	type DeleteRoundFavouriteResponse,
+	type GetRoundFavouriteStatusData,
+	type GetRoundFavouriteStatusError,
+	type GetRoundFavouriteStatusResponse,
+	type CreateRoundFavouriteData,
+	type CreateRoundFavouriteError,
+	type CreateRoundFavouriteResponse,
+	type GetRoundFavouriteCountData,
+	type GetRoundFavouriteCountError,
+	type GetRoundFavouriteCountResponse,
+	type GetRoundImpressionCountData,
+	type GetRoundImpressionCountError,
+	type GetRoundImpressionCountResponse,
+	type CreateRoundImpressionData,
+	type CreateRoundImpressionError,
+	type CreateRoundImpressionResponse,
+	type GetDailyAggregatedVentureAnalyticsData,
+	type GetDailyAggregatedVentureAnalyticsError,
+	type GetDailyAggregatedVentureAnalyticsResponse,
+	type DeleteVentureFavouriteData,
+	type DeleteVentureFavouriteError,
+	type DeleteVentureFavouriteResponse,
+	type GetVentureFavouriteStatusData,
+	type GetVentureFavouriteStatusError,
+	type GetVentureFavouriteStatusResponse,
+	type CreateVentureFavouriteData,
+	type CreateVentureFavouriteError,
+	type CreateVentureFavouriteResponse,
+	type GetVentureFavouriteCountData,
+	type GetVentureFavouriteCountError,
+	type GetVentureFavouriteCountResponse,
 	type CreateBusinessData,
 	type CreateBusinessError,
 	type CreateBusinessResponse,
@@ -66,6 +126,24 @@ import {
 	type GetBusinessVenturesByPageData,
 	type GetBusinessVenturesByPageError,
 	type GetBusinessVenturesByPageResponse,
+	type CreateChatData,
+	type CreateChatError,
+	type CreateChatResponse,
+	type DeleteChatMessageData,
+	type DeleteChatMessageError,
+	type DeleteChatMessageResponse,
+	type UpdateChatMessageData,
+	type UpdateChatMessageError,
+	type UpdateChatMessageResponse,
+	type DeleteChatData,
+	type DeleteChatError,
+	type DeleteChatResponse,
+	type GetChatMessagesData,
+	type GetChatMessagesError,
+	type GetChatMessagesResponse,
+	type CreateChatMessageData,
+	type CreateChatMessageError,
+	type CreateChatMessageResponse,
 	type HealthCheckError,
 	type HealthCheckResponse,
 	type GetAllIndustriesError,
@@ -100,24 +178,12 @@ import {
 	type GetRoundByIdData,
 	type GetRoundByIdError,
 	type GetRoundByIdResponse,
-	type DeleteRoundLikeData,
-	type DeleteRoundLikeError,
-	type DeleteRoundLikeResponse,
-	type GetRoundLikeStatusData,
-	type GetRoundLikeStatusError,
-	type GetRoundLikeStatusResponse,
-	type CreateRoundLikeData,
-	type CreateRoundLikeError,
-	type CreateRoundLikeResponse,
 	type GetRoundInvestmentsByCursorData,
 	type GetRoundInvestmentsByCursorError,
 	type GetRoundInvestmentsByCursorResponse,
 	type GetRoundInvestmentsByPageData,
 	type GetRoundInvestmentsByPageError,
 	type GetRoundInvestmentsByPageResponse,
-	type GetRoundLikeCountData,
-	type GetRoundLikeCountError,
-	type GetRoundLikeCountResponse,
 	type GetUserAccountData,
 	type GetUserAccountError,
 	type GetUserAccountResponse,
@@ -139,18 +205,6 @@ import {
 	type UpdateVentureData,
 	type UpdateVentureError,
 	type UpdateVentureResponse,
-	type DeleteVentureLikeData,
-	type DeleteVentureLikeError,
-	type DeleteVentureLikeResponse,
-	type GetVentureLikeStatusData,
-	type GetVentureLikeStatusError,
-	type GetVentureLikeStatusResponse,
-	type CreateVentureLikeData,
-	type CreateVentureLikeError,
-	type CreateVentureLikeResponse,
-	type GetVentureLikeCountData,
-	type GetVentureLikeCountError,
-	type GetVentureLikeCountResponse,
 	type GetVentureRoundInvestmentsByCursorData,
 	type GetVentureRoundInvestmentsByCursorError,
 	type GetVentureRoundInvestmentsByCursorResponse,
@@ -170,6 +224,7 @@ import {
 	GetAccountByIdResponseTransformer,
 	UpdateAccountResponseTransformer,
 	GetAccountBusinessesResponseTransformer,
+	GetAccountChatsResponseTransformer,
 	GetAccountInvestmentsByCursorResponseTransformer,
 	GetAccountInvestmentsByPageResponseTransformer,
 	GetInvestmentByIdResponseTransformer,
@@ -181,6 +236,8 @@ import {
 	GetBusinessRoundsByPageResponseTransformer,
 	GetBusinessVenturesByCursorResponseTransformer,
 	GetBusinessVenturesByPageResponseTransformer,
+	CreateChatResponseTransformer,
+	GetChatMessagesResponseTransformer,
 	GetAllIndustriesResponseTransformer,
 	CreateRoundInvestmentResponseTransformer,
 	GetRoundByCursorResponseTransformer,
@@ -294,6 +351,24 @@ export const getAccountBusinesses = <ThrowOnError extends boolean = false>(
 };
 
 /**
+ * Get account chats
+ * Get account chats.
+ */
+export const getAccountChats = <ThrowOnError extends boolean = false>(
+	options: Options<GetAccountChatsData, ThrowOnError>
+) => {
+	return (options?.client ?? client).get<
+		GetAccountChatsResponse,
+		GetAccountChatsError,
+		ThrowOnError
+	>({
+		...options,
+		url: "/account/{id}/chats",
+		responseTransformer: GetAccountChatsResponseTransformer,
+	});
+};
+
+/**
  * Get round investments
  * Get round investments.
  */
@@ -348,6 +423,339 @@ export const getInvestmentById = <ThrowOnError extends boolean = false>(
 		...options,
 		url: "/account/{id}/investments/{investmentId}",
 		responseTransformer: GetInvestmentByIdResponseTransformer,
+	});
+};
+
+/**
+ * Get daily aggregated business analytics
+ * Get daily aggregated business analytics.
+ */
+export const getDailyAggregatedBusinessAnalytics = <
+	ThrowOnError extends boolean = false
+>(
+	options: Options<GetDailyAggregatedBusinessAnalyticsData, ThrowOnError>
+) => {
+	return (options?.client ?? client).get<
+		GetDailyAggregatedBusinessAnalyticsResponse,
+		GetDailyAggregatedBusinessAnalyticsError,
+		ThrowOnError
+	>({
+		...options,
+		url: "/analytic/businesses/{id}",
+	});
+};
+
+/**
+ * Delete a business favourite
+ * Delete a business favourite.
+ */
+export const deleteBusinessFavourite = <ThrowOnError extends boolean = false>(
+	options: Options<DeleteBusinessFavouriteData, ThrowOnError>
+) => {
+	return (options?.client ?? client).delete<
+		DeleteBusinessFavouriteResponse,
+		DeleteBusinessFavouriteError,
+		ThrowOnError
+	>({
+		...options,
+		url: "/analytic/businesses/{id}/account/{accountId}/favourite",
+	});
+};
+
+/**
+ * Get a business favourite status
+ * Get a business favourite status.
+ */
+export const getBusinessFavouriteStatus = <
+	ThrowOnError extends boolean = false
+>(
+	options: Options<GetBusinessFavouriteStatusData, ThrowOnError>
+) => {
+	return (options?.client ?? client).get<
+		GetBusinessFavouriteStatusResponse,
+		GetBusinessFavouriteStatusError,
+		ThrowOnError
+	>({
+		...options,
+		url: "/analytic/businesses/{id}/account/{accountId}/favourite",
+	});
+};
+
+/**
+ * Create a business favourite
+ * Create a business favourite.
+ */
+export const createBusinessFavourite = <ThrowOnError extends boolean = false>(
+	options: Options<CreateBusinessFavouriteData, ThrowOnError>
+) => {
+	return (options?.client ?? client).post<
+		CreateBusinessFavouriteResponse,
+		CreateBusinessFavouriteError,
+		ThrowOnError
+	>({
+		...options,
+		url: "/analytic/businesses/{id}/account/{accountId}/favourite",
+	});
+};
+
+/**
+ * Get a business favourite count
+ * Get a business favourite count.
+ */
+export const getBusinessFavouriteCount = <ThrowOnError extends boolean = false>(
+	options: Options<GetBusinessFavouriteCountData, ThrowOnError>
+) => {
+	return (options?.client ?? client).get<
+		GetBusinessFavouriteCountResponse,
+		GetBusinessFavouriteCountError,
+		ThrowOnError
+	>({
+		...options,
+		url: "/analytic/businesses/{id}/favourites",
+	});
+};
+
+/**
+ * Get a business impression count
+ * Get a business impression count.
+ */
+export const getBusinessImpressionCount = <
+	ThrowOnError extends boolean = false
+>(
+	options: Options<GetBusinessImpressionCountData, ThrowOnError>
+) => {
+	return (options?.client ?? client).get<
+		GetBusinessImpressionCountResponse,
+		GetBusinessImpressionCountError,
+		ThrowOnError
+	>({
+		...options,
+		url: "/analytic/businesses/{id}/impressions",
+	});
+};
+
+/**
+ * Create a business impression
+ * Create a business impression.
+ */
+export const createBusinessImpression = <ThrowOnError extends boolean = false>(
+	options: Options<CreateBusinessImpressionData, ThrowOnError>
+) => {
+	return (options?.client ?? client).post<
+		CreateBusinessImpressionResponse,
+		CreateBusinessImpressionError,
+		ThrowOnError
+	>({
+		...options,
+		url: "/analytic/businesses/{id}/impressions",
+	});
+};
+
+/**
+ * Get daily aggregated round analytics
+ * Get daily aggregated round analytics.
+ */
+export const getDailyAggregatedRoundAnalytics = <
+	ThrowOnError extends boolean = false
+>(
+	options: Options<GetDailyAggregatedRoundAnalyticsData, ThrowOnError>
+) => {
+	return (options?.client ?? client).get<
+		GetDailyAggregatedRoundAnalyticsResponse,
+		GetDailyAggregatedRoundAnalyticsError,
+		ThrowOnError
+	>({
+		...options,
+		url: "/analytic/rounds/{id}",
+	});
+};
+
+/**
+ * Delete a round favourite
+ * Delete a round favourite.
+ */
+export const deleteRoundFavourite = <ThrowOnError extends boolean = false>(
+	options: Options<DeleteRoundFavouriteData, ThrowOnError>
+) => {
+	return (options?.client ?? client).delete<
+		DeleteRoundFavouriteResponse,
+		DeleteRoundFavouriteError,
+		ThrowOnError
+	>({
+		...options,
+		url: "/analytic/rounds/{id}/account/{accountId}/favourite",
+	});
+};
+
+/**
+ * Get a round favourite status
+ * Get a round favourite status.
+ */
+export const getRoundFavouriteStatus = <ThrowOnError extends boolean = false>(
+	options: Options<GetRoundFavouriteStatusData, ThrowOnError>
+) => {
+	return (options?.client ?? client).get<
+		GetRoundFavouriteStatusResponse,
+		GetRoundFavouriteStatusError,
+		ThrowOnError
+	>({
+		...options,
+		url: "/analytic/rounds/{id}/account/{accountId}/favourite",
+	});
+};
+
+/**
+ * Create a round favourite
+ * Create a round favourite.
+ */
+export const createRoundFavourite = <ThrowOnError extends boolean = false>(
+	options: Options<CreateRoundFavouriteData, ThrowOnError>
+) => {
+	return (options?.client ?? client).post<
+		CreateRoundFavouriteResponse,
+		CreateRoundFavouriteError,
+		ThrowOnError
+	>({
+		...options,
+		url: "/analytic/rounds/{id}/account/{accountId}/favourite",
+	});
+};
+
+/**
+ * Get a round favourite count
+ * Get a round favourite count.
+ */
+export const getRoundFavouriteCount = <ThrowOnError extends boolean = false>(
+	options: Options<GetRoundFavouriteCountData, ThrowOnError>
+) => {
+	return (options?.client ?? client).get<
+		GetRoundFavouriteCountResponse,
+		GetRoundFavouriteCountError,
+		ThrowOnError
+	>({
+		...options,
+		url: "/analytic/rounds/{id}/favourites",
+	});
+};
+
+/**
+ * Get a round impression count
+ * Get a round impression count.
+ */
+export const getRoundImpressionCount = <ThrowOnError extends boolean = false>(
+	options: Options<GetRoundImpressionCountData, ThrowOnError>
+) => {
+	return (options?.client ?? client).get<
+		GetRoundImpressionCountResponse,
+		GetRoundImpressionCountError,
+		ThrowOnError
+	>({
+		...options,
+		url: "/analytic/rounds/{id}/impressions",
+	});
+};
+
+/**
+ * Create a round impression
+ * Create a round impression.
+ */
+export const createRoundImpression = <ThrowOnError extends boolean = false>(
+	options: Options<CreateRoundImpressionData, ThrowOnError>
+) => {
+	return (options?.client ?? client).post<
+		CreateRoundImpressionResponse,
+		CreateRoundImpressionError,
+		ThrowOnError
+	>({
+		...options,
+		url: "/analytic/rounds/{id}/impressions",
+	});
+};
+
+/**
+ * Get daily aggregated venture analytics
+ * Get daily aggregated venture analytics.
+ */
+export const getDailyAggregatedVentureAnalytics = <
+	ThrowOnError extends boolean = false
+>(
+	options: Options<GetDailyAggregatedVentureAnalyticsData, ThrowOnError>
+) => {
+	return (options?.client ?? client).get<
+		GetDailyAggregatedVentureAnalyticsResponse,
+		GetDailyAggregatedVentureAnalyticsError,
+		ThrowOnError
+	>({
+		...options,
+		url: "/analytic/ventures/{id}",
+	});
+};
+
+/**
+ * Delete a venture favourite
+ * Delete a venture favourite.
+ */
+export const deleteVentureFavourite = <ThrowOnError extends boolean = false>(
+	options: Options<DeleteVentureFavouriteData, ThrowOnError>
+) => {
+	return (options?.client ?? client).delete<
+		DeleteVentureFavouriteResponse,
+		DeleteVentureFavouriteError,
+		ThrowOnError
+	>({
+		...options,
+		url: "/analytic/ventures/{id}/account/{accountId}/favourite",
+	});
+};
+
+/**
+ * Get a venture favourite status
+ * Get a venture favourite status.
+ */
+export const getVentureFavouriteStatus = <ThrowOnError extends boolean = false>(
+	options: Options<GetVentureFavouriteStatusData, ThrowOnError>
+) => {
+	return (options?.client ?? client).get<
+		GetVentureFavouriteStatusResponse,
+		GetVentureFavouriteStatusError,
+		ThrowOnError
+	>({
+		...options,
+		url: "/analytic/ventures/{id}/account/{accountId}/favourite",
+	});
+};
+
+/**
+ * Create a venture favourite
+ * Create a venture favourite.
+ */
+export const createVentureFavourite = <ThrowOnError extends boolean = false>(
+	options: Options<CreateVentureFavouriteData, ThrowOnError>
+) => {
+	return (options?.client ?? client).post<
+		CreateVentureFavouriteResponse,
+		CreateVentureFavouriteError,
+		ThrowOnError
+	>({
+		...options,
+		url: "/analytic/ventures/{id}/account/{accountId}/favourite",
+	});
+};
+
+/**
+ * Get a venture favourite count
+ * Get a venture favourite count.
+ */
+export const getVentureFavouriteCount = <ThrowOnError extends boolean = false>(
+	options: Options<GetVentureFavouriteCountData, ThrowOnError>
+) => {
+	return (options?.client ?? client).get<
+		GetVentureFavouriteCountResponse,
+		GetVentureFavouriteCountError,
+		ThrowOnError
+	>({
+		...options,
+		url: "/analytic/ventures/{id}/favourites",
 	});
 };
 
@@ -572,6 +980,110 @@ export const getBusinessVenturesByPage = <ThrowOnError extends boolean = false>(
 };
 
 /**
+ * Create a chat
+ * Create a chat.
+ */
+export const createChat = <ThrowOnError extends boolean = false>(
+	options: Options<CreateChatData, ThrowOnError>
+) => {
+	return (options?.client ?? client).post<
+		CreateChatResponse,
+		CreateChatError,
+		ThrowOnError
+	>({
+		...options,
+		url: "/chat",
+		responseTransformer: CreateChatResponseTransformer,
+	});
+};
+
+/**
+ * Delete a chat message
+ * Delete a chat message.
+ */
+export const deleteChatMessage = <ThrowOnError extends boolean = false>(
+	options: Options<DeleteChatMessageData, ThrowOnError>
+) => {
+	return (options?.client ?? client).delete<
+		DeleteChatMessageResponse,
+		DeleteChatMessageError,
+		ThrowOnError
+	>({
+		...options,
+		url: "/chat/message/{id}",
+	});
+};
+
+/**
+ * Update a chat message
+ * Update a chat message.
+ */
+export const updateChatMessage = <ThrowOnError extends boolean = false>(
+	options: Options<UpdateChatMessageData, ThrowOnError>
+) => {
+	return (options?.client ?? client).put<
+		UpdateChatMessageResponse,
+		UpdateChatMessageError,
+		ThrowOnError
+	>({
+		...options,
+		url: "/chat/message/{id}",
+	});
+};
+
+/**
+ * Delete a chat
+ * Delete a chat.
+ */
+export const deleteChat = <ThrowOnError extends boolean = false>(
+	options: Options<DeleteChatData, ThrowOnError>
+) => {
+	return (options?.client ?? client).delete<
+		DeleteChatResponse,
+		DeleteChatError,
+		ThrowOnError
+	>({
+		...options,
+		url: "/chat/{id}",
+	});
+};
+
+/**
+ * Get chat messages
+ * Get chat messages.
+ */
+export const getChatMessages = <ThrowOnError extends boolean = false>(
+	options: Options<GetChatMessagesData, ThrowOnError>
+) => {
+	return (options?.client ?? client).get<
+		GetChatMessagesResponse,
+		GetChatMessagesError,
+		ThrowOnError
+	>({
+		...options,
+		url: "/chat/{id}/messages",
+		responseTransformer: GetChatMessagesResponseTransformer,
+	});
+};
+
+/**
+ * Create a chat message
+ * Create a chat message.
+ */
+export const createChatMessage = <ThrowOnError extends boolean = false>(
+	options: Options<CreateChatMessageData, ThrowOnError>
+) => {
+	return (options?.client ?? client).post<
+		CreateChatMessageResponse,
+		CreateChatMessageError,
+		ThrowOnError
+	>({
+		...options,
+		url: "/chat/{id}/messages",
+	});
+};
+
+/**
  * Health check
  * Health check.
  */
@@ -782,57 +1294,6 @@ export const getRoundById = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Delete a round like
- * Delete a round like.
- */
-export const deleteRoundLike = <ThrowOnError extends boolean = false>(
-	options: Options<DeleteRoundLikeData, ThrowOnError>
-) => {
-	return (options?.client ?? client).delete<
-		DeleteRoundLikeResponse,
-		DeleteRoundLikeError,
-		ThrowOnError
-	>({
-		...options,
-		url: "/round/{id}/account/{accountId}/like",
-	});
-};
-
-/**
- * Get a round like status
- * Get a round like status.
- */
-export const getRoundLikeStatus = <ThrowOnError extends boolean = false>(
-	options: Options<GetRoundLikeStatusData, ThrowOnError>
-) => {
-	return (options?.client ?? client).get<
-		GetRoundLikeStatusResponse,
-		GetRoundLikeStatusError,
-		ThrowOnError
-	>({
-		...options,
-		url: "/round/{id}/account/{accountId}/like",
-	});
-};
-
-/**
- * Create a round like
- * Create a round like.
- */
-export const createRoundLike = <ThrowOnError extends boolean = false>(
-	options: Options<CreateRoundLikeData, ThrowOnError>
-) => {
-	return (options?.client ?? client).post<
-		CreateRoundLikeResponse,
-		CreateRoundLikeError,
-		ThrowOnError
-	>({
-		...options,
-		url: "/round/{id}/account/{accountId}/like",
-	});
-};
-
-/**
  * Get round investments
  * Get round investments.
  */
@@ -867,23 +1328,6 @@ export const getRoundInvestmentsByPage = <ThrowOnError extends boolean = false>(
 		...options,
 		url: "/round/{id}/investments/page",
 		responseTransformer: GetRoundInvestmentsByPageResponseTransformer,
-	});
-};
-
-/**
- * Get a round like count
- * Get a round like count.
- */
-export const getRoundLikeCount = <ThrowOnError extends boolean = false>(
-	options: Options<GetRoundLikeCountData, ThrowOnError>
-) => {
-	return (options?.client ?? client).get<
-		GetRoundLikeCountResponse,
-		GetRoundLikeCountError,
-		ThrowOnError
-	>({
-		...options,
-		url: "/round/{id}/like",
 	});
 };
 
@@ -1009,74 +1453,6 @@ export const updateVenture = <ThrowOnError extends boolean = false>(
 		...options,
 		url: "/venture/{id}",
 		responseTransformer: UpdateVentureResponseTransformer,
-	});
-};
-
-/**
- * Delete a venture like
- * Delete a venture like.
- */
-export const deleteVentureLike = <ThrowOnError extends boolean = false>(
-	options: Options<DeleteVentureLikeData, ThrowOnError>
-) => {
-	return (options?.client ?? client).delete<
-		DeleteVentureLikeResponse,
-		DeleteVentureLikeError,
-		ThrowOnError
-	>({
-		...options,
-		url: "/venture/{id}/account/{accountId}/like",
-	});
-};
-
-/**
- * Get a venture like status
- * Get a venture like status.
- */
-export const getVentureLikeStatus = <ThrowOnError extends boolean = false>(
-	options: Options<GetVentureLikeStatusData, ThrowOnError>
-) => {
-	return (options?.client ?? client).get<
-		GetVentureLikeStatusResponse,
-		GetVentureLikeStatusError,
-		ThrowOnError
-	>({
-		...options,
-		url: "/venture/{id}/account/{accountId}/like",
-	});
-};
-
-/**
- * Create a venture like
- * Create a venture like.
- */
-export const createVentureLike = <ThrowOnError extends boolean = false>(
-	options: Options<CreateVentureLikeData, ThrowOnError>
-) => {
-	return (options?.client ?? client).post<
-		CreateVentureLikeResponse,
-		CreateVentureLikeError,
-		ThrowOnError
-	>({
-		...options,
-		url: "/venture/{id}/account/{accountId}/like",
-	});
-};
-
-/**
- * Get a venture like count
- * Get a venture like count.
- */
-export const getVentureLikeCount = <ThrowOnError extends boolean = false>(
-	options: Options<GetVentureLikeCountData, ThrowOnError>
-) => {
-	return (options?.client ?? client).get<
-		GetVentureLikeCountResponse,
-		GetVentureLikeCountError,
-		ThrowOnError
-	>({
-		...options,
-		url: "/venture/{id}/like",
 	});
 };
 

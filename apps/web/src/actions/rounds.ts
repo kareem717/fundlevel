@@ -6,9 +6,9 @@ import {
 	createRound as createRoundApi,
 	getRoundByCursor,
 	getRoundsByPage as getRoundsByPageApi,
-	createRoundLike,
-	getRoundLikeStatus,
-	deleteRoundLike,
+	createRoundFavourite,
+	getRoundFavouriteStatus,
+	deleteRoundFavourite,
 } from "@/lib/api";
 import {
 	cursorPaginationSchema,
@@ -91,7 +91,7 @@ export const isRoundLiked = actionClientWithAccount
 			throw new Error("User not found");
 		}
 
-		const response = await getRoundLikeStatus({
+		const response = await getRoundFavouriteStatus({
 			client: apiClient,
 			throwOnError: true,
 			path: {
@@ -110,7 +110,7 @@ export const likeRound = actionClientWithAccount
 			throw new Error("User not found");
 		}
 
-		await createRoundLike({
+		await createRoundFavourite({
 			client: apiClient,
 			throwOnError: true,
 			path: {
@@ -127,7 +127,7 @@ export const unlikeRound = actionClientWithAccount
 			throw new Error("User not found");
 		}
 
-		await deleteRoundLike({
+		await deleteRoundFavourite({
 			client: apiClient,
 			throwOnError: true,
 			path: {

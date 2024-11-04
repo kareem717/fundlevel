@@ -3,12 +3,12 @@
 import { actionClient, actionClientWithAccount } from "@/lib/safe-action";
 import {
 	createBusiness as createBusinessApi,
-	getBusinessVenturesByCursor as getBusinessVenturesApi,
+	getBusinessVenturesByCursor as getBusinessVenturesByCursorApi,
+	getBusinessVenturesByPage as getBusinessVenturesByPageApi,
 	getBusinessById as getBusinessByIdApi,
 	getAccountBusinesses as getAccountBusinessesApi,
-	getBusinessTotalFunding,
-	getBusinessVenturesByPage,
 	getBusinessRoundsByPage as getBusinessRoundsByPageApi,
+	getBusinessTotalFunding,
 } from "@/lib/api";
 import { createBusinessSchema } from "@/actions/validations/business";
 import {
@@ -73,7 +73,7 @@ export const getBusinessVentures = actionClientWithAccount
 	)
 	.action(
 		async ({ parsedInput: { businessId, pagination }, ctx: { apiClient } }) => {
-			const res = await getBusinessVenturesByPage({
+			const res = await getBusinessVenturesByPageApi({
 				client: apiClient,
 				throwOnError: true,
 				query: {
@@ -97,7 +97,7 @@ export const getBusinessVenturesInfinite = actionClientWithAccount
 	)
 	.action(
 		async ({ parsedInput: { businessId, pagination }, ctx: { apiClient } }) => {
-			const res = await getBusinessVenturesApi({
+			const res = await getBusinessVenturesByCursorApi({
 				client: apiClient,
 				throwOnError: true,
 				query: {

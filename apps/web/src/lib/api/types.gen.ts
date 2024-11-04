@@ -78,6 +78,26 @@ export type BusinessParams = {
     teamSize: '1' | '2-10' | '11-50' | '51-200' | '201-500' | '501-1000' | '1000+';
 };
 
+export type Chat = {
+    createdAt: Date;
+    createdByAccountId: number;
+    createdForAccountId: number;
+    deletedAt: (Date) | null;
+    id: number;
+    lastMessageAt: (Date) | null;
+    updatedAt: (Date) | null;
+};
+
+export type ChatMessage = {
+    content: string;
+    createdAt: Date;
+    deletedAt: (Date) | null;
+    id: number;
+    readAt: (Date) | null;
+    senderAccountId: number;
+    updatedAt: (Date) | null;
+};
+
 export type CreateAccountParams = {
     /**
      * A URL to the JSON Schema for this object.
@@ -112,6 +132,30 @@ export type CreateBusinessParams = {
     business: BusinessParams;
 };
 
+export type CreateChatParams = {
+    /**
+     * A URL to the JSON Schema for this object.
+     */
+    readonly $schema?: string;
+    createdByAccountId: number;
+    createdForAccountId: number;
+};
+
+export type CreateChatResponseBody = {
+    /**
+     * A URL to the JSON Schema for this object.
+     */
+    readonly $schema?: string;
+    createdAt: Date;
+    createdByAccountId: number;
+    createdForAccountId: number;
+    deletedAt: (Date) | null;
+    id: number;
+    lastMessageAt: (Date) | null;
+    message: string;
+    updatedAt: (Date) | null;
+};
+
 export type CreateInvestmentParams = {
     /**
      * A URL to the JSON Schema for this object.
@@ -119,6 +163,15 @@ export type CreateInvestmentParams = {
     readonly $schema?: string;
     investorId: number;
     roundId: number;
+};
+
+export type CreateMessageParams = {
+    /**
+     * A URL to the JSON Schema for this object.
+     */
+    readonly $schema?: string;
+    content: string;
+    senderAccountId: number;
 };
 
 export type CreateRoundParams = {
@@ -231,6 +284,28 @@ export type GetBusinessesOutputBody = {
     message: string;
 };
 
+export type GetChatMessagesResponseBody = {
+    /**
+     * A URL to the JSON Schema for this object.
+     */
+    readonly $schema?: string;
+    hasNext: boolean;
+    message: string;
+    messages: Array<ChatMessage> | null;
+    nextCursor: (Date) | null;
+};
+
+export type GetChatsOutputBody = {
+    /**
+     * A URL to the JSON Schema for this object.
+     */
+    readonly $schema?: string;
+    chats: Array<Chat> | null;
+    hasNext: boolean;
+    message: string;
+    nextCursor: (Date) | null;
+};
+
 export type GetCursorPaginatedRoundInvestmentsOutputBody = {
     /**
      * A URL to the JSON Schema for this object.
@@ -262,6 +337,33 @@ export type GetCursorPaginatedVenturesOutputBody = {
     message: string;
     nextCursor: (number) | null;
     ventures: Array<Venture> | null;
+};
+
+export type GetDailyAggregatedBusinessAnalyticsOutputBody = {
+    /**
+     * A URL to the JSON Schema for this object.
+     */
+    readonly $schema?: string;
+    analytics: Array<SimplifiedDailyAggregatedBusinessAnalytics> | null;
+    message: string;
+};
+
+export type GetDailyAggregatedRoundAnalyticsOutputBody = {
+    /**
+     * A URL to the JSON Schema for this object.
+     */
+    readonly $schema?: string;
+    analytics: Array<SimplifiedDailyAggregatedRoundAnalytics> | null;
+    message: string;
+};
+
+export type GetDailyAggregatedVentureAnalyticsOutputBody = {
+    /**
+     * A URL to the JSON Schema for this object.
+     */
+    readonly $schema?: string;
+    analytics: Array<SimplifiedDailyAggregatedVentureAnalytics> | null;
+    message: string;
 };
 
 export type GetLikeCountOutputBody = {
@@ -306,6 +408,23 @@ export type GetOffsetPaginatedVenturesOutputBody = {
     ventures: Array<Venture> | null;
 };
 
+export type ImpressionCountOutputBody = {
+    /**
+     * A URL to the JSON Schema for this object.
+     */
+    readonly $schema?: string;
+    count: number;
+    message: string;
+};
+
+export type ImpressionInputBody = {
+    /**
+     * A URL to the JSON Schema for this object.
+     */
+    readonly $schema?: string;
+    accountId: number;
+};
+
 export type Industry = {
     createdAt: Date;
     deletedAt: (Date) | null;
@@ -314,12 +433,12 @@ export type Industry = {
     updatedAt: (Date) | null;
 };
 
-export type IsLikedOutputBody = {
+export type IsFavouritedOutputBody = {
     /**
      * A URL to the JSON Schema for this object.
      */
     readonly $schema?: string;
-    liked: boolean;
+    favourited: boolean;
     message: string;
 };
 
@@ -390,6 +509,27 @@ export const status3 = {
     FAILED: 'failed'
 } as const;
 
+export type SimplifiedDailyAggregatedBusinessAnalytics = {
+    dayOfYear: number;
+    favouritedCount: number;
+    impressionsCount: number;
+    uniquesImpressionsCount: number;
+};
+
+export type SimplifiedDailyAggregatedRoundAnalytics = {
+    dayOfYear: number;
+    favouritedCount: number;
+    impressionsCount: number;
+    uniquesImpressionsCount: number;
+};
+
+export type SimplifiedDailyAggregatedVentureAnalytics = {
+    dayOfYear: number;
+    favouritedCount: number;
+    impressionsCount: number;
+    uniquesImpressionsCount: number;
+};
+
 export type SingleAccountResponseBody = {
     /**
      * A URL to the JSON Schema for this object.
@@ -451,6 +591,15 @@ export type UpdateAccountParams = {
     readonly $schema?: string;
     firstName: string;
     lastName: string;
+};
+
+export type UpdateMessageParams = {
+    /**
+     * A URL to the JSON Schema for this object.
+     */
+    readonly $schema?: string;
+    content: string;
+    readAt: (Date) | null;
 };
 
 export type UpdateVentureParams = {
@@ -536,6 +685,20 @@ export type GetAccountBusinessesResponse = (GetBusinessesOutputBody);
 
 export type GetAccountBusinessesError = (ErrorModel);
 
+export type GetAccountChatsData = {
+    path: {
+        id: number;
+    };
+    query?: {
+        cursor?: Date;
+        limit?: number;
+    };
+};
+
+export type GetAccountChatsResponse = (GetChatsOutputBody);
+
+export type GetAccountChatsError = (ErrorModel);
+
 export type GetAccountInvestmentsByCursorData = {
     path: {
         id: number;
@@ -583,6 +746,219 @@ export type GetInvestmentByIdData = {
 export type GetInvestmentByIdResponse = (SingleInvestmentResponseBody);
 
 export type GetInvestmentByIdError = (ErrorModel);
+
+export type GetDailyAggregatedBusinessAnalyticsData = {
+    path: {
+        id: number;
+    };
+    query?: {
+        maxDayOfYear?: number;
+        minDayOfYear?: number;
+    };
+};
+
+export type GetDailyAggregatedBusinessAnalyticsResponse = (GetDailyAggregatedBusinessAnalyticsOutputBody);
+
+export type GetDailyAggregatedBusinessAnalyticsError = (ErrorModel);
+
+export type DeleteBusinessFavouriteData = {
+    path: {
+        accountId: number;
+        id: number;
+    };
+};
+
+export type DeleteBusinessFavouriteResponse = (MessageResponse);
+
+export type DeleteBusinessFavouriteError = (ErrorModel);
+
+export type GetBusinessFavouriteStatusData = {
+    path: {
+        accountId: number;
+        id: number;
+    };
+};
+
+export type GetBusinessFavouriteStatusResponse = (IsFavouritedOutputBody);
+
+export type GetBusinessFavouriteStatusError = (ErrorModel);
+
+export type CreateBusinessFavouriteData = {
+    path: {
+        accountId: number;
+        id: number;
+    };
+};
+
+export type CreateBusinessFavouriteResponse = (MessageResponse);
+
+export type CreateBusinessFavouriteError = (ErrorModel);
+
+export type GetBusinessFavouriteCountData = {
+    path: {
+        id: number;
+    };
+};
+
+export type GetBusinessFavouriteCountResponse = (GetLikeCountOutputBody);
+
+export type GetBusinessFavouriteCountError = (ErrorModel);
+
+export type GetBusinessImpressionCountData = {
+    path: {
+        id: number;
+    };
+};
+
+export type GetBusinessImpressionCountResponse = (ImpressionCountOutputBody);
+
+export type GetBusinessImpressionCountError = (ErrorModel);
+
+export type CreateBusinessImpressionData = {
+    body: ImpressionInputBody;
+    path: {
+        id: number;
+    };
+};
+
+export type CreateBusinessImpressionResponse = (MessageResponse);
+
+export type CreateBusinessImpressionError = (ErrorModel);
+
+export type GetDailyAggregatedRoundAnalyticsData = {
+    path: {
+        id: number;
+    };
+    query?: {
+        maxDayOfYear?: number;
+        minDayOfYear?: number;
+    };
+};
+
+export type GetDailyAggregatedRoundAnalyticsResponse = (GetDailyAggregatedRoundAnalyticsOutputBody);
+
+export type GetDailyAggregatedRoundAnalyticsError = (ErrorModel);
+
+export type DeleteRoundFavouriteData = {
+    path: {
+        accountId: number;
+        id: number;
+    };
+};
+
+export type DeleteRoundFavouriteResponse = (MessageResponse);
+
+export type DeleteRoundFavouriteError = (ErrorModel);
+
+export type GetRoundFavouriteStatusData = {
+    path: {
+        accountId: number;
+        id: number;
+    };
+};
+
+export type GetRoundFavouriteStatusResponse = (IsFavouritedOutputBody);
+
+export type GetRoundFavouriteStatusError = (ErrorModel);
+
+export type CreateRoundFavouriteData = {
+    path: {
+        accountId: number;
+        id: number;
+    };
+};
+
+export type CreateRoundFavouriteResponse = (MessageResponse);
+
+export type CreateRoundFavouriteError = (ErrorModel);
+
+export type GetRoundFavouriteCountData = {
+    path: {
+        id: number;
+    };
+};
+
+export type GetRoundFavouriteCountResponse = (GetLikeCountOutputBody);
+
+export type GetRoundFavouriteCountError = (ErrorModel);
+
+export type GetRoundImpressionCountData = {
+    path: {
+        id: number;
+    };
+};
+
+export type GetRoundImpressionCountResponse = (ImpressionCountOutputBody);
+
+export type GetRoundImpressionCountError = (ErrorModel);
+
+export type CreateRoundImpressionData = {
+    body: ImpressionInputBody;
+    path: {
+        id: number;
+    };
+};
+
+export type CreateRoundImpressionResponse = (MessageResponse);
+
+export type CreateRoundImpressionError = (ErrorModel);
+
+export type GetDailyAggregatedVentureAnalyticsData = {
+    path: {
+        id: number;
+    };
+    query?: {
+        maxDayOfYear?: number;
+        minDayOfYear?: number;
+    };
+};
+
+export type GetDailyAggregatedVentureAnalyticsResponse = (GetDailyAggregatedVentureAnalyticsOutputBody);
+
+export type GetDailyAggregatedVentureAnalyticsError = (ErrorModel);
+
+export type DeleteVentureFavouriteData = {
+    path: {
+        accountId: number;
+        id: number;
+    };
+};
+
+export type DeleteVentureFavouriteResponse = (MessageResponse);
+
+export type DeleteVentureFavouriteError = (ErrorModel);
+
+export type GetVentureFavouriteStatusData = {
+    path: {
+        accountId: number;
+        id: number;
+    };
+};
+
+export type GetVentureFavouriteStatusResponse = (IsFavouritedOutputBody);
+
+export type GetVentureFavouriteStatusError = (ErrorModel);
+
+export type CreateVentureFavouriteData = {
+    path: {
+        accountId: number;
+        id: number;
+    };
+};
+
+export type CreateVentureFavouriteResponse = (MessageResponse);
+
+export type CreateVentureFavouriteError = (ErrorModel);
+
+export type GetVentureFavouriteCountData = {
+    path: {
+        id: number;
+    };
+};
+
+export type GetVentureFavouriteCountResponse = (GetLikeCountOutputBody);
+
+export type GetVentureFavouriteCountError = (ErrorModel);
 
 export type HandleStripeWebhookData = {
     body: unknown;
@@ -797,6 +1173,74 @@ export type GetBusinessVenturesByPageResponse = (GetOffsetPaginatedVenturesOutpu
 
 export type GetBusinessVenturesByPageError = (ErrorModel);
 
+export type CreateChatData = {
+    body: CreateChatParams;
+};
+
+export type CreateChatResponse = (CreateChatResponseBody);
+
+export type CreateChatError = (ErrorModel);
+
+export type DeleteChatMessageData = {
+    path: {
+        id: number;
+    };
+};
+
+export type DeleteChatMessageResponse = (MessageResponse);
+
+export type DeleteChatMessageError = (ErrorModel);
+
+export type UpdateChatMessageData = {
+    body: UpdateMessageParams;
+    path: {
+        id: number;
+    };
+};
+
+export type UpdateChatMessageResponse = (MessageResponse);
+
+export type UpdateChatMessageError = (ErrorModel);
+
+export type DeleteChatData = {
+    path: {
+        id: number;
+    };
+};
+
+export type DeleteChatResponse = (MessageResponse);
+
+export type DeleteChatError = (ErrorModel);
+
+export type GetChatMessagesData = {
+    path: {
+        id: number;
+    };
+    query?: {
+        cursor?: Date;
+        limit?: number;
+        maxCreatedAt?: Date;
+        minCreatedAt?: Date;
+        read?: boolean;
+        senderAccountIds?: Array<(number)> | null;
+    };
+};
+
+export type GetChatMessagesResponse = (GetChatMessagesResponseBody);
+
+export type GetChatMessagesError = (ErrorModel);
+
+export type CreateChatMessageData = {
+    body: CreateMessageParams;
+    path: {
+        id: number;
+    };
+};
+
+export type CreateChatMessageResponse = (MessageResponse);
+
+export type CreateChatMessageError = (ErrorModel);
+
 export type HealthCheckResponse = (MessageResponse);
 
 export type HealthCheckError = (ErrorModel);
@@ -938,39 +1382,6 @@ export type GetRoundByIdResponse = (SingleRoundResponseBody);
 
 export type GetRoundByIdError = (ErrorModel);
 
-export type DeleteRoundLikeData = {
-    path: {
-        accountId: number;
-        id: number;
-    };
-};
-
-export type DeleteRoundLikeResponse = (MessageResponse);
-
-export type DeleteRoundLikeError = (ErrorModel);
-
-export type GetRoundLikeStatusData = {
-    path: {
-        accountId: number;
-        id: number;
-    };
-};
-
-export type GetRoundLikeStatusResponse = (IsLikedOutputBody);
-
-export type GetRoundLikeStatusError = (ErrorModel);
-
-export type CreateRoundLikeData = {
-    path: {
-        accountId: number;
-        id: number;
-    };
-};
-
-export type CreateRoundLikeResponse = (MessageResponse);
-
-export type CreateRoundLikeError = (ErrorModel);
-
 export type GetRoundInvestmentsByCursorData = {
     path: {
         id: number;
@@ -1008,16 +1419,6 @@ export type GetRoundInvestmentsByPageData = {
 export type GetRoundInvestmentsByPageResponse = (GetOffsetPaginatedRoundInvestmentsOutputBody);
 
 export type GetRoundInvestmentsByPageError = (ErrorModel);
-
-export type GetRoundLikeCountData = {
-    path: {
-        id: number;
-    };
-};
-
-export type GetRoundLikeCountResponse = (GetLikeCountOutputBody);
-
-export type GetRoundLikeCountError = (ErrorModel);
 
 export type GetUserAccountData = {
     path: {
@@ -1095,49 +1496,6 @@ export type UpdateVentureData = {
 export type UpdateVentureResponse = (SingleVentureResponseBody);
 
 export type UpdateVentureError = (ErrorModel);
-
-export type DeleteVentureLikeData = {
-    path: {
-        accountId: number;
-        id: number;
-    };
-};
-
-export type DeleteVentureLikeResponse = (MessageResponse);
-
-export type DeleteVentureLikeError = (ErrorModel);
-
-export type GetVentureLikeStatusData = {
-    path: {
-        accountId: number;
-        id: number;
-    };
-};
-
-export type GetVentureLikeStatusResponse = (IsLikedOutputBody);
-
-export type GetVentureLikeStatusError = (ErrorModel);
-
-export type CreateVentureLikeData = {
-    path: {
-        accountId: number;
-        id: number;
-    };
-};
-
-export type CreateVentureLikeResponse = (MessageResponse);
-
-export type CreateVentureLikeError = (ErrorModel);
-
-export type GetVentureLikeCountData = {
-    path: {
-        id: number;
-    };
-};
-
-export type GetVentureLikeCountResponse = (GetLikeCountOutputBody);
-
-export type GetVentureLikeCountError = (ErrorModel);
 
 export type GetVentureRoundInvestmentsByCursorData = {
     path: {
@@ -1362,6 +1720,43 @@ export const GetAccountBusinessesResponseTransformer: GetAccountBusinessesRespon
     return data;
 };
 
+export type GetAccountChatsResponseTransformer = (data: any) => Promise<GetAccountChatsResponse>;
+
+export type GetChatsOutputBodyModelResponseTransformer = (data: any) => GetChatsOutputBody;
+
+export type ChatModelResponseTransformer = (data: any) => Chat;
+
+export const ChatModelResponseTransformer: ChatModelResponseTransformer = data => {
+    if (data?.createdAt) {
+        data.createdAt = new Date(data.createdAt);
+    }
+    if (data?.deletedAt) {
+        data.deletedAt = new Date(data.deletedAt);
+    }
+    if (data?.lastMessageAt) {
+        data.lastMessageAt = new Date(data.lastMessageAt);
+    }
+    if (data?.updatedAt) {
+        data.updatedAt = new Date(data.updatedAt);
+    }
+    return data;
+};
+
+export const GetChatsOutputBodyModelResponseTransformer: GetChatsOutputBodyModelResponseTransformer = data => {
+    if (Array.isArray(data?.chats)) {
+        data.chats.forEach(ChatModelResponseTransformer);
+    }
+    if (data?.nextCursor) {
+        data.nextCursor = new Date(data.nextCursor);
+    }
+    return data;
+};
+
+export const GetAccountChatsResponseTransformer: GetAccountChatsResponseTransformer = async (data) => {
+    GetChatsOutputBodyModelResponseTransformer(data);
+    return data;
+};
+
 export type GetAccountInvestmentsByCursorResponseTransformer = (data: any) => Promise<GetAccountInvestmentsByCursorResponse>;
 
 export type GetCursorPaginatedRoundInvestmentsOutputBodyModelResponseTransformer = (data: any) => GetCursorPaginatedRoundInvestmentsOutputBody;
@@ -1574,6 +1969,68 @@ export const GetOffsetPaginatedVenturesOutputBodyModelResponseTransformer: GetOf
 
 export const GetBusinessVenturesByPageResponseTransformer: GetBusinessVenturesByPageResponseTransformer = async (data) => {
     GetOffsetPaginatedVenturesOutputBodyModelResponseTransformer(data);
+    return data;
+};
+
+export type CreateChatResponseTransformer = (data: any) => Promise<CreateChatResponse>;
+
+export type CreateChatResponseBodyModelResponseTransformer = (data: any) => CreateChatResponseBody;
+
+export const CreateChatResponseBodyModelResponseTransformer: CreateChatResponseBodyModelResponseTransformer = data => {
+    if (data?.createdAt) {
+        data.createdAt = new Date(data.createdAt);
+    }
+    if (data?.deletedAt) {
+        data.deletedAt = new Date(data.deletedAt);
+    }
+    if (data?.lastMessageAt) {
+        data.lastMessageAt = new Date(data.lastMessageAt);
+    }
+    if (data?.updatedAt) {
+        data.updatedAt = new Date(data.updatedAt);
+    }
+    return data;
+};
+
+export const CreateChatResponseTransformer: CreateChatResponseTransformer = async (data) => {
+    CreateChatResponseBodyModelResponseTransformer(data);
+    return data;
+};
+
+export type GetChatMessagesResponseTransformer = (data: any) => Promise<GetChatMessagesResponse>;
+
+export type GetChatMessagesResponseBodyModelResponseTransformer = (data: any) => GetChatMessagesResponseBody;
+
+export type ChatMessageModelResponseTransformer = (data: any) => ChatMessage;
+
+export const ChatMessageModelResponseTransformer: ChatMessageModelResponseTransformer = data => {
+    if (data?.createdAt) {
+        data.createdAt = new Date(data.createdAt);
+    }
+    if (data?.deletedAt) {
+        data.deletedAt = new Date(data.deletedAt);
+    }
+    if (data?.readAt) {
+        data.readAt = new Date(data.readAt);
+    }
+    if (data?.updatedAt) {
+        data.updatedAt = new Date(data.updatedAt);
+    }
+    return data;
+};
+
+export const GetChatMessagesResponseBodyModelResponseTransformer: GetChatMessagesResponseBodyModelResponseTransformer = data => {
+    if (Array.isArray(data?.messages)) {
+        data.messages.forEach(ChatMessageModelResponseTransformer);
+    }
+    if (data?.nextCursor) {
+        data.nextCursor = new Date(data.nextCursor);
+    }
+    return data;
+};
+
+export const GetChatMessagesResponseTransformer: GetChatMessagesResponseTransformer = async (data) => {
+    GetChatMessagesResponseBodyModelResponseTransformer(data);
     return data;
 };
 

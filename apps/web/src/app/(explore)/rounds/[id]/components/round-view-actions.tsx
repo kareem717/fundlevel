@@ -32,7 +32,7 @@ export const RoundViewActions: FC<RoundViewActionsProps> = ({ roundId, isLiked, 
 
   const { execute: isLikedExecute, isExecuting: isLikedExecuting } = useAction(isRoundLiked, {
     onSuccess: ({ data }) => {
-      setLiked(data?.liked ?? false);
+      setLiked(data?.favourited ?? false);
     },
     onError: () => {
       toast.error("Failed to check if round is liked");

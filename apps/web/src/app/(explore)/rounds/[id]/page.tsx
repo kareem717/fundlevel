@@ -46,7 +46,7 @@ export default async function RoundViewPage(props: { params: Promise<{ id: strin
   let isLiked = false;
   if (account) {
     const isLikedResp = await isRoundLiked(round.id);
-    isLiked = isLikedResp?.data?.liked ?? false;
+    isLiked = isLikedResp?.data?.favourited ?? false;
   }
 
   const valuationAtPurchase = Math.round(round.percentageValue / (round.percentageOffered / 100));
