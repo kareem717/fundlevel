@@ -6,12 +6,17 @@ import Image from "next/image";
 import { DislikeButton } from "./dislike-button";
 import { FavouriteButton } from "./favourite-button";
 import { Venture } from "@/lib/api";
+import { isVentureLiked } from "@/actions/ventures";
 
 type VentureCardProps = {
   venture: Venture;
 };
 
-export function VentureCard({ venture }: VentureCardProps) {
+export async function VentureCard({ venture }: VentureCardProps) {
+
+  const isLiked = await isVentureLiked(venture.id);
+
+
   return (
     <Card className="w-full max-w-[400px] overflow-hidden bg-white z-10">
       <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
