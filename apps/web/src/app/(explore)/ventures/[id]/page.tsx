@@ -1,4 +1,4 @@
-import { VentureViewActions } from "./components/venture-view-actions";
+import { VentureViewActions } from "./components/venture-actions.tsx";
 import { getVentureById } from "@/actions/ventures";
 import { notFound } from "next/navigation";
 import {
@@ -57,72 +57,6 @@ export default async function VentureViewPage(props: {
   const { business, ...venture } = ventureResp.data.venture;
 
   return (
-    <Component />
-    // <Card className="w-full relative max-w-screen-lg mx-auto">
-    //   <CardHeader>
-    //     <CardTitle className="flex flex-row items-center justify-between w-full">
-    //       {venture.name}
-    //       <VentureViewActions ventureId={venture.id} />
-    //     </CardTitle>
-    //     <CardDescription>
-    //       <span className="text-muted-foreground text-sm font-normal">
-    //         {/* Seeking {round.percentageValue} for {round.percentageOffered} through {round.investorCount} investors{round.investorCount > 1 ? "s" : ""} */}
-    //       </span>
-    //     </CardDescription>
-    //   </CardHeader>
-    //   <CardContent className="flex flex-col gap-8 ">
-    //     <div className="w-full flex flex-col lg:flex-row gap-4 h-full">
-    //       <div className={cn("w-full flex flex-col px-2 gap-4")}>
-    //         <div className="flex flex-col gap-1 font-semibold">
-    //           By {business?.name}
-    //         </div>
-    //         <Separator className="w-full" />
-    //         <span className="text-lg font-semibold">Business Details</span>
-    //         <BusinessOverview
-    //           overview={venture.overview}
-    //           teamSize={business?.teamSize}
-    //           businessId={business?.id}
-    //         />
-    //         <Separator className="w-full" />
-    //         <span className="text-lg font-semibold">Venture Description</span>
-    //         <div className="flex flex-col items-start justify-start">
-    //           <p>{truncateText(venture.description, 350)}</p>
-    //           {venture.description.length > 150 && (
-    //             <Dialog>
-    //               <DialogTrigger asChild>
-    //                 <Button variant="outline" size="sm" className="mt-4">
-    //                   <span className="text-xs underline">Show more</span>
-    //                   <Icons.chevronRight className="w-4 h-4 ml-2" />
-    //                 </Button>
-    //               </DialogTrigger>
-    //               <div className="max-w-screen-lg px-2">
-    //                 <DialogContent className="rounded-md">
-    //                   <DialogHeader>
-    //                     <DialogTitle>Venture Description</DialogTitle>
-    //                   </DialogHeader>
-    //                   <div className="max-h-[70dvh] w-full h-full">
-    //                     <ScrollArea className="h-full w-full">
-    //                       {venture.description}
-    //                     </ScrollArea>
-    //                   </div>
-    //                 </DialogContent>
-    //               </div>
-    //             </Dialog>
-    //           )}
-    //         </div>
-    //       </div>
-    //       <VentureActiveRoundCard
-    //         ventureId={venture.id}
-    //         className="w-full h-full lg:max-w-96"
-    //       />
-    //     </div>
-    //   </CardContent>
-    // </Card>
-  );
-}
-
-export function Component() {
-  return (
     <div className="min-h-screen bg-background">
       {/* Hero Banner */}
       <div className="relative h-[40vh] py-4 bg-gradient-to-r from-purple-600 to-blue-600">
@@ -142,33 +76,19 @@ export function Component() {
               <AvatarFallback>BB</AvatarFallback>
             </Avatar>
             <div className="text-white">
-              <h1 className="text-2xl font-bold">Bilal Burgers on Bathurst</h1>
+              <h1 className="text-2xl font-bold">{venture.name}</h1>
               <p className="text-sm">Toronto, Canada</p>
             </div>
           </div>
         </div>
       </div>
 
+      {/* Actions  */}
       <nav className="border-b bg-background">
         <div className="container flex items-center justify-between p-4">
           <div className="flex items-center flex-wrap justify-between gap-6 w-full">
             <VentureTabs />
-
-            <div className="flex items-center gap-2">
-              <Button size="lg" className="px-6">
-                Invest
-              </Button>
-              <Button variant="outline" size="icon">
-                <MessageSquare className="h-5 w-5" />
-              </Button>
-              <Button
-                variant="outline"
-                size="icon"
-                className="text-red-500 hover:text-red-500/80"
-              >
-                <Heart className="h-5 w-5" />
-              </Button>
-            </div>
+            <VentureViewActions ventureId={venture.id} />
           </div>
         </div>
       </nav>
@@ -176,106 +96,100 @@ export function Component() {
       {/* Main Content */}
       <div className="container py-8 px-4">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-          <div className="md:col-span-2">
-            <Tabs defaultValue="overview">
-              <TabsContent value="overview" className="space-y-6">
-                <div className="rounded-lg border p-4">
-                  <h2 className="font-semibold">Please note:</h2>
-                  <p className="text-sm text-muted-foreground">
-                    Investing in early stage businesses involves risks,
-                    including illiquidity, lack of dividends, loss of investment
-                    and dilution, and it should be done only as part of a
-                    diversified portfolio.
-                  </p>
-                </div>
+          <div className="md:col-span-2 space-y-6">
+            <div className="rounded-lg border p-4">
+              <h2 className="font-semibold">Please note:</h2>
+              <p className="text-sm text-muted-foreground">
+                Investing in early stage businesses involves risks, including
+                illiquidity, lack of dividends, loss of investment and dilution,
+                and it should be done only as part of a diversified portfolio.
+              </p>
+            </div>
 
-                <section>
-                  <h2 className="text-xl font-bold">Summary</h2>
-                  <p className="mt-2 text-muted-foreground">
-                    A family-friendly burger restaurant that combines delicious,
-                    high-quality ingredients with a welcoming atmosphere. Known
-                    for its mouth-watering burgers topped with fresh, flavorful
-                    ingredients, Bilal Burgers creates an unforgettable dining
-                    experience with options for all tastes.
-                  </p>
-                </section>
+            <section>
+              <h2 className="text-xl font-bold">Summary</h2>
+              <p className="mt-2 text-muted-foreground">
+                A family-friendly burger restaurant that combines delicious,
+                high-quality ingredients with a welcoming atmosphere. Known for
+                its mouth-watering burgers topped with fresh, flavorful
+                ingredients, Bilal Burgers creates an unforgettable dining
+                experience with options for all tastes.
+              </p>
+            </section>
 
-                <section>
-                  <h2 className="text-xl font-bold">The Business</h2>
-                  <p className="mt-2 text-muted-foreground">
-                    The menu offers classic beef burgers, chicken sandwiches,
-                    and vegetarian options, all made to order. With a nod to
-                    cultural heritage through thoughtful decor and a unique
-                    blend of spices, Bilal Burgers has become a favorite spot
-                    for locals and newcomers alike.
-                  </p>
-                </section>
+            <section>
+              <h2 className="text-xl font-bold">The Business</h2>
+              <p className="mt-2 text-muted-foreground">
+                The menu offers classic beef burgers, chicken sandwiches, and
+                vegetarian options, all made to order. With a nod to cultural
+                heritage through thoughtful decor and a unique blend of spices,
+                Bilal Burgers has become a favorite spot for locals and
+                newcomers alike.
+              </p>
+            </section>
 
-                <section>
-                  <h2 className="text-xl font-bold">The Market</h2>
-                  <p className="mt-2 text-muted-foreground">
-                    The restaurant's focus on quality, flavor, and community
-                    makes it a standout choice for anyone craving a hearty,
-                    satisfying meal. Our unique positioning in the market
-                    combines traditional flavors with modern dining
-                    expectations.
-                  </p>
-                </section>
+            <section>
+              <h2 className="text-xl font-bold">The Market</h2>
+              <p className="mt-2 text-muted-foreground">
+                The restaurant's focus on quality, flavor, and community makes
+                it a standout choice for anyone craving a hearty, satisfying
+                meal. Our unique positioning in the market combines traditional
+                flavors with modern dining expectations.
+              </p>
+            </section>
 
-                <section>
-                  <h2 className="text-xl font-bold">The Team</h2>
-                  <div className="mt-4 space-y-4">
-                    {[1, 2, 3].map((i) => (
-                      <div key={i} className="flex items-center gap-4">
-                        <Avatar>
-                          <AvatarImage src="/placeholder.svg" />
-                          <AvatarFallback>ST</AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <div className="font-medium">Team Member</div>
-                          <div className="text-sm text-muted-foreground">
-                            CEO
-                          </div>
-                        </div>
-                      </div>
-                    ))}
+            <section>
+              <h2 className="text-xl font-bold">The Team</h2>
+              <div className="mt-4 space-y-4">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="flex items-center gap-4">
+                    <Avatar>
+                      <AvatarImage src="/placeholder.svg" />
+                      <AvatarFallback>ST</AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <div className="font-medium">Team Member</div>
+                      <div className="text-sm text-muted-foreground">CEO</div>
+                    </div>
                   </div>
-                </section>
+                ))}
+              </div>
+            </section>
 
-                <section>
-                  <h2 className="text-xl font-bold">FAQ</h2>
-                  <Accordion type="single" collapsible className="mt-4">
-                    <AccordionItem value="item-1">
-                      <AccordionTrigger>How do we make money?</AccordionTrigger>
-                      <AccordionContent>
-                        Through food sales and catering services.
-                      </AccordionContent>
-                    </AccordionItem>
-                    <AccordionItem value="item-2">
-                      <AccordionTrigger>
-                        Why should you invest?
-                      </AccordionTrigger>
-                      <AccordionContent>
-                        Strong growth potential and proven business model.
-                      </AccordionContent>
-                    </AccordionItem>
-                    <AccordionItem value="item-3">
-                      <AccordionTrigger>
-                        Our vision for the company?
-                      </AccordionTrigger>
-                      <AccordionContent>
-                        To become the leading halal burger chain in North
-                        America.
-                      </AccordionContent>
-                    </AccordionItem>
-                  </Accordion>
-                </section>
-              </TabsContent>
-            </Tabs>
+            <section>
+              <h2 className="text-xl font-bold">FAQ</h2>
+              <Accordion type="single" collapsible className="mt-4">
+                <AccordionItem value="item-1">
+                  <AccordionTrigger>How do we make money?</AccordionTrigger>
+                  <AccordionContent>
+                    Through food sales and catering services.
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="item-2">
+                  <AccordionTrigger>Why should you invest?</AccordionTrigger>
+                  <AccordionContent>
+                    Strong growth potential and proven business model.
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="item-3">
+                  <AccordionTrigger>
+                    Our vision for the company?
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    To become the leading halal burger chain in North America.
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </section>
           </div>
 
           {/* Sidebar */}
           <div className="space-y-6">
+            <VentureActiveRoundCard
+              ventureId={venture.id}
+              className="w-full h-full lg:max-w-96"
+            />
+
             <Card>
               <CardContent className="p-6">
                 <div className="space-y-4">
@@ -326,3 +240,61 @@ export function Component() {
     </div>
   );
 }
+
+// function OldVentureView() {
+//   return (
+//     <Card className="w-full relative max-w-screen-lg mx-auto">
+//       <CardHeader>
+//         <CardTitle className="flex flex-row items-center justify-between w-full"></CardTitle>
+//         <CardDescription>
+//           <span className="text-muted-foreground text-sm font-normal">
+//             {/* Seeking {round.percentageValue} for {round.percentageOffered} through {round.investorCount} investors{round.investorCount > 1 ? "s" : ""} */}
+//           </span>
+//         </CardDescription>
+//       </CardHeader>
+//       <CardContent className="flex flex-col gap-8 ">
+//         <div className="w-full flex flex-col lg:flex-row gap-4 h-full">
+//           <div className={cn("w-full flex flex-col px-2 gap-4")}>
+//             <div className="flex flex-col gap-1 font-semibold">
+//               By {business?.name}
+//             </div>
+//             <Separator className="w-full" />
+//             <span className="text-lg font-semibold">Business Details</span>
+//             <BusinessOverview
+//               overview={venture.overview}
+//               teamSize={business?.teamSize}
+//               businessId={business?.id}
+//             />
+//             <Separator className="w-full" />
+//             <span className="text-lg font-semibold">Venture Description</span>
+//             <div className="flex flex-col items-start justify-start">
+//               <p>{truncateText(venture.description, 350)}</p>
+//               {venture.description.length > 150 && (
+//                 <Dialog>
+//                   <DialogTrigger asChild>
+//                     <Button variant="outline" size="sm" className="mt-4">
+//                       <span className="text-xs underline">Show more</span>
+//                       <Icons.chevronRight className="w-4 h-4 ml-2" />
+//                     </Button>
+//                   </DialogTrigger>
+//                   <div className="max-w-screen-lg px-2">
+//                     <DialogContent className="rounded-md">
+//                       <DialogHeader>
+//                         <DialogTitle>Venture Description</DialogTitle>
+//                       </DialogHeader>
+//                       <div className="max-h-[70dvh] w-full h-full">
+//                         <ScrollArea className="h-full w-full">
+//                           {venture.description}
+//                         </ScrollArea>
+//                       </div>
+//                     </DialogContent>
+//                   </div>
+//                 </Dialog>
+//               )}
+//             </div>
+//           </div>
+//         </div>
+//       </CardContent>
+//     </Card>
+//   );
+// }

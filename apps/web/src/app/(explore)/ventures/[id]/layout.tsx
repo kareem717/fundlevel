@@ -7,5 +7,5 @@ export default function VentureViewLayout({
   children: React.ReactNode;
   // modal: React.ReactNode
 }) {
-  return <div className="flex flex-col">{children}</div>;
+  return <div className="">{children}</div>;
 }
