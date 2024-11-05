@@ -54,6 +54,7 @@
     "next": "latest",
     "next-safe-action": "^7.9.3",
     "next-themes": "^0.3.0",
+    "nuqs": "^2.1.1",
     "react": "latest",
     "react-day-picker": "8.10.1",
     "react-dom": "latest",
