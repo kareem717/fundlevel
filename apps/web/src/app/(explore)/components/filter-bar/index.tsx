@@ -59,8 +59,8 @@ export default function FilterBar() {
 
   return (
     <div className="w-full bg-background container">
-      <div className="flex flex-row gap-6 items-center justify-evenly w-full max-w-4xl">
-        <div className="relative flex-grow px-14">
+      <div className="flex flex-row gap-6 items-center justify-between w-full max-w-4xl">
+        <div className="relative flex-grow px-14 hidden md:block">
           <Carousel
             className="max-w-sm sm:max-w-md md:max-w-2xl lg:max-w-5xl"
             opts={{ loop: true, dragFree: true, duration: 15 }}
@@ -92,7 +92,7 @@ export default function FilterBar() {
           </Carousel>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 ml-auto md:ml-0">
           <Button variant="outline" onClick={() => setShowFilter(true)}>
             Filter
             <Filter className="h-4 w-4" />
@@ -118,6 +118,10 @@ export default function FilterBar() {
                 key={index}
                 variant="ghost"
                 className="justify-start gap-2"
+                onClick={() => {
+                  setSelectedIndustry(industry.label);
+                  setShowFilter(false);
+                }}
               >
                 <Cpu className="h-5 w-5" />
                 {industry.label}

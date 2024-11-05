@@ -35,22 +35,38 @@ export function VentureList({ title, ventures }: VentureListProps) {
   return (
     <div className="w-full py-6">
       <div className="container">
-        <h2 className="text-2xl font-semibold mb-6 md:mb-8">{title}</h2>
-        <div className="relative">
+        <h2 className="text-2xl font-semibold mb-6 md:mb-8 text-center md:text-left">
+          {title}
+        </h2>
+        <div className="relative max-w-[400px] md:max-w-none mx-auto">
           <Carousel
             className="w-full"
             setApi={setApi}
             opts={{
-              align: "start",
+              align: "center",
+              slidesToScroll: 1,
+              breakpoints: {
+                "(min-width: 768px)": {
+                  slidesToScroll: 2,
+                  align: "start",
+                },
+                "(min-width: 1024px)": {
+                  slidesToScroll: 3,
+                  align: "start",
+                },
+              },
             }}
           >
             <CarouselContent>
               {ventures?.map((venture) => (
-                <CarouselItem key={venture.id} className="md:basis-1/3">
+                <CarouselItem
+                  key={venture.id}
+                  className="basis-full md:basis-1/2 lg:basis-1/3"
+                >
                   <VentureCard venture={venture} />
                 </CarouselItem>
               ))}
-              <CarouselItem className="sm:basis-1/2 md:basis-1/3">
+              <CarouselItem className="basis-full md:basis-1/2 lg:basis-1/3">
                 <div className="h-full flex items-center justify-center">
                   <Button
                     variant="outline"
@@ -63,12 +79,12 @@ export function VentureList({ title, ventures }: VentureListProps) {
               </CarouselItem>
             </CarouselContent>
             {canScrollLeft && (
-              <div className="absolute left-0 top-1/2 z-10 bg-gradient-to-l from-transparent via-background/90 to-background w-12 h-full -translate-y-1/2">
-                <CarouselPrevious />
+              <div className="absolute left-0 top-1/2 z-10 -translate-y-1/2 md:bg-gradient-to-l md:from-transparent md:via-background/90 md:to-background md:w-12 md:h-full">
+                <CarouselPrevious className="relative md:absolute" />
               </div>
             )}
-            <div className="absolute right-0 top-1/2 z-10 bg-gradient-to-r from-transparent via-background/90 to-background w-12 h-full -translate-y-1/2">
-              <CarouselNext />
+            <div className="absolute right-0 top-1/2 z-10 -translate-y-1/2 md:bg-gradient-to-r md:from-transparent md:via-background/90 md:to-background md:w-12 md:h-full">
+              <CarouselNext className="relative md:absolute" />
             </div>
           </Carousel>
         </div>

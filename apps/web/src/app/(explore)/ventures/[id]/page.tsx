@@ -26,11 +26,13 @@ import { VentureActiveRoundCard } from "./components/venture-active-round-card";
 export default async function VentureViewPage(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   const parsedId = parseInt(params.id as string || ""); // Parse the id
+
   if (isNaN(parsedId)) {
     notFound();
   }
 
   const ventureResp = await getVentureById(parsedId)
+  
   if (!ventureResp?.data || ventureResp?.serverError) {
     console.error(ventureResp)
     throw new Error("Something went wrong")

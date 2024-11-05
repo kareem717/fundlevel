@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ThumbsDown, ThumbsUp } from "lucide-react";
 import Image from "next/image";
@@ -7,6 +7,8 @@ import { DislikeButton } from "./dislike-button";
 import { FavouriteButton } from "./favourite-button";
 import { Venture } from "@/lib/api";
 import { isVentureLiked } from "@/actions/ventures";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 type VentureCardProps = {
   venture: Venture;
@@ -74,9 +76,9 @@ export function VentureCard({ venture }: VentureCardProps) {
         </div>
 
         <div className="flex items-center gap-2 sm:gap-4">
-          <Button className="flex-1 bg-zinc-900 text-white hover:bg-zinc-800 text-sm sm:text-base">
+          <Link href={`/ventures/${venture.id}`} className={cn(buttonVariants({ variant: "outline" }), "flex-1")}>
             More Details
-          </Button>
+          </Link>
           <div className="flex gap-1 sm:gap-2">
             <FavouriteButton ventureId={venture.id} />
             <DislikeButton />
