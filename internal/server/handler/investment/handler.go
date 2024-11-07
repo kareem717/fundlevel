@@ -152,7 +152,7 @@ type CreateInvestmentInput struct {
 }
 
 func (h *httpHandler) createInvestment(ctx context.Context, input *CreateInvestmentInput) (*shared.SingleInvestmentResponse, error) {
-	account := shared.GetAuthenticatedAccount(ctx);
+	account := shared.GetAuthenticatedAccount(ctx)
 
 	if account.ID != input.Body.InvestorID {
 		h.logger.Error("input account id does not match authenticated account id",
@@ -195,13 +195,19 @@ func (h *httpHandler) createInvestment(ctx context.Context, input *CreateInvestm
 	return resp, nil
 }
 
-type GetStripeCheckoutLinkInput struct {
+type GetInvestmentEmbeddedCheckoutClientSecretInput struct {
 	shared.PathIDParam
 	RedirectURL string `query:"redirectUrl" required:"true" format:"url"`
 }
 
+type GetInvestmentEmbeddedCheckoutClientSecretOutput struct {
+	Body struct {
+		shared.MessageResponse
+		ClientSecret string `json:"clientSecret"`
+	} `json:"body"`
+}
 
-func (h *httpHandler) getInvestmentCheckoutLink(ctx context.Context, input *GetStripeCheckoutLinkInput) (*shared.URLOutput, error) {
+func (h *httpHandler) getInvestmentEmbeddedCheckoutClientSecret(ctx context.Context, input *GetInvestmentEmbeddedCheckoutClientSecretInput) (*GetInvestmentEmbeddedCheckoutClientSecretOutput, error) {
 	investmentRecord, err := h.service.InvestmentService.GetById(ctx, input.ID)
 	if err != nil {
 		h.logger.Error("failed to get investment", zap.Error(err))
@@ -241,9 +247,9 @@ func (h *httpHandler) getInvestmentCheckoutLink(ctx context.Context, input *GetS
 		return nil, huma.Error500InternalServerError("Failed to create stripe checkout session")
 	}
 
-	resp := &shared.URLOutput{}
+	resp := &GetInvestmentEmbeddedCheckoutClientSecretOutput{}
 	resp.Body.Message = "Stripe checkout link created successfully"
-	resp.Body.URL = sess
+	resp.Body.ClientSecret = sess
 
 	return resp, nil
 }

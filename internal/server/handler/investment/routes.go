@@ -100,11 +100,11 @@ func RegisterHumaRoutes(
 	}, handler.deleteInvestment)
 
 	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-account-checkout-link",
+		OperationID: "get-investment-embedded-checkout-client-secret",
 		Method:      http.MethodGet,
 		Path:        "/investments/{id}/checkout",
-		Summary:     "Get a stripe checkout link",
-		Description: "Get a stripe checkout link.",
+		Summary:     "Get a stripe embedded checkout client secret",
+		Description: "Get a stripe embedded checkout client secret.",
 		Tags:        []string{"Investments"},
 		Security: []map[string][]string{
 			{"bearerAuth": {}},
@@ -117,5 +117,5 @@ func RegisterHumaRoutes(
 				middleware.WithAccount(humaApi)(ctx, next, logger, service)
 			},
 		},
-	}, handler.getInvestmentCheckoutLink)
+	}, handler.getInvestmentEmbeddedCheckoutClientSecret)
 }

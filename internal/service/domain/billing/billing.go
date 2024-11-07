@@ -64,6 +64,7 @@ func (s *BillingService) CreateInvestmentCheckoutSession(
 	fmt.Println(stripe.Key)
 	checkoutParams := &stripe.CheckoutSessionParams{
 		SuccessURL: stripe.String(successURL),
+		UIMode:     stripe.String("embedded"),
 		CancelURL:  stripe.String(cancelURL),
 		LineItems: []*stripe.CheckoutSessionLineItemParams{
 			{
@@ -92,7 +93,7 @@ func (s *BillingService) CreateInvestmentCheckoutSession(
 		return "", err
 	}
 
-	return resp.URL, nil
+	return resp.ClientSecret, nil
 }
 
 func (s *BillingService) HandleInvestmentCheckoutSuccess(ctx context.Context, sessionID string) (string, error) {
