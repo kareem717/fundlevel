@@ -16,7 +16,7 @@ type VentureCardProps = {
 
 export function VentureCard({ venture }: VentureCardProps) {
   return (
-    <Card className="w-full max-w-[400px] overflow-hidden bg-white z-10">
+    <Card className="w-full max-w-[400px] overflow-hidden bg-background z-10">
       <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
         <div className="flex items-start gap-3 sm:gap-4">
           <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-lg bg-gradient-to-b from-blue-400 to-emerald-400 flex-shrink-0" />
@@ -76,7 +76,10 @@ export function VentureCard({ venture }: VentureCardProps) {
         </div>
 
         <div className="flex items-center gap-2 sm:gap-4">
-          <Link href={`/ventures/${venture.id}`} className={cn(buttonVariants({ variant: "outline" }), "flex-1")}>
+          <Link
+            href={`/ventures/${venture.id}`}
+            className={cn(buttonVariants({ variant: "outline" }), "flex-1")}
+          >
             More Details
           </Link>
           <div className="flex gap-1 sm:gap-2">

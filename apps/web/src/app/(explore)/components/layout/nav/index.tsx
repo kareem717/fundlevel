@@ -14,16 +14,16 @@ export function ExploreNav() {
         <div className="container flex justify-between items-center py-4">
           <LogoDiv className="hidden lg:flex" />
           <SmallLogoDiv className="lg:hidden" />
-          <ExploreToggle className="hidden sm:flex" />
+          {/* <ExploreToggle className="hidden sm:flex" /> */}
           <div className="flex items-center justify-center gap-2">
-            <Link
+            {/* <Link
               href={redirects.app.myBusinesses.create}
               className="hidden sm:block text-sm mr-2"
             >
               List on Fundlevel
-            </Link>
+            </Link> */}
             <ExploreAuth />
-            <ModeToggle variant="outline" />
+            {/* <ModeToggle variant="outline" /> */}
           </div>
         </div>
       </div>

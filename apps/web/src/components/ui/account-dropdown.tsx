@@ -1,4 +1,4 @@
-import { ComponentPropsWithoutRef, FC } from "react"
+import { ComponentPropsWithoutRef, FC } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -6,32 +6,58 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import { Account } from "@/lib/api";
 import { buttonVariants } from "./button";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Icons } from "./icons";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import redirects from "@/lib/config/redirects";
 
-export interface AccountDropdownProps extends ComponentPropsWithoutRef<typeof DropdownMenuTrigger> {
-  account: Account
-};
+export interface AccountDropdownProps
+  extends ComponentPropsWithoutRef<typeof DropdownMenuTrigger> {
+  account: Account;
+}
 
-export const AccountDropdown: FC<AccountDropdownProps> = ({ account, className, ...props }) => {
+export const AccountDropdown: FC<AccountDropdownProps> = ({
+  account,
+  className,
+  ...props
+}) => {
   const intials = account.firstName.charAt(0) + account.lastName.charAt(0);
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className={cn("flex items-center justify-center gap-2", buttonVariants({ variant: "outline" }), className)} {...props}>
+      <DropdownMenuTrigger
+        className={cn(
+          "flex items-center justify-center gap-2",
+          buttonVariants({ variant: "outline" }),
+          className
+        )}
+        {...props}
+      >
         <Icons.menu className="size-5" />
         <Avatar className="size-7">
           {/* <AvatarImage src="https://github.com/shadcn.png" /> */}
-          <AvatarFallback >{intials.toUpperCase()}</AvatarFallback>
+          <AvatarFallback>{intials.toUpperCase()}</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
+        <DropdownMenuLabel>Investors</DropdownMenuLabel>
+        <DropdownMenuItem>
+          <Link href={redirects.app.investments.root}>My Portfolio</Link>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+
+        <DropdownMenuLabel>Businesses</DropdownMenuLabel>
+        <DropdownMenuItem>
+          <Link href={redirects.app.myBusinesses.index}>My Ventures</Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <Link href={redirects.app.myBusinesses.create}>Dashboard</Link>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuItem>
           <Link href={redirects.auth.logout}>Logout</Link>
@@ -39,18 +65,7 @@ export const AccountDropdown: FC<AccountDropdownProps> = ({ account, className, 
         <DropdownMenuItem>
           <Link href={redirects.app.settings.account}>Settings</Link>
         </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Link href={redirects.app.investments.root}>My Investments</Link>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuLabel>Business</DropdownMenuLabel>
-        <DropdownMenuItem>
-          <Link href={redirects.app.myBusinesses.index}>My Businesses</Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Link href={redirects.app.myBusinesses.create}>Create Business</Link>
-        </DropdownMenuItem>
       </DropdownMenuContent>
-    </DropdownMenu >
+    </DropdownMenu>
   );
 };
