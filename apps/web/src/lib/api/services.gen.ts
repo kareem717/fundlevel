@@ -154,12 +154,12 @@ import {
 	type DeleteRoundInvestmentData,
 	type DeleteRoundInvestmentError,
 	type DeleteRoundInvestmentResponse,
-	type AcceptInvestmentData,
-	type AcceptInvestmentError,
-	type AcceptInvestmentResponse,
 	type GetInvestmentPaymentIntentClientSecretData,
 	type GetInvestmentPaymentIntentClientSecretError,
 	type GetInvestmentPaymentIntentClientSecretResponse,
+	type ProcessInvestmentData,
+	type ProcessInvestmentError,
+	type ProcessInvestmentResponse,
 	type WithdrawInvestmentData,
 	type WithdrawInvestmentError,
 	type WithdrawInvestmentResponse,
@@ -1154,23 +1154,6 @@ export const deleteRoundInvestment = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Accept an investment
- * Accept an investment.
- */
-export const acceptInvestment = <ThrowOnError extends boolean = false>(
-	options: Options<AcceptInvestmentData, ThrowOnError>
-) => {
-	return (options?.client ?? client).put<
-		AcceptInvestmentResponse,
-		AcceptInvestmentError,
-		ThrowOnError
-	>({
-		...options,
-		url: "/investments/{id}/accept",
-	});
-};
-
-/**
  * Get a stripe payment intent client secret
  * Get a stripe payment intent client secret.
  */
@@ -1186,6 +1169,23 @@ export const getInvestmentPaymentIntentClientSecret = <
 	>({
 		...options,
 		url: "/investments/{id}/payment-intent",
+	});
+};
+
+/**
+ * Process an investment
+ * Process an investment.
+ */
+export const processInvestment = <ThrowOnError extends boolean = false>(
+	options: Options<ProcessInvestmentData, ThrowOnError>
+) => {
+	return (options?.client ?? client).put<
+		ProcessInvestmentResponse,
+		ProcessInvestmentError,
+		ThrowOnError
+	>({
+		...options,
+		url: "/investments/{id}/process",
 	});
 };
 

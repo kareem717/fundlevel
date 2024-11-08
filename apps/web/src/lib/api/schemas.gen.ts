@@ -1307,7 +1307,7 @@ export const RoundInvestmentSchema = {
             type: 'integer'
         },
         status: {
-            enum: ['pending', 'accepted', 'rejected', 'withdrawn', 'successful', 'failed'],
+            enum: ['pending', 'processing', 'rejected', 'withdrawn', 'successful', 'round_closed'],
             type: 'string'
         },
         updatedAt: {

@@ -503,19 +503,19 @@ export type RoundInvestment = {
     payment: RoundInvestmentPayment;
     round: Round;
     roundId: number;
-    status: 'pending' | 'accepted' | 'rejected' | 'withdrawn' | 'successful' | 'failed';
+    status: 'pending' | 'processing' | 'rejected' | 'withdrawn' | 'successful' | 'round_closed';
     updatedAt: (Date) | null;
 };
 
-export type status3 = 'pending' | 'accepted' | 'rejected' | 'withdrawn' | 'successful' | 'failed';
+export type status3 = 'pending' | 'processing' | 'rejected' | 'withdrawn' | 'successful' | 'round_closed';
 
 export const status3 = {
     PENDING: 'pending',
-    ACCEPTED: 'accepted',
+    PROCESSING: 'processing',
     REJECTED: 'rejected',
     WITHDRAWN: 'withdrawn',
     SUCCESSFUL: 'successful',
-    FAILED: 'failed'
+    ROUND_CLOSED: 'round_closed'
 } as const;
 
 export type RoundInvestmentPayment = {
@@ -739,7 +739,7 @@ export type GetAccountInvestmentsByCursorData = {
         limit?: number;
         sortBy?: 'created_at';
         sortOrder?: 'asc' | 'desc';
-        status?: Array<('pending' | 'accepted' | 'rejected' | 'withdrawn' | 'successful' | 'failed')> | null;
+        status?: Array<('pending' | 'processing' | 'rejected' | 'withdrawn' | 'successful' | 'round_closed')> | null;
     };
 };
 
@@ -756,7 +756,7 @@ export type GetAccountInvestmentsByPageData = {
         pageSize?: number;
         sortBy?: 'created_at';
         sortOrder?: 'asc' | 'desc';
-        status?: Array<('pending' | 'accepted' | 'rejected' | 'withdrawn' | 'successful' | 'failed')> | null;
+        status?: Array<('pending' | 'processing' | 'rejected' | 'withdrawn' | 'successful' | 'round_closed')> | null;
     };
 };
 
@@ -1056,7 +1056,7 @@ export type GetBusinessInvestmentsByCursorData = {
         limit?: number;
         sortBy?: 'created_at';
         sortOrder?: 'asc' | 'desc';
-        status?: Array<('pending' | 'accepted' | 'rejected' | 'withdrawn' | 'successful' | 'failed')> | null;
+        status?: Array<('pending' | 'processing' | 'rejected' | 'withdrawn' | 'successful' | 'round_closed')> | null;
     };
 };
 
@@ -1073,7 +1073,7 @@ export type GetBusinessInvestmentsByPageData = {
         pageSize?: number;
         sortBy?: 'created_at';
         sortOrder?: 'asc' | 'desc';
-        status?: Array<('pending' | 'accepted' | 'rejected' | 'withdrawn' | 'successful' | 'failed')> | null;
+        status?: Array<('pending' | 'processing' | 'rejected' | 'withdrawn' | 'successful' | 'round_closed')> | null;
     };
 };
 
@@ -1290,16 +1290,6 @@ export type DeleteRoundInvestmentResponse = (string);
 
 export type DeleteRoundInvestmentError = (ErrorModel);
 
-export type AcceptInvestmentData = {
-    path: {
-        id: number;
-    };
-};
-
-export type AcceptInvestmentResponse = (string);
-
-export type AcceptInvestmentError = (ErrorModel);
-
 export type GetInvestmentPaymentIntentClientSecretData = {
     path: {
         id: number;
@@ -1309,6 +1299,16 @@ export type GetInvestmentPaymentIntentClientSecretData = {
 export type GetInvestmentPaymentIntentClientSecretResponse = (GetInvestmentPaymentIntentClientSecretOutputBody);
 
 export type GetInvestmentPaymentIntentClientSecretError = (ErrorModel);
+
+export type ProcessInvestmentData = {
+    path: {
+        id: number;
+    };
+};
+
+export type ProcessInvestmentResponse = (string);
+
+export type ProcessInvestmentError = (ErrorModel);
 
 export type WithdrawInvestmentData = {
     path: {
@@ -1411,7 +1411,7 @@ export type GetRoundInvestmentsByCursorData = {
         limit?: number;
         sortBy?: 'created_at';
         sortOrder?: 'asc' | 'desc';
-        status?: Array<('pending' | 'accepted' | 'rejected' | 'withdrawn' | 'successful' | 'failed')> | null;
+        status?: Array<('pending' | 'processing' | 'rejected' | 'withdrawn' | 'successful' | 'round_closed')> | null;
     };
 };
 
@@ -1428,7 +1428,7 @@ export type GetRoundInvestmentsByPageData = {
         pageSize?: number;
         sortBy?: 'created_at';
         sortOrder?: 'asc' | 'desc';
-        status?: Array<('pending' | 'accepted' | 'rejected' | 'withdrawn' | 'successful' | 'failed')> | null;
+        status?: Array<('pending' | 'processing' | 'rejected' | 'withdrawn' | 'successful' | 'round_closed')> | null;
     };
 };
 
@@ -1522,7 +1522,7 @@ export type GetVentureRoundInvestmentsByCursorData = {
         limit?: number;
         sortBy?: 'created_at';
         sortOrder?: 'asc' | 'desc';
-        status?: Array<('pending' | 'accepted' | 'rejected' | 'withdrawn' | 'successful' | 'failed')> | null;
+        status?: Array<('pending' | 'processing' | 'rejected' | 'withdrawn' | 'successful' | 'round_closed')> | null;
     };
 };
 
@@ -1539,7 +1539,7 @@ export type GetVentureRoundInvestmentsByPageData = {
         pageSize?: number;
         sortBy?: 'created_at';
         sortOrder?: 'asc' | 'desc';
-        status?: Array<('pending' | 'accepted' | 'rejected' | 'withdrawn' | 'successful' | 'failed')> | null;
+        status?: Array<('pending' | 'processing' | 'rejected' | 'withdrawn' | 'successful' | 'round_closed')> | null;
     };
 };
 

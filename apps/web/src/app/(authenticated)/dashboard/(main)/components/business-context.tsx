@@ -63,6 +63,7 @@ export const BusinessContextProvider: FC<{
 
   //TODO: i'd assume there's a better way to do this
   useEffect(() => {
+    //? Should we throw an error if the business isn't found instead of defaulting to the first one?
     setCurrentBusiness(businesses.find(business => business.id === currentBusinessId) || businesses[0])
   }, [currentBusinessId, businesses])
 

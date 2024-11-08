@@ -10,7 +10,7 @@ import {
 } from "@/lib/api";
 import { createInvestmentSchema } from "@/actions/validations/investments";
 import { intIdSchema, offsetPaginationSchema } from "./validations/shared";
-import { object, string } from "yup";
+import { cache } from "react";
 
 /**
  * Create a investment on a round
@@ -71,29 +71,17 @@ export const withdrawInvestment = actionClientWithAccount
 	});
 
 export const getInvestmentPaymentIntentClientSecret = actionClientWithAccount
-	.schema(
-		object().shape({
-			investmentId: intIdSchema.required(),
-			redirectUrl: string().required(),
-		})
-	)
-	.action(
-		async ({
-			parsedInput: { investmentId, redirectUrl },
-			ctx: { apiClient, account },
-		}) => {
-			if (!account) {
-				throw new Error("Account not found");
+	.schema(intIdSchema.required())
+	.action(async ({ parsedInput, ctx: { apiClient, account } }) => {
+		if (!account) {
+			throw new Error("Account not found");
 			}
 
 			const resp = await getInvestmentPaymentIntentClientSecretApi({
 				client: apiClient,
 				path: {
 					id: account.id,
-					investmentId,
-				},
-				query: {
-					redirectUrl,
+					investmentId: parsedInput,
 				},
 				throwOnError: true,
 			});
@@ -115,3 +103,5 @@ export const getInvestmentById = actionClientWithAccount
 
 		return resp.data;
 	});
+
+export const getInvestmentByIdCached = cache(getInvestmentById);
