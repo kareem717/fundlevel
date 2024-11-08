@@ -20,11 +20,11 @@ func RegisterHumaRoutes(
 	handler := newHTTPHandler(service, logger)
 
 	huma.Register(humaApi, huma.Operation{
-		OperationID: "accept-investment",
+		OperationID: "process-investment",
 		Method:      http.MethodPut,
-		Path:        "/investments/{id}/accept",
-		Summary:     "Accept an investment",
-		Description: "Accept an investment.",
+		Path:        "/investments/{id}/process",
+		Summary:     "Process an investment",
+		Description: "Process an investment.",
 		Tags:        []string{"Investments"},
 		Security: []map[string][]string{
 			{"bearerAuth": {}},
@@ -37,7 +37,7 @@ func RegisterHumaRoutes(
 				middleware.WithAccount(humaApi)(ctx, next, logger, service)
 			},
 		},
-	}, handler.acceptInvestment)
+	}, handler.processInvestment)
 
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "withdraw-investment",
@@ -100,11 +100,11 @@ func RegisterHumaRoutes(
 	}, handler.deleteInvestment)
 
 	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-investment-embedded-checkout-client-secret",
+		OperationID: "get-investment-payment-intent-client-secret",
 		Method:      http.MethodGet,
-		Path:        "/investments/{id}/checkout",
-		Summary:     "Get a stripe embedded checkout client secret",
-		Description: "Get a stripe embedded checkout client secret.",
+		Path:        "/investments/{id}/payment-intent",
+		Summary:     "Get a stripe payment intent client secret",
+		Description: "Get a stripe payment intent client secret.",
 		Tags:        []string{"Investments"},
 		Security: []map[string][]string{
 			{"bearerAuth": {}},
@@ -117,5 +117,5 @@ func RegisterHumaRoutes(
 				middleware.WithAccount(humaApi)(ctx, next, logger, service)
 			},
 		},
-	}, handler.getInvestmentEmbeddedCheckoutClientSecret)
+	}, handler.getInvestmentPaymentIntentClientSecret)
 }

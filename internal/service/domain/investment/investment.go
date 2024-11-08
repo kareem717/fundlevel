@@ -4,17 +4,20 @@ import (
 	"context"
 
 	"fundlevel/internal/entities/investment"
+	"fundlevel/internal/service/domain/billing"
 	"fundlevel/internal/storage"
 )
 
 type InvestmentService struct {
-	repositories storage.Repository
+	repositories   storage.Repository
+	billingService *billing.BillingService
 }
 
 // NewInvestmentService returns a new instance of investment service.
-func NewInvestmentService(repositories storage.Repository) *InvestmentService {
+func NewInvestmentService(repositories storage.Repository, billingService *billing.BillingService) *InvestmentService {
 	return &InvestmentService{
-		repositories: repositories,
+		repositories:   repositories,
+		billingService: billingService,
 	}
 }
 
@@ -26,16 +29,40 @@ func (s *InvestmentService) Update(ctx context.Context, id int, params investmen
 	return s.repositories.Investment().Update(ctx, id, params)
 }
 
-func (s *InvestmentService) AcceptInvestment(ctx context.Context, investmentId int) error {
+func (s *InvestmentService) ProcessInvestment(ctx context.Context, investmentId int) error {
 	updateParams := investment.UpdateInvestmentParams{}
-	updateParams.Status = investment.InvestmentStatusAccepted
+	updateParams.Status = investment.InvestmentStatusProcessing
 
-	_, err := s.repositories.Investment().Update(ctx, investmentId, updateParams)
-	if err != nil {
-		return err
-	}
+	return s.repositories.RunInTx(ctx, func(ctx context.Context, tx storage.Transaction) error {
+		investmentRecord, err := s.repositories.Investment().Update(ctx, investmentId, updateParams)
+		if err != nil {
+			return err
+		}
 
-	return nil
+		round, err := tx.Round().GetById(ctx, investmentRecord.RoundID)
+		if err != nil {
+			return err
+		}
+
+		checkoutPrice := int(round.BuyIn * 100)
+
+		paymentIntent, err := s.billingService.CreateInvestmentPaymentIntent(ctx, checkoutPrice, investmentRecord.ID, round.ValueCurrency, round.Venture.Business.StripeConnectedAccountID)
+		if err != nil {
+			return err
+		}
+
+		paymentParams := investment.CreateRoundInvestmentPaymentParams{
+			RoundInvestmentID:               investmentRecord.ID,
+			StripePaymentIntentID:           paymentIntent.ID,
+			StripePaymentIntentClientSecret: paymentIntent.ClientSecret,
+		}
+		_, err = tx.Investment().CreatePayment(ctx, paymentParams)
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
 }
 
 func (s *InvestmentService) WithdrawInvestment(ctx context.Context, investmentId int) error {

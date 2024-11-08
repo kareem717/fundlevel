@@ -1,8 +1,6 @@
 package investment
 
 import (
-	"time"
-
 	"fundlevel/internal/entities/account"
 	"fundlevel/internal/entities/round"
 	"fundlevel/internal/entities/shared"
@@ -14,11 +12,11 @@ type InvestmentStatus string
 
 const (
 	InvestmentStatusPending    InvestmentStatus = "pending"
-	InvestmentStatusAccepted   InvestmentStatus = "accepted"
+	InvestmentStatusProcessing InvestmentStatus = "processing"
 	InvestmentStatusRejected   InvestmentStatus = "rejected"
 	InvestmentStatusWithdrawn  InvestmentStatus = "withdrawn"
 	InvestmentStatusSuccessful InvestmentStatus = "successful"
-	InvestmentStatusFailed     InvestmentStatus = "failed"
+	InvestmentStatusRoundClosed  InvestmentStatus = "round_closed"
 )
 
 // FixedTotalRound represents an fixed total round entity.
@@ -26,11 +24,10 @@ type RoundInvestment struct {
 	bun.BaseModel `bun:"table:round_investments"`
 	shared.IntegerID
 	CreateInvestmentParams
-	Status                  InvestmentStatus `json:"status" enum:"pending,accepted,rejected,withdrawn,successful,failed"`
-	StripeCheckoutSessionID *string          `json:"stripeCheckoutSessionId" hidden:"true" required:"false"`
-	PaidAt                  *time.Time       `json:"paidAt"`
-	Round                   *round.Round     `json:"round" bun:"rel:belongs-to,join:round_id=id"`
-	Investor                *account.Account `json:"investor" bun:"rel:belongs-to,join:investor_id=id"`
+	Status   InvestmentStatus        `json:"status" enum:"pending,processing,rejected,withdrawn,successful,round_closed"`
+	Payment  *RoundInvestmentPayment `json:"payment" bun:"rel:has-one,join:id=round_investment_id"`
+	Round    *round.Round            `json:"round" bun:"rel:belongs-to,join:round_id=id"`
+	Investor *account.Account        `json:"investor" bun:"rel:belongs-to,join:investor_id=id"`
 	shared.Timestamps
 }
 
@@ -40,16 +37,12 @@ type CreateInvestmentParams struct {
 }
 
 type UpdateInvestmentParams struct {
-	Status                  InvestmentStatus `json:"status" enum:"pending,accepted,rejected,withdrawn,successful,failed" hidden:"true" required:"false"`
-	StripeCheckoutSessionID *string          `json:"stripeCheckoutSessionId" hidden:"true" required:"false"`
-	PaidAt                  *time.Time       `json:"paidAt" hidden:"true" required:"false"`
+	Status InvestmentStatus `json:"status" enum:"pending,processing,rejected,withdrawn,successful,round_closed"`
 }
 
 type InvestmentFilter struct {
-	Status    []string  `query:"status" required:"false" enum:"pending,accepted,rejected,withdrawn,successful,failed"`
-	MinPaidAt time.Time `query:"minPaidAt" required:"false" format:"date-time"`
-	MaxPaidAt time.Time `query:"maxPaidAt" required:"false" format:"date-time"`
+	Status []string `query:"status" required:"false" enum:"pending,processing,rejected,withdrawn,successful,round_closed"`
 
-	SortBy    string `query:"sortBy" required:"false" enum:"paid_at,created_at"`
-	SortOrder string `query:"sortOrder" required:"false" enum:"asc,desc" default:"asc"`
+	SortBy    string `query:"sortBy" required:"false" enum:"created_at"`
+	SortOrder string `query:"sortOrder" required:"false" enum:"asc,desc" default:"desc"`
 }

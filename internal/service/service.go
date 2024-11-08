@@ -109,8 +109,11 @@ type BusinessService interface {
 }
 
 type BillingService interface {
-	CreateInvestmentCheckoutSession(ctx context.Context, price int, successURL string, cancelURL string, investmentId int, currency shared.Currency, businessStripeAccountID string) (string, error)
-	HandleInvestmentCheckoutSuccess(ctx context.Context, sessionID string) (string, error)
+	CreateInvestmentPaymentIntent(ctx context.Context, price int, investmentId int, currency shared.Currency, businessStripeAccountID string) (*stripe.PaymentIntent, error)
+	HandleInvestmentPaymentIntentSuccess(ctx context.Context, intentID string) error
+	HandleInvestmentPaymentIntentPaymentFailed(ctx context.Context, intentID string) error
+	HandleInvestmentPaymentIntentProcessing(ctx context.Context, intentID string) error
+	HandleInvestmentPaymentIntentCancelled(ctx context.Context, intentID string) error
 
 	CreateAccountLink(ctx context.Context, accountID string, returnURL string, refreshURL string) (string, error)
 	CreateStripeConnectedAccount(ctx context.Context) (stripe.Account, error)
@@ -119,7 +122,7 @@ type BillingService interface {
 }
 
 type InvestmentService interface {
-	AcceptInvestment(ctx context.Context, investmentId int) error
+	ProcessInvestment(ctx context.Context, investmentId int) error
 	WithdrawInvestment(ctx context.Context, investmentId int) error
 	DeleteInvestment(ctx context.Context, investmentId int) error
 	CreateInvestment(ctx context.Context, params investment.CreateInvestmentParams) (investment.RoundInvestment, error)
@@ -168,8 +171,8 @@ type ChatService interface {
 	Update(ctx context.Context, chatID int, params chat.UpdateChatParams) (chat.Chat, error)
 	Delete(ctx context.Context, chatID int) error
 	GetChatById(ctx context.Context, id int) (chat.Chat, error)
-	
-	IsAccountInChat(ctx context.Context, chatID int, accountID int) (bool, error)	
+
+	IsAccountInChat(ctx context.Context, chatID int, accountID int) (bool, error)
 }
 
 type Service struct {
@@ -203,7 +206,7 @@ func NewService(
 		RoundService:      roundService.NewRoundService(repositories),
 		BusinessService:   businessService.NewBusinessService(repositories, billingService),
 		BillingService:    billingService,
-		InvestmentService: investmentService.NewInvestmentService(repositories),
+		InvestmentService: investmentService.NewInvestmentService(repositories, billingService),
 		ChatService:       chatService.NewChatService(repositories),
 	}
 }

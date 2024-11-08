@@ -45,6 +45,7 @@ type RoundRepository interface {
 	GetById(ctx context.Context, id int) (round.Round, error)
 	GetByCursor(ctx context.Context, paginationParams postgres.CursorPagination, filter round.RoundFilter) ([]round.Round, error)
 	GetByPage(ctx context.Context, paginationParams postgres.OffsetPagination, filter round.RoundFilter) ([]round.Round, int, error)
+	Update(ctx context.Context, id int, params round.UpdateRoundParams) (round.Round, error)
 
 	// GetInvestmentsByCursor gets all of the investments received on the round using cursor pagination
 	GetInvestmentsByCursor(ctx context.Context, roundId int, paginationParams postgres.CursorPagination, filter investment.InvestmentFilter) ([]investment.RoundInvestment, error)
@@ -60,6 +61,12 @@ type InvestmentRepository interface {
 	GetByCursor(ctx context.Context, paginationParams postgres.CursorPagination, filter investment.InvestmentFilter) ([]investment.RoundInvestment, error)
 	GetByPage(ctx context.Context, paginationParams postgres.OffsetPagination, filter investment.InvestmentFilter) ([]investment.RoundInvestment, int, error)
 	GetByRoundIdAndAccountId(ctx context.Context, roundId int, accountId int) (investment.RoundInvestment, error)
+	UpdateProcessingAndPendingInvestmentsByRoundId(ctx context.Context, roundId int, status investment.InvestmentStatus) error
+	
+	CreatePayment(ctx context.Context, params investment.CreateRoundInvestmentPaymentParams) (investment.RoundInvestmentPayment, error)
+	UpdatePayment(ctx context.Context, investmentId int, params investment.UpdateRoundInvestmentPaymentParams) (investment.RoundInvestmentPayment, error)
+	GetPayment(ctx context.Context, roundInvestmentId int) (investment.RoundInvestmentPayment, error)
+	GetPaymentByIntentId(ctx context.Context, intentId string) (investment.RoundInvestmentPayment, error)
 }
 
 type AccountRepository interface {

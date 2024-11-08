@@ -117,3 +117,16 @@ func (r *RoundRepository) Create(
 
 	return resp, err
 }
+
+func (r *RoundRepository) Update(ctx context.Context, id int, params round.UpdateRoundParams) (round.Round, error) {
+	resp := round.Round{}
+
+	err := r.db.NewUpdate().
+		Model(&params).
+		ModelTableExpr("rounds").
+		Where("rounds.id = ?", id).
+		Returning("*").
+		Scan(ctx, &resp)
+
+	return resp, err
+}

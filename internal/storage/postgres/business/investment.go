@@ -60,7 +60,7 @@ func (r *BusinessRepository) GetTotalFunding(ctx context.Context, businessId int
 		ColumnExpr("SUM(round.percentage_value)").
 		Join("JOIN ventures").
 		JoinOn("round.venture_id = ventures.id").
-		Where("round.status = ?", round.Successful).
+		Where("round.status = ?", round.RoundStatusSuccessful).
 		Where("ventures.business_id = ?", businessId).
 		Group("ventures.business_id").
 		Scan(ctx, &totalFunding)

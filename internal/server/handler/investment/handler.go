@@ -32,7 +32,7 @@ func newHTTPHandler(service *service.Service, logger *zap.Logger) *httpHandler {
 	}
 }
 
-func (h *httpHandler) acceptInvestment(ctx context.Context, input *shared.PathIDParam) (*shared.MessageResponse, error) {
+func (h *httpHandler) processInvestment(ctx context.Context, input *shared.PathIDParam) (*shared.MessageResponse, error) {
 	investmentResult, err := h.service.InvestmentService.GetById(ctx, input.ID)
 	if err != nil {
 		switch {
@@ -67,10 +67,10 @@ func (h *httpHandler) acceptInvestment(ctx context.Context, input *shared.PathID
 		return nil, huma.Error403Forbidden("Cannot accept investment for a round for a business you do not own")
 	}
 
-	err = h.service.InvestmentService.AcceptInvestment(ctx, input.ID)
+	err = h.service.InvestmentService.ProcessInvestment(ctx, input.ID)
 	if err != nil {
-		h.logger.Error("failed to accept investment", zap.Error(err))
-		return nil, huma.Error500InternalServerError("An error occurred while accepting the investment")
+		h.logger.Error("failed to process investment", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while processing the investment")
 	}
 
 	resp := &shared.MessageResponse{}
@@ -195,27 +195,26 @@ func (h *httpHandler) createInvestment(ctx context.Context, input *CreateInvestm
 	return resp, nil
 }
 
-type GetInvestmentEmbeddedCheckoutClientSecretInput struct {
+type GetInvestmentPaymentIntentClientSecretInput struct {
 	shared.PathIDParam
-	RedirectURL string `query:"redirectUrl" required:"true" format:"url"`
 }
 
-type GetInvestmentEmbeddedCheckoutClientSecretOutput struct {
+type GetInvestmentPaymentIntentClientSecretOutput struct {
 	Body struct {
 		shared.MessageResponse
 		ClientSecret string `json:"clientSecret"`
 	} `json:"body"`
 }
 
-func (h *httpHandler) getInvestmentEmbeddedCheckoutClientSecret(ctx context.Context, input *GetInvestmentEmbeddedCheckoutClientSecretInput) (*GetInvestmentEmbeddedCheckoutClientSecretOutput, error) {
+func (h *httpHandler) getInvestmentPaymentIntentClientSecret(ctx context.Context, input *GetInvestmentPaymentIntentClientSecretInput) (*GetInvestmentPaymentIntentClientSecretOutput, error) {
 	investmentRecord, err := h.service.InvestmentService.GetById(ctx, input.ID)
 	if err != nil {
 		h.logger.Error("failed to get investment", zap.Error(err))
 		return nil, huma.Error500InternalServerError("Failed to get investment")
 	}
 
-	if investmentRecord.Status != investment.InvestmentStatusAccepted {
-		return nil, huma.Error400BadRequest("Investment has not been accepted")
+	if investmentRecord.Status != investment.InvestmentStatusProcessing {
+		return nil, huma.Error400BadRequest("Investment has not begun processing")
 	}
 
 	if account := shared.GetAuthenticatedAccount(ctx); account.ID != investmentRecord.InvestorID {
@@ -226,30 +225,13 @@ func (h *httpHandler) getInvestmentEmbeddedCheckoutClientSecret(ctx context.Cont
 		return nil, huma.Error403Forbidden("Cannot get investment checkout link for a investment you did not make")
 	}
 
-	round, err := h.service.RoundService.GetById(ctx, investmentRecord.RoundID)
-	if err != nil {
-		h.logger.Error("failed to get round", zap.Error(err))
-		return nil, huma.Error500InternalServerError("Failed to get round")
+	if investmentRecord.Payment == nil {
+		return nil, huma.Error400BadRequest("Investment has no payment")
 	}
 
-	checkoutPrice := int(round.BuyIn * 100)
-	sess, err := h.service.BillingService.CreateInvestmentCheckoutSession(
-		ctx,
-		checkoutPrice,
-		input.RedirectURL,
-		input.RedirectURL,
-		investmentRecord.ID,
-		round.ValueCurrency,
-		round.Venture.Business.StripeConnectedAccountID,
-	)
-	if err != nil {
-		h.logger.Error("failed to create stripe checkout session", zap.Error(err))
-		return nil, huma.Error500InternalServerError("Failed to create stripe checkout session")
-	}
-
-	resp := &GetInvestmentEmbeddedCheckoutClientSecretOutput{}
-	resp.Body.Message = "Stripe checkout link created successfully"
-	resp.Body.ClientSecret = sess
+	resp := &GetInvestmentPaymentIntentClientSecretOutput{}
+	resp.Body.Message = "Stripe payment intent created successfully"
+	resp.Body.ClientSecret = investmentRecord.Payment.StripePaymentIntentClientSecret
 
 	return resp, nil
 }

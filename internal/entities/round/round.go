@@ -11,9 +11,9 @@ import (
 type RoundStatus string
 
 const (
-	Active     RoundStatus = "active"
-	Successful RoundStatus = "successful"
-	Failed     RoundStatus = "failed"
+	RoundStatusActive     RoundStatus = "active"
+	RoundStatusSuccessful RoundStatus = "successful"
+	RoundStatusFailed     RoundStatus = "failed"
 )
 
 // Round represents an round entity.
@@ -77,4 +77,8 @@ type CreateRoundParams struct {
 	InvestorCount     int             `json:"investorCount" minimum:"1"`
 	BuyIn             float64         `json:"buyIn" minimum:"1" hidden:"true" required:"false"`
 	Description       string          `json:"description" minLength:"10" maxLength:"3000"`
+}
+
+type UpdateRoundParams struct {
+	Status RoundStatus `json:"status" enum:"active,successful,failed"`
 }

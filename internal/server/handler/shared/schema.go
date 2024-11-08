@@ -48,10 +48,6 @@ type HandleStripeWebhookInput struct {
 	Body      json.RawMessage
 }
 
-type HandleStripeWebhookOutput struct {
-	RedirectURL *string `header:"Location"`
-	Status      int
-}
 type GetRoundsByParentAndCursorInput struct {
 	GetCursorPaginatedByParentPathIDInput
 	round.RoundFilter

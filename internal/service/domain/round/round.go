@@ -43,7 +43,7 @@ func (s *RoundService) Create(ctx context.Context, params round.CreateRoundParam
 	}
 
 	params.BuyIn = float64(params.PercentageValue) / float64(params.InvestorCount)
-	params.Status = round.Active
+	params.Status = round.RoundStatusActive
 
 	return s.repositories.Round().Create(ctx, params)
 }

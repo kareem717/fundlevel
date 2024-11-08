@@ -19,7 +19,7 @@ type FixedTotalRoundMap map[int][]FixedTotalRound
 // expected to already exist in the database
 func SeedFixedTotalRounds(db *sql.DB, ventureIds []int, seedConfig SeedConfig) (FixedTotalRoundMap, error) {
 	currencies := []shared.Currency{shared.USD, shared.GBP, shared.EUR, shared.CAD, shared.AUD, shared.JPY}
-	inactiveStatuses := []round.RoundStatus{round.Successful, round.Failed}
+	inactiveStatuses := []round.RoundStatus{round.RoundStatusSuccessful, round.RoundStatusFailed}
 	fixedTotalRounds := make(FixedTotalRoundMap)
 
 	for i := 0; i < seedConfig.numFixedTotalRounds; i++ {
@@ -33,7 +33,7 @@ func SeedFixedTotalRounds(db *sql.DB, ventureIds []int, seedConfig SeedConfig) (
 
 		var status round.RoundStatus
 		if _, roundExists := fixedTotalRounds[ventureId]; !roundExists {
-			status = round.Active
+			status = round.RoundStatusActive
 		} else {
 			status = inactiveStatuses[rand.Intn(len(inactiveStatuses))]
 		}
@@ -94,7 +94,7 @@ type RegularDynamicRoundMap map[int][]RegularDynamicRound
 // expected to already exist in the database
 func SeedRegularDynamicRounds(db *sql.DB, ventureIds []int, seedConfig SeedConfig) (RegularDynamicRoundMap, error) {
 	currencies := []shared.Currency{shared.USD, shared.GBP, shared.EUR, shared.CAD, shared.AUD, shared.JPY}
-	inactiveStatuses := []round.RoundStatus{round.Successful, round.Failed}
+	inactiveStatuses := []round.RoundStatus{round.RoundStatusSuccessful, round.RoundStatusFailed}
 	regularDynamicRounds := make(RegularDynamicRoundMap)
 
 	for i := seedConfig.numFixedTotalRounds; i < seedConfig.numFixedTotalRounds+seedConfig.numRegularDynamicRounds; i++ {
@@ -108,7 +108,7 @@ func SeedRegularDynamicRounds(db *sql.DB, ventureIds []int, seedConfig SeedConfi
 
 		var status round.RoundStatus
 		if _, roundExists := regularDynamicRounds[ventureId]; !roundExists {
-			status = round.Active
+			status = round.RoundStatusActive
 		} else {
 			status = inactiveStatuses[rand.Intn(len(inactiveStatuses))]
 		}
@@ -170,7 +170,7 @@ type PartialTotalRoundMap map[int][]PartialTotalRound
 // expected to already exist in the database
 func SeedPartialTotalRounds(db *sql.DB, ventureIds []int, seedConfig SeedConfig) (PartialTotalRoundMap, error) {
 	currencies := []shared.Currency{shared.USD, shared.GBP, shared.EUR, shared.CAD, shared.AUD, shared.JPY}
-	inactiveStatuses := []round.RoundStatus{round.Successful, round.Failed}
+	inactiveStatuses := []round.RoundStatus{round.RoundStatusSuccessful, round.RoundStatusFailed}
 	partialTotalRounds := make(PartialTotalRoundMap)
 
 	for i := seedConfig.numFixedTotalRounds + seedConfig.numRegularDynamicRounds; i < seedConfig.numFixedTotalRounds+seedConfig.numRegularDynamicRounds+seedConfig.numPartialTotalRounds; i++ {
@@ -184,7 +184,7 @@ func SeedPartialTotalRounds(db *sql.DB, ventureIds []int, seedConfig SeedConfig)
 
 		var status round.RoundStatus
 		if _, roundExists := partialTotalRounds[ventureId]; !roundExists {
-			status = round.Active
+			status = round.RoundStatusActive
 		} else {
 			status = inactiveStatuses[rand.Intn(len(inactiveStatuses))]
 		}
@@ -246,7 +246,7 @@ type DutchDynamicRoundMap map[int][]DutchDynamicRound
 // expected to already exist in the database
 func SeedDutchDynamicRounds(db *sql.DB, ventureIds []int, seedConfig SeedConfig) (DutchDynamicRoundMap, error) {
 	currencies := []shared.Currency{shared.USD, shared.GBP, shared.EUR, shared.CAD, shared.AUD, shared.JPY}
-	inactiveStatuses := []round.RoundStatus{round.Successful, round.Failed}
+	inactiveStatuses := []round.RoundStatus{round.RoundStatusSuccessful, round.RoundStatusFailed}
 	dutchDynamicRounds := make(DutchDynamicRoundMap)
 
 	for i := seedConfig.numFixedTotalRounds + seedConfig.numRegularDynamicRounds + seedConfig.numPartialTotalRounds; i < seedConfig.numFixedTotalRounds+seedConfig.numRegularDynamicRounds+seedConfig.numPartialTotalRounds+seedConfig.numDutchDynamicRounds; i++ {
@@ -260,7 +260,7 @@ func SeedDutchDynamicRounds(db *sql.DB, ventureIds []int, seedConfig SeedConfig)
 
 		var status round.RoundStatus
 		if _, roundExists := dutchDynamicRounds[ventureId]; !roundExists {
-			status = round.Active
+			status = round.RoundStatusActive
 		} else {
 			status = inactiveStatuses[rand.Intn(len(inactiveStatuses))]
 		}

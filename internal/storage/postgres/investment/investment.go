@@ -51,6 +51,7 @@ func (r *InvestmentRepository) GetById(ctx context.Context, id int) (investment.
 		Model(&resp).
 		Relation("Round").
 		Relation("Investor").
+		Relation("Payment").
 		Where("round_investment.id = ?", id).
 		Scan(ctx)
 
@@ -121,4 +122,15 @@ func (r *InvestmentRepository) GetByRoundIdAndAccountId(ctx context.Context, rou
 		Scan(ctx)
 
 	return resp, err
+}
+
+func (r *InvestmentRepository) UpdateProcessingAndPendingInvestmentsByRoundId(ctx context.Context, roundId int, status investment.InvestmentStatus) error {
+	_, err := r.db.NewUpdate().
+		Model(&investment.RoundInvestment{}).
+		Where("round_investment.round_id = ?", roundId).
+		Where("round_investment.status IN (?)", bun.In([]investment.InvestmentStatus{investment.InvestmentStatusProcessing, investment.InvestmentStatusPending})).
+		Set("status = ?", status).
+		Exec(ctx)
+
+	return err
 }

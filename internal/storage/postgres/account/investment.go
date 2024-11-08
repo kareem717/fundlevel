@@ -50,7 +50,7 @@ func (r *AccountRepository) GetInvestmentsByPage(ctx context.Context, accountId 
 }
 
 func (r *AccountRepository) IsInvestedInRound(ctx context.Context, accountId int, roundId int) (bool, error) {
-	statusArray := []investment.InvestmentStatus{investment.InvestmentStatusAccepted, investment.InvestmentStatusPending}
+	statusArray := []investment.InvestmentStatus{investment.InvestmentStatusProcessing, investment.InvestmentStatusPending}
 	stringStatusArray := make([]string, len(statusArray))
 	for i, status := range statusArray {
 		stringStatusArray[i] = string(status)
