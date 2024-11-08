@@ -6,7 +6,6 @@ export default function ExploreLayout({ children }: { children: ReactNode }) {
     <div className="flex flex-col">
       <ExploreNav />
       {children}
-      {/* <ExploreFooter /> */}
     </div>
   );
 }

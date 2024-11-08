@@ -1,19 +1,11 @@
-import { NavBack } from "@/components/ui/nav-back"
+import { NavBack } from "@/components/ui/nav-back";
 
 export default function VentureViewLayout({
   children,
-  // modal
-}: {
-  children: React.ReactNode,
+}: // modal
+{
+  children: React.ReactNode;
   // modal: React.ReactNode
 }) {
-  return (
-    <div className="p-4 space-y-4">
-      <NavBack />
-      <div className="h-full w-full relative pb-14 md:pb-20">
-        {children}
-        {/* {modal} */}
-      </div>
-    </div >
-  )
+  return <div className="">{children}</div>;
 }

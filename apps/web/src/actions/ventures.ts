@@ -19,6 +19,7 @@ import {
   createVentureSchema,
   updateVentureSchema,
 } from "@/actions/validations/ventures";
+import { cache } from "react";
 
 /**
  * Create a venture
@@ -39,20 +40,19 @@ export const createVenture = actionClientWithAccount
  * Get ventures by cursor pagination
  */
 export const getVenturesInfinite = actionClient
-	.schema(cursorPaginationSchema)
-	.action(async ({ parsedInput, ctx: { apiClient } }) => {
-		console.log(parsedInput)
-		
-		const response = await getVenturesByCursor({
-			client: apiClient,
-			throwOnError: true,
-			query: parsedInput,
-		});
+  .schema(cursorPaginationSchema)
+  .action(async ({ parsedInput, ctx: { apiClient } }) => {
+    console.log(parsedInput);
+    const response = await getVenturesByCursor({
+      client: apiClient,
+      throwOnError: true,
+      query: parsedInput,
+    });
 
-		console.log("response", response)
+    return response.data;
+  });
 
-		return response.data;
-	});
+export const cacheVentures = cache(getVenturesInfinite);
 
 /**
  * Get venture by id

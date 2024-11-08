@@ -1,10 +1,10 @@
-import type { Metadata } from "next";
 import "./globals.css";
-import { Toaster } from "@/components/ui/sonner"
-import { ThemeProvider } from "@/components/providers/theme-provider";
+
+import React from "react";
 import { env } from "@/env";
-import { GeistSans } from 'geist/font/sans';
-import { NuqsAdapter } from 'nuqs/adapters/next/app'
+import type { Metadata } from "next";
+import { GeistSans } from "geist/font/sans";
+import { Providers } from "@/components/providers";
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -14,12 +14,22 @@ export const metadata: Metadata = {
   },
   description: "Building the future of finance.",
   keywords: [
-    "fundlevel", "fundlevel.com", "finance",
-    "investing", "investment", "investment management",
-    "investment platform", "investment software", "investment technology",
-    "investment tools", "investment services", "investment products",
-    "investment management software", "investment management technology",
-    "investment management tools", "investment management services",
+    "fundlevel",
+    "fundlevel.com",
+    "finance",
+    "investing",
+    "investment",
+    "investment management",
+    "investment platform",
+    "investment software",
+    "investment technology",
+    "investment tools",
+    "investment services",
+    "investment products",
+    "investment management software",
+    "investment management technology",
+    "investment management tools",
+    "investment management services",
     "investment management products",
   ],
   twitter: {
@@ -35,17 +45,7 @@ export default async function RootLayout({
   return (
     <html lang="en" className={GeistSans.className}>
       <body>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <NuqsAdapter>
-            {children}
-          </NuqsAdapter>
-          <Toaster />
-        </ThemeProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

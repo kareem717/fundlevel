@@ -10,9 +10,7 @@ import { createClient } from "@hey-api/client-fetch";
 
 export const actionClient = createSafeActionClient({
 	validationAdapter: yupAdapter(),
-	handleServerError: async (error, utils) => {
-		console.log("utils", utils)
-		console.log("error", error)
+	handleServerError: async (error) => {
 		try {
 			const err = JSON.parse(error.message) as ErrorModel; // Attempt to cast to ErrorModel
 			console.error(err);
