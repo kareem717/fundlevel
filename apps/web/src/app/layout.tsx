@@ -4,6 +4,7 @@ import { Toaster } from "@/components/ui/sonner"
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { env } from "@/env";
 import { GeistSans } from 'geist/font/sans';
+import { NuqsAdapter } from 'nuqs/adapters/next/app'
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -40,7 +41,9 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <NuqsAdapter>
+            {children}
+          </NuqsAdapter>
           <Toaster />
         </ThemeProvider>
       </body>

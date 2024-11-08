@@ -81,6 +81,8 @@ export const actionClientWithUser = actionClient.use(async ({ next, ctx }) => {
 		user = data?.user;
 	}
 
+	console.log(`userId: ${user?.id}\n---------\naccess_token: ${session?.access_token}`)
+
 	return next({
 		ctx: {
 			...ctx,

@@ -940,6 +940,26 @@ export const GetDailyAggregatedVentureAnalyticsOutputBodySchema = {
     type: 'object'
 } as const;
 
+export const GetInvestmentPaymentIntentClientSecretOutputBodySchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/GetInvestmentPaymentIntentClientSecretOutputBody.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        clientSecret: {
+            type: 'string'
+        },
+        message: {
+            type: 'string'
+        }
+    },
+    required: ['clientSecret', 'message'],
+    type: 'object'
+} as const;
+
 export const GetLikeCountOutputBodySchema = {
     additionalProperties: false,
     properties: {
@@ -1276,9 +1296,8 @@ export const RoundInvestmentSchema = {
             format: 'int64',
             type: 'integer'
         },
-        paidAt: {
-            format: 'date-time',
-            type: ['string', 'null']
+        payment: {
+            '$ref': '#/components/schemas/RoundInvestmentPayment'
         },
         round: {
             '$ref': '#/components/schemas/Round'
@@ -1296,7 +1315,41 @@ export const RoundInvestmentSchema = {
             type: ['string', 'null']
         }
     },
-    required: ['status', 'paidAt', 'round', 'investor', 'id', 'roundId', 'investorId', 'createdAt', 'updatedAt', 'deletedAt'],
+    required: ['status', 'payment', 'round', 'investor', 'id', 'roundId', 'investorId', 'createdAt', 'updatedAt', 'deletedAt'],
+    type: 'object'
+} as const;
+
+export const RoundInvestmentPaymentSchema = {
+    additionalProperties: false,
+    properties: {
+        createdAt: {
+            format: 'date-time',
+            type: 'string'
+        },
+        deletedAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        },
+        roundInvestmentId: {
+            format: 'int64',
+            type: 'integer'
+        },
+        status: {
+            enum: ['cancelled', 'processing', 'requires_action', 'requires_capture', 'requires_confirmation', 'requires_payment_method', 'succeeded'],
+            type: 'string'
+        },
+        stripePaymentIntentClientSecret: {
+            type: 'string'
+        },
+        stripePaymentIntentId: {
+            type: 'string'
+        },
+        updatedAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        }
+    },
+    required: ['roundInvestmentId', 'status', 'stripePaymentIntentId', 'stripePaymentIntentClientSecret', 'createdAt', 'updatedAt', 'deletedAt'],
     type: 'object'
 } as const;
 

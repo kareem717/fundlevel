@@ -3,7 +3,7 @@
 import { actionClientWithAccount } from "@/lib/safe-action";
 import {
 	createRoundInvestment as createRoundInvestmentApi,
-	getAccountCheckoutLink,
+	getInvestmentPaymentIntentClientSecret as getInvestmentPaymentIntentClientSecretApi,
 	getAccountInvestmentsByPage as getAccountInvestmentsByPageApi,
 	withdrawInvestment as withdrawInvestmentApi,
 	getInvestmentById as getInvestmentByIdApi,
@@ -70,7 +70,7 @@ export const withdrawInvestment = actionClientWithAccount
 		});
 	});
 
-export const getInvestmentCheckoutLink = actionClientWithAccount
+export const getInvestmentPaymentIntentClientSecret = actionClientWithAccount
 	.schema(
 		object().shape({
 			investmentId: intIdSchema.required(),
@@ -86,7 +86,7 @@ export const getInvestmentCheckoutLink = actionClientWithAccount
 				throw new Error("Account not found");
 			}
 
-			const resp = await getAccountCheckoutLink({
+			const resp = await getInvestmentPaymentIntentClientSecretApi({
 				client: apiClient,
 				path: {
 					id: account.id,

@@ -21,44 +21,15 @@ export type NavigationMenu = {
 /**
  * An array of navigation items for the business dashboard.
  */
-const businessDashboardNavigation: NavigationMenu[] = [
+const dashboardNavigation: NavigationMenu[] = [
 	{
 		name: "Business Dashboard",
-		path: redirects.app.businessDashboard.root,
+		path: redirects.app.dashboard.index,
 		items: [
 			{
 				title: "Overview",
-				url: redirects.app.businessDashboard.root,
+				url: redirects.app.dashboard.index,
 				icon: Icons.layoutGrid,
-			},
-			{
-				title: "Investors",
-				icon: Icons.handCoins,
-				items: [
-					{
-						title: "Overview",
-						url: redirects.app.businessDashboard.investors.root,
-					},
-					{
-						title: "Offers",
-						url: redirects.app.businessDashboard.investors.offers,
-					},
-				],
-			},
-			{
-				title: "Financials",
-				url: redirects.app.businessDashboard.financials,
-				icon: Icons.dollarSign,
-			},
-			{
-				title: "Rounds",
-				url: redirects.app.businessDashboard.rounds,
-				icon: Icons.chart,
-			},
-			{
-				title: "Ventures",
-				url: redirects.app.businessDashboard.ventures,
-				icon: Icons.store,
 			},
 		],
 	},
@@ -68,7 +39,7 @@ const businessDashboardNavigation: NavigationMenu[] = [
  * A configuration object for the navigation items.
  */
 const NavConfig = {
-	businessDashboard: businessDashboardNavigation,
+	dashboard: dashboardNavigation,
 };
 
 export default NavConfig;

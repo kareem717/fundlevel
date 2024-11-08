@@ -3,8 +3,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Account } from "@/lib/api";
@@ -32,23 +30,11 @@ export const AccountDropdown: FC<AccountDropdownProps> = ({ account, className, 
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuItem>
+          <Link href={redirects.app.dashboard.index}>Dashboard</Link>
+        </DropdownMenuItem>
         <DropdownMenuItem>
           <Link href={redirects.auth.logout}>Logout</Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Link href={redirects.app.settings.account}>Settings</Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Link href={redirects.app.investments.root}>My Investments</Link>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuLabel>Business</DropdownMenuLabel>
-        <DropdownMenuItem>
-          <Link href={redirects.app.myBusinesses.index}>My Businesses</Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Link href={redirects.app.myBusinesses.create}>Create Business</Link>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu >

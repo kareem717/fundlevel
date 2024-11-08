@@ -157,9 +157,9 @@ import {
 	type AcceptInvestmentData,
 	type AcceptInvestmentError,
 	type AcceptInvestmentResponse,
-	type GetAccountCheckoutLinkData,
-	type GetAccountCheckoutLinkError,
-	type GetAccountCheckoutLinkResponse,
+	type GetInvestmentPaymentIntentClientSecretData,
+	type GetInvestmentPaymentIntentClientSecretError,
+	type GetInvestmentPaymentIntentClientSecretResponse,
 	type WithdrawInvestmentData,
 	type WithdrawInvestmentError,
 	type WithdrawInvestmentResponse,
@@ -1171,19 +1171,21 @@ export const acceptInvestment = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get a stripe checkout link
- * Get a stripe checkout link.
+ * Get a stripe payment intent client secret
+ * Get a stripe payment intent client secret.
  */
-export const getAccountCheckoutLink = <ThrowOnError extends boolean = false>(
-	options: Options<GetAccountCheckoutLinkData, ThrowOnError>
+export const getInvestmentPaymentIntentClientSecret = <
+	ThrowOnError extends boolean = false
+>(
+	options: Options<GetInvestmentPaymentIntentClientSecretData, ThrowOnError>
 ) => {
 	return (options?.client ?? client).get<
-		GetAccountCheckoutLinkResponse,
-		GetAccountCheckoutLinkError,
+		GetInvestmentPaymentIntentClientSecretResponse,
+		GetInvestmentPaymentIntentClientSecretError,
 		ThrowOnError
 	>({
 		...options,
-		url: "/investments/{id}/checkout",
+		url: "/investments/{id}/payment-intent",
 	});
 };
 

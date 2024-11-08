@@ -17,7 +17,7 @@ export function ExploreNav() {
           <ExploreToggle className="hidden sm:flex" />
           <div className="flex items-center justify-center gap-2">
             <Link
-              href={redirects.app.myBusinesses.create}
+              href={redirects.app.dashboard.business.create}
               className="hidden sm:block text-sm mr-2"
             >
               List on Fundlevel

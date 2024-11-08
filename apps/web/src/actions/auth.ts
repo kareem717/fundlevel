@@ -13,6 +13,7 @@ import {
 	updateAccount as updateAccountApi,
 } from "@/lib/api";
 import { cache } from "react";
+
 /**
  * Create a new account for the currently authenticated user
  */

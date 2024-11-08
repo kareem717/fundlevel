@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 export interface NavBackProps extends ComponentPropsWithoutRef<typeof Button> {
 };
 
-export const NavBack: FC<NavBackProps> = ({ className, ...props }) => {
+export const NavBack: FC<NavBackProps> = ({ className, children, ...props }) => {
   const router = useRouter();
 
   const handleClick = () => {
@@ -24,8 +24,12 @@ export const NavBack: FC<NavBackProps> = ({ className, ...props }) => {
       variant="ghost"
       size="sm"
     >
-      <Icons.arrowLeft className="w-4 h-4 mr-2" />
-      Back
+      {children ?? (
+        <>
+          <Icons.arrowLeft className="w-4 h-4 mr-2" />
+          Back
+        </>
+      )}
     </Button>
   );
 };

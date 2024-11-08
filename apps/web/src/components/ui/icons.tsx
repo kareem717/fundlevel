@@ -126,6 +126,7 @@ import {
   Settings2,
   BadgeInfo,
   ArrowDownWideNarrow,
+  CircleChevronDown
 } from "lucide-react";
 
 export type Icon = LucideIcon;
@@ -134,6 +135,7 @@ export const Icons = {
   flag: Flag,
   arrowLeft: ArrowLeft,
   badgeInfo: BadgeInfo,
+  circleChevronDown: CircleChevronDown,
   home: Home,
   map: Map,
   telescope: Telescope,
