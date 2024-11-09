@@ -213,26 +213,7 @@ func (h *httpHandler) createRoundFavourite(ctx context.Context, input *Favourite
 		return nil, huma.Error403Forbidden("Cannot like for another account")
 	}
 
-	roundRecord, err := h.service.RoundService.GetById(ctx, input.ID)
-	if err != nil {
-		switch {
-		case errors.Is(err, sql.ErrNoRows):
-			return nil, huma.Error404NotFound("Round not found")
-		default:
-			h.logger.Error("failed to fetch round", zap.Error(err))
-			return nil, huma.Error500InternalServerError("An error occurred while fetching the round")
-		}
-	}
-
-	if account.ID != roundRecord.Venture.Business.OwnerAccountID {
-		h.logger.Error("business owner account id does not match authenticated account id",
-			zap.Any("business owner account id", roundRecord.Venture.Business.OwnerAccountID),
-			zap.Any("authenticated account id", account.ID))
-
-		return nil, huma.Error403Forbidden("Cannot like a round for a business you do not own")
-	}
-
-	err = h.service.AnalyticService.CreateRoundFavourite(ctx, analytic.CreateRoundFavouriteParams{
+	err := h.service.AnalyticService.CreateRoundFavourite(ctx, analytic.CreateRoundFavouriteParams{
 		RoundID:   input.ID,
 		AccountID: input.AccountID,
 	})
@@ -259,26 +240,7 @@ func (h *httpHandler) deleteRoundFavourite(ctx context.Context, input *Favourite
 		return nil, huma.Error403Forbidden("Cannot delete like for another account")
 	}
 
-	roundRecord, err := h.service.RoundService.GetById(ctx, input.ID)
-	if err != nil {
-		switch {
-		case errors.Is(err, sql.ErrNoRows):
-			return nil, huma.Error404NotFound("Round not found")
-		default:
-			h.logger.Error("failed to fetch round", zap.Error(err))
-			return nil, huma.Error500InternalServerError("An error occurred while fetching the round")
-		}
-	}
-
-	if account.ID != roundRecord.Venture.Business.OwnerAccountID {
-		h.logger.Error("business owner account id does not match authenticated account id",
-			zap.Any("business owner account id", roundRecord.Venture.Business.OwnerAccountID),
-			zap.Any("authenticated account id", account.ID))
-
-		return nil, huma.Error403Forbidden("Cannot delete like for a round for a business you do not own")
-	}
-
-	err = h.service.AnalyticService.DeleteRoundFavourite(ctx, input.ID, input.AccountID)
+	err := h.service.AnalyticService.DeleteRoundFavourite(ctx, input.ID, input.AccountID)
 	if err != nil {
 		h.logger.Error("failed to delete round like", zap.Error(err))
 		return nil, huma.Error500InternalServerError("An error occurred while deleting the round like")
@@ -339,26 +301,7 @@ func (h *httpHandler) createVentureFavourite(ctx context.Context, input *Favouri
 		return nil, huma.Error403Forbidden("Cannot like for another account")
 	}
 
-	ventureRecord, err := h.service.VentureService.GetById(ctx, input.ID)
-	if err != nil {
-		switch {
-		case errors.Is(err, sql.ErrNoRows):
-			return nil, huma.Error404NotFound("Venture not found")
-		default:
-			h.logger.Error("failed to fetch venture", zap.Error(err))
-			return nil, huma.Error500InternalServerError("An error occurred while fetching the venture")
-		}
-	}
-
-	if account.ID != ventureRecord.Business.OwnerAccountID {
-		h.logger.Error("business owner account id does not match authenticated account id",
-			zap.Any("business owner account id", ventureRecord.Business.OwnerAccountID),
-			zap.Any("authenticated account id", account.ID))
-
-		return nil, huma.Error403Forbidden("Cannot like a venture for a business you do not own")
-	}
-
-	err = h.service.AnalyticService.CreateVentureFavourite(ctx, analytic.CreateVentureFavouriteParams{
+	err := h.service.AnalyticService.CreateVentureFavourite(ctx, analytic.CreateVentureFavouriteParams{
 		VentureID: input.ID,
 		AccountID: input.AccountID,
 	})
@@ -385,26 +328,7 @@ func (h *httpHandler) deleteVentureFavourite(ctx context.Context, input *Favouri
 		return nil, huma.Error403Forbidden("Cannot delete like for another account")
 	}
 
-	ventureRecord, err := h.service.VentureService.GetById(ctx, input.ID)
-	if err != nil {
-		switch {
-		case errors.Is(err, sql.ErrNoRows):
-			return nil, huma.Error404NotFound("Venture not found")
-		default:
-			h.logger.Error("failed to fetch venture", zap.Error(err))
-			return nil, huma.Error500InternalServerError("An error occurred while fetching the venture")
-		}
-	}
-
-	if account.ID != ventureRecord.Business.OwnerAccountID {
-		h.logger.Error("business owner account id does not match authenticated account id",
-			zap.Any("business owner account id", ventureRecord.Business.OwnerAccountID),
-			zap.Any("authenticated account id", account.ID))
-
-		return nil, huma.Error403Forbidden("Cannot delete like for a venture for a business you do not own")
-	}
-
-	err = h.service.AnalyticService.DeleteVentureFavourite(ctx, input.ID, input.AccountID)
+	err := h.service.AnalyticService.DeleteVentureFavourite(ctx, input.ID, input.AccountID)
 	if err != nil {
 		h.logger.Error("failed to delete venture like", zap.Error(err))
 		return nil, huma.Error500InternalServerError("An error occurred while deleting the venture like")
