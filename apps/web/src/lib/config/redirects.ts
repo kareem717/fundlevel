@@ -24,11 +24,11 @@ const redirects = {
 			ventureView: "/ventures/:id",
 			roundView: "/rounds/:id",
 		},
-		account: {
-			index: "/account",
+		portfolio: {
+			index: "/portfolio",
 			investments: {
-				root: "/account/investments",
-				checkout: "/account/investments/:id/checkout",
+				root: "/portfolio/investments",
+				checkout: "/portfolio/investments/:id/checkout",
 			},
 		},
 		dashboard: {

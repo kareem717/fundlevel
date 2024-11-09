@@ -64,7 +64,7 @@ export default async function CompleteInvestmentPage({ params }: { params: Promi
                 clientSecret={clientSecret.data.clientSecret}
                 publishableKey={env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}
                 confirmParams={{
-                  return_url: `${env.NEXT_PUBLIC_APP_URL}${redirects.app.account.investments.checkout.replace(":id", investmentId)}`,
+                  return_url: `${env.NEXT_PUBLIC_APP_URL}${redirects.app.portfolio.investments.checkout.replace(":id", investmentId)}`,
                 }}
               />
             </div>
