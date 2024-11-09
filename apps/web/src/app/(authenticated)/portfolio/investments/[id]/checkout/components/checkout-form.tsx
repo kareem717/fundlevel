@@ -5,6 +5,7 @@ import { ConfirmPaymentData, loadStripe, StripeElementsOptions, StripeError, Str
 import { PaymentElement } from '@stripe/react-stripe-js';
 import { FC, useCallback, useEffect, useMemo } from 'react';
 import { create } from 'zustand';
+import { useTheme } from 'next-themes';
 
 interface CheckoutFormState {
   isExecuting: boolean;
@@ -56,7 +57,6 @@ export const FormContent = ({ confirmParams, redirect }: { confirmParams: Confir
       elements,
       confirmParams,
       redirect,
-  
     });
     alert('submit');
 
@@ -91,8 +91,12 @@ export const CheckoutForm: FC<CheckoutFormProps> = ({
   confirmParams,
   redirect,
 }) => {
+  const { resolvedTheme } = useTheme();
   const options: StripeElementsOptions = {
     clientSecret,
+    appearance: {
+      theme: resolvedTheme === 'dark' ? 'night' : 'flat',
+    },
   };
 
   const stripePromise = useMemo(() => loadStripe(publishableKey), [publishableKey]);
