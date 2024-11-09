@@ -2,7 +2,10 @@ import { ComponentPropsWithoutRef, FC } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Account } from "@/lib/api";
@@ -37,17 +40,30 @@ export const AccountDropdown: FC<AccountDropdownProps> = ({
       >
         <Icons.menu className="size-5" />
         <Avatar className="size-7">
-          {/* <AvatarImage src="https://github.com/shadcn.png" /> */}
           <AvatarFallback>{intials.toUpperCase()}</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuItem>
-          <Link href={redirects.app.dashboard.index}>Dashboard</Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Link href={redirects.auth.logout}>Logout</Link>
-        </DropdownMenuItem>
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>Account</DropdownMenuLabel>
+          <DropdownMenuItem>
+            <Link href={redirects.auth.logout}>Logout</Link>
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>Business</DropdownMenuLabel>
+          <DropdownMenuItem>
+            <Link href={redirects.app.dashboard.index}>Dashboard</Link>
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>Investor</DropdownMenuLabel>
+          <DropdownMenuItem>
+            <Link href={redirects.app.portfolio.index}>Portfolio</Link>
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
   );

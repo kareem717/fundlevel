@@ -56,7 +56,6 @@ declare module '@tanstack/react-table' {
   }
 }
 
-
 const ActionsCell: FC<{ row: Row<RoundInvestment> }> = ({ row }) => {
   const investment = row.original
   const [isDialogOpen, setIsDialogOpen] = useState(false)
