@@ -256,15 +256,6 @@ export const getVentureFavouriteCount = <ThrowOnError extends boolean = false>(o
 }); };
 
 /**
- * Handle a stripe webhook
- * Handle a stripe webhook.
- */
-export const handleStripeWebhook = <ThrowOnError extends boolean = false>(options: Options<HandleStripeWebhookData, ThrowOnError>) => { return (options?.client ?? client).post<HandleStripeWebhookResponse, HandleStripeWebhookError, ThrowOnError>({
-    ...options,
-    url: '/billing/webhook'
-}); };
-
-/**
  * Create a business
  * Create a business.
  */
@@ -272,15 +263,6 @@ export const createBusiness = <ThrowOnError extends boolean = false>(options: Op
     ...options,
     url: '/business',
     responseTransformer: CreateBusinessResponseTransformer
-}); };
-
-/**
- * Handle Stripe connected account webhook
- * Handle Stripe connected account webhook.
- */
-export const handleStripeConnectedAccountWebhook = <ThrowOnError extends boolean = false>(options: Options<HandleStripeConnectedAccountWebhookData, ThrowOnError>) => { return (options?.client ?? client).post<HandleStripeConnectedAccountWebhookResponse, HandleStripeConnectedAccountWebhookError, ThrowOnError>({
-    ...options,
-    url: '/business/stripe-webhook'
 }); };
 
 /**
