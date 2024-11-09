@@ -30,7 +30,7 @@ import {
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu"
 import { ComponentPropsWithoutRef, FC, useEffect, useMemo, useState } from "react"
-import { DataTablePagination, DataTableColumnHeader } from "@/components/ui/data-table"
+import { DataTablePagination, DataTableColumnHeader } from "@/components/data-table"
 import { Icons } from "@/components/ui/icons"
 import { titleCase } from "title-case"
 import { Address, getBusinessInvestmentsByPage, RoundInvestment } from "@/lib/api"

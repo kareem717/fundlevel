@@ -11,7 +11,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { CreateInvestmentButton } from "@/components/ui/create-investment-button";
+import { CreateInvestmentButton } from "@/components/create-investment-button";
 
 export interface ConfirmInvestmentDialogProps extends ComponentPropsWithoutRef<typeof Dialog> {
   roundId: number;

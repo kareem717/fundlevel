@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Icons } from "@/components/ui/icons"
-import { DataTableColumnHeader } from "@/components/ui/data-table"
+import { DataTableColumnHeader } from "@/components/data-table"
 import { titleCase } from "title-case"
 import { RoundInvestment } from "@/lib/api"
 import {
@@ -44,7 +44,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { DataTablePagination } from "@/components/ui/data-table"
+import { DataTablePagination } from "@/components/data-table"
 import { ComponentPropsWithoutRef, FC, useEffect, useMemo, useState } from "react"
 import { useAction } from "next-safe-action/hooks"
 import { getAccountInvestmentsByPage } from "@/actions/investments"

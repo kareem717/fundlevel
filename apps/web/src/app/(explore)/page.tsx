@@ -1,7 +1,7 @@
 import React from "react";
 import FilterBar from "./components/filter-bar";
 import { VentureList } from "./components/venture-list";
-import { Suspense } from "@/components/ui/suspense";
+import { Suspense } from "@/components/suspense";
 import { getVenturesInfinite } from "@/actions/ventures";
 
 export default async function ExplorePage() {

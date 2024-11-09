@@ -1,6 +1,6 @@
 "use client";
 
-import { MultiStepForm, Step } from "@/components/ui/multistep-form";
+import { MultiStepForm, Step } from "@/components/multistep-form";
 import { cn } from "@/lib/utils";
 import { ComponentPropsWithoutRef } from "react"
 import { useForm } from "react-hook-form"
@@ -22,7 +22,7 @@ import { createBusiness } from "@/actions/busineses";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { InferType } from "yup";
 import { createBusinessSchema } from "@/actions/validations/business";
-import { AddressInput } from "@/components/ui/address-input";
+import { AddressInput } from "@/components/address-input";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
@@ -34,7 +34,7 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select";
-import { IndustrySelect } from "@/components/ui/industry-select";
+import { IndustrySelect } from "@/components/industry-select";
 import redirects from "@/lib/config/redirects";
 
 export interface CreateBusinessFormProps extends ComponentPropsWithoutRef<"form"> { }

@@ -1,4 +1,4 @@
-import { ChartWrapper } from "@/components/ui/chart-wrapper";
+import { ChartWrapper } from "@/components/chart-wrapper";
 import { BusinessImpressionAnalytics } from "./components/impression-analytics-chart";
 import { KeyInvestorsTable } from "./components/key-investors-table";
 import { BusinessRaiseRate } from "./components/raise-rate-chart";

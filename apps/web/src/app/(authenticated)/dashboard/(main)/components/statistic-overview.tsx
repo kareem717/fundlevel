@@ -1,6 +1,6 @@
 "use client"
 
-import { StatisticCard } from "@/components/ui/statistic-card";
+import { StatisticCard } from "@/components/statistic-card";
 import { cn } from "@/lib/utils";
 import { ComponentPropsWithoutRef, FC } from "react"
 

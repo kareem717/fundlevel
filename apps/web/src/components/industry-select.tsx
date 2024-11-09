@@ -7,7 +7,7 @@ import { Industry } from "@/lib/api"
 import { useAction } from "next-safe-action/hooks"
 import { getAllIndustries } from "@/actions/industries"
 import { toast } from "sonner"
-import { Icons } from "./icons"
+import { Icons } from "./ui/icons"
 
 export interface IndustrySelectProps extends Omit<ComponentPropsWithoutRef<typeof Select>, "onValueChange"> {
   triggerProps?: ComponentPropsWithoutRef<typeof SelectTrigger>

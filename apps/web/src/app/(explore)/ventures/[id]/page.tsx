@@ -20,7 +20,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Icons } from "@/components/ui/icons";
 import { Separator } from "@/components/ui/separator";
 import { cn, truncateText } from "@/lib/utils";
-import { BusinessOverview } from "@/components/ui/business-overview";
+import { BusinessOverview } from "@/components/business-overview.jsx";
 import { VentureActiveRoundCard } from "./components/venture-active-round-card";
 
 import { ArrowLeft, Globe, Heart, MessageSquare, Star } from "lucide-react";

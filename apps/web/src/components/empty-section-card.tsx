@@ -2,7 +2,7 @@ import { ComponentPropsWithoutRef, FC } from "react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { Icons } from "./icons";
+import { Icons } from "./ui/icons";
 import Image from "next/image";
 
 export interface EmptySectionCardProps extends ComponentPropsWithoutRef<"div"> {

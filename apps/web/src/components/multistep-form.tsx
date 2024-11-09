@@ -8,7 +8,7 @@ import {
   ComponentPropsWithoutRef,
   useState,
 } from "react";
-import { Form } from "./form";
+import { Form } from "./ui/form";
 import { FieldValues, Path, UseFormReturn } from "react-hook-form";
 import Link from "next/link";
 

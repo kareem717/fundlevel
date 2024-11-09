@@ -3,14 +3,14 @@
 import { ComponentPropsWithoutRef, FC, useEffect, useState } from "react";
 import { Account } from "@/lib/api";
 import { cn } from "@/lib/utils";
-import { AccountDropdown } from "@/components/ui/account-dropdown";
+import { AccountDropdown } from "@/components/account-dropdown";
 import { Button, buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
 import redirects from "@/lib/config/redirects";
 import { useAction } from "next-safe-action/hooks";
 import { getAccountCached } from "@/actions/auth";
 
-export interface ExploreAuthProps extends ComponentPropsWithoutRef<"div"> {}
+export interface ExploreAuthProps extends ComponentPropsWithoutRef<"div"> { }
 
 export const ExploreAuth: FC<ExploreAuthProps> = ({ className, ...props }) => {
   const [account, setAccount] = useState<Account | undefined>(undefined);

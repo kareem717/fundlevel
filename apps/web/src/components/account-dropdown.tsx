@@ -6,9 +6,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Account } from "@/lib/api";
-import { buttonVariants } from "./button";
+import { buttonVariants } from "./ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Icons } from "./icons";
+import { Icons } from "./ui/icons";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import redirects from "@/lib/config/redirects";

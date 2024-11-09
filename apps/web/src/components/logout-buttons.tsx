@@ -1,11 +1,11 @@
 "use client";
 
-import { Button } from "./button";
+import { Button } from "./ui/button";
 import supabase from "@/lib/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner"
 import { useState } from "react";
-import { Icons } from "./icons";
+import { Icons } from "./ui/icons";
 
 export const LogoutButtons = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);

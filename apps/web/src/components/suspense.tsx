@@ -1,7 +1,7 @@
 "use client"
 
 import { ComponentPropsWithoutRef, FC, Suspense as ReactSuspense } from "react"
-import { Skeleton } from "./skeleton";
+import { Skeleton } from "./ui/skeleton";
 import { cn } from "@/lib/utils";
 
 export interface SuspenseProps<T extends React.ElementType = typeof Skeleton> extends ComponentPropsWithoutRef<typeof ReactSuspense> {

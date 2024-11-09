@@ -1,4 +1,4 @@
-import { ChartWrapper } from "@/components/ui/chart-wrapper";
+import { ChartWrapper } from "@/components/chart-wrapper";
 import { InvestorTable } from "./components/investor-table";
 import { ProfitStakeChart } from "./components/profit-stake-chart";
 import { VentureOwnershipChart } from "./components/venture-ownership-chart";

@@ -3,7 +3,7 @@ import { ConfirmationForm } from "./components/confirmation-form";
 import { Label } from "@/components/ui/label";
 import { faker } from "@faker-js/faker";
 import Link from "next/link";
-import { NavBack } from "@/components/ui/nav-back";
+import { NavBack } from "@/components/nav-back";
 import { Icons } from "@/components/ui/icons";
 import { env } from "@/env";
 import { CheckoutForm } from "./components/checkout-form";

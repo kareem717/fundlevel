@@ -1,4 +1,4 @@
-import { LogoDiv } from "@/components/ui/logo-div";
+import { LogoDiv } from "@/components/logo-div";
 import { CreateBusinessForm } from "./components/create-business-form";
 
 export const dynamic = "force-dynamic";

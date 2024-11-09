@@ -3,7 +3,7 @@
 import { Icons } from "../ui/icons";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { OAuthButtons } from "../ui/oauth-buttons";
+import { OAuthButtons } from "../oauth-buttons";
 import { useState, ComponentPropsWithoutRef, FC } from "react";
 import supabase from "@/lib/utils/supabase/client";
 import { zodResolver } from "@hookform/resolvers/zod"

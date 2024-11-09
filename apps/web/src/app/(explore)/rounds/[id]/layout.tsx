@@ -1,4 +1,4 @@
-import { NavBack } from "@/components/ui/nav-back"
+import { NavBack } from "@/components/nav-back"
 
 export default function RoundViewLayout({
   children,

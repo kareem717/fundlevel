@@ -2,9 +2,9 @@
 
 import { cn } from "@/lib/utils";
 import { ComponentPropsWithoutRef, FC } from "react"
-import { Card } from "./card";
-import { Icons } from "./icons";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./tooltip";
+import { Card } from "./ui/card";
+import { Icons } from "./ui/icons";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 
 export interface StatisticCardProps extends ComponentPropsWithoutRef<typeof Card> {
   title: string;

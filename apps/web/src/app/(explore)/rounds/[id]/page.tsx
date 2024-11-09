@@ -23,7 +23,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { env } from "@/env";
-import { BusinessOverview } from "@/components/ui/business-overview";
+import { BusinessOverview } from "@/components/business-overview";
 
 export default async function RoundViewPage(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;

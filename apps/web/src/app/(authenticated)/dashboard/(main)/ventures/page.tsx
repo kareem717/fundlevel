@@ -1,4 +1,4 @@
-import { QuickSearch } from "@/components/ui/quick-search";
+import { QuickSearch } from "@/components/quick-search";
 import { VenturesSection } from "./components/ventures-section";
 
 

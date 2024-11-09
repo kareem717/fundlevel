@@ -1,7 +1,7 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import { DataTableColumnHeader } from "@/components/ui/data-table"
+import { DataTableColumnHeader } from "@/components/data-table"
 import { format } from "date-fns"
 import {
   VisibilityState,
@@ -20,7 +20,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { DataTablePagination } from "@/components/ui/data-table"
+import { DataTablePagination } from "@/components/data-table"
 import { ComponentPropsWithoutRef, FC, useState } from "react"
 import { faker } from "@faker-js/faker"
 import { Input } from "@/components/ui/input"

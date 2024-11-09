@@ -34,7 +34,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Icons } from "./icons"
+import { Icons } from "./ui/icons"
 
 interface DataTableViewOptionsProps<TData> {
   table: TableType<TData>

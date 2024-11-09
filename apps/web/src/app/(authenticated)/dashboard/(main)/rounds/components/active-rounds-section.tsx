@@ -1,6 +1,6 @@
 "use client";
 
-import { EmptySectionCard } from "@/components/ui/empty-section-card";
+import { EmptySectionCard } from "@/components/empty-section-card";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Round } from "@/lib/api";

@@ -1,4 +1,4 @@
-import { QuickSearch } from "@/components/ui/quick-search";
+import { QuickSearch } from "@/components/quick-search";
 import { ActiveRoundsSection } from "./components/active-rounds-section";
 import { PastRoundsSection } from "./components/past-rounds-section";
 

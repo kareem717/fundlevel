@@ -8,10 +8,10 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar"
-import { SidebarMenu } from "@/components/ui/sidebar-menu"
+import { SidebarMenu } from "@/components/sidebar-menu"
 import { ComponentPropsWithoutRef } from "react"
 import SidebarConfig from "@/lib/config/sidebar"
-import { SidebarUser } from "@/components/ui/sidebar-user"
+import { SidebarUser } from "@/components/sidebar-user"
 import { useAuth } from "@/components/providers/auth-provider"
 
 export interface DashboardSidebarProps extends ComponentPropsWithoutRef<typeof Sidebar> {
