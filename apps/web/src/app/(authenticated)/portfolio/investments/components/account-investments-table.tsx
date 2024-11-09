@@ -71,7 +71,8 @@ const ActionsCell: FC<{ row: Row<RoundInvestment> }> = ({ row }) => {
           Copy investment ID
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href={redirects.app.explore.roundView.replace(":id", investment.round.id.toString())}>
+          {/*//TODO: handle better*/}
+          <Link href={redirects.app.explore.roundView.replace(":id", investment?.round?.id?.toString() ?? "")}>
             View round
           </Link>
         </DropdownMenuItem>
@@ -155,6 +156,10 @@ export const columns: ColumnDef<RoundInvestment>[] = [
     ),
     cell: ({ table, row }) => {
       const round = row.original.round
+      // TODO: handle better
+      if (!round) {
+        return <div className="text-left font-medium">N/A</div>
+      }
       // TODO: Add locale support
       const locale = "en-US"
       return <div className="text-left font-medium">{Intl.NumberFormat(locale, { style: "currency", currency: round.valueCurrency.toLocaleUpperCase() }).format(round.buyIn)}</div>
@@ -167,6 +172,10 @@ export const columns: ColumnDef<RoundInvestment>[] = [
     ),
     cell: ({ row }) => {
       const round = row.original.round
+      // TODO: handle better
+      if (!round) {
+        return <div className="text-left font-medium">N/A</div>
+      }
       return <div className="text-left font-medium">{round.percentageValue}%</div>
     },
   },

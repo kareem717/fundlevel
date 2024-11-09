@@ -498,10 +498,10 @@ export type RoundInvestment = {
     createdAt: Date;
     deletedAt: (Date) | null;
     id: number;
-    investor: Account;
+    investor?: Account;
     investorId: number;
-    payment: RoundInvestmentPayment;
-    round: Round;
+    payment?: RoundInvestmentPayment;
+    round?: Round;
     roundId: number;
     status: 'pending' | 'processing' | 'rejected' | 'withdrawn' | 'successful' | 'round_closed';
     updatedAt: (Date) | null;

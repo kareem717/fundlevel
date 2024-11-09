@@ -1315,7 +1315,7 @@ export const RoundInvestmentSchema = {
             type: ['string', 'null']
         }
     },
-    required: ['status', 'payment', 'round', 'investor', 'id', 'roundId', 'investorId', 'createdAt', 'updatedAt', 'deletedAt'],
+    required: ['status', 'id', 'roundId', 'investorId', 'createdAt', 'updatedAt', 'deletedAt'],
     type: 'object'
 } as const;
 

@@ -134,7 +134,8 @@ export default async function CompleteInvestmentPage({ params }: { params: Promi
                 <Separator className="my-2" />
                 <div className="flex justify-between font-bold">
                   <span>Total (CAD)</span>
-                  <span>${investment.data.investment.round.buyIn.toFixed(2)} CAD</span>
+                  {/*//TODO: handle better*/}
+                  <span>${investment.data.investment?.round?.buyIn?.toFixed(2) ?? "N/A"} CAD</span>
                 </div>
               </div>
             </div>

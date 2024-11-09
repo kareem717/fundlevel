@@ -34,29 +34,23 @@ const dashboard: NavigationMenu[] = [
 		],
 	},
 	{
-		name: "Investments",
-		path: redirects.app.dashboard.investments.index,
+		name: "Funding",
+		path: redirects.app.dashboard.funding.index,
 		items: [
 			{
 				title: "Overview",
-				url: redirects.app.dashboard.investments.index,
+				url: redirects.app.dashboard.funding.index,
 				icon: Icons.chart,
 			},
 			{
-				title: "Offers",
-				url: redirects.app.dashboard.investments.offers.index,
+				title: "Investments",
+				url: redirects.app.dashboard.funding.investments.index,
 				icon: Icons.handCoins,
 			},
-		],
-	},
-	{
-		name: "Investors",
-		path: redirects.app.dashboard.investors.index,
-		items: [
 			{
-				title: "Overview",
-				url: redirects.app.dashboard.investors.index,
-				icon: Icons.layoutGrid,
+				title: "Investors",
+				url: redirects.app.dashboard.funding.investors.index,
+				icon: Icons.users,
 			},
 		],
 	},
