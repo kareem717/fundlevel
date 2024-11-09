@@ -28,6 +28,9 @@ func (r *BusinessRepository) Create(ctx context.Context, params business.CreateB
 			ModelTableExpr("addresses").
 			Returning("*").
 			Scan(ctx, &address)
+		if err != nil {
+			return err
+		}
 
 		params.Business.AddressID = address.ID
 		err = tx.NewInsert().
@@ -67,6 +70,9 @@ func (r *BusinessRepository) Delete(ctx context.Context, id int) error {
 		Model(&business.Business{}).
 		Where("id = ?", id).
 		Exec(ctx)
+	if err != nil {
+		return err
+	}
 
 	rowsAffected, err := resp.RowsAffected()
 	if err != nil {

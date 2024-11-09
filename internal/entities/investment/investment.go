@@ -25,9 +25,9 @@ type RoundInvestment struct {
 	shared.IntegerID
 	CreateInvestmentParams
 	Status   InvestmentStatus        `json:"status" enum:"pending,processing,rejected,withdrawn,successful,round_closed"`
-	Payment  *RoundInvestmentPayment `json:"payment" bun:"rel:has-one,join:id=round_investment_id"`
-	Round    *round.Round            `json:"round" bun:"rel:belongs-to,join:round_id=id"`
-	Investor *account.Account        `json:"investor" bun:"rel:belongs-to,join:investor_id=id"`
+	Payment  *RoundInvestmentPayment `json:"payment" bun:"rel:has-one,join:id=round_investment_id" required:"false"`
+	Round    *round.Round            `json:"round" bun:"rel:belongs-to,join:round_id=id" required:"false"`
+	Investor *account.Account        `json:"investor" bun:"rel:belongs-to,join:investor_id=id" required:"false"`
 	shared.Timestamps
 }
 

@@ -42,10 +42,10 @@ func (r *BusinessRepository) GetInvestmentsByPage(ctx context.Context, businessI
 	query := r.db.
 		NewSelect().
 		Model(&resp).
-		Join("JOIN rounds").
-		JoinOn("round_investment.round_id = rounds.id").
+		Relation("Round").
+		Relation("Investor").
 		Join("JOIN ventures").
-		JoinOn("rounds.venture_id = ventures.id").
+		JoinOn("round.venture_id = ventures.id").
 		Where("ventures.business_id = ?", businessId).
 		Offset(offset).
 		Limit(paginationParams.PageSize + 1)
