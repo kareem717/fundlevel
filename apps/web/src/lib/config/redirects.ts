@@ -1,12 +1,3 @@
-import { Icons } from "@/components/ui/icons";
-
-export type Menu = {
-	href: string;
-	label: string;
-	pathIdentifier: string;
-	icon: keyof typeof Icons;
-};
-
 const redirects = {
 	privacy: "/privacy-policy",
 	terms: "/terms-of-service",

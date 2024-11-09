@@ -49,6 +49,7 @@ import { ComponentPropsWithoutRef, FC, useEffect, useMemo, useState } from "reac
 import { useAction } from "next-safe-action/hooks"
 import { getAccountInvestmentsByPage } from "@/actions/investments"
 import { Skeleton } from "@/components/ui/skeleton"
+import { formatCurrency } from "@/lib/utils"
 
 const ActionsCell: FC<{ row: Row<RoundInvestment> }> = ({ row }) => {
   const investment = row.original
@@ -161,8 +162,9 @@ export const columns: ColumnDef<RoundInvestment>[] = [
         return <div className="text-left font-medium">N/A</div>
       }
       // TODO: Add locale support
-      const locale = "en-US"
-      return <div className="text-left font-medium">{Intl.NumberFormat(locale, { style: "currency", currency: round.valueCurrency.toLocaleUpperCase() }).format(round.buyIn)}</div>
+      return <div className="text-left font-medium">
+        {formatCurrency(round.buyIn, round.valueCurrency)}
+      </div>
     },
   },
   {

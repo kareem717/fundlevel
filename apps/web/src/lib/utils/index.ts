@@ -91,3 +91,15 @@ export const toFixedRound = (rawPercentage: number, toFixed: number) =>
 	rawPercentage.toFixed(toFixed) !== rawPercentage.toString()
 		? rawPercentage.toFixed(toFixed)
 		: rawPercentage.toString();
+
+/**
+ * Format currency.
+ * @description Formats a number as a currency string.
+ * @arg {number} value Number to format.
+ * @arg {string} currency Currency to format, can be uppercase or lowercase but is converted to uppercase.
+ * @arg {string} locale Locale used to format the currency.
+ * @return {string} Formatted currency.
+ */
+export const formatCurrency = (value: number, currency: string, locale: string = 'en-CA') => {
+	return Intl.NumberFormat(locale, { style: 'currency', currency: currency.toLocaleUpperCase(locale) }).format(value);
+};

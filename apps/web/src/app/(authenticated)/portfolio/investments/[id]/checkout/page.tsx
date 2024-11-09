@@ -1,5 +1,5 @@
 import { Separator } from "@/components/ui/separator";
-import { ConfirmationForm } from "./components/confirmation-form";
+import { ConfirmationButton } from "./components/confirmation-button";
 import { Label } from "@/components/ui/label";
 import { faker } from "@faker-js/faker";
 import Link from "next/link";
@@ -11,6 +11,7 @@ import { getInvestmentByIdCached, getInvestmentPaymentIntentClientSecret } from 
 import redirects from "@/lib/config/redirects";
 import Image from "next/image";
 import { Card } from "@/components/ui/card";
+import { useMemo } from "react";
 
 export default async function CompleteInvestmentPage({ params }: { params: Promise<{ id: string }> }) {
   const { id: investmentId } = await params;
@@ -39,6 +40,8 @@ export default async function CompleteInvestmentPage({ params }: { params: Promi
     throw new Error("Client secret not found");
   }
 
+  const redirectUrl = useMemo(() => redirects.app.portfolio.investments.index, []);
+
   return (
     <div className="flex justify-center items-start relative py-24 px-8 gap-4">
       <NavBack size="icon">
@@ -64,7 +67,7 @@ export default async function CompleteInvestmentPage({ params }: { params: Promi
                 clientSecret={clientSecret.data.clientSecret}
                 publishableKey={env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}
                 confirmParams={{
-                  return_url: `${env.NEXT_PUBLIC_APP_URL}${redirects.app.portfolio.investments.index}`,
+                  return_url: redirectUrl,
                 }}
               />
             </div>
@@ -100,7 +103,7 @@ export default async function CompleteInvestmentPage({ params }: { params: Promi
               </p>
             </div>
             <Separator className="my-4" />
-            <ConfirmationForm className="w-full" />
+            <ConfirmationButton className="w-full" prefetchUrl={redirectUrl} />
           </div>
           <Card className="flex flex-col gap-4 p-4 w-full min-w-[300px] max-w-md sticky top-14 right-0 h-min">
             <div className="flex justify-start items-center gap-4 w-full">
@@ -115,7 +118,7 @@ export default async function CompleteInvestmentPage({ params }: { params: Promi
             <div className="flex flex-col gap-2">
               <Label className="text-2xl font-medium" htmlFor="price-details">Price details</Label>
               <div id="price-details" className="flex flex-col gap-2">
-                {/* <div className="flex justify-between">
+                <div className="flex justify-between">
                   <span>$337.00 CAD x 5 nights</span>
                   <span>$1,685.00 CAD</span>
                 </div>
@@ -130,7 +133,7 @@ export default async function CompleteInvestmentPage({ params }: { params: Promi
                 <div className="flex justify-between">
                   <span>Taxes</span>
                   <span>$227.50 CAD</span>
-                </div> */}
+                </div>
                 <Separator className="my-2" />
                 <div className="flex justify-between font-bold">
                   <span>Total (CAD)</span>

@@ -44,6 +44,7 @@ import { processInvestment } from "@/actions/investments"
 import { Badge } from "@/components/ui/badge"
 import { titleCase } from "title-case"
 import { object } from "yup"
+import { formatCurrency } from "@/lib/utils"
 
 export const columns = (
   processInvestment: (id: number) => void,
@@ -82,10 +83,10 @@ export const columns = (
           <>
             {row.original.round?.percentageOffered && row.original.round?.percentageValue ? (
               <div className="text-left font-medium">
-                {Intl.NumberFormat(
-                  'en-US',
-                  { style: 'currency', currency: row.original.round?.valueCurrency.toLocaleUpperCase() }
-                ).format(row.original.round?.percentageOffered / row.original.round?.percentageValue)}
+                {formatCurrency(
+                  row.original.round?.percentageOffered / row.original.round?.percentageValue,
+                  row.original.round?.valueCurrency,
+                )}
               </div>
             ) : (
               <div className="text-left font-medium">
@@ -126,10 +127,7 @@ export const columns = (
           <div className="text-left font-medium">
             {/*//TODO: handle better*/}
             {round?.buyIn ? (
-              Intl.NumberFormat(
-                'en-US',
-                { style: 'currency', currency: round?.valueCurrency.toLocaleUpperCase() }
-              ).format(round?.buyIn)
+              <>{formatCurrency(round.buyIn, round.valueCurrency)}</>
             ) : (
               <div className="text-left font-medium">
                 N/A
