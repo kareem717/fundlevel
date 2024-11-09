@@ -13,7 +13,10 @@ import { Separator } from "@/components/ui/separator";
 import { BusinessContextProvider } from "./components/business-context";
 
 export const metadata: Metadata = {
-  title: "Dashboard",
+  title: {
+    default: "Dashboard",
+    template: "%s | Dashboard",
+  },
 }
 
 export default async function DashboardLayout({

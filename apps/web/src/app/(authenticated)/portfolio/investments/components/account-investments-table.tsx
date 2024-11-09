@@ -24,7 +24,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { WithdrawInvestmentButton } from "../app/(authenticated)/portfolio/investments/components/withdraw-investment-dialog"
+import { WithdrawInvestmentButton } from "./withdraw-investment-dialog"
 import Link from "next/link"
 import redirects from "@/lib/config/redirects"
 import {
@@ -49,12 +49,6 @@ import { ComponentPropsWithoutRef, FC, useEffect, useMemo, useState } from "reac
 import { useAction } from "next-safe-action/hooks"
 import { getAccountInvestmentsByPage } from "@/actions/investments"
 import { Skeleton } from "@/components/ui/skeleton"
-
-declare module '@tanstack/react-table' {
-  interface TableMeta<TData extends RowData> {
-    locale: string
-  }
-}
 
 const ActionsCell: FC<{ row: Row<RoundInvestment> }> = ({ row }) => {
   const investment = row.original
@@ -161,7 +155,8 @@ export const columns: ColumnDef<RoundInvestment>[] = [
     ),
     cell: ({ table, row }) => {
       const round = row.original.round
-      const locale = table.options.meta?.locale || "en-US"
+      // TODO: Add locale support
+      const locale = "en-US"
       return <div className="text-left font-medium">{Intl.NumberFormat(locale, { style: "currency", currency: round.valueCurrency.toLocaleUpperCase() }).format(round.buyIn)}</div>
     },
   },
@@ -288,11 +283,8 @@ export const AccountInvestmentsTable: FC<AccountInvestmentsTableProps> = () => {
       columnVisibility,
       rowSelection,
     },
-    meta: {
-      //TODO: localize properly
-      locale: 'en-CA',
-    },
   })
+
 
   return (
     <div className="flex flex-col gap-4 w-full h-full">

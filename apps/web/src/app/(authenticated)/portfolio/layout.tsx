@@ -8,7 +8,10 @@ import { Metadata } from "next"
 import { Separator } from "@/components/ui/separator";
 
 export const metadata: Metadata = {
-  title: "Dashboard",
+  title: {
+    default: "Portfolio",
+    template: "%s | Portfolio",
+  },
 }
 
 export default async function PortfolioLayout({

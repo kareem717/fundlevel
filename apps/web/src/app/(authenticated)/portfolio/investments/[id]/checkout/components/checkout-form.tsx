@@ -56,6 +56,7 @@ export const FormContent = ({ confirmParams, redirect }: { confirmParams: Confir
       elements,
       confirmParams,
       redirect,
+  
     });
     alert('submit');
 
@@ -82,9 +83,6 @@ export interface CheckoutFormProps {
   publishableKey: string;
   confirmParams: ConfirmPaymentData;
   redirect?: 'always';
-  onError?: (error: StripeError) => void;
-  onSuccess?: () => void;
-  onExecute?: () => void;
 }
 
 export const CheckoutForm: FC<CheckoutFormProps> = ({

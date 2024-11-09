@@ -23,12 +23,39 @@ export type NavigationMenu = {
  */
 const dashboard: NavigationMenu[] = [
 	{
-		name: "Business Dashboard",
+		name: "Business",
 		path: redirects.app.dashboard.index,
 		items: [
 			{
 				title: "Overview",
 				url: redirects.app.dashboard.index,
+				icon: Icons.layoutGrid,
+			},
+		],
+	},
+	{
+		name: "Investments",
+		path: redirects.app.dashboard.investments.index,
+		items: [
+			{
+				title: "Overview",
+				url: redirects.app.dashboard.investments.index,
+				icon: Icons.chart,
+			},
+			{
+				title: "Offers",
+				url: redirects.app.dashboard.investments.offers.index,
+				icon: Icons.handCoins,
+			},
+		],
+	},
+	{
+		name: "Investors",
+		path: redirects.app.dashboard.investors.index,
+		items: [
+			{
+				title: "Overview",
+				url: redirects.app.dashboard.investors.index,
 				icon: Icons.layoutGrid,
 			},
 		],
@@ -43,6 +70,11 @@ const portfolio: NavigationMenu[] = [
 		name: "Portfolio",
 		path: redirects.app.portfolio.index,
 		items: [
+			{
+				title: "Overview",
+				url: redirects.app.portfolio.index,
+				icon: Icons.layoutGrid,
+			},
 			{
 				title: "Investments",
 				url: redirects.app.portfolio.investments.index,

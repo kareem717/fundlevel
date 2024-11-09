@@ -9,6 +9,7 @@ import {
 	getAccountBusinesses as getAccountBusinessesApi,
 	getBusinessRoundsByPage as getBusinessRoundsByPageApi,
 	getBusinessTotalFunding,
+	getBusinessInvestmentsByPage as getBusinessInvestmentsByPageApi,
 } from "@/lib/api";
 import { createBusinessSchema } from "@/actions/validations/business";
 import {
@@ -159,3 +160,27 @@ export const getBusinessFunding = actionClient
 
 		return res.data;
 	});
+
+export const getBusinessInvestmentsByPage = actionClientWithAccount
+	.schema(
+		object().shape({
+			businessId: intIdSchema.required(),
+			pagination: offsetPaginationSchema.required(),
+		})
+	)
+	.action(
+		async ({ parsedInput: { businessId, pagination }, ctx: { apiClient } }) => {
+			const res = await getBusinessInvestmentsByPageApi({
+				client: apiClient,
+				throwOnError: true,
+				path: {
+					id: businessId,
+				},
+				query: {
+					...pagination,
+				},
+			});
+
+			return res.data;
+		}
+	);

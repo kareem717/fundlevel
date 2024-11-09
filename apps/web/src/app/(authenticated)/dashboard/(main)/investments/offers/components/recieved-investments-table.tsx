@@ -9,6 +9,7 @@ import {
   getFilteredRowModel,
   getSortedRowModel,
   useReactTable,
+  RowData,
 } from "@tanstack/react-table"
 import {
   Table,
@@ -18,7 +19,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
@@ -32,21 +32,20 @@ import {
 import { ComponentPropsWithoutRef, FC, useEffect, useMemo, useState } from "react"
 import { DataTablePagination, DataTableColumnHeader } from "@/components/data-table"
 import { Icons } from "@/components/ui/icons"
-import { titleCase } from "title-case"
-import { Address, getBusinessInvestmentsByPage, RoundInvestment } from "@/lib/api"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+import { RoundInvestment } from "@/lib/api"
 import { format } from "date-fns"
 import { toast } from "sonner"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useAction } from "next-safe-action/hooks"
 import { useBusinessContext } from "../../../components/business-context"
+import { parseAsInteger, useQueryStates } from "nuqs"
+import { getBusinessInvestmentsByPage } from "@/actions/busineses"
+import { processInvestment } from "@/actions/investments"
 
-export const columns: ColumnDef<RoundInvestment>[] = [
+export const columns = (
+  processInvestment: (id: number) => void,
+  isProcessingInvestment: boolean
+): ColumnDef<RoundInvestment>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -70,62 +69,20 @@ export const columns: ColumnDef<RoundInvestment>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "name",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Name" />
-    ),
-    cell: ({ row }) => {
-      const name = row.getValue("name") as string
-      return <div className="text-left font-medium">{titleCase(name)}</div>
-    },
-  },
-  {
     accessorKey: "createdAt",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Created At" />
     ),
     cell: ({ row }) => {
-      const createdAt = row.getValue("createdAt") as Date
+      const createdAt = row.original.createdAt
       return <div className="text-left font-medium">{format(createdAt, "PPP")}</div>
-    },
-  },
-  {
-    accessorKey: "businessNumber",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Business Number" />
-    ),
-    cell: ({ row }) => {
-      const businessNumber = row.getValue("businessNumber") as string
-      return <div className="text-left font-medium">{businessNumber}</div>
-    },
-  },
-  {
-    accessorKey: "address",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Address" />
-    ),
-    cell: ({ row }) => {
-      const address = row.getValue("address") as Address
-      return (
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger>
-              <div className="text-left font-medium truncate max-w-32" title={address?.fullAddress || "N/A"}>
-                {address?.fullAddress || "N/A"}
-              </div>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>{address?.fullAddress || "N/A"}</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      )
     },
   },
   {
     id: "actions",
     cell: ({ row }) => {
       const investment = row.original
+      console.log('investment', investment)
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -143,8 +100,13 @@ export const columns: ColumnDef<RoundInvestment>[] = [
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => {
-                toast.info("Not implemented")
+                if (isProcessingInvestment) {
+                  toast.info("Investment is already being processed, please wait for it to finish.")
+                  return
+                }
+                processInvestment(investment.id)
               }}
+              disabled={isProcessingInvestment}
             >
               Accept
             </DropdownMenuItem>
@@ -175,10 +137,18 @@ export const RecievedInvestmentsTable: FC<RecievedInvestmentsTableProps> = ({
   }
 
   const [data, setData] = useState<RoundInvestment[]>([])
-  const [pagination, setPagination] = useState({
-    pageIndex: 0,
-    pageSize: 10,
-  })
+
+  const [pagination, setPagination] = useQueryStates(
+    {
+      page: parseAsInteger.withDefault(1),
+      pageSize: parseAsInteger.withDefault(10)
+    },
+    {
+      urlKeys: {
+        pageSize: 'limit'
+      }
+    }
+  )
 
   const [rowCount, setRowCount] = useState(0)
 
@@ -188,6 +158,7 @@ export const RecievedInvestmentsTable: FC<RecievedInvestmentsTableProps> = ({
 
   const { execute, isExecuting } = useAction(getBusinessInvestmentsByPage, {
     onSuccess: ({ data }) => {
+      console.log('data', data)
       setData(data?.investments || [])
       setRowCount(data?.total || 0)
     },
@@ -196,28 +167,35 @@ export const RecievedInvestmentsTable: FC<RecievedInvestmentsTableProps> = ({
     },
   })
 
+  const { execute: process, isExecuting: isProcessingInvestment } = useAction(processInvestment, {
+    onSuccess: () => {
+      toast.success("Investment processed")
+    },
+    onError: (error) => {
+      toast.error("Failed to process investment")
+      console.error(error)
+    },
+  })
+
   useEffect(() => {
     execute({
       businessId: currentBusiness.id,
-      pagination: {
-        page: pagination.pageIndex + 1,
-        pageSize: pagination.pageSize,
-      },
+      pagination
     })
-  }, [pagination.pageIndex, pagination.pageSize, currentBusiness.id, execute])
+  }, [pagination, currentBusiness.id, execute])
 
   const columnsMemo = useMemo(
     () =>
       isExecuting
-        ? columns.map((column) => ({
+        ? columns(process, isProcessingInvestment).map((column) => ({
           ...column,
           cell: () => <Skeleton className="h-8 w-full" />,
         }))
-        : columns,
+        : columns(process, isProcessingInvestment),
     [isExecuting]
   );
 
-  const table = useReactTable({
+  const table = useReactTable<RoundInvestment>({
     data,
     columns: columnsMemo,
     getCoreRowModel: getCoreRowModel(),
@@ -227,28 +205,38 @@ export const RecievedInvestmentsTable: FC<RecievedInvestmentsTableProps> = ({
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
     onPaginationChange: (updater) => {
-      setPagination(updater)
+      if (typeof updater === 'function') {
+        const newState = updater({ pageIndex: pagination.page - 1, pageSize: pagination.pageSize })
+        setPagination({ page: newState.pageIndex + 1, pageSize: newState.pageSize })
+      }
     },
     rowCount,
     manualPagination: true,
     state: {
-      pagination,
+      pagination: {
+        pageIndex: pagination.page - 1,
+        pageSize: pagination.pageSize,
+      },
       columnVisibility,
       rowSelection,
+    },
+    meta: {
+      processInvestment: process,
+      isProcessingInvestment,
     },
   })
 
   return (
     <div className="flex flex-col gap-4 w-full h-full">
       <div className="flex items-center py-4">
-        <Input
+        {/* <Input
           placeholder="Filter name..."
           value={table.getColumn("name")?.getFilterValue() as string}
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
-        />
+        /> */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">

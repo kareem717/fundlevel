@@ -36,6 +36,15 @@ const redirects = {
 			business: {
 				create: "/dashboard/create-business",
 			},
+			investments: {
+				index: "/dashboard/investments",
+				offers: {
+					index: "/dashboard/investments/offers",
+				},
+			},
+			investors: {
+				index: "/dashboard/investors",
+			},
 		},
 	},
 };

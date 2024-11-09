@@ -764,16 +764,6 @@ export type GetAccountInvestmentsByPageResponse = (GetOffsetPaginatedRoundInvest
 
 export type GetAccountInvestmentsByPageError = (ErrorModel);
 
-export type GetInvestmentByIdData = {
-    path: {
-        id: number;
-    };
-};
-
-export type GetInvestmentByIdResponse = (SingleInvestmentResponseBody);
-
-export type GetInvestmentByIdError = (ErrorModel);
-
 export type GetDailyAggregatedBusinessAnalyticsData = {
     path: {
         id: number;
@@ -1289,6 +1279,16 @@ export type DeleteRoundInvestmentData = {
 export type DeleteRoundInvestmentResponse = (string);
 
 export type DeleteRoundInvestmentError = (ErrorModel);
+
+export type GetInvestmentByIdData = {
+    path: {
+        id: number;
+    };
+};
+
+export type GetInvestmentByIdResponse = (SingleInvestmentResponseBody);
+
+export type GetInvestmentByIdError = (ErrorModel);
 
 export type GetInvestmentPaymentIntentClientSecretData = {
     path: {
@@ -1882,22 +1882,6 @@ export const GetAccountInvestmentsByPageResponseTransformer: GetAccountInvestmen
     return data;
 };
 
-export type GetInvestmentByIdResponseTransformer = (data: any) => Promise<GetInvestmentByIdResponse>;
-
-export type SingleInvestmentResponseBodyModelResponseTransformer = (data: any) => SingleInvestmentResponseBody;
-
-export const SingleInvestmentResponseBodyModelResponseTransformer: SingleInvestmentResponseBodyModelResponseTransformer = data => {
-    if (data?.investment) {
-        RoundInvestmentModelResponseTransformer(data.investment);
-    }
-    return data;
-};
-
-export const GetInvestmentByIdResponseTransformer: GetInvestmentByIdResponseTransformer = async (data) => {
-    SingleInvestmentResponseBodyModelResponseTransformer(data);
-    return data;
-};
-
 export type CreateBusinessResponseTransformer = (data: any) => Promise<CreateBusinessResponse>;
 
 export type SingleBusinessResponseBodyModelResponseTransformer = (data: any) => SingleBusinessResponseBody;
@@ -2079,7 +2063,23 @@ export const GetAllIndustriesResponseTransformer: GetAllIndustriesResponseTransf
 
 export type CreateRoundInvestmentResponseTransformer = (data: any) => Promise<CreateRoundInvestmentResponse>;
 
+export type SingleInvestmentResponseBodyModelResponseTransformer = (data: any) => SingleInvestmentResponseBody;
+
+export const SingleInvestmentResponseBodyModelResponseTransformer: SingleInvestmentResponseBodyModelResponseTransformer = data => {
+    if (data?.investment) {
+        RoundInvestmentModelResponseTransformer(data.investment);
+    }
+    return data;
+};
+
 export const CreateRoundInvestmentResponseTransformer: CreateRoundInvestmentResponseTransformer = async (data) => {
+    SingleInvestmentResponseBodyModelResponseTransformer(data);
+    return data;
+};
+
+export type GetInvestmentByIdResponseTransformer = (data: any) => Promise<GetInvestmentByIdResponse>;
+
+export const GetInvestmentByIdResponseTransformer: GetInvestmentByIdResponseTransformer = async (data) => {
     SingleInvestmentResponseBodyModelResponseTransformer(data);
     return data;
 };
