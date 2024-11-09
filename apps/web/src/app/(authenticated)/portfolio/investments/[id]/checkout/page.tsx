@@ -40,7 +40,7 @@ export default async function CompleteInvestmentPage({ params }: { params: Promi
     throw new Error("Client secret not found");
   }
 
-  const redirectUrl = useMemo(() => redirects.app.portfolio.investments.index, []);
+  const redirectUrl = redirects.app.portfolio.investments.index;
 
   return (
     <div className="flex justify-center items-start relative py-24 px-8 gap-4">

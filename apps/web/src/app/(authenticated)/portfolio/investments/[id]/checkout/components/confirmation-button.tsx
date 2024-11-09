@@ -31,13 +31,13 @@ export const ConfirmationButton: FC<ConfirmationButtonProps> = ({ className, pre
   }
 
   return (
-    <div className={cn(className)} {...props}>
-      <p className="text-sm text-foreground/50">
+    <div className={cn("flex flex-col gap-4", className)} {...props}>
+      <p className="text-sm text-foreground">
         By clicking the button below, I agree to the Host&apos;s House Rules, Ground rules for guests, Airbnb&apos;s Rebooking and Refund Policy, and that Airbnb can charge my payment method if I&apos;m responsible for damage. I agree to pay the total amount shown if the Host accepts my booking request.
       </p>
       <Button
         type="submit"
-        className="w-full flex justify-center items-center"
+        className="w-min flex justify-center items-center"
         disabled={isExecuting || !form.formState.isValid}
         onClick={onSubmit}
       >
