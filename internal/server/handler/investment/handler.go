@@ -37,6 +37,7 @@ func (h *httpHandler) processInvestment(ctx context.Context, input *shared.PathI
 	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
+			h.logger.Error("investment not found", zap.Int("investment id", input.ID))
 			return nil, huma.Error404NotFound("investment not found")
 		default:
 			h.logger.Error("failed to fetch investment", zap.Error(err))
@@ -45,6 +46,7 @@ func (h *httpHandler) processInvestment(ctx context.Context, input *shared.PathI
 	}
 
 	if investmentResult.Status != investment.InvestmentStatusPending {
+		h.logger.Error("investment is not pending", zap.Int("investment id", input.ID))
 		return nil, huma.Error400BadRequest("Investment is not pending")
 	}
 
@@ -52,6 +54,7 @@ func (h *httpHandler) processInvestment(ctx context.Context, input *shared.PathI
 	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
+			h.logger.Error("round not found", zap.Int("round id", investmentResult.RoundID))
 			return nil, huma.Error404NotFound("round not found")
 		default:
 			h.logger.Error("failed to fetch round", zap.Error(err))
@@ -232,6 +235,36 @@ func (h *httpHandler) getInvestmentPaymentIntentClientSecret(ctx context.Context
 	resp := &GetInvestmentPaymentIntentClientSecretOutput{}
 	resp.Body.Message = "Stripe payment intent created successfully"
 	resp.Body.ClientSecret = investmentRecord.Payment.StripePaymentIntentClientSecret
+
+	return resp, nil
+}
+
+func (h *httpHandler) getInvestmentById(ctx context.Context, input *shared.PathIDParam) (*shared.SingleInvestmentResponse, error) {
+	investment, err := h.service.InvestmentService.GetById(ctx, input.ID)
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			h.logger.Error("investment not found", zap.Int("investment id", input.ID))
+			return nil, huma.Error404NotFound("Investment not found")
+		default:
+			h.logger.Error("failed to fetch investment", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the investment")
+		}
+	}
+
+	account := shared.GetAuthenticatedAccount(ctx)
+
+	if account.ID != investment.InvestorID {
+		h.logger.Error("input account id does not match authenticated account id",
+			zap.Any("input account id", investment.InvestorID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot fetch investment for another account")
+	}
+
+	resp := &shared.SingleInvestmentResponse{}
+	resp.Body.Message = "Investment fetched successfully"
+	resp.Body.Investment = &investment
 
 	return resp, nil
 }

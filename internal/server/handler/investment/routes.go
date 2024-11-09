@@ -100,6 +100,26 @@ func RegisterHumaRoutes(
 	}, handler.deleteInvestment)
 
 	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-investment-by-id",
+		Method:      http.MethodGet,
+		Path:        "/investments/{id}",
+		Summary:     "Get a round investment",
+		Description: "Get a round investment.",
+		Tags:        []string{"Investments"},
+		Security: []map[string][]string{
+			{"bearerAuth": {}},
+		},
+		Middlewares: huma.Middlewares{
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
+			},
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithAccount(humaApi)(ctx, next, logger, service)
+			},
+		},
+	}, handler.getInvestmentById)
+
+	huma.Register(humaApi, huma.Operation{
 		OperationID: "get-investment-payment-intent-client-secret",
 		Method:      http.MethodGet,
 		Path:        "/investments/{id}/payment-intent",
