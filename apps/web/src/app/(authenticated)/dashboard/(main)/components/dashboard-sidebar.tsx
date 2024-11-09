@@ -1,6 +1,6 @@
 "use client"
 
-import { BusinessSelector } from "./business-context"
+import { BusinessContextSelector } from "./business-context"
 import {
   Sidebar,
   SidebarContent,
@@ -10,15 +10,15 @@ import {
 } from "@/components/ui/sidebar"
 import { SidebarMenu } from "@/components/ui/sidebar-menu"
 import { ComponentPropsWithoutRef } from "react"
-import NavConfig from "@/lib/config/navigation"
+import SidebarConfig from "@/lib/config/sidebar"
 import { SidebarUser } from "@/components/ui/sidebar-user"
 import { useAuth } from "@/components/providers/auth-provider"
 
-export interface AppSidebarProps extends ComponentPropsWithoutRef<typeof Sidebar> {
+export interface DashboardSidebarProps extends ComponentPropsWithoutRef<typeof Sidebar> {
 }
 
-export const AppSidebar: React.FC<AppSidebarProps> = ({ ...props }: AppSidebarProps) => {
-  const { dashboard } = NavConfig
+export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ ...props }: DashboardSidebarProps) => {
+  const { dashboard } = SidebarConfig
   const { user, account } = useAuth()
 
   if (!user || !account) {
@@ -28,7 +28,7 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ ...props }: AppSidebarPr
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <BusinessSelector />
+        <BusinessContextSelector />
       </SidebarHeader>
       <SidebarContent>
         {dashboard.map((menu) => (

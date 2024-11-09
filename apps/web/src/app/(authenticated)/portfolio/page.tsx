@@ -13,7 +13,7 @@ export default async function PortfolioPage() {
   return (
     <div>
       <h1>Portfolio</h1>
-      <Link href={redirects.app.portfolio.investments.root} className={buttonVariants()}>
+      <Link href={redirects.app.portfolio.investments.index} className={buttonVariants()}>
         My Investments
       </Link>
     </div>

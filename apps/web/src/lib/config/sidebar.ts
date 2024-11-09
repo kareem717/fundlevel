@@ -19,9 +19,9 @@ export type NavigationMenu = {
 };
 
 /**
- * An array of navigation items for the business dashboard.
+ * An array of navigation items for the business dashboard sidebar.
  */
-const dashboardNavigation: NavigationMenu[] = [
+const dashboard: NavigationMenu[] = [
 	{
 		name: "Business Dashboard",
 		path: redirects.app.dashboard.index,
@@ -36,10 +36,28 @@ const dashboardNavigation: NavigationMenu[] = [
 ];
 
 /**
- * A configuration object for the navigation items.
+ * An array of navigation items for the portfolio dashboard sidebar.
  */
-const NavConfig = {
-	dashboard: dashboardNavigation,
+const portfolio: NavigationMenu[] = [
+	{
+		name: "Portfolio",
+		path: redirects.app.portfolio.index,
+		items: [
+			{
+				title: "Investments",
+				url: redirects.app.portfolio.investments.index,
+				icon: Icons.chart,
+			},
+		],
+	},
+];
+
+/**
+ * A configuration object for sidebar navigation items.
+ */
+const SidebarConfig = {
+	dashboard,
+	portfolio,
 };
 
-export default NavConfig;
+export default SidebarConfig;

@@ -1,6 +1,6 @@
 "use client";
 
-import { NavigationMenu } from "@/lib/config/navigation";
+import { NavigationMenu } from "@/lib/config/sidebar";
 import { ComponentPropsWithoutRef, FC } from "react"
 import {
   Collapsible,

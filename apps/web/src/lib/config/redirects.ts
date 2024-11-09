@@ -27,7 +27,7 @@ const redirects = {
 		portfolio: {
 			index: "/portfolio",
 			investments: {
-				root: "/portfolio/investments",
+				index: "/portfolio/investments",
 				checkout: "/portfolio/investments/:id/checkout",
 			},
 		},

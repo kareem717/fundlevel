@@ -75,10 +75,10 @@ export const BusinessContextProvider: FC<{
 };
 
 
-export interface BusinessSelectorProps extends ComponentPropsWithoutRef<typeof SidebarMenu> {
+export interface BusinessContextSelectorProps extends ComponentPropsWithoutRef<typeof SidebarMenu> {
 }
 
-export const BusinessSelector: FC<BusinessSelectorProps> = ({ ...props }) => {
+export const BusinessContextSelector: FC<BusinessContextSelectorProps> = ({ ...props }) => {
   const { isMobile } = useSidebar()
   const { setCurrentBusinessId, currentBusiness, businesses } = useBusinessContext()
   console.log(currentBusiness)
