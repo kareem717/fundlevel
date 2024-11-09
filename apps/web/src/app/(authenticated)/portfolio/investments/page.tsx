@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { AccountInvestmentsTable } from "../../../../actions/account-investments-table";
 
 export const metadata: Metadata = {
   title: "Investments",
@@ -7,5 +8,10 @@ export const metadata: Metadata = {
 
 export default async function InvestmentsPage() {
   //TODO: Implement
-  return <div>All investments listed here. Not implemented yet.</div>;
+  return (
+    <div>
+      <h1>Investments</h1>
+      <AccountInvestmentsTable />
+    </div>
+  )
 }
