@@ -465,28 +465,6 @@ export const CreateChatResponseBodySchema = {
     type: 'object'
 } as const;
 
-export const CreateInvestmentParamsSchema = {
-    additionalProperties: false,
-    properties: {
-        '$schema': {
-            examples: ['https://example.com/schemas/CreateInvestmentParams.json'],
-            format: 'uri',
-            readOnly: true,
-            type: 'string'
-        },
-        investorId: {
-            format: 'int64',
-            type: 'integer'
-        },
-        roundId: {
-            format: 'int64',
-            type: 'integer'
-        }
-    },
-    required: ['roundId', 'investorId'],
-    type: 'object'
-} as const;
-
 export const CreateMessageParamsSchema = {
     additionalProperties: false,
     properties: {
@@ -940,26 +918,6 @@ export const GetDailyAggregatedVentureAnalyticsOutputBodySchema = {
     type: 'object'
 } as const;
 
-export const GetInvestmentPaymentIntentClientSecretOutputBodySchema = {
-    additionalProperties: false,
-    properties: {
-        '$schema': {
-            examples: ['https://example.com/schemas/GetInvestmentPaymentIntentClientSecretOutputBody.json'],
-            format: 'uri',
-            readOnly: true,
-            type: 'string'
-        },
-        clientSecret: {
-            type: 'string'
-        },
-        message: {
-            type: 'string'
-        }
-    },
-    required: ['clientSecret', 'message'],
-    type: 'object'
-} as const;
-
 export const GetLikeCountOutputBodySchema = {
     additionalProperties: false,
     properties: {
@@ -1141,6 +1099,26 @@ export const IndustrySchema = {
     type: 'object'
 } as const;
 
+export const InvestmentPaymentIntentClientSecretOutputBodySchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/InvestmentPaymentIntentClientSecretOutputBody.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        clientSecret: {
+            type: 'string'
+        },
+        message: {
+            type: 'string'
+        }
+    },
+    required: ['clientSecret', 'message'],
+    type: 'object'
+} as const;
+
 export const IsFavouritedOutputBodySchema = {
     additionalProperties: false,
     properties: {
@@ -1315,7 +1293,7 @@ export const RoundInvestmentSchema = {
             type: ['string', 'null']
         }
     },
-    required: ['status', 'id', 'roundId', 'investorId', 'createdAt', 'updatedAt', 'deletedAt'],
+    required: ['status', 'payment', 'id', 'roundId', 'investorId', 'createdAt', 'updatedAt', 'deletedAt'],
     type: 'object'
 } as const;
 

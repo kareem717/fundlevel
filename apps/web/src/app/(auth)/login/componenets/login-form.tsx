@@ -1,9 +1,9 @@
 "use client";
 
-import { Icons } from "../ui/icons";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import { OAuthButtons } from "../oauth-buttons";
+import { Icons } from "@/components/ui/icons";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { OAuthButtons } from "@/components/oauth-buttons";
 import { useState, ComponentPropsWithoutRef, FC } from "react";
 import supabase from "@/lib/utils/supabase/client";
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -35,6 +35,7 @@ const formSchema = z.object({
 
 export interface LoginFormProps extends ComponentPropsWithoutRef<"form"> {
 	onSubmitProp?: (values: z.infer<typeof formSchema>) => void;
+	redirectUrl?: string;
 }
 
 export const LoginForm: FC<LoginFormProps> = ({ onSubmitProp, className, ...props }) => {

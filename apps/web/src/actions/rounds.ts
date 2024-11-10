@@ -15,6 +15,7 @@ import {
 	intIdSchema,
 } from "@/actions/validations/shared";
 import { createRoundSchema } from "./validations/rounds";
+import { cache } from "react";
 
 /**
  * Create a venture
@@ -34,19 +35,21 @@ export const createRound = actionClientWithAccount
 /**
  * Create a venture
  */
-export const getRoundById = actionClient
-	.schema(intIdSchema.required())
-	.action(async ({ parsedInput, ctx: { apiClient } }) => {
-		const response = await getRoundByIdApi({
-			client: apiClient,
-			throwOnError: true,
-			path: {
-				id: parsedInput,
-			},
-		});
+export const getRoundById = cache(
+	actionClient
+		.schema(intIdSchema.required())
+		.action(async ({ parsedInput, ctx: { apiClient } }) => {
+			const response = await getRoundByIdApi({
+				client: apiClient,
+				throwOnError: true,
+				path: {
+					id: parsedInput,
+				},
+			});
 
-		return response.data;
-	});
+			return response.data;
+		})
+);
 
 /**
  * Get rounds by cursor pagination

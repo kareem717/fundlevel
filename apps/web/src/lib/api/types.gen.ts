@@ -156,15 +156,6 @@ export type CreateChatResponseBody = {
     updatedAt: (Date) | null;
 };
 
-export type CreateInvestmentParams = {
-    /**
-     * A URL to the JSON Schema for this object.
-     */
-    readonly $schema?: string;
-    investorId: number;
-    roundId: number;
-};
-
 export type CreateMessageParams = {
     /**
      * A URL to the JSON Schema for this object.
@@ -366,15 +357,6 @@ export type GetDailyAggregatedVentureAnalyticsOutputBody = {
     message: string;
 };
 
-export type GetInvestmentPaymentIntentClientSecretOutputBody = {
-    /**
-     * A URL to the JSON Schema for this object.
-     */
-    readonly $schema?: string;
-    clientSecret: string;
-    message: string;
-};
-
 export type GetLikeCountOutputBody = {
     /**
      * A URL to the JSON Schema for this object.
@@ -442,6 +424,15 @@ export type Industry = {
     updatedAt: (Date) | null;
 };
 
+export type InvestmentPaymentIntentClientSecretOutputBody = {
+    /**
+     * A URL to the JSON Schema for this object.
+     */
+    readonly $schema?: string;
+    clientSecret: string;
+    message: string;
+};
+
 export type IsFavouritedOutputBody = {
     /**
      * A URL to the JSON Schema for this object.
@@ -500,7 +491,7 @@ export type RoundInvestment = {
     id: number;
     investor?: Account;
     investorId: number;
-    payment?: RoundInvestmentPayment;
+    payment: RoundInvestmentPayment;
     round?: Round;
     roundId: number;
     status: 'pending' | 'processing' | 'rejected' | 'withdrawn' | 'successful' | 'round_closed';
@@ -977,17 +968,6 @@ export type GetVentureFavouriteCountResponse = (GetLikeCountOutputBody);
 
 export type GetVentureFavouriteCountError = (ErrorModel);
 
-export type HandleStripeWebhookData = {
-    body: unknown;
-    headers?: {
-        'Stripe-Signature'?: string;
-    };
-};
-
-export type HandleStripeWebhookResponse = (void);
-
-export type HandleStripeWebhookError = (ErrorModel);
-
 export type CreateBusinessData = {
     body: CreateBusinessParams;
 };
@@ -995,17 +975,6 @@ export type CreateBusinessData = {
 export type CreateBusinessResponse = (SingleBusinessResponseBody);
 
 export type CreateBusinessError = (ErrorModel);
-
-export type HandleStripeConnectedAccountWebhookData = {
-    body: unknown;
-    headers?: {
-        'Stripe-Signature'?: string;
-    };
-};
-
-export type HandleStripeConnectedAccountWebhookResponse = (void);
-
-export type HandleStripeConnectedAccountWebhookError = (ErrorModel);
 
 export type DeleteBusinessData = {
     path: {
@@ -1262,24 +1231,6 @@ export type GetAllIndustriesResponse = (GetAllIndustriesResponseBody);
 
 export type GetAllIndustriesError = (ErrorModel);
 
-export type CreateRoundInvestmentData = {
-    body: CreateInvestmentParams;
-};
-
-export type CreateRoundInvestmentResponse = (SingleInvestmentResponseBody);
-
-export type CreateRoundInvestmentError = (ErrorModel);
-
-export type DeleteRoundInvestmentData = {
-    path: {
-        id: number;
-    };
-};
-
-export type DeleteRoundInvestmentResponse = (string);
-
-export type DeleteRoundInvestmentError = (ErrorModel);
-
 export type GetInvestmentByIdData = {
     path: {
         id: number;
@@ -1290,35 +1241,15 @@ export type GetInvestmentByIdResponse = (SingleInvestmentResponseBody);
 
 export type GetInvestmentByIdError = (ErrorModel);
 
-export type GetInvestmentPaymentIntentClientSecretData = {
+export type CreateInvestmentPaymentIntentData = {
     path: {
         id: number;
     };
 };
 
-export type GetInvestmentPaymentIntentClientSecretResponse = (GetInvestmentPaymentIntentClientSecretOutputBody);
+export type CreateInvestmentPaymentIntentResponse = (InvestmentPaymentIntentClientSecretOutputBody);
 
-export type GetInvestmentPaymentIntentClientSecretError = (ErrorModel);
-
-export type ProcessInvestmentData = {
-    path: {
-        id: number;
-    };
-};
-
-export type ProcessInvestmentResponse = (string);
-
-export type ProcessInvestmentError = (ErrorModel);
-
-export type WithdrawInvestmentData = {
-    path: {
-        id: number;
-    };
-};
-
-export type WithdrawInvestmentResponse = (string);
-
-export type WithdrawInvestmentError = (ErrorModel);
+export type CreateInvestmentPaymentIntentError = (ErrorModel);
 
 export type GetRoundByCursorData = {
     query?: {
@@ -1616,6 +1547,28 @@ export type GetVentureRoundsByPageData = {
 export type GetVentureRoundsByPageResponse = (GetOffsetPaginatedRoundsOutputBody);
 
 export type GetVentureRoundsByPageError = (ErrorModel);
+
+export type HandleStripeWebhookData = {
+    body: unknown;
+    headers?: {
+        'Stripe-Signature'?: string;
+    };
+};
+
+export type HandleStripeWebhookResponse = (void);
+
+export type HandleStripeWebhookError = (ErrorModel);
+
+export type HandleStripeConnectWebhookData = {
+    body: unknown;
+    headers?: {
+        'Stripe-Signature'?: string;
+    };
+};
+
+export type HandleStripeConnectWebhookResponse = (void);
+
+export type HandleStripeConnectWebhookError = (ErrorModel);
 
 export type CreateAccountResponseTransformer = (data: any) => Promise<CreateAccountResponse>;
 
@@ -2061,7 +2014,7 @@ export const GetAllIndustriesResponseTransformer: GetAllIndustriesResponseTransf
     return data;
 };
 
-export type CreateRoundInvestmentResponseTransformer = (data: any) => Promise<CreateRoundInvestmentResponse>;
+export type GetInvestmentByIdResponseTransformer = (data: any) => Promise<GetInvestmentByIdResponse>;
 
 export type SingleInvestmentResponseBodyModelResponseTransformer = (data: any) => SingleInvestmentResponseBody;
 
@@ -2071,13 +2024,6 @@ export const SingleInvestmentResponseBodyModelResponseTransformer: SingleInvestm
     }
     return data;
 };
-
-export const CreateRoundInvestmentResponseTransformer: CreateRoundInvestmentResponseTransformer = async (data) => {
-    SingleInvestmentResponseBodyModelResponseTransformer(data);
-    return data;
-};
-
-export type GetInvestmentByIdResponseTransformer = (data: any) => Promise<GetInvestmentByIdResponse>;
 
 export const GetInvestmentByIdResponseTransformer: GetInvestmentByIdResponseTransformer = async (data) => {
     SingleInvestmentResponseBodyModelResponseTransformer(data);

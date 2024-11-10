@@ -1,3 +1,5 @@
+
+
 const redirects = {
 	privacy: "/privacy-policy",
 	terms: "/terms-of-service",
@@ -12,14 +14,18 @@ const redirects = {
 	app: {
 		explore: {
 			index: "/",
-			ventureView: "/ventures/:id",
-			roundView: "/rounds/:id",
+			venture: {
+				view: (id: string) => `/ventures/${id}`,
+			},
+			round: {
+				view: (id: string) => `/rounds/${id}`,
+			},
 		},
 		portfolio: {
 			index: "/portfolio",
 			investments: {
 				index: "/portfolio/investments",
-				checkout: "/portfolio/investments/:id/checkout",
+				create: (roundId: string) => `/portfolio/investments/create/${roundId}`,
 			},
 		},
 		dashboard: {

@@ -1,5 +1,4 @@
 import { RoundViewActions } from "./components/round-view-actions"
-import { ConfirmInvestmentDialog } from "./components/confirm-investment-dialog";
 import { getRoundById, isRoundLiked } from "@/actions/rounds";
 import { notFound } from "next/navigation";
 import { getAccount } from "@/actions/auth";
@@ -191,16 +190,16 @@ export default async function RoundViewPage(props: { params: Promise<{ id: strin
                 </div>
               </CardContent>
             </TooltipProvider>
-            <CardFooter className="w-full mt-8">
+            {/* <CardFooter className="w-full mt-8">
               <ConfirmInvestmentDialog roundId={round.id} />
-            </CardFooter>
+            </CardFooter> */}
           </Card>
         </div>
       </CardContent>
       <div
         className={cn("w-full font-semibold py-2 px-4 sm:px-6 bg-background border-t md:hidden bottom-0 left-0 right-0 fixed")}
       >
-        <ConfirmInvestmentDialog roundId={round.id} price={parseFloat(buyInPrice)} />
+        {/* <ConfirmInvestmentDialog roundId={round.id} price={parseFloat(buyInPrice)} /> */}
       </div>
     </Card>
   )

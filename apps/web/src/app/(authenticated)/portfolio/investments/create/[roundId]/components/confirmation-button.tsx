@@ -41,7 +41,7 @@ export const ConfirmationButton: FC<ConfirmationButtonProps> = ({ className, pre
         disabled={isExecuting || !form.formState.isValid}
         onClick={onSubmit}
       >
-        {isExecuting && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />}  Continue to payment
+        {isExecuting && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />} Invest
       </Button>
     </div>
   );

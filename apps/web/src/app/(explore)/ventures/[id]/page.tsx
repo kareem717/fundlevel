@@ -5,25 +5,13 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Icons } from "@/components/ui/icons";
-import { Separator } from "@/components/ui/separator";
-import { cn, truncateText } from "@/lib/utils";
-import { BusinessOverview } from "@/components/business-overview.jsx";
-import { VentureActiveRoundCard } from "./components/venture-active-round-card";
-
-import { ArrowLeft, Globe, Heart, MessageSquare, Star } from "lucide-react";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -33,9 +21,9 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import BackButton from "./components/back-button";
 import { VentureTabs } from "./components/tabs";
+import redirects from "@/lib/config/redirects";
 
 export default async function VentureViewPage(props: {
   params: Promise<{ id: string }>;
@@ -185,11 +173,38 @@ export default async function VentureViewPage(props: {
 
           {/* Sidebar */}
           <div className="space-y-6">
-            <VentureActiveRoundCard
-              ventureId={venture.id}
-              className="w-full h-full lg:max-w-96"
-            />
-
+            {venture.activeRound && (
+              <Card className="size-full max-w-96">
+                <CardHeader>
+                  <CardTitle>Currently Raising</CardTitle>
+                  <CardDescription>
+                    This venture currently has a active round.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="flex flex-col gap-2">
+                  <span className="font-semibold">
+                    Valuation: {venture.activeRound.percentageValue / (venture.activeRound.percentageOffered / 100)}
+                  </span>
+                  <span className="font-semibold">
+                    Offered: {venture.activeRound.percentageOffered}%
+                  </span>
+                  <span className="font-semibold">
+                    Investors: {venture.activeRound.investorCount}
+                  </span>
+                </CardContent>
+                <CardFooter>
+                  <Link
+                    prefetch={true}
+                    href={
+                      redirects.app.portfolio.investments.create(venture.activeRound.id.toString())
+                    }
+                    className={cn("px-6", buttonVariants({ variant: "outline", size: "lg" }))}
+                  >
+                    Invest
+                  </Link>
+                </CardFooter>
+              </Card>
+            )}
             <Card>
               <CardContent className="p-6">
                 <div className="space-y-4">

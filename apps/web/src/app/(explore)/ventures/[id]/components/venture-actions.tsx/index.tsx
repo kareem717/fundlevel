@@ -7,11 +7,6 @@ import { Icons } from "@/components/ui/icons";
 import redirects from "@/lib/config/redirects";
 import {
   DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 import { useAction } from "next-safe-action/hooks";
@@ -19,7 +14,8 @@ import { isVentureLiked, likeVenture, unlikeVenture } from "@/actions/ventures";
 import { useRouter } from "next/navigation";
 import { Account } from "@/lib/api";
 import { getAccount } from "@/actions/auth";
-import { Ellipsis, Heart, MessageSquare } from "lucide-react";
+import { MessageSquare } from "lucide-react";
+import Link from "next/link";
 
 export interface VentureViewActionsProps
   extends ComponentPropsWithoutRef<typeof DropdownMenu> {
@@ -28,7 +24,6 @@ export interface VentureViewActionsProps
 
 export const VentureViewActions: FC<VentureViewActionsProps> = ({
   ventureId,
-  ...props
 }) => {
   const [liked, setLiked] = useState<boolean | undefined>(false);
   const [account, setAccount] = useState<Account | undefined>(undefined);
@@ -114,15 +109,6 @@ export const VentureViewActions: FC<VentureViewActionsProps> = ({
 
   return (
     <div className="flex items-center gap-2">
-      <Button
-        size="lg"
-        className="px-6"
-        onClick={() => {
-          toast.info("Not yet implemented");
-        }}
-      >
-        Invest
-      </Button>
       <Button
         variant="outline"
         size="icon"

@@ -57,7 +57,7 @@ export const VentureIndexCard: FC<VentureIndexCardProps> = ({ className, venture
       <CardFooter>
         <Link
           className={cn(buttonVariants(), "w-full")}
-          href={redirects.app.explore.ventureView.replace(":id", id.toString())}
+          href={redirects.app.explore.venture.view(id.toString())}
         >
           View
         </Link>
@@ -117,7 +117,7 @@ export const RoundIndexCard: FC<RoundIndexCardProps> = ({ round, className, ...p
       <CardFooter>
         <Link
           className={cn(buttonVariants(), "w-full")}
-          href={redirects.app.explore.roundView.replace(":id", id.toString())}
+          href={redirects.app.explore.round.view(id.toString())}
         >
           View
         </Link>

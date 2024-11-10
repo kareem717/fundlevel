@@ -5,42 +5,37 @@ import { faker } from "@faker-js/faker";
 import Link from "next/link";
 import { NavBack } from "@/components/nav-back";
 import { Icons } from "@/components/ui/icons";
-import { env } from "@/env";
 import { CheckoutForm } from "./components/checkout-form";
-import { getInvestmentByIdCached, getInvestmentPaymentIntentClientSecret } from "@/actions/investments";
 import redirects from "@/lib/config/redirects";
 import Image from "next/image";
 import { Card } from "@/components/ui/card";
-import { useMemo } from "react";
+import { getRoundById } from "@/actions/rounds";
+import { getAccountCached } from "@/actions/auth";
+import { env } from "@/env";
 
-export default async function CompleteInvestmentPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id: investmentId } = await params;
+export default async function RoundInvestPage({ params }: { params: Promise<{ roundId: string }> }) {
+  const { roundId } = await params;
 
-  const parsedId = parseInt(investmentId);
+  const parsedId = parseInt(roundId);
   if (isNaN(parsedId)) {
-    console.error("Invalid investment ID", investmentId);
-    throw new Error("Invalid investment ID");
+    console.error("Invalid round ID", roundId);
+    throw new Error("Invalid round ID");
   }
 
-  const investment = await getInvestmentByIdCached(parsedId);
-  if (!investment?.data?.investment) {
-    console.error("Investment not found", investmentId);
-    throw new Error("Investment not found");
+  const account = await getAccountCached();
+  if (!account?.data) {
+    console.error("Account not found", account);
+    throw new Error("Account not found");
   }
 
-  if (investment.data.investment.status !== "processing") {
-    console.error("Investment is not processing", investmentId);
-    throw new Error("Investment is not processing");
+  const round = await getRoundById(parsedId); 
+
+  if (!round?.data?.round) {
+    console.error("Round not found", round);
+    throw new Error("Round not found");
   }
 
-  const clientSecret = await getInvestmentPaymentIntentClientSecret(parsedId);
-
-  if (!clientSecret?.data?.clientSecret) {
-    console.error("Client secret not found", clientSecret);
-    throw new Error("Client secret not found");
-  }
-
-  const redirectUrl = redirects.app.portfolio.investments.index;
+  const redirectUrl = env.NEXT_PUBLIC_APP_URL + redirects.app.portfolio.investments.index;
 
   return (
     <div className="flex justify-center items-start relative py-24 px-8 gap-4">
@@ -64,8 +59,7 @@ export default async function CompleteInvestmentPage({ params }: { params: Promi
             </Label>
             <div id="refund-policy">
               <CheckoutForm
-                clientSecret={clientSecret.data.clientSecret}
-                publishableKey={env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}
+                roundId={round.data.round.id}
                 confirmParams={{
                   return_url: redirectUrl,
                 }}
@@ -109,7 +103,7 @@ export default async function CompleteInvestmentPage({ params }: { params: Promi
             <div className="flex justify-start items-center gap-4 w-full">
               <Image src="/filler.jpeg" alt="Investment Price Breakdown" width={100} height={100} className="rounded-md" />
               <div className="flex flex-col gap-1">
-                <p className="font-medium text-lg">{investmentId}</p>
+                <p className="font-medium text-lg">{roundId}</p>
                 <p className="text-sm text-muted-foreground">description</p>
                 {/* <p className="text-sm text-muted-foreground flex items-center gap-1"><Icons.star className="size-4 inline-block fill-current" /> 4.94 (199 reviews) • Superhost</p> */}
               </div>
@@ -138,7 +132,7 @@ export default async function CompleteInvestmentPage({ params }: { params: Promi
                 <div className="flex justify-between font-bold">
                   <span>Total (CAD)</span>
                   {/*//TODO: handle better*/}
-                  <span>${investment.data.investment?.round?.buyIn?.toFixed(2) ?? "N/A"} CAD</span>
+                  <span>${round.data.round?.buyIn?.toFixed(2) ?? "N/A"} CAD</span>
                 </div>
               </div>
             </div>

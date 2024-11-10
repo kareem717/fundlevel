@@ -3,9 +3,14 @@
 import { Elements, useElements, useStripe } from '@stripe/react-stripe-js';
 import { ConfirmPaymentData, loadStripe, StripeElementsOptions, StripeError, StripePaymentElementOptions } from '@stripe/stripe-js';
 import { PaymentElement } from '@stripe/react-stripe-js';
-import { FC, useCallback, useEffect, useMemo } from 'react';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { create } from 'zustand';
 import { useTheme } from 'next-themes';
+import { env } from '@/env';
+import { useAction } from 'next-safe-action/hooks';
+import { createInvestmentPaymentIntent } from '@/actions/investments';
+import { toast } from 'sonner';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface CheckoutFormState {
   isExecuting: boolean;
@@ -44,8 +49,7 @@ export const FormContent = ({ confirmParams, redirect }: { confirmParams: Confir
     layout: 'tabs',
   }), []);
 
-  const handleSubmit = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmit = useCallback(async () => {
     // For some reason, we can't use the isStripeLoaded state here, so we need to check stripe and elements directly
     if (!stripe || !elements) {
       return;
@@ -58,7 +62,6 @@ export const FormContent = ({ confirmParams, redirect }: { confirmParams: Confir
       confirmParams,
       redirect,
     });
-    alert('submit');
 
     setExecuting(false);
 
@@ -69,7 +72,7 @@ export const FormContent = ({ confirmParams, redirect }: { confirmParams: Confir
 
   useEffect(() => {
     useCheckoutFormStore.setState({
-      triggerSubmit: () => handleSubmit(new Event('submit') as any)
+      triggerSubmit: handleSubmit
     });
   }, [handleSubmit]);  // Add handleSubmit to dependencies
 
@@ -79,27 +82,49 @@ export const FormContent = ({ confirmParams, redirect }: { confirmParams: Confir
 };
 
 export interface CheckoutFormProps {
-  clientSecret: string;
-  publishableKey: string;
+  roundId: number;
   confirmParams: ConfirmPaymentData;
   redirect?: 'always';
 }
 
 export const CheckoutForm: FC<CheckoutFormProps> = ({
-  clientSecret,
-  publishableKey,
+  roundId,
   confirmParams,
   redirect,
 }) => {
+  const [clientSecret, setClientSecret] = useState<string>();
   const { resolvedTheme } = useTheme();
+  const stripePromise = useMemo(() => loadStripe(env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY), []);
+  const { executeAsync: createPaymentIntent, isExecuting } = useAction(createInvestmentPaymentIntent, {
+    onSuccess: ({ data }) => {
+      if (!data?.clientSecret) throw new Error('Failed to create a payment intent');
+
+      setClientSecret(data.clientSecret);
+    },
+  });
+
+  useEffect(() => {
+    createPaymentIntent(roundId);
+  }, [createPaymentIntent, roundId]);
+
+  if (isExecuting) return (
+    <div className="grid grid-rows-3 gap-4 [&>*]:h-10 [&>*]:w-full">
+      <div className="grid grid-cols-2 gap-4">
+        <Skeleton className="size-full" />
+        <Skeleton className="size-full" />
+      </div>
+      <Skeleton className="size-full" />
+      <Skeleton className="size-full" />
+    </div>
+  )
+
+
   const options: StripeElementsOptions = {
     clientSecret,
     appearance: {
       theme: resolvedTheme === 'dark' ? 'night' : 'flat',
     },
   };
-
-  const stripePromise = useMemo(() => loadStripe(publishableKey), [publishableKey]);
 
   return (
     <Elements stripe={stripePromise} options={options}>

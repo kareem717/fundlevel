@@ -24,7 +24,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { WithdrawInvestmentButton } from "./withdraw-investment-dialog"
 import Link from "next/link"
 import redirects from "@/lib/config/redirects"
 import {
@@ -73,7 +72,7 @@ const ActionsCell: FC<{ row: Row<RoundInvestment> }> = ({ row }) => {
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           {/*//TODO: handle better*/}
-          <Link href={redirects.app.explore.roundView.replace(":id", investment?.round?.id?.toString() ?? "")}>
+          <Link href={redirects.app.explore.round.view(investment?.round?.id?.toString() ?? "")}>
             View round
           </Link>
         </DropdownMenuItem>
@@ -101,14 +100,6 @@ const ActionsCell: FC<{ row: Row<RoundInvestment> }> = ({ row }) => {
                   >
                     Cancel
                   </AlertDialogCancel>
-                  <WithdrawInvestmentButton
-                    investmentId={investment.id}
-                    onSuccess={() => {
-                      setIsDialogOpen(false)
-                      setIsDropdownOpen(false)
-                    }}
-                    className="w-full"
-                  />
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
@@ -116,7 +107,7 @@ const ActionsCell: FC<{ row: Row<RoundInvestment> }> = ({ row }) => {
         )}
         {investment.status === "processing" && investment?.payment?.status !== "succeeded" && (
           <DropdownMenuItem asChild>
-            <Link href={redirects.app.portfolio.investments.checkout.replace(":id", investment.id.toString())}>
+            <Link href={redirects.app.portfolio.investments.create(investment.id.toString())}>
               Checkout
             </Link>
           </DropdownMenuItem>

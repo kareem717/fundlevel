@@ -9,7 +9,6 @@ import {
   getFilteredRowModel,
   getSortedRowModel,
   useReactTable,
-  RowData,
 } from "@tanstack/react-table"
 import {
   Table,
@@ -29,189 +28,165 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu"
-import { ComponentPropsWithoutRef, FC, useCallback, useEffect, useMemo, useState } from "react"
+import { ComponentPropsWithoutRef, FC, useEffect, useMemo, useState } from "react"
 import { DataTablePagination, DataTableColumnHeader } from "@/components/data-table"
 import { Icons } from "@/components/ui/icons"
 import { RoundInvestment } from "@/lib/api"
 import { format } from "date-fns"
-import { toast } from "sonner"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useAction } from "next-safe-action/hooks"
 import { useBusinessContext } from "../../../components/business-context"
-import { createParser, parseAsInteger, parseAsJson, useQueryState, useQueryStates } from "nuqs"
+import { createParser, parseAsInteger, useQueryState, useQueryStates } from "nuqs"
 import { getBusinessInvestmentsByPage } from "@/actions/busineses"
-import { processInvestment } from "@/actions/investments"
 import { Badge } from "@/components/ui/badge"
 import { titleCase } from "title-case"
 import { object } from "yup"
 import { formatCurrency } from "@/lib/utils"
 
-export const columns = (
-  processInvestment: (id: number) => void,
-  isProcessingInvestment: boolean
-): ColumnDef<RoundInvestment>[] => [
-    {
-      id: "select",
-      header: ({ table }) => (
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-          }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      ),
-      enableSorting: false,
-      enableHiding: false,
-    },
-    {
-      id: "valuation",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Valuation" />
-      ),
-      cell: ({ row }) => {
-        return (
-          //TODO: handle better
-          <>
-            {row.original.round?.percentageOffered && row.original.round?.percentageValue ? (
-              <div className="text-left font-medium">
-                {formatCurrency(
-                  row.original.round?.percentageOffered / row.original.round?.percentageValue,
-                  row.original.round?.valueCurrency,
-                )}
-              </div>
-            ) : (
-              <div className="text-left font-medium">
-                N/A
-              </div>
-            )}
-          </>
-        )
-      },
-    },
-    {
-      accessorKey: "investor",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Investor" />
-      ),
-      cell: ({ row }) => {
+export const columns: ColumnDef<RoundInvestment>[] = [
+  {
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && "indeterminate")
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
+    id: "valuation",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Valuation" />
+    ),
+    cell: ({ row }) => {
+      return (
         //TODO: handle better
-        if (!row.original.investor) {
-          return <div className="text-left font-medium">N/A</div>
-        }
-        const { firstName, lastName } = row.original.investor
-        return (
-          <div className="text-left font-medium">
-            {firstName} {lastName}
-          </div>
-        )
-      },
+        <>
+          {row.original.round?.percentageOffered && row.original.round?.percentageValue ? (
+            <div className="text-left font-medium">
+              {formatCurrency(
+                row.original.round?.percentageOffered / row.original.round?.percentageValue,
+                row.original.round?.valueCurrency,
+              )}
+            </div>
+          ) : (
+            <div className="text-left font-medium">
+              N/A
+            </div>
+          )}
+        </>
+      )
     },
-    {
-      accessorKey: "round.buyIn",
-      id: "buy in",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Buy In" />
-      ),
-      cell: ({ row }) => {
-        const round = row.original.round
-        return (
-          <div className="text-left font-medium">
-            {/*//TODO: handle better*/}
-            {round?.buyIn ? (
-              <>{formatCurrency(round.buyIn, round.valueCurrency)}</>
-            ) : (
-              <div className="text-left font-medium">
-                N/A
-              </div>
-            )}
-          </div>
-        )
-      },
+  },
+  {
+    accessorKey: "investor",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Investor" />
+    ),
+    cell: ({ row }) => {
+      //TODO: handle better
+      if (!row.original.investor) {
+        return <div className="text-left font-medium">N/A</div>
+      }
+      const { firstName, lastName } = row.original.investor
+      return (
+        <div className="text-left font-medium">
+          {firstName} {lastName}
+        </div>
+      )
     },
-    {
-      accessorKey: "status",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Status" />
-      ),
-      cell: ({ row }) => {
-        const status = row.original.status
-        switch (status) {
-          case "successful":
-            return <Badge variant="default">{titleCase(status)}</Badge>
-          case "pending":
-            return <Badge variant="outline">{titleCase(status)}</Badge>
-          case "processing":
-            return <Badge variant="secondary">{titleCase(status)}</Badge>
-          default:
-            return <Badge variant="destructive">{titleCase(status)}</Badge>
-        }
-      },
+  },
+  {
+    accessorKey: "round.buyIn",
+    id: "buy in",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Buy In" />
+    ),
+    cell: ({ row }) => {
+      const round = row.original.round
+      return (
+        <div className="text-left font-medium">
+          {/*//TODO: handle better*/}
+          {round?.buyIn ? (
+            <>{formatCurrency(round.buyIn, round.valueCurrency)}</>
+          ) : (
+            <div className="text-left font-medium">
+              N/A
+            </div>
+          )}
+        </div>
+      )
     },
-    {
-      accessorKey: "createdAt",
-      id: "date",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Date" />
-      ),
-      cell: ({ row }) => {
-        const createdAt = row.original.createdAt
-        return <div className="text-left font-medium">{format(createdAt, "PPP")}</div>
-      },
+  },
+  {
+    accessorKey: "status",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Status" />
+    ),
+    cell: ({ row }) => {
+      const status = row.original.status
+      switch (status) {
+        case "successful":
+          return <Badge variant="default">{titleCase(status)}</Badge>
+        case "pending":
+          return <Badge variant="outline">{titleCase(status)}</Badge>
+        case "processing":
+          return <Badge variant="secondary">{titleCase(status)}</Badge>
+        default:
+          return <Badge variant="destructive">{titleCase(status)}</Badge>
+      }
     },
-    {
-      id: "actions",
-      cell: ({ row }) => {
-        const investment = row.original
-        console.log('investment', investment)
-        return (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <Icons.ellipsis className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(investment.id.toString())}
-              >
-                Copy investment ID
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => {
-                  if (isProcessingInvestment) {
-                    toast.info("Investment is already being processed, please wait for it to finish.")
-                    return
-                  }
-                  processInvestment(investment.id)
-                }}
-                disabled={isProcessingInvestment}
-              >
-                Accept
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => {
-                  toast.info("Not implemented")
-                }}
-              >
-                Reject
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        )
-      },
+  },
+  {
+    accessorKey: "createdAt",
+    id: "date",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Date" />
+    ),
+    cell: ({ row }) => {
+      const createdAt = row.original.createdAt
+      return <div className="text-left font-medium">{format(createdAt, "PPP")}</div>
     },
-  ]
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => {
+      const investment = row.original
+      console.log('investment', investment)
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Open menu</span>
+              <Icons.ellipsis className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuItem
+              onClick={() => navigator.clipboard.writeText(investment.id.toString())}
+            >
+              Copy investment ID
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )
+    },
+  },
+]
 
 export interface RecievedInvestmentsTableProps extends ComponentPropsWithoutRef<typeof Table> {
 }
@@ -274,20 +249,6 @@ export const RecievedInvestmentsTable: FC<RecievedInvestmentsTableProps> = ({
     },
   })
 
-  const { execute: process, isExecuting: isProcessingInvestment } = useAction(processInvestment, {
-    onSuccess: () => {
-      toast.success("Investment processed")
-      execute({
-        businessId: currentBusiness.id,
-        pagination
-      })
-    },
-    onError: (error) => {
-      toast.error("Failed to process investment")
-      console.error(error)
-    },
-  })
-
   useEffect(() => {
     execute({
       businessId: currentBusiness.id,
@@ -298,11 +259,11 @@ export const RecievedInvestmentsTable: FC<RecievedInvestmentsTableProps> = ({
   const columnsMemo = useMemo(
     () =>
       isExecuting
-        ? columns(process, isProcessingInvestment).map((column) => ({
+        ? columns.map((column) => ({
           ...column,
           cell: () => <Skeleton className="h-8 w-full" />,
         }))
-        : columns(process, isProcessingInvestment),
+        : columns,
     [isExecuting]
   );
 
@@ -330,10 +291,6 @@ export const RecievedInvestmentsTable: FC<RecievedInvestmentsTableProps> = ({
       },
       columnVisibility,
       rowSelection,
-    },
-    meta: {
-      processInvestment: process,
-      isProcessingInvestment,
     },
   })
 
