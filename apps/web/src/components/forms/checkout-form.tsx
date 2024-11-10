@@ -3,7 +3,7 @@
 import { Elements, useElements, useStripe } from '@stripe/react-stripe-js';
 import { ConfirmPaymentData, loadStripe, StripeElementsOptions, StripeError, StripePaymentElementOptions } from '@stripe/stripe-js';
 import { PaymentElement } from '@stripe/react-stripe-js';
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { ComponentPropsWithoutRef, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { create } from 'zustand';
 import { useTheme } from 'next-themes';
 import { env } from '@/env';
@@ -11,6 +11,10 @@ import { useAction } from 'next-safe-action/hooks';
 import { createInvestmentPaymentIntent } from '@/actions/investments';
 import { toast } from 'sonner';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '../ui/button';
+import { useRouter } from 'next/navigation';
+import { Icons } from '../ui/icons';
+import { cn } from '@/lib/utils';
 
 interface CheckoutFormState {
   isExecuting: boolean;
@@ -107,7 +111,7 @@ export const CheckoutForm: FC<CheckoutFormProps> = ({
     createPaymentIntent(roundId);
   }, [createPaymentIntent, roundId]);
 
-  if (isExecuting) return (
+  if (isExecuting || !clientSecret) return (
     <div className="grid grid-rows-3 gap-4 [&>*]:h-10 [&>*]:w-full">
       <div className="grid grid-cols-2 gap-4">
         <Skeleton className="size-full" />
@@ -130,5 +134,47 @@ export const CheckoutForm: FC<CheckoutFormProps> = ({
     <Elements stripe={stripePromise} options={options}>
       <FormContent confirmParams={confirmParams} redirect={redirect} />
     </Elements>
+  );
+};
+
+export interface CheckoutConfirmationProps extends ComponentPropsWithoutRef<'div'> {
+  prefetchUrl: string;
+  buttonProps?: ComponentPropsWithoutRef<typeof Button>;
+  confirmationDisclaimer?: string | React.ReactNode;
+}
+
+export const CheckoutConfirmation: FC<CheckoutConfirmationProps> = ({ prefetchUrl, className, buttonProps, confirmationDisclaimer, ...props }) => {
+  const [isExecuting, setIsExecuting] = useState(false);
+  const { triggerSubmit, error } = useCheckoutFormStore();
+  const router = useRouter();
+
+  const onSubmit = useCallback(async () => {
+    setIsExecuting(true);
+    router.prefetch(prefetchUrl);
+    await triggerSubmit();
+    if (error) {
+      toast.error("An error occurred while processing your payment.");
+      console.error('error', error.message);
+    }
+    setIsExecuting(false);
+  }, [triggerSubmit, error, router, prefetchUrl]);
+
+  return (
+    <div className={cn("flex flex-col gap-4", className)} {...props}>
+      <p className="text-sm text-foreground">
+        {confirmationDisclaimer ??
+        "By clicking the button below, I agree to the terms and conditions."}
+      </p>
+      <Button
+        type="submit"
+        className={cn("w-min flex justify-center items-center", buttonProps?.className)}
+        disabled={isExecuting}
+        onClick={onSubmit}
+        {...buttonProps}
+      >
+        {isExecuting && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />}
+        Complete
+      </Button>
+    </div>
   );
 };

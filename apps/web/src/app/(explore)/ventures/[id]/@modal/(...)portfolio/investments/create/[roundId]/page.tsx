@@ -1,48 +1,101 @@
-import { Separator } from "@/components/ui/separator";
-import { Label } from "@/components/ui/label";
-import { faker } from "@faker-js/faker";
-import Link from "next/link";
-import { NavBack } from "@/components/nav-back";
-import { Icons } from "@/components/ui/icons";
-import { CheckoutConfirmation, CheckoutForm } from "@/components/forms/checkout-form";
-import redirects from "@/lib/config/redirects";
-import Image from "next/image";
-import { Card } from "@/components/ui/card";
-import { getRoundById } from "@/actions/rounds";
+"use client";
+
 import { getAccountCached } from "@/actions/auth";
+import { getRoundById } from "@/actions/rounds";
+import { CheckoutConfirmation, CheckoutForm } from "@/components/forms/checkout-form";
+import { Card } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { Icons } from "@/components/ui/icons";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
 import { env } from "@/env";
+import { Round } from "@/lib/api";
+import redirects from "@/lib/config/redirects";
+import { faker } from "@faker-js/faker";
+import { useAction } from "next-safe-action/hooks";
+import Image from "next/image";
+import Link from "next/link";
+import { notFound, useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
-export default async function RoundInvestPage({ params }: { params: Promise<{ roundId: string }> }) {
-  const { roundId } = await params;
-
-  const parsedId = parseInt(roundId);
+export default function InvestmentModal() {
+  const { roundId } = useParams();
+  const router = useRouter();
+  const [round, setRound] = useState<Round>();
+  const parsedId = parseInt(roundId as string);
   if (isNaN(parsedId)) {
     console.error("Invalid round ID", roundId);
     throw new Error("Invalid round ID");
   }
 
-  const account = await getAccountCached();
-  if (!account?.data) {
-    console.error("Account not found", account);
-    throw new Error("Account not found");
-  }
+  const { execute: getAccount, isExecuting: isAccountLoading } = useAction(getAccountCached, {
+    onSuccess: (data) => {
+      if (!data?.data) {
+        //Todo: handle better
+        router.push(redirects.auth.createAccount);
+      }
+    },
+    onError: () => {
+      toast.error("An error occurred while fetching your account.");
+      router.back();
+    },
+  });
 
-  const round = await getRoundById(parsedId);
 
-  if (!round?.data?.round) {
-    console.error("Round not found", round);
-    throw new Error("Round not found");
+  const { execute: getRound, isExecuting: isRoundLoading, ...rest } = useAction(getRoundById, {
+    onSuccess: ({ data }) => {
+      if (!data?.round) {
+        notFound();
+      }
+
+      setRound(data.round);
+    },
+    onError: () => {
+      toast.error("An error occurred while fetching the round.");
+      router.back();
+    },
+  });
+
+  useEffect(() => {
+    getAccount();
+    getRound(parsedId);
+  }, [getAccount, getRound, parsedId]);
+
+  if (isAccountLoading || isRoundLoading) {
+    return (
+      <Dialog
+        open={true}
+        onOpenChange={() => router.back()}
+      >
+        <DialogContent className="max-w-screen-xl min-h-[80vh]">
+          <DialogHeader>
+            <DialogTitle className="text-4xl">Complete your investment</DialogTitle>
+          </DialogHeader>
+          <div className="flex justify-center items-center h-full">
+            <Icons.spinner className="size-10 animate-spin" />
+          </div>
+        </DialogContent>
+      </Dialog>
+    )
   }
 
   const redirectUrl = env.NEXT_PUBLIC_APP_URL + redirects.app.portfolio.investments.index;
 
   return (
-    <div className="flex justify-center items-start relative py-24 px-8 gap-4">
-      <NavBack size="icon">
-        <Icons.chevronLeft className="size-10" />
-      </NavBack>
-      <div className="w-full max-w-screen-xl space-y-10">
-        <h1 className="text-4xl font-bold">Complete your investment</h1>
+    <Dialog
+      open={true}
+      onOpenChange={() => router.back()}
+    >
+      <DialogContent className="max-w-screen-xl">
+        <DialogHeader>
+          <DialogTitle className="text-4xl">Complete your investment</DialogTitle>
+        </DialogHeader>
         <div className="flex flex-col-reverse md:flex-row gap-20 w-full">
           <div className="flex flex-col gap-4 w-full">
             <Label className="text-2xl" htmlFor="refund-policy">
@@ -58,7 +111,7 @@ export default async function RoundInvestPage({ params }: { params: Promise<{ ro
             </Label>
             <div id="refund-policy">
               <CheckoutForm
-                roundId={round.data.round.id}
+                roundId={round?.id ?? 0}
                 confirmParams={{
                   return_url: redirectUrl,
                 }}
@@ -98,7 +151,7 @@ export default async function RoundInvestPage({ params }: { params: Promise<{ ro
             <Separator className="my-4" />
             <CheckoutConfirmation className="w-full" prefetchUrl={redirectUrl} />
           </div>
-          <Card className="flex flex-col gap-4 p-4 w-full min-w-[300px] max-w-md sticky top-14 right-0 h-min">
+          <Card className="flex flex-col gap-4 p-4 w-full min-w-[300px] max-w-md h-min">
             <div className="flex justify-start items-center gap-4 w-full">
               <Image src="/filler.jpeg" alt="Investment Price Breakdown" width={100} height={100} className="rounded-md" />
               <div className="flex flex-col gap-1">
@@ -131,13 +184,13 @@ export default async function RoundInvestPage({ params }: { params: Promise<{ ro
                 <div className="flex justify-between font-bold">
                   <span>Total (CAD)</span>
                   {/*//TODO: handle better*/}
-                  <span>${round.data.round?.buyIn?.toFixed(2) ?? "N/A"} CAD</span>
+                  <span>${round?.buyIn?.toFixed(2) ?? "N/A"} CAD</span>
                 </div>
               </div>
             </div>
           </Card>
         </div>
-      </div>
-    </div>
-  );
+      </DialogContent>
+    </Dialog>
+  )
 }
