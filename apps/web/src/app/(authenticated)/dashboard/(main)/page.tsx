@@ -40,7 +40,6 @@ export default function BusinessDashboard() {
           </CardContent>
         </Card>
       </div>
-
     </div>
   )
 }
