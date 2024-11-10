@@ -27,6 +27,9 @@ const redirects = {
 				index: "/portfolio/investments",
 				create: (roundId: string) => `/portfolio/investments/create/${roundId}`,
 			},
+			positions: {
+				index: "/portfolio/positions",
+			},
 		},
 		dashboard: {
 			index: "/dashboard",

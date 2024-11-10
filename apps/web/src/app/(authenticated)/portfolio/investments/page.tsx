@@ -10,7 +10,7 @@ export default async function InvestmentsPage() {
   //TODO: Implement
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-2xl font-bold">Investments</h1>
+      <h1 className="text-2xl font-bold">Investment History</h1>
       <AccountInvestmentsTable />
     </div>
   )
