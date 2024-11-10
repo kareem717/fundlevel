@@ -16,9 +16,8 @@ func RegisterHumaRoutes(
 	humaApi huma.API,
 	logger *zap.Logger,
 	supabaseClient *supabase.Client,
-	webhookSecret string,
 ) {
-	handler := newHTTPHandler(service, logger, webhookSecret)
+	handler := newHTTPHandler(service, logger)
 
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "get-business-by-id",
@@ -173,15 +172,6 @@ func RegisterHumaRoutes(
 			},
 		},
 	}, handler.onboardStripeConnectedAccount)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "handle-stripe-connected-account-webhook",
-		Method:      http.MethodPost,
-		Path:        "/business/stripe-webhook",
-		Summary:     "Handle Stripe connected account webhook",
-		Description: "Handle Stripe connected account webhook.",
-		Tags:        []string{"Businesses"},
-	}, handler.handleStripeWebhook)
 
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "get-stripe-dashboard-url",

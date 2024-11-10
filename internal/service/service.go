@@ -11,11 +11,9 @@ import (
 	"fundlevel/internal/entities/industry"
 	"fundlevel/internal/entities/investment"
 	"fundlevel/internal/entities/round"
-	"fundlevel/internal/entities/shared"
 	"fundlevel/internal/entities/venture"
 	accountService "fundlevel/internal/service/domain/account"
 	analyticService "fundlevel/internal/service/domain/analytic"
-	"fundlevel/internal/service/domain/billing"
 	businessService "fundlevel/internal/service/domain/business"
 	chatService "fundlevel/internal/service/domain/chat"
 	healthService "fundlevel/internal/service/domain/health"
@@ -93,6 +91,10 @@ type BusinessService interface {
 	GetByStripeConnectedAccountId(ctx context.Context, stripeConnectedAccountId string) (business.Business, error)
 
 	GetStripeDashboardURL(ctx context.Context, businessId int) (string, error)
+	CreateStripeAccountLink(ctx context.Context, accountID string, returnURL string, refreshURL string) (string, error)
+	CreateStripeConnectedAccount(ctx context.Context) (stripe.Account, error)
+	DeleteStripeConnectedAccount(ctx context.Context, accountID string) error
+	GetStripeConnectedAccountDashboardURL(ctx context.Context, accountID string) (string, error)
 
 	GetVenturesByCursor(ctx context.Context, accountId int, limit int, cursor int, filter venture.VentureFilter) ([]venture.Venture, error)
 	GetVenturesByPage(ctx context.Context, accountId int, pageSize int, page int, filter venture.VentureFilter) ([]venture.Venture, int, error)
@@ -108,26 +110,20 @@ type BusinessService interface {
 	GetTotalFunding(ctx context.Context, businessId int) (int, error)
 }
 
-type BillingService interface {
-	CreateInvestmentPaymentIntent(ctx context.Context, price int, investmentId int, currency shared.Currency, businessStripeAccountID string) (*stripe.PaymentIntent, error)
-	HandleInvestmentPaymentIntentSuccess(ctx context.Context, intentID string) error
-	HandleInvestmentPaymentIntentPaymentFailed(ctx context.Context, intentID string) error
-	HandleInvestmentPaymentIntentProcessing(ctx context.Context, intentID string) error
-	HandleInvestmentPaymentIntentCancelled(ctx context.Context, intentID string) error
-
-	CreateAccountLink(ctx context.Context, accountID string, returnURL string, refreshURL string) (string, error)
-	CreateStripeConnectedAccount(ctx context.Context) (stripe.Account, error)
-	DeleteStripeConnectedAccount(ctx context.Context, accountID string) error
-	GetStripeConnectedAccountDashboardURL(ctx context.Context, accountID string) (string, error)
-}
-
 type InvestmentService interface {
-	ProcessInvestment(ctx context.Context, investmentId int) error
-	WithdrawInvestment(ctx context.Context, investmentId int) error
-	DeleteInvestment(ctx context.Context, investmentId int) error
-	CreateInvestment(ctx context.Context, params investment.CreateInvestmentParams) (investment.RoundInvestment, error)
+	// WithdrawInvestment(ctx context.Context, investmentId int) error
+	// DeleteInvestment(ctx context.Context, investmentId int) error
+	// Create(ctx context.Context, params investment.CreateInvestmentParams) (investment.RoundInvestment, error)
 	GetById(ctx context.Context, id int) (investment.RoundInvestment, error)
-	Update(ctx context.Context, id int, params investment.UpdateInvestmentParams) (investment.RoundInvestment, error)
+	// Update(ctx context.Context, id int, params investment.UpdateInvestmentParams) (investment.RoundInvestment, error)
+
+	// ProcessInvestment(ctx context.Context, investmentId int) error
+	CreatePaymentIntent(ctx context.Context, roundId int, investorId int) (*stripe.PaymentIntent, error)
+	HandleInvestmentPaymentIntentSuccess(ctx context.Context, intentID string) error
+	// HandleInvestmentPaymentIntentPaymentFailed(ctx context.Context, intentID string) error
+	// HandleInvestmentPaymentIntentProcessing(ctx context.Context, intentID string) error
+	// HandleInvestmentPaymentIntentCancelled(ctx context.Context, intentID string) error
+	// CapturePaymentIntent(ctx context.Context, intentID string) error
 }
 
 type AnalyticService interface {
@@ -184,7 +180,6 @@ type Service struct {
 	AnalyticService   AnalyticService
 	UserService       UserService
 	BusinessService   BusinessService
-	BillingService    BillingService
 	InvestmentService InvestmentService
 	ChatService       ChatService
 }
@@ -192,10 +187,9 @@ type Service struct {
 // NewService implementation for storage of all services.
 func NewService(
 	repositories storage.Repository,
-	config billing.BillingServiceConfig,
+	stripeAPIKey string,
+	feePercentage float64,
 ) *Service {
-	billingService := billing.NewBillingService(repositories, config)
-
 	return &Service{
 		VentureService:    ventureService.NewVentureService(repositories),
 		IndustryService:   industryService.NewIndustryService(repositories),
@@ -204,9 +198,8 @@ func NewService(
 		AccountService:    accountService.NewAccountService(repositories),
 		UserService:       userService.NewUserService(repositories),
 		RoundService:      roundService.NewRoundService(repositories),
-		BusinessService:   businessService.NewBusinessService(repositories, billingService),
-		BillingService:    billingService,
-		InvestmentService: investmentService.NewInvestmentService(repositories, billingService),
+		InvestmentService: investmentService.NewInvestmentService(repositories, stripeAPIKey, feePercentage),
+		BusinessService:   businessService.NewBusinessService(repositories, stripeAPIKey),
 		ChatService:       chatService.NewChatService(repositories),
 	}
 }

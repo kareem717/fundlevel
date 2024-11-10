@@ -4,20 +4,19 @@ import (
 	"context"
 
 	"fundlevel/internal/entities/business"
-	"fundlevel/internal/service/domain/billing"
 	"fundlevel/internal/storage"
 )
 
 type BusinessService struct {
-	repositories   storage.Repository
-	billingService *billing.BillingService
+	repositories storage.Repository
+	stripeAPIKey string
 }
 
 // NewBusinessService returns a new instance of business service.
-func NewBusinessService(repositories storage.Repository, billingService *billing.BillingService) *BusinessService {
+func NewBusinessService(repositories storage.Repository, stripeAPIKey string) *BusinessService {
 	return &BusinessService{
-		repositories:   repositories,
-		billingService: billingService,
+		repositories: repositories,
+		stripeAPIKey: stripeAPIKey,
 	}
 }
 
@@ -26,7 +25,7 @@ func (s *BusinessService) Create(ctx context.Context, params business.CreateBusi
 	resp := business.Business{}
 
 	err := s.repositories.RunInTx(ctx, func(ctx context.Context, tx storage.Transaction) error {
-		stripeConnectedAccount, err := s.billingService.CreateStripeConnectedAccount(ctx)
+		stripeConnectedAccount, err := s.CreateStripeConnectedAccount(ctx)
 		if err != nil {
 			return err
 		}
@@ -34,7 +33,7 @@ func (s *BusinessService) Create(ctx context.Context, params business.CreateBusi
 		params.Business.StripeConnectedAccountID = stripeConnectedAccount.ID
 
 		// TODO: We need to delete the stripe connected account if the business creation fails
-		business, err := s.repositories.Business().Create(ctx, params)
+		business, err := tx.Business().Create(ctx, params)
 		if err != nil {
 			return err
 		}
@@ -48,17 +47,17 @@ func (s *BusinessService) Create(ctx context.Context, params business.CreateBusi
 
 func (s *BusinessService) Delete(ctx context.Context, id int) error {
 	return s.repositories.RunInTx(ctx, func(ctx context.Context, tx storage.Transaction) error {
-		business, err := s.repositories.Business().GetById(ctx, id)
+		business, err := tx.Business().GetById(ctx, id)
 		if err != nil {
 			return err
 		}
 
-		err = s.repositories.Business().Delete(ctx, id)
+		err = tx.Business().Delete(ctx, id)
 		if err != nil {
 			return err
 		}
 
-		return s.billingService.DeleteStripeConnectedAccount(ctx, business.StripeConnectedAccountID)
+		return s.DeleteStripeConnectedAccount(ctx, business.StripeConnectedAccountID)
 	})
 }
 
@@ -80,5 +79,5 @@ func (s *BusinessService) GetStripeDashboardURL(ctx context.Context, businessId 
 		return "", err
 	}
 
-	return s.billingService.GetStripeConnectedAccountDashboardURL(ctx, business.StripeConnectedAccountID)
+	return s.GetStripeConnectedAccountDashboardURL(ctx, business.StripeConnectedAccountID)
 }

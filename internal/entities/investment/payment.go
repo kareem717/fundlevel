@@ -23,6 +23,7 @@ type CreateRoundInvestmentPaymentParams struct {
 	RoundInvestmentID               int    `json:"roundInvestmentId"`
 	StripePaymentIntentID           string `json:"stripePaymentIntentId"`
 	StripePaymentIntentClientSecret string `json:"stripePaymentIntentClientSecret"`
+	Status                          stripe.PaymentIntentStatus `json:"status" enum:"cancelled,processing,requires_action,requires_capture,requires_confirmation,requires_payment_method,succeeded"`
 }
 
 type UpdateRoundInvestmentPaymentParams struct {

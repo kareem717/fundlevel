@@ -11,12 +11,12 @@ import (
 type InvestmentStatus string
 
 const (
-	InvestmentStatusPending    InvestmentStatus = "pending"
-	InvestmentStatusProcessing InvestmentStatus = "processing"
-	InvestmentStatusRejected   InvestmentStatus = "rejected"
-	InvestmentStatusWithdrawn  InvestmentStatus = "withdrawn"
-	InvestmentStatusSuccessful InvestmentStatus = "successful"
-	InvestmentStatusRoundClosed  InvestmentStatus = "round_closed"
+	InvestmentStatusPending     InvestmentStatus = "pending"
+	InvestmentStatusProcessing  InvestmentStatus = "processing"
+	InvestmentStatusRejected    InvestmentStatus = "rejected"
+	InvestmentStatusWithdrawn   InvestmentStatus = "withdrawn"
+	InvestmentStatusSuccessful  InvestmentStatus = "successful"
+	InvestmentStatusRoundClosed InvestmentStatus = "round_closed"
 )
 
 // FixedTotalRound represents an fixed total round entity.
@@ -25,15 +25,16 @@ type RoundInvestment struct {
 	shared.IntegerID
 	CreateInvestmentParams
 	Status   InvestmentStatus        `json:"status" enum:"pending,processing,rejected,withdrawn,successful,round_closed"`
-	Payment  *RoundInvestmentPayment `json:"payment" bun:"rel:has-one,join:id=round_investment_id" required:"false"`
+	Payment  *RoundInvestmentPayment `json:"payment" bun:"rel:has-one,join:id=round_investment_id" required:"true"`
 	Round    *round.Round            `json:"round" bun:"rel:belongs-to,join:round_id=id" required:"false"`
 	Investor *account.Account        `json:"investor" bun:"rel:belongs-to,join:investor_id=id" required:"false"`
 	shared.Timestamps
 }
 
 type CreateInvestmentParams struct {
-	RoundID    int `json:"roundId"`
-	InvestorID int `json:"investorId"`
+	RoundID    int              `json:"roundId"`
+	InvestorID int              `json:"investorId"`
+	Status     InvestmentStatus `json:"status" enum:"pending,processing,rejected,withdrawn,successful,round_closed"`
 }
 
 type UpdateInvestmentParams struct {

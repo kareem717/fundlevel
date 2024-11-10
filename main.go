@@ -8,7 +8,6 @@ import (
 
 	server "fundlevel/internal/server"
 	"fundlevel/internal/service"
-	"fundlevel/internal/service/domain/billing"
 	"fundlevel/internal/storage/postgres"
 
 	"github.com/danielgtaylor/huma/v2/humacli"
@@ -82,12 +81,11 @@ func main() {
 		if err != nil {
 			panic(fmt.Sprintf("Failed to parse FEE_PERCENTAGE: %v", err))
 		}
-		services := service.NewService(repositories, billing.BillingServiceConfig{
-			FeePercentage:           feePercentage,
-			TransactionFeeProductID: options.TransactionFeeProductID,
-			InvestmentFeeProductID:  options.InvestmentFeeProductID,
-			StripeAPIKey:            options.StripeAPIKey,
-		})
+		services := service.NewService(
+			repositories,
+			options.StripeAPIKey,
+			feePercentage,
+		)
 
 		supabaseClient, err := supabase.NewClient(
 			options.SupabaseHost,

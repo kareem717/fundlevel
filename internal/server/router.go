@@ -3,7 +3,6 @@ package http
 import (
 	"fundlevel/internal/server/handler/account"
 	"fundlevel/internal/server/handler/analytic"
-	"fundlevel/internal/server/handler/billing"
 	"fundlevel/internal/server/handler/business"
 	"fundlevel/internal/server/handler/chat"
 	"fundlevel/internal/server/handler/health"
@@ -12,6 +11,7 @@ import (
 	"fundlevel/internal/server/handler/round"
 	"fundlevel/internal/server/handler/user"
 	"fundlevel/internal/server/handler/venture"
+	"fundlevel/internal/server/handler/webhook"
 
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/danielgtaylor/huma/v2/adapters/humachi"
@@ -71,14 +71,14 @@ func (s *Server) routes() chi.Router {
 		humaApi,
 		s.logger,
 		s.supabaseClient,
-		s.stripeConnectWebhookSecret,
 	)
 
-	billing.RegisterHumaRoutes(
+	webhook.RegisterHumaRoutes(
 		s.services,
 		s.logger,
 		humaApi,
 		s.stripeWebhookSecret,
+		s.stripeConnectWebhookSecret,
 		s.supabaseClient,
 	)
 
