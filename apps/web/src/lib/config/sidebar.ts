@@ -2,15 +2,21 @@ import { Icons } from "@/components/ui/icons";
 import { LucideIcon } from "lucide-react";
 import redirects from "./redirects";
 
-export type NavigationItem = {
-	title: string;
-	url?: string;
-	icon?: LucideIcon;
-	items?: {
-		title: string;
-		url: string;
-	}[];
-};
+export type NavigationItem =
+	| {
+			title: string;
+			url: string;
+			icon?: LucideIcon;
+	  }
+	| {
+			title: string;
+			root: string;
+			icon?: LucideIcon;
+			items: {
+				title: string;
+				url: string;
+			}[];
+	  };
 
 export type NavigationMenu = {
 	name: string;
@@ -77,7 +83,7 @@ const portfolio: NavigationMenu[] = [
 		items: [
 			{
 				title: "Investments",
-				url: redirects.app.portfolio.investments.index,
+				root: redirects.app.portfolio.investments.root,
 				icon: Icons.chart,
 				items: [
 					{

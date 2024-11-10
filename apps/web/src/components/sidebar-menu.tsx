@@ -30,7 +30,7 @@ export const SidebarMenu: FC<SidebarMenuProps> = ({ config, ...props }) => {
       <SidebarGroupLabel>{config.name}</SidebarGroupLabel>
       <SidebarMenuComponent {...props}>
         {config.items.map((item) => (
-          item.items ? (
+          'root' in item ? (
             <Collapsible
               key={item.title}
               asChild
@@ -48,7 +48,7 @@ export const SidebarMenu: FC<SidebarMenuProps> = ({ config, ...props }) => {
                 </CollapsibleTrigger>
                 <CollapsibleContent>
                   <SidebarMenuSub>
-                    {item.items?.map((subItem) => (
+                    {item.items.map((subItem) => (
                       <SidebarMenuSubItem key={subItem.title}>
                         <SidebarMenuSubButton asChild>
                           <Link href={subItem.url}>
@@ -64,17 +64,10 @@ export const SidebarMenu: FC<SidebarMenuProps> = ({ config, ...props }) => {
           ) : (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton tooltip={item.title} asChild>
-                {item.url ? (
-                  <Link href={item.url}>
-                    {item.icon && <item.icon />}
-                    <span>{item.title}</span>
-                  </Link>
-                ) : (
-                  <>
-                    {item.icon && <item.icon />}
-                    <span>{item.title}</span>
-                  </>
-                )}
+                <Link href={item.url}>
+                  {item.icon && <item.icon />}
+                  <span>{item.title}</span>
+                </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
           )
