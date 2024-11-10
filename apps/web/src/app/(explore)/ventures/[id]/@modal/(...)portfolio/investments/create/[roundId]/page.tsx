@@ -85,7 +85,7 @@ export default function InvestmentModal() {
     )
   }
 
-  const redirectUrl = env.NEXT_PUBLIC_APP_URL + redirects.app.portfolio.investments.index;
+  const redirectUrl = env.NEXT_PUBLIC_APP_URL + redirects.app.portfolio.investments.history;
 
   return (
     <Dialog

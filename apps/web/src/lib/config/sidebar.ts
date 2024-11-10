@@ -76,9 +76,23 @@ const portfolio: NavigationMenu[] = [
 		path: redirects.app.portfolio.index,
 		items: [
 			{
-				title: "Investment History",
+				title: "Investments",
 				url: redirects.app.portfolio.investments.index,
 				icon: Icons.chart,
+				items: [
+					{
+						title: "Insights",
+						url: redirects.app.portfolio.investments.insights,
+					},
+					{
+						title: "History",
+						url: redirects.app.portfolio.investments.history,
+					},
+					{
+						title: "Payments",
+						url: redirects.app.portfolio.investments.payments,
+					},
+				],
 			},
 			{
 				title: "Positions",

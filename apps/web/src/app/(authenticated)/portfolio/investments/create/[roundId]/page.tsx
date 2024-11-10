@@ -34,7 +34,7 @@ export default async function RoundInvestPage({ params }: { params: Promise<{ ro
     throw new Error("Round not found");
   }
 
-  const redirectUrl = env.NEXT_PUBLIC_APP_URL + redirects.app.portfolio.investments.index;
+  const redirectUrl = env.NEXT_PUBLIC_APP_URL + redirects.app.portfolio.investments.history;
 
   return (
     <div className="flex justify-center items-start relative py-24 px-8 gap-4">
