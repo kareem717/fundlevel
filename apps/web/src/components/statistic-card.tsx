@@ -5,6 +5,7 @@ import { ComponentPropsWithoutRef, FC } from "react"
 import { Card } from "./ui/card";
 import { Icons } from "./ui/icons";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
+import { Skeleton } from "./ui/skeleton";
 
 export interface StatisticCardProps extends ComponentPropsWithoutRef<typeof Card> {
   title: string;
@@ -12,9 +13,10 @@ export interface StatisticCardProps extends ComponentPropsWithoutRef<typeof Card
   icon: keyof typeof Icons;
   description: string;
   tooltip?: string;
+  isLoading?: boolean;
 };
 
-export const StatisticCard: FC<StatisticCardProps> = ({ className, title, value, icon, description, tooltip, ...props }) => {
+export const StatisticCard: FC<StatisticCardProps> = ({ className, title, value, icon, description, tooltip, isLoading, ...props }) => {
   const Icon = Icons[icon];
 
   return (
@@ -36,7 +38,11 @@ export const StatisticCard: FC<StatisticCardProps> = ({ className, title, value,
         <Icon className="size-4 text-muted-foreground" />
       </div>
       <div className="flex flex-col gap-1">
-        <span className="text-2xl font-bold">{value}</span>
+        {isLoading ? (
+          <Skeleton className="h-12 mb-2 w-1/3" />
+        ) : (
+          <span className="text-2xl font-bold">{value}</span>
+        )}
         <span className="text-xs">{description}</span>
       </div>
     </Card>

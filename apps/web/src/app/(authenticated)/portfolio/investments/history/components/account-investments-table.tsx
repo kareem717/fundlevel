@@ -1,6 +1,6 @@
 "use client"
 
-import { ColumnDef, Row, RowData } from "@tanstack/react-table"
+import { ColumnDef, Row } from "@tanstack/react-table"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -15,15 +15,6 @@ import { Icons } from "@/components/ui/icons"
 import { DataTableColumnHeader } from "@/components/data-table"
 import { titleCase } from "title-case"
 import { RoundInvestment } from "@/lib/api"
-import {
-  AlertDialog,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
 import Link from "next/link"
 import redirects from "@/lib/config/redirects"
 import {
@@ -49,15 +40,14 @@ import { useAction } from "next-safe-action/hooks"
 import { getAccountInvestmentsByPage } from "@/actions/investments"
 import { Skeleton } from "@/components/ui/skeleton"
 import { formatCurrency } from "@/lib/utils"
+import { cn } from "@/lib/utils"
 
 const ActionsCell: FC<{ row: Row<RoundInvestment> }> = ({ row }) => {
   const investment = row.original
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 
   return (
-    <DropdownMenu open={isDropdownOpen} onOpenChange={() => { }}>
-      <DropdownMenuTrigger onClick={() => setIsDropdownOpen(true)} asChild>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="h-8 w-8 p-0">
           <span className="sr-only">Open menu</span>
           <Icons.ellipsis className="h-4 w-4" />
@@ -76,47 +66,10 @@ const ActionsCell: FC<{ row: Row<RoundInvestment> }> = ({ row }) => {
             View round
           </Link>
         </DropdownMenuItem>
-        {investment.status === "pending" && (
-          <>
-            <DropdownMenuItem onClick={() => setIsDialogOpen(true)} >
-              Withdraw
-            </DropdownMenuItem>
-            <AlertDialog open={isDialogOpen}>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Withdraw investment</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    This action cannot be undone. Your investment application will be cancelled,
-                    and you will have to reapply if you want to invest in the same round.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel
-                    className="w-full"
-                    onClick={() => {
-                      setIsDialogOpen(false)
-                      setIsDropdownOpen(false)
-                    }}
-                  >
-                    Cancel
-                  </AlertDialogCancel>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          </>
-        )}
-        {investment.status === "processing" && investment?.payment?.status !== "succeeded" && (
-          <DropdownMenuItem asChild>
-            <Link href={redirects.app.portfolio.investments.create(investment.id.toString())}>
-              Checkout
-            </Link>
-          </DropdownMenuItem>
-        )}
       </DropdownMenuContent>
     </DropdownMenu>
   )
 }
-
 
 export const columns: ColumnDef<RoundInvestment>[] = [
   {
@@ -222,10 +175,11 @@ export const columns: ColumnDef<RoundInvestment>[] = [
   },
 ]
 
-interface AccountInvestmentsTableProps extends ComponentPropsWithoutRef<typeof Table> {
+interface AccountInvestmentsTableProps extends ComponentPropsWithoutRef<"div"> {
+  tableProps?: ComponentPropsWithoutRef<typeof Table>
 }
 
-export const AccountInvestmentsTable: FC<AccountInvestmentsTableProps> = () => {
+export const AccountInvestmentsTable: FC<AccountInvestmentsTableProps> = ({ className, tableProps, ...props }) => {
   const [data, setData] = useState<RoundInvestment[]>([])
   const [pagination, setPagination] = useState({
     pageIndex: 0,
@@ -289,9 +243,9 @@ export const AccountInvestmentsTable: FC<AccountInvestmentsTableProps> = () => {
 
 
   return (
-    <div className="flex flex-col gap-4 w-full h-full">
-      <div className="rounded-md border">
-        <Table>
+    <div className={cn("flex flex-col gap-4 w-full h-full", className)} {...props}>
+      <div className="rounded-md border h-full">
+        <Table className={cn("h-full", tableProps?.className)} {...tableProps}>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -310,7 +264,7 @@ export const AccountInvestmentsTable: FC<AccountInvestmentsTableProps> = () => {
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody>
+          <TableBody className={cn("h-full")}>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
