@@ -16,7 +16,9 @@ import { Separator } from "@/components/ui/separator";
 import { env } from "@/env";
 import { Round } from "@/lib/api";
 import redirects from "@/lib/config/redirects";
+import { formatCurrency } from "@/lib/utils";
 import { faker } from "@faker-js/faker";
+import { format } from "date-fns";
 import { useAction } from "next-safe-action/hooks";
 import Image from "next/image";
 import Link from "next/link";
@@ -29,12 +31,15 @@ export default function InvestmentModal() {
   const router = useRouter();
   const [round, setRound] = useState<Round>();
   const parsedId = parseInt(roundId as string);
+  const [accountLoading, setAccountLoading] = useState(true);
+  const [roundLoading, setRoundLoading] = useState(true);
   if (isNaN(parsedId)) {
     console.error("Invalid round ID", roundId);
     throw new Error("Invalid round ID");
   }
 
-  const { execute: getAccount, isExecuting: isAccountLoading } = useAction(getAccountCached, {
+  const { execute: getAccount } = useAction(getAccountCached, {
+    onExecute: () => setAccountLoading(true),
     onSuccess: (data) => {
       if (!data?.data) {
         //Todo: handle better
@@ -45,10 +50,12 @@ export default function InvestmentModal() {
       toast.error("An error occurred while fetching your account.");
       router.back();
     },
+    onSettled: () => setAccountLoading(false),
   });
 
 
-  const { execute: getRound, isExecuting: isRoundLoading, ...rest } = useAction(getRoundById, {
+  const { execute: getRound } = useAction(getRoundById, {
+    onExecute: () => setRoundLoading(true),
     onSuccess: ({ data }) => {
       if (!data?.round) {
         notFound();
@@ -60,6 +67,7 @@ export default function InvestmentModal() {
       toast.error("An error occurred while fetching the round.");
       router.back();
     },
+    onSettled: () => setRoundLoading(false),
   });
 
   useEffect(() => {
@@ -67,26 +75,35 @@ export default function InvestmentModal() {
     getRound(parsedId);
   }, [getAccount, getRound, parsedId]);
 
-  if (isAccountLoading || isRoundLoading) {
+  if (accountLoading || roundLoading) {
     return (
       <Dialog
         open={true}
         onOpenChange={() => router.back()}
       >
-        <DialogContent className="max-w-screen-xl min-h-[80vh]">
+        <DialogContent className="max-w-screen-xl">
           <DialogHeader>
             <DialogTitle className="text-4xl">Complete your investment</DialogTitle>
           </DialogHeader>
-          <div className="flex justify-center items-center h-full">
-            <Icons.spinner className="size-10 animate-spin" />
+          <div className="flex justify-center items-center h-full py-10">
+            <Icons.spinner className="size-10 animate-spin text-muted-foreground" />
           </div>
         </DialogContent>
       </Dialog>
     )
   }
 
+  if (!round) {
+    notFound();
+  }
+
   const redirectUrl = env.NEXT_PUBLIC_APP_URL + redirects.app.portfolio.investments.history;
 
+  //todo: localize
+  const valuation = formatCurrency(round.percentageValue / (round.percentageOffered / 100), round.valueCurrency);
+  const serviceFee = formatCurrency(round.buyIn * 0.03, round.valueCurrency);
+  const taxes = formatCurrency((round.buyIn * 1.03) * 0.13, round.valueCurrency);
+  const total = formatCurrency((round.buyIn * 1.03) * 1.13, round.valueCurrency);
   return (
     <Dialog
       open={true}
@@ -96,14 +113,14 @@ export default function InvestmentModal() {
         <DialogHeader>
           <DialogTitle className="text-4xl">Complete your investment</DialogTitle>
         </DialogHeader>
-        <div className="flex flex-col-reverse md:flex-row gap-20 w-full">
+        <div className="flex flex-col-reverse md:flex-row gap-20 w-full max-h-[70dvh] overflow-y-auto relative px-2">
           <div className="flex flex-col gap-4 w-full">
             <Label className="text-2xl" htmlFor="refund-policy">
               Your investment
             </Label>
             <div id="refund-policy">
-              {faker.lorem.paragraphs(1)}{" "}
-              <Link href="#" className="font-semibold underline">Learn more</Link>
+              You recieve {round.percentageOffered}% of this venture's profits for the next 16 months.{" "}
+              <Link href="#" className="font-semibold underline">Learn more</Link>.
             </div>
             <Separator className="my-4" />
             <Label className="text-2xl" htmlFor="refund-policy">
@@ -122,36 +139,31 @@ export default function InvestmentModal() {
               Refund policy
             </Label>
             <div id="refund-policy">
-              {faker.lorem.paragraphs(1)}{" "}
-              <Link href="#" className="font-semibold underline">Learn more</Link>
+              You can get a partial refund for this investment if you request one before {format(new Date(new Date().setDate(new Date().getDate() + 5)), "PPP")}. After that, your refund depends on when you cancel.{" "}
+              <Link href="#" className="font-semibold underline">Learn more</Link>.
             </div>
             <Separator className="my-4" />
-            <Label className="text-2xl" htmlFor="refund-policy">
-              Escrow policy
-            </Label>
-            <div id="refund-policy">
-              {faker.lorem.paragraphs(1)}{" "}
-              <Link href="#" className="font-semibold underline">Learn more</Link>
-            </div>
-            <Separator className="my-4" />
-            <Label className="text-2xl" htmlFor="refund-policy">
-              Refund policy
-            </Label>
-            <div id="refund-policy">
-              {faker.lorem.paragraphs(1)}{" "}
-              <Link href="#" className="font-semibold underline">Learn more</Link>
-            </div>
-            <Separator className="my-4" />
-            <div className="flex flex-row gap-6">
+            {/* <div className="flex flex-row gap-6">
               <Icons.calendar className="size-10" />
               <p>
-                <span className="font-semibold">Your reservation won’t be confirmed until the Host accepts your request (within 24 hours).</span> You won’t be charged until then.
+                <span className="font-semibold">
+                  Your reservation won’t be confirmed until the Host accepts your request (within 24 hours).
+                </span>{" "}
+                You won’t be charged until then.
               </p>
-            </div>
-            <Separator className="my-4" />
-            <CheckoutConfirmation className="w-full" prefetchUrl={redirectUrl} />
+            </div> */}
+            {/* <Separator className="my-4" /> */}
+            <CheckoutConfirmation
+              className="w-full"
+              prefetchUrl={redirectUrl}
+              confirmationDisclaimer={(
+                <p>
+                  By pressing this button, you agree to the <Link href="#" className="font-semibold underline">investment agreement</Link>, <Link href="#" className="font-semibold underline">Fundlevel's terms of service</Link>, and the <Link href="#" className="font-semibold underline">payment policy</Link>. You agree to pay the total amount shown if the investment goes through.
+                </p>
+              )}
+            />
           </div>
-          <Card className="flex flex-col gap-4 p-4 w-full min-w-[300px] max-w-md h-min">
+          <Card className="flex flex-col gap-4 p-4 w-full min-w-[300px] max-w-md h-min sticky top-0">
             <div className="flex justify-start items-center gap-4 w-full">
               <Image src="/filler.jpeg" alt="Investment Price Breakdown" width={100} height={100} className="rounded-md" />
               <div className="flex flex-col gap-1">
@@ -165,26 +177,21 @@ export default function InvestmentModal() {
               <Label className="text-2xl font-medium" htmlFor="price-details">Price details</Label>
               <div id="price-details" className="flex flex-col gap-2">
                 <div className="flex justify-between">
-                  <span>$337.00 CAD x 5 nights</span>
-                  <span>$1,685.00 CAD</span>
+                  <span>{valuation} x {round.percentageOffered}%</span>
+                  <span>{formatCurrency(round.buyIn, round.valueCurrency)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Cleaning fee</span>
-                  <span>$65.00 CAD</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Airbnb service fee</span>
-                  <span>$279.18 CAD</span>
+                  <span>Service fee</span>
+                  <span>{serviceFee}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Taxes</span>
-                  <span>$227.50 CAD</span>
+                  <span>{taxes}</span>
                 </div>
                 <Separator className="my-2" />
                 <div className="flex justify-between font-bold">
-                  <span>Total (CAD)</span>
-                  {/*//TODO: handle better*/}
-                  <span>${round?.buyIn?.toFixed(2) ?? "N/A"} CAD</span>
+                  <span>Total</span>
+                  <span>{total}</span>
                 </div>
               </div>
             </div>
