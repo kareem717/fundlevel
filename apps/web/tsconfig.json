@@ -33,7 +33,7 @@
     "src/**/*.ts",
     "src/**/*.tsx",
     ".next/types/**/*.ts"
-  ],
+, "src/app/(explore)/ventures/[id]/components/venture-actions"  ],
   "exclude": [
     "node_modules"
   ]

@@ -55,8 +55,9 @@ import {
   useQueryState,
   parseAsInteger,
   parseAsString,
+  parseAsStringLiteral,
 } from "nuqs";
-import { industries } from "@/lib/dev/config";
+import { categories, industries } from "@/lib/dev/config";
 
 export default function FilterBar() {
   // const { execute, status } = useAction(getAllIndustries, {
@@ -69,26 +70,20 @@ export default function FilterBar() {
   // });
 
   const [list, setList] = useQueryState("list", {
-    parse: (value) => value || "featured",
-    defaultValue: "featured",
+    parse: (value) => value || "Featured",
+    defaultValue: "Featured",
     clearOnDefault: false,
   });
 
-  const [industriesState, setIndustriesState] = useState<
-    { label: Industry; value: string }[]
-  >([]);
+  const [filterIndustries, setFilterIndustries] = useQueryState(
+    "industries",
+    parseAsArrayOf(parseAsStringLiteral(industries))
+  );
 
   const [showFilter, setShowFilter] = React.useState(false);
   const [values, setValues] = useState([100, 1000000]);
 
-  const formatValue = (value: number) => {
-    return value.toLocaleString("en-US", {
-      style: "currency",
-      currency: "USD",
-    });
-  };
-
-  const handleIndustryChange = (industry: string) => {
+  const handleIndustryChange = (industry: Industry) => {
     const currentIndustries = filterIndustries || [];
 
     const isSelected = currentIndustries.includes(industry);
@@ -100,23 +95,12 @@ export default function FilterBar() {
     }
   };
 
-  const [filterIndustries, setFilterIndustries] = useQueryState(
-    "industries",
-    parseAsArrayOf<string>({
-      parse: (value) => value,
-      serialize: (value) => value,
-    })
-  );
-
-  useEffect(() => {
-    // Map all possible Industry types to industry objects
-    const industryList = industries.map((industry) => ({
-      label: industry,
-      value: industry.toLowerCase(),
-    }));
-
-    setIndustriesState(industryList);
-  }, []);
+  const formatValue = (value: number) => {
+    return value.toLocaleString("en-US", {
+      style: "currency",
+      currency: "USD",
+    });
+  };
 
   return (
     <div className="block w-full relative h-[107px] lg:h-10 px-8 pt-4">
@@ -126,12 +110,15 @@ export default function FilterBar() {
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Select List" />
             </SelectTrigger>
+
             <SelectContent>
               <SelectGroup>
                 <SelectLabel>Lists</SelectLabel>
-                <SelectItem value="featured">Featured</SelectItem>
-                <SelectItem value="latest">Latest</SelectItem>
-                <SelectItem value="aquired">Aquired</SelectItem>
+                {categories.map((category) => (
+                  <SelectItem value={category.label} key={category.label}>
+                    {category.label}
+                  </SelectItem>
+                ))}
               </SelectGroup>
             </SelectContent>
           </Select>
@@ -144,17 +131,17 @@ export default function FilterBar() {
             plugins={[WheelGesturesPlugin()]}
           >
             <CarouselContent>
-              {industriesState.map((industry, index) => (
+              {industries.map((industry, index) => (
                 <CarouselItem className="basis-1/10" key={index}>
                   <button
                     className={cn(
                       "flex flex-col rounded-md bg-muted items-center justify-center p-3 gap-2 w-full h-full hover:bg-muted/80 transition-colors",
-                      filterIndustries?.includes(industry.value) &&
+                      filterIndustries?.includes(industry) &&
                         "border-b-2 border-primary"
                     )}
-                    onClick={() => handleIndustryChange(industry.value)}
+                    onClick={() => handleIndustryChange(industry)}
                   >
-                    <span className="text-xs">{industry.label}</span>
+                    <span className="text-xs">{industry}</span>
                   </button>
                 </CarouselItem>
               ))}

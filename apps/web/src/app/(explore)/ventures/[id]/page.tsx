@@ -1,4 +1,4 @@
-import { VentureViewActions } from "./components/venture-actions.tsx";
+import { VentureViewActions } from "./components/venture-actions";
 import { getVentureById } from "@/actions/ventures";
 import { notFound } from "next/navigation";
 import {
@@ -24,30 +24,43 @@ import {
 import BackButton from "./components/back-button";
 import { VentureTabs } from "./components/tabs";
 import redirects from "@/lib/config/redirects";
+import { ventures } from "@/lib/dev/config";
+import { getRandomGradient } from "../../explore/components/venture-card";
 
 export default async function VentureViewPage(props: {
   params: Promise<{ id: string }>;
 }) {
   const params = await props.params;
-  const parsedId = parseInt((params.id as string) || ""); // Parse the id
 
-  if (isNaN(parsedId)) {
+  console.log(params);
+
+  const venture = ventures.find((v) => v.slug === params.id);
+
+  if (!venture) {
     notFound();
   }
 
-  const ventureResp = await getVentureById(parsedId);
+  // const parsedId = parseInt((params.id as string) || ""); // Parse the id
 
-  if (!ventureResp?.data || ventureResp?.serverError) {
-    console.error(ventureResp);
-    throw new Error("Something went wrong");
-  }
+  // if (isNaN(parsedId)) {
+  //   notFound();
+  // }
 
-  const { business, ...venture } = ventureResp.data.venture;
+  // const ventureResp = await getVentureById(parsedId);
+
+  // if (!ventureResp?.data || ventureResp?.serverError) {
+  //   console.error(ventureResp);
+  //   throw new Error("Something went wrong");
+  // }
+
+  // const { business, ...venture } = ventureResp.data.venture;
 
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Banner */}
-      <div className="relative h-[40vh] py-4 bg-gradient-to-r from-purple-600 to-blue-600">
+      <div
+        className={`relative h-[40vh] py-4 ${getRandomGradient(venture.title)}`}
+      >
         <Image
           src="/filler.jpeg"
           alt="Bilal Burgers Banner"
@@ -64,8 +77,8 @@ export default async function VentureViewPage(props: {
               <AvatarFallback>BB</AvatarFallback>
             </Avatar>
             <div className="text-white">
-              <h1 className="text-2xl font-bold">{venture.name}</h1>
-              <p className="text-sm">Toronto, Canada</p>
+              <h1 className="text-2xl font-bold">{venture?.title}</h1>
+              <p className="text-sm">{venture?.location}</p>
             </div>
           </div>
         </div>
@@ -76,7 +89,7 @@ export default async function VentureViewPage(props: {
         <div className="container flex items-center justify-between p-4">
           <div className="flex items-center flex-wrap justify-between gap-6 w-full">
             <VentureTabs />
-            <VentureViewActions ventureId={venture.id} />
+            <VentureViewActions ventureId={1} />
           </div>
         </div>
       </nav>
@@ -119,10 +132,10 @@ export default async function VentureViewPage(props: {
             <section>
               <h2 className="text-xl font-bold">The Market</h2>
               <p className="mt-2 text-muted-foreground">
-                The restaurant&apos;s focus on quality, flavor, and community makes
-                it a standout choice for anyone craving a hearty, satisfying
-                meal. Our unique positioning in the market combines traditional
-                flavors with modern dining expectations.
+                The restaurant&apos;s focus on quality, flavor, and community
+                makes it a standout choice for anyone craving a hearty,
+                satisfying meal. Our unique positioning in the market combines
+                traditional flavors with modern dining expectations.
               </p>
             </section>
 
@@ -173,7 +186,7 @@ export default async function VentureViewPage(props: {
 
           {/* Sidebar */}
           <div className="space-y-6">
-            {venture.activeRound && (
+            {/* {venture.activeRound && (
               <Card className="size-full max-w-96">
                 <CardHeader>
                   <CardTitle>Currently Raising</CardTitle>
@@ -183,7 +196,9 @@ export default async function VentureViewPage(props: {
                 </CardHeader>
                 <CardContent className="flex flex-col gap-2">
                   <span className="font-semibold">
-                    Valuation: {venture.activeRound.percentageValue / (venture.activeRound.percentageOffered / 100)}
+                    Valuation:{" "}
+                    {venture.activeRound.percentageValue /
+                      (venture.activeRound.percentageOffered / 100)}
                   </span>
                   <span className="font-semibold">
                     Offered: {venture.activeRound.percentageOffered}%
@@ -195,16 +210,19 @@ export default async function VentureViewPage(props: {
                 <CardFooter>
                   <Link
                     prefetch={true}
-                    href={
-                      redirects.app.portfolio.investments.create(venture.activeRound.id.toString())
-                    }
-                    className={cn("px-6", buttonVariants({ variant: "outline", size: "lg" }))}
+                    href={redirects.app.portfolio.investments.create(
+                      venture.activeRound.id.toString()
+                    )}
+                    className={cn(
+                      "px-6",
+                      buttonVariants({ variant: "outline", size: "lg" })
+                    )}
                   >
                     Invest
                   </Link>
                 </CardFooter>
               </Card>
-            )}
+            )} */}
             <Card>
               <CardContent className="p-6">
                 <div className="space-y-4">

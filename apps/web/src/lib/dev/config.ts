@@ -3,32 +3,32 @@ import { Category, Venture, Industry } from "./types";
 export const categories: Category[] = [
   {
     label: "Featured",
-    href: "/explore?list=featured",
+    href: "/explore?list=Featured",
     description: "Our most promising and notable investment opportunities",
   },
   {
     label: "Latest",
-    href: "/explore?list=latest",
+    href: "/explore?list=Latest",
     description: "Recently added ventures seeking investment",
   },
   {
     label: "Aquired",
-    href: "/explore?list=aquired",
+    href: "/explore?list=Aquired",
     description: "Success stories of ventures that have been acquired",
   },
   {
     label: "Upcoming",
-    href: "/explore?list=upcoming",
+    href: "/explore?list=Upcoming",
     description: "Preview ventures that will be available for investment soon",
   },
   {
-    label: "Real Estate",
-    href: "/explore?list=real-estate",
+    label: "Real-Estate",
+    href: "/explore?list=Real-Estate",
     description: "Property and real estate investment opportunities",
   },
 ];
 
-export const industries: Industry[] = [
+export const industries = [
   "Artificial Intelligence",
   "Technology",
   "Enterprise Software",
@@ -59,7 +59,7 @@ export const industries: Industry[] = [
   "Media & Entertainment",
   "Non-Profit",
   "Others",
-];
+] as const;
 
 export const ventures: Venture[] = [
   {
@@ -287,7 +287,7 @@ export const ventures: Venture[] = [
     slug: "smartspace-properties",
     description: "AI-powered real estate management platform",
     logoUrl: "/logos/smartspace.png",
-    category: "Real Estate",
+    category: "Real-Estate",
     location: "New York, NY",
     industries: ["Real Estate", "Technology", "Artificial Intelligence"],
   },
@@ -296,7 +296,7 @@ export const ventures: Venture[] = [
     slug: "urban-development-co",
     description: "Sustainable urban development and planning",
     logoUrl: "/logos/urbandev.png",
-    category: "Real Estate",
+    category: "Real-Estate",
     location: "Toronto, ON",
     industries: ["Real Estate", "Construction", "Urban Planning"],
   },
@@ -305,7 +305,7 @@ export const ventures: Venture[] = [
     slug: "proptech-solutions",
     description: "Property technology and management solutions",
     logoUrl: "/logos/proptech.png",
-    category: "Real Estate",
+    category: "Real-Estate",
     location: "Vancouver, BC",
     industries: ["Real Estate", "Technology", "Property Management"],
   },
@@ -314,7 +314,7 @@ export const ventures: Venture[] = [
     slug: "smartrental",
     description: "AI-driven rental property management platform",
     logoUrl: "/logos/smartrental.png",
-    category: "Real Estate",
+    category: "Real-Estate",
     location: "Chicago, IL",
     industries: ["Real Estate", "Technology", "Property Management"],
   },
@@ -323,7 +323,7 @@ export const ventures: Venture[] = [
     slug: "greenspace-development",
     description: "Sustainable commercial real estate development",
     logoUrl: "/logos/greenspace.png",
-    category: "Real Estate",
+    category: "Real-Estate",
     location: "Seattle, WA",
     industries: ["Real Estate", "Construction", "Sustainability"],
   },
@@ -332,7 +332,7 @@ export const ventures: Venture[] = [
     slug: "realtytech-pro",
     description: "Virtual reality real estate tours and marketing",
     logoUrl: "/logos/realtytech.png",
-    category: "Real Estate",
+    category: "Real-Estate",
     location: "Miami, FL",
     industries: ["Real Estate", "Virtual Reality", "Technology"],
   },
