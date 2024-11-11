@@ -40,6 +40,10 @@ export default async function VentureViewPage(props: {
 
   const { business, ...venture } = ventureResp.data.venture;
 
+  if (!venture.activeRound) {
+    notFound();
+  }
+
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Banner */}
