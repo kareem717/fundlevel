@@ -47,7 +47,7 @@ export const TotalInvestmentsCard: FC<InvestmentStatisticLineProps> = ({ classNa
     <StatisticCard
       isLoading={isLoading}
       title="Total Investments"
-      value={isLoading ? "" : "10"}
+      value={isLoading ? "" : "1"}
       icon="dollarSign"
       description="This is the total amount of investments you have made."
       className={className}

@@ -18,6 +18,7 @@ import { ventures } from "@/lib/dev/config";
 import { getRandomGradient } from "../../explore/components/venture-card";
 import { InvestmentDialog } from "./components/investment-dialog";
 import { env } from "@/env";
+import { formatCurrency } from "@/lib/utils";
 
 export default async function VentureViewPage(props: {
   params: Promise<{ id: string }>;
@@ -184,35 +185,43 @@ export default async function VentureViewPage(props: {
           {/* Sidebar */}
           <div className="space-y-6">
             <Card>
-              <CardContent className="p-6">
-                <div className="space-y-4">
-                  <div>
-                    <div className="text-sm font-medium">Target</div>
-                    <div className="text-2xl font-bold">CA $1,000,000</div>
-                  </div>
-                  <div>
-                    <div className="text-sm font-medium">Minimum</div>
-                    <div className="text-2xl font-bold">CA $5,000</div>
-                  </div>
-                  <div>
-                    <div className="text-sm font-medium">Investment Raised</div>
-                    <div className="text-2xl font-bold">CA $0</div>
-                  </div>
-                </div>
-              </CardContent>
               {venture.activeRound && (
-                <CardFooter>
-                  <InvestmentDialog
-                    round={venture.activeRound}
-                    redirectUrl={
-                      env.NEXT_PUBLIC_APP_URL +
-                      redirects.app.portfolio.investments.history
-                    }
-                    triggerProps={{
-                      className: "w-full",
-                    }}
-                  />
-                </CardFooter>
+                <>
+                  <CardContent className="p-6">
+                    <div className="space-y-4">
+                      <div>
+                        <div className="text-sm font-medium">Target</div>
+                        <div className="text-2xl font-bold">
+                          {formatCurrency(venture.activeRound.percentageValue, venture.activeRound.valueCurrency)}
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-sm font-medium">Buy In</div>
+                        <div className="text-2xl font-bold">
+                          {formatCurrency(venture.activeRound.buyIn, venture.activeRound.valueCurrency)}
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-sm font-medium">Investment Raised</div>
+                        <div className="text-2xl font-bold">
+                          {formatCurrency(0, venture.activeRound.valueCurrency)}
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                  <CardFooter>
+                    <InvestmentDialog
+                      round={venture.activeRound}
+                      redirectUrl={
+                        env.NEXT_PUBLIC_APP_URL +
+                        redirects.app.portfolio.investments.history
+                      }
+                      triggerProps={{
+                        className: "w-full",
+                      }}
+                    />
+                  </CardFooter>
+                </>
               )}
             </Card>
 
