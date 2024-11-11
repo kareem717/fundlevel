@@ -49,7 +49,7 @@ export const InvestmentDialog: FC<InvestmentDialogProps> = ({ round, className, 
           Your investment
         </Label>
         <div id="refund-policy">
-          You recieve {round.percentageOffered}% of this venture's profits for the next 16 months.{" "}
+          You recieve {round.percentageOffered}% of this venture&apos;s profits for the next 16 months.{" "}
           <Link href="#" className="font-semibold underline">Learn more</Link>.
         </div>
         <Separator className="my-4" />
@@ -79,7 +79,7 @@ export const InvestmentDialog: FC<InvestmentDialogProps> = ({ round, className, 
           confirmationDisclaimer={(
             <>
               {/* //todo: replace with real links */}
-              By pressing this button, you agree to the <Link href="#" className="font-semibold underline">investment agreement</Link>, <Link href="#" className="font-semibold underline">Fundlevel's terms of service</Link>, and the <Link href="#" className="font-semibold underline">payment policy</Link>. You agree to pay the total amount shown if the investment goes through.
+              By pressing this button, you agree to the <Link href="#" className="font-semibold underline">investment agreement</Link>, <Link href="#" className="font-semibold underline">Fundlevel&apos;s terms of service</Link>, and the <Link href="#" className="font-semibold underline">payment policy</Link>. You agree to pay the total amount shown if the investment goes through.
             </>
           )}
         />

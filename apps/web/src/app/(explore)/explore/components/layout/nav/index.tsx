@@ -1,10 +1,5 @@
-import React from "react";
-import Link from "next/link";
 import { LogoDiv } from "@/components/logo-div";
-import redirects from "@/lib/config/redirects";
 import { SmallLogoDiv } from "@/components/logo-div";
-import { ExploreToggle } from "./explore-toggle";
-import { ModeToggle } from "@/components/mode-toggle";
 import { ExploreAuth } from "./explore-auth";
 
 export function ExploreNav() {
