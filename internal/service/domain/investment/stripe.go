@@ -28,6 +28,11 @@ func (s *InvestmentService) CreatePaymentIntent(
 		return nil, err
 	}
 
+	businessStripeAccount, err := s.repositories.Business().GetStripeAccount(ctx, round.Venture.BusinessID)
+	if err != nil {
+		return nil, err
+	}
+
 	var resp *stripe.PaymentIntent
 	err = s.repositories.RunInTx(ctx, func(ctx context.Context, tx storage.Transaction) error {
 		buyInCents := int(round.BuyIn * 100)
@@ -36,12 +41,14 @@ func (s *InvestmentService) CreatePaymentIntent(
 		totalAmount := (float64(buyInCents) + feeCents)
 		stripe.Key = s.stripeAPIKey
 
+
+
 		paymentIntentParams := &stripe.PaymentIntentParams{
 			Amount:               stripe.Int64(int64(totalAmount)),
 			Currency:             stripe.String(string(round.ValueCurrency)),
 			ApplicationFeeAmount: stripe.Int64(int64(feeCents)),
 			TransferData: &stripe.PaymentIntentTransferDataParams{
-				Destination: stripe.String(round.Venture.Business.StripeConnectedAccountID),
+				Destination: stripe.String(businessStripeAccount.StripeConnectedAccountID),
 			},
 			PaymentMethodTypes: []*string{
 				stripe.String(string(stripe.PaymentMethodTypeCard)),

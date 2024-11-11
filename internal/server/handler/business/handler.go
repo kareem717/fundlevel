@@ -362,7 +362,7 @@ func (h *httpHandler) onboardStripeConnectedAccount(ctx context.Context, input *
 		return nil, huma.Error403Forbidden("Connected account cannot be onboarded for another account")
 	}
 
-	link, err := h.service.BusinessService.CreateStripeAccountLink(ctx, business.StripeConnectedAccountID, input.Body.ReturnURL, input.Body.RefreshURL)
+	link, err := h.service.BusinessService.CreateStripeAccountLink(ctx, business.StripeAccount.StripeConnectedAccountID, input.Body.ReturnURL, input.Body.RefreshURL)
 	if err != nil {
 		return nil, huma.Error500InternalServerError("An error occurred while creating the account link")
 	}

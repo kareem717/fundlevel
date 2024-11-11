@@ -5,6 +5,9 @@ import (
 
 	"fundlevel/internal/entities/business"
 	"fundlevel/internal/storage"
+
+	"github.com/stripe/stripe-go/v80"
+	"github.com/stripe/stripe-go/v80/account"
 )
 
 type BusinessService struct {
@@ -25,19 +28,44 @@ func (s *BusinessService) Create(ctx context.Context, params business.CreateBusi
 	resp := business.Business{}
 
 	err := s.repositories.RunInTx(ctx, func(ctx context.Context, tx storage.Transaction) error {
-		stripeConnectedAccount, err := s.CreateStripeConnectedAccount(ctx)
+		stripe.Key = s.stripeAPIKey
+
+		stripeConnectedAccount, err := account.New(&stripe.AccountParams{})
 		if err != nil {
 			return err
 		}
-
-		params.Business.StripeConnectedAccountID = stripeConnectedAccount.ID
+	
 
 		// TODO: We need to delete the stripe connected account if the business creation fails
-		business, err := tx.Business().Create(ctx, params)
+		businessRecord, err := tx.Business().Create(ctx, params)
 		if err != nil {
 			return err
 		}
-		resp = business
+		resp = businessRecord
+
+		stripeAccountParams := business.CreateBusinessStripeAccountParams{
+			BusinessID:               businessRecord.ID,
+			StripeConnectedAccountID: stripeConnectedAccount.ID,
+		}
+
+		if stripeConnectedAccount.Capabilities.Transfers == stripe.AccountCapabilityStatusActive {
+			stripeAccountParams.StripeTransfersEnabled = true
+		}
+
+		if stripeConnectedAccount.PayoutsEnabled {
+			stripeAccountParams.StripePayoutsEnabled = true
+		}
+
+		if stripeConnectedAccount.Requirements.DisabledReason != "" {
+			stripeAccountParams.StripeDisabledReason = &stripeConnectedAccount.Requirements.DisabledReason
+		}
+
+		businessStripeAccount, err := tx.Business().CreateStripeAccount(ctx, stripeAccountParams)
+		if err != nil {
+			return err
+		}
+
+		resp.StripeAccount = &businessStripeAccount
 
 		return nil
 	})
@@ -57,7 +85,12 @@ func (s *BusinessService) Delete(ctx context.Context, id int) error {
 			return err
 		}
 
-		return s.DeleteStripeConnectedAccount(ctx, business.StripeConnectedAccountID)
+		err = tx.Business().DeleteStripeAccount(ctx, business.StripeAccount.BusinessID)
+		if err != nil {
+			return err
+		}
+
+		return s.DeleteStripeConnectedAccount(ctx, business.StripeAccount.StripeConnectedAccountID)
 	})
 }
 
@@ -65,19 +98,9 @@ func (s *BusinessService) GetById(ctx context.Context, id int) (business.Busines
 	return s.repositories.Business().GetById(ctx, id)
 }
 
-func (s *BusinessService) GetByStripeConnectedAccountId(ctx context.Context, stripeConnectedAccountId string) (business.Business, error) {
-	return s.repositories.Business().GetByStripeConnectedAccountId(ctx, stripeConnectedAccountId)
-}
+
 
 func (s *BusinessService) Update(ctx context.Context, id int, params business.UpdateBusinessParams) (business.Business, error) {
 	return s.repositories.Business().Update(ctx, id, params)
 }
 
-func (s *BusinessService) GetStripeDashboardURL(ctx context.Context, businessId int) (string, error) {
-	business, err := s.repositories.Business().GetById(ctx, businessId)
-	if err != nil {
-		return "", err
-	}
-
-	return s.GetStripeConnectedAccountDashboardURL(ctx, business.StripeConnectedAccountID)
-}

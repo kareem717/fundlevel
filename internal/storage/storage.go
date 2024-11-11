@@ -62,7 +62,7 @@ type InvestmentRepository interface {
 	GetByPage(ctx context.Context, paginationParams postgres.OffsetPagination, filter investment.InvestmentFilter) ([]investment.RoundInvestment, int, error)
 	GetByRoundIdAndAccountId(ctx context.Context, roundId int, accountId int) (investment.RoundInvestment, error)
 	UpdateProcessingAndPendingInvestmentsByRoundId(ctx context.Context, roundId int, status investment.InvestmentStatus) error
-	
+
 	CreatePayment(ctx context.Context, params investment.CreateRoundInvestmentPaymentParams) (investment.RoundInvestmentPayment, error)
 	UpdatePayment(ctx context.Context, investmentId int, params investment.UpdateRoundInvestmentPaymentParams) (investment.RoundInvestmentPayment, error)
 	GetPayment(ctx context.Context, roundInvestmentId int) (investment.RoundInvestmentPayment, error)
@@ -95,9 +95,15 @@ type UserRepository interface {
 type BusinessRepository interface {
 	Create(ctx context.Context, params business.CreateBusinessParams) (business.Business, error)
 	GetById(ctx context.Context, id int) (business.Business, error)
-	GetByStripeConnectedAccountId(ctx context.Context, stripeConnectedAccountId string) (business.Business, error)
 	Update(ctx context.Context, id int, params business.UpdateBusinessParams) (business.Business, error)
 	Delete(ctx context.Context, id int) error
+	// GetByStripeConnectedAccountId(ctx context.Context, stripeConnectedAccountId string) (business.Business, error)
+
+	GetStripeAccountByAccountId(ctx context.Context, accountId string) (business.BusinessStripeAccount, error)
+	CreateStripeAccount(ctx context.Context, params business.CreateBusinessStripeAccountParams) (business.BusinessStripeAccount, error)
+	UpdateStripeAccount(ctx context.Context, businessId int, params business.UpdateBusinessStripeAccountParams) (business.BusinessStripeAccount, error)
+	GetStripeAccount(ctx context.Context, businessId int) (business.BusinessStripeAccount, error)
+	DeleteStripeAccount(ctx context.Context, businessId int) error
 
 	GetVenturesByCursor(ctx context.Context, businessId int, paginationParams postgres.CursorPagination, filter venture.VentureFilter) ([]venture.Venture, error)
 	GetVenturesByPage(ctx context.Context, businessId int, paginationParams postgres.OffsetPagination, filter venture.VentureFilter) ([]venture.Venture, int, error)

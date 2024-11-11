@@ -3,6 +3,7 @@ package business
 import (
 	"context"
 	"fmt"
+	"fundlevel/internal/entities/business"
 
 	"github.com/stripe/stripe-go/v80"
 	"github.com/stripe/stripe-go/v80/account"
@@ -36,17 +37,6 @@ func (s *BusinessService) CreateStripeAccountLink(ctx context.Context, accountID
 	return accountLink.URL, nil
 }
 
-func (s *BusinessService) CreateStripeConnectedAccount(ctx context.Context) (stripe.Account, error) {
-	stripe.Key = s.stripeAPIKey
-
-	account, err := account.New(&stripe.AccountParams{})
-	if err != nil {
-		return stripe.Account{}, err
-	}
-
-	return *account, nil
-}
-
 func (s *BusinessService) GetStripeConnectedAccountDashboardURL(ctx context.Context, accountID string) (string, error) {
 	stripe.Key = s.stripeAPIKey
 
@@ -75,4 +65,25 @@ func (s *BusinessService) DeleteStripeConnectedAccount(ctx context.Context, acco
 	}
 
 	return nil
+}
+
+func (s *BusinessService) GetStripeAccountByAccountId(ctx context.Context, accountId string) (business.BusinessStripeAccount, error) {
+	return s.repositories.Business().GetStripeAccountByAccountId(ctx, accountId)
+}
+
+func (s *BusinessService) UpdateStripeAccount(ctx context.Context, businessId int, params business.UpdateBusinessStripeAccountParams) (business.BusinessStripeAccount, error) {
+	return s.repositories.Business().UpdateStripeAccount(ctx, businessId, params)
+}
+
+func (s *BusinessService) GetStripeDashboardURL(ctx context.Context, businessId int) (string, error) {
+	business, err := s.repositories.Business().GetById(ctx, businessId)
+	if err != nil {
+		return "", err
+	}
+
+	return s.GetStripeConnectedAccountDashboardURL(ctx, business.StripeAccount.StripeConnectedAccountID)
+}
+
+func (s *BusinessService) GetStripeAccount(ctx context.Context, businessId int) (business.BusinessStripeAccount, error) {
+	return s.repositories.Business().GetStripeAccount(ctx, businessId)
 }

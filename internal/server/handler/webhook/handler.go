@@ -140,7 +140,7 @@ func (h *httpHandler) handleStripeConnectWebhook(ctx context.Context, input *sha
 
 		stripeConnectedAccountId := eventBody.ID
 
-		businessRecord, err := h.service.BusinessService.GetByStripeConnectedAccountId(ctx, stripeConnectedAccountId)
+		stripeAccount, err := h.service.BusinessService.GetStripeAccountByAccountId(ctx, stripeConnectedAccountId)
 		if err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
 				h.logger.Error("business not found", zap.String("stripeConnectedAccountId", stripeConnectedAccountId))
@@ -151,7 +151,7 @@ func (h *httpHandler) handleStripeConnectWebhook(ctx context.Context, input *sha
 			return nil, huma.Error500InternalServerError("An error occurred while fetching the business")
 		}
 
-		var updateParams business.UpdateBusinessParams
+		var updateParams business.UpdateBusinessStripeAccountParams
 		hasToUpdate := false
 		if eventBody.Requirements.DisabledReason != "" {
 			h.logger.Error("business is disabled", zap.String("stripeConnectedAccountId", stripeConnectedAccountId), zap.String("disabledReason", string(eventBody.Requirements.DisabledReason)))
@@ -164,26 +164,26 @@ func (h *httpHandler) handleStripeConnectWebhook(ctx context.Context, input *sha
 		// 	h.logger.Error("business requires additional information", zap.String("stripeConnectedAccountId", stripeConnectedAccountId))
 		// 	return nil, huma.Error400BadRequest("Business requires additional information")
 		// }
-		if eventBody.PayoutsEnabled != businessRecord.StripePaymentsEnabled {
-			updateParams.StripePaymentsEnabled = eventBody.PayoutsEnabled
+		if eventBody.PayoutsEnabled != stripeAccount.StripePayoutsEnabled {
+			updateParams.StripePayoutsEnabled = eventBody.PayoutsEnabled
 			hasToUpdate = true
 		}
 
 		switch eventBody.Capabilities.Transfers {
 		case stripe.AccountCapabilityStatusActive:
-			if !businessRecord.StripeTransfersEnabled {
+			if !stripeAccount.StripeTransfersEnabled {
 				updateParams.StripeTransfersEnabled = true
 				hasToUpdate = true
 			}
 		default:
-			if businessRecord.StripeTransfersEnabled {
+			if stripeAccount.StripeTransfersEnabled {
 				updateParams.StripeTransfersEnabled = false
 				hasToUpdate = true
 			}
 		}
 
 		if hasToUpdate {
-			_, err = h.service.BusinessService.Update(ctx, businessRecord.ID, updateParams)
+			_, err = h.service.BusinessService.UpdateStripeAccount(ctx, stripeAccount.BusinessID, updateParams)
 			if err != nil {
 				h.logger.Error("failed to update business", zap.Error(err))
 				return nil, huma.Error500InternalServerError("An error occurred while changing the business's stripe account enabled status")

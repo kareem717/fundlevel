@@ -59,6 +59,8 @@ func (r *BusinessRepository) GetById(ctx context.Context, id int) (business.Busi
 	err := r.db.NewSelect().
 		Model(&resp).
 		Relation("Address").
+		Relation("StripeAccount").
+		Relation("Industry").
 		Where("business.id = ?", id).
 		Scan(ctx)
 

@@ -88,12 +88,12 @@ type BusinessService interface {
 	Delete(ctx context.Context, id int) error
 	GetById(ctx context.Context, id int) (business.Business, error)
 	Update(ctx context.Context, id int, params business.UpdateBusinessParams) (business.Business, error)
-	GetByStripeConnectedAccountId(ctx context.Context, stripeConnectedAccountId string) (business.Business, error)
 
 	GetStripeDashboardURL(ctx context.Context, businessId int) (string, error)
 	CreateStripeAccountLink(ctx context.Context, accountID string, returnURL string, refreshURL string) (string, error)
-	CreateStripeConnectedAccount(ctx context.Context) (stripe.Account, error)
-	DeleteStripeConnectedAccount(ctx context.Context, accountID string) error
+	GetStripeAccount(ctx context.Context, businessId int) (business.BusinessStripeAccount, error)
+	GetStripeAccountByAccountId(ctx context.Context, accountId string) (business.BusinessStripeAccount, error)
+	UpdateStripeAccount(ctx context.Context, businessId int, params business.UpdateBusinessStripeAccountParams) (business.BusinessStripeAccount, error)
 	GetStripeConnectedAccountDashboardURL(ctx context.Context, accountID string) (string, error)
 
 	GetVenturesByCursor(ctx context.Context, accountId int, limit int, cursor int, filter venture.VentureFilter) ([]venture.Venture, error)
