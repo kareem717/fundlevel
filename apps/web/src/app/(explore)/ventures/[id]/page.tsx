@@ -1,11 +1,7 @@
-import { VentureViewActions } from "./components/venture-actions.tsx";
+import { VentureViewActions } from "./components/venture-actions";
 import { getVentureById } from "@/actions/ventures";
 import { notFound } from "next/navigation";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Star } from "lucide-react";
 import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -18,6 +14,8 @@ import {
 import BackButton from "./components/back-button";
 import { VentureTabs } from "./components/tabs";
 import redirects from "@/lib/config/redirects";
+import { ventures } from "@/lib/dev/config";
+import { getRandomGradient } from "../../explore/components/venture-card";
 import { InvestmentDialog } from "./components/investment-dialog";
 import { env } from "@/env";
 
@@ -25,7 +23,15 @@ export default async function VentureViewPage(props: {
   params: Promise<{ id: string }>;
 }) {
   const params = await props.params;
-  const parsedId = parseInt((params.id as string) || ""); // Parse the id
+
+  console.log(params);
+
+  //TODO: FIX MOCK
+  const ventureMock = ventures.find((v) => v.slug === params.id);
+  if (!ventureMock) {
+    notFound();
+  }
+  const parsedId = 1; /*parseInt((params.id as string) || ""); // Parse the id */
 
   if (isNaN(parsedId)) {
     notFound();
@@ -47,7 +53,11 @@ export default async function VentureViewPage(props: {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Banner */}
-      <div className="relative h-[40vh] py-4 bg-gradient-to-r from-purple-600 to-blue-600">
+      <div
+        className={`relative h-[40vh] py-4 ${getRandomGradient(
+          ventureMock.title
+        )}`}
+      >
         <Image
           src="/filler.jpeg"
           alt="Bilal Burgers Banner"
@@ -64,8 +74,8 @@ export default async function VentureViewPage(props: {
               <AvatarFallback>BB</AvatarFallback>
             </Avatar>
             <div className="text-white">
-              <h1 className="text-2xl font-bold">{venture.name}</h1>
-              <p className="text-sm">Toronto, Canada</p>
+              <h1 className="text-2xl font-bold">{ventureMock?.title}</h1>
+              <p className="text-sm">{ventureMock?.location}</p>
             </div>
           </div>
         </div>
@@ -76,7 +86,7 @@ export default async function VentureViewPage(props: {
         <div className="container flex items-center justify-between p-4">
           <div className="flex items-center flex-wrap justify-between gap-6 w-full">
             <VentureTabs />
-            <VentureViewActions ventureId={venture.id} />
+            <VentureViewActions ventureId={1} />
           </div>
         </div>
       </nav>
@@ -119,10 +129,10 @@ export default async function VentureViewPage(props: {
             <section>
               <h2 className="text-xl font-bold">The Market</h2>
               <p className="mt-2 text-muted-foreground">
-                The restaurant&apos;s focus on quality, flavor, and community makes
-                it a standout choice for anyone craving a hearty, satisfying
-                meal. Our unique positioning in the market combines traditional
-                flavors with modern dining expectations.
+                The restaurant&apos;s focus on quality, flavor, and community
+                makes it a standout choice for anyone craving a hearty,
+                satisfying meal. Our unique positioning in the market combines
+                traditional flavors with modern dining expectations.
               </p>
             </section>
 
@@ -173,7 +183,6 @@ export default async function VentureViewPage(props: {
 
           {/* Sidebar */}
           <div className="space-y-6">
-
             <Card>
               <CardContent className="p-6">
                 <div className="space-y-4">
@@ -195,7 +204,10 @@ export default async function VentureViewPage(props: {
                 <CardFooter>
                   <InvestmentDialog
                     round={venture.activeRound}
-                    redirectUrl={env.NEXT_PUBLIC_APP_URL + redirects.app.portfolio.investments.history}
+                    redirectUrl={
+                      env.NEXT_PUBLIC_APP_URL +
+                      redirects.app.portfolio.investments.history
+                    }
                     triggerProps={{
                       className: "w-full",
                     }}

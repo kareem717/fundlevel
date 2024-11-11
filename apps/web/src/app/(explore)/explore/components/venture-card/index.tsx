@@ -10,7 +10,7 @@ import { isVentureLiked } from "@/actions/ventures";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
-const getRandomGradient = (title: string) => {
+export const getRandomGradient = (title: string) => {
   const gradients = [
     "bg-gradient-to-br from-blue-200 to-blue-400",
     "bg-gradient-to-br from-green-200 to-green-400",
@@ -28,12 +28,15 @@ const getRandomGradient = (title: string) => {
 
   return gradients[index];
 };
-
 export function VentureCard({ venture }: { venture: Venture }) {
   return (
-    <Link href={`/venture/${venture.slug}`}>
-      <div className="relative flex flex-col p-6 space-y-4 rounded-lg border border-neutral-200 hover:border-neutral-300 hover:shadow-md transition-colors overflow-hidden group h-[300px] w-full">
-        <div className="flex items-center space-x-4">
+    <Link href={`/ventures/${venture.slug}`}>
+      <div className="relative group flex flex-col p-6 space-y-4 rounded-lg border border-neutral-200 hover:border-neutral-300 hover:shadow-md transition-colors overflow-hidden h-[400px] w-full">
+        <div className="absolute top-2 right-2 z-2 opacity-0 group-hover:opacity-100 transition-opacity">
+          <FavouriteButton ventureId={1} />
+        </div>
+
+        <div className="flex flex-col space-y-3">
           <div
             className={`w-12 h-12 rounded-full ${getRandomGradient(
               venture.title
@@ -43,37 +46,43 @@ export function VentureCard({ venture }: { venture: Venture }) {
           />
           <div>
             <h3 className="text-lg font-semibold">{venture.title}</h3>
-            <p className="text-sm text-neutral-600">{venture.location}</p>
           </div>
         </div>
 
-        <p className="text-neutral-600 group-hover:opacity-0 transition-opacity duration-200">
+        <p className="text-neutral-600 text-sm flex-grow">
           {venture.description}
         </p>
 
-        <div className="flex flex-wrap gap-2 group-hover:opacity-0 transition-opacity duration-200">
-          {venture.industries.map((industry) => (
-            <span
-              key={industry}
-              className="px-2 py-1 text-sm bg-neutral-100 rounded-full"
-            >
-              {industry}
+        <div className="absolute bottom-0 left-0 right-0 p-6">
+          <div className="flex flex-col space-y-4 group-hover:opacity-0 transition-opacity duration-200">
+            <span className="text-sm text-muted-foreground font-medium">
+              {venture.location}
             </span>
-          ))}
-        </div>
+            <div className="flex flex-wrap gap-2">
+              {venture.industries.map((industry) => (
+                <span
+                  key={industry}
+                  className="px-2 py-1 text-sm bg-neutral-100 rounded-full"
+                >
+                  {industry}
+                </span>
+              ))}
+            </div>
+          </div>
 
-        <div className="absolute bottom-0 left-0 right-0 bg-white p-6 transform translate-y-full group-hover:translate-y-0 transition-transform duration-200 space-y-2">
-          <div className="flex justify-between items-center">
-            <span className="text-sm font-medium">Valuation</span>
-            <span className="text-sm">$10M</span>
-          </div>
-          <div className="flex justify-between items-center">
-            <span className="text-sm font-medium">Asking for</span>
-            <span className="text-sm">$2M</span>
-          </div>
-          <div className="flex justify-between items-center">
-            <span className="text-sm font-medium">Min Investment</span>
-            <span className="text-sm">$50K</span>
+          <div className="absolute bottom-0 left-0 right-0 bg-white px-6 py-4 transform translate-y-full group-hover:translate-y-0 transition-transform duration-200 space-y-2">
+            <div className="flex justify-between items-center">
+              <span className="text-sm font-medium">Valuation</span>
+              <span className="text-sm">$10M</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm font-medium">Asking for</span>
+              <span className="text-sm">$2M</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm font-medium">Total Investment</span>
+              <span className="text-sm">$50K</span>
+            </div>
           </div>
         </div>
       </div>

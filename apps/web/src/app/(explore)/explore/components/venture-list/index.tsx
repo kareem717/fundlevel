@@ -2,33 +2,27 @@
 
 import React, { useState } from "react";
 import { Industry, Venture } from "@/lib/dev/types";
-import { parseAsArrayOf, useQueryState } from "nuqs";
+import { parseAsArrayOf, parseAsStringLiteral, useQueryState } from "nuqs";
 import { VentureCard } from "../venture-card";
-
-import { ventures } from "@/lib/dev/config";
+import { industries, ventures } from "@/lib/dev/config";
 
 export function VentureList() {
   const [list, _] = useQueryState("list", {
-    defaultValue: "featured",
+    defaultValue: "Featured",
     clearOnDefault: false,
   });
 
   const [filterIndustries, setFilterIndustries] = useQueryState(
     "industries",
-    parseAsArrayOf<string>({
-      parse: (value) => value,
-      serialize: (value) => value,
-    })
+    parseAsArrayOf(parseAsStringLiteral(industries))
   );
 
   const venturesFiltered = ventures.filter(
     (venture) =>
-      venture.category === list.charAt(0).toUpperCase() + list.slice(1) &&
+      venture.category === list &&
       (filterIndustries?.length ?? 0 > 0
         ? filterIndustries?.every((industry) =>
-            venture.industries.includes(
-              industry.charAt(0).toUpperCase() as Industry
-            )
+            venture.industries.includes(industry)
           )
         : true)
   );
@@ -42,9 +36,15 @@ export function VentureList() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {venturesFiltered.map((venture) => (
-          <VentureCard key={venture.title} venture={venture} />
-        ))}
+        {venturesFiltered.length > 0 ? (
+          venturesFiltered.map((venture) => (
+            <VentureCard key={venture.title} venture={venture} />
+          ))
+        ) : (
+          <div className="col-span-full text-center py-12 text-muted-foreground">
+            No ventures found matching your filters
+          </div>
+        )}
       </div>
     </div>
   );
