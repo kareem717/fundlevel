@@ -4,16 +4,10 @@ import { notFound } from "next/navigation";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
-import { buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import { Star } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Accordion,
@@ -24,6 +18,8 @@ import {
 import BackButton from "./components/back-button";
 import { VentureTabs } from "./components/tabs";
 import redirects from "@/lib/config/redirects";
+import { InvestmentDialog } from "./components/investment-dialog";
+import { env } from "@/env";
 
 export default async function VentureViewPage(props: {
   params: Promise<{ id: string }>;
@@ -193,15 +189,13 @@ export default async function VentureViewPage(props: {
               </CardContent>
               {venture.activeRound && (
                 <CardFooter>
-                  <Link
-                    prefetch={true}
-                    href={
-                      redirects.app.portfolio.investments.create(venture.activeRound.id.toString())
-                    }
-                    className={cn("w-full", buttonVariants({ variant: "outline", size: "lg" }))}
-                  >
-                    Invest
-                  </Link>
+                  <InvestmentDialog
+                    round={venture.activeRound}
+                    redirectUrl={env.NEXT_PUBLIC_APP_URL + redirects.app.portfolio.investments.history}
+                    triggerProps={{
+                      className: "w-full",
+                    }}
+                  />
                 </CardFooter>
               )}
             </Card>

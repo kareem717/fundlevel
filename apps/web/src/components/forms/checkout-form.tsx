@@ -108,6 +108,9 @@ export const CheckoutForm: FC<CheckoutFormProps> = ({
   });
 
   useEffect(() => {
+    if (clientSecret) return;
+
+    //todo: cache payment intent
     createPaymentIntent(roundId);
   }, [createPaymentIntent, roundId]);
 
@@ -121,7 +124,6 @@ export const CheckoutForm: FC<CheckoutFormProps> = ({
       <Skeleton className="size-full" />
     </div>
   )
-
 
   const options: StripeElementsOptions = {
     clientSecret,
@@ -163,7 +165,7 @@ export const CheckoutConfirmation: FC<CheckoutConfirmationProps> = ({ prefetchUr
     <div className={cn("flex flex-col gap-4", className)} {...props}>
       <p className="text-sm text-foreground">
         {confirmationDisclaimer ??
-        "By clicking the button below, I agree to the terms and conditions."}
+          "By clicking the button below, I agree to the terms and conditions."}
       </p>
       <Button
         type="submit"
