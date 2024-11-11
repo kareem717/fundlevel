@@ -173,38 +173,7 @@ export default async function VentureViewPage(props: {
 
           {/* Sidebar */}
           <div className="space-y-6">
-            {venture.activeRound && (
-              <Card className="size-full max-w-96">
-                <CardHeader>
-                  <CardTitle>Currently Raising</CardTitle>
-                  <CardDescription>
-                    This venture currently has a active round.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="flex flex-col gap-2">
-                  <span className="font-semibold">
-                    Valuation: {venture.activeRound.percentageValue / (venture.activeRound.percentageOffered / 100)}
-                  </span>
-                  <span className="font-semibold">
-                    Offered: {venture.activeRound.percentageOffered}%
-                  </span>
-                  <span className="font-semibold">
-                    Investors: {venture.activeRound.investorCount}
-                  </span>
-                </CardContent>
-                <CardFooter>
-                  <Link
-                    prefetch={true}
-                    href={
-                      redirects.app.portfolio.investments.create(venture.activeRound.id.toString())
-                    }
-                    className={cn("px-6", buttonVariants({ variant: "outline", size: "lg" }))}
-                  >
-                    Invest
-                  </Link>
-                </CardFooter>
-              </Card>
-            )}
+
             <Card>
               <CardContent className="p-6">
                 <div className="space-y-4">
@@ -222,6 +191,19 @@ export default async function VentureViewPage(props: {
                   </div>
                 </div>
               </CardContent>
+              {venture.activeRound && (
+                <CardFooter>
+                  <Link
+                    prefetch={true}
+                    href={
+                      redirects.app.portfolio.investments.create(venture.activeRound.id.toString())
+                    }
+                    className={cn("w-full", buttonVariants({ variant: "outline", size: "lg" }))}
+                  >
+                    Invest
+                  </Link>
+                </CardFooter>
+              )}
             </Card>
 
             <Card>
@@ -255,61 +237,3 @@ export default async function VentureViewPage(props: {
     </div>
   );
 }
-
-// function OldVentureView() {
-//   return (
-//     <Card className="w-full relative max-w-screen-lg mx-auto">
-//       <CardHeader>
-//         <CardTitle className="flex flex-row items-center justify-between w-full"></CardTitle>
-//         <CardDescription>
-//           <span className="text-muted-foreground text-sm font-normal">
-//             {/* Seeking {round.percentageValue} for {round.percentageOffered} through {round.investorCount} investors{round.investorCount > 1 ? "s" : ""} */}
-//           </span>
-//         </CardDescription>
-//       </CardHeader>
-//       <CardContent className="flex flex-col gap-8 ">
-//         <div className="w-full flex flex-col lg:flex-row gap-4 h-full">
-//           <div className={cn("w-full flex flex-col px-2 gap-4")}>
-//             <div className="flex flex-col gap-1 font-semibold">
-//               By {business?.name}
-//             </div>
-//             <Separator className="w-full" />
-//             <span className="text-lg font-semibold">Business Details</span>
-//             <BusinessOverview
-//               overview={venture.overview}
-//               teamSize={business?.teamSize}
-//               businessId={business?.id}
-//             />
-//             <Separator className="w-full" />
-//             <span className="text-lg font-semibold">Venture Description</span>
-//             <div className="flex flex-col items-start justify-start">
-//               <p>{truncateText(venture.description, 350)}</p>
-//               {venture.description.length > 150 && (
-//                 <Dialog>
-//                   <DialogTrigger asChild>
-//                     <Button variant="outline" size="sm" className="mt-4">
-//                       <span className="text-xs underline">Show more</span>
-//                       <Icons.chevronRight className="w-4 h-4 ml-2" />
-//                     </Button>
-//                   </DialogTrigger>
-//                   <div className="max-w-screen-lg px-2">
-//                     <DialogContent className="rounded-md">
-//                       <DialogHeader>
-//                         <DialogTitle>Venture Description</DialogTitle>
-//                       </DialogHeader>
-//                       <div className="max-h-[70dvh] w-full h-full">
-//                         <ScrollArea className="h-full w-full">
-//                           {venture.description}
-//                         </ScrollArea>
-//                       </div>
-//                     </DialogContent>
-//                   </div>
-//                 </Dialog>
-//               )}
-//             </div>
-//           </div>
-//         </div>
-//       </CardContent>
-//     </Card>
-//   );
-// }
