@@ -68,56 +68,6 @@ func (h *httpHandler) handleStripeWebhook(ctx context.Context, input *shared.Han
 	// 		h.logger.Error("failed to handle stripe checkout success", zap.Error(err))
 	// 		return nil, huma.Error500InternalServerError("Failed to handle stripe checkout success")
 	// 	}
-	case stripe.EventTypeAccountUpdated:
-		eventBody, err := shared.ParseStripeWebhook[stripe.Account](event)
-		if err != nil {
-			h.logger.Error("failed to parse webhook json", zap.Error(err), zap.String("eventType", string(event.Type)))
-			return nil, huma.Error500InternalServerError("Failed to parse webhook json")
-		}
-
-		stripeConnectedAccountId := eventBody.ID
-
-		businessRecord, err := h.service.BusinessService.GetByStripeConnectedAccountId(ctx, stripeConnectedAccountId)
-		if err != nil {
-			if errors.Is(err, sql.ErrNoRows) {
-				h.logger.Error("business not found", zap.String("stripeConnectedAccountId", stripeConnectedAccountId))
-				return nil, huma.Error404NotFound("Business not found")
-			}
-
-			h.logger.Error("failed to fetch business", zap.Error(err))
-			return nil, huma.Error500InternalServerError("An error occurred while fetching the business")
-		}
-
-		if eventBody.Requirements.DisabledReason != "" {
-			h.logger.Error("business is disabled", zap.String("stripeConnectedAccountId", stripeConnectedAccountId), zap.String("disabledReason", string(eventBody.Requirements.DisabledReason)))
-
-			if businessRecord.StripeAccountEnabled {
-				_, err = h.service.BusinessService.Update(ctx, businessRecord.ID, business.UpdateBusinessParams{
-					StripeAccountEnabled: false,
-				})
-
-				if err != nil {
-					h.logger.Error("failed to update business", zap.Error(err))
-					return nil, huma.Error500InternalServerError("An error occurred while changing the business's stripe account enabled status")
-				}
-			}
-
-			return nil, huma.Error400BadRequest("Business is disabled")
-		}
-
-		if len(eventBody.Requirements.CurrentlyDue) > 0 {
-			h.logger.Error("business requires additional information", zap.String("stripeConnectedAccountId", stripeConnectedAccountId))
-			return nil, huma.Error400BadRequest("Business requires additional information")
-		}
-		_, err = h.service.BusinessService.Update(ctx, businessRecord.ID, business.UpdateBusinessParams{
-			StripeAccountEnabled: true,
-		})
-
-		if err != nil {
-			h.logger.Error("failed to update business", zap.Error(err))
-			return nil, huma.Error500InternalServerError("An error occurred while changing the business's stripe account enabled status")
-		}
-
 	// case stripe.EventTypePaymentIntentPaymentFailed:
 	// 	eventBody, err := shared.ParseStripeWebhook[stripe.PaymentIntent](event)
 	// 	if err != nil {
@@ -201,36 +151,44 @@ func (h *httpHandler) handleStripeConnectWebhook(ctx context.Context, input *sha
 			return nil, huma.Error500InternalServerError("An error occurred while fetching the business")
 		}
 
+		var updateParams business.UpdateBusinessParams
+		hasToUpdate := false
 		if eventBody.Requirements.DisabledReason != "" {
 			h.logger.Error("business is disabled", zap.String("stripeConnectedAccountId", stripeConnectedAccountId), zap.String("disabledReason", string(eventBody.Requirements.DisabledReason)))
+			updateParams.StripeDisabledReason = &eventBody.Requirements.DisabledReason
+			hasToUpdate = true
+		}
 
-			if businessRecord.StripeAccountEnabled {
-				_, err = h.service.BusinessService.Update(ctx, businessRecord.ID, business.UpdateBusinessParams{
-					StripeAccountEnabled: false,
-				})
+		//todo: handle currently due
+		// if len(eventBody.Requirements.CurrentlyDue) > 0 {
+		// 	h.logger.Error("business requires additional information", zap.String("stripeConnectedAccountId", stripeConnectedAccountId))
+		// 	return nil, huma.Error400BadRequest("Business requires additional information")
+		// }
+		if eventBody.PayoutsEnabled != businessRecord.StripePaymentsEnabled {
+			updateParams.StripePaymentsEnabled = eventBody.PayoutsEnabled
+			hasToUpdate = true
+		}
 
-				if err != nil {
-					h.logger.Error("failed to update business", zap.Error(err))
-					return nil, huma.Error500InternalServerError("An error occurred while changing the business's stripe account enabled status")
-				}
+		switch eventBody.Capabilities.Transfers {
+		case stripe.AccountCapabilityStatusActive:
+			if !businessRecord.StripeTransfersEnabled {
+				updateParams.StripeTransfersEnabled = true
+				hasToUpdate = true
 			}
-
-			return nil, huma.Error400BadRequest("Business is disabled")
+		default:
+			if businessRecord.StripeTransfersEnabled {
+				updateParams.StripeTransfersEnabled = false
+				hasToUpdate = true
+			}
 		}
 
-		if len(eventBody.Requirements.CurrentlyDue) > 0 {
-			h.logger.Error("business requires additional information", zap.String("stripeConnectedAccountId", stripeConnectedAccountId))
-			return nil, huma.Error400BadRequest("Business requires additional information")
+		if hasToUpdate {
+			_, err = h.service.BusinessService.Update(ctx, businessRecord.ID, updateParams)
+			if err != nil {
+				h.logger.Error("failed to update business", zap.Error(err))
+				return nil, huma.Error500InternalServerError("An error occurred while changing the business's stripe account enabled status")
+			}
 		}
-		_, err = h.service.BusinessService.Update(ctx, businessRecord.ID, business.UpdateBusinessParams{
-			StripeAccountEnabled: true,
-		})
-
-		if err != nil {
-			h.logger.Error("failed to update business", zap.Error(err))
-			return nil, huma.Error500InternalServerError("An error occurred while changing the business's stripe account enabled status")
-		}
-
 	default:
 		h.logger.Error("unhandled event type", zap.String("eventType", string(event.Type)))
 		return nil, huma.Error501NotImplemented("Unhandled event type")

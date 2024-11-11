@@ -6,6 +6,7 @@ import (
 	"fundlevel/internal/entities/shared"
 	"time"
 
+	"github.com/stripe/stripe-go/v80"
 	"github.com/uptrace/bun"
 )
 
@@ -44,7 +45,9 @@ type Business struct {
 	AddressID                int            `json:"addressId" minimum:"1"`
 	TeamSize                 TeamSize       `json:"teamSize" enum:"1,2-10,11-50,51-200,201-500,501-1000,1000+"`
 	StripeConnectedAccountID string         `json:"stripeConnectedAccountId"`
-	StripeAccountEnabled     bool           `json:"stripeAccountEnabled" hidden:"true" required:"false"`
+	StripeDisabledReason     *string        `json:"stripeDisabledReason"`
+	StripeTransfersEnabled   bool           `json:"stripeTransfersEnabled"`
+	StripePaymentsEnabled    bool           `json:"stripePaymentsEnabled"`
 	IsRemote                 bool           `json:"isRemote" default:"false" required:"false"`
 	IndustryId               int            `json:"industryId" minimum:"1"`
 	shared.Timestamps
@@ -59,7 +62,6 @@ type BusinessParams struct {
 	AddressID                int            `json:"addressId" minimum:"1" hidden:"true" required:"false"`
 	TeamSize                 TeamSize       `json:"teamSize" enum:"1,2-10,11-50,51-200,201-500,501-1000,1000+"`
 	StripeConnectedAccountID string         `json:"stripeConnectedAccountId" hidden:"true" required:"false"`
-	StripeAccountEnabled     bool           `json:"stripeAccountEnabled" hidden:"true" required:"false"`
 	IndustryId               int            `json:"industryId" minimum:"1"`
 	IsRemote                 bool           `json:"isRemote" default:"false" required:"false"`
 }
@@ -70,10 +72,12 @@ type CreateBusinessParams struct {
 }
 
 type UpdateBusinessParams struct {
-	Name                 string         `json:"name" minLength:"1"`
-	Status               BusinessStatus `json:"status" hidden:"true" required:"false"`
-	TeamSize             TeamSize       `json:"teamSize" enum:"1,2-10,11-50,51-200,201-500,501-1000,1000+"`
-	IndustryId           int            `json:"industryId" minimum:"1"`
-	IsRemote             bool           `json:"isRemote" default:"false" required:"false"`
-	StripeAccountEnabled bool           `json:"stripeAccountEnabled" hidden:"true" required:"false"`
+	Name                   string                                   `json:"name" minLength:"1"`
+	Status                 BusinessStatus                           `json:"status" hidden:"true" required:"false"`
+	TeamSize               TeamSize                                 `json:"teamSize" enum:"1,2-10,11-50,51-200,201-500,501-1000,1000+"`
+	IndustryId             int                                      `json:"industryId" minimum:"1"`
+	IsRemote               bool                                     `json:"isRemote" default:"false" required:"false"`
+	StripeDisabledReason   *stripe.AccountRequirementsDisabledReason `json:"stripeDisabledReason" hidden:"true" required:"false"`
+	StripeTransfersEnabled bool                                     `json:"stripeTransfersEnabled" hidden:"true" required:"false"`
+	StripePaymentsEnabled  bool                                     `json:"stripePaymentsEnabled" hidden:"true" required:"false"`
 }
