@@ -30,11 +30,38 @@ func (s *BusinessService) Create(ctx context.Context, params business.CreateBusi
 	err := s.repositories.RunInTx(ctx, func(ctx context.Context, tx storage.Transaction) error {
 		stripe.Key = s.stripeAPIKey
 
-		stripeConnectedAccount, err := account.New(&stripe.AccountParams{})
+		stripeConnectedAccount, err := account.New(&stripe.AccountParams{
+			Controller: &stripe.AccountControllerParams{
+				StripeDashboard: &stripe.AccountControllerStripeDashboardParams{
+					Type: stripe.String("express"),
+				},
+				Fees: &stripe.AccountControllerFeesParams{
+					Payer: stripe.String("application"),
+				},
+				Losses: &stripe.AccountControllerLossesParams{
+					Payments: stripe.String("application"),
+				},
+			},
+		})
 		if err != nil {
 			return err
 		}
-	
+
+		params.StripeAccount = business.CreateBusinessStripeAccountParams{
+			StripeConnectedAccountID: stripeConnectedAccount.ID,
+		}
+
+		if stripeConnectedAccount.Capabilities.Transfers == stripe.AccountCapabilityStatusActive {
+			params.StripeAccount.StripeTransfersEnabled = true
+		}
+
+		if stripeConnectedAccount.PayoutsEnabled {
+			params.StripeAccount.StripePayoutsEnabled = true
+		}
+
+		if stripeConnectedAccount.Requirements.DisabledReason != "" {
+			params.StripeAccount.StripeDisabledReason = &stripeConnectedAccount.Requirements.DisabledReason
+		}
 
 		// TODO: We need to delete the stripe connected account if the business creation fails
 		businessRecord, err := tx.Business().Create(ctx, params)
@@ -42,30 +69,6 @@ func (s *BusinessService) Create(ctx context.Context, params business.CreateBusi
 			return err
 		}
 		resp = businessRecord
-
-		stripeAccountParams := business.CreateBusinessStripeAccountParams{
-			BusinessID:               businessRecord.ID,
-			StripeConnectedAccountID: stripeConnectedAccount.ID,
-		}
-
-		if stripeConnectedAccount.Capabilities.Transfers == stripe.AccountCapabilityStatusActive {
-			stripeAccountParams.StripeTransfersEnabled = true
-		}
-
-		if stripeConnectedAccount.PayoutsEnabled {
-			stripeAccountParams.StripePayoutsEnabled = true
-		}
-
-		if stripeConnectedAccount.Requirements.DisabledReason != "" {
-			stripeAccountParams.StripeDisabledReason = &stripeConnectedAccount.Requirements.DisabledReason
-		}
-
-		businessStripeAccount, err := tx.Business().CreateStripeAccount(ctx, stripeAccountParams)
-		if err != nil {
-			return err
-		}
-
-		resp.StripeAccount = &businessStripeAccount
 
 		return nil
 	})
@@ -98,9 +101,6 @@ func (s *BusinessService) GetById(ctx context.Context, id int) (business.Busines
 	return s.repositories.Business().GetById(ctx, id)
 }
 
-
-
 func (s *BusinessService) Update(ctx context.Context, id int, params business.UpdateBusinessParams) (business.Business, error) {
 	return s.repositories.Business().Update(ctx, id, params)
 }
-

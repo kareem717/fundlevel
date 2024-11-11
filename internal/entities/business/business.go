@@ -35,7 +35,7 @@ type Business struct {
 
 	Address       *address.Address       `json:"address" bun:"rel:has-one,join:address_id=id"`
 	Industry      *industry.Industry     `json:"industry" bun:"rel:has-one,join:industry_id=id"`
-	StripeAccount *BusinessStripeAccount `json:"stripeAccount" bun:"rel:has-one,join:business_id=id"`
+	StripeAccount *BusinessStripeAccount `json:"stripeAccount" bun:"rel:has-one,join:id=business_id"`
 
 	Name           string         `json:"name" minLength:"1"`
 	BusinessNumber string         `json:"businessNumber" minLength:"1"`
@@ -62,8 +62,9 @@ type BusinessParams struct {
 }
 
 type CreateBusinessParams struct {
-	Business BusinessParams              `json:"business"`
-	Address  address.CreateAddressParams `json:"address"`
+	Business      BusinessParams                    `json:"business"`
+	Address       address.CreateAddressParams       `json:"address"`
+	StripeAccount CreateBusinessStripeAccountParams `json:"stripeAccount"`
 }
 
 type UpdateBusinessParams struct {

@@ -19,8 +19,9 @@ func NewBusinessRepository(db bun.IDB, ctx context.Context) *BusinessRepository 
 }
 
 func (r *BusinessRepository) Create(ctx context.Context, params business.CreateBusinessParams) (business.Business, error) {
-	address := address.Address{}
 	resp := business.Business{}
+	var address address.Address
+	var stripeAccount business.BusinessStripeAccount
 
 	err := r.db.RunInTx(ctx, nil, func(ctx context.Context, tx bun.Tx) error {
 		err := tx.NewInsert().
@@ -32,6 +33,8 @@ func (r *BusinessRepository) Create(ctx context.Context, params business.CreateB
 			return err
 		}
 
+		resp.Address = &address
+
 		params.Business.AddressID = address.ID
 		err = tx.NewInsert().
 			Model(&params.Business).
@@ -42,13 +45,22 @@ func (r *BusinessRepository) Create(ctx context.Context, params business.CreateB
 			return err
 		}
 
+		params.StripeAccount.BusinessID = resp.ID
+		err = tx.NewInsert().
+			Model(&params.StripeAccount).
+			ModelTableExpr("business_stripe_accounts").
+			Returning("*").
+			Scan(ctx, &stripeAccount)
+		if err != nil {
+			return err
+		}
+
+		resp.StripeAccount = &stripeAccount
 		return nil
 	})
 	if err != nil {
 		return resp, err
 	}
-
-	resp.Address = &address
 
 	return resp, nil
 }

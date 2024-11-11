@@ -4,9 +4,12 @@ import (
 	"fundlevel/internal/entities/shared"
 
 	"github.com/stripe/stripe-go/v80"
+	"github.com/uptrace/bun"
 )
 
 type BusinessStripeAccount struct {
+	bun.BaseModel `bun:"table:business_stripe_accounts"`
+
 	BusinessID               int                                       `json:"businessId" minimum:"1" bun:",pk"`
 	StripeConnectedAccountID string                                    `json:"stripeConnectedAccountId"`
 	StripeDisabledReason     *stripe.AccountRequirementsDisabledReason `json:"stripeDisabledReason"`

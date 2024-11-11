@@ -100,7 +100,6 @@ type BusinessRepository interface {
 	// GetByStripeConnectedAccountId(ctx context.Context, stripeConnectedAccountId string) (business.Business, error)
 
 	GetStripeAccountByAccountId(ctx context.Context, accountId string) (business.BusinessStripeAccount, error)
-	CreateStripeAccount(ctx context.Context, params business.CreateBusinessStripeAccountParams) (business.BusinessStripeAccount, error)
 	UpdateStripeAccount(ctx context.Context, businessId int, params business.UpdateBusinessStripeAccountParams) (business.BusinessStripeAccount, error)
 	GetStripeAccount(ctx context.Context, businessId int) (business.BusinessStripeAccount, error)
 	DeleteStripeAccount(ctx context.Context, businessId int) error

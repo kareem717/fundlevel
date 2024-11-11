@@ -18,16 +18,6 @@ func (r *BusinessRepository) GetStripeAccountByAccountId(ctx context.Context, ac
 	return resp, err
 }
 
-func (r *BusinessRepository) CreateStripeAccount(ctx context.Context, params business.CreateBusinessStripeAccountParams) (business.BusinessStripeAccount, error) {
-	resp := business.BusinessStripeAccount{}
-
-	err := r.db.NewInsert().
-		Model(&resp).
-		Scan(ctx, &resp)
-
-	return resp, err
-}
-
 func (r *BusinessRepository) UpdateStripeAccount(ctx context.Context, id int, params business.UpdateBusinessStripeAccountParams) (business.BusinessStripeAccount, error) {
 	resp := business.BusinessStripeAccount{}
 
