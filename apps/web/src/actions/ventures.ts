@@ -12,87 +12,87 @@ import {
 	deleteVentureFavourite,
 } from "@/lib/api";
 import {
-	cursorPaginationSchema,
-	intIdSchema,
+  cursorPaginationSchema,
+  intIdSchema,
 } from "@/actions/validations/shared";
 import {
-	createVentureSchema,
-	updateVentureSchema,
+  createVentureSchema,
+  updateVentureSchema,
 } from "@/actions/validations/ventures";
+import { cache } from "react";
 
 /**
  * Create a venture
  */
 export const createVenture = actionClientWithAccount
-	.schema(createVentureSchema)
-	.action(async ({ parsedInput, ctx: { apiClient } }) => {
-		await createVentureApi({
-			client: apiClient,
-			throwOnError: true,
-			body: {
-				...parsedInput,
-			},
-		});
-	});
+  .schema(createVentureSchema)
+  .action(async ({ parsedInput, ctx: { apiClient } }) => {
+    await createVentureApi({
+      client: apiClient,
+      throwOnError: true,
+      body: {
+        ...parsedInput,
+      },
+    });
+  });
 
 /**
  * Get ventures by cursor pagination
  */
 export const getVenturesInfinite = actionClient
-	.schema(cursorPaginationSchema)
-	.action(async ({ parsedInput, ctx: { apiClient } }) => {
-		console.log(parsedInput)
-		
-		const response = await getVenturesByCursor({
-			client: apiClient,
-			throwOnError: true,
-			query: parsedInput,
-		});
+  .schema(cursorPaginationSchema)
+  .action(async ({ parsedInput, ctx: { apiClient } }) => {
+    console.log(parsedInput);
+    const response = await getVenturesByCursor({
+      client: apiClient,
+      throwOnError: true,
+      query: parsedInput,
+    });
 
-		console.log("response", response)
+    return response.data;
+  });
 
-		return response.data;
-	});
+export const cacheVentures = cache(getVenturesInfinite);
 
 /**
  * Get venture by id
  */
 export const getVentureById = actionClient
-	.schema(intIdSchema.required())
-	.action(async ({ parsedInput, ctx: { apiClient } }) => {
-		const response = await getVentureByIdApi({
-			client: apiClient,
-			throwOnError: true,
-			path: {
-				id: parsedInput,
-			},
-		});
+  .schema(intIdSchema.required())
+  .action(async ({ parsedInput, ctx: { apiClient } }) => {
+    const response = await getVentureByIdApi({
+      client: apiClient,
+      throwOnError: true,
+      path: {
+        id: parsedInput,
+      },
+    });
 
-		return response.data;
-	});
+    return response.data;
+  });
 
 /**
  * Update a venture
  */
 export const updateVenture = actionClientWithAccount
-	.schema(updateVentureSchema)
-	.action(async ({ parsedInput, ctx: { apiClient } }) => {
-		await updateVentureApi({
-			client: apiClient,
-			throwOnError: true,
-			body: parsedInput,
-			path: {
-				id: parsedInput.id,
-			},
-		});
-	});
+  .schema(updateVentureSchema)
+  .action(async ({ parsedInput, ctx: { apiClient } }) => {
+    await updateVentureApi({
+      client: apiClient,
+      throwOnError: true,
+      body: parsedInput,
+      path: {
+        id: parsedInput.id,
+      },
+    });
+  });
 
 export const isVentureLiked = actionClientWithAccount
-	.schema(intIdSchema.required())
-	.action(async ({ parsedInput, ctx: { apiClient, account } }) => {
-		if (!account) {
-			throw new Error("User not found");
-		}
+  .schema(intIdSchema.required())
+  .action(async ({ parsedInput, ctx: { apiClient, account } }) => {
+    if (!account) {
+      throw new Error("User not found");
+    }
 
 		const response = await getVentureFavouriteStatus({
 			client: apiClient,
@@ -103,15 +103,15 @@ export const isVentureLiked = actionClientWithAccount
 			},
 		});
 
-		return response.data;
-	});
+    return response.data;
+  });
 
 export const likeVenture = actionClientWithAccount
-	.schema(intIdSchema.required())
-	.action(async ({ parsedInput, ctx: { apiClient, account } }) => {
-		if (!account) {
-			throw new Error("User not found");
-		}
+  .schema(intIdSchema.required())
+  .action(async ({ parsedInput, ctx: { apiClient, account } }) => {
+    if (!account) {
+      throw new Error("User not found");
+    }
 
 		await createVentureFavourite({
 			client: apiClient,
@@ -124,11 +124,11 @@ export const likeVenture = actionClientWithAccount
 	});
 
 export const unlikeVenture = actionClientWithAccount
-	.schema(intIdSchema.required())
-	.action(async ({ parsedInput, ctx: { apiClient, account } }) => {
-		if (!account) {
-			throw new Error("User not found");
-		}
+  .schema(intIdSchema.required())
+  .action(async ({ parsedInput, ctx: { apiClient, account } }) => {
+    if (!account) {
+      throw new Error("User not found");
+    }
 
 		await deleteVentureFavourite({
 			client: apiClient,
@@ -141,15 +141,15 @@ export const unlikeVenture = actionClientWithAccount
 	});
 
 export const getVentureActiveRound = actionClient
-	.schema(intIdSchema.required())
-	.action(async ({ parsedInput, ctx: { apiClient } }) => {
-		const response = await getVentureActiveRoundApi({
-			client: apiClient,
-			throwOnError: true,
-			path: {
-				id: parsedInput,
-			},
-		});
+  .schema(intIdSchema.required())
+  .action(async ({ parsedInput, ctx: { apiClient } }) => {
+    const response = await getVentureActiveRoundApi({
+      client: apiClient,
+      throwOnError: true,
+      path: {
+        id: parsedInput,
+      },
+    });
 
-		return response.data;
-	});
+    return response.data;
+  });

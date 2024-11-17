@@ -1,6 +1,6 @@
 import {
-	createSafeActionClient,
-	DEFAULT_SERVER_ERROR_MESSAGE,
+  createSafeActionClient,
+  DEFAULT_SERVER_ERROR_MESSAGE,
 } from "next-safe-action";
 import { yupAdapter } from "next-safe-action/adapters/yup";
 import { env } from "@/env";
@@ -10,9 +10,7 @@ import { createClient } from "@hey-api/client-fetch";
 
 export const actionClient = createSafeActionClient({
 	validationAdapter: yupAdapter(),
-	handleServerError: async (error, utils) => {
-		console.log("utils", utils)
-		console.log("error", error)
+	handleServerError: async (error) => {
 		try {
 			const err = JSON.parse(error.message) as ErrorModel; // Attempt to cast to ErrorModel
 			console.error(err);
@@ -45,24 +43,24 @@ export const actionClient = createSafeActionClient({
 		baseUrl: env.NEXT_PUBLIC_BACKEND_API_URL,
 	});
 
-	return next({
-		ctx: {
-			apiClient: client,
-		},
-	});
+  return next({
+    ctx: {
+      apiClient: client,
+    },
+  });
 });
 
 export const actionClientWithUser = actionClient.use(async ({ next, ctx }) => {
 	const sb = await createSupabaseServerClient();
 
-	const {
-		data: { session },
-		error: sessionError,
-	} = await sb.auth.getSession();
+  const {
+    data: { session },
+    error: sessionError,
+  } = await sb.auth.getSession();
 
-	if (sessionError) {
-		console.error("Error getting user session: ", sessionError);
-	}
+  if (sessionError) {
+    console.error("Error getting user session: ", sessionError);
+  }
 
 	let user = null;
 	if (session) {
@@ -80,6 +78,8 @@ export const actionClientWithUser = actionClient.use(async ({ next, ctx }) => {
 
 		user = data?.user;
 	}
+
+	console.log(`userId: ${user?.id}\n---------\naccess_token: ${session?.access_token}`)
 
 	return next({
 		ctx: {

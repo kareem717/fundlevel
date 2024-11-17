@@ -62,7 +62,7 @@ export const formatTime = (then: Date) => {
 	}
 
 	return "less than a minute";
-}
+};
 
 /**
  * Truncate text.
@@ -79,7 +79,6 @@ export const truncateText = (text: string, maxLength: number) => {
 	return text;
 };
 
-
 /**
  * Format percentage.
  * @description Formats a number as a percentage string with up to specified decimal places.
@@ -87,6 +86,20 @@ export const truncateText = (text: string, maxLength: number) => {
  * @arg {number} toFixed Maximum number of decimal places to round to.
  * @return {string} Formatted percentage.
  */
-export const toFixedRound = (rawPercentage: number, toFixed: number) => rawPercentage % 1 !== 0 && rawPercentage.toFixed(toFixed) !== rawPercentage.toString()
-	? rawPercentage.toFixed(toFixed)
-	: rawPercentage.toString();
+export const toFixedRound = (rawPercentage: number, toFixed: number) =>
+	rawPercentage % 1 !== 0 &&
+	rawPercentage.toFixed(toFixed) !== rawPercentage.toString()
+		? rawPercentage.toFixed(toFixed)
+		: rawPercentage.toString();
+
+/**
+ * Format currency.
+ * @description Formats a number as a currency string.
+ * @arg {number} value Number to format.
+ * @arg {string} currency Currency to format, can be uppercase or lowercase but is converted to uppercase.
+ * @arg {string} locale Locale used to format the currency.
+ * @return {string} Formatted currency.
+ */
+export const formatCurrency = (value: number, currency: string, locale: string = 'en-CA') => {
+	return Intl.NumberFormat(locale, { style: 'currency', currency: currency.toLocaleUpperCase(locale) }).format(value);
+};

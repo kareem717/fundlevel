@@ -1,11 +1,4 @@
-import { Icons } from "@/components/ui/icons";
 
-export type Menu = {
-	href: string;
-	label: string;
-	pathIdentifier: string;
-	icon: keyof typeof Icons;
-};
 
 const redirects = {
 	privacy: "/privacy-policy",
@@ -21,53 +14,40 @@ const redirects = {
 	app: {
 		explore: {
 			index: "/",
-			ventureView: "/ventures/:id",
-			roundView: "/rounds/:id",
-		},
-		settings: {
-			account: "/settings?tab=account",
-		},
-		investments: {
-			root: "/investments",
-			checkout: "/investments/:investmentId/checkout",
-		},
-		businessDashboard: {
-			root: "/my-business",
-			investors: {
-				root: "/my-business/investors",
-				offers: "/my-business/investors/offers",
+			venture: {
+				view: (id: string) => `/ventures/${id}`,
 			},
-			financials: "/my-business/financials",
-			rounds: "/my-business/rounds",
-			ventures: "/my-business/ventures",
+			round: {
+				view: (id: string) => `/rounds/${id}`,
+			},
 		},
-		myBusinesses: {
-			index: "/my-businesses",
-			view: {
-				rounds: {
-					root: "/my-businesses/:id/rounds",
-					view: "/my-businesses/:id/rounds/:roundId",
-					create: "/my-businesses/:id/rounds/create",
+		portfolio: {
+			index: "/portfolio",
+			investments: {
+				root: "/portfolio/investments",
+				history: "/portfolio/investments/history",	
+				insights: "/portfolio/investments/insights",
+				payments: "/portfolio/investments/payments",
+				create: (roundId: string) => `/portfolio/investments/create/${roundId}`,
+			},
+			positions: {
+				index: "/portfolio/positions",
+			},
+		},
+		dashboard: {
+			index: "/dashboard",
+			business: {
+				create: "/dashboard/create-business",
+			},
+			funding: {
+				index: "/dashboard/funding",
+				investments: {
+					index: "/dashboard/funding/investments",
 				},
-				investments: "/my-businesses/:id/investments",
-				ventures: {
-					root: "/my-businesses/:id/ventures",
-					view: {
-						root: "/my-businesses/:id/ventures/:ventureId",
-						edit: "/my-businesses/:id/ventures/:ventureId/edit",
-					},
-					create: "/my-business/:id/ventures/create",
+				investors: {
+					index: "/dashboard/funding/investors",
 				},
 			},
-			create: "/my-businesses/create",
-		},
-		rounds: {
-			myRounds: {
-				root: "/my-rounds",
-				view: "/my-rounds/:id",
-			},
-			create: "/rounds/create",
-			view: "/rounds/:id",
 		},
 	},
 };

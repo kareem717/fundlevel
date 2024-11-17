@@ -30,9 +30,6 @@ import {
 	type GetAccountInvestmentsByPageData,
 	type GetAccountInvestmentsByPageError,
 	type GetAccountInvestmentsByPageResponse,
-	type GetInvestmentByIdData,
-	type GetInvestmentByIdError,
-	type GetInvestmentByIdResponse,
 	type GetDailyAggregatedBusinessAnalyticsData,
 	type GetDailyAggregatedBusinessAnalyticsError,
 	type GetDailyAggregatedBusinessAnalyticsResponse,
@@ -148,21 +145,12 @@ import {
 	type HealthCheckResponse,
 	type GetAllIndustriesError,
 	type GetAllIndustriesResponse,
-	type CreateRoundInvestmentData,
-	type CreateRoundInvestmentError,
-	type CreateRoundInvestmentResponse,
-	type DeleteRoundInvestmentData,
-	type DeleteRoundInvestmentError,
-	type DeleteRoundInvestmentResponse,
-	type AcceptInvestmentData,
-	type AcceptInvestmentError,
-	type AcceptInvestmentResponse,
-	type GetAccountCheckoutLinkData,
-	type GetAccountCheckoutLinkError,
-	type GetAccountCheckoutLinkResponse,
-	type WithdrawInvestmentData,
-	type WithdrawInvestmentError,
-	type WithdrawInvestmentResponse,
+	type GetInvestmentByIdData,
+	type GetInvestmentByIdError,
+	type GetInvestmentByIdResponse,
+	type CreateInvestmentPaymentIntentData,
+	type CreateInvestmentPaymentIntentError,
+	type CreateInvestmentPaymentIntentResponse,
 	type GetRoundByCursorData,
 	type GetRoundByCursorError,
 	type GetRoundByCursorResponse,
@@ -220,6 +208,12 @@ import {
 	type GetVentureRoundsByPageData,
 	type GetVentureRoundsByPageError,
 	type GetVentureRoundsByPageResponse,
+	type HandleStripeWebhookData,
+	type HandleStripeWebhookError,
+	type HandleStripeWebhookResponse,
+	type HandleStripeConnectWebhookData,
+	type HandleStripeConnectWebhookError,
+	type HandleStripeConnectWebhookResponse,
 	CreateAccountResponseTransformer,
 	GetAccountByIdResponseTransformer,
 	UpdateAccountResponseTransformer,
@@ -227,7 +221,6 @@ import {
 	GetAccountChatsResponseTransformer,
 	GetAccountInvestmentsByCursorResponseTransformer,
 	GetAccountInvestmentsByPageResponseTransformer,
-	GetInvestmentByIdResponseTransformer,
 	CreateBusinessResponseTransformer,
 	GetBusinessByIdResponseTransformer,
 	GetBusinessInvestmentsByCursorResponseTransformer,
@@ -239,7 +232,7 @@ import {
 	CreateChatResponseTransformer,
 	GetChatMessagesResponseTransformer,
 	GetAllIndustriesResponseTransformer,
-	CreateRoundInvestmentResponseTransformer,
+	GetInvestmentByIdResponseTransformer,
 	GetRoundByCursorResponseTransformer,
 	CreateRoundResponseTransformer,
 	GetRoundsByPageResponseTransformer,
@@ -405,24 +398,6 @@ export const getAccountInvestmentsByPage = <
 		...options,
 		url: "/account/{id}/investments/page",
 		responseTransformer: GetAccountInvestmentsByPageResponseTransformer,
-	});
-};
-
-/**
- * Get investment by ID
- * Get investment by ID.
- */
-export const getInvestmentById = <ThrowOnError extends boolean = false>(
-	options: Options<GetInvestmentByIdData, ThrowOnError>
-) => {
-	return (options?.client ?? client).get<
-		GetInvestmentByIdResponse,
-		GetInvestmentByIdError,
-		ThrowOnError
-	>({
-		...options,
-		url: "/account/{id}/investments/{investmentId}",
-		responseTransformer: GetInvestmentByIdResponseTransformer,
 	});
 };
 
@@ -1119,88 +1094,39 @@ export const getAllIndustries = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Create a round investment
- * Create a round investment.
+ * Get a round investment
+ * Get a round investment.
  */
-export const createRoundInvestment = <ThrowOnError extends boolean = false>(
-	options: Options<CreateRoundInvestmentData, ThrowOnError>
+export const getInvestmentById = <ThrowOnError extends boolean = false>(
+	options: Options<GetInvestmentByIdData, ThrowOnError>
 ) => {
-	return (options?.client ?? client).post<
-		CreateRoundInvestmentResponse,
-		CreateRoundInvestmentError,
-		ThrowOnError
-	>({
-		...options,
-		url: "/investments",
-		responseTransformer: CreateRoundInvestmentResponseTransformer,
-	});
-};
-
-/**
- * Delete a round investment
- * Delete a round investment.
- */
-export const deleteRoundInvestment = <ThrowOnError extends boolean = false>(
-	options: Options<DeleteRoundInvestmentData, ThrowOnError>
-) => {
-	return (options?.client ?? client).delete<
-		DeleteRoundInvestmentResponse,
-		DeleteRoundInvestmentError,
+	return (options?.client ?? client).get<
+		GetInvestmentByIdResponse,
+		GetInvestmentByIdError,
 		ThrowOnError
 	>({
 		...options,
 		url: "/investments/{id}",
+		responseTransformer: GetInvestmentByIdResponseTransformer,
 	});
 };
 
 /**
- * Accept an investment
- * Accept an investment.
+ * Create a stripe payment intent
+ * Create a stripe payment intent.
  */
-export const acceptInvestment = <ThrowOnError extends boolean = false>(
-	options: Options<AcceptInvestmentData, ThrowOnError>
-) => {
-	return (options?.client ?? client).put<
-		AcceptInvestmentResponse,
-		AcceptInvestmentError,
-		ThrowOnError
-	>({
-		...options,
-		url: "/investments/{id}/accept",
-	});
-};
-
-/**
- * Get a stripe checkout link
- * Get a stripe checkout link.
- */
-export const getAccountCheckoutLink = <ThrowOnError extends boolean = false>(
-	options: Options<GetAccountCheckoutLinkData, ThrowOnError>
+export const createInvestmentPaymentIntent = <
+	ThrowOnError extends boolean = false
+>(
+	options: Options<CreateInvestmentPaymentIntentData, ThrowOnError>
 ) => {
 	return (options?.client ?? client).get<
-		GetAccountCheckoutLinkResponse,
-		GetAccountCheckoutLinkError,
+		CreateInvestmentPaymentIntentResponse,
+		CreateInvestmentPaymentIntentError,
 		ThrowOnError
 	>({
 		...options,
-		url: "/investments/{id}/checkout",
-	});
-};
-
-/**
- * Withdraw a investment
- * Withdraw a investment.
- */
-export const withdrawInvestment = <ThrowOnError extends boolean = false>(
-	options: Options<WithdrawInvestmentData, ThrowOnError>
-) => {
-	return (options?.client ?? client).post<
-		WithdrawInvestmentResponse,
-		WithdrawInvestmentError,
-		ThrowOnError
-	>({
-		...options,
-		url: "/investments/{id}/withdraw",
+		url: "/investments/{id}/payment-intent",
 	});
 };
 

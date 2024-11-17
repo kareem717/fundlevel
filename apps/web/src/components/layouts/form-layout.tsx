@@ -1,5 +1,5 @@
 import { ComponentPropsWithoutRef, FC } from "react"
-import { Suspense } from "../ui/suspense";
+import { Suspense } from "../suspense";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../ui/card";
 import { cn } from "@/lib/utils";
 

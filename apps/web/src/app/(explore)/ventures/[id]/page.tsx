@@ -1,104 +1,258 @@
-import { VentureViewActions } from "./components/venture-view-actions"
+import { VentureViewActions } from "./components/venture-actions";
 import { getVentureById } from "@/actions/ventures";
 import { notFound } from "next/navigation";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Star } from "lucide-react";
+import Image from "next/image";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle
-} from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Icons } from "@/components/ui/icons";
-import { Separator } from "@/components/ui/separator";
-import { cn, truncateText } from "@/lib/utils";
-import { BusinessOverview } from "@/components/ui/business-overview";
-import { VentureActiveRoundCard } from "./components/venture-active-round-card";
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import BackButton from "./components/back-button";
+import { VentureTabs } from "./components/tabs";
+import redirects from "@/lib/config/redirects";
+import { ventures } from "@/lib/dev/config";
+import { getRandomGradient } from "../../explore/components/venture-card";
+import { InvestmentDialog } from "./components/investment-dialog";
+import { env } from "@/env";
+import { formatCurrency } from "@/lib/utils";
 
-export default async function VentureViewPage(props: { params: Promise<{ id: string }> }) {
+export default async function VentureViewPage(props: {
+  params: Promise<{ id: string }>;
+}) {
   const params = await props.params;
-  const parsedId = parseInt(params.id as string || ""); // Parse the id
+
+  console.log(params);
+
+  //TODO: FIX MOCK
+  const ventureMock = ventures.find((v) => v.slug === params.id);
+  if (!ventureMock) {
+    notFound();
+  }
+  const parsedId = 1; /*parseInt((params.id as string) || ""); // Parse the id */
+
   if (isNaN(parsedId)) {
     notFound();
   }
 
-  const ventureResp = await getVentureById(parsedId)
+  const ventureResp = await getVentureById(parsedId);
+
   if (!ventureResp?.data || ventureResp?.serverError) {
-    console.error(ventureResp)
-    throw new Error("Something went wrong")
+    console.error(ventureResp);
+    throw new Error("Something went wrong");
   }
 
-  const { business, ...venture } = ventureResp.data.venture
+  const { business, ...venture } = ventureResp.data.venture;
+
+  if (!venture.activeRound) {
+    notFound();
+  }
 
   return (
-    <Card className="w-full relative max-w-screen-lg mx-auto">
-      <CardHeader>
-        <CardTitle className="flex flex-row items-center justify-between w-full">
-          {venture.name}
-          <VentureViewActions ventureId={venture.id} />
-        </CardTitle>
-        <CardDescription>
-          <span className="text-muted-foreground text-sm font-normal">
-            {/* Seeking {round.percentageValue} for {round.percentageOffered} through {round.investorCount} investors{round.investorCount > 1 ? "s" : ""} */}
-          </span>
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="flex flex-col gap-8 ">
-        <div className="w-full flex flex-col lg:flex-row gap-4 h-full">
-          <div className={cn("w-full flex flex-col px-2 gap-4")}>
-            <div className="flex flex-col gap-1 font-semibold">
-              By {business?.name}
-            </div>
-            <Separator className="w-full" />
-            <span className="text-lg font-semibold">Business Details</span>
-            <BusinessOverview
-              overview={venture.overview}
-              teamSize={business?.teamSize}
-              businessId={business?.id}
-            />
-            <Separator className="w-full" />
-            <span className="text-lg font-semibold">Venture Description</span>
-            <div className="flex flex-col items-start justify-start">
-              <p>
-                {truncateText(venture.description, 350)}
-              </p>
-              {venture.description.length > 150 && (
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button variant="outline" size="sm" className="mt-4">
-                      <span className="text-xs underline">
-                        Show more
-                      </span>
-                      <Icons.chevronRight className="w-4 h-4 ml-2" />
-                    </Button>
-                  </DialogTrigger>
-                  <div className="max-w-screen-lg px-2">
-                    <DialogContent className="rounded-md">
-                      <DialogHeader>
-                        <DialogTitle>Venture Description</DialogTitle>
-                      </DialogHeader>
-                      <div className="max-h-[70dvh] w-full h-full">
-                        <ScrollArea className="h-full w-full">
-                          {venture.description}
-                        </ScrollArea>
-                      </div>
-                    </DialogContent>
-                  </div>
-                </Dialog>
-              )}
+    <div className="min-h-screen bg-background">
+      {/* Hero Banner */}
+      <div
+        className={`relative h-[40vh] py-4 ${getRandomGradient(
+          ventureMock.title
+        )}`}
+      >
+        <Image
+          src="/filler.jpeg"
+          alt="Bilal Burgers Banner"
+          className="h-full w-full object-cover opacity-50 absolute inset-0 -z-10"
+          width={1200}
+          height={320}
+        />
+
+        <div className="container flex flex-col h-full justify-between">
+          <BackButton />
+          <div className="flex items-center gap-4">
+            <Avatar className="h-16 w-16">
+              <AvatarImage src="/placeholder.svg" alt="Bilal Burgers Logo" />
+              <AvatarFallback>BB</AvatarFallback>
+            </Avatar>
+            <div className="text-white">
+              <h1 className="text-2xl font-bold">{ventureMock?.title}</h1>
+              <p className="text-sm">{ventureMock?.location}</p>
             </div>
           </div>
-          <VentureActiveRoundCard ventureId={venture.id} className="w-full h-full lg:max-w-96" />
         </div>
-      </CardContent>
-    </Card>
-  )
+      </div>
+
+      {/* Actions  */}
+      <nav className="border-b bg-background">
+        <div className="container flex items-center justify-between p-4">
+          <div className="flex items-center flex-wrap justify-between gap-6 w-full">
+            <VentureTabs />
+            <VentureViewActions ventureId={1} />
+          </div>
+        </div>
+      </nav>
+
+      {/* Main Content */}
+      <div className="container py-8 px-4">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+          <div className="md:col-span-2 space-y-6">
+            <div className="rounded-lg border p-4">
+              <h2 className="font-semibold">Please note:</h2>
+              <p className="text-sm text-muted-foreground">
+                Investing in early stage businesses involves risks, including
+                illiquidity, lack of dividends, loss of investment and dilution,
+                and it should be done only as part of a diversified portfolio.
+              </p>
+            </div>
+
+            <section>
+              <h2 className="text-xl font-bold">Summary</h2>
+              <p className="mt-2 text-muted-foreground">
+                A family-friendly burger restaurant that combines delicious,
+                high-quality ingredients with a welcoming atmosphere. Known for
+                its mouth-watering burgers topped with fresh, flavorful
+                ingredients, Bilal Burgers creates an unforgettable dining
+                experience with options for all tastes.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="text-xl font-bold">The Business</h2>
+              <p className="mt-2 text-muted-foreground">
+                The menu offers classic beef burgers, chicken sandwiches, and
+                vegetarian options, all made to order. With a nod to cultural
+                heritage through thoughtful decor and a unique blend of spices,
+                Bilal Burgers has become a favorite spot for locals and
+                newcomers alike.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="text-xl font-bold">The Market</h2>
+              <p className="mt-2 text-muted-foreground">
+                The restaurant&apos;s focus on quality, flavor, and community
+                makes it a standout choice for anyone craving a hearty,
+                satisfying meal. Our unique positioning in the market combines
+                traditional flavors with modern dining expectations.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="text-xl font-bold">The Team</h2>
+              <div className="mt-4 space-y-4">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="flex items-center gap-4">
+                    <Avatar>
+                      <AvatarImage src="/placeholder.svg" />
+                      <AvatarFallback>ST</AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <div className="font-medium">Team Member</div>
+                      <div className="text-sm text-muted-foreground">CEO</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <section>
+              <h2 className="text-xl font-bold">FAQ</h2>
+              <Accordion type="single" collapsible className="mt-4">
+                <AccordionItem value="item-1">
+                  <AccordionTrigger>How do we make money?</AccordionTrigger>
+                  <AccordionContent>
+                    Through food sales and catering services.
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="item-2">
+                  <AccordionTrigger>Why should you invest?</AccordionTrigger>
+                  <AccordionContent>
+                    Strong growth potential and proven business model.
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="item-3">
+                  <AccordionTrigger>
+                    Our vision for the company?
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    To become the leading halal burger chain in North America.
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </section>
+          </div>
+
+          {/* Sidebar */}
+          <div className="space-y-6">
+            <Card>
+              {venture.activeRound && (
+                <>
+                  <CardContent className="p-6">
+                    <div className="space-y-4">
+                      <div>
+                        <div className="text-sm font-medium">Target</div>
+                        <div className="text-2xl font-bold">
+                          {formatCurrency(venture.activeRound.percentageValue, venture.activeRound.valueCurrency)}
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-sm font-medium">Buy In</div>
+                        <div className="text-2xl font-bold">
+                          {formatCurrency(venture.activeRound.buyIn, venture.activeRound.valueCurrency)}
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-sm font-medium">Investment Raised</div>
+                        <div className="text-2xl font-bold">
+                          {formatCurrency(0, venture.activeRound.valueCurrency)}
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                  <CardFooter>
+                    <InvestmentDialog
+                      round={venture.activeRound}
+                      redirectUrl={
+                        env.NEXT_PUBLIC_APP_URL +
+                        redirects.app.portfolio.investments.history
+                      }
+                      triggerProps={{
+                        className: "w-full",
+                      }}
+                    />
+                  </CardFooter>
+                </>
+              )}
+            </Card>
+
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="text-lg font-bold">Highlights</h3>
+                <ul className="mt-4 space-y-4">
+                  <li className="flex gap-2">
+                    <Star className="h-5 w-5 text-primary" />
+                    <div className="text-sm">
+                      Customer Retention Rate: 85% – High repeat customer rate
+                    </div>
+                  </li>
+                  <li className="flex gap-2">
+                    <Star className="h-5 w-5 text-primary" />
+                    <div className="text-sm">
+                      Order Fulfillment Time: 15 minutes on average
+                    </div>
+                  </li>
+                  <li className="flex gap-2">
+                    <Star className="h-5 w-5 text-primary" />
+                    <div className="text-sm">
+                      Revenue Growth: 20% year-over-year
+                    </div>
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }

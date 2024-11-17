@@ -1,11 +1,11 @@
 import redirects from "@/lib/config/redirects";
 import { createClient } from "@/lib/utils/supabase/server";
 import { redirect } from "next/navigation";
-import { LogoutButtons } from "@/components/ui/logout-buttons";
+import { LogoutButtons } from "@/components/logout-buttons";
 
 export default async function LogoutPage() {
-	const supabase = await createClient();
-	const { data: { user } } = await supabase.auth.getUser();
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
     return redirect(redirects.auth.login);

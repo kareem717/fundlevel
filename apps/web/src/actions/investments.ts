@@ -2,38 +2,37 @@
 
 import { actionClientWithAccount } from "@/lib/safe-action";
 import {
-	createRoundInvestment as createRoundInvestmentApi,
-	getAccountCheckoutLink,
+	createInvestmentPaymentIntent as createInvestmentPaymentIntentApi,
 	getAccountInvestmentsByPage as getAccountInvestmentsByPageApi,
-	withdrawInvestment as withdrawInvestmentApi,
+	// withdrawInvestment as withdrawInvestmentApi,
 	getInvestmentById as getInvestmentByIdApi,
+	// processInvestment as processInvestmentApi,
 } from "@/lib/api";
-import { createInvestmentSchema } from "@/actions/validations/investments";
+// import { createInvestmentSchema } from "@/actions/validations/investments";
 import { intIdSchema, offsetPaginationSchema } from "./validations/shared";
-import { object, string } from "yup";
+import { cache } from "react";
 
 /**
- * Create a investment on a round
- */
-export const createInvestment = actionClientWithAccount
-	.schema(createInvestmentSchema)
-	.action(async ({ parsedInput, ctx: { apiClient, account } }) => {
-		if (!account) {
-			throw new Error("Account not found");
-		}
+//  * Create a investment on a round
+//  */
+// export const createInvestment = actionClientWithAccount
+// 	.schema(createInvestmentSchema)
+// 	.action(async ({ parsedInput, ctx: { apiClient, account } }) => {
+// 		if (!account) {
+// 			throw new Error("Account not found");
+// 		}
 
-		await createRoundInvestmentApi({
-			client: apiClient,
-			path: {
-				id: account.id,
-			},
-			throwOnError: true,
-			body: {
-				...parsedInput,
-				investorId: account.id,
-			},
-		});
-	});
+// 		const resp = await createRoundInvestmentApi({
+// 			client: apiClient,
+// 			throwOnError: true,
+// 			body: {
+// 				...parsedInput,
+// 				investorId: account.id,
+// 			},
+// 		});
+
+// 		return resp.data.clientSecret;
+// 	});
 
 export const getAccountInvestmentsByPage = actionClientWithAccount
 	.schema(offsetPaginationSchema)
@@ -53,58 +52,41 @@ export const getAccountInvestmentsByPage = actionClientWithAccount
 		return resp.data;
 	});
 
-export const withdrawInvestment = actionClientWithAccount
-	.schema(intIdSchema.required())
-	.action(async ({ parsedInput, ctx: { apiClient, account } }) => {
-		if (!account) {
-			throw new Error("Account not found");
-		}
+// export const withdrawInvestment = actionClientWithAccount
+// 	.schema(intIdSchema.required())
+// 	.action(async ({ parsedInput, ctx: { apiClient } }) => {
+// 		await withdrawInvestmentApi({
+// 			client: apiClient,
+// 			path: {
+// 				id: parsedInput,
+// 			},
+// 			throwOnError: true,
+// 		});
+// 	});
 
-		await withdrawInvestmentApi({
-			client: apiClient,
-			path: {
-				id: account.id,
-				investmentId: parsedInput,
-			},
-			throwOnError: true,
-		});
-	});
+// export const getInvestmentPaymentIntentClientSecret = actionClientWithAccount
+// 	.schema(intIdSchema.required())
+// 	.action(async ({ parsedInput, ctx: { apiClient, account } }) => {
+// 		if (!account) {
+// 			throw new Error("Account not found");
+// 		}
 
-export const getInvestmentCheckoutLink = actionClientWithAccount
-	.schema(
-		object().shape({
-			investmentId: intIdSchema.required(),
-			redirectUrl: string().required(),
-		})
-	)
-	.action(
-		async ({
-			parsedInput: { investmentId, redirectUrl },
-			ctx: { apiClient, account },
-		}) => {
-			if (!account) {
-				throw new Error("Account not found");
-			}
+// 		const resp = await getInvestmentPaymentIntentClientSecretApi({
+// 			client: apiClient,
+// 			path: {
+// 				id: parsedInput,
+// 			},
+// 			throwOnError: true,
+// 		});
 
-			const resp = await getAccountCheckoutLink({
-				client: apiClient,
-				path: {
-					id: account.id,
-					investmentId,
-				},
-				query: {
-					redirectUrl,
-				},
-				throwOnError: true,
-			});
-
-			return resp.data;
-		}
-	);
+// 		return resp.data;
+// 	});
 
 export const getInvestmentById = actionClientWithAccount
 	.schema(intIdSchema.required())
 	.action(async ({ parsedInput, ctx: { apiClient } }) => {
+		console.log("getting investment", parsedInput);
+
 		const resp = await getInvestmentByIdApi({
 			client: apiClient,
 			path: {
@@ -115,3 +97,30 @@ export const getInvestmentById = actionClientWithAccount
 
 		return resp.data;
 	});
+
+export const getInvestmentByIdCached = cache(getInvestmentById);
+
+export const createInvestmentPaymentIntent = actionClientWithAccount
+	.schema(intIdSchema.required())
+	.action(async ({ parsedInput, ctx: { apiClient } }) => {
+		const resp = await createInvestmentPaymentIntentApi({
+			client: apiClient,
+			path: {
+				id: parsedInput,
+			},
+		});
+
+		return resp.data;
+	});
+
+// export const processInvestment = actionClientWithAccount
+// 	.schema(intIdSchema.required())
+// 	.action(async ({ parsedInput, ctx: { apiClient } }) => {
+// 		await processInvestmentApi({
+// 			client: apiClient,
+// 			path: {
+// 				id: parsedInput,
+// 			},
+// 			throwOnError: true,
+// 		});
+// 	});
