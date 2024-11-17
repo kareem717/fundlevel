@@ -21,8 +21,23 @@ test:
 watch:
 	@air -c .air.toml
 
+db-start:
+	@cd ${SUPABASE_DIRECTORY} && supabase start && cd ..
+
+db-stop:
+	@cd ${SUPABASE_DIRECTORY} && supabase stop && cd ..
+
 db-status:
-	@GOOSE_DRIVER=${GOOSE_DRIVER} GOOSE_DBSTRING='${DATABASE_URL}' goose -dir=${GOOSE_MIGRATIONS_PATH} status
+	@echo "=== Supabase Status ==="
+	@if [ -d "${SUPABASE_DIRECTORY}" ]; then \
+		cd ${SUPABASE_DIRECTORY} && supabase status && cd ..; \
+	else \
+		echo "Error: Supabase directory not found at ${SUPABASE_DIRECTORY}"; \
+		exit 1; \
+	fi
+	@echo "\n=== Migration Status ==="
+	@GOOSE_DRIVER=${GOOSE_DRIVER} GOOSE_DBSTRING='${DATABASE_URL}' goose -dir=${GOOSE_MIGRATIONS_PATH} status || \
+		(echo "Error: Failed to get migration status" && exit 1)
 
 db-up:
 	@GOOSE_DRIVER=${GOOSE_DRIVER} GOOSE_DBSTRING='${DATABASE_URL}' goose -dir=${GOOSE_MIGRATIONS_PATH} up
