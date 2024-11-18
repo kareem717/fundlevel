@@ -130,5 +130,4 @@ vector_port = 54328
 backend = "postgres"
 
 [db.seed]
-enabled = true
-sql_paths = ['./seeds/*.sql']
+enabled = false

@@ -30,6 +30,7 @@ go.work.sum
 .temp
 .env
 .branches
+node_modules
 
 # MacOS specific files
 .DS_Store
