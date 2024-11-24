@@ -63,14 +63,14 @@ export default buildConfig({
       collections: {
         ["media"]: true,
       },
-      bucket: process.env.S3_BUCKET || "media",
+      bucket: env.AWS_BUCKET_NAME,
       config: {
-        endpoint: process.env.S3_ENDPOINT || "",
+        endpoint: env.AWS_URI,
         credentials: {
-          accessKeyId: process.env.S3_ACCESS_KEY_ID || "",
-          secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || "",
+          accessKeyId: env.AWS_ACCESS_KEY_ID,
+          secretAccessKey: env.AWS_SECRET_ACCESS_KEY,
         },
-        region: process.env.S3_REGION || "",
+        region: env.AWS_REGION,
       },
     }),
   ],

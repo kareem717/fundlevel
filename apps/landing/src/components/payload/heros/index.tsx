@@ -1,12 +1,12 @@
-import React from 'react'
-import type { Page } from '@payload-types'
-import { HighImpactHero } from '@components/payload/heros/HighImpact'
-import { LowImpactHero } from '@components/payload/heros/LowImpact'
-import { MediumImpactHero } from '@components/payload/heros/MediumImpact'
-import { ParallaxHero } from '@components/payload/heros/Parallax'
-import { PostHero } from '@components/payload/heros/PostHero'
-import { StandardHero } from './Standard'
-import { SliderHero } from './SliderHero'
+import React from "react";
+import type { Page } from "@/payload-types";
+import { HighImpactHero } from "@/components/payload/heros/HighImpact";
+import { LowImpactHero } from "@/components/payload/heros/LowImpact";
+import { MediumImpactHero } from "@/components/payload/heros/MediumImpact";
+import { ParallaxHero } from "@/components/payload/heros/Parallax";
+import { PostHero } from "@/components/payload/heros/PostHero";
+import { StandardHero } from "@/components/payload/heros/Standard";
+import { SliderHero } from "@/components/payload/heros/SliderHero";
 
 const heroes = {
   highImpact: HighImpactHero,
@@ -16,16 +16,16 @@ const heroes = {
   parallax: ParallaxHero,
   standard: StandardHero,
   slider: SliderHero,
-}
+};
 
-export const RenderHero: React.FC<Page['hero']> = (props) => {
-  const { type } = props || {}
+export const RenderHero: React.FC<Page["hero"]> = (props) => {
+  const { type } = props || {};
 
-  if (!type || type === 'none') return null
+  if (!type || type === "none") return null;
 
-  const HeroToRender = heroes[type]
+  const HeroToRender = heroes[type];
 
-  if (!HeroToRender) return null
+  if (!HeroToRender) return null;
 
-  return <HeroToRender {...props} />
-}
+  return <HeroToRender {...props} />;
+};

@@ -1,26 +1,27 @@
-'use client'
-import { useEffect, useRef } from 'react'
-import Image from 'next/image'
+"use client";
+import { useEffect, useRef } from "react";
+import Image from "next/image";
 
-import React from 'react'
-import type { Page } from '@payload-types'
-import { CMSLink } from '@components/payload/Link'
-import { Media } from '@components/payload/Media'
-import RichText from '@components/payload/RichText'
+import React from "react";
+import type { Page } from "@/payload-types";
 
-export const ParallaxHero: React.FC<Page['hero']> = ({ links, media, richText }) => {
-  const parallaxRef = useRef<HTMLDivElement>(null)
+export const ParallaxHero: React.FC<Page["hero"]> = ({
+  links,
+  media,
+  richText,
+}) => {
+  const parallaxRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
-      const scrolled = window.scrollY
+      const scrolled = window.scrollY;
       if (parallaxRef.current) {
-        parallaxRef.current.style.transform = `translateY(${scrolled * 0.5}px)`
+        parallaxRef.current.style.transform = `translateY(${scrolled * 0.5}px)`;
       }
-    }
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <section className="relative h-screen flex items-center justify-center overflow-hidden">
@@ -48,5 +49,5 @@ export const ParallaxHero: React.FC<Page['hero']> = ({ links, media, richText })
         </a>
       </div>
     </section>
-  )
-}
+  );
+};
