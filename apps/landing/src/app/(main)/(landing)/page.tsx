@@ -8,17 +8,15 @@ import React from "react";
 import { cn } from "@/lib/utils";
 import { copy } from "@/lib/config";
 import { ModeToggle } from "@/components/mode-toggle";
+import { NavBar } from "@/components/nav-bar";
+import { navigationConfig } from "@/lib/config/navigation";
 
 export default async function Home() {
   const { landing: { hero } } = copy;
 
   return (
     <div className="p-4 flex flex-col justify-between h-[100dvh] w-full max-w-screen-2xl mx-auto items-center">
-      <header className="flex flex-row items-center justify-between y-4 w-full">
-        <LogoDiv className="hidden sm:block" />
-        <SmallLogoDiv className="sm:hidden" />
-        <ModeToggle />
-      </header>
+      <NavBar config={navigationConfig} currentPath={"/"} />
       <div className="flex flex-col items-center justify-center gap-4 sm:gap-8">
         <h1 className="text-3xl sm:text-4xl font-bold text-center">
           The right way to <span className="text-primary">fund</span>.
