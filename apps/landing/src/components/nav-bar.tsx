@@ -1,7 +1,6 @@
 import { ComponentPropsWithoutRef, FC } from "react";
 import { cn } from "@/lib/utils";
 import { LogoDiv } from "./logo-div";
-
 import Link from "next/link";
 import {
     Sheet,
@@ -47,7 +46,7 @@ export interface NavBarProps extends ComponentPropsWithoutRef<"header">, NavConf
 
 export const NavBar: FC<NavBarProps> = ({ className, config, currentPath, ...props }) => {
     return (
-        <header className={cn("flex flex-row items-center justify-between w-full", className)} {...props}>
+        <header className={cn("flex flex-row items-center justify-between w-full bg-background p-4", className)} {...props}>
             <LogoDiv className="justify-start" />
             <NavMenu config={config} currentPath={currentPath} className="hidden sm:block" />
             <div className="flex-row items-center justify-end gap-4 hidden sm:flex">

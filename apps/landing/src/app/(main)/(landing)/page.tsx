@@ -1,13 +1,11 @@
 import { createElement } from "react";
 import { Icons } from "@/components/icons";
-import { LogoDiv, SmallLogoDiv } from "@/components/logo-div";
 import { buttonVariants } from "@/components/ui/button";
 import { contact, business } from "@/lib/config";
 import Link from "next/link";
 import React from "react";
 import { cn } from "@/lib/utils";
 import { copy } from "@/lib/config";
-import { ModeToggle } from "@/components/mode-toggle";
 import { NavBar } from "@/components/nav-bar";
 import { navigationConfig } from "@/lib/config/navigation";
 
@@ -15,8 +13,8 @@ export default async function Home() {
   const { landing: { hero } } = copy;
 
   return (
-    <div className="p-4 flex flex-col justify-between h-[100dvh] w-full max-w-screen-2xl mx-auto items-center">
-      <NavBar config={navigationConfig} currentPath={"/"} />
+    <div className="p-4 flex flex-col justify-between h-[300dvh] w-full max-w-screen-2xl mx-auto items-center relative">
+      <NavBar config={navigationConfig} currentPath={"/"} className="sticky top-0 z-50" />
       <div className="flex flex-col items-center justify-center gap-4 sm:gap-8">
         <h1 className="text-3xl sm:text-4xl font-bold text-center">
           The right way to <span className="text-primary">fund</span>.
