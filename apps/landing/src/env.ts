@@ -13,6 +13,10 @@ export const env = createEnv({
     AWS_SECRET_ACCESS_KEY: z.string().min(1),
     AWS_REGION: z.string().min(1),
     AWS_BUCKET_NAME: z.string().min(1),
+    SMTP_HOST: z.string().min(1),
+    SMTP_PORT: z.string().min(1),
+    SMTP_USER: z.string().min(1),
+    SMTP_PASS: z.string().min(1),
   },
   client: {
     NEXT_PUBLIC_APP_URL: z.string().url().min(1),

@@ -7,12 +7,13 @@ import path from "path";
 import { buildConfig } from "payload";
 import { fileURLToPath } from "url";
 import sharp from "sharp";
-import { env } from "./env";
 import collections from "./payload/collections";
 import globals from "./payload/globals";
 import Users from "./payload/collections/Users";
 import { revalidateRedirects } from "./payload/hooks/revalidateRedirects";
 import { generateTitle, generateURL } from "./lib/utils/seo";
+import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
+import { env } from './env'
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -74,6 +75,18 @@ export default buildConfig({
       },
     }),
   ],
+  email: nodemailerAdapter({
+    defaultFromAddress: 'payloadcms@fundlevel.app',
+    defaultFromName: 'Fundlevel Payload CMS',
+    transportOptions: {
+      host: env.SMTP_HOST,
+      port: env.SMTP_PORT,
+      auth: {
+        user: env.SMTP_USER,
+        pass: env.SMTP_PASS,
+      },
+    },
+  }),
   db: postgresAdapter({
     pool: {
       connectionString: env.DATABASE_URI,
