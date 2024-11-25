@@ -1,17 +1,19 @@
-import React from "react";
-import { Toaster } from "sonner";
-import { NuqsProvider } from "./Nuqs";
-import { ThemeProvider } from "./Theme";
+import { FC, ReactNode } from "react";
+import { NuqsProvider, NuqsProviderProps } from "./nuqs-provider";
+import { ThemeProvider, ThemeProviderProps } from "./theme-provider";
 
-export const Providers: React.FC<{
-  children: React.ReactNode;
-}> = async ({ children }) => {
+export interface ProvidersProps {
+  children: ReactNode
+  nuqsProps?: NuqsProviderProps
+  themeProps?: ThemeProviderProps
+}
+
+export const Providers: FC<ProvidersProps> = ({ children, nuqsProps, themeProps }) => {
   return (
-    <ThemeProvider>
-      <NuqsProvider>
+    <NuqsProvider {...nuqsProps}>
+      <ThemeProvider {...themeProps}>
         {children}
-        <Toaster />
-      </NuqsProvider>
-    </ThemeProvider>
+      </ThemeProvider>
+    </NuqsProvider>
   );
 };

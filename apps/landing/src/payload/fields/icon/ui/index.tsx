@@ -4,11 +4,7 @@ import React from 'react'
 
 import {
   Select,
-  useFormFields,
-  SelectField,
-  SelectInput,
   ReactSelectOption,
-  useFieldProps,
 } from '@payloadcms/ui'
 
 import { useField } from '@payloadcms/ui'
@@ -42,8 +38,7 @@ export const LucideIcon = ({ name, color, size }: LucideProps) => {
   return <LucideIcon color={color} size={size} />
 }
 
-export function CustomIconSelect() {
-  const { path } = useFieldProps()
+export const CustomIconSelect = (path: string) => {
   const { value, setValue } = useField({ path })
 
   return (
@@ -53,8 +48,8 @@ export function CustomIconSelect() {
       <Select
         options={generateLucideIconOptions()}
         onChange={(value) => setValue(value)}
-        // @ts-ignore
-        // value={value}
+      // @ts-ignore
+      // value={value}
       />
       <h3>Preview</h3>
       {/* @ts-ignore */}

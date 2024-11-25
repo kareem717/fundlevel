@@ -1,29 +1,30 @@
 "use client";
+
+import { ComponentPropsWithoutRef, FC, Fragment } from "react";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useClickableCard } from "@/lib/hooks/use-clickable-card";
-import Link from "next/link";
-import React, { Fragment } from "react";
-
 import type { Post } from "@/payload-types";
-
 import { Media } from "@/components/payload/Media";
 
-export const Card: React.FC<{
+export interface PostCardProps
+  extends ComponentPropsWithoutRef<"article"> {
   alignItems?: "center";
   className?: string;
   doc?: Post;
-  relationTo?: "posts";
   showCategories?: boolean;
   title?: string;
-}> = (props) => {
+}
+
+export const PostCard: FC<PostCardProps> = ({
+  alignItems,
+  className,
+  doc,
+  showCategories,
+  title: titleFromProps,
+  ...props
+}) => {
   const { card, link } = useClickableCard({});
-  const {
-    className,
-    doc,
-    relationTo,
-    showCategories,
-    title: titleFromProps,
-  } = props;
 
   const { slug, categories, meta, title } = doc || {};
   const { description, image: metaImage } = meta || {};
@@ -32,7 +33,7 @@ export const Card: React.FC<{
     categories && Array.isArray(categories) && categories.length > 0;
   const titleToUse = titleFromProps || title;
   const sanitizedDescription = description?.replace(/\s/g, " "); // replace non-breaking space with white space
-  const href = `/${relationTo}/${slug}`;
+  const href = `/blog/${slug}`;
 
   return (
     <article
@@ -41,6 +42,7 @@ export const Card: React.FC<{
         className
       )}
       ref={card.ref}
+      {...props}
     >
       <div className="relative w-full ">
         {!metaImage && <div className="">No image</div>}

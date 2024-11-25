@@ -1,8 +1,8 @@
 'use client'
 
 import React from 'react'
-import { cn } from '@lib/utils/cn'
-import { useRouter } from 'next/navigation'
+import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 import {
   Pagination as PaginationComponent,
@@ -12,7 +12,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from '@components/ui/pagination'
+} from '@/components/ui/pagination'
 
 export const Pagination: React.FC<{
   className?: string
@@ -33,13 +33,25 @@ export const Pagination: React.FC<{
       <PaginationComponent>
         <PaginationContent>
           <PaginationItem>
-            <PaginationPrevious
-              size="sm"
-              disabled={!hasPrevPage}
-              onClick={() => {
-                router.push(`/posts/page/${page - 1}`)
-              }}
-            />
+            {hasPrevPage && (
+              <PaginationItem>
+                <PaginationPrevious
+                  size="sm"
+                  onClick={() => {
+                    router.push(`/posts/page/${page - 1}`)
+                  }}
+                />
+              </PaginationItem>
+            )}
+
+            {!hasPrevPage && (
+              <PaginationItem>
+                <PaginationPrevious
+                  size="sm"
+                  isActive={false}
+                />
+              </PaginationItem>
+            )}
           </PaginationItem>
 
           {hasExtraPrevPages && (
@@ -93,13 +105,25 @@ export const Pagination: React.FC<{
           )}
 
           <PaginationItem>
-            <PaginationNext
-              size="sm"
-              disabled={!hasNextPage}
-              onClick={() => {
-                router.push(`/posts/page/${page + 1}`)
-              }}
-            />
+            {hasNextPage && (
+              <PaginationItem>
+                <PaginationNext
+                  size="sm"
+                  onClick={() => {
+                    router.push(`/posts/page/${page + 1}`)
+                  }}
+                />
+              </PaginationItem>
+            )}
+
+            {!hasNextPage && (
+              <PaginationItem>
+                <PaginationNext
+                  size="sm"
+                  isActive={false}
+                />
+              </PaginationItem>
+            )}
           </PaginationItem>
         </PaginationContent>
       </PaginationComponent>
