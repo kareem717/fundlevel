@@ -1,6 +1,8 @@
 import { cn } from "@/lib/utils";
 import Marquee from "@/components/ui/marquee";
 import Image from "next/image";
+import { ComponentPropsWithoutRef, FC } from "react";
+
 const reviews = [
   {
     name: "Jack",
@@ -43,16 +45,20 @@ const reviews = [
 const firstRow = reviews.slice(0, reviews.length / 2);
 const secondRow = reviews.slice(reviews.length / 2);
 
-const ReviewCard = ({
-  img,
-  name,
-  username,
-  body,
-}: {
+export interface ReviewCardProps extends ComponentPropsWithoutRef<"figure"> {
   img: string;
   name: string;
   username: string;
   body: string;
+}
+
+const ReviewCard: FC<ReviewCardProps> = ({
+  img,
+  name,
+  username,
+  body,
+  className,
+  ...props
 }) => {
   return (
     <figure
@@ -61,8 +67,10 @@ const ReviewCard = ({
         // light styles
         "border-gray-950/[.1] bg-gray-950/[.01] hover:bg-gray-950/[.05]",
         // dark styles
-        "dark:border-gray-50/[.1] dark:bg-gray-50/[.10] dark:hover:bg-gray-50/[.15]"
+        "dark:border-gray-50/[.1] dark:bg-gray-50/[.10] dark:hover:bg-gray-50/[.15]",
+        className
       )}
+      {...props}
     >
       <div className="flex flex-row items-center gap-2">
         <Image
@@ -84,9 +92,18 @@ const ReviewCard = ({
   );
 };
 
-export function MarqueeDemo() {
+export const MarqueeDemo: FC<ComponentPropsWithoutRef<"div">> = ({
+  className,
+  ...props
+}) => {
   return (
-    <div className="relative flex h-[500px] w-full flex-col items-center justify-center overflow-hidden rounded-lg border bg-background md:shadow-xl">
+    <div
+      className={cn(
+        "relative flex h-[500px] w-full flex-col items-center justify-center overflow-hidden rounded-lg border bg-background md:shadow-xl",
+        className
+      )}
+      {...props}
+    >
       <Marquee pauseOnHover className="[--duration:20s]">
         {firstRow.map((review) => (
           <ReviewCard key={review.username} {...review} />
@@ -101,4 +118,4 @@ export function MarqueeDemo() {
       <div className="pointer-events-none absolute inset-y-0 right-0 w-1/3 bg-gradient-to-l from-white dark:from-background"></div>
     </div>
   );
-}
+};
