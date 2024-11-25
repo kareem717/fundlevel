@@ -1,9 +1,7 @@
-import { FC, ReactNode, ComponentPropsWithoutRef } from "react";
+import { FC, ComponentPropsWithoutRef } from "react";
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
 
-export interface NuqsProviderProps extends ComponentPropsWithoutRef<typeof NuqsAdapter> {
-  children: ReactNode
-}
+export type NuqsProviderProps = ComponentPropsWithoutRef<typeof NuqsAdapter>
 
 export const NuqsProvider: FC<NuqsProviderProps> = ({ children, ...props }) => {
   return <NuqsAdapter {...props}>{children}</NuqsAdapter>
