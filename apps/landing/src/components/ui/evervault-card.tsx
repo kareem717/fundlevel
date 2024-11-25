@@ -1,17 +1,15 @@
 "use client";
 
-import { useMotionValue } from "framer-motion";
-import React, { useState, useEffect } from "react";
+import { MotionValue, useMotionValue } from "framer-motion";
+import { useState, useEffect, FC, ComponentPropsWithoutRef } from "react";
 import { useMotionTemplate, motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
-export const EvervaultCard = ({
-  text,
-  className,
-}: {
+export interface EvervaultCardProps extends ComponentPropsWithoutRef<"div"> { 
   text?: string;
-  className?: string;
-}) => {
+}
+
+export const EvervaultCard: FC<EvervaultCardProps> = ({ text, className, ...props }) => {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
@@ -37,6 +35,7 @@ export const EvervaultCard = ({
         "p-0.5  bg-transparent aspect-square  flex items-center justify-center w-full h-full relative",
         className
       )}
+      {...props}
     >
       <div
         onMouseMove={onMouseMove}
@@ -58,12 +57,18 @@ export const EvervaultCard = ({
   );
 };
 
-export function CardPattern({ mouseX, mouseY, randomString }: any) {
+export interface CardPatternProps extends ComponentPropsWithoutRef<"div"> {
+  mouseX: MotionValue<number>;
+  mouseY: MotionValue<number>;
+  randomString: string;
+}
+
+export function CardPattern({ mouseX, mouseY, randomString, className, ...props }: CardPatternProps) {
   const maskImage = useMotionTemplate`radial-gradient(250px at ${mouseX}px ${mouseY}px, white, transparent)`;
   const style = { maskImage, WebkitMaskImage: maskImage };
 
   return (
-    <div className="pointer-events-none">
+    <div className={cn("pointer-events-none", className)} {...props}>
       <div className="absolute inset-0 rounded-2xl  [mask-image:linear-gradient(white,transparent)] group-hover/card:opacity-50"></div>
       <motion.div
         className="absolute inset-0 rounded-2xl bg-gradient-to-r from-green-500 to-blue-700 opacity-0  group-hover/card:opacity-100 backdrop-blur-xl transition duration-500"
@@ -89,20 +94,4 @@ export const generateRandomString = (length: number) => {
     result += characters.charAt(Math.floor(Math.random() * characters.length));
   }
   return result;
-};
-
-export const Icon = ({ className, ...rest }: any) => {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth="1.5"
-      stroke="currentColor"
-      className={className}
-      {...rest}
-    >
-      <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m6-6H6" />
-    </svg>
-  );
 };
