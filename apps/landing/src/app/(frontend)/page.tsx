@@ -1,9 +1,14 @@
-import { copy } from "@/lib/config";
+import { business, contact, copy } from "@/lib/config";
 import { NavBar } from "@/components/nav-bar";
 import { navigationConfig } from "@/lib/config/navigation";
 import { Hero } from "@/components/landing/hero";
 import { BentoDemo } from "@/components/landing/bento";
 import Newsletter from "@/components/landing/newsletter";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
+import { Icons } from "@/components/icons";
+import { createElement } from "react";
 
 export default async function Home() {
   const {
