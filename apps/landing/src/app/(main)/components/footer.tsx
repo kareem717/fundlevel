@@ -1,14 +1,18 @@
 import { LogoDiv } from "@/components/logo-div";
-import { Facebook, Twitter, Linkedin, Github } from "lucide-react";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
+import { ComponentPropsWithoutRef, createElement, FC } from "react";
+import { Icons } from "@/components/icons";
+import { contact } from "@/lib/config";
 
-export function Footer() {
+export interface FooterProps extends ComponentPropsWithoutRef<"footer"> { }
+
+export const Footer: FC<FooterProps> = ({ className, ...props }) => {
   return (
-    <footer className="container mt-12">
+    <footer className={cn("container mt-12", className)} {...props}>
       <div className="flex flex-row justify-between items-center">
         <LogoDiv />
       </div>
-
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 py-6">
         <div>
           <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
@@ -66,22 +70,12 @@ export function Footer() {
           © {new Date().getFullYear()} FundLevel. All rights reserved.
         </div>
         <div className="flex space-x-4 mt-4 md:mt-0">
-          <Link href="#" className="text-muted-foreground hover:text-black">
-            <Facebook className="h-5 w-5" />
-            <span className="sr-only">Facebook</span>
-          </Link>
-          <Link href="#" className="text-muted-foreground hover:text-black">
-            <Twitter className="h-5 w-5" />
-            <span className="sr-only">Twitter</span>
-          </Link>
-          <Link href="#" className="text-muted-foreground hover:text-black">
-            <Linkedin className="h-5 w-5" />
-            <span className="sr-only">LinkedIn</span>
-          </Link>
-          <Link href="#" className="text-muted-foreground hover:text-black">
-            <Github className="h-5 w-5" />
-            <span className="sr-only">GitHub</span>
-          </Link>
+          {contact.socials.map((social) => (
+            <Link href={social.link} className="text-muted-foreground hover:text-black">
+              {createElement(Icons[social.icon], { className: "h-5 w-5" })}
+              <span className="sr-only">{social.label}</span>
+            </Link>
+          ))}
         </div>
       </div>
     </footer>
