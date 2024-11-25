@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import { BentoCard, BentoGrid } from "@/components/ui/bento-grid";
 import { Calendar } from "@/components/ui/calendar";
 import { AnimatedBeamDemo } from "./bento/integrations";
-import Marquee from "@/components/ui/marquee";
+import { Marquee } from "@/components/ui/marquee";
 import { AnimatedListDemo } from "./bento/notification";
 import { EvervaultCard } from "@/components/ui/evervault-card";
 import { Icons } from "@/components/icons";

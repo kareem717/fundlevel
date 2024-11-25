@@ -1,4 +1,4 @@
-import BlogFilters from "./components/filter";
+import { BlogFilters } from "./components/filter";
 import { FilteredPagination } from "./components/pagination";
 import getPayload from "@/lib/utils/getPayload";
 import { blogFiltersCache } from "./components/searchParams";
