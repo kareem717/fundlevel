@@ -9,6 +9,9 @@ import getPayload from "@/lib/utils/getPayload";
 import { Metadata } from "next/types";
 import { mergeOpenGraph } from "@/lib/utils/mergeOpenGraph";
 import { cn } from "@/lib/utils";
+import { navigationConfig } from "@/lib/config/navigation";
+import { Header } from "@/components/layout/header";
+import { Footer } from "@/components/layout/footer";
 
 // export const metadata = meta.root;
 
@@ -23,10 +26,16 @@ export default async function RootLayout({
       className={cn(GeistSans.variable, GeistMono.variable)}
       suppressHydrationWarning
     >
-      <body>
+      <body className="w-full">
         <Providers>
           <LivePreviewListener />
+          <Header
+            config={navigationConfig}
+            currentPath={"/"}
+            className="sticky top-0 z-50 border-b w-full"
+          />
           {children}
+          <Footer />
         </Providers>
       </body>
     </html>
