@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import { ComponentPropsWithoutRef, FC } from "react";
 import { BlogCategory } from "@/payload-types";
 import {
   Select,
@@ -13,17 +13,23 @@ import { Button } from "@/components/ui/button";
 import clsx from "clsx";
 import { useQueryStates } from "nuqs";
 import { blogFiltersParsers } from "./searchParams";
+import { cn } from "@/lib/utils";
 
-export default function BlogFilters({
-  categories,
-}: {
+export interface BlogFiltersProps
+  extends ComponentPropsWithoutRef<"div"> {
   categories: BlogCategory[];
-}) {
+}
+
+export const BlogFilters: FC<BlogFiltersProps> = ({
+  categories,
+  className,
+  ...props
+}) => {
   const [{ category: currentCategory }, setCurrentCategory] =
     useQueryStates(blogFiltersParsers);
 
   return (
-    <div className="container">
+    <div className={cn("container", className)} {...props}>
       <div className="hidden md:flex flex-wrap justify-center gap-4">
         <Button
           onClick={() => setCurrentCategory({ category: "all" })}
