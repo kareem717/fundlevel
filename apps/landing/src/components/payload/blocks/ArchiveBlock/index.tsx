@@ -26,9 +26,11 @@ export const ArchiveBlock: React.FC<
   if (populateBy === "collection") {
     const payload = await getPayload();
 
-    const flattenedCategories = categories?.map((category: BlogCategory) => {
-      if (typeof category === "object") return category.id;
-      else return category;
+    const flattenedCategories = categories?.map((category) => {
+      if (typeof category === "object" && category !== null) {
+        return category.id;
+      }
+      return category;
     });
 
     const fetchedPosts = await payload.find({
@@ -49,9 +51,11 @@ export const ArchiveBlock: React.FC<
     posts = fetchedPosts.docs;
   } else {
     if (selectedDocs?.length) {
-      const filteredSelectedPosts = selectedDocs.map((post: Post) => {
-        if (typeof post === "object") return post;
-      }) as Post[];
+      const filteredSelectedPosts = selectedDocs.map((doc) => {
+        if (doc.relationTo === "posts" && typeof doc.value === "object") {
+          return doc.value as Post;
+        }
+      }).filter(Boolean) as Post[];
 
       posts = filteredSelectedPosts;
     }
