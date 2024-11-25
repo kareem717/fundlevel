@@ -25,3 +25,4 @@ A modern landing page built with Next.js, PayloadCMS, React, Framer Motion, and 
 ## Getting Started
 
 1. Clone the repository:
+

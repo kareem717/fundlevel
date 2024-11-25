@@ -24,11 +24,7 @@ const Circle = forwardRef<
 
 Circle.displayName = "Circle";
 
-export function AnimatedBeamMultipleOutputDemo({
-  className,
-}: {
-  className?: string;
-}) {
+export function AnimatedBeamDemo({ className }: { className?: string }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const div1Ref = useRef<HTMLDivElement>(null);
   const div2Ref = useRef<HTMLDivElement>(null);
@@ -46,72 +42,76 @@ export function AnimatedBeamMultipleOutputDemo({
       )}
       ref={containerRef}
     >
-      <div className="flex size-full max-w-lg flex-row items-stretch justify-between gap-10">
-        <div className="flex flex-col justify-center">
-          <Circle ref={div7Ref}>
-            <Icons.user />
-          </Circle>
-        </div>
-        <div className="flex flex-col justify-center">
-          <Circle ref={div6Ref} className="size-16">
-            <Icons.openai />
-          </Circle>
-        </div>
-        <div className="flex flex-col justify-center gap-2">
+      <div className="flex size-full flex-col max-w-lg max-h-[200px] items-stretch justify-between gap-10">
+        <div className="flex flex-row items-center justify-between">
           <Circle ref={div1Ref}>
             <Icons.googleDrive />
           </Circle>
-          <Circle ref={div2Ref}>
+          <Circle ref={div5Ref}>
             <Icons.googleDocs />
           </Circle>
+        </div>
+        <div className="flex flex-row items-center justify-between">
+          <Circle ref={div2Ref}>
+            <Icons.notion />
+          </Circle>
+          <Circle ref={div4Ref} className="size-16">
+            <Icons.openai />
+          </Circle>
+          <Circle ref={div6Ref}>
+            <Icons.zapier />
+          </Circle>
+        </div>
+        <div className="flex flex-row items-center justify-between">
           <Circle ref={div3Ref}>
             <Icons.whatsapp />
           </Circle>
-          <Circle ref={div4Ref}>
+          <Circle ref={div7Ref}>
             <Icons.messenger />
-          </Circle>
-          <Circle ref={div5Ref}>
-            <Icons.notion />
           </Circle>
         </div>
       </div>
 
-      {/* AnimatedBeams */}
       <AnimatedBeam
         containerRef={containerRef}
         fromRef={div1Ref}
-        toRef={div6Ref}
-        duration={3}
+        toRef={div4Ref}
+        curvature={-75}
+        endYOffset={-10}
       />
       <AnimatedBeam
         containerRef={containerRef}
         fromRef={div2Ref}
-        toRef={div6Ref}
-        duration={3}
+        toRef={div4Ref}
       />
       <AnimatedBeam
         containerRef={containerRef}
         fromRef={div3Ref}
-        toRef={div6Ref}
-        duration={3}
-      />
-      <AnimatedBeam
-        containerRef={containerRef}
-        fromRef={div4Ref}
-        toRef={div6Ref!}
-        duration={3}
+        toRef={div4Ref}
+        curvature={75}
+        endYOffset={10}
       />
       <AnimatedBeam
         containerRef={containerRef}
         fromRef={div5Ref}
-        toRef={div6Ref}
-        duration={3}
+        toRef={div4Ref}
+        curvature={-75}
+        endYOffset={-10}
+        reverse
       />
       <AnimatedBeam
         containerRef={containerRef}
         fromRef={div6Ref}
-        toRef={div7Ref}
-        duration={3}
+        toRef={div4Ref}
+        reverse
+      />
+      <AnimatedBeam
+        containerRef={containerRef}
+        fromRef={div7Ref}
+        toRef={div4Ref}
+        curvature={75}
+        endYOffset={10}
+        reverse
       />
     </div>
   );
@@ -495,20 +495,6 @@ const Icons = {
         fill="#ffffff"
         d="M34.394,18.501l-5.7,4.22c-0.61,0.46-1.44,0.46-2.04,0.01L22.68,19.74	c-1.68-1.25-4.06-0.82-5.19,0.94l-1.21,1.89l-4.11,6.68c-0.6,0.94,0.55,2.01,1.44,1.34l5.7-4.22c0.61-0.46,1.44-0.46,2.04-0.01	l3.974,2.991c1.68,1.25,4.06,0.82,5.19-0.94l1.21-1.89l4.11-6.68C36.434,18.901,35.284,17.831,34.394,18.501z"
       />
-    </svg>
-  ),
-  user: () => (
-    <svg
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="#000000"
-      strokeWidth="2"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-      <circle cx="12" cy="7" r="4" />
     </svg>
   ),
 };

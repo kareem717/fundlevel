@@ -77,11 +77,20 @@ module.exports = {
         sm: "calc(var(--radius) - 4px)",
       },
       animation: {
+        aurora: "aurora 60s linear infinite",
         move: "move 5s linear infinite",
         marquee: "marquee var(--duration) infinite linear",
         "marquee-vertical": "marquee-vertical var(--duration) linear infinite",
       },
       keyframes: {
+        aurora: {
+          from: {
+            backgroundPosition: "50% 50%, 50% 50%",
+          },
+          to: {
+            backgroundPosition: "350% 50%, 350% 50%",
+          },
+        },
         move: {
           "0%": {
             transform: "translateX(-200px)",

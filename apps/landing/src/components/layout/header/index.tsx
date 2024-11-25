@@ -13,6 +13,7 @@ import {
 } from "../../ui/sheet";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { ModeToggle } from "@/components/mode-toggle";
 
 interface HeaderProps extends ComponentPropsWithoutRef<"header"> {
   config: NavigationItem[];
@@ -40,6 +41,7 @@ export function Header({
         className="hidden sm:flex"
       />
       <div className="flex-row items-center justify-end gap-4 hidden sm:flex">
+        <ModeToggle />
         <Link href="#" className={buttonVariants()}>
           Invest
         </Link>
