@@ -1,12 +1,11 @@
 "use client";
 
-import { RefObject, useEffect, useId, useState } from "react";
+import { ComponentPropsWithoutRef, FC, RefObject, useEffect, useId, useState } from "react";
 import { motion } from "framer-motion";
-
 import { cn } from "@/lib/utils";
 
-export interface AnimatedBeamProps {
-  className?: string;
+export interface AnimatedBeamProps
+  extends ComponentPropsWithoutRef<"svg"> {
   containerRef: RefObject<HTMLElement | null>; // Container ref
   fromRef: RefObject<HTMLElement | null>;
   toRef: RefObject<HTMLElement | null>;
@@ -25,7 +24,7 @@ export interface AnimatedBeamProps {
   endYOffset?: number;
 }
 
-export const AnimatedBeam: React.FC<AnimatedBeamProps> = ({
+export const AnimatedBeam: FC<AnimatedBeamProps> = ({
   className,
   containerRef,
   fromRef,
@@ -43,6 +42,7 @@ export const AnimatedBeam: React.FC<AnimatedBeamProps> = ({
   startYOffset = 0,
   endXOffset = 0,
   endYOffset = 0,
+  ...props
 }) => {
   const id = useId();
   const [pathD, setPathD] = useState("");
@@ -133,6 +133,7 @@ export const AnimatedBeam: React.FC<AnimatedBeamProps> = ({
         className
       )}
       viewBox={`0 0 ${svgDimensions.width} ${svgDimensions.height}`}
+      {...props}
     >
       <path
         d={pathD}
