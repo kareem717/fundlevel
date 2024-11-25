@@ -1,10 +1,10 @@
 "use client";
 
 import { ComponentPropsWithoutRef, useEffect, useState } from "react";
-import { LogoDiv } from "../../logo-div";
+import { LogoDiv } from "../../../../components/logo-div";
 import { NavigationItem, NavMenu } from "./nav";
-import { buttonVariants } from "../../ui/button";
-import { Icons } from "../../icons";
+import { buttonVariants } from "../../../../components/ui/button";
+import { Icons } from "../../../../components/icons";
 import {
   Sheet,
   SheetContent,
@@ -12,7 +12,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "../../ui/sheet";
+} from "../../../../components/ui/sheet";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { ModeToggle } from "@/components/mode-toggle";

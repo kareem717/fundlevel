@@ -8,8 +8,8 @@ import { Metadata } from "next/types";
 import { mergeOpenGraph } from "@/lib/utils/mergeOpenGraph";
 import { cn } from "@/lib/utils";
 import { navigationConfig } from "@/lib/config/navigation";
-import { Header } from "@/components/layout/header";
-import { Footer } from "@/components/layout/footer";
+import { Header } from "@/app/(main)/components/header";
+import { Footer } from "@/app/(main)/components/footer";
 import { Toaster } from "sonner";
 
 // export const metadata = meta.root;
