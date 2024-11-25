@@ -139,3 +139,5 @@ export const BackgroundBeams: FC<ComponentPropsWithoutRef<"div">> = memo(
     );
   }
 );
+
+BackgroundBeams.displayName = "BackgroundBeams";
