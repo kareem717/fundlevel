@@ -5,7 +5,7 @@ import { ChartLine, Wallet } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { ComponentPropsWithoutRef } from "react";
-import { AuroraBackground } from "../ui/aurora";
+import { AuroraBackground } from "../../../../components/ui/aurora";
 
 const bannerItems = [
   "Secure",

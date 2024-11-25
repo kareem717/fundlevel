@@ -12,13 +12,13 @@ import {
   FileTextIcon,
   Lock,
 } from "lucide-react";
-import { BentoCard, BentoGrid } from "../ui/bento-grid";
+import { BentoCard, BentoGrid } from "../../../../components/ui/bento-grid";
 import { Calendar } from "@/components/ui/calendar";
 import { BellIcon, Share2Icon } from "lucide-react";
 import { AnimatedBeamDemo } from "./bento/integrations";
 import Marquee from "@/components/ui/marquee";
 import { AnimatedListDemo } from "./bento/notification";
-import { EvervaultCard } from "../ui/evervault-card";
+import { EvervaultCard } from "../../../../components/ui/evervault-card";
 
 const files = [
   {
