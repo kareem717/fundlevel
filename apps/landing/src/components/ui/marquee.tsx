@@ -1,16 +1,15 @@
 import { cn } from "@/lib/utils";
+import { ComponentPropsWithoutRef, FC } from "react";
 
-interface MarqueeProps {
-  className?: string;
+export interface MarqueeProps extends ComponentPropsWithoutRef<"div"> {
   reverse?: boolean;
   pauseOnHover?: boolean;
-  children?: React.ReactNode;
   vertical?: boolean;
   repeat?: number;
   [key: string]: any;
 }
 
-export default function Marquee({
+export const Marquee: FC<MarqueeProps> = ({
   className,
   reverse,
   pauseOnHover = false,
@@ -18,7 +17,7 @@ export default function Marquee({
   vertical = false,
   repeat = 4,
   ...props
-}: MarqueeProps) {
+}) => {
   return (
     <div
       {...props}
