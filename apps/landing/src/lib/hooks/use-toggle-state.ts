@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useState } from "react";
 
 type StateType = [boolean, () => void, () => void, () => void] & {
   state: boolean;
@@ -9,8 +9,8 @@ type StateType = [boolean, () => void, () => void, () => void] & {
   toggle: () => void;
 };
 
-const useToggleState = (initial = false) => {
-  const [state, setState] = React.useState<boolean>(initial);
+export const useToggleState = (initial = false) => {
+  const [state, setState] = useState<boolean>(initial);
 
   const close = () => {
     setState(false);
@@ -31,5 +31,3 @@ const useToggleState = (initial = false) => {
   hookData.toggle = toggle;
   return hookData;
 };
-
-export { useToggleState };
