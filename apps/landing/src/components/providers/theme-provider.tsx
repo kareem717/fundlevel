@@ -3,14 +3,11 @@
 import { FC, ComponentPropsWithoutRef } from "react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 
-export const ThemeProvider: FC<
-  ComponentPropsWithoutRef<typeof NextThemesProvider>
-> = ({ children, ...props }) => {
+export interface ThemeProviderProps extends ComponentPropsWithoutRef<typeof NextThemesProvider> { }
+
+export const ThemeProvider: FC<ThemeProviderProps> = ({ children, ...props }) => {
   return (
     <NextThemesProvider
-      attribute="class"
-      defaultTheme="light"
-      disableTransitionOnChange
       {...props}
     >
       {children}
