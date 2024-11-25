@@ -1,15 +1,9 @@
-import { createElement } from "react";
-import { Icons } from "@/components/icons";
-import { buttonVariants } from "@/components/ui/button";
-import { contact, business } from "@/lib/config";
-import Link from "next/link";
-import React from "react";
-import { cn } from "@/lib/utils";
 import { copy } from "@/lib/config";
 import { NavBar } from "@/components/nav-bar";
 import { navigationConfig } from "@/lib/config/navigation";
-import Newsletter from "@/components/landing/newsletter";
+import { Hero } from "@/components/landing/hero";
 import { BentoDemo } from "@/components/landing/bento";
+import Newsletter from "@/components/landing/newsletter";
 
 export default async function Home() {
   const {
@@ -22,6 +16,10 @@ export default async function Home() {
         config={navigationConfig}
         currentPath={"/"}
         className="sticky top-0 z-50"
+      />
+      <Hero
+        id="hero"
+        className="pt-8 md:pt-56 lg:pt-64 w-full h-[95dvh] md:h-[70vh] xl:h-[1028px]"
       />
       <div className="flex flex-col items-center justify-center gap-4 sm:gap-8">
         <h1 className="text-3xl sm:text-4xl font-bold text-center">
