@@ -29,11 +29,7 @@ export default async function RootLayout({
       <body className="w-full">
         <Providers>
           <LivePreviewListener />
-          <Header
-            config={navigationConfig}
-            currentPath={"/"}
-            className="sticky top-0 z-50 border-b w-full"
-          />
+          <Header config={navigationConfig} currentPath={"/"} />
           {children}
           <Footer />
         </Providers>

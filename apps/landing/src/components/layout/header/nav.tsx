@@ -17,6 +17,7 @@ interface NavMenuProps extends ComponentPropsWithoutRef<"nav">, NavConfigProps {
 }
 
 export const NavMenu: FC<NavMenuProps> = ({
+  className,
   config,
   currentPath,
   direction = "row",
@@ -24,25 +25,38 @@ export const NavMenu: FC<NavMenuProps> = ({
   return (
     <nav
       className={cn(
-        "flex flex-row items-center justify-between",
-        direction === "column" && "flex-col"
+        "flex items-center justify-between",
+        direction === "column" ? "flex-col w-full" : "flex-row",
+        className
       )}
     >
       <ul
         className={cn(
-          "flex space-x-4 items-center justify-center",
-          direction === "column" && "flex-col justify-start items-start"
+          "flex items-center",
+          direction === "column" 
+            ? "flex-col space-y-4 w-full" 
+            : "flex-row space-x-4",
         )}
       >
         {config.map((item, index) => (
           <li
             key={index}
             className={cn(
-              "hover:text-primary text-md",
+              "hover:text-primary text-md transition-colors",
+              direction === "column" && "w-full",
               item.href === currentPath && "text-primary"
             )}
           >
-            <Link href={item.href} legacyBehavior passHref prefetch>
+            <Link 
+              href={item.href} 
+              legacyBehavior 
+              passHref 
+              prefetch
+              className={cn(
+                "block",
+                direction === "column" && "w-full py-2 px-4 hover:bg-accent rounded-md"
+              )}
+            >
               {item.label}
             </Link>
           </li>

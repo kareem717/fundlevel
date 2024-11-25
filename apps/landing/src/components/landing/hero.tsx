@@ -30,7 +30,7 @@ export function Hero({
       {...props}
     >
       <div className="relative w-full">
-        <div className="container z-10 flex flex-col items-center justify-center gap-4 w-full text-center px-4 sm:px-10 pb-16 md:pb-24 lg:pb-32 pt-16">
+        <div className="container z-10 flex flex-col items-center justify-center gap-4 w-full text-center px-4 sm:px-10 pb-16 md:pb-24 lg:pb-32 pt-36">
           <h1 className="text-3xl sm:text-4xl lg:text-7xl font-medium">
             Invest Smarter, Raise Faster.
             <br />
