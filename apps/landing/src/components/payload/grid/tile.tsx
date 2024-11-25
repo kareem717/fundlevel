@@ -1,6 +1,6 @@
 import type { Media as MediaType } from '@payload-types'
 
-import { Media } from '@components/payload/Media'
+import { Media } from '@/components/payload/Media'
 import clsx from 'clsx'
 import React from 'react'
 import Label from '../Label'
