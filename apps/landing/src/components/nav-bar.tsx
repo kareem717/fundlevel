@@ -24,12 +24,18 @@ interface NavConfigProps {
     currentPath: string;
 }
 
-interface NavMenuProps extends ComponentPropsWithoutRef<"nav">, NavConfigProps { }
+interface NavMenuProps extends ComponentPropsWithoutRef<"nav">, NavConfigProps {
+    direction?: "row" | "column";
+}
 
-const NavMenu: FC<NavMenuProps> = ({ config, currentPath }) => {
+const NavMenu: FC<NavMenuProps> = ({ config, currentPath, direction = "row" }) => {
     return (
-        <nav className="flex flex-row items-center justify-between">
-            <ul className="flex space-x-4">
+        <nav className={cn("flex flex-row items-center justify-between", direction === "column" && "flex-col")}>
+            <ul className={
+                cn(
+                    "flex space-x-4 items-center justify-center",
+                    direction === "column" && "flex-col justify-start items-start"
+                )}>
                 {config.map((item, index) => (
                     <li key={index} className={cn("hover:text-primary text-md", item.href === currentPath && "text-primary")}    >
                         <Link href={item.href} legacyBehavior passHref prefetch>
@@ -48,7 +54,7 @@ export const NavBar: FC<NavBarProps> = ({ className, config, currentPath, ...pro
     return (
         <header className={cn("flex flex-row items-center justify-between w-full bg-background p-4", className)} {...props}>
             <LogoDiv className="justify-start" />
-            <NavMenu config={config} currentPath={currentPath} className="hidden sm:block" />
+            <NavMenu config={config} currentPath={currentPath} className="hidden sm:flex" />
             <div className="flex-row items-center justify-end gap-4 hidden sm:flex">
                 <Link href="#" className={buttonVariants()}>
                     CTA 1
@@ -65,9 +71,13 @@ export const NavBar: FC<NavBarProps> = ({ className, config, currentPath, ...pro
                     <SheetHeader>
                         <SheetTitle>Are you absolutely sure?</SheetTitle>
                         <SheetDescription>
-                            <NavMenu config={config} currentPath={currentPath} />
                         </SheetDescription>
                     </SheetHeader>
+                    <NavMenu
+                        config={config}
+                        currentPath={currentPath}
+                        direction="column"
+                    />
                 </SheetContent>
             </Sheet>
         </header>
