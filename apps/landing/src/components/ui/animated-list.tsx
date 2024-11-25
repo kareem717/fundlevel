@@ -45,6 +45,8 @@ export const AnimatedList: FC<AnimatedListProps> = memo(
   },
 );
 
+AnimatedList.displayName = "AnimatedList";
+
 export const AnimatedListItem: FC<ComponentPropsWithoutRef<typeof motion.div>> = ({
   children,
   className,
