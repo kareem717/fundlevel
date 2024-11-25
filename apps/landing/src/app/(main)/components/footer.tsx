@@ -5,9 +5,7 @@ import { ComponentPropsWithoutRef, createElement, FC } from "react";
 import { Icons } from "@/components/icons";
 import { contact } from "@/lib/config";
 
-export interface FooterProps extends ComponentPropsWithoutRef<"footer"> { }
-
-export const Footer: FC<FooterProps> = ({ className, ...props }) => {
+export const Footer: FC<ComponentPropsWithoutRef<"footer">> = ({ className, ...props }) => {
   return (
     <footer className={cn("container mt-12", className)} {...props}>
       <div className="flex flex-row justify-between items-center">
@@ -70,8 +68,12 @@ export const Footer: FC<FooterProps> = ({ className, ...props }) => {
           © {new Date().getFullYear()} FundLevel. All rights reserved.
         </div>
         <div className="flex space-x-4 mt-4 md:mt-0">
-          {contact.socials.map((social) => (
-            <Link href={social.link} className="text-muted-foreground hover:text-black">
+          {contact.socials.map((social, index) => (
+            <Link
+              key={index}
+              href={social.link}
+              className="text-muted-foreground hover:text-black"
+            >
               {createElement(Icons[social.icon], { className: "h-5 w-5" })}
               <span className="sr-only">{social.label}</span>
             </Link>
