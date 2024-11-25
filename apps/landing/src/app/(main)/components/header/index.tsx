@@ -1,18 +1,10 @@
 "use client";
 
-import { ComponentPropsWithoutRef, useEffect, useState } from "react";
-import { LogoDiv } from "../../../../components/logo-div";
+import { ComponentPropsWithoutRef, useEffect, useState, FC } from "react";
+import { LogoDiv } from "@/components/logo-div";
 import { NavigationItem, NavMenu } from "./nav";
-import { buttonVariants } from "../../../../components/ui/button";
-import { Icons } from "../../../../components/icons";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "../../../../components/ui/sheet";
+import { buttonVariants } from "@/components/ui/button";
+import { Icons } from "@/components/icons";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { ModeToggle } from "@/components/mode-toggle";
@@ -22,12 +14,12 @@ interface HeaderProps extends ComponentPropsWithoutRef<"header"> {
   currentPath: string;
 }
 
-export function Header({
+export const Header: FC<HeaderProps> = ({
   className,
   config,
   currentPath,
   ...props
-}: HeaderProps) {
+}) => {
   const [scrolled, setScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -83,7 +75,6 @@ export function Header({
             Raise
           </Link>
         </div>
-
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="flex items-center justify-center md:hidden"
