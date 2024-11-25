@@ -1,6 +1,6 @@
 "use client";
 import { cn } from "@/lib/utils";
-import useClickableCard from "@/lib/hooks/use-clickable-card";
+import { useClickableCard } from "@/lib/hooks/use-clickable-card";
 import Link from "next/link";
 import React, { Fragment } from "react";
 
