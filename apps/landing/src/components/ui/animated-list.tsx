@@ -1,19 +1,18 @@
 "use client";
 
-import React, { ReactElement, useEffect, useMemo, useState } from "react";
+import { Children, ComponentPropsWithoutRef, FC, memo, useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 
-export interface AnimatedListProps {
-  className?: string;
-  children: React.ReactNode;
+export interface AnimatedListProps extends ComponentPropsWithoutRef<"div"> {
   delay?: number;
 }
 
-export const AnimatedList = React.memo(
-  ({ className, children, delay = 1000 }: AnimatedListProps) => {
+export const AnimatedList: FC<AnimatedListProps> = memo(
+  ({ className, children, delay = 1000, ...props }) => {
     const [index, setIndex] = useState(0);
     const childrenArray = useMemo(
-      () => React.Children.toArray(children),
+      () => Children.toArray(children),
       [children],
     );
 
@@ -33,7 +32,7 @@ export const AnimatedList = React.memo(
     }, [index, childrenArray]);
 
     return (
-      <div className={`flex flex-col items-center gap-4 ${className}`}>
+      <div className={cn(`flex flex-col items-center gap-4`, className)} {...props}>
         <AnimatePresence>
           {itemsToShow.map((item) => (
             <AnimatedListItem key={(item as React.ReactElement).key}>
@@ -46,9 +45,11 @@ export const AnimatedList = React.memo(
   },
 );
 
-AnimatedList.displayName = "AnimatedList";
-
-export function AnimatedListItem({ children }: { children: React.ReactNode }) {
+export const AnimatedListItem: FC<ComponentPropsWithoutRef<typeof motion.div>> = ({
+  children,
+  className,
+  ...props
+}) => {
   const animations = {
     initial: { scale: 0, opacity: 0 },
     animate: { scale: 1, opacity: 1, originY: 0 },
@@ -57,8 +58,13 @@ export function AnimatedListItem({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <motion.div {...animations} layout className="mx-auto w-full">
+    <motion.div
+      {...animations}
+      layout
+      className={cn("mx-auto w-full", className)}
+      {...props}
+    >
       {children}
     </motion.div>
   );
-}
+};
