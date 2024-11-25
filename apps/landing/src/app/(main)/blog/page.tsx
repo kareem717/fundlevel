@@ -1,8 +1,7 @@
-import React from "react";
-import BlogFilters from "@/app/(frontend)/blog/components/filter";
-import FilteredPagination from "@/app/(frontend)/blog/components/pagination";
+import BlogFilters from "./components/filter";
+import { FilteredPagination } from "./components/pagination";
 import getPayload from "@/lib/utils/getPayload";
-import { blogFiltersCache } from "@/app/(frontend)/blog/components/searchParams";
+import { blogFiltersCache } from "./searchParams";
 import { BlogCategory } from "@/payload-types";
 import { Metadata } from "next";
 

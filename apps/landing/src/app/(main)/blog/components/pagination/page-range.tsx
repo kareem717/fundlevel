@@ -1,4 +1,5 @@
-import React from "react";
+import { cn } from "@/lib/utils";
+import { ComponentPropsWithoutRef, FC } from "react";
 
 const defaultLabels = {
   plural: "Docs",
@@ -12,8 +13,7 @@ const defaultCollectionLabels = {
   },
 };
 
-export const PageRange: React.FC<{
-  className?: string;
+export interface PageRangeProps extends ComponentPropsWithoutRef<"div"> {
   collection?: string;
   collectionLabels?: {
     plural?: string;
@@ -22,16 +22,17 @@ export const PageRange: React.FC<{
   currentPage?: number;
   limit?: number;
   totalDocs?: number;
-}> = (props) => {
-  const {
-    className,
-    collection,
-    collectionLabels: collectionLabelsFromProps,
-    currentPage,
-    limit,
-    totalDocs,
-  } = props;
+}
 
+export const PageRange: FC<PageRangeProps> = ({
+  className,
+  collection,
+  collectionLabels: collectionLabelsFromProps,
+  currentPage,
+  limit,
+  totalDocs,
+  ...props
+}) => {
   let indexStart = (currentPage ? currentPage - 1 : 1) * (limit || 1) + 1;
   if (totalDocs && indexStart > totalDocs) indexStart = 0;
 
@@ -41,19 +42,18 @@ export const PageRange: React.FC<{
   const { plural, singular } =
     collectionLabelsFromProps ||
     defaultCollectionLabels[
-      collection as keyof typeof defaultCollectionLabels
+    collection as keyof typeof defaultCollectionLabels
     ] ||
     defaultLabels ||
     {};
 
   return (
-    <div className={[className, "font-semibold"].filter(Boolean).join(" ")}>
+    <div className={cn(className, "font-semibold")} {...props}>
       {(typeof totalDocs === "undefined" || totalDocs === 0) &&
         "Search produced no results."}
       {typeof totalDocs !== "undefined" &&
         totalDocs > 0 &&
-        `Showing ${indexStart}${indexStart > 0 ? ` - ${indexEnd}` : ""} of ${totalDocs} ${
-          totalDocs > 1 ? plural : singular
+        `Showing ${indexStart}${indexStart > 0 ? ` - ${indexEnd}` : ""} of ${totalDocs} ${totalDocs > 1 ? plural : singular
         }`}
     </div>
   );

@@ -1,16 +1,20 @@
-import React from "react";
+import { ComponentPropsWithoutRef, FC } from "react";
 import configPromise from "@payload-config";
 import { getPayloadHMR } from "@payloadcms/next/utilities";
-import { Pagination } from "@/app/(frontend)/blog/components/pagination/pagination";
-import { PostArchive } from "@/app/(frontend)/blog/components/post-archive";
-import { PageRange } from "@/app/(frontend)/blog/components/pagination/page-range";
+import { Pagination } from "./pagination";
+import { PostArchive } from "../post-archive";
+import { PageRange } from "./page-range";
 
-type Props = {
+export interface FilteredPaginationProps extends ComponentPropsWithoutRef<"div"> {
   category?: string;
   page?: number;
 };
 
-export default async function FilteredPagination({ category, page }: Props) {
+export const FilteredPagination: FC<FilteredPaginationProps> = async ({
+  category,
+  page,
+  ...props
+}) => {
   const payload = await getPayloadHMR({ config: configPromise });
 
   const posts = await payload.find({
@@ -30,7 +34,7 @@ export default async function FilteredPagination({ category, page }: Props) {
   });
 
   return (
-    <div className="flex flex-col container">
+    <div className="flex flex-col container" {...props}>
       <PageRange
         collection="posts"
         currentPage={posts.page}
