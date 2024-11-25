@@ -7,6 +7,11 @@ import {
   Sun,
   Moon,
   Menu,
+  CalendarIcon,
+  FileTextIcon,
+  Lock,
+  BellIcon,
+  Share2Icon,
   type LucideIcon,
   LucideProps,
 } from "lucide-react";
@@ -20,6 +25,11 @@ export const Icons = {
   moon: Moon,
   arrowRight: ArrowRight,
   menu: Menu,
+  calendar: CalendarIcon,
+  fileText: FileTextIcon,
+  lock: Lock,
+  bell: BellIcon,
+  share2: Share2Icon,
   xTwitter: (props: LucideProps) => (
     <svg width="1200" height="1227" viewBox="0 0 1200 1227" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
       <path

@@ -1,11 +1,9 @@
-import { Icons } from "@/components/icons";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ChartLine, Wallet } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { ComponentPropsWithoutRef } from "react";
-import { AuroraBackground } from "../../../../components/ui/aurora";
+import { ComponentPropsWithoutRef, FC } from "react";
 
 const bannerItems = [
   "Secure",
@@ -16,10 +14,10 @@ const bannerItems = [
   "Inclusive",
 ];
 
-export function Hero({
+export const Hero: FC<ComponentPropsWithoutRef<"section">> = ({
   className,
   ...props
-}: ComponentPropsWithoutRef<"section">) {
+}) => {
   const showRadialGradient = true;
   return (
     <section

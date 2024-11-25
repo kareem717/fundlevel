@@ -1,11 +1,10 @@
 "use client";
 
 import { motion, animate } from "framer-motion";
-import { ComponentPropsWithoutRef, FC, useEffect, useMemo, useState } from "react";
+import { ComponentPropsWithoutRef, FC, useEffect, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { GoCopilot } from "react-icons/go";
 import { Icons } from "@/components/icons";
-
 
 export const CardDemo: FC<ComponentPropsWithoutRef<"div">> = ({
   ...props
@@ -23,7 +22,6 @@ export const CardDemo: FC<ComponentPropsWithoutRef<"div">> = ({
     </Card>
   );
 };
-
 
 export const Skeleton: FC<ComponentPropsWithoutRef<"div">> = ({
   className,

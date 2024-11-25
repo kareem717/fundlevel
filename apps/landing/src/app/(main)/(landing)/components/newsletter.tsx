@@ -1,14 +1,16 @@
-"use client";
-
-import React from "react";
+import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Mail } from "lucide-react";
 import { BackgroundBeams } from "@/components/ui/background-beams";
+import { ComponentPropsWithoutRef, FC } from "react";
 
-export default function Newsletter() {
+export const Newsletter: FC<ComponentPropsWithoutRef<"section">> = ({
+  className,
+  ...props
+}) => {
   return (
-    <section className="w-full p-12">
+    <section className={cn("w-full p-12", className)} {...props}>
       <div className="container px-4 md:px-6">
         <div className="px-6 py-28 bg-black rounded-xl antialiased relative shadow-xl">
           <div className="grid gap-8 lg:grid-cols-2 items-start">

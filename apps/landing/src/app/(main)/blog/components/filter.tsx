@@ -12,7 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import clsx from "clsx";
 import { useQueryStates } from "nuqs";
-import { blogFiltersParsers } from "../searchParams";
+import { blogFiltersParsers } from "./searchParams";
 
 export default function BlogFilters({
   categories,

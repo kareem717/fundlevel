@@ -11,7 +11,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { blogFiltersParsers } from "../../searchParams";
+import { blogFiltersParsers } from "../searchParams";
 import { useQueryStates } from "nuqs";
 
 export interface PaginationProps extends ComponentPropsWithoutRef<"div"> {

@@ -1,24 +1,12 @@
-"use client";
-
 import { cn } from "@/lib/utils";
-import {
-  Brain,
-  Shield,
-  LineChart,
-  Rocket,
-  Target,
-  BadgeDollarSign,
-  CalendarIcon,
-  FileTextIcon,
-  Lock,
-} from "lucide-react";
-import { BentoCard, BentoGrid } from "../../../../components/ui/bento-grid";
+import { BentoCard, BentoGrid } from "@/components/ui/bento-grid";
 import { Calendar } from "@/components/ui/calendar";
-import { BellIcon, Share2Icon } from "lucide-react";
 import { AnimatedBeamDemo } from "./bento/integrations";
 import Marquee from "@/components/ui/marquee";
 import { AnimatedListDemo } from "./bento/notification";
-import { EvervaultCard } from "../../../../components/ui/evervault-card";
+import { EvervaultCard } from "@/components/ui/evervault-card";
+import { Icons } from "@/components/icons";
+import { ComponentPropsWithoutRef, FC } from "react";
 
 const files = [
   {
@@ -45,7 +33,7 @@ const files = [
 
 const features = [
   {
-    Icon: FileTextIcon,
+    Icon: Icons.fileText,
     name: "Save your files",
     description: "We automatically save your files as you type.",
     href: "#",
@@ -80,7 +68,7 @@ const features = [
     ),
   },
   {
-    Icon: BellIcon,
+    Icon: Icons.bell,
     name: "Notifications",
     description: "Get notified when something happens.",
     href: "#",
@@ -91,7 +79,7 @@ const features = [
     ),
   },
   {
-    Icon: Share2Icon,
+    Icon: Icons.share2,
     name: "Integrations",
     description: "Supports 100+ integrations and counting.",
     href: "#",
@@ -102,7 +90,7 @@ const features = [
     ),
   },
   {
-    Icon: CalendarIcon,
+    Icon: Icons.calendar,
     name: "Calendar",
     description: "Use the calendar to filter your files by date.",
     className: "col-span-3 lg:col-span-1",
@@ -120,7 +108,7 @@ const features = [
 
 const investorFeatures = [
   {
-    Icon: Lock,
+    Icon: Icons.lock,
     name: "Smart Contracts",
     description: "Invest and own smart contracts.",
     className: "col-span-3 lg:col-span-1",
@@ -135,7 +123,7 @@ const investorFeatures = [
   },
 
   {
-    Icon: BellIcon,
+    Icon: Icons.bell,
     name: "Notifications",
     description: "Get notified when something happens.",
     href: "#",
@@ -146,7 +134,7 @@ const investorFeatures = [
     ),
   },
   {
-    Icon: Share2Icon,
+    Icon: Icons.share2,
     name: "Integrations",
     description: "Supports 100+ integrations and counting.",
     href: "#",
@@ -157,7 +145,7 @@ const investorFeatures = [
     ),
   },
   {
-    Icon: FileTextIcon,
+    Icon: Icons.fileText,
     name: "Save your files",
     description: "We automatically save your files as you type.",
     href: "#",
@@ -193,9 +181,12 @@ const investorFeatures = [
   },
 ];
 
-export function Features() {
+export const Features: FC<ComponentPropsWithoutRef<"section">> = ({
+  className,
+  ...props
+}) => {
   return (
-    <section className="w-full py-12">
+    <section className={cn("w-full py-12", className)} {...props}>
       <div className="container px-4 md:px-6">
         <div className="flex flex-col items-center justify-center space-y-4 text-center mb-20">
           <h2 className="text-3xl font-medium tracking-tighter sm:text-5xl">
@@ -207,7 +198,6 @@ export function Features() {
             succeed.
           </p>
         </div>
-
         {/* Investor Features */}
         <div className="mb-20">
           <h3 className="text-2xl font-medium mb-8">For Investors</h3>
@@ -217,7 +207,6 @@ export function Features() {
             ))}
           </BentoGrid>
         </div>
-
         {/* Business Features */}
         <div>
           <h3 className="text-2xl font-medium mb-8">For Businesses</h3>

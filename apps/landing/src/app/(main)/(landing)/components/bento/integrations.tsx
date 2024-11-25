@@ -22,7 +22,7 @@ const Circle: FC<ComponentPropsWithRef<"div">> = ({
   </div>
 );
 
-const AnimatedBeamDemo: FC<ComponentPropsWithoutRef<"div">> = ({
+export const AnimatedBeamDemo: FC<ComponentPropsWithoutRef<"div">> = ({
   className,
   ...props
 }) => {
