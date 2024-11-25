@@ -1,58 +1,50 @@
-import type { ComponentProps } from "react";
+import { ComponentPropsWithoutRef, FC } from "react";
 import { cn } from "@/lib/utils";
 
 type Cols = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
 type Span = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13;
 
-type GridProps = ComponentProps<"div"> & {
+export interface GridProps extends ComponentPropsWithoutRef<"div"> {
   cols?: Cols;
   colsSm?: Cols;
   colsMd?: Cols;
   colsLg?: Cols;
-};
+}
 
-const Grid: React.FC<GridProps> = (props) => {
-  const { cols = 1, colsSm, colsMd, colsLg, className, ...rest } = props;
-  return (
-    <div
-      className={cn(
-        "grid",
-        gridCols[cols],
-        colsSm && gridColsSm[colsSm],
-        colsMd && gridColsMd[colsMd],
-        colsLg && gridColsLg[colsLg],
-        className
-      )}
-      {...rest}
-    />
-  );
-};
+export const Grid: FC<GridProps> = ({ cols = 1, colsSm, colsMd, colsLg, className, ...props }) => (
+  <div
+    className={cn(
+      "grid",
+      gridCols[cols],
+      colsSm && gridColsSm[colsSm],
+      colsMd && gridColsMd[colsMd],
+      colsLg && gridColsLg[colsLg],
+      className
+    )}
+    {...props}
+  />
+);
 
-type ColProps = ComponentProps<"div"> & {
+export interface ColProps extends ComponentPropsWithoutRef<"div"> {
   span?: Span;
   spanSm?: Span;
   spanMd?: Span;
   spanLg?: Span;
-};
+}
 
-const Col: React.FC<ColProps> = (props) => {
-  const { span = 1, spanSm, spanMd, spanLg, className, ...rest } = props;
+export const Col: FC<ColProps> = ({ span = 1, spanSm, spanMd, spanLg, className, ...props }) => (
+  <div
+    className={cn(
+      colSpan[span],
+      spanSm && colSpanSm[spanSm],
+      spanMd && colSpanMd[spanMd],
+      spanLg && colSpanLg[spanLg],
+      className
+    )}
+    {...props}
+  />
+);
 
-  return (
-    <div
-      className={cn(
-        colSpan[span],
-        spanSm && colSpanSm[spanSm],
-        spanMd && colSpanMd[spanMd],
-        spanLg && colSpanLg[spanLg],
-        className
-      )}
-      {...rest}
-    />
-  );
-};
-
-export { Grid, Col };
 
 const gridCols: { [key in Cols]: string } = {
   0: "grid-cols-none",
