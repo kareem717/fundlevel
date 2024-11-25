@@ -1,6 +1,6 @@
 import React from "react";
 import type { Post } from "@/payload-types";
-import { PostCard } from "@/components/blog/post-card";
+import { PostCard } from "@/app/(frontend)/blog/components/post-card";
 
 type Args = {
   posts: Post[];

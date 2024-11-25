@@ -1,9 +1,9 @@
 import React from "react";
 import configPromise from "@payload-config";
 import { getPayloadHMR } from "@payloadcms/next/utilities";
-import { Pagination } from "@/components/blog/pagination/pagination";
-import { PostArchive } from "@/components/blog/post-archive";
-import { PageRange } from "@/components/blog/pagination/page-range";
+import { Pagination } from "@/app/(frontend)/blog/components/pagination/pagination";
+import { PostArchive } from "@/app/(frontend)/blog/components/post-archive";
+import { PageRange } from "@/app/(frontend)/blog/components/pagination/page-range";
 
 type Props = {
   category?: string;
