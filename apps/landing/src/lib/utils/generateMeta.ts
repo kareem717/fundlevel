@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import type { Page, Post } from "@/payload-types";
 import { mergeOpenGraph } from "@/lib/utils/mergeOpenGraph";
-import { generateMetadata } from "@/app/(frontend)/layout";
+import { generateMetadata } from "@/app/(main)/layout";
 
 export const generateMeta = async (args: {
   doc: Page | Post | null;
