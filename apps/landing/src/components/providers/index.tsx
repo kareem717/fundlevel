@@ -1,18 +1,23 @@
 import { FC, ReactNode } from "react";
 import { NuqsProvider, NuqsProviderProps } from "./nuqs-provider";
 import { ThemeProvider, ThemeProviderProps } from "./theme-provider";
+import { WrapBalancer } from "./wrap-balancer";
 
 export interface ProvidersProps {
-  children: ReactNode
-  nuqsProps?: NuqsProviderProps
-  themeProps?: ThemeProviderProps
+  children: ReactNode;
+  nuqsProps?: NuqsProviderProps;
+  themeProps?: ThemeProviderProps;
 }
 
-export const Providers: FC<ProvidersProps> = ({ children, nuqsProps, themeProps }) => {
+export const Providers: FC<ProvidersProps> = ({
+  children,
+  nuqsProps,
+  themeProps,
+}) => {
   return (
     <NuqsProvider {...nuqsProps}>
       <ThemeProvider {...themeProps}>
-        {children}
+        <WrapBalancer>{children}</WrapBalancer>
       </ThemeProvider>
     </NuqsProvider>
   );

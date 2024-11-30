@@ -19,15 +19,15 @@ const Hero: FC<HeroProps> = ({ className = "" }) => {
         transition={{ duration: 0.5 }}
         className="container max-w-6xl text-center"
       >
-        <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary to-primary-foreground bg-clip-text text-transparent">
+        <h1 className="mb-6 text-4xl font-bold text-transparent md:text-6xl bg-gradient-to-r from-primary to-primary-foreground bg-clip-text">
           Access interest and debt free capital while preserving ownership
         </h1>
-        <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto">
+        <p className="max-w-3xl mx-auto mb-8 text-xl md:text-2xl text-muted-foreground">
           Raise funds in ways that don&apos;t make you carry all of the risk,
           and give all of the reward to the investor.
         </p>
         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-          <Button size="lg" className="text-lg px-8">
+          <Button size="lg" className="px-8 text-lg">
             Get Started
           </Button>
         </motion.div>

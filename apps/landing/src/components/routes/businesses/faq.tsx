@@ -54,9 +54,9 @@ const FAQ: FC<FAQProps> = ({ className = "" }) => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="mb-16 text-center"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+          <h2 className="mb-4 text-3xl font-bold md:text-4xl">
             Frequently Asked Questions
           </h2>
           <p className="text-xl text-muted-foreground">

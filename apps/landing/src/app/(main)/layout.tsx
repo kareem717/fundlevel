@@ -21,10 +21,14 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
-      className={cn(GeistSans.variable, GeistMono.variable)}
       suppressHydrationWarning
+      className={cn(
+        GeistSans.variable,
+        GeistMono.variable,
+        "scroll-smooth antialiased focus:scroll-auto"
+      )}
     >
-      <body className="antialiased">
+      <body>
         <Providers
           themeProps={{
             attribute: "class",

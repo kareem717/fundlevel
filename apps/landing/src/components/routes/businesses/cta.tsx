@@ -19,7 +19,7 @@ const CTA: FC<CTAProps> = ({ className = "" }) => {
           className="text-center"
         >
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Button size="lg" className="text-lg px-8">
+            <Button size="lg" className="px-8 text-lg">
               Raise Funds
             </Button>
           </motion.div>

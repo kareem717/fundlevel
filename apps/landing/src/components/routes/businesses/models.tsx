@@ -33,14 +33,14 @@ const Models: FC<ModelsProps> = ({ className = "" }) => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="mb-16 text-center"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+          <h2 className="mb-4 text-3xl font-bold md:text-4xl">
             Models For Businesses
           </h2>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid gap-8 md:grid-cols-3">
           {modelsList.map((model, index) => (
             <motion.div
               key={index}
@@ -48,9 +48,9 @@ const Models: FC<ModelsProps> = ({ className = "" }) => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.2 }}
-              className="p-6 rounded-lg bg-card shadow-lg"
+              className="p-6 rounded-lg shadow-lg bg-card"
             >
-              <h3 className="text-xl font-semibold mb-4">{model.title}</h3>
+              <h3 className="mb-4 text-xl font-semibold">{model.title}</h3>
               <p className="text-muted-foreground">{model.description}</p>
             </motion.div>
           ))}

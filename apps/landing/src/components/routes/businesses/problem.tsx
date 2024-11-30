@@ -34,9 +34,9 @@ const Problem: FC<ProblemProps> = ({ className = "" }) => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-16"
+          className="mb-16 text-center"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+          <h2 className="mb-4 text-3xl font-bold md:text-4xl">
             Businesses struggle to access capital without debt, interest, or
             diluting ownership.
           </h2>
@@ -47,7 +47,7 @@ const Problem: FC<ProblemProps> = ({ className = "" }) => {
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid gap-8 md:grid-cols-3">
           {problems.map((problem, index) => (
             <motion.div
               key={index}
@@ -55,9 +55,9 @@ const Problem: FC<ProblemProps> = ({ className = "" }) => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.2 }}
-              className="p-6 rounded-lg bg-card shadow-lg"
+              className="p-6 rounded-lg shadow-lg bg-card"
             >
-              <h3 className="text-xl font-semibold mb-4">{problem.title}</h3>
+              <h3 className="mb-4 text-xl font-semibold">{problem.title}</h3>
               <p className="text-muted-foreground">{problem.description}</p>
             </motion.div>
           ))}

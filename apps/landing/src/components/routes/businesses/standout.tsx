@@ -42,14 +42,14 @@ const Standout: FC<StandoutProps> = ({ className = "" }) => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="mb-16 text-center"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+          <h2 className="mb-4 text-3xl font-bold md:text-4xl">
             How we stand out
           </h2>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {features.map((feature, index) => (
             <motion.div
               key={index}
@@ -57,9 +57,9 @@ const Standout: FC<StandoutProps> = ({ className = "" }) => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              className="p-6 rounded-lg bg-card shadow-lg"
+              className="p-6 rounded-lg shadow-lg bg-card"
             >
-              <h3 className="text-xl font-semibold mb-4">{feature.title}</h3>
+              <h3 className="mb-4 text-xl font-semibold">{feature.title}</h3>
               <p className="text-muted-foreground">{feature.description}</p>
             </motion.div>
           ))}
