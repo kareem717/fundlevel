@@ -3,7 +3,7 @@ import React from "react";
 import type { Page } from "@/payload-types";
 import getPayload from "@/lib/utils/getPayload";
 import { POST_SLUG } from "@/payload/collections/constants";
-import { PostCard } from "@/app/(main)/blog/components/post-card";
+import { PostCard } from "@/components/routes/blog/post-card";
 import { CMSLink } from "@/components/payload/Link";
 
 type Props = Extract<

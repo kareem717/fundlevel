@@ -1,11 +1,24 @@
-import { NavigationItem } from "@/app/(main)/components/header/nav";
+import { NavigationItem } from "@/components/layout/header/nav";
 
 export const navigationConfig: NavigationItem[] = [
-    {
-        label: "Home",
-        href: "/",
-    }, {
-        label: "Features",
-        href: "#",
-    }
+  {
+    label: "Investors",
+    href: "/investors",
+  },
+  {
+    label: "Businesses",
+    href: "/businesses",
+  },
+  {
+    label: "Features",
+    href: "/features",
+  },
+  {
+    label: "Blog",
+    href: "/blog",
+  },
+  {
+    label: "Changelog",
+    href: "/changelog",
+  },
 ];

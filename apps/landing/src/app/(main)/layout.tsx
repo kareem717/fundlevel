@@ -1,4 +1,5 @@
-import "./globals.css";
+import "@/lib/styles/globals.css";
+
 import { Providers } from "@/components/providers";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
@@ -8,11 +9,9 @@ import { Metadata } from "next/types";
 import { mergeOpenGraph } from "@/lib/utils/mergeOpenGraph";
 import { cn } from "@/lib/utils";
 import { navigationConfig } from "@/lib/config/navigation";
-import { Header } from "@/app/(main)/components/header";
-import { Footer } from "@/app/(main)/components/footer";
 import { Toaster } from "sonner";
-
-// export const metadata = meta.root;
+import { Header } from "@/components/layout/header";
+import { Footer } from "@/components/layout/footer";
 
 export default async function RootLayout({
   children,
@@ -25,7 +24,7 @@ export default async function RootLayout({
       className={cn(GeistSans.variable, GeistMono.variable)}
       suppressHydrationWarning
     >
-      <body className="w-full">
+      <body className="antialiased">
         <Providers
           themeProps={{
             attribute: "class",
@@ -36,7 +35,7 @@ export default async function RootLayout({
           <LivePreviewListener />
           <Header config={navigationConfig} currentPath={"/"} />
           {children}
-          <Footer />
+          <Footer className="mt-6" />
           <Toaster />
         </Providers>
       </body>

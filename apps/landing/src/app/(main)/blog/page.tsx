@@ -1,7 +1,7 @@
-import { BlogFilters } from "./components/filter";
-import { FilteredPagination } from "./components/pagination";
+import { BlogFilters } from "@/components/routes/blog/filter";
+import { FilteredPagination } from "@/components/routes/blog/pagination";
 import getPayload from "@/lib/utils/getPayload";
-import { blogFiltersCache } from "./components/searchParams";
+import { blogFiltersCache } from "@/components/routes/blog/searchParams";
 import { BlogCategory } from "@/payload-types";
 import { Metadata } from "next";
 
@@ -33,12 +33,28 @@ export default async function Page({ searchParams }: Args) {
   )?.id;
 
   return (
-    <div className="flex flex-col min-h-screen space-y-16">
-      <BlogFilters categories={categories.docs} />
-      <FilteredPagination
-        category={categoryId?.toString() ?? ""}
-        page={page ?? ""}
-      />
+    <div className="flex flex-col min-h-screen">
+      <section className="relative w-full py-24 bg-muted/40 mt-16">
+        <div className="container px-4 md:px-6">
+          <div className="flex flex-col items-center space-y-4 text-center">
+            <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl">
+              Our Blog
+            </h1>
+            <p className="max-w-[600px] text-muted-foreground md:text-xl/relaxed">
+              Insights, updates and stories from our team. Learn more about
+              fundraising, investing and building great companies.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <div className="container px-4 md:px-6 space-y-16 py-16">
+        <BlogFilters categories={categories.docs} />
+        <FilteredPagination
+          category={categoryId?.toString() ?? ""}
+          page={page ?? ""}
+        />
+      </div>
     </div>
   );
 }
