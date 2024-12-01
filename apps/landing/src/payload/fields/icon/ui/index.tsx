@@ -2,10 +2,7 @@
 
 import React from 'react'
 
-import {
-  Select,
-  ReactSelectOption,
-} from '@payloadcms/ui'
+import { Select, ReactSelectOption } from '@payloadcms/ui'
 
 import { useField } from '@payloadcms/ui'
 
@@ -48,8 +45,8 @@ export const CustomIconSelect = (path: string) => {
       <Select
         options={generateLucideIconOptions()}
         onChange={(value) => setValue(value)}
-      // @ts-ignore
-      // value={value}
+        // @ts-ignore
+        // value={value}
       />
       <h3>Preview</h3>
       {/* @ts-ignore */}

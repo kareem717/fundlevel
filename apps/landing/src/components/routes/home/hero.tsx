@@ -1,76 +1,76 @@
-import { buttonVariants } from "@/components/ui/button";
-import { Cover } from "@/components/ui/cover";
-import { FlipWords } from "@/components/ui/flip-words";
-import { cn } from "@/lib/utils";
-import { ChartLine, Wallet } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import { ComponentPropsWithoutRef, FC } from "react";
+import { buttonVariants } from '@/components/ui/button'
+import { Cover } from '@/components/ui/cover'
+import { FlipWords } from '@/components/ui/flip-words'
+import { cn } from '@/lib/utils'
+import { ChartLine, Wallet } from 'lucide-react'
+import Image from 'next/image'
+import Link from 'next/link'
+import { ComponentPropsWithoutRef, FC } from 'react'
 
 const bannerItems = [
-  "Secure",
-  "Smart",
-  "Transparent",
-  "Fast",
-  "Fair",
-  "Inclusive",
-];
+  'Secure',
+  'Smart',
+  'Transparent',
+  'Fast',
+  'Fair',
+  'Inclusive',
+]
 
-export const Hero: FC<ComponentPropsWithoutRef<"section">> = ({
+export const Hero: FC<ComponentPropsWithoutRef<'section'>> = ({
   className,
   ...props
 }) => {
-  const showRadialGradient = true;
+  const showRadialGradient = true
   return (
     <section
       className={cn(
-        "w-full flex flex-col items-center overflow-x-hidden",
+        'w-full flex flex-col items-center overflow-x-hidden',
         className
       )}
       {...props}
     >
       <div className="relative w-full">
-        <div className="container z-10 flex flex-col items-center justify-center gap-4 w-full text-center px-4 sm:px-10 pb-16 md:pb-24 lg:pb-32 pt-36">
-          <h1 className="text-3xl sm:text-4xl lg:text-7xl font-medium">
+        <div className="container z-10 flex flex-col items-center justify-center w-full gap-4 px-4 pb-16 text-center sm:px-10 md:pb-24 lg:pb-32 pt-36">
+          <h1 className="text-3xl font-medium sm:text-4xl lg:text-7xl">
             Simple Alternative Investing
             <br />
-            <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-              Aligned with Your{" "}
-              <FlipWords words={["Values", "Goals", "Dreams"]} />.
+            <span className="">
+              Aligned with Your{' '}
+              <FlipWords words={['Values.', 'Goals.', 'Dreams.']} />
             </span>
           </h1>
-          <p className="text-sm md:text-lg mx-auto md:w-2/3 text-muted-foreground">
+          <p className="mx-auto text-sm md:text-lg md:w-2/3 text-muted-foreground">
             Fundlevel enables access to alternative and private markets,
             allowing investors to find high-return opportunities and businesses
             to raise capital in a healthy, growth-conducive manner—all while
             maintaining shariah compliance.
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2 w-full max-w-2xl">
+          <div className="grid w-full max-w-2xl grid-cols-1 gap-4 mt-2 md:grid-cols-2">
             <Link
               href="#"
               className={cn(
-                buttonVariants({ variant: "outline", size: "lg" }),
-                "flex flex-row items-center justify-center"
+                buttonVariants({ variant: 'outline', size: 'lg' }),
+                'flex flex-row items-center justify-center'
               )}
             >
-              <ChartLine className="size-4 mr-2" />
+              <ChartLine className="mr-2 size-4" />
               Invest
             </Link>
             <Link
               href="#"
               className={cn(
-                buttonVariants({ size: "lg" }),
-                "flex flex-row items-center justify-center"
+                buttonVariants({ size: 'lg' }),
+                'flex flex-row items-center justify-center'
               )}
             >
-              <Wallet className="size-4 mr-2" />
+              <Wallet className="mr-2 size-4" />
               Raise
             </Link>
           </div>
         </div>
 
         <div className="h-[35dvw] md:h-[27dvw] lg:h-[27dvw]   w-full relative mt-8 sm:mt-16 md:mt-24">
-          <div className="container h-full mx-auto relative">
+          <div className="container relative h-full mx-auto">
             <Image
               className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[90dvw] md:w-[70dvw] h-auto"
               src="https://perawallet.s3.amazonaws.com/images/pera-web.png"
@@ -89,7 +89,7 @@ export const Hero: FC<ComponentPropsWithoutRef<"section">> = ({
           </div>
         </div>
 
-        <div className="absolute inset-0 -z-10 pointer-events-none touch-none">
+        <div className="absolute inset-0 pointer-events-none -z-10 touch-none">
           <div
             className={cn(
               `
@@ -114,7 +114,7 @@ export const Hero: FC<ComponentPropsWithoutRef<"section">> = ({
         </div>
       </div>
 
-      <div className="w-full bg-neutral-800 py-4 overflow-hidden">
+      <div className="w-full py-4 overflow-hidden bg-neutral-800">
         <div className="animate-marquee whitespace-nowrap">
           <div className="inline-flex gap-4">
             {[...Array(3)].map((_, i) => (
@@ -125,11 +125,11 @@ export const Hero: FC<ComponentPropsWithoutRef<"section">> = ({
                     className="flex flex-row items-center justify-center"
                   >
                     <div className="py-1">
-                      <p className="text-white text-sm uppercase tracking-widest">
+                      <p className="text-sm tracking-widest text-white uppercase">
                         {item}
                       </p>
                     </div>
-                    <span className="inline-block w-4 h-2 bg-white/50 mx-2" />
+                    <span className="inline-block w-4 h-2 mx-2 bg-white/50" />
                   </div>
                 ))}
               </div>
@@ -138,5 +138,5 @@ export const Hero: FC<ComponentPropsWithoutRef<"section">> = ({
         </div>
       </div>
     </section>
-  );
-};
+  )
+}

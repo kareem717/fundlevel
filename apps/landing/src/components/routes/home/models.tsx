@@ -1,82 +1,97 @@
-"use client";
+'use client'
 
-import { cn } from "@/lib/utils";
-import React, { ComponentPropsWithoutRef, FC } from "react";
+import { Box, Container } from '@/components/layout'
+import { Section } from '@/components/layout'
+import { cn } from '@/lib/utils'
+import { motion } from 'framer-motion'
+import Link from 'next/link'
+import React, { ComponentPropsWithoutRef, FC, useState } from 'react'
+import Balancer from 'react-wrap-balancer'
 
 const models = [
   {
-    title: "Equity Financing",
+    title: 'Equity Financing',
     description:
-      "Empowering investors to own a share of businesses, benefiting from dividends or capital growth.",
+      'Empowering investors to own a share of businesses, benefiting from dividends or capital growth.',
     color:
-      "bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/50 dark:hover:bg-blue-950/70",
-    borderColor: "border-blue-200 dark:border-blue-800",
+      'bg-blue-500 hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-800',
+    borderColor: 'border-blue-200 dark:border-blue-800',
   },
   {
-    title: "Revenue/Profit Sharing",
+    title: 'Revenue/Profit Sharing',
     description:
-      "Offering a share of business profits over time, ideal for cash-flow positive ventures.",
+      'Offering a share of business profits over time, ideal for cash-flow positive ventures.',
     color:
-      "bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/50 dark:hover:bg-emerald-950/70",
-    borderColor: "border-emerald-200 dark:border-emerald-800",
+      'bg-emerald-500 hover:bg-emerald-600 dark:bg-emerald-700 dark:hover:bg-emerald-800',
+    borderColor: 'border-emerald-200 dark:border-emerald-800',
   },
   {
-    title: "Asset Funding Arrangements",
+    title: 'Asset Funding Arrangements',
     description:
-      "Facilitating shared ownership of assets, generating profits from their use.",
+      'Facilitating shared ownership of assets, generating profits from their use.',
     color:
-      "bg-purple-50 hover:bg-purple-100 dark:bg-purple-950/50 dark:hover:bg-purple-950/70",
-    borderColor: "border-purple-200 dark:border-purple-800",
+      'bg-purple-500 hover:bg-purple-600 dark:bg-purple-700 dark:hover:bg-purple-800',
+    borderColor: 'border-purple-200 dark:border-purple-800',
   },
   {
-    title: "Mergers & Acquisitions",
+    title: 'Mergers & Acquisitions',
     description:
-      "Streamlining business growth and consolidation through strategic partnerships and acquisitions.",
+      'Streamlining business growth and consolidation through strategic partnerships and acquisitions.',
     color:
-      "bg-orange-50 hover:bg-orange-100 dark:bg-orange-950/50 dark:hover:bg-orange-950/70",
-    borderColor: "border-orange-200 dark:border-orange-800",
+      'bg-orange-500 hover:bg-orange-600 dark:bg-orange-700 dark:hover:bg-orange-800',
+    borderColor: 'border-orange-200 dark:border-orange-800',
   },
-];
+]
 
-export const Models: FC<ComponentPropsWithoutRef<"section">> = ({
+export const Models: FC<ComponentPropsWithoutRef<'section'>> = ({
   className,
   ...props
 }) => {
+  const [activeIndex, setActiveIndex] = useState(0)
   return (
-    <section className={cn("py-24 px-4", className)} {...props}>
-      <div className="text-center mb-16">
-        <p className="text-sm font-medium text-muted-foreground mb-2">
-          INVESTMENT MODELS
-        </p>
-        <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
-          Our Services
-        </h2>
-      </div>
+    <Section className={cn(className)} {...props}>
+      <Container>
+        <Box
+          direction="col"
+          className="items-center justify-center gap-4 text-center"
+        >
+          <p className="text-sm text-muted-foreground">INVESTMENT MODELS</p>
+          <h2 className="text-4xl tracking-tight md:text-5xl">Our Services</h2>
+        </Box>
+        <Box cols={{ sm: 1, md: 2, lg: 4 }} gap={4}>
+          {models.map((model, index) => (
+            <div
+              key={index}
+              className={cn(
+                'group relative rounded-lg',
+                'p-6 flex flex-col h-[280px] lg:h-[350px] text-foreground gap-8',
+                'bg-secondary'
+              )}
+            >
+              <div className="text-sm font-medium text-muted-foreground">
+                {String(index + 1).padStart(2, '0')}
+              </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto px-4">
-        {models.map((model, index) => (
-          <div
-            key={index}
-            className={cn(
-              "group relative overflow-hidden rounded-2xl border transition-all duration-300",
-              "p-6 h-[280px] flex flex-col justify-between",
-              model.color,
-              model.borderColor
-            )}
-          >
-            <div className="space-y-4 transform transition-transform duration-300 group-hover:-translate-y-4">
-              <h3 className="text-xl font-bold">{model.title}</h3>
-              <p className="text-muted-foreground">{model.description}</p>
-            </div>
+              <div className="flex flex-col flex-1 gap-4">
+                <h3 className="text-xl font-medium">
+                  <Balancer>{model.title}</Balancer>
+                </h3>
+                <p className="text-muted-foreground mb-auto">
+                  <Balancer>{model.description}</Balancer>
+                </p>
+              </div>
 
-            <div className="absolute bottom-6 left-6 transform translate-y-full opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-              <button className="text-primary font-medium hover:underline">
-                Learn more →
-              </button>
+              <Link
+                href="/investors"
+                className="inline-flex items-center text-sm font-medium px-4 py-2 rounded-md bg-secondary-foreground/10 hover:bg-secondary-foreground/20 transition-colors w-fit"
+              >
+                Learn more
+                <span className="ml-2">→</span>
+              </Link>
             </div>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-};
+          ))}
+        </Box>
+      </Container>
+    </Section>
+  )
+}

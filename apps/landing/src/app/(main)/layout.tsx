@@ -1,11 +1,11 @@
 import "@/lib/styles/globals.css";
 
+import getPayload from "@/lib/utils/getPayload";
+import { Metadata } from "next/types";
 import { Providers } from "@/components/providers";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
-import { LivePreviewListener } from "@/components/payload/LivePreviewListener";
-import getPayload from "@/lib/utils/getPayload";
-import { Metadata } from "next/types";
+
 import { mergeOpenGraph } from "@/lib/utils/mergeOpenGraph";
 import { cn } from "@/lib/utils";
 import { navigationConfig } from "@/lib/config/navigation";
@@ -36,11 +36,9 @@ export default async function RootLayout({
             disableTransitionOnChange: true,
           }}
         >
-          <LivePreviewListener />
           <Header config={navigationConfig} currentPath={"/"} />
           {children}
           <Footer className="mt-6" />
-          <Toaster />
         </Providers>
       </body>
     </html>

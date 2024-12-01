@@ -2,6 +2,8 @@ import { FC, ReactNode } from "react";
 import { NuqsProvider, NuqsProviderProps } from "./nuqs-provider";
 import { ThemeProvider, ThemeProviderProps } from "./theme-provider";
 import { WrapBalancer } from "./wrap-balancer";
+import { LivePreviewListener } from "../payload/LivePreviewListener";
+import { Toaster } from "sonner";
 
 export interface ProvidersProps {
   children: ReactNode;
@@ -17,7 +19,11 @@ export const Providers: FC<ProvidersProps> = ({
   return (
     <NuqsProvider {...nuqsProps}>
       <ThemeProvider {...themeProps}>
-        <WrapBalancer>{children}</WrapBalancer>
+        <WrapBalancer>
+          {children}
+          <Toaster />
+          <LivePreviewListener />
+        </WrapBalancer>
       </ThemeProvider>
     </NuqsProvider>
   );

@@ -1,117 +1,186 @@
-"use client";
+'use client'
 
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { ArrowUpRight } from "lucide-react";
-import Image from "next/image";
-import React, { ComponentPropsWithoutRef, FC } from "react";
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
+import { ArrowUpRight } from 'lucide-react'
+import Image from 'next/image'
+import React, { ComponentPropsWithoutRef, FC, useState } from 'react'
+import { Section, Box, Container } from '@/components/layout'
+import { motion } from 'framer-motion'
+import Balancer from 'react-wrap-balancer'
 
 const items = [
   {
-    header: "Invest",
-    subheading: "Discover high growth investment opportunities.",
+    header: 'Invest',
+    subheading: 'Discover high growth investments.',
     description:
-      "Access a range of shariah-compliant models, from revenue sharing to asset leasing, and grow your portfolio.",
-    buttonText: "Learn More",
+      'Access a range of shariah-compliant models, from revenue sharing to asset leasing, and grow your portfolio.',
+    buttonText: 'Learn More',
     image:
-      "https://pipe.com/_next/image?url=%2Fassets%2Fimg%2Fproduct-selector%2Fproduct-selector-capital-desktop.png&w=828&q=75",
-    url: "/invest",
+      'https://pipe.com/_next/image?url=%2Fassets%2Fimg%2Fproduct-selector%2Fproduct-selector-card-desktop.png&w=828&q=75',
+    url: '/invest',
   },
   {
-    header: "Raise",
-    subheading: "Secure capital without debt or interest.",
+    header: 'Raise',
+    subheading: 'Secure capital without debt or interest.',
     description:
-      "Connect with investors through equity crowdfunding, profit-sharing, and more. Grow your business ethically and efficiently.",
-    buttonText: "Get Started",
+      'Connect with investors through equity crowdfunding, profit-sharing, and more. Grow your business ethically and efficiently.',
+    buttonText: 'Get Started',
     image:
-      "https://pipe.com/_next/image?url=%2Fassets%2Fimg%2Fproduct-selector%2Fproduct-selector-card-desktop.png&w=828&q=75",
-    url: "/raise",
+      'https://pipe.com/_next/image?url=%2Fassets%2Fimg%2Fproduct-selector%2Fproduct-selector-capital-desktop.png&w=828&q=75',
+    url: '/raise',
   },
-];
+]
 
-export const CTA: FC<ComponentPropsWithoutRef<"section">> = ({
+export const CTA: FC<ComponentPropsWithoutRef<'section'>> = ({
   className,
   ...props
 }) => {
-  const [activeIndex, setActiveIndex] = React.useState(0);
+  const [activeIndex, setActiveIndex] = useState(0)
+  const duration = 0.5
 
   return (
-    <section className={cn("py-24 px-4", className)} {...props}>
-      <div className="">
-        <div className="text-center mb-16">
-          <p className="text-sm font-medium text-muted-foreground mb-2">
-            EMBEDDED FINANCE
+    <Section className={cn(className)} {...props}>
+      <Container>
+        <Box
+          direction="col"
+          className="items-center justify-center gap-4 text-center"
+        >
+          <p className="text-sm tracking-wide text-muted-foreground">
+            JOIN FUNDLEVEL
           </p>
-          <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
-            Meet our products
+          <h2 className="text-4xl tracking-tight md:text-5xl">
+            Invest & Raise Capital With Confidence
           </h2>
-        </div>
-
-        <div className="group flex max-md:flex-col justify-center gap-2 w-[80%] mx-auto mb-10 mt-3">
-          {items.map((item, i: number) => (
-            <div
-              key={i}
-              onMouseEnter={() => setActiveIndex(i)}
+        </Box>
+        <Box
+          className="justify-center gap-4"
+          direction={{ sm: 'col', md: 'row' }}
+        >
+          {items.map((item, index) => (
+            <motion.div
+              key={index}
+              onMouseEnter={() => setActiveIndex(index)}
               className={cn(
-                "relative overflow-hidden rounded-2xl bg-[#E6E8FF]",
-                activeIndex === i ? "w-full" : "w-1/2",
-                "transition-all duration-500 ease-in-out"
+                'relative overflow-hidden rounded-2xl bg-secondary'
               )}
+              animate={{
+                width: activeIndex === index ? '100%' : '66.666667%',
+              }}
+              transition={{
+                duration,
+                ease: 'easeInOut',
+              }}
+              initial={{
+                width: activeIndex === index ? '66.666667%' : '100%',
+              }}
             >
               {/* Content */}
-              <div
+              <motion.div
                 className={cn(
-                  "relative z-10 p-8 md:p-12 flex flex-col h-full min-h-[400px]",
-                  activeIndex === i ? "w-2/3" : "w-full"
+                  'relative z-10 p-8 md:p-12 flex flex-col h-full min-h-[500px]'
                 )}
+                animate={{
+                  width: activeIndex === index ? '66.666667%' : '100%',
+                }}
+                transition={{
+                  duration,
+                  ease: 'easeInOut',
+                }}
+                initial={{
+                  width: activeIndex === index ? '66.666667%' : '100%',
+                }}
               >
                 <div className="flex flex-col gap-2">
-                  <ArrowUpRight className="h-8 w-8 bg-white rounded-md p-1" />
-                  <h3
+                  <ArrowUpRight
                     className={cn(
-                      "text-3xl md:text-4xl font-bold transition-all duration-500",
-                      activeIndex === i && "text-5xl md:text-6xl"
+                      'p-1 bg-foreground text-background rounded-md transition-all duration-500',
+                      activeIndex === index ? 'w-10 h-10' : 'w-8 h-8'
                     )}
+                  />
+                  <motion.h3
+                    className={cn(
+                      'font-medium mt-8 text-4xl',
+                      activeIndex === index && 'mb-0'
+                    )}
+                    animate={{
+                      fontSize: activeIndex === index ? '3rem' : '2.25rem',
+                    }}
+                    transition={{
+                      duration,
+                      ease: 'easeInOut',
+                    }}
+                    initial={{
+                      fontSize: '2.25rem',
+                    }}
                   >
                     {item.header}
-                  </h3>
+                  </motion.h3>
                 </div>
-                <p
+                <motion.div
                   className={cn(
-                    "text-xl md:text-2xl transition-all duration-500 transform",
-                    activeIndex === i ? "translate-y-4" : "translate-y-32"
+                    'relative flex flex-col gap-8 py-4 my-4',
+                    activeIndex === index ? 'w-2/3' : 'w-full'
                   )}
+                  animate={{
+                    width: activeIndex === index ? '66.666667%' : '100%',
+                  }}
+                  transition={{
+                    duration,
+                    ease: 'easeInOut',
+                  }}
                 >
-                  {item.subheading}
-                </p>
-                <p
-                  className={cn(
-                    "text-gray-400 transition-all duration-500 transform",
-                    activeIndex === i
-                      ? "translate-y-8 opacity-100"
-                      : "translate-y-full opacity-0"
-                  )}
-                >
-                  {item.description}
-                </p>
+                  <motion.p
+                    className="text-xl md:text-2xl"
+                    animate={{
+                      y: activeIndex === index ? 4 : 96,
+                    }}
+                    transition={{ duration, ease: 'easeInOut' }}
+                  >
+                    <Balancer>{item.subheading}</Balancer>
+                  </motion.p>
+                  <motion.p
+                    initial={{ opacity: 0, y: 60 }}
+                    animate={{
+                      opacity: activeIndex === index ? 1 : 0,
+                      y: activeIndex === index ? 0 : 60,
+                    }}
+                    transition={{
+                      duration,
+                      ease: 'easeInOut',
+                    }}
+                    className="absolute text-muted-foreground top-full"
+                  >
+                    <Balancer>{item.description}</Balancer>
+                  </motion.p>
+                </motion.div>
                 <div className="mt-auto">
                   <Button
                     variant="outline"
-                    className="bg-[#4F5DFF] text-white hover:bg-[#4F5DFF]/90"
+                    className="bg-[#4F5DFF] hover:bg-[#4F5DFF]/90 text-white"
                   >
                     {item.buttonText}
                   </Button>
                 </div>
-              </div>
+              </motion.div>
 
               {/* Image */}
-              <div
+              <motion.div
                 className={cn(
-                  "absolute top-0 right-0 h-full transition-all duration-500 overflow-hidden p-2",
-                  activeIndex === i ? "w-1/3" : "w-0"
+                  'absolute top-0 right-0 h-full overflow-hidden p-2'
                 )}
+                animate={{
+                  width: activeIndex === index ? '33.333333%' : '0%',
+                }}
+                transition={{
+                  duration,
+                  ease: 'easeInOut',
+                }}
+                initial={{
+                  width: activeIndex === index ? '33.333333%' : '0%',
+                }}
               >
-                <div className="rounded-lg overflow-hidden h-full w-full">
+                <div className="w-full h-full overflow-hidden rounded-lg">
                   <Image
                     src={item.image}
                     alt={`${item.header} interface`}
@@ -120,11 +189,22 @@ export const CTA: FC<ComponentPropsWithoutRef<"section">> = ({
                     className="object-cover w-full h-full"
                   />
                 </div>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           ))}
-        </div>
-      </div>
-    </section>
-  );
-};
+        </Box>
+      </Container>
+    </Section>
+    // <section className={cn("py-24 px-4", className)} {...props}>
+    //   <div className="">
+    //     <div className="mb-16 text-center">
+
+    //     </div>
+
+    //     <div className="group flex max-md:flex-col justify-center gap-2 w-[80%] mx-auto mb-10 mt-3">
+
+    //     </div>
+    //   </div>
+    // </section>
+  )
+}

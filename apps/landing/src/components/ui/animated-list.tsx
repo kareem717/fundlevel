@@ -9,7 +9,7 @@ export interface AnimatedListProps extends ComponentPropsWithoutRef<"div"> {
 }
 
 export const AnimatedList: FC<AnimatedListProps> = memo(
-  ({ className, children, delay = 1000, ...props }) => {
+  ({ className, children, delay = 2000, ...props }) => {
     const [index, setIndex] = useState(0);
     const childrenArray = useMemo(
       () => Children.toArray(children),
@@ -17,13 +17,11 @@ export const AnimatedList: FC<AnimatedListProps> = memo(
     );
 
     useEffect(() => {
-      if (index < childrenArray.length - 1) {
-        const timeout = setTimeout(() => {
-          setIndex((prevIndex) => prevIndex + 1);
-        }, delay);
+      const timeout = setTimeout(() => {
+        setIndex((prevIndex) => (prevIndex + 1) % childrenArray.length);
+      }, delay);
 
-        return () => clearTimeout(timeout);
-      }
+      return () => clearTimeout(timeout);
     }, [index, delay, childrenArray.length]);
 
     const itemsToShow = useMemo(() => {
