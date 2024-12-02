@@ -9,7 +9,7 @@ import FAQ from '../../../components/routes/businesses/faq'
 
 export default function Businesses() {
   return (
-    <div className="flex min-h-screen flex-col items-center">
+    <main className="relative flex flex-col items-center w-full">
       <Hero />
       <Problem />
       <Value />
@@ -17,6 +17,6 @@ export default function Businesses() {
       <Standout />
       <CTA />
       <FAQ />
-    </div>
+    </main>
   )
 }

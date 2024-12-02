@@ -14,11 +14,17 @@ import {
   Share2Icon,
   type LucideIcon,
   LucideProps,
+  Clock,
+  PieChart,
+  AlertTriangle,
 } from "lucide-react";
 
 export type Icon = LucideIcon;
 
 export const Icons = {
+  warning: AlertTriangle,
+  pieChart: PieChart,
+  clock: Clock,
   spinner: Loader2,
   linkedin: Linkedin,
   sun: Sun,
