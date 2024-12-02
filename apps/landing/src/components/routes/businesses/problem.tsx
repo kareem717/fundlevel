@@ -7,6 +7,7 @@ import { Icons } from '@/components/ui/icons'
 import { Container } from '@/components/layout'
 import { Section } from '@/components/layout'
 import { cn } from '@/lib/utils'
+import Balancer from 'react-wrap-balancer'
 
 interface ProblemProps {
   className?: string
@@ -42,14 +43,16 @@ const Problem: FC<ProblemProps> = ({ className = '' }) => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-12"
+          className="text-center space-y-6"
         >
-          <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-neutral-50 to-neutral-400 bg-clip-text text-transparent">
+          <h2 className="text-3xl font-medium tracking-tight sm:text-4xl md:text-5xl bg-gradient-to-r from-cyan-400 to-cyan-600 bg-clip-text text-transparent">
             Common Funding Challenges
           </h2>
-          <p className="mt-4 text-neutral-400 max-w-2xl mx-auto">
-            Businesses face significant obstacles when seeking growth capital
-            through traditional channels.
+          <p className="text-lg text-muted-foreground sm:text-xl max-w-2xl mx-auto">
+            <Balancer>
+              Businesses face significant obstacles when seeking growth capital
+              through traditional channels.
+            </Balancer>
           </p>
         </motion.div>
 
@@ -62,14 +65,12 @@ const Problem: FC<ProblemProps> = ({ className = '' }) => {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.2 }}
             >
-              <Card className="p-6 bg-neutral-900/50 border-neutral-800 hover:border-cyan-500/50 transition-colors">
+              <Card className="p-6 bg-card/50 shadow-lg hover:bg-card/80 transition-colors">
                 <div className="h-12 w-12 rounded-full bg-cyan-500/10 flex items-center justify-center mb-4">
                   <problem.icon className="h-6 w-6 text-cyan-500" />
                 </div>
-                <h3 className="text-xl font-semibold text-neutral-200 mb-2">
-                  {problem.title}
-                </h3>
-                <p className="text-neutral-400">{problem.description}</p>
+                <h3 className="text-xl font-semibold mb-2">{problem.title}</h3>
+                <p className="text-muted-foreground">{problem.description}</p>
               </Card>
             </motion.div>
           ))}
