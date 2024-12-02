@@ -48,13 +48,14 @@ export const PageRange: FC<PageRangeProps> = ({
     {};
 
   return (
-    <div className={cn(className, "font-semibold")} {...props}>
-      {(typeof totalDocs === "undefined" || totalDocs === 0) &&
-        "Search produced no results."}
-      {typeof totalDocs !== "undefined" &&
-        totalDocs > 0 &&
-        `Showing ${indexStart}${indexStart > 0 ? ` - ${indexEnd}` : ""} of ${totalDocs} ${totalDocs > 1 ? plural : singular
-        }`}
+    <div className={cn(className, "font-semibold text-center")} {...props}>
+      {(typeof totalDocs === "undefined" || totalDocs === 0) ? (
+        <p className="text-muted-foreground">No results found</p>
+      ) : (
+        <p>
+          Showing {indexStart}{indexStart > 0 ? ` - ${indexEnd}` : ""} of {totalDocs} {totalDocs > 1 ? plural : singular}
+        </p>
+      )}
     </div>
   );
 };
