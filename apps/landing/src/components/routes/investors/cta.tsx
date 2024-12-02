@@ -14,10 +14,8 @@ interface CTAProps {
 }
 
 const CTA: FC<CTAProps> = ({ className }) => {
-  const [isHovered, setIsHovered] = useState(false)
-
   return (
-    <Section className={cn('relative overflow-hidden', className)}>
+    <Section className={cn('relative', className)}>
       <Container>
         {/* Background gradient animation */}
         <div className="absolute inset-0 -z-10">

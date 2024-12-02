@@ -48,12 +48,10 @@ const FAQSection: FC<FAQSectionProps> = ({ className }) => {
   return (
     <Section className={cn('', className)}>
       <Container>
-        <div className="text-center max-w-3xl mx-auto">
-          <h2 className="text-3xl font-medium leading-tight tracking-tight sm:text-4xl md:text-5xl">
-            <span className="bg-gradient-to-r from-orange-400 to-rose-400 bg-clip-text text-transparent">
-              Frequently Asked Questions
-            </span>
-          </h2>
+        <div className="text-center max-w-3xl mx-auto space-y-4">
+          <h3 className="text-3xl font-medium leading-tight tracking-tight sm:text-4xl md:text-5xl bg-gradient-to-r from-orange-400 to-rose-400 bg-clip-text text-transparent">
+            Frequently Asked Questions
+          </h3>
           <p className="text-lg text-muted-foreground sm:text-xl">
             Get answers to common questions about investing through our platform
           </p>
