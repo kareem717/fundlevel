@@ -1,143 +1,126 @@
-"use client";
+'use client'
 
-import { FC, useState } from "react";
-import { buttonVariants } from "@/components/ui/button";
-import Link from "next/link";
-import { cn } from "@/lib/utils";
-import Image from "next/image";
+import { FC, useState } from 'react'
+import { buttonVariants } from '@/components/ui/button'
+import Link from 'next/link'
+import { cn } from '@/lib/utils'
+import Image from 'next/image'
+import { Container } from '@/components/layout'
+import { Section } from '@/components/layout'
+import Balancer from 'react-wrap-balancer'
 
 interface CTAProps {
-  className?: string;
+  className?: string
 }
 
 const CTA: FC<CTAProps> = ({ className }) => {
-  const [isHovered, setIsHovered] = useState(false);
+  const [isHovered, setIsHovered] = useState(false)
 
   return (
-    <section className={cn("relative overflow-hidden py-24", className)}>
-      {/* Background gradient animation */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-primary/5 animate-gradient-shift" />
+    <Section className={cn('relative overflow-hidden', className)}>
+      <Container>
+        {/* Background gradient animation */}
+        <div className="absolute inset-0 -z-10">
+          <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background" />
+          <div className="absolute inset-0 bg-gradient-to-br from-transparent via-orange-400/10 to-transparent" />
+        </div>
 
-      {/* Floating shapes animation */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-16 -left-16 w-64 h-64 bg-primary/10 rounded-full blur-3xl animate-float-slow" />
-        <div className="absolute top-1/2 -right-32 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-float" />
-      </div>
-
-      <div className="container relative">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8">
-            <h2 className="text-4xl md:text-5xl font-bold leading-tight animate-fade-in">
-              Transform Your Investment <br />
-              <span className="text-primary">Portfolio Today</span>
+            <h2 className="text-3xl font-medium leading-tight tracking-tight sm:text-4xl md:text-5xl">
+              <Balancer>
+                Transform Your Investment Portfolio{' '}
+                <span className="bg-gradient-to-r from-orange-400 to-rose-400 bg-clip-text text-transparent">
+                  Today
+                </span>
+              </Balancer>
             </h2>
 
-            <p className="text-xl text-muted-foreground animate-fade-in-delay">
-              Join sophisticated investors accessing exclusive private market
-              opportunities with returns that outperform traditional
-              investments.
-            </p>
+            <Balancer>
+              <p className="text-lg text-muted-foreground sm:text-xl">
+                Join sophisticated investors accessing exclusive private market
+                opportunities with returns that outperform traditional
+                investments.
+              </p>
+            </Balancer>
 
-            <div className="flex flex-col sm:flex-row gap-4 animate-fade-in-delay-2">
+            <div className="flex flex-col sm:flex-row gap-4">
               <Link
                 href="/register"
                 className={cn(
-                  buttonVariants({ size: "lg" }),
-                  "relative group overflow-hidden",
-                  "bg-primary hover:bg-primary/90 text-primary-foreground"
+                  buttonVariants({ size: 'lg' }),
+                  'bg-gradient-to-r from-orange-400 to-rose-400 text-white hover:opacity-90'
                 )}
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
               >
-                <span className="relative z-10">Start Investing Now</span>
-                <div
-                  className={cn(
-                    "absolute inset-0 bg-primary-foreground/10 transition-transform duration-300",
-                    isHovered ? "translate-x-0" : "-translate-x-full"
-                  )}
-                />
-              </Link>
-
-              <Link
-                href="/learn-more"
-                className={buttonVariants({
-                  variant: "outline",
-                  size: "lg",
-                })}
-              >
-                Learn More
+                Start Investing Now
               </Link>
             </div>
 
-            <div className="flex items-center gap-8 text-sm text-muted-foreground animate-fade-in-delay-3">
+            <div className="flex flex-wrap gap-6 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
-                <svg
-                  className="w-5 h-5 text-primary"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
+                <span className="text-orange-400">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    className="w-5 h-5"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </span>
                 <span>Vetted Opportunities</span>
               </div>
               <div className="flex items-center gap-2">
-                <svg
-                  className="w-5 h-5 text-primary"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
+                <span className="text-orange-400">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    className="w-5 h-5"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </span>
                 <span>Shariah Compliant</span>
               </div>
               <div className="flex items-center gap-2">
-                <svg
-                  className="w-5 h-5 text-primary"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
+                <span className="text-orange-400">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    className="w-5 h-5"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </span>
                 <span>Expert Support</span>
               </div>
             </div>
           </div>
-
-          <div className="relative animate-fade-in-right">
-            <div className="relative aspect-square rounded-2xl overflow-hidden shadow-2xl transform hover:scale-[1.02] transition-transform duration-300">
-              <Image
-                src="https://perawallet.s3.amazonaws.com/images/pera-web.png"
-                alt="Investment Dashboard"
-                fill
-                className="object-cover"
-                priority
-              />
+          <div className="relative">
+            <div className="relative w-full aspect-[4/3] rounded-2xl bg-gradient-to-br from-orange-100 to-rose-100 dark:from-orange-950/30 dark:to-rose-950/30">
+              <div className="absolute inset-0 flex items-center justify-center text-muted-foreground">
+                <span>Image Placeholder</span>
+              </div>
             </div>
-            <div className="absolute -bottom-6 -left-6 w-48 h-48 bg-primary/20 rounded-full blur-2xl" />
-            <div className="absolute -top-6 -right-6 w-48 h-48 bg-primary/10 rounded-full blur-2xl" />
           </div>
         </div>
-      </div>
-    </section>
-  );
-};
+      </Container>
+    </Section>
+  )
+}
 
-export { CTA };
+export { CTA }

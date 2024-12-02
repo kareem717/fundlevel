@@ -9,6 +9,8 @@ import { Container } from '@/components/layout'
 interface StandoutProps {
   className?: string
 }
+
+
 const standoutConfig = {
   accessible: {
     title: 'Accessible to Non-Accredited Investors',
@@ -100,7 +102,7 @@ const standoutConfig = {
 }
 
 const StandoutSection: FC<StandoutProps> = ({ className }) => {
-  const [hoveredItem, setHoveredItem] = useState<string | null>(null)
+  
 
   return (
     <Section className={cn('', className)}>
