@@ -1,63 +1,74 @@
-"use client";
-
-import { motion } from "framer-motion";
-import { FC } from "react";
+import { FC } from 'react'
+import { cn } from '@/lib/utils'
+import { Container } from '@/components/layout'
+import { Balancer } from 'react-wrap-balancer'
+import { Section } from '@/components/layout'
 
 interface ModelsProps {
-  className?: string;
+  className?: string
 }
 
-const modelsList = [
-  {
-    title: "Equity Crowdfunding",
+const modelsConfig = {
+  crowdfunding: {
+    title: 'Equity Crowdfunding',
     description:
-      "Raise capital by offering shares to a broad audience without losing control.",
+      'Raise capital by offering shares to a broad audience without losing control. Get funding from investors who believe in your vision.',
   },
-  {
-    title: "Revenue Sharing",
+  revenue: {
+    title: 'Revenue Sharing',
     description:
-      "Share a portion of your revenue with investors, aligning their success with yours.",
+      'Share a portion of your revenue with investors, creating perfect alignment between business and investor success. A flexible funding option that grows with you.',
   },
-  {
-    title: "Profit-Sharing Partnerships",
+  profit: {
+    title: 'Profit-Sharing Partnerships',
     description:
-      "Partner with investors who share in your profits, not your losses.",
+      'Partner with investors who share in your profits, not your losses. Build true partnerships that incentivize mutual growth and success.',
   },
-];
+}
 
-const Models: FC<ModelsProps> = ({ className = "" }) => {
+const Models: FC<ModelsProps> = ({ className }) => {
   return (
-    <section className={`w-full py-20 bg-secondary/5 ${className}`}>
-      <div className="container max-w-6xl">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mb-16 text-center"
-        >
-          <h2 className="mb-4 text-3xl font-bold md:text-4xl">
-            Models For Businesses
+    <Section className={cn('', className)}>
+      <Container>
+        <div className="space-y-6 text-center max-w-3xl mx-auto">
+          <h2 className="text-3xl font-medium leading-tight tracking-tight sm:text-4xl md:text-5xl">
+            <Balancer>
+              Funding{' '}
+              <span className="bg-gradient-to-r from-cyan-400 to-cyan-600 bg-clip-text text-transparent">
+                Models
+              </span>{' '}
+              That Work
+            </Balancer>
           </h2>
-        </motion.div>
+          <p className="text-lg text-muted-foreground sm:text-xl">
+            <Balancer>
+              Choose from multiple ways to raise capital that align with your goals and
+              values
+            </Balancer>
+          </p>
+        </div>
 
-        <div className="grid gap-8 md:grid-cols-3">
-          {modelsList.map((model, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.2 }}
-              className="p-6 rounded-lg shadow-lg bg-card"
+        <div className="grid md:grid-cols-3 gap-8">
+          {Object.entries(modelsConfig).map(([key, model]) => (
+            <div
+              key={key}
+              className="group relative overflow-hidden rounded-lg bg-secondary p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
             >
-              <h3 className="mb-4 text-xl font-semibold">{model.title}</h3>
-              <p className="text-muted-foreground">{model.description}</p>
-            </motion.div>
+              <div className="space-y-4">
+                <h3 className="text-xl sm:text-2xl font-medium bg-gradient-to-r from-cyan-400 to-cyan-600 bg-clip-text text-transparent">
+                  {model.title}
+                </h3>
+
+                <p className="text-sm sm:text-base text-muted-foreground">
+                  <Balancer>{model.description}</Balancer>
+                </p>
+              </div>
+            </div>
           ))}
         </div>
-      </div>
-    </section>
-  );
-};
+      </Container>
+    </Section>
+  )
+}
 
-export default Models;
+export default Models

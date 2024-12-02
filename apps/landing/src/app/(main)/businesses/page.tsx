@@ -4,7 +4,7 @@ import Problem from '../../../components/routes/businesses/problem'
 import Value from '../../../components/routes/businesses/value'
 import Models from '../../../components/routes/businesses/models'
 import { StandoutSection } from '../../../components/routes/businesses/standout'
-import CTA from '../../../components/routes/businesses/cta'
+import { CTA } from '../../../components/routes/businesses/cta'
 import FAQ from '../../../components/routes/businesses/faq'
 
 export default function Businesses() {
