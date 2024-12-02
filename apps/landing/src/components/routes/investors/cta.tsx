@@ -17,12 +17,6 @@ const CTA: FC<CTAProps> = ({ className }) => {
   return (
     <Section className={cn('relative', className)}>
       <Container>
-        {/* Background gradient animation */}
-        <div className="absolute inset-0 -z-10">
-          <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background" />
-          <div className="absolute inset-0 bg-gradient-to-br from-transparent via-orange-400/10 to-transparent" />
-        </div>
-
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8">
             <h2 className="text-3xl font-medium leading-tight tracking-tight sm:text-4xl md:text-5xl">
