@@ -288,7 +288,7 @@ func (h *httpHandler) getByPage(ctx context.Context, input *GetByPageInput) (*sh
 	return resp, nil
 }
 
-func (h *httpHandler) getById(ctx context.Context, input *shared.PathIDParam) (*shared.SingleRoundResponse, error) {
+func (h *httpHandler) getById(ctx context.Context, input *shared.PathIDParam) (*shared.SingleRoundWithBusinessResponse, error) {
 	round, err := h.service.RoundService.GetById(ctx, input.ID)
 	if err != nil {
 		switch {
@@ -300,7 +300,7 @@ func (h *httpHandler) getById(ctx context.Context, input *shared.PathIDParam) (*
 		}
 	}
 
-	resp := &shared.SingleRoundResponse{}
+	resp := &shared.SingleRoundWithBusinessResponse{}
 	resp.Body.Message = "Round fetched successfully"
 	resp.Body.Round = &round
 

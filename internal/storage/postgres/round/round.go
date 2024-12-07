@@ -23,15 +23,15 @@ func NewRoundRepository(db bun.IDB, ctx context.Context) *RoundRepository {
 	}
 }
 
-func (r *RoundRepository) GetById(ctx context.Context, id int) (round.Round, error) {
-	resp := round.Round{}
+func (r *RoundRepository) GetById(ctx context.Context, id int) (round.RoundWithBusiness, error) {
+	resp := round.RoundWithBusiness{}
 
 	err := r.db.
 		NewSelect().
 		Model(&resp).
 		Relation("Business").
 		Relation("Business.Industries").
-		Where("rounds.id = ?", id).
+		Where("round_with_business.id = ?", id).
 		Scan(ctx)
 
 	return resp, err
@@ -47,8 +47,6 @@ func (r *RoundRepository) GetByCursor(
 	query := r.db.
 		NewSelect().
 		Model(&resp).
-		Relation("Business").
-		Relation("Business.Industries").
 		Limit(paginationParams.Limit)
 
 	query = helper.ApplyRoundFilter(query, filter)
@@ -58,7 +56,9 @@ func (r *RoundRepository) GetByCursor(
 		cursorCondition = "round.id <= ?"
 	}
 
-	err := query.Where(cursorCondition, paginationParams.Cursor).Scan(ctx, &resp)
+	err := query.
+		Where(cursorCondition, paginationParams.Cursor).
+		Scan(ctx, &resp)
 
 	return resp, err
 }
@@ -75,7 +75,6 @@ func (r *RoundRepository) GetByPage(
 		NewSelect().
 		Model(&resp).
 		Relation("Business").
-		Relation("Business.Industries").
 		Offset(offset).
 		Limit(paginationParams.PageSize + 1)
 

@@ -205,7 +205,7 @@ func NewDB(config Config, ctx context.Context, logger *zap.Logger) (*bun.DB, err
 		}
 	}
 
-	db.RegisterModel((*businessEntity.BusinessToIndustry)(nil))
+	db.RegisterModel((*businessEntity.BusinessIndustries)(nil))
 
 	logger.Info("Successfully connected to the database.")
 

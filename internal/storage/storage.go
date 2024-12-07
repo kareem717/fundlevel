@@ -22,7 +22,7 @@ type IndustryRepository interface {
 type RoundRepository interface {
 	Create(ctx context.Context, params round.CreateRoundParams) (round.Round, error)
 	Delete(ctx context.Context, id int) error
-	GetById(ctx context.Context, id int) (round.Round, error)
+	GetById(ctx context.Context, id int) (round.RoundWithBusiness, error)
 	GetByCursor(ctx context.Context, paginationParams postgres.CursorPagination, filter round.RoundFilter) ([]round.Round, error)
 	GetByPage(ctx context.Context, paginationParams postgres.OffsetPagination, filter round.RoundFilter) ([]round.Round, int, error)
 	Update(ctx context.Context, id int, params round.UpdateRoundParams) (round.Round, error)
