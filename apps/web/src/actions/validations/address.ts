@@ -1,7 +1,6 @@
 import { object, string, number } from "yup";
-import { CreateAddressParams } from "../../lib/api";
 
-export const createAddressSchema = object<CreateAddressParams>().shape({
+export const createAddressSchema = object().shape({
 	city: string().required(),
 	country: string().required(),
 	district: string().required(),

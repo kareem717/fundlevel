@@ -56,7 +56,7 @@ export const BusinessSelect: FC<BusinessSelectProps> = ({ triggerProps, ...props
         {businesses.map((business) => (
           <SelectItem key={business.id} value={business.id.toString()}>
             <div className="flex items-center">
-              <span className="ml-2">{business.name}</span>
+              <span className="ml-2">{business.displayName}</span>
             </div>
           </SelectItem>
         ))}

@@ -26,7 +26,7 @@ export const createBusiness = actionClientWithAccount
 	.schema(createBusinessSchema)
 	.action(
 		async ({
-			parsedInput: { address, business },
+			parsedInput: { business, industryIds },
 			ctx: { apiClient, account },
 		}) => {
 			if (!account) {
@@ -37,11 +37,11 @@ export const createBusiness = actionClientWithAccount
 				client: apiClient,
 				throwOnError: true,
 				body: {
-					address,
 					business: {
 						...business,
-						ownerAccountId: account.id,
 					},
+					industryIds,
+					initialOwnerId: account.id,
 				},
 			});
 		}

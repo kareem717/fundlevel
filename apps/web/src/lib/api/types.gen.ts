@@ -31,34 +31,21 @@ export type Address = {
 
 export type Business = {
     address: Address;
-    addressId: number;
-    businessNumber: string;
+    businessColour: string;
     createdAt: Date;
     deletedAt: (Date) | null;
+    displayName: string;
+    employeeCount?: '1' | '2-10' | '11-50' | '51-200' | '201-500' | '501-1000' | '1000+';
     foundingDate: Date;
     id: number;
-    industry: Industry;
-    industryId: number;
-    isRemote?: boolean;
-    name: string;
-    ownerAccountId: number;
-    status: 'pending' | 'active' | 'disabled';
-    stripeConnectedAccountId: string;
-    teamSize: '1' | '2-10' | '11-50' | '51-200' | '201-500' | '501-1000' | '1000+';
+    industries: Array<Industry> | null;
+    stripeAccount: BusinessStripeAccount;
     updatedAt: (Date) | null;
 };
 
-export type status = 'pending' | 'active' | 'disabled';
+export type employeeCount = '1' | '2-10' | '11-50' | '51-200' | '201-500' | '501-1000' | '1000+';
 
-export const status = {
-    PENDING: 'pending',
-    ACTIVE: 'active',
-    DISABLED: 'disabled'
-} as const;
-
-export type teamSize = '1' | '2-10' | '11-50' | '51-200' | '201-500' | '501-1000' | '1000+';
-
-export const teamSize = {
+export const employeeCount = {
     _1: '1',
     _2_10: '2-10',
     _11_50: '11-50',
@@ -69,13 +56,21 @@ export const teamSize = {
 } as const;
 
 export type BusinessParams = {
-    businessNumber: string;
+    businessColour?: (string) | null;
+    displayName: string;
+    employeeCount: '1' | '2-10' | '11-50' | '51-200' | '201-500' | '501-1000' | '1000+';
     foundingDate: Date;
-    industryId: number;
-    isRemote?: boolean;
-    name: string;
-    ownerAccountId: number;
-    teamSize: '1' | '2-10' | '11-50' | '51-200' | '201-500' | '501-1000' | '1000+';
+};
+
+export type BusinessStripeAccount = {
+    businessId: number;
+    createdAt: Date;
+    deletedAt: (Date) | null;
+    stripeConnectedAccountId: string;
+    stripeDisabledReason: (string) | null;
+    stripePayoutsEnabled: boolean;
+    stripeTransfersEnabled: boolean;
+    updatedAt: (Date) | null;
 };
 
 export type Chat = {
@@ -108,28 +103,14 @@ export type CreateAccountParams = {
     userId: string;
 };
 
-export type CreateAddressParams = {
-    city: string;
-    country: string;
-    district: string;
-    fullAddress: string;
-    line1: string;
-    line2: string;
-    postalCode: string;
-    rawJson: unknown;
-    region: string;
-    regionCode: string;
-    xCoordinate: number;
-    yCoordinate: number;
-};
-
 export type CreateBusinessParams = {
     /**
      * A URL to the JSON Schema for this object.
      */
     readonly $schema?: string;
-    address: CreateAddressParams;
     business: BusinessParams;
+    industryIds?: Array<(number)> | null;
+    initialOwnerId: number;
 };
 
 export type CreateChatParams = {
@@ -477,9 +458,9 @@ export type Round = {
     ventureId: number;
 };
 
-export type status2 = 'active' | 'successful' | 'failed';
+export type status = 'active' | 'successful' | 'failed';
 
-export const status2 = {
+export const status = {
     ACTIVE: 'active',
     SUCCESSFUL: 'successful',
     FAILED: 'failed'
@@ -498,9 +479,9 @@ export type RoundInvestment = {
     updatedAt: (Date) | null;
 };
 
-export type status3 = 'pending' | 'processing' | 'rejected' | 'withdrawn' | 'successful' | 'round_closed';
+export type status2 = 'pending' | 'processing' | 'rejected' | 'withdrawn' | 'successful' | 'round_closed';
 
-export const status3 = {
+export const status2 = {
     PENDING: 'pending',
     PROCESSING: 'processing',
     REJECTED: 'rejected',
@@ -519,9 +500,9 @@ export type RoundInvestmentPayment = {
     updatedAt: (Date) | null;
 };
 
-export type status4 = 'cancelled' | 'processing' | 'requires_action' | 'requires_capture' | 'requires_confirmation' | 'requires_payment_method' | 'succeeded';
+export type status3 = 'cancelled' | 'processing' | 'requires_action' | 'requires_capture' | 'requires_confirmation' | 'requires_payment_method' | 'succeeded';
 
-export const status4 = {
+export const status3 = {
     CANCELLED: 'cancelled',
     PROCESSING: 'processing',
     REQUIRES_ACTION: 'requires_action',
@@ -972,7 +953,7 @@ export type CreateBusinessData = {
     body: CreateBusinessParams;
 };
 
-export type CreateBusinessResponse = (SingleBusinessResponseBody);
+export type CreateBusinessResponse = (MessageResponse);
 
 export type CreateBusinessError = (ErrorModel);
 
@@ -1651,6 +1632,21 @@ export const IndustryModelResponseTransformer: IndustryModelResponseTransformer 
     return data;
 };
 
+export type BusinessStripeAccountModelResponseTransformer = (data: any) => BusinessStripeAccount;
+
+export const BusinessStripeAccountModelResponseTransformer: BusinessStripeAccountModelResponseTransformer = data => {
+    if (data?.createdAt) {
+        data.createdAt = new Date(data.createdAt);
+    }
+    if (data?.deletedAt) {
+        data.deletedAt = new Date(data.deletedAt);
+    }
+    if (data?.updatedAt) {
+        data.updatedAt = new Date(data.updatedAt);
+    }
+    return data;
+};
+
 export const BusinessModelResponseTransformer: BusinessModelResponseTransformer = data => {
     if (data?.address) {
         AddressModelResponseTransformer(data.address);
@@ -1664,8 +1660,11 @@ export const BusinessModelResponseTransformer: BusinessModelResponseTransformer 
     if (data?.foundingDate) {
         data.foundingDate = new Date(data.foundingDate);
     }
-    if (data?.industry) {
-        IndustryModelResponseTransformer(data.industry);
+    if (Array.isArray(data?.industries)) {
+        data.industries.forEach(IndustryModelResponseTransformer);
+    }
+    if (data?.stripeAccount) {
+        BusinessStripeAccountModelResponseTransformer(data.stripeAccount);
     }
     if (data?.updatedAt) {
         data.updatedAt = new Date(data.updatedAt);
@@ -1835,7 +1834,7 @@ export const GetAccountInvestmentsByPageResponseTransformer: GetAccountInvestmen
     return data;
 };
 
-export type CreateBusinessResponseTransformer = (data: any) => Promise<CreateBusinessResponse>;
+export type GetBusinessByIdResponseTransformer = (data: any) => Promise<GetBusinessByIdResponse>;
 
 export type SingleBusinessResponseBodyModelResponseTransformer = (data: any) => SingleBusinessResponseBody;
 
@@ -1845,13 +1844,6 @@ export const SingleBusinessResponseBodyModelResponseTransformer: SingleBusinessR
     }
     return data;
 };
-
-export const CreateBusinessResponseTransformer: CreateBusinessResponseTransformer = async (data) => {
-    SingleBusinessResponseBodyModelResponseTransformer(data);
-    return data;
-};
-
-export type GetBusinessByIdResponseTransformer = (data: any) => Promise<GetBusinessByIdResponse>;
 
 export const GetBusinessByIdResponseTransformer: GetBusinessByIdResponseTransformer = async (data) => {
     SingleBusinessResponseBodyModelResponseTransformer(data);

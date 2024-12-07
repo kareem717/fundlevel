@@ -69,13 +69,13 @@ export default async function RoundViewPage(props: { params: Promise<{ id: strin
         <div className="w-full flex flex-col lg:flex-row gap-4 h-full">
           <div className={cn("w-full flex flex-col px-2 lg:w-2/3 gap-4")}>
             <div className="flex flex-col gap-1 font-semibold">
-              By {business.name}
+              By {business.displayName}
             </div>
             <Separator className="w-full" />
             <span className="text-lg font-semibold">Business Details</span>
             <BusinessOverview
               overview={venture.overview}
-              teamSize={business.teamSize}
+              teamSize={business.employeeCount!}
               businessId={business.id}
             />
             <Separator className="w-full" />

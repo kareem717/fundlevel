@@ -11,9 +11,11 @@ import { Icons } from "./ui/icons"
 
 export interface IndustrySelectProps extends Omit<ComponentPropsWithoutRef<typeof Select>, "onValueChange"> {
   triggerProps?: ComponentPropsWithoutRef<typeof SelectTrigger>
-  onValueChange?: (value: number) => void
+  onValueChange?: (value: number[]) => void
 };
 
+
+//TODO: make multi select
 export const IndustrySelect: FC<IndustrySelectProps> = ({ triggerProps, onValueChange, ...props }) => {
   const [industries, setIndustries] = useState<Industry[]>([])
 
@@ -36,9 +38,8 @@ export const IndustrySelect: FC<IndustrySelectProps> = ({ triggerProps, onValueC
     <Select
       {...props}
       onValueChange={(value) => {
-        onValueChange?.(parseInt(value))
+        onValueChange?.(value.split(",").map(Number))
       }}
-
     >
       <SelectTrigger
         className={cn(

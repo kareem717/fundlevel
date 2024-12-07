@@ -221,7 +221,6 @@ import {
 	GetAccountChatsResponseTransformer,
 	GetAccountInvestmentsByCursorResponseTransformer,
 	GetAccountInvestmentsByPageResponseTransformer,
-	CreateBusinessResponseTransformer,
 	GetBusinessByIdResponseTransformer,
 	GetBusinessInvestmentsByCursorResponseTransformer,
 	GetBusinessInvestmentsByPageResponseTransformer,
@@ -748,7 +747,6 @@ export const createBusiness = <ThrowOnError extends boolean = false>(
 	>({
 		...options,
 		url: "/business",
-		responseTransformer: CreateBusinessResponseTransformer,
 	});
 };
 

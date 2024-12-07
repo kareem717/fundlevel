@@ -112,13 +112,7 @@ export const BusinessSchema = {
         address: {
             '$ref': '#/components/schemas/Address'
         },
-        addressId: {
-            format: 'int64',
-            minimum: 1,
-            type: 'integer'
-        },
-        businessNumber: {
-            minLength: 1,
+        businessColour: {
             type: 'string'
         },
         createdAt: {
@@ -129,6 +123,14 @@ export const BusinessSchema = {
             format: 'date-time',
             type: ['string', 'null']
         },
+        displayName: {
+            minLength: 1,
+            type: 'string'
+        },
+        employeeCount: {
+            enum: ['1', '2-10', '11-50', '51-200', '201-500', '501-1000', '1000+'],
+            type: 'string'
+        },
         foundingDate: {
             format: 'date-time',
             type: 'string'
@@ -138,82 +140,83 @@ export const BusinessSchema = {
             minimum: 1,
             type: 'integer'
         },
-        industry: {
-            '$ref': '#/components/schemas/Industry'
+        industries: {
+            items: {
+                '$ref': '#/components/schemas/Industry'
+            },
+            type: ['array', 'null']
         },
-        industryId: {
-            format: 'int64',
-            minimum: 1,
-            type: 'integer'
-        },
-        isRemote: {
-            default: false,
-            type: 'boolean'
-        },
-        name: {
-            minLength: 1,
-            type: 'string'
-        },
-        ownerAccountId: {
-            format: 'int64',
-            minimum: 1,
-            type: 'integer'
-        },
-        status: {
-            enum: ['pending', 'active', 'disabled'],
-            type: 'string'
-        },
-        stripeConnectedAccountId: {
-            type: 'string'
-        },
-        teamSize: {
-            enum: ['1', '2-10', '11-50', '51-200', '201-500', '501-1000', '1000+'],
-            type: 'string'
+        stripeAccount: {
+            '$ref': '#/components/schemas/BusinessStripeAccount'
         },
         updatedAt: {
             format: 'date-time',
             type: ['string', 'null']
         }
     },
-    required: ['address', 'industry', 'name', 'businessNumber', 'foundingDate', 'ownerAccountId', 'status', 'addressId', 'teamSize', 'stripeConnectedAccountId', 'industryId', 'id', 'createdAt', 'updatedAt', 'deletedAt'],
+    required: ['address', 'stripeAccount', 'businessColour', 'displayName', 'foundingDate', 'industries', 'id', 'createdAt', 'updatedAt', 'deletedAt'],
     type: 'object'
 } as const;
 
 export const BusinessParamsSchema = {
     additionalProperties: false,
     properties: {
-        businessNumber: {
+        businessColour: {
+            maxLength: 6,
+            minLength: 6,
+            type: ['string', 'null']
+        },
+        displayName: {
             minLength: 1,
+            type: 'string'
+        },
+        employeeCount: {
+            enum: ['1', '2-10', '11-50', '51-200', '201-500', '501-1000', '1000+'],
             type: 'string'
         },
         foundingDate: {
             format: 'date-time',
             type: 'string'
-        },
-        industryId: {
-            format: 'int64',
-            minimum: 1,
-            type: 'integer'
-        },
-        isRemote: {
-            default: false,
-            type: 'boolean'
-        },
-        name: {
-            minLength: 1,
-            type: 'string'
-        },
-        ownerAccountId: {
-            format: 'int64',
-            minimum: 1,
-            type: 'integer'
-        },
-        teamSize: {
-            enum: ['1', '2-10', '11-50', '51-200', '201-500', '501-1000', '1000+'],
-            type: 'string'
         }
     },
-    required: ['name', 'businessNumber', 'foundingDate', 'ownerAccountId', 'teamSize', 'industryId'],
+    required: ['displayName', 'foundingDate', 'employeeCount'],
+    type: 'object'
+} as const;
+
+export const BusinessStripeAccountSchema = {
+    additionalProperties: false,
+    properties: {
+        businessId: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
+        createdAt: {
+            format: 'date-time',
+            type: 'string'
+        },
+        deletedAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        },
+        stripeConnectedAccountId: {
+            type: 'string'
+        },
+        stripeDisabledReason: {
+            type: ['string', 'null']
+        },
+        stripePayoutsEnabled: {
+            type: 'boolean'
+        },
+        stripeTransfersEnabled: {
+            type: 'boolean'
+        },
+        updatedAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        }
+    },
+    required: ['businessId', 'stripeConnectedAccountId', 'stripeDisabledReason', 'stripeTransfersEnabled', 'stripePayoutsEnabled', 'createdAt', 'updatedAt', 'deletedAt'],
     type: 'object'
 } as const;
 
@@ -329,50 +332,6 @@ export const CreateAccountParamsSchema = {
     type: 'object'
 } as const;
 
-export const CreateAddressParamsSchema = {
-    additionalProperties: false,
-    properties: {
-        city: {
-            type: 'string'
-        },
-        country: {
-            type: 'string'
-        },
-        district: {
-            type: 'string'
-        },
-        fullAddress: {
-            type: 'string'
-        },
-        line1: {
-            type: 'string'
-        },
-        line2: {
-            type: 'string'
-        },
-        postalCode: {
-            type: 'string'
-        },
-        rawJson: {},
-        region: {
-            type: 'string'
-        },
-        regionCode: {
-            type: 'string'
-        },
-        xCoordinate: {
-            format: 'double',
-            type: 'number'
-        },
-        yCoordinate: {
-            format: 'double',
-            type: 'number'
-        }
-    },
-    required: ['xCoordinate', 'yCoordinate', 'line1', 'line2', 'city', 'region', 'postalCode', 'country', 'rawJson', 'district', 'regionCode', 'fullAddress'],
-    type: 'object'
-} as const;
-
 export const CreateBusinessParamsSchema = {
     additionalProperties: false,
     properties: {
@@ -382,14 +341,25 @@ export const CreateBusinessParamsSchema = {
             readOnly: true,
             type: 'string'
         },
-        address: {
-            '$ref': '#/components/schemas/CreateAddressParams'
-        },
         business: {
             '$ref': '#/components/schemas/BusinessParams'
+        },
+        industryIds: {
+            items: {
+                format: 'int64',
+                type: 'integer'
+            },
+            minItems: 1,
+            type: ['array', 'null'],
+            uniqueItems: true
+        },
+        initialOwnerId: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
         }
     },
-    required: ['business', 'address'],
+    required: ['business', 'initialOwnerId'],
     type: 'object'
 } as const;
 

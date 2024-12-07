@@ -94,12 +94,12 @@ export const BusinessContextSelector: FC<BusinessContextSelectorProps> = ({ ...p
             >
               <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                 <span className="text-lg uppercase">
-                  {currentBusiness.name[0]}
+                  {currentBusiness.displayName[0]}
                 </span>
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">
-                  {currentBusiness.name}
+                  {currentBusiness.displayName}
                 </span>
                 {/* <span className="truncate text-xs">{business.plan}</span> */}
               </div>
@@ -122,9 +122,9 @@ export const BusinessContextSelector: FC<BusinessContextSelectorProps> = ({ ...p
                 className="gap-2 p-2"
               >
                 <div className="flex size-6 items-center justify-center rounded-sm border">
-                  {business.name[0]}
+                  {business.displayName[0]}
                 </div>
-                {business.name}
+                {business.displayName}
                 {/* <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut> */}
               </DropdownMenuItem>
             ))}
