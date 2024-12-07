@@ -38,9 +38,9 @@ type Business struct {
 	BusinessColour string               `json:"businessColour"`
 	DisplayName    string               `json:"displayName" minLength:"1"`
 	FoundingDate   time.Time            `json:"foundingDate" format:"date-time"`
-	Status         BusinessStatus       `json:"status" enum:"pending,active,disabled"`
-	AddressID      int                  `json:"addressId" minimum:"1"`
-	EmployeeCount  EmployeeCountRange   `json:"employeeCount" enum:"1,2-10,11-50,51-200,201-500,501-1000,1000+"`
+	Status         BusinessStatus      `json:"status" hidden:"true" required:"false"`
+	AddressID      *int                 `json:"addressId" minimum:"1" hidden:"true" required:"false"`
+	EmployeeCount  EmployeeCountRange  `json:"employeeCount" enum:"1,2-10,11-50,51-200,201-500,501-1000,1000+" required:"false"`
 	Industries     []BusinessToIndustry `json:"industries" bun:"m2m:business_industries,join:Business=Industry"`
 	shared.Timestamps
 }
@@ -50,13 +50,11 @@ type BusinessParams struct {
 	DisplayName    string             `json:"displayName" minLength:"1"`
 	FoundingDate   time.Time          `json:"foundingDate" format:"date-time"`
 	Status         BusinessStatus     `json:"status" hidden:"true" required:"false"`
-	AddressID      int                `json:"addressId" minimum:"1" hidden:"true" required:"false"`
 	EmployeeCount  EmployeeCountRange `json:"employeeCount" enum:"1,2-10,11-50,51-200,201-500,501-1000,1000+"`
 }
 
 type CreateBusinessParams struct {
 	Business       BusinessParams                    `json:"business"`
-	Address        address.CreateAddressParams       `json:"address"`
 	StripeAccount  CreateBusinessStripeAccountParams `json:"stripeAccount" required:"false" hidden:"true"`
 	InitialOwnerID int                               `json:"initialOwnerId" minimum:"1"`
 	IndustryIDs    []int                             `json:"industryIds" required:"false" minItems:"1" type:"array" uniqueItems:"true"`

@@ -20,7 +20,7 @@ CREATE TABLE
         status business_status NOT NULL DEFAULT 'pending',
         employee_count employee_count_ranges NOT NULL DEFAULT '1',
         business_colour VARCHAR(7) NOT NULL CHECK (business_colour ~ '^#[0-9A-F]{6}$'),
-        address_id INTEGER NOT NULL REFERENCES addresses (id),
+        address_id INTEGER REFERENCES addresses (id),
         created_at timestamptz DEFAULT CLOCK_TIMESTAMP(),
         updated_at timestamptz,
         deleted_at timestamptz
