@@ -32,9 +32,14 @@ type Round struct {
 	BuyIn             float64         `json:"buyIn" minimum:"1"`
 	Description       string          `json:"description" minLength:"10" maxLength:"3000"`
 
-	Business *business.Business `json:"business" bun:"rel:belongs-to,join:business_id=id"`
-
 	shared.Timestamps
+}
+
+type RoundWithBusiness struct {
+	bun.BaseModel `bun:"table:rounds"`
+	
+	Round
+	Business *business.Business `json:"business" bun:"rel:belongs-to,join:business_id=id"`
 }
 
 // RoundFilter contains the parameters for filtering rounds.

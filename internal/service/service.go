@@ -58,7 +58,7 @@ type HealthService interface {
 type RoundService interface {
 	Create(ctx context.Context, params round.CreateRoundParams) (round.Round, error)
 	Delete(ctx context.Context, id int) error
-	GetById(ctx context.Context, id int) (round.Round, error)
+	GetById(ctx context.Context, id int) (round.RoundWithBusiness, error)
 	GetByCursor(ctx context.Context, limit int, cursor int, filter round.RoundFilter) ([]round.Round, error)
 	GetByPage(ctx context.Context, pageSize int, page int, filter round.RoundFilter) ([]round.Round, int, error)
 

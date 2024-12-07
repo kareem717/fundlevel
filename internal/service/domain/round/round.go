@@ -37,7 +37,7 @@ func (s *RoundService) Create(ctx context.Context, params round.CreateRoundParam
 	return s.repositories.Round().Create(ctx, params)
 }
 
-func (s *RoundService) GetById(ctx context.Context, id int) (round.Round, error) {
+func (s *RoundService) GetById(ctx context.Context, id int) (round.RoundWithBusiness, error) {
 	return s.repositories.Round().GetById(ctx, id)
 }
 

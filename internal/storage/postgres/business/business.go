@@ -80,7 +80,7 @@ func (r *BusinessRepository) Create(ctx context.Context, params business.CreateB
 			return err
 		}
 
-		industryIds := make([]business.BusinessToIndustry, len(params.IndustryIDs))
+		industryIds := make([]business.BusinessIndustries, len(params.IndustryIDs))
 		for i, industryId := range params.IndustryIDs {
 			industryIds[i].BusinessID = businessRecord.ID
 			industryIds[i].IndustryID = industryId
