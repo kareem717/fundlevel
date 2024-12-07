@@ -13,7 +13,8 @@ func (r *AccountRepository) GetAllBusinesses(ctx context.Context, accountId int)
 		NewSelect().
 		Model(&resp).
 		Relation("Address").
-		Where("business.owner_account_id = ? ", accountId).
+		Join("JOIN business_members").
+		JoinOn("business_members.business_id = business.id AND business_members.account_id = ?", accountId).
 		Scan(ctx)
 
 	return resp, err
