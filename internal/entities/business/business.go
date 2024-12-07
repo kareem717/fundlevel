@@ -2,6 +2,7 @@ package business
 
 import (
 	"fundlevel/internal/entities/address"
+	"fundlevel/internal/entities/industry"
 	"fundlevel/internal/entities/shared"
 	"time"
 
@@ -41,7 +42,7 @@ type Business struct {
 	Status         BusinessStatus      `json:"status" hidden:"true" required:"false"`
 	AddressID      *int                 `json:"addressId" minimum:"1" hidden:"true" required:"false"`
 	EmployeeCount  EmployeeCountRange  `json:"employeeCount" enum:"1,2-10,11-50,51-200,201-500,501-1000,1000+" required:"false"`
-	Industries     []BusinessToIndustry `json:"industries" bun:"m2m:business_industries,join:Business=Industry"`
+	Industries     []industry.Industry `json:"industries" bun:"m2m:business_industries,join:Business=Industry"`
 	shared.Timestamps
 }
 

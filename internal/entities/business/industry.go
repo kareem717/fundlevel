@@ -14,12 +14,6 @@ type BusinessToIndustry struct {
 	Business   *Business          `json:"business" bun:"rel:belongs-to,join:business_id=id"`
 	IndustryID int                `json:"industryId" minimum:"1" bun:",pk"`
 	Industry   *industry.Industry `json:"industry" bun:"rel:belongs-to,join:industry_id=id"`
-}
 
-type BusinessIndustry struct {
-	bun.BaseModel `json:"-" bun:"business_industries"`
-
-	BusinessID int       `json:"businessId" minimum:"1"`
-	IndustryID int       `json:"industryId" minimum:"1"`
 	CreatedAt  time.Time `json:"createdAt" format:"date-time"`
 }
