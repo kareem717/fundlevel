@@ -6,7 +6,6 @@ import (
 	"errors"
 
 	"fundlevel/internal/entities/business"
-	"fundlevel/internal/entities/venture"
 	"fundlevel/internal/server/handler/shared"
 	"fundlevel/internal/service"
 
@@ -165,7 +164,7 @@ func (h *httpHandler) getRoundsByPage(ctx context.Context, input *shared.GetRoun
 			return nil, huma.Error404NotFound("rounds not found")
 		default:
 			h.logger.Error("failed to fetch rounds", zap.Error(err))
-			return nil, huma.Error500InternalServerError("An error occurred while fetching the ventures")
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the rounds")
 		}
 	}
 
@@ -281,70 +280,6 @@ func (h *httpHandler) getInvestmentsByPage(ctx context.Context, input *shared.Ge
 	if len(investments) > input.PageSize {
 		resp.Body.HasMore = true
 		resp.Body.Investments = resp.Body.Investments[:len(resp.Body.Investments)-1]
-	}
-
-	return resp, nil
-}
-
-type GetVenturesByParentAndCursorInput struct {
-	shared.GetCursorPaginatedByParentPathIDInput
-	venture.VentureFilter
-}
-
-func (h *httpHandler) getVenturesByCursor(ctx context.Context, input *GetVenturesByParentAndCursorInput) (*shared.GetCursorPaginatedVenturesOutput, error) {
-	limit := input.Limit + 1
-
-	ventures, err := h.service.BusinessService.GetVenturesByCursor(ctx, input.ID, limit, input.Cursor, input.VentureFilter)
-
-	if err != nil {
-		switch {
-		case errors.Is(err, sql.ErrNoRows):
-			return nil, huma.Error404NotFound("ventures not found")
-		default:
-			h.logger.Error("failed to fetch ventures", zap.Error(err))
-			return nil, huma.Error500InternalServerError("An error occurred while fetching the ventures")
-		}
-	}
-
-	resp := &shared.GetCursorPaginatedVenturesOutput{}
-	resp.Body.Message = "Ventures fetched successfully"
-	resp.Body.Ventures = ventures
-
-	if len(ventures) == limit {
-		resp.Body.NextCursor = &ventures[len(ventures)-1].ID
-		resp.Body.HasMore = true
-		resp.Body.Ventures = resp.Body.Ventures[:len(resp.Body.Ventures)-1]
-	}
-
-	return resp, nil
-}
-
-type GetVenturesByParentAndPageInput struct {
-	shared.GetOffsetPaginatedByParentPathIDInput
-	venture.VentureFilter
-}
-
-func (h *httpHandler) getVenturesByPage(ctx context.Context, input *GetVenturesByParentAndPageInput) (*shared.GetOffsetPaginatedVenturesOutput, error) {
-	ventures, total, err := h.service.BusinessService.GetVenturesByPage(ctx, input.ID, input.PageSize, input.Page, input.VentureFilter)
-
-	if err != nil {
-		switch {
-		case errors.Is(err, sql.ErrNoRows):
-			return nil, huma.Error404NotFound("ventures not found")
-		default:
-			h.logger.Error("failed to fetch ventures", zap.Error(err))
-			return nil, huma.Error500InternalServerError("An error occurred while fetching the ventures")
-		}
-	}
-
-	resp := &shared.GetOffsetPaginatedVenturesOutput{}
-	resp.Body.Message = "Ventures fetched successfully"
-	resp.Body.Ventures = ventures
-	resp.Body.Total = total
-
-	if len(ventures) > input.PageSize {
-		resp.Body.HasMore = true
-		resp.Body.Ventures = resp.Body.Ventures[:len(resp.Body.Ventures)-1]
 	}
 
 	return resp, nil

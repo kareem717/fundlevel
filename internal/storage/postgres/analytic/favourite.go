@@ -6,43 +6,6 @@ import (
 	"fundlevel/internal/entities/analytic"
 )
 
-func (r *AnalyticRepository) IsVentureFavouritedByAccount(ctx context.Context, ventureId int, accountId int) (bool, error) {
-	return r.db.
-		NewSelect().
-		Model(&analytic.VentureFavourite{}).
-		Where("venture_id = ?", ventureId).
-		Where("account_id = ?", accountId).
-		Exists(ctx)
-}
-
-func (r *AnalyticRepository) CreateVentureFavourite(ctx context.Context, params analytic.CreateVentureFavouriteParams) error {
-	_, err := r.db.NewInsert().
-		Model(&params).
-		ModelTableExpr("venture_favourites").
-		Exec(ctx)
-
-	return err
-}
-
-func (r *AnalyticRepository) DeleteVentureFavourite(ctx context.Context, ventureId int, accountId int) error {
-	_, err := r.db.
-		NewDelete().
-		Model(&analytic.VentureFavourite{}).
-		Where("venture_id = ?", ventureId).
-		Where("account_id = ?", accountId).
-		Exec(ctx)
-
-	return err
-}
-
-func (r *AnalyticRepository) GetVentureFavouriteCount(ctx context.Context, ventureId int) (int, error) {
-	return r.db.
-		NewSelect().
-		Model(&analytic.VentureFavourite{}).
-		Where("venture_id = ?", ventureId).
-		Count(ctx)
-}
-
 func (r *AnalyticRepository) IsRoundFavouritedByAccount(ctx context.Context, roundId int, accountId int) (bool, error) {
 	return r.db.
 		NewSelect().

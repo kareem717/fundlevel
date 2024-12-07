@@ -66,33 +66,6 @@ func (h *httpHandler) createRoundImpression(ctx context.Context, input *Impressi
 	return resp, nil
 }
 
-func (h *httpHandler) createVentureImpression(ctx context.Context, input *ImpressionInput) (*shared.MessageOutput, error) {
-	account := shared.GetAuthenticatedAccount(ctx)
-
-	if account.ID != input.Body.AccountID {
-		h.logger.Error("account id does not match authenticated account id",
-			zap.Any("authenticated account id", account.ID),
-			zap.Any("input account id", input.Body.AccountID))
-
-		return nil, huma.Error403Forbidden("Cannot view as another account")
-	}
-
-	err := h.service.AnalyticService.CreateVentureImpression(ctx, analytic.CreateVentureImpressionParams{
-		VentureID: input.ID,
-		AccountID: input.Body.AccountID,
-	})
-
-	if err != nil {
-		h.logger.Error("failed to create venture impression", zap.Error(err))
-		return nil, huma.Error500InternalServerError("An error occurred while creating the venture impression")
-	}
-
-	resp := &shared.MessageOutput{}
-	resp.Body.Message = "Venture impression created successfully"
-
-	return resp, nil
-}
-
 func (h *httpHandler) createBusinessImpression(ctx context.Context, input *ImpressionInput) (*shared.MessageOutput, error) {
 	account := shared.GetAuthenticatedAccount(ctx)
 	//! this doesn't check if the business exists to minimize exec time
@@ -148,28 +121,6 @@ func (h *httpHandler) getRoundImpressionCount(ctx context.Context, input *shared
 
 	resp := &ImpressionCountOutput{}
 	resp.Body.Message = "Round impression count fetched successfully"
-	resp.Body.Count = count
-
-	return resp, nil
-}
-
-func (h *httpHandler) getVentureImpressionCount(ctx context.Context, input *shared.PathIDParam) (*ImpressionCountOutput, error) {
-	_, err := h.service.VentureService.GetById(ctx, input.ID)
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			h.logger.Error("venture not found", zap.Int("venture id", input.ID))
-			return nil, huma.Error404NotFound("Venture not found")
-		}
-	}
-
-	count, err := h.service.AnalyticService.GetVentureImpressionCount(ctx, input.ID)
-	if err != nil {
-		h.logger.Error("failed to get venture impression count", zap.Error(err))
-		return nil, huma.Error500InternalServerError("An error occurred while getting the venture impression count")
-	}
-
-	resp := &ImpressionCountOutput{}
-	resp.Body.Message = "Venture impression count fetched successfully"
 	resp.Body.Count = count
 
 	return resp, nil
@@ -285,94 +236,6 @@ func (h *httpHandler) getRoundFavouriteCount(ctx context.Context, input *shared.
 
 	resp := &shared.GetLikeCountOutput{}
 	resp.Body.Message = "Round favourited count fetched successfully"
-	resp.Body.Count = count
-
-	return resp, nil
-}
-
-func (h *httpHandler) createVentureFavourite(ctx context.Context, input *FavouriteInput) (*shared.MessageOutput, error) {
-	account := shared.GetAuthenticatedAccount(ctx)
-
-	if account.ID != input.AccountID {
-		h.logger.Error("account id does not match authenticated account id",
-			zap.Any("authenticated account id", account.ID),
-			zap.Any("input account id", input.AccountID))
-
-		return nil, huma.Error403Forbidden("Cannot like for another account")
-	}
-
-	err := h.service.AnalyticService.CreateVentureFavourite(ctx, analytic.CreateVentureFavouriteParams{
-		VentureID: input.ID,
-		AccountID: input.AccountID,
-	})
-
-	if err != nil {
-		h.logger.Error("failed to create venture like", zap.Error(err))
-		return nil, huma.Error500InternalServerError("An error occurred while creating the venture like")
-	}
-
-	resp := &shared.MessageOutput{}
-	resp.Body.Message = "Venture favourited successfully"
-
-	return resp, nil
-}
-
-func (h *httpHandler) deleteVentureFavourite(ctx context.Context, input *FavouriteInput) (*shared.MessageOutput, error) {
-	account := shared.GetAuthenticatedAccount(ctx)
-
-	if account.ID != input.AccountID {
-		h.logger.Error("account id does not match authenticated account id",
-			zap.Any("authenticated account id", account.ID),
-			zap.Any("input account id", input.AccountID))
-
-		return nil, huma.Error403Forbidden("Cannot delete like for another account")
-	}
-
-	err := h.service.AnalyticService.DeleteVentureFavourite(ctx, input.ID, input.AccountID)
-	if err != nil {
-		h.logger.Error("failed to delete venture like", zap.Error(err))
-		return nil, huma.Error500InternalServerError("An error occurred while deleting the venture like")
-	}
-
-	resp := &shared.MessageOutput{}
-	resp.Body.Message = "Venture favourited deleted successfully"
-
-	return resp, nil
-}
-
-func (h *httpHandler) isVentureFavouritedByAccount(ctx context.Context, input *FavouriteInput) (*shared.IsFavouritedOutput, error) {
-	account := shared.GetAuthenticatedAccount(ctx)
-
-	if account.ID != input.AccountID {
-		h.logger.Error("account id does not match authenticated account id",
-			zap.Any("authenticated account id", account.ID),
-			zap.Any("input account id", input.AccountID))
-
-		return nil, huma.Error403Forbidden("Cannot check if venture is liked by another account")
-	}
-
-	favourited, err := h.service.AnalyticService.IsVentureFavouritedByAccount(ctx, input.ID, input.AccountID)
-	if err != nil {
-		h.logger.Error("failed to check if venture is liked by account", zap.Error(err))
-		return nil, huma.Error500InternalServerError("An error occurred while checking if the venture is liked by the account")
-	}
-
-	resp := &shared.IsFavouritedOutput{}
-	resp.Body.Message = "Venture favourited status fetched successfully"
-	resp.Body.Favourited = favourited
-
-	return resp, nil
-}
-
-func (h *httpHandler) getVentureFavouriteCount(ctx context.Context, input *shared.PathIDParam) (*shared.GetLikeCountOutput, error) {
-	count, err := h.service.AnalyticService.GetVentureFavouriteCount(ctx, input.ID)
-	if err != nil {
-		h.logger.Error("failed to get venture like count", zap.Error(err))
-		return nil, huma.Error500InternalServerError("An error occurred while getting the venture like count")
-	}
-
-	resp := &shared.GetLikeCountOutput{}
-	resp.Body.Message = "Venture favourited count fetched successfully"
 	resp.Body.Count = count
 
 	return resp, nil
@@ -535,51 +398,6 @@ func (h *httpHandler) getDailyAggregatedBusinessAnalytics(ctx context.Context, i
 	resp := &GetDailyAggregatedBusinessAnalyticsOutput{}
 	resp.Body.Message = "Daily aggregated business analytics fetched successfully"
 	resp.Body.Analytics = businessAnalytics
-
-	return resp, nil
-}
-
-type GetDailyAggregatedVentureAnalyticsOutput struct {
-	Body struct {
-		shared.MessageResponse
-		Analytics []analytic.SimplifiedDailyAggregatedVentureAnalytics `json:"analytics"`
-	} `json:"body"`
-}
-
-func (h *httpHandler) getDailyAggregatedVentureAnalytics(ctx context.Context, input *GetDailyAggregatedAnalyticsInput) (*GetDailyAggregatedVentureAnalyticsOutput, error) {
-	venture, err := h.service.VentureService.GetById(ctx, input.ID)
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			h.logger.Error("tried to get daily aggregated venture analytics for a non-existent venture", zap.Error(err), zap.Int("venture_id", input.ID))
-		} else {
-			h.logger.Error("failed to get venture", zap.Error(err), zap.Int("venture_id", input.ID))
-		}
-
-		return nil, huma.Error500InternalServerError("An error occurred while getting the venture")
-	}
-
-	account := shared.GetAuthenticatedAccount(ctx)
-
-	authorized, err := h.service.PermissionService.CanViewVentureAnalytics(ctx, account.ID, venture.Business.ID)
-	if err != nil {
-		h.logger.Error("failed to check if account can view venture analytics", zap.Error(err), zap.Int("venture_id", input.ID), zap.Int("account_id", account.ID))
-		return nil, huma.Error500InternalServerError("An error occurred while checking if the account can view venture analytics")
-	}
-
-	if !authorized {
-		h.logger.Error("failed to get daily aggregated venture analytics", zap.Error(err), zap.Int("venture_id", input.ID))
-		return nil, huma.Error500InternalServerError("An error occurred while getting the daily aggregated venture analytics")
-	}
-
-	ventureAnalytics, err := h.service.AnalyticService.GetDailyAggregatedVentureAnalytics(ctx, venture.ID, input.MinDayOfYear, input.MaxDayOfYear)
-	if err != nil {
-		h.logger.Error("failed to get daily aggregated venture analytics", zap.Error(err), zap.Int("venture_id", input.ID))
-		return nil, huma.Error500InternalServerError("An error occurred while getting the daily aggregated venture analytics")
-	}
-
-	resp := &GetDailyAggregatedVentureAnalyticsOutput{}
-	resp.Body.Message = "Daily aggregated venture analytics fetched successfully"
-	resp.Body.Analytics = ventureAnalytics
 
 	return resp, nil
 }

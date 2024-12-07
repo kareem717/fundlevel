@@ -28,7 +28,7 @@ func (s *InvestmentService) CreatePaymentIntent(
 		return nil, err
 	}
 
-	businessStripeAccount, err := s.repositories.Business().GetStripeAccount(ctx, round.Venture.BusinessID)
+	businessStripeAccount, err := s.repositories.Business().GetStripeAccount(ctx, round.BusinessID)
 	if err != nil {
 		return nil, err
 	}

@@ -146,75 +146,6 @@ func RegisterHumaRoutes(
 	}, handler.getRoundFavouriteCount)
 
 	huma.Register(humaApi, huma.Operation{
-		OperationID: "create-venture-favourite",
-		Method:      http.MethodPost,
-		Path:        "/analytic/ventures/{id}/account/{accountId}/favourite",
-		Summary:     "Create a venture favourite",
-		Description: "Create a venture favourite.",
-		Tags:        []string{"Analytic", "Ventures", "Favourites"},
-		Security: []map[string][]string{
-			{"bearerAuth": {}},
-		},
-		Middlewares: huma.Middlewares{
-			func(ctx huma.Context, next func(huma.Context)) {
-				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
-			},
-			func(ctx huma.Context, next func(huma.Context)) {
-				middleware.WithAccount(humaApi)(ctx, next, logger, service)
-			},
-		},
-	}, handler.createVentureFavourite)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "delete-venture-favourite",
-		Method:      http.MethodDelete,
-		Path:        "/analytic/ventures/{id}/account/{accountId}/favourite",
-		Summary:     "Delete a venture favourite",
-		Description: "Delete a venture favourite.",
-		Tags:        []string{"Analytic", "Ventures", "Favourites"},
-		Security: []map[string][]string{
-			{"bearerAuth": {}},
-		},
-		Middlewares: huma.Middlewares{
-			func(ctx huma.Context, next func(huma.Context)) {
-				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
-			},
-			func(ctx huma.Context, next func(huma.Context)) {
-				middleware.WithAccount(humaApi)(ctx, next, logger, service)
-			},
-		},
-	}, handler.deleteVentureFavourite)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-venture-favourite-status",
-		Method:      http.MethodGet,
-		Path:        "/analytic/ventures/{id}/account/{accountId}/favourite",
-		Summary:     "Get a venture favourite status",
-		Description: "Get a venture favourite status.",
-		Tags:        []string{"Analytic", "Ventures", "Favourites"},
-		Security: []map[string][]string{
-			{"bearerAuth": {}},
-		},
-		Middlewares: huma.Middlewares{
-			func(ctx huma.Context, next func(huma.Context)) {
-				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
-			},
-			func(ctx huma.Context, next func(huma.Context)) {
-				middleware.WithAccount(humaApi)(ctx, next, logger, service)
-			},
-		},
-	}, handler.isVentureFavouritedByAccount)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-venture-favourite-count",
-		Method:      http.MethodGet,
-		Path:        "/analytic/ventures/{id}/favourites",
-		Summary:     "Get a venture favourite count",
-		Description: "Get a venture favourite count.",
-		Tags:        []string{"Analytic", "Ventures", "Favourites"},
-	}, handler.getVentureFavouriteCount)
-
-	huma.Register(humaApi, huma.Operation{
 		OperationID: "create-business-favourite",
 		Method:      http.MethodPost,
 		Path:        "/analytic/businesses/{id}/account/{accountId}/favourite",
@@ -302,26 +233,6 @@ func RegisterHumaRoutes(
 			},
 		},
 	}, handler.getDailyAggregatedRoundAnalytics)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-daily-aggregated-venture-analytics",
-		Method:      http.MethodGet,
-		Path:        "/analytic/ventures/{id}",
-		Summary:     "Get daily aggregated venture analytics",
-		Description: "Get daily aggregated venture analytics.",
-		Tags:        []string{"Analytic", "Ventures"},
-		Security: []map[string][]string{
-			{"bearerAuth": {}},
-		},
-		Middlewares: huma.Middlewares{
-			func(ctx huma.Context, next func(huma.Context)) {
-				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
-			},
-			func(ctx huma.Context, next func(huma.Context)) {
-				middleware.WithAccount(humaApi)(ctx, next, logger, service)
-			},
-		},
-	}, handler.getDailyAggregatedVentureAnalytics)
 
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "get-daily-aggregated-business-analytics",

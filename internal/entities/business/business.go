@@ -47,8 +47,8 @@ type Business struct {
 }
 
 type BusinessParams struct {
-	BusinessColour *string            `json:"businessColour" minLength:"6" maxLength:"6" regex:"^#[0-9A-F]{6}$" required:"false"`
-	DisplayName    string             `json:"displayName" minLength:"1"`
+	BusinessColour *string            `json:"businessColour" minLength:"7" maxLength:"7" regex:"^#[0-9A-F]{6}$" required:"false" example:"#E9743E"`
+	DisplayName    string             `json:"displayName" minLength:"1" example:"Acme Inc."`
 	FoundingDate   time.Time          `json:"foundingDate" format:"date-time"`
 	Status         BusinessStatus     `json:"status" hidden:"true" required:"false"`
 	EmployeeCount  EmployeeCountRange `json:"employeeCount" enum:"1,2-10,11-50,51-200,201-500,501-1000,1000+"`
@@ -58,7 +58,7 @@ type CreateBusinessParams struct {
 	Business       BusinessParams                    `json:"business"`
 	StripeAccount  CreateBusinessStripeAccountParams `json:"stripeAccount" required:"false" hidden:"true"`
 	InitialOwnerID int                               `json:"initialOwnerId" minimum:"1"`
-	IndustryIDs    []int                             `json:"industryIds" required:"false" minItems:"1" type:"array" uniqueItems:"true"`
+	IndustryIDs    []int                             `json:"industryIds" required:"false" minItems:"1" type:"array" uniqueItems:"true" example:"[1]"`
 }
 
 type UpdateBusinessParams struct {
