@@ -20,7 +20,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import { ComponentPropsWithoutRef, FC } from "react"
-import { Icons } from "@/components/ui/icons"
+import { Icons } from "@/components/icons"
 import Link from "next/link"
 import redirects from "@/lib/config/redirects"
 

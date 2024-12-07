@@ -17,7 +17,7 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
-import { Icons } from "./ui/icons";
+import { Icons } from "./icons";
 import Link from "next/link";
 
 export interface SidebarMenuProps extends ComponentPropsWithoutRef<typeof SidebarMenuComponent> {

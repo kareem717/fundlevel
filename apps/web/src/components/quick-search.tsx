@@ -3,7 +3,7 @@
 import { ComponentPropsWithoutRef, FC } from "react"
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
-import { Icons } from "./ui/icons";
+import { Icons } from "./icons";
 import { cn } from "@/lib/utils";
 
 export interface QuickSearchProps extends ComponentPropsWithoutRef<"div"> {

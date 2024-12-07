@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner"
 import { updateAccount } from "@/actions/auth";
 import { ComponentPropsWithoutRef, FC } from "react";
-import { Icons } from "@/components/ui/icons";
+import { Icons } from "@/components/icons";
 import { useAction } from "next-safe-action/hooks";
 import { cn } from "@/lib/utils";
 import { InferType } from "yup";

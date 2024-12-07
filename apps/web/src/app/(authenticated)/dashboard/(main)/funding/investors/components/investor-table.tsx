@@ -33,7 +33,7 @@ import {
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
-import { Icons } from "@/components/ui/icons"
+import { Icons } from "@/components/icons"
 
 type Investor = {
   name: string

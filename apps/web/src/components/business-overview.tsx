@@ -1,7 +1,7 @@
 "use client"
 
 import { ComponentPropsWithoutRef, FC, useEffect, useState } from "react"
-import { Icons } from "@/components/ui/icons"
+import { Icons } from "@/components/icons"
 import { cn } from "@/lib/utils"
 import { Skeleton } from "./ui/skeleton";
 import { useAction } from "next-safe-action/hooks";

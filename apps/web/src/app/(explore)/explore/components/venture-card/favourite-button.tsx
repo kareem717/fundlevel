@@ -8,7 +8,7 @@ import { likeVenture } from "@/actions/ventures";
 import { useOptimisticAction } from "next-safe-action/hooks";
 import { Venture } from "@/lib/api";
 import { cn } from "@/lib/utils";
-import { Icons } from "@/components/ui/icons";
+import { Icons } from "@/components/icons";
 
 type FavouriteButtonProps = {
   ventureId: number;

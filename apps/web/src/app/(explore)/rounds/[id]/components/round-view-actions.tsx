@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils";
 import { ComponentPropsWithoutRef, FC, useEffect, useState } from "react"
 import { Button } from "@/components/ui/button";
-import { Icons } from "@/components/ui/icons";
+import { Icons } from "@/components/icons";
 import redirects from "@/lib/config/redirects";
 import {
   DropdownMenu,

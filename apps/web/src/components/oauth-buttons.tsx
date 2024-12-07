@@ -1,6 +1,6 @@
 "use client";
 
-import { Icons } from "./ui/icons";
+import { Icons } from "./icons";
 import { Button } from "./ui/button";
 import supabase from "@/lib/utils/supabase/client";
 import { useRouter } from "next/navigation";

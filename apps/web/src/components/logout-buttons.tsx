@@ -5,7 +5,7 @@ import supabase from "@/lib/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner"
 import { useState } from "react";
-import { Icons } from "./ui/icons";
+import { Icons } from "./icons";
 
 export const LogoutButtons = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);

@@ -8,7 +8,7 @@
 // import { Venture, Round } from "@/lib/api"
 // import { toast } from "sonner"
 // import { useInView } from "react-intersection-observer"
-// import { Icons } from "@/components/ui/icons"
+// import { Icons } from "@/components/icons"
 // import Link from "next/link";
 // import redirects from "@/lib/config/redirects";
 // import { formatTime, cn, truncateText, toFixedRound } from "@/lib/utils";

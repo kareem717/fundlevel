@@ -13,7 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner"
 import { ComponentPropsWithoutRef, FC } from "react";
-import { Icons } from "@/components/ui/icons";
+import { Icons } from "@/components/icons";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { yupResolver } from '@hookform/resolvers/yup';

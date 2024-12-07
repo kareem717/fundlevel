@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils";
 import { ComponentPropsWithoutRef, FC } from "react"
 import { Card } from "./ui/card";
-import { Icons } from "./ui/icons";
+import { Icons } from "./icons";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 import { Skeleton } from "./ui/skeleton";
 

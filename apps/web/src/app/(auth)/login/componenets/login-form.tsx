@@ -1,6 +1,6 @@
 "use client";
 
-import { Icons } from "@/components/ui/icons";
+import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { OAuthButtons } from "@/components/oauth-buttons";

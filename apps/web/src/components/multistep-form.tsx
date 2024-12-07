@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, buttonVariants } from "@/components/ui/button";
-import { Icons } from "@/components/ui/icons";
+import { Icons } from "@/components/icons";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import {

@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Icons } from "@/components/ui/icons"
+import { Icons } from "@/components/icons"
 import { DataTableColumnHeader } from "@/components/data-table"
 import { titleCase } from "title-case"
 import { RoundInvestment } from "@/lib/api"

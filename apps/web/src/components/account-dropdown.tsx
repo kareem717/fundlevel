@@ -11,7 +11,7 @@ import {
 import { Account } from "@/lib/api";
 import { buttonVariants } from "./ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Icons } from "./ui/icons";
+import { Icons } from "./icons";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import redirects from "@/lib/config/redirects";

@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { ComponentPropsWithoutRef, FC, useEffect, useMemo, useState } from "react"
 import { DataTablePagination, DataTableColumnHeader } from "@/components/data-table"
-import { Icons } from "@/components/ui/icons"
+import { Icons } from "@/components/icons"
 import { RoundInvestment } from "@/lib/api"
 import { format } from "date-fns"
 import { Skeleton } from "@/components/ui/skeleton"

@@ -2,7 +2,7 @@
 
 import { ComponentPropsWithoutRef, FC } from "react"
 import { cn } from "@/lib/utils";
-import { Icons } from "./ui/icons";
+import { Icons } from "./icons";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
 

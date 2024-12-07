@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Icons } from "@/components/ui/icons";
+import { Icons } from "@/components/icons";
 import { Separator } from "@/components/ui/separator";
 import { cn, toFixedRound, truncateText } from "@/lib/utils";
 import {
