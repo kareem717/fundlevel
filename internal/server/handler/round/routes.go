@@ -86,44 +86,4 @@ func RegisterHumaRoutes(
 			},
 		},
 	}, handler.delete)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-round-investments-by-cursor",
-		Method:      http.MethodGet,
-		Path:        "/round/{id}/investments",
-		Summary:     "Get round investments",
-		Description: "Get round investments.",
-		Tags:        []string{"Round", "Investments"},
-		Security: []map[string][]string{
-			{"bearerAuth": {}},
-		},
-		Middlewares: huma.Middlewares{
-			func(ctx huma.Context, next func(huma.Context)) {
-				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
-			},
-			func(ctx huma.Context, next func(huma.Context)) {
-				middleware.WithAccount(humaApi)(ctx, next, logger, service)
-			},
-		},
-	}, handler.getInvestmentsByCursor)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-round-investments-by-page",
-		Method:      http.MethodGet,
-		Path:        "/round/{id}/investments/page",
-		Summary:     "Get round investments",
-		Description: "Get round investments.",
-		Tags:        []string{"Round", "Investments"},
-		Security: []map[string][]string{
-			{"bearerAuth": {}},
-		},
-		Middlewares: huma.Middlewares{
-			func(ctx huma.Context, next func(huma.Context)) {
-				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
-			},
-			func(ctx huma.Context, next func(huma.Context)) {
-				middleware.WithAccount(humaApi)(ctx, next, logger, service)
-			},
-		},
-	}, handler.getInvestmentsByPage)
 }

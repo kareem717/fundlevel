@@ -18,9 +18,7 @@ func (r *BusinessRepository) GetInvestmentsByCursor(ctx context.Context, busines
 		Model(&resp).
 		Join("JOIN rounds").
 		JoinOn("round_investment.round_id = rounds.id").
-		Join("JOIN ventures").
-		JoinOn("rounds.venture_id = ventures.id").
-		Where("ventures.business_id = ?", businessId).
+		Where("rounds.business_id = ?", businessId).
 		Limit(paginationParams.Limit)
 
 	query = helper.ApplyInvestmentFilter(query, filter)
@@ -44,9 +42,7 @@ func (r *BusinessRepository) GetInvestmentsByPage(ctx context.Context, businessI
 		Model(&resp).
 		Relation("Round").
 		Relation("Investor").
-		Join("JOIN ventures").
-		JoinOn("round.venture_id = ventures.id").
-		Where("ventures.business_id = ?", businessId).
+		Where("rounds.business_id = ?", businessId).
 		Offset(offset).
 		Limit(paginationParams.PageSize + 1)
 
@@ -62,11 +58,9 @@ func (r *BusinessRepository) GetTotalFunding(ctx context.Context, businessId int
 		NewSelect().
 		Model(&round.Round{}).
 		ColumnExpr("SUM(round.percentage_value)").
-		Join("JOIN ventures").
-		JoinOn("round.venture_id = ventures.id").
 		Where("round.status = ?", round.RoundStatusSuccessful).
-		Where("ventures.business_id = ?", businessId).
-		Group("ventures.business_id").
+		Where("rounds.business_id = ?", businessId).
+		Group("rounds.business_id").
 		Scan(ctx, &totalFunding)
 
 	if err != nil {

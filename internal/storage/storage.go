@@ -10,30 +10,10 @@ import (
 	"fundlevel/internal/entities/industry"
 	"fundlevel/internal/entities/investment"
 	"fundlevel/internal/entities/round"
-	"fundlevel/internal/entities/venture"
 	postgres "fundlevel/internal/storage/shared"
 
 	"github.com/google/uuid"
 )
-
-type VentureRepository interface {
-	Create(ctx context.Context, params venture.CreateVentureParams) (venture.Venture, error)
-	Delete(ctx context.Context, id int) error
-	GetByCursor(ctx context.Context, paginationParams postgres.CursorPagination, filter venture.VentureFilter) ([]venture.Venture, error)
-	GetByPage(ctx context.Context, paginationParams postgres.OffsetPagination, filter venture.VentureFilter) ([]venture.Venture, int, error)
-	Update(ctx context.Context, id int, params venture.UpdateVentureParams) (venture.Venture, error)
-	GetById(ctx context.Context, id int) (venture.Venture, error)
-
-	GetRoundsByCursor(ctx context.Context, ventureId int, paginationParams postgres.CursorPagination, filter round.RoundFilter) ([]round.Round, error)
-	GetRoundsByPage(ctx context.Context, ventureId int, paginationParams postgres.OffsetPagination, filter round.RoundFilter) ([]round.Round, int, error)
-	HasActiveRound(ctx context.Context, ventureId int) (bool, error)
-	GetActiveRound(ctx context.Context, ventureId int) (round.Round, error)
-
-	// GetInvestmentsByCursor gets all of the received investments on the rounds related to the venture using cursor pagination
-	GetInvestmentsByCursor(ctx context.Context, ventureId int, paginationParams postgres.CursorPagination, filter investment.InvestmentFilter) ([]investment.RoundInvestment, error)
-	// GetInvestmentsByPage gets all of the received investments on the rounds related to the venture using offset pagination
-	GetInvestmentsByPage(ctx context.Context, ventureId int, paginationParams postgres.OffsetPagination, filter investment.InvestmentFilter) ([]investment.RoundInvestment, int, error)
-}
 
 type IndustryRepository interface {
 	GetAll(ctx context.Context) ([]industry.Industry, error)
@@ -42,7 +22,7 @@ type IndustryRepository interface {
 type RoundRepository interface {
 	Create(ctx context.Context, params round.CreateRoundParams) (round.Round, error)
 	Delete(ctx context.Context, id int) error
-	GetById(ctx context.Context, id int) (round.Round, error)
+	GetById(ctx context.Context, id int) (round.RoundWithBusiness, error)
 	GetByCursor(ctx context.Context, paginationParams postgres.CursorPagination, filter round.RoundFilter) ([]round.Round, error)
 	GetByPage(ctx context.Context, paginationParams postgres.OffsetPagination, filter round.RoundFilter) ([]round.Round, int, error)
 	Update(ctx context.Context, id int, params round.UpdateRoundParams) (round.Round, error)
@@ -104,9 +84,6 @@ type BusinessRepository interface {
 	GetStripeAccount(ctx context.Context, businessId int) (business.BusinessStripeAccount, error)
 	DeleteStripeAccount(ctx context.Context, businessId int) error
 
-	GetVenturesByCursor(ctx context.Context, businessId int, paginationParams postgres.CursorPagination, filter venture.VentureFilter) ([]venture.Venture, error)
-	GetVenturesByPage(ctx context.Context, businessId int, paginationParams postgres.OffsetPagination, filter venture.VentureFilter) ([]venture.Venture, int, error)
-
 	GetRoundsByPage(ctx context.Context, businessId int, paginationParams postgres.OffsetPagination, filter round.RoundFilter) ([]round.Round, int, error)
 	GetRoundsByCursor(ctx context.Context, businessId int, paginationParams postgres.CursorPagination, filter round.RoundFilter) ([]round.Round, error)
 
@@ -123,21 +100,13 @@ type BusinessRepository interface {
 
 type AnalyticRepository interface {
 	GetDailyAggregatedBusinessAnalytics(ctx context.Context, businessId int, minDayOfYear int, maxDayOfYear int) ([]analytic.SimplifiedDailyAggregatedBusinessAnalytics, error)
-	GetDailyAggregatedVentureAnalytics(ctx context.Context, ventureId int, minDayOfYear int, maxDayOfYear int) ([]analytic.SimplifiedDailyAggregatedVentureAnalytics, error)
 	GetDailyAggregatedRoundAnalytics(ctx context.Context, roundId int, minDayOfYear int, maxDayOfYear int) ([]analytic.SimplifiedDailyAggregatedRoundAnalytics, error)
 
 	CreateRoundImpression(ctx context.Context, params analytic.CreateRoundImpressionParams) error
-	CreateVentureImpression(ctx context.Context, params analytic.CreateVentureImpressionParams) error
 	CreateBusinessImpression(ctx context.Context, params analytic.CreateBusinessImpressionParams) error
 
 	GetRoundImpressionCount(ctx context.Context, roundId int) (int, error)
-	GetVentureImpressionCount(ctx context.Context, ventureId int) (int, error)
 	GetBusinessImpressionCount(ctx context.Context, businessId int) (int, error)
-
-	CreateVentureFavourite(ctx context.Context, params analytic.CreateVentureFavouriteParams) error
-	DeleteVentureFavourite(ctx context.Context, ventureId int, accountId int) error
-	IsVentureFavouritedByAccount(ctx context.Context, ventureId int, accountId int) (bool, error)
-	GetVentureFavouriteCount(ctx context.Context, ventureId int) (int, error)
 
 	CreateBusinessFavourite(ctx context.Context, params analytic.CreateBusinessFavouriteParams) error
 	DeleteBusinessFavourite(ctx context.Context, businessId int, accountId int) error
@@ -167,7 +136,6 @@ type ChatRepository interface {
 }
 
 type RepositoryProvider interface {
-	Venture() VentureRepository
 	Account() AccountRepository
 	Round() RoundRepository
 	Investment() InvestmentRepository

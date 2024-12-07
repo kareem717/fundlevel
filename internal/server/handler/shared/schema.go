@@ -6,7 +6,6 @@ import (
 	"fundlevel/internal/entities/business"
 	"fundlevel/internal/entities/investment"
 	"fundlevel/internal/entities/round"
-	"fundlevel/internal/entities/venture"
 	"time"
 
 	"github.com/google/uuid"
@@ -35,7 +34,7 @@ type URLOutput struct {
 
 type TimeCursorPaginationResponse struct {
 	NextCursor *time.Time `json:"nextCursor"`
-	HasNext    bool      `json:"hasNext"`
+	HasNext    bool       `json:"hasNext"`
 }
 
 type TimeCursorPaginationRequest struct {
@@ -75,12 +74,20 @@ type FundingOutput struct {
 	}
 }
 
+type SingleRoundWithBusinessResponse struct {
+	Body struct {
+		MessageResponse
+		Round *round.RoundWithBusiness `json:"round"`
+	}
+}
+
 type SingleRoundResponse struct {
 	Body struct {
 		MessageResponse
 		Round *round.Round `json:"round"`
 	}
 }
+
 type PathUserIDParam struct {
 	UserID uuid.UUID `path:"userId"`
 }
@@ -125,22 +132,6 @@ type GetOffsetPaginatedRoundsOutput struct {
 	Body struct {
 		MessageResponse
 		Rounds []round.Round `json:"rounds"`
-		OffsetPaginationResponse
-	}
-}
-
-type GetCursorPaginatedVenturesOutput struct {
-	Body struct {
-		MessageResponse
-		Ventures []venture.Venture `json:"ventures"`
-		CursorPaginationResponse
-	}
-}
-
-type GetOffsetPaginatedVenturesOutput struct {
-	Body struct {
-		MessageResponse
-		Ventures []venture.Venture `json:"ventures"`
 		OffsetPaginationResponse
 	}
 }

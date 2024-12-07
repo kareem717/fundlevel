@@ -7,7 +7,7 @@ CREATE TYPE round_status AS ENUM('active', 'successful', 'failed');
 CREATE TABLE
     rounds (
         id serial PRIMARY KEY,
-        venture_id INT NOT NULL REFERENCES ventures (id),
+        business_id INT NOT NULL REFERENCES businesses (id),
         begins_at timestamptz NOT NULL,
         ends_at timestamptz NOT NULL,
         percentage_offered NUMERIC(6, 3) NOT NULL,
@@ -28,11 +28,6 @@ CREATE TABLE
         CONSTRAINT buy_in_check CHECK (buy_in>0),
         CONSTRAINT description_check CHECK (LENGTH(description)>=10)
     );
-
-CREATE UNIQUE INDEX idx_rounds_venture_id_status ON rounds (venture_id)
-WHERE
-    status='active'
-    AND deleted_at IS NULL;
 
 CREATE TRIGGER sync_rounds_updated_at BEFORE
 UPDATE ON rounds FOR EACH ROW

@@ -18,12 +18,6 @@ type RolePermission struct {
 	Value         RolePermissionValue `json:"value"`
 }
 
-type RoleType string
-
-const (
-	RoleTypeBusiness RoleType = "business"
-)
-
 type BusinessMemberRole struct {
 	bun.BaseModel `bun:"business_member_roles"`
 
@@ -32,7 +26,6 @@ type BusinessMemberRole struct {
 	Permissions []RolePermission `json:"permissions" bun:"rel:has-many,join:id=role_id"`
 	shared.Timestamps
 }
-
 type BusinessMember struct {
 	bun.BaseModel `json:"-" bun:"business_members"`
 	BusinessId    int `bun:",pk"`
@@ -41,4 +34,10 @@ type BusinessMember struct {
 
 	Role BusinessMemberRole `bun:"rel:has-one,join:role_id=id"`
 	shared.Timestamps
+}
+
+type CreateBusinessMemberParams struct {
+	BusinessId int `json:"businessId" minimum:"1"`
+	AccountId  int `json:"accountId" minimum:"1"`
+	RoleId     int `json:"roleId" minimum:"1"`
 }

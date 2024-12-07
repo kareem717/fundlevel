@@ -11,7 +11,6 @@ import (
 	"fundlevel/internal/entities/industry"
 	"fundlevel/internal/entities/investment"
 	"fundlevel/internal/entities/round"
-	"fundlevel/internal/entities/venture"
 	accountService "fundlevel/internal/service/domain/account"
 	analyticService "fundlevel/internal/service/domain/analytic"
 	businessService "fundlevel/internal/service/domain/business"
@@ -22,28 +21,11 @@ import (
 	"fundlevel/internal/service/domain/permission"
 	roundService "fundlevel/internal/service/domain/round"
 	userService "fundlevel/internal/service/domain/user"
-	ventureService "fundlevel/internal/service/domain/venture"
 	"fundlevel/internal/storage"
 
 	"github.com/google/uuid"
 	"github.com/stripe/stripe-go/v80"
 )
-
-type VentureService interface {
-	Create(ctx context.Context, params venture.CreateVentureParams) (venture.Venture, error)
-	Delete(ctx context.Context, id int) error
-	Update(ctx context.Context, id int, params venture.UpdateVentureParams) (venture.Venture, error)
-	GetById(ctx context.Context, id int) (venture.Venture, error)
-	GetByCursor(ctx context.Context, limit int, cursor int, filter venture.VentureFilter) ([]venture.Venture, error)
-	GetByPage(ctx context.Context, pageSize int, page int, filter venture.VentureFilter) ([]venture.Venture, int, error)
-
-	GetRoundsByCursor(ctx context.Context, ventureId int, limit int, cursor int, filter round.RoundFilter) ([]round.Round, error)
-	GetRoundsByPage(ctx context.Context, ventureId int, pageSize int, page int, filter round.RoundFilter) ([]round.Round, int, error)
-	GetActiveRound(ctx context.Context, ventureId int) (round.Round, error)
-
-	GetInvestmentsByCursor(ctx context.Context, ventureId int, limit int, cursor int, filter investment.InvestmentFilter) ([]investment.RoundInvestment, error)
-	GetInvestmentsByPage(ctx context.Context, ventureId int, pageSize int, page int, filter investment.InvestmentFilter) ([]investment.RoundInvestment, int, error)
-}
 
 type UserService interface {
 	GetAccount(ctx context.Context, id uuid.UUID) (account.Account, error)
@@ -76,7 +58,7 @@ type HealthService interface {
 type RoundService interface {
 	Create(ctx context.Context, params round.CreateRoundParams) (round.Round, error)
 	Delete(ctx context.Context, id int) error
-	GetById(ctx context.Context, id int) (round.Round, error)
+	GetById(ctx context.Context, id int) (round.RoundWithBusiness, error)
 	GetByCursor(ctx context.Context, limit int, cursor int, filter round.RoundFilter) ([]round.Round, error)
 	GetByPage(ctx context.Context, pageSize int, page int, filter round.RoundFilter) ([]round.Round, int, error)
 
@@ -96,9 +78,6 @@ type BusinessService interface {
 	GetStripeAccountByAccountId(ctx context.Context, accountId string) (business.BusinessStripeAccount, error)
 	UpdateStripeAccount(ctx context.Context, businessId int, params business.UpdateBusinessStripeAccountParams) (business.BusinessStripeAccount, error)
 	GetStripeConnectedAccountDashboardURL(ctx context.Context, accountID string) (string, error)
-
-	GetVenturesByCursor(ctx context.Context, accountId int, limit int, cursor int, filter venture.VentureFilter) ([]venture.Venture, error)
-	GetVenturesByPage(ctx context.Context, accountId int, pageSize int, page int, filter venture.VentureFilter) ([]venture.Venture, int, error)
 
 	GetRoundsByPage(ctx context.Context, businessId int, pageSize int, page int, filter round.RoundFilter) ([]round.Round, int, error)
 	GetRoundsByCursor(ctx context.Context, businessId int, limit int, cursor int, filter round.RoundFilter) ([]round.Round, error)
@@ -136,14 +115,6 @@ type AnalyticService interface {
 	IsRoundFavouritedByAccount(ctx context.Context, roundId int, accountId int) (bool, error)
 	GetRoundFavouriteCount(ctx context.Context, roundId int) (int, error)
 
-	CreateVentureImpression(ctx context.Context, params analytic.CreateVentureImpressionParams) error
-	GetVentureImpressionCount(ctx context.Context, ventureId int) (int, error)
-
-	CreateVentureFavourite(ctx context.Context, params analytic.CreateVentureFavouriteParams) error
-	DeleteVentureFavourite(ctx context.Context, ventureId int, accountId int) error
-	IsVentureFavouritedByAccount(ctx context.Context, ventureId int, accountId int) (bool, error)
-	GetVentureFavouriteCount(ctx context.Context, ventureId int) (int, error)
-
 	CreateBusinessImpression(ctx context.Context, params analytic.CreateBusinessImpressionParams) error
 	GetBusinessImpressionCount(ctx context.Context, businessId int) (int, error)
 
@@ -153,7 +124,6 @@ type AnalyticService interface {
 	GetBusinessFavouriteCount(ctx context.Context, businessId int) (int, error)
 
 	GetDailyAggregatedBusinessAnalytics(ctx context.Context, businessId int, minDayOfYear int, maxDayOfYear int) ([]analytic.SimplifiedDailyAggregatedBusinessAnalytics, error)
-	GetDailyAggregatedVentureAnalytics(ctx context.Context, ventureId int, minDayOfYear int, maxDayOfYear int) ([]analytic.SimplifiedDailyAggregatedVentureAnalytics, error)
 	GetDailyAggregatedRoundAnalytics(ctx context.Context, roundId int, minDayOfYear int, maxDayOfYear int) ([]analytic.SimplifiedDailyAggregatedRoundAnalytics, error)
 }
 
@@ -178,25 +148,16 @@ type PermissionService interface {
 	CanManageBusinessStripe(ctx context.Context, accountId int, businessId int) (bool, error)
 	CanAccessBusinessStripeDashboard(ctx context.Context, accountId int, businessId int) (bool, error)
 	CanViewBusinessAnalytics(ctx context.Context, accountId int, businessId int) (bool, error)
-	
-	CanViewVentureAnalytics(ctx context.Context, accountId int, ventureId int) (bool, error)
-	CanViewVentureInvestments(ctx context.Context, accountId int, ventureId int) (bool, error)
-	CanCreateVenture(ctx context.Context, accountId int, businessId int) (bool, error)
-	CanUpdateVenture(ctx context.Context, accountId int, ventureId int) (bool, error)
-	CanDeleteVenture(ctx context.Context, accountId int, ventureId int) (bool, error)
 
 	CanViewRoundAnalytics(ctx context.Context, accountId int, roundId int) (bool, error)
 	CanViewRoundInvestments(ctx context.Context, accountId int, roundId int) (bool, error)
 	CanCreateRound(ctx context.Context, accountId int, businessId int) (bool, error)
 	CanDeleteRound(ctx context.Context, accountId int, roundId int) (bool, error)
 
-
-
 	CanCreateBusiness(ctx context.Context, account account.Account) (bool, error)
 }
 
 type Service struct {
-	VentureService    VentureService
 	RoundService      RoundService
 	AccountService    AccountService
 	HealthService     HealthService
@@ -216,7 +177,6 @@ func NewService(
 	feePercentage float64,
 ) *Service {
 	return &Service{
-		VentureService:    ventureService.NewVentureService(repositories),
 		IndustryService:   industryService.NewIndustryService(repositories),
 		HealthService:     healthService.NewHealthService(repositories),
 		AnalyticService:   analyticService.NewAnalyticService(repositories),

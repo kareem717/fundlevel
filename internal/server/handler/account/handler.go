@@ -260,7 +260,7 @@ func (h *httpHandler) getAllBusinesses(ctx context.Context, input *shared.PathID
 			return nil, huma.Error404NotFound("businesses not found")
 		default:
 			h.logger.Error("failed to fetch businesses", zap.Error(err))
-			return nil, huma.Error500InternalServerError("An error occurred while fetching the ventures")
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the businesses")
 		}
 	}
 
