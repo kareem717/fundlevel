@@ -11,8 +11,9 @@ func (r *BusinessRepository) GetBusinessMember(ctx context.Context, businessId i
 		NewSelect().
 		Model(&resp).
 		Relation("Role").
-		Where("business_members.business_id = ?", businessId).
-		Where("business_members.account_id = ?", accountId).
+		Relation("Role.Permissions").
+		Where("business_member.business_id = ?", businessId).
+		Where("business_member.account_id = ?", accountId).
 		Scan(ctx)
 
 	return resp, err
