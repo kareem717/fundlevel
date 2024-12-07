@@ -3,7 +3,6 @@ package business
 import (
 	"context"
 	"errors"
-	"fundlevel/internal/entities/address"
 	"fundlevel/internal/entities/business"
 
 	"github.com/uptrace/bun"
@@ -21,20 +20,8 @@ func NewBusinessRepository(db bun.IDB, ctx context.Context) *BusinessRepository 
 //TODO: this logic should be in a service, not in the repository
 func (r *BusinessRepository) Create(ctx context.Context, params business.CreateBusinessParams) error {
 	err := r.db.RunInTx(ctx, nil, func(ctx context.Context, tx bun.Tx) error {
-		addressRecord := address.Address{}
-		err := tx.NewInsert().
-			Model(&params.Address).
-			ModelTableExpr("addresses").
-			Returning("*").
-			Scan(ctx, &addressRecord)
-		if err != nil {
-			return err
-		}
-
-		params.Business.AddressID = addressRecord.ID
-
 		var businessRecord business.Business
-		err = tx.NewInsert().
+		err := tx.NewInsert().
 			Model(&params.Business).
 			ModelTableExpr("businesses").
 			Returning("*").
@@ -93,7 +80,7 @@ func (r *BusinessRepository) Create(ctx context.Context, params business.CreateB
 			return err
 		}
 
-		industryIds := make([]business.BusinessIndustry, len(params.IndustryIDs))
+		industryIds := make([]business.BusinessToIndustry, len(params.IndustryIDs))
 		for i, industryId := range params.IndustryIDs {
 			industryIds[i].BusinessID = businessRecord.ID
 			industryIds[i].IndustryID = industryId
@@ -120,7 +107,7 @@ func (r *BusinessRepository) GetById(ctx context.Context, id int) (business.Busi
 		Model(&resp).
 		Relation("Address").
 		Relation("StripeAccount").
-		Relation("Industry").
+		Relation("Industries").
 		Where("business.id = ?", id).
 		Scan(ctx)
 
