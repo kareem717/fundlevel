@@ -19,6 +19,7 @@ import (
 	healthService "fundlevel/internal/service/domain/health"
 	industryService "fundlevel/internal/service/domain/industry"
 	investmentService "fundlevel/internal/service/domain/investment"
+	"fundlevel/internal/service/domain/permission"
 	roundService "fundlevel/internal/service/domain/round"
 	userService "fundlevel/internal/service/domain/user"
 	ventureService "fundlevel/internal/service/domain/venture"
@@ -171,6 +172,29 @@ type ChatService interface {
 	IsAccountInChat(ctx context.Context, chatID int, accountID int) (bool, error)
 }
 
+type PermissionService interface {
+	CanAccessBusinessInvestments(ctx context.Context, accountId int, businessId int) (bool, error)
+	CanAccountDeleteBusiness(ctx context.Context, accountId int, businessId int) (bool, error)
+	CanManageBusinessStripe(ctx context.Context, accountId int, businessId int) (bool, error)
+	CanAccessBusinessStripeDashboard(ctx context.Context, accountId int, businessId int) (bool, error)
+	CanViewBusinessAnalytics(ctx context.Context, accountId int, businessId int) (bool, error)
+	
+	CanViewVentureAnalytics(ctx context.Context, accountId int, ventureId int) (bool, error)
+	CanViewVentureInvestments(ctx context.Context, accountId int, ventureId int) (bool, error)
+	CanCreateVenture(ctx context.Context, accountId int, businessId int) (bool, error)
+	CanUpdateVenture(ctx context.Context, accountId int, ventureId int) (bool, error)
+	CanDeleteVenture(ctx context.Context, accountId int, ventureId int) (bool, error)
+
+	CanViewRoundAnalytics(ctx context.Context, accountId int, roundId int) (bool, error)
+	CanViewRoundInvestments(ctx context.Context, accountId int, roundId int) (bool, error)
+	CanCreateRound(ctx context.Context, accountId int, businessId int) (bool, error)
+	CanDeleteRound(ctx context.Context, accountId int, roundId int) (bool, error)
+
+
+
+	CanCreateBusiness(ctx context.Context, account account.Account) (bool, error)
+}
+
 type Service struct {
 	VentureService    VentureService
 	RoundService      RoundService
@@ -182,6 +206,7 @@ type Service struct {
 	BusinessService   BusinessService
 	InvestmentService InvestmentService
 	ChatService       ChatService
+	PermissionService PermissionService
 }
 
 // NewService implementation for storage of all services.
@@ -201,5 +226,6 @@ func NewService(
 		InvestmentService: investmentService.NewInvestmentService(repositories, stripeAPIKey, feePercentage),
 		BusinessService:   businessService.NewBusinessService(repositories, stripeAPIKey),
 		ChatService:       chatService.NewChatService(repositories),
+		PermissionService: permission.NewPermissionService(repositories),
 	}
 }

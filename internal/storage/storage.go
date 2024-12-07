@@ -117,6 +117,8 @@ type BusinessRepository interface {
 
 	// GetTotalFunding gets the amount the business has successfully raised through rounds
 	GetTotalFunding(ctx context.Context, businessId int) (int, error)
+
+	GetBusinessMember(ctx context.Context, businessId int, accountId int) (business.BusinessMember, error)
 }
 
 type AnalyticRepository interface {

@@ -389,7 +389,7 @@ func (h *httpHandler) createBusinessFavourite(ctx context.Context, input *Favour
 		return nil, huma.Error403Forbidden("Cannot like for another account")
 	}
 
-	businessRecord, err := h.service.BusinessService.GetById(ctx, input.ID)
+	_, err := h.service.BusinessService.GetById(ctx, input.ID)
 	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
@@ -398,14 +398,6 @@ func (h *httpHandler) createBusinessFavourite(ctx context.Context, input *Favour
 			h.logger.Error("failed to fetch business", zap.Error(err))
 			return nil, huma.Error500InternalServerError("An error occurred while fetching the business")
 		}
-	}
-
-	if account.ID != businessRecord.OwnerAccountID {
-		h.logger.Error("business owner account id does not match authenticated account id",
-			zap.Any("business owner account id", businessRecord.OwnerAccountID),
-			zap.Any("authenticated account id", account.ID))
-
-		return nil, huma.Error403Forbidden("Cannot like a business you do not own")
 	}
 
 	err = h.service.AnalyticService.CreateBusinessFavourite(ctx, analytic.CreateBusinessFavouriteParams{
@@ -435,7 +427,7 @@ func (h *httpHandler) deleteBusinessFavourite(ctx context.Context, input *Favour
 		return nil, huma.Error403Forbidden("Cannot delete like for another account")
 	}
 
-	businessRecord, err := h.service.BusinessService.GetById(ctx, input.ID)
+	_, err := h.service.BusinessService.GetById(ctx, input.ID)
 	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
@@ -444,14 +436,6 @@ func (h *httpHandler) deleteBusinessFavourite(ctx context.Context, input *Favour
 			h.logger.Error("failed to fetch business", zap.Error(err))
 			return nil, huma.Error500InternalServerError("An error occurred while fetching the business")
 		}
-	}
-
-	if account.ID != businessRecord.OwnerAccountID {
-		h.logger.Error("business owner account id does not match authenticated account id",
-			zap.Any("business owner account id", businessRecord.OwnerAccountID),
-			zap.Any("authenticated account id", account.ID))
-
-		return nil, huma.Error403Forbidden("Cannot delete like for a business you do not own")
 	}
 
 	err = h.service.AnalyticService.DeleteBusinessFavourite(ctx, input.ID, input.AccountID)
@@ -531,9 +515,15 @@ func (h *httpHandler) getDailyAggregatedBusinessAnalytics(ctx context.Context, i
 
 	account := shared.GetAuthenticatedAccount(ctx)
 
-	if business.OwnerAccountID != account.ID {
-		h.logger.Error("account does not own business", zap.Int("business_id", input.ID), zap.Int("account_id", account.ID))
-		return nil, huma.Error403Forbidden("Account does not own business")
+	authorized, err := h.service.PermissionService.CanViewBusinessAnalytics(ctx, account.ID, business.ID)
+	if err != nil {
+		h.logger.Error("failed to check if account can view business analytics", zap.Error(err), zap.Int("business_id", input.ID), zap.Int("account_id", account.ID))
+		return nil, huma.Error500InternalServerError("An error occurred while checking if the account can view business analytics")
+	}
+
+	if !authorized {
+		h.logger.Error("account does not have permission to view business analytics", zap.Int("business_id", input.ID), zap.Int("account_id", account.ID))
+		return nil, huma.Error403Forbidden("Account does not have permission to view business analytics")
 	}
 
 	businessAnalytics, err := h.service.AnalyticService.GetDailyAggregatedBusinessAnalytics(ctx, business.ID, input.MinDayOfYear, input.MaxDayOfYear)
@@ -570,9 +560,15 @@ func (h *httpHandler) getDailyAggregatedVentureAnalytics(ctx context.Context, in
 
 	account := shared.GetAuthenticatedAccount(ctx)
 
-	if venture.Business.OwnerAccountID != account.ID {
-		h.logger.Error("account does not own venture", zap.Int("venture_id", input.ID), zap.Int("account_id", account.ID))
-		return nil, huma.Error403Forbidden("Account does not own venture")
+	authorized, err := h.service.PermissionService.CanViewVentureAnalytics(ctx, account.ID, venture.Business.ID)
+	if err != nil {
+		h.logger.Error("failed to check if account can view venture analytics", zap.Error(err), zap.Int("venture_id", input.ID), zap.Int("account_id", account.ID))
+		return nil, huma.Error500InternalServerError("An error occurred while checking if the account can view venture analytics")
+	}
+
+	if !authorized {
+		h.logger.Error("failed to get daily aggregated venture analytics", zap.Error(err), zap.Int("venture_id", input.ID))
+		return nil, huma.Error500InternalServerError("An error occurred while getting the daily aggregated venture analytics")
 	}
 
 	ventureAnalytics, err := h.service.AnalyticService.GetDailyAggregatedVentureAnalytics(ctx, venture.ID, input.MinDayOfYear, input.MaxDayOfYear)
@@ -609,9 +605,15 @@ func (h *httpHandler) getDailyAggregatedRoundAnalytics(ctx context.Context, inpu
 
 	account := shared.GetAuthenticatedAccount(ctx)
 
-	if round.Venture.Business.OwnerAccountID != account.ID {
-		h.logger.Error("account does not own round", zap.Int("round_id", input.ID), zap.Int("account_id", account.ID))
-		return nil, huma.Error403Forbidden("Account does not own round")
+	authorized, err := h.service.PermissionService.CanViewRoundAnalytics(ctx, account.ID, round.ID)
+	if err != nil {
+		h.logger.Error("failed to check if account can view round analytics", zap.Error(err), zap.Int("round_id", input.ID), zap.Int("account_id", account.ID))
+		return nil, huma.Error500InternalServerError("An error occurred while checking if the account can view round analytics")
+	}
+
+	if !authorized {
+		h.logger.Error("account does not have permission to view round analytics", zap.Int("round_id", input.ID), zap.Int("account_id", account.ID))
+		return nil, huma.Error403Forbidden("Account does not have permission to view round analytics")
 	}
 
 	roundAnalytics, err := h.service.AnalyticService.GetDailyAggregatedRoundAnalytics(ctx, round.ID, input.MinDayOfYear, input.MaxDayOfYear)

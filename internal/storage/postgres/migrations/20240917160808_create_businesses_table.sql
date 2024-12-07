@@ -18,7 +18,6 @@ CREATE TABLE
         NAME VARCHAR(200) NOT NULL,
         business_number VARCHAR(50) NOT NULL,
         founding_date DATE NOT NULL,
-        owner_account_id INT NOT NULL REFERENCES accounts (id),
         status business_status NOT NULL DEFAULT 'pending',
         team_size team_size NOT NULL DEFAULT '1',
         is_remote BOOLEAN NOT NULL DEFAULT FALSE,

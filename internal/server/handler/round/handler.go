@@ -70,12 +70,17 @@ func (h *httpHandler) create(ctx context.Context, input *CreateRoundInput) (*sha
 		return nil, huma.Error500InternalServerError("An error occurred while fetching the venture")
 	}
 
-	if account := shared.GetAuthenticatedAccount(ctx); account.ID != venture.Business.OwnerAccountID {
-		h.logger.Error("business owner account id does not match authenticated account id",
-			zap.Any("business owner account id", venture.Business.OwnerAccountID),
-			zap.Any("authenticated account id", account.ID))
+	account := shared.GetAuthenticatedAccount(ctx)
+	authorized, err := h.service.PermissionService.CanCreateRound(ctx, account.ID, venture.Business.ID)
+	if err != nil {
+		h.logger.Error("failed to check if account can create round", zap.Error(err), zap.Int("venture_id", input.Body.VentureID), zap.Int("account_id", account.ID))
+		return nil, huma.Error500InternalServerError("An error occurred while checking if the account can create the round")
+	}
 
-		return nil, huma.Error403Forbidden("Cannot create round for a business you do not own")
+	if !authorized {
+		h.logger.Error("account does not have permission to create round", zap.Int("venture_id", input.Body.VentureID), zap.Int("account_id", account.ID))
+
+		return nil, huma.Error403Forbidden("Unauthorized to create round")
 	}
 
 	if venture.IsHidden {
@@ -107,12 +112,17 @@ func (h *httpHandler) delete(ctx context.Context, input *shared.PathIDParam) (*s
 		}
 	}
 
-	if account := shared.GetAuthenticatedAccount(ctx); account.ID != round.Venture.Business.OwnerAccountID {
-		h.logger.Error("business owner account id does not match authenticated account id",
-			zap.Any("business owner account id", round.Venture.Business.OwnerAccountID),
-			zap.Any("authenticated account id", account.ID))
+	account := shared.GetAuthenticatedAccount(ctx)
 
-		return nil, huma.Error403Forbidden("Cannot delete round for a business you do not own")
+	authorized, err := h.service.PermissionService.CanDeleteRound(ctx, account.ID, round.Venture.Business.ID)
+	if err != nil {
+		h.logger.Error("failed to check if account can delete round", zap.Error(err), zap.Int("round_id", input.ID), zap.Int("account_id", account.ID))
+		return nil, huma.Error500InternalServerError("An error occurred while checking if the account can delete the round")
+	}
+
+	if !authorized {
+		h.logger.Error("account does not have permission to delete round", zap.Int("round_id", input.ID), zap.Int("account_id", account.ID))
+		return nil, huma.Error403Forbidden("Account does not have permission to delete round")
 	}
 
 	err = h.service.RoundService.Delete(ctx, input.ID)
@@ -139,12 +149,18 @@ func (h *httpHandler) getInvestmentsByCursor(ctx context.Context, input *shared.
 		}
 	}
 
-	if account := shared.GetAuthenticatedAccount(ctx); account.ID != round.Venture.Business.OwnerAccountID {
-		h.logger.Error("business owner account id does not match authenticated account id",
-			zap.Any("business owner account id", round.Venture.Business.OwnerAccountID),
-			zap.Any("authenticated account id", account.ID))
+	account := shared.GetAuthenticatedAccount(ctx)
+	
+	authorized, err := h.service.PermissionService.CanViewRoundInvestments(ctx, account.ID, round.Venture.Business.ID)
+	if err != nil {
+		h.logger.Error("failed to check if account can view round investments", zap.Error(err), zap.Int("round_id", input.ID), zap.Int("account_id", account.ID))
+		return nil, huma.Error500InternalServerError("An error occurred while checking if the account can view round investments")
+	}
 
-		return nil, huma.Error403Forbidden("Cannot get investments for a round for a business you do not own")
+	if !authorized {
+		h.logger.Error("account does not have permission to view round investments", zap.Int("round_id", input.ID), zap.Int("account_id", account.ID))
+
+		return nil, huma.Error403Forbidden("Unauthorized to view round investments")
 	}
 
 	limit := input.Limit + 1
@@ -186,12 +202,17 @@ func (h *httpHandler) getInvestmentsByPage(ctx context.Context, input *shared.Ge
 		}
 	}
 
-	if account := shared.GetAuthenticatedAccount(ctx); account.ID != round.Venture.Business.OwnerAccountID {
-		h.logger.Error("business owner account id does not match authenticated account id",
-			zap.Any("business owner account id", round.Venture.Business.OwnerAccountID),
-			zap.Any("authenticated account id", account.ID))
+	account := shared.GetAuthenticatedAccount(ctx)
+	authorized, err := h.service.PermissionService.CanViewRoundInvestments(ctx, account.ID, round.Venture.Business.ID)
+	if err != nil {
+		h.logger.Error("failed to check if account can view round investments", zap.Error(err), zap.Int("round_id", input.ID), zap.Int("account_id", account.ID))
+		return nil, huma.Error500InternalServerError("An error occurred while checking if the account can view round investments")
+	}
 
-		return nil, huma.Error403Forbidden("Cannot get investments for a round for a business you do not own")
+	if !authorized {
+		h.logger.Error("account does not have permission to view round investments", zap.Int("round_id", input.ID), zap.Int("account_id", account.ID))
+
+		return nil, huma.Error403Forbidden("Unauthorized to view round investments")
 	}
 
 	investments, total, err := h.service.RoundService.GetInvestmentsByPage(ctx, input.ID, input.PageSize, input.Page, input.InvestmentFilter)
