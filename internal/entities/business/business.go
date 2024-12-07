@@ -16,16 +16,16 @@ const (
 	BusinessStatusDisabled BusinessStatus = "disabled"
 )
 
-type TeamSize string
+type EmployeeCountRange string
 
 const (
-	TeamSize1        TeamSize = "1"
-	TeamSize2_10     TeamSize = "2-10"
-	TeamSize11_50    TeamSize = "11-50"
-	TeamSize51_200   TeamSize = "51-200"
-	TeamSize201_500  TeamSize = "201-500"
-	TeamSize501_1000 TeamSize = "501-1000"
-	TeamSize1000Plus TeamSize = "1000+"
+	EmployeeCountRange1        EmployeeCountRange = "1"
+	EmployeeCountRange2_10     EmployeeCountRange = "2-10"
+	EmployeeCountRange11_50    EmployeeCountRange = "11-50"
+	EmployeeCountRange51_200   EmployeeCountRange = "51-200"
+	EmployeeCountRange201_500  EmployeeCountRange = "201-500"
+	EmployeeCountRange501_1000 EmployeeCountRange = "501-1000"
+	EmployeeCountRange1000Plus EmployeeCountRange = "1000+"
 )
 
 type Business struct {
@@ -35,25 +35,23 @@ type Business struct {
 	Address       *address.Address       `json:"address" bun:"rel:has-one,join:address_id=id"`
 	StripeAccount *BusinessStripeAccount `json:"stripeAccount" bun:"rel:has-one,join:id=business_id"`
 
-	Name           string               `json:"name" minLength:"1"`
-	BusinessNumber string               `json:"businessNumber" minLength:"1"`
+	BusinessColour string               `json:"businessColour"`
+	DisplayName    string               `json:"displayName" minLength:"1"`
 	FoundingDate   time.Time            `json:"foundingDate" format:"date-time"`
 	Status         BusinessStatus       `json:"status" enum:"pending,active,disabled"`
 	AddressID      int                  `json:"addressId" minimum:"1"`
-	TeamSize       TeamSize             `json:"teamSize" enum:"1,2-10,11-50,51-200,201-500,501-1000,1000+"`
-	IsRemote       bool                 `json:"isRemote" default:"false" required:"false"`
+	EmployeeCount  EmployeeCountRange   `json:"employeeCount" enum:"1,2-10,11-50,51-200,201-500,501-1000,1000+"`
 	Industries     []BusinessToIndustry `json:"industries" bun:"m2m:business_industries,join:Business=Industry"`
 	shared.Timestamps
 }
 
 type BusinessParams struct {
-	Name           string         `json:"name" minLength:"1"`
-	BusinessNumber string         `json:"businessNumber" minLength:"1"`
-	FoundingDate   time.Time      `json:"foundingDate" format:"date-time"`
-	Status         BusinessStatus `json:"status" hidden:"true" required:"false"`
-	AddressID      int            `json:"addressId" minimum:"1" hidden:"true" required:"false"`
-	TeamSize       TeamSize       `json:"teamSize" enum:"1,2-10,11-50,51-200,201-500,501-1000,1000+"`
-	IsRemote       bool           `json:"isRemote" default:"false" required:"false"`
+	BusinessColour *string            `json:"businessColour" minLength:"6" maxLength:"6" regex:"^#[0-9A-F]{6}$" required:"false"`
+	DisplayName    string             `json:"displayName" minLength:"1"`
+	FoundingDate   time.Time          `json:"foundingDate" format:"date-time"`
+	Status         BusinessStatus     `json:"status" hidden:"true" required:"false"`
+	AddressID      int                `json:"addressId" minimum:"1" hidden:"true" required:"false"`
+	EmployeeCount  EmployeeCountRange `json:"employeeCount" enum:"1,2-10,11-50,51-200,201-500,501-1000,1000+"`
 }
 
 type CreateBusinessParams struct {
@@ -65,8 +63,8 @@ type CreateBusinessParams struct {
 }
 
 type UpdateBusinessParams struct {
-	Name     string         `json:"name" minLength:"1"`
-	Status   BusinessStatus `json:"status" hidden:"true" required:"false"`
-	TeamSize TeamSize       `json:"teamSize" enum:"1,2-10,11-50,51-200,201-500,501-1000,1000+"`
-	IsRemote bool           `json:"isRemote" default:"false" required:"false"`
+	DisplayName    *string             `json:"displayName" minLength:"1" required:"false"`
+	Status         *BusinessStatus     `json:"status" hidden:"true" required:"false"`
+	EmployeeCount  *EmployeeCountRange `json:"employeeCount" enum:"1,2-10,11-50,51-200,201-500,501-1000,1000+" required:"false"`
+	BusinessColour *string             `json:"businessColour" minLength:"6" maxLength:"6" regex:"^#[0-9A-F]{6}$" required:"false"`
 }
