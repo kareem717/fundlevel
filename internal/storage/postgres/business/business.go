@@ -80,7 +80,7 @@ func (r *BusinessRepository) Create(ctx context.Context, params business.CreateB
 			return err
 		}
 
-		industryIds := make([]business.BusinessIndustry, len(params.IndustryIDs))
+		industryIds := make([]business.BusinessToIndustry, len(params.IndustryIDs))
 		for i, industryId := range params.IndustryIDs {
 			industryIds[i].BusinessID = businessRecord.ID
 			industryIds[i].IndustryID = industryId
@@ -107,7 +107,7 @@ func (r *BusinessRepository) GetById(ctx context.Context, id int) (business.Busi
 		Model(&resp).
 		Relation("Address").
 		Relation("StripeAccount").
-		Relation("Industry").
+		Relation("Industries").
 		Where("business.id = ?", id).
 		Scan(ctx)
 
