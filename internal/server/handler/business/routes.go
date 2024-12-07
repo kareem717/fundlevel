@@ -69,24 +69,6 @@ func RegisterHumaRoutes(
 	}, handler.delete)
 
 	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-business-ventures-by-cursor",
-		Method:      http.MethodGet,
-		Path:        "/business/{id}/ventures",
-		Summary:     "Get business ventures",
-		Description: "Get all of the ventures owned by a given business.",
-		Tags:        []string{"Businesses", "Ventures"},
-	}, handler.getVenturesByCursor)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-business-ventures-by-page",
-		Method:      http.MethodGet,
-		Path:        "/business/{id}/ventures/page",
-		Summary:     "Get business ventures",
-		Description: "Get all of the ventures owned by a given business.",
-		Tags:        []string{"Businesses", "Ventures"},
-	}, handler.getVenturesByPage)
-
-	huma.Register(humaApi, huma.Operation{
 		OperationID: "get-business-investments-by-cursor",
 		Method:      http.MethodGet,
 		Path:        "/business/{id}/investments",

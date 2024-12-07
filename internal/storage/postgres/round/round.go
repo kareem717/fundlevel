@@ -29,10 +29,9 @@ func (r *RoundRepository) GetById(ctx context.Context, id int) (round.Round, err
 	err := r.db.
 		NewSelect().
 		Model(&resp).
-		Relation("Venture").
-		Relation("Venture.Business").
-		Relation("Venture.Business.Industry").
-		Where("round.id = ?", id).
+		Relation("Business").
+		Relation("Business.Industries").
+		Where("rounds.id = ?", id).
 		Scan(ctx)
 
 	return resp, err
@@ -48,9 +47,8 @@ func (r *RoundRepository) GetByCursor(
 	query := r.db.
 		NewSelect().
 		Model(&resp).
-		Relation("Venture").
-		Relation("Venture.Business").
-		Relation("Venture.Business.Industry").
+		Relation("Business").
+		Relation("Business.Industries").
 		Limit(paginationParams.Limit)
 
 	query = helper.ApplyRoundFilter(query, filter)
@@ -76,9 +74,8 @@ func (r *RoundRepository) GetByPage(
 	query := r.db.
 		NewSelect().
 		Model(&resp).
-		Relation("Venture").
-		Relation("Venture.Business").
-		Relation("Venture.Business.Industry").
+		Relation("Business").
+		Relation("Business.Industries").
 		Offset(offset).
 		Limit(paginationParams.PageSize + 1)
 

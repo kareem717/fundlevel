@@ -6,7 +6,6 @@ import (
 	"fundlevel/internal/entities/business"
 	"fundlevel/internal/entities/investment"
 	"fundlevel/internal/entities/round"
-	"fundlevel/internal/entities/venture"
 	"time"
 
 	"github.com/google/uuid"
@@ -125,22 +124,6 @@ type GetOffsetPaginatedRoundsOutput struct {
 	Body struct {
 		MessageResponse
 		Rounds []round.Round `json:"rounds"`
-		OffsetPaginationResponse
-	}
-}
-
-type GetCursorPaginatedVenturesOutput struct {
-	Body struct {
-		MessageResponse
-		Ventures []venture.Venture `json:"ventures"`
-		CursorPaginationResponse
-	}
-}
-
-type GetOffsetPaginatedVenturesOutput struct {
-	Body struct {
-		MessageResponse
-		Ventures []venture.Venture `json:"ventures"`
 		OffsetPaginationResponse
 	}
 }

@@ -22,23 +22,12 @@ func NewRoundService(repositories storage.Repository) *RoundService {
 }
 
 func (s *RoundService) Create(ctx context.Context, params round.CreateRoundParams) (round.Round, error) {
-	// Calculate the buy-in value for the round
-
-	hasActiveRound, err := s.repositories.Venture().HasActiveRound(ctx, params.VentureID)
+	businessRecord, err := s.repositories.Business().GetById(ctx, params.BusinessID)
 	if err != nil {
 		return round.Round{}, err
 	}
 
-	if hasActiveRound {
-		return round.Round{}, errors.New("active round already exists")
-	}
-
-	venture, err := s.repositories.Venture().GetById(ctx, params.VentureID)
-	if err != nil {
-		return round.Round{}, err
-	}
-
-	if venture.Business.Status != business.BusinessStatusActive {
+	if businessRecord.Status != business.BusinessStatusActive {
 		return round.Round{}, errors.New("business is not active")
 	}
 

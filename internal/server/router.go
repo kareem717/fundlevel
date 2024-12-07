@@ -10,7 +10,6 @@ import (
 	"fundlevel/internal/server/handler/investment"
 	"fundlevel/internal/server/handler/round"
 	"fundlevel/internal/server/handler/user"
-	"fundlevel/internal/server/handler/venture"
 	"fundlevel/internal/server/handler/webhook"
 
 	"github.com/danielgtaylor/huma/v2"
@@ -31,13 +30,6 @@ func (s *Server) routes() chi.Router {
 	}
 
 	humaApi := humachi.New(r, config)
-
-	venture.RegisterHumaRoutes(
-		s.services,
-		humaApi,
-		s.logger,
-		s.supabaseClient,
-	)
 
 	account.RegisterHumaRoutes(
 		s.services,

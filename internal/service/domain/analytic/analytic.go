@@ -22,10 +22,6 @@ func (s *AnalyticService) GetDailyAggregatedBusinessAnalytics(ctx context.Contex
 	return s.repositories.Analytic().GetDailyAggregatedBusinessAnalytics(ctx, businessId, minDayOfYear, maxDayOfYear)
 }
 
-func (s *AnalyticService) GetDailyAggregatedVentureAnalytics(ctx context.Context, ventureId int, minDayOfYear int, maxDayOfYear int) ([]analytic.SimplifiedDailyAggregatedVentureAnalytics, error) {
-	return s.repositories.Analytic().GetDailyAggregatedVentureAnalytics(ctx, ventureId, minDayOfYear, maxDayOfYear)
-}
-
 func (s *AnalyticService) GetDailyAggregatedRoundAnalytics(ctx context.Context, roundId int, minDayOfYear int, maxDayOfYear int) ([]analytic.SimplifiedDailyAggregatedRoundAnalytics, error) {
 	return s.repositories.Analytic().GetDailyAggregatedRoundAnalytics(ctx, roundId, minDayOfYear, maxDayOfYear)
 }

@@ -14,7 +14,6 @@ import (
 	"fundlevel/internal/storage/postgres/investment"
 	"fundlevel/internal/storage/postgres/round"
 	"fundlevel/internal/storage/postgres/user"
-	"fundlevel/internal/storage/postgres/venture"
 
 	businessEntity "fundlevel/internal/entities/business"
 
@@ -91,7 +90,6 @@ func configDBPool(config Config) (*pgxpool.Config, error) {
 }
 
 type transaction struct {
-	ventureRepo    *venture.VentureRepository
 	accountRepo    *account.AccountRepository
 	roundRepo      *round.RoundRepository
 	userRepo       *user.UserRepository
@@ -102,10 +100,6 @@ type transaction struct {
 	analyticRepo   *analytic.AnalyticRepository
 	tx             *bun.Tx
 	ctx            context.Context
-}
-
-func (t *transaction) Venture() storage.VentureRepository {
-	return t.ventureRepo
 }
 
 func (t *transaction) Account() storage.AccountRepository {
@@ -155,7 +149,6 @@ func (t *transaction) SubTransaction() (storage.Transaction, error) {
 	}
 
 	return &transaction{
-		ventureRepo:    venture.NewVentureRepository(tx, t.ctx),
 		accountRepo:    account.NewAccountRepository(tx, t.ctx),
 		roundRepo:      round.NewRoundRepository(tx, t.ctx),
 		chatRepo:       chat.NewChatRepository(tx, t.ctx),
@@ -169,7 +162,6 @@ func (t *transaction) SubTransaction() (storage.Transaction, error) {
 }
 
 type Repository struct {
-	ventureRepo    *venture.VentureRepository
 	accountRepo    *account.AccountRepository
 	roundRepo      *round.RoundRepository
 	userRepo       *user.UserRepository
@@ -222,7 +214,6 @@ func NewDB(config Config, ctx context.Context, logger *zap.Logger) (*bun.DB, err
 
 func NewRepository(db *bun.DB, ctx context.Context) *Repository {
 	return &Repository{
-		ventureRepo:    venture.NewVentureRepository(db, ctx),
 		accountRepo:    account.NewAccountRepository(db, ctx),
 		roundRepo:      round.NewRoundRepository(db, ctx),
 		userRepo:       user.NewUserRepository(db, ctx),
@@ -234,10 +225,6 @@ func NewRepository(db *bun.DB, ctx context.Context) *Repository {
 		db:             db,
 		ctx:            ctx,
 	}
-}
-
-func (r *Repository) Venture() storage.VentureRepository {
-	return r.ventureRepo
 }
 
 func (r *Repository) Chat() storage.ChatRepository {
@@ -283,7 +270,6 @@ func (r *Repository) NewTransaction() (storage.Transaction, error) {
 	}
 
 	return &transaction{
-		ventureRepo:    venture.NewVentureRepository(tx, r.ctx),
 		accountRepo:    account.NewAccountRepository(tx, r.ctx),
 		userRepo:       user.NewUserRepository(tx, r.ctx),
 		roundRepo:      round.NewRoundRepository(tx, r.ctx),

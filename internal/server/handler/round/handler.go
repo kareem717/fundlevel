@@ -60,31 +60,17 @@ func (i *CreateRoundInput) Resolve(ctx huma.Context) []error {
 }
 
 func (h *httpHandler) create(ctx context.Context, input *CreateRoundInput) (*shared.SingleRoundResponse, error) {
-	venture, err := h.service.VentureService.GetById(ctx, input.Body.VentureID)
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return nil, huma.Error404NotFound("Venture ID not found")
-		}
-
-		h.logger.Error("failed to fetch venture", zap.Error(err))
-		return nil, huma.Error500InternalServerError("An error occurred while fetching the venture")
-	}
-
 	account := shared.GetAuthenticatedAccount(ctx)
-	authorized, err := h.service.PermissionService.CanCreateRound(ctx, account.ID, venture.Business.ID)
+	authorized, err := h.service.PermissionService.CanCreateRound(ctx, account.ID, input.Body.BusinessID)
 	if err != nil {
-		h.logger.Error("failed to check if account can create round", zap.Error(err), zap.Int("venture_id", input.Body.VentureID), zap.Int("account_id", account.ID))
+		h.logger.Error("failed to check if account can create round", zap.Error(err), zap.Int("business_id", input.Body.BusinessID), zap.Int("account_id", account.ID))
 		return nil, huma.Error500InternalServerError("An error occurred while checking if the account can create the round")
 	}
 
 	if !authorized {
-		h.logger.Error("account does not have permission to create round", zap.Int("venture_id", input.Body.VentureID), zap.Int("account_id", account.ID))
+		h.logger.Error("account does not have permission to create round", zap.Int("business_id", input.Body.BusinessID), zap.Int("account_id", account.ID))
 
 		return nil, huma.Error403Forbidden("Unauthorized to create round")
-	}
-
-	if venture.IsHidden {
-		return nil, huma.Error400BadRequest("Cannot create round for a hidden venture")
 	}
 
 	round, err := h.service.RoundService.Create(ctx, input.Body)
@@ -114,7 +100,7 @@ func (h *httpHandler) delete(ctx context.Context, input *shared.PathIDParam) (*s
 
 	account := shared.GetAuthenticatedAccount(ctx)
 
-	authorized, err := h.service.PermissionService.CanDeleteRound(ctx, account.ID, round.Venture.Business.ID)
+	authorized, err := h.service.PermissionService.CanDeleteRound(ctx, account.ID, round.Business.ID)
 	if err != nil {
 		h.logger.Error("failed to check if account can delete round", zap.Error(err), zap.Int("round_id", input.ID), zap.Int("account_id", account.ID))
 		return nil, huma.Error500InternalServerError("An error occurred while checking if the account can delete the round")
@@ -150,8 +136,7 @@ func (h *httpHandler) getInvestmentsByCursor(ctx context.Context, input *shared.
 	}
 
 	account := shared.GetAuthenticatedAccount(ctx)
-	
-	authorized, err := h.service.PermissionService.CanViewRoundInvestments(ctx, account.ID, round.Venture.Business.ID)
+	authorized, err := h.service.PermissionService.CanViewRoundInvestments(ctx, account.ID, round.Business.ID)
 	if err != nil {
 		h.logger.Error("failed to check if account can view round investments", zap.Error(err), zap.Int("round_id", input.ID), zap.Int("account_id", account.ID))
 		return nil, huma.Error500InternalServerError("An error occurred while checking if the account can view round investments")
@@ -203,7 +188,7 @@ func (h *httpHandler) getInvestmentsByPage(ctx context.Context, input *shared.Ge
 	}
 
 	account := shared.GetAuthenticatedAccount(ctx)
-	authorized, err := h.service.PermissionService.CanViewRoundInvestments(ctx, account.ID, round.Venture.Business.ID)
+	authorized, err := h.service.PermissionService.CanViewRoundInvestments(ctx, account.ID, round.Business.ID)
 	if err != nil {
 		h.logger.Error("failed to check if account can view round investments", zap.Error(err), zap.Int("round_id", input.ID), zap.Int("account_id", account.ID))
 		return nil, huma.Error500InternalServerError("An error occurred while checking if the account can view round investments")

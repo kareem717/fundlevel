@@ -126,55 +126,7 @@ func (s *PermissionService) CanViewBusinessAnalytics(ctx context.Context, accoun
 	return false, nil
 }
 
-func (s *PermissionService) CanViewVentureAnalytics(ctx context.Context, accountId int, businessId int) (bool, error) {
-	if accountId == 0 {
-		return false, errors.New("account id is 0")
-	}
-
-	if businessId == 0 {
-		return false, errors.New("business id is 0")
-	}
-
-	member, err := s.repo.Business().GetBusinessMember(ctx, businessId, accountId)
-	if err != nil {
-		return false, err
-	}
-
-	for _, permission := range member.Role.Permissions {
-		switch permission.Value {
-		case business.RolePermissionValueBusinessFullAccess:
-			return true, nil
-		}
-	}
-
-	return false, nil
-}
-
 func (s *PermissionService) CanViewRoundAnalytics(ctx context.Context, accountId int, businessId int) (bool, error) {
-	if accountId == 0 {
-		return false, errors.New("account id is 0")
-	}
-
-	if businessId == 0 {
-		return false, errors.New("business id is 0")
-	}
-
-	member, err := s.repo.Business().GetBusinessMember(ctx, businessId, accountId)
-	if err != nil {
-		return false, err
-	}
-
-	for _, permission := range member.Role.Permissions {
-		switch permission.Value {
-		case business.RolePermissionValueBusinessFullAccess:
-			return true, nil
-		}
-	}
-
-	return false, nil
-}
-
-func (s *PermissionService) CanCreateVenture(ctx context.Context, accountId int, businessId int) (bool, error) {
 	if accountId == 0 {
 		return false, errors.New("account id is 0")
 	}
@@ -208,78 +160,6 @@ func (s *PermissionService) CanCreateRound(ctx context.Context, accountId int, b
 	}
 
 	member, err := s.repo.Business().GetBusinessMember(ctx, businessId, accountId)
-	if err != nil {
-		return false, err
-	}
-
-	for _, permission := range member.Role.Permissions {
-		switch permission.Value {
-		case business.RolePermissionValueBusinessFullAccess:
-			return true, nil
-		}
-	}
-
-	return false, nil
-}
-
-func (s *PermissionService) CanViewVentureInvestments(ctx context.Context, accountId int, ventureId int) (bool, error) {
-	if accountId == 0 {
-		return false, errors.New("account id is 0")
-	}
-
-	if ventureId == 0 {
-		return false, errors.New("venture id is 0")
-	}
-
-	member, err := s.repo.Business().GetBusinessMember(ctx, ventureId, accountId)
-	if err != nil {
-		return false, err
-	}
-
-	for _, permission := range member.Role.Permissions {
-		switch permission.Value {
-		case business.RolePermissionValueBusinessFullAccess:
-			return true, nil
-		}
-	}
-
-	return false, nil
-}
-
-func (s *PermissionService) CanUpdateVenture(ctx context.Context, accountId int, ventureId int) (bool, error) {
-	if accountId == 0 {
-		return false, errors.New("account id is 0")
-	}
-
-	if ventureId == 0 {
-		return false, errors.New("venture id is 0")
-	}
-
-	member, err := s.repo.Business().GetBusinessMember(ctx, ventureId, accountId)
-	if err != nil {
-		return false, err
-	}
-
-	for _, permission := range member.Role.Permissions {
-		switch permission.Value {
-		case business.RolePermissionValueBusinessFullAccess:
-			return true, nil
-		}
-	}
-
-	return false, nil
-}
-
-func (s *PermissionService) CanDeleteVenture(ctx context.Context, accountId int, ventureId int) (bool, error) {
-	if accountId == 0 {
-		return false, errors.New("account id is 0")
-	}
-
-	if ventureId == 0 {
-		return false, errors.New("venture id is 0")
-	}
-
-	member, err := s.repo.Business().GetBusinessMember(ctx, ventureId, accountId)
 	if err != nil {
 		return false, err
 	}

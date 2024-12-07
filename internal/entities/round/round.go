@@ -1,8 +1,8 @@
 package round
 
 import (
+	"fundlevel/internal/entities/business"
 	"fundlevel/internal/entities/shared"
-	"fundlevel/internal/entities/venture"
 	"time"
 
 	"github.com/uptrace/bun"
@@ -21,7 +21,7 @@ type Round struct {
 	bun.BaseModel `bun:"table:rounds"`
 
 	shared.IntegerID
-	VentureID         int             `json:"ventureId" minimum:"1"`
+	BusinessID        int             `json:"businessId" minimum:"1"`
 	BeginsAt          time.Time       `json:"beginsAt" format:"date-time"`
 	EndsAt            time.Time       `json:"endsAt" format:"date-time"`
 	PercentageOffered float64         `json:"percentageOffered" minimum:"0" maximum:"100"`
@@ -32,7 +32,7 @@ type Round struct {
 	BuyIn             float64         `json:"buyIn" minimum:"1"`
 	Description       string          `json:"description" minLength:"10" maxLength:"3000"`
 
-	Venture *venture.Venture `json:"venture" bun:"rel:belongs-to,join:venture_id=id"`
+	Business *business.Business `json:"business" bun:"rel:belongs-to,join:business_id=id"`
 
 	shared.Timestamps
 }
@@ -67,12 +67,12 @@ type RoundFilter struct {
 
 // CreateRoundParams contains the parameters for creating a new round.
 type CreateRoundParams struct {
-	VentureID         int             `json:"ventureId" minimum:"1"`
+	BusinessID        int             `json:"businessId" minimum:"1"`
 	BeginsAt          time.Time       `json:"beginsAt" format:"date-time"`
 	EndsAt            time.Time       `json:"endsAt" format:"date-time"`
-	PercentageOffered float64         `json:"percentageOffered" minimum:"0" maximum:"100"`
+	PercentageOffered float64         `json:"percentageOffered" minimum:"0" maximum:"100" example:"10"`
 	ValueCurrency     shared.Currency `json:"valueCurrency" enum:"usd,gbp,eur,cad,aud,jpy"`
-	PercentageValue   int             `json:"percentageValue" minimum:"1"`
+	PercentageValue   int             `json:"percentageValue" minimum:"1" example:"1000000"`
 	Status            RoundStatus     `json:"status" hidden:"true" required:"false"`
 	InvestorCount     int             `json:"investorCount" minimum:"1"`
 	BuyIn             float64         `json:"buyIn" minimum:"1" hidden:"true" required:"false"`

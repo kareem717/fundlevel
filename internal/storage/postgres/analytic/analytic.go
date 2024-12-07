@@ -33,20 +33,6 @@ func (r *AnalyticRepository) GetDailyAggregatedBusinessAnalytics(ctx context.Con
 	return result, err
 }
 
-func (r *AnalyticRepository) GetDailyAggregatedVentureAnalytics(ctx context.Context, ventureId int, minDayOfYear int, maxDayOfYear int) ([]analytic.SimplifiedDailyAggregatedVentureAnalytics, error) {
-	result := []analytic.SimplifiedDailyAggregatedVentureAnalytics{}
-
-	err := r.db.
-		NewSelect().
-		Model(&result).
-		Where("venture_id = ?", ventureId).
-		Where("day_of_year >= ?", minDayOfYear).
-		Where("day_of_year <= ?", maxDayOfYear).
-		Scan(ctx)
-
-	return result, err
-}
-
 func (r *AnalyticRepository) GetDailyAggregatedRoundAnalytics(ctx context.Context, roundId int, minDayOfYear int, maxDayOfYear int) ([]analytic.SimplifiedDailyAggregatedRoundAnalytics, error) {
 	result := []analytic.SimplifiedDailyAggregatedRoundAnalytics{}
 
