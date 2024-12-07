@@ -176,7 +176,7 @@ func (h *httpHandler) getRoundsByCursor(ctx context.Context, input *shared.GetRo
 }
 
 func (h *httpHandler) getOffsetPaginatedRoundInvestments(ctx context.Context, input *shared.GetInvestmentsByParentAndPageInput) (*shared.GetOffsetPaginatedRoundInvestmentsOutput, error) {
-	ventureRecord, err := h.service.VentureService.GetById(ctx, input.ID)
+	venture, err := h.service.VentureService.GetById(ctx, input.ID)
 	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
@@ -188,13 +188,14 @@ func (h *httpHandler) getOffsetPaginatedRoundInvestments(ctx context.Context, in
 	}
 
 	account := shared.GetAuthenticatedAccount(ctx)
+	authorized, err := h.service.PermissionService.CanViewVentureInvestments(ctx, account.ID, venture.Business.ID)
+	if err != nil {
+		h.logger.Error("failed to check if account can view venture investments", zap.Error(err), zap.Int("venture_id", input.ID), zap.Int("account_id", account.ID))
+		return nil, huma.Error500InternalServerError("An error occurred while checking if the account can view venture investments")
+	}
 
-	if account.ID != ventureRecord.Business.OwnerAccountID {
-		h.logger.Error("business owner account id does not match authenticated account id",
-			zap.Any("business owner account id", ventureRecord.Business.OwnerAccountID),
-			zap.Any("authenticated account id", account.ID))
-
-		return nil, huma.Error403Forbidden("Cannot fetch round investments for a venture you do not own")
+	if !authorized {
+		return nil, huma.Error403Forbidden("Unauthorized to view venture investments")
 	}
 
 	rounds, total, err := h.service.VentureService.GetInvestmentsByPage(ctx, input.ID, input.PageSize, input.Page, input.InvestmentFilter)
@@ -223,7 +224,7 @@ func (h *httpHandler) getOffsetPaginatedRoundInvestments(ctx context.Context, in
 }
 
 func (h *httpHandler) getCursorPaginatedRoundInvestments(ctx context.Context, input *shared.GetInvestmentsByParentAndCursorInput) (*shared.GetCursorPaginatedRoundInvestmentsOutput, error) {
-	ventureRecord, err := h.service.VentureService.GetById(ctx, input.ID)
+	venture, err := h.service.VentureService.GetById(ctx, input.ID)
 	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
@@ -235,13 +236,14 @@ func (h *httpHandler) getCursorPaginatedRoundInvestments(ctx context.Context, in
 	}
 
 	account := shared.GetAuthenticatedAccount(ctx)
+	authorized, err := h.service.PermissionService.CanViewVentureInvestments(ctx, account.ID, venture.Business.ID)
+	if err != nil {
+		h.logger.Error("failed to check if account can view venture investments", zap.Error(err), zap.Int("venture_id", input.ID), zap.Int("account_id", account.ID))
+		return nil, huma.Error500InternalServerError("An error occurred while checking if the account can view venture investments")
+	}
 
-	if account.ID != ventureRecord.Business.OwnerAccountID {
-		h.logger.Error("business owner account id does not match authenticated account id",
-			zap.Any("business owner account id", ventureRecord.Business.OwnerAccountID),
-			zap.Any("authenticated account id", account.ID))
-
-		return nil, huma.Error403Forbidden("Cannot fetch round investments for a venture you do not own")
+	if !authorized {
+		return nil, huma.Error403Forbidden("Unauthorized to view venture investments")
 	}
 
 	limit := input.Limit + 1
@@ -285,12 +287,15 @@ func (h *httpHandler) create(ctx context.Context, input *CreateVentureInput) (*S
 		return nil, huma.Error500InternalServerError("An error occurred while fetching the business")
 	}
 
-	if account := shared.GetAuthenticatedAccount(ctx); account.ID != businessRecord.OwnerAccountID {
-		h.logger.Error("input account id does not match authenticated account id",
-			zap.Any("input account id", businessRecord.OwnerAccountID),
-			zap.Any("authenticated account id", account.ID))
+	account := shared.GetAuthenticatedAccount(ctx)
+	authorized, err := h.service.PermissionService.CanCreateVenture(ctx, account.ID, businessRecord.ID)
+	if err != nil {
+		h.logger.Error("failed to check if account can create venture", zap.Error(err), zap.Int("business_id", businessRecord.ID), zap.Int("account_id", account.ID))
+		return nil, huma.Error500InternalServerError("An error occurred while checking if the account can create the venture")
+	}
 
-		return nil, huma.Error403Forbidden("Cannot create venture for business you do not own")
+	if !authorized {
+		return nil, huma.Error403Forbidden("Unauthorized to create venture")
 	}
 
 	if businessRecord.Status != business.BusinessStatusActive {
@@ -316,7 +321,7 @@ type UpdateVentureInput struct {
 }
 
 func (h *httpHandler) update(ctx context.Context, input *UpdateVentureInput) (*SingleVentureResponse, error) {
-	ventureRecord, err := h.service.VentureService.GetById(ctx, input.ID)
+	venture, err := h.service.VentureService.GetById(ctx, input.ID)
 	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
@@ -327,26 +332,18 @@ func (h *httpHandler) update(ctx context.Context, input *UpdateVentureInput) (*S
 		}
 	}
 
-	business, err := h.service.BusinessService.GetById(ctx, ventureRecord.BusinessID)
+	account := shared.GetAuthenticatedAccount(ctx)
+	authorized, err := h.service.PermissionService.CanUpdateVenture(ctx, account.ID, venture.Business.ID)
 	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return nil, huma.Error404NotFound("Business not found")
-		}
-
-		h.logger.Error("failed to fetch business", zap.Error(err))
-		return nil, huma.Error500InternalServerError("An error occurred while fetching the business")
+		h.logger.Error("failed to check if account can update venture", zap.Error(err), zap.Int("venture_id", input.ID), zap.Int("account_id", account.ID))
+		return nil, huma.Error500InternalServerError("An error occurred while checking if the account can update the venture")
 	}
 
-	if account := shared.GetAuthenticatedAccount(ctx); account.ID != business.OwnerAccountID {
-		h.logger.Error("input account id does not match authenticated account id",
-			zap.Any("input account id", business.OwnerAccountID),
-			zap.Any("authenticated account id", account.ID))
-
-		return nil, huma.Error403Forbidden("Cannot update venture for business you do not own")
+	if !authorized {
+		return nil, huma.Error403Forbidden("Unauthorized to update venture")
 	}
 
-	venture, err := h.service.VentureService.Update(ctx, input.ID, input.Body)
-
+	updatedVenture, err := h.service.VentureService.Update(ctx, input.ID, input.Body)
 	if err != nil {
 		h.logger.Error("failed to update venture", zap.Error(err))
 		return nil, huma.Error500InternalServerError("An error occurred while updating the venture")
@@ -354,7 +351,7 @@ func (h *httpHandler) update(ctx context.Context, input *UpdateVentureInput) (*S
 
 	resp := &SingleVentureResponse{}
 	resp.Body.Message = "Venture updated successfully"
-	resp.Body.Venture = &venture
+	resp.Body.Venture = &updatedVenture
 
 	return resp, nil
 }
@@ -364,7 +361,7 @@ type DeleteVentureOutput struct {
 }
 
 func (h *httpHandler) delete(ctx context.Context, input *shared.PathIDParam) (*DeleteVentureOutput, error) {
-	ventureRecord, err := h.service.VentureService.GetById(ctx, input.ID)
+	venture, err := h.service.VentureService.GetById(ctx, input.ID)
 	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
@@ -375,22 +372,15 @@ func (h *httpHandler) delete(ctx context.Context, input *shared.PathIDParam) (*D
 		}
 	}
 
-	business, err := h.service.BusinessService.GetById(ctx, ventureRecord.BusinessID)
+	account := shared.GetAuthenticatedAccount(ctx)
+	authorized, err := h.service.PermissionService.CanDeleteVenture(ctx, account.ID, venture.Business.ID)
 	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return nil, huma.Error404NotFound("Business not found")
-		}
-
-		h.logger.Error("failed to fetch business", zap.Error(err))
-		return nil, huma.Error500InternalServerError("An error occurred while fetching the business")
+		h.logger.Error("failed to check if account can delete venture", zap.Error(err), zap.Int("venture_id", input.ID), zap.Int("account_id", account.ID))
+		return nil, huma.Error500InternalServerError("An error occurred while checking if the account can delete the venture")
 	}
 
-	if account := shared.GetAuthenticatedAccount(ctx); account.ID != business.OwnerAccountID {
-		h.logger.Error("input account id does not match authenticated account id",
-			zap.Any("input account id", business.OwnerAccountID),
-			zap.Any("authenticated account id", account.ID))
-
-		return nil, huma.Error403Forbidden("Cannot delete venture for business you do not own")
+	if !authorized {
+		return nil, huma.Error403Forbidden("Unauthorized to delete venture")
 	}
 
 	err = h.service.VentureService.Delete(ctx, input.ID)

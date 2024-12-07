@@ -58,15 +58,22 @@ type CreateBusinessRequest struct {
 }
 
 func (h *httpHandler) create(ctx context.Context, input *CreateBusinessRequest) (*shared.MessageOutput, error) {
-	if account := shared.GetAuthenticatedAccount(ctx); account.ID != input.Body.Business.OwnerAccountID {
-		h.logger.Error("input account id does not match authenticated account id",
-			zap.Any("input account id", input.Body.Business.OwnerAccountID),
-			zap.Any("authenticated account id", account.ID))
+	account := shared.GetAuthenticatedAccount(ctx)
 
-		return nil, huma.Error403Forbidden("Cannot create business for another account")
+	authorized, err := h.service.PermissionService.CanCreateBusiness(ctx, account)
+	if err != nil {
+		h.logger.Error("failed to check if account can create business", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while checking authorization")
 	}
 
-	err := h.service.BusinessService.Create(ctx, input.Body)
+	if !authorized {
+		h.logger.Error("account is not authorized to create business",
+			zap.Any("account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Account is not authorized to create business")
+	}
+
+	err = h.service.BusinessService.Create(ctx, input.Body)
 	if err != nil {
 		h.logger.Error("failed to create business", zap.Error(err))
 		return nil, huma.Error500InternalServerError("An error occurred while creating the business")
@@ -93,12 +100,20 @@ func (h *httpHandler) delete(ctx context.Context, input *shared.PathIDParam) (*D
 		return nil, huma.Error500InternalServerError("An error occurred while fetching the business")
 	}
 
-	if account := shared.GetAuthenticatedAccount(ctx); account.ID != business.OwnerAccountID {
-		h.logger.Error("input account id does not match authenticated account id",
-			zap.Any("input account id", input.ID),
-			zap.Any("authenticated account id", account.ID))
+	account := shared.GetAuthenticatedAccount(ctx)
 
-		return nil, huma.Error403Forbidden("Cannot delete business for another account")
+	canDelete, err := h.service.PermissionService.CanAccountDeleteBusiness(ctx, account.ID, business.ID)
+	if err != nil {
+		h.logger.Error("failed to check if account can delete business", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while checking authorization")
+	}
+
+	if !canDelete {
+		h.logger.Error("account is not authorized to delete this business",
+			zap.Any("account id", account.ID),
+			zap.Any("business id", business.ID))
+
+		return nil, huma.Error403Forbidden("Account is not authorized to delete this business")
 	}
 
 	err = h.service.BusinessService.Delete(ctx, business.ID)
@@ -178,12 +193,20 @@ func (h *httpHandler) getInvestmentsByCursor(ctx context.Context, input *shared.
 		return nil, huma.Error500InternalServerError("An error occurred while fetching the business")
 	}
 
-	if account := shared.GetAuthenticatedAccount(ctx); account.ID != business.OwnerAccountID {
-		h.logger.Error("input account id does not match authenticated account id",
-			zap.Any("input account id", input.ID),
-			zap.Any("authenticated account id", account.ID))
+	account := shared.GetAuthenticatedAccount(ctx)
 
-		return nil, huma.Error403Forbidden("Cannot access investments for another account")
+	authorized, err := h.service.PermissionService.CanAccessBusinessInvestments(ctx, account.ID, business.ID)
+	if err != nil {
+		h.logger.Error("failed to check if account can access business investments", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while checking authorization")
+	}
+
+	if !authorized {
+		h.logger.Error("account is not authorized to access business investments",
+			zap.Any("account id", account.ID),
+			zap.Any("business id", business.ID))
+
+		return nil, huma.Error403Forbidden("Account is not authorized to access business investments")
 	}
 
 	limit := input.Limit + 1
@@ -224,12 +247,19 @@ func (h *httpHandler) getInvestmentsByPage(ctx context.Context, input *shared.Ge
 		return nil, huma.Error500InternalServerError("An error occurred while fetching the business")
 	}
 
-	if account := shared.GetAuthenticatedAccount(ctx); account.ID != business.OwnerAccountID {
-		h.logger.Error("input account id does not match authenticated account id",
-			zap.Any("input account id", input.ID),
-			zap.Any("authenticated account id", account.ID))
+	account := shared.GetAuthenticatedAccount(ctx)
+	authorized, err := h.service.PermissionService.CanAccessBusinessInvestments(ctx, account.ID, business.ID)
+	if err != nil {
+		h.logger.Error("failed to check if account can access business investments", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while checking authorization")
+	}
 
-		return nil, huma.Error403Forbidden("Cannot access investments for another account")
+	if !authorized {
+		h.logger.Error("account is not authorized to access business investments",
+			zap.Any("account id", account.ID),
+			zap.Any("business id", business.ID))
+
+		return nil, huma.Error403Forbidden("Account is not authorized to access business investments")
 	}
 
 	investments, total, err := h.service.BusinessService.GetInvestmentsByPage(ctx, input.ID, input.PageSize, input.Page, input.InvestmentFilter)
@@ -353,12 +383,20 @@ func (h *httpHandler) onboardStripeConnectedAccount(ctx context.Context, input *
 		return nil, huma.Error500InternalServerError("An error occurred while fetching the business")
 	}
 
-	if account := shared.GetAuthenticatedAccount(ctx); account.ID != business.OwnerAccountID {
-		h.logger.Error("input account id does not match authenticated account id",
-			zap.Any("input account id", input.ID),
-			zap.Any("authenticated account id", account.ID))
+	account := shared.GetAuthenticatedAccount(ctx)
 
-		return nil, huma.Error403Forbidden("Connected account cannot be onboarded for another account")
+	authorized, err := h.service.PermissionService.CanManageBusinessStripe(ctx, account.ID, business.ID)
+	if err != nil {
+		h.logger.Error("failed to check if account can onboard stripe connected account", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while checking authorization")
+	}
+
+	if !authorized {
+		h.logger.Error("account is not authorized to onboard stripe connected account",
+			zap.Any("account id", account.ID),
+			zap.Any("business id", business.ID))
+
+		return nil, huma.Error403Forbidden("Account is not authorized to onboard stripe connected account")
 	}
 
 	link, err := h.service.BusinessService.CreateStripeAccountLink(ctx, business.StripeAccount.StripeConnectedAccountID, input.Body.ReturnURL, input.Body.RefreshURL)
@@ -386,12 +424,18 @@ func (h *httpHandler) getStripeDashboardURL(ctx context.Context, input *shared.P
 		return nil, huma.Error500InternalServerError("An error occurred while fetching the business")
 	}
 
-	if business.OwnerAccountID != account.ID {
-		h.logger.Error("input account id does not match authenticated account id",
-			zap.Any("input account id", input.ID),
-			zap.Any("authenticated account id", account.ID))
+	authorized, err := h.service.PermissionService.CanAccessBusinessStripeDashboard(ctx, account.ID, business.ID)
+	if err != nil {
+		h.logger.Error("failed to check if account can access business stripe dashboard", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while checking authorization")
+	}
 
-		return nil, huma.Error403Forbidden("Cannot access stripe dashboard url for another account")
+	if !authorized {
+		h.logger.Error("account is not authorized to access business stripe dashboard",
+			zap.Any("account id", account.ID),
+			zap.Any("business id", business.ID))
+
+		return nil, huma.Error403Forbidden("Account is not authorized to access business stripe dashboard")
 	}
 
 	url, err := h.service.BusinessService.GetStripeDashboardURL(ctx, input.ID)

@@ -18,6 +18,7 @@ func NewBusinessRepository(db bun.IDB, ctx context.Context) *BusinessRepository 
 	return &BusinessRepository{db: db, ctx: ctx}
 }
 
+//TODO: this logic should be in a service, not in the repository
 func (r *BusinessRepository) Create(ctx context.Context, params business.CreateBusinessParams) error {
 	err := r.db.RunInTx(ctx, nil, func(ctx context.Context, tx bun.Tx) error {
 		addressRecord := address.Address{}
@@ -42,6 +43,47 @@ func (r *BusinessRepository) Create(ctx context.Context, params business.CreateB
 			return err
 		}
 
+		businessOwnerRole := business.BusinessMemberRole{
+			Name: "Owner",
+		}
+
+		err = tx.NewInsert().
+			Model(&businessOwnerRole).
+			Column("name").
+			Returning("*").
+			Scan(ctx, &businessOwnerRole)
+		if err != nil {
+			return err
+		}
+
+		businessOwnerRolePermission := business.RolePermission{
+			RoleId: businessOwnerRole.ID,
+			Value: business.RolePermissionValueBusinessFullAccess,
+		}
+
+		err = tx.NewInsert().
+			Model(&businessOwnerRolePermission).
+			Returning("*").
+			Scan(ctx, &businessOwnerRolePermission)
+		if err != nil {
+			return err
+		}
+
+		businessMember := business.BusinessMember{
+			BusinessId: businessRecord.ID,
+			AccountId:  params.InitialOwnerID,
+			RoleId:     businessOwnerRole.ID,
+		}
+
+		err = tx.NewInsert().
+			Model(&businessMember).
+			ModelTableExpr("business_members").
+			Returning("*").
+			Scan(ctx, &businessMember)
+		if err != nil {
+			return err
+		}
+
 		params.StripeAccount.BusinessID = businessRecord.ID
 		_, err = tx.NewInsert().
 			Model(&params.StripeAccount).
@@ -51,8 +93,8 @@ func (r *BusinessRepository) Create(ctx context.Context, params business.CreateB
 			return err
 		}
 
-		industryIds := make([]business.BusinessIndustry, len(params.IndustryIds))
-		for i, industryId := range params.IndustryIds {
+		industryIds := make([]business.BusinessIndustry, len(params.IndustryIDs))
+		for i, industryId := range params.IndustryIDs {
 			industryIds[i].BusinessID = businessRecord.ID
 			industryIds[i].IndustryID = industryId
 		}

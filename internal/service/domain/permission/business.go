@@ -1,0 +1,343 @@
+package permission
+
+import (
+	"context"
+	"errors"
+	"fundlevel/internal/entities/business"
+)
+
+func (s *PermissionService) CanAccountDeleteBusiness(ctx context.Context, accountId int, businessId int) (bool, error) {
+	if accountId == 0 {
+		return false, errors.New("account id is 0")
+	}
+
+	if businessId == 0 {
+		return false, errors.New("business id is 0")
+	}
+
+	member, err := s.repo.Business().GetBusinessMember(ctx, businessId, accountId)
+	if err != nil {
+		return false, err
+	}
+
+	for _, permission := range member.Role.Permissions {
+		switch permission.Value {
+		case business.RolePermissionValueBusinessFullAccess:
+			return true, nil
+		}
+	}
+
+	return false, nil
+}
+
+func (s *PermissionService) CanAccessBusinessInvestments(ctx context.Context, accountId int, businessId int) (bool, error) {
+	if accountId == 0 {
+		return false, errors.New("account id is 0")
+	}
+
+	if businessId == 0 {
+		return false, errors.New("business id is 0")
+	}
+
+	member, err := s.repo.Business().GetBusinessMember(ctx, businessId, accountId)
+	if err != nil {
+		return false, err
+	}
+
+	for _, permission := range member.Role.Permissions {
+		switch permission.Value {
+		case business.RolePermissionValueBusinessFullAccess:
+			return true, nil
+		}
+	}
+
+	return false, nil
+}
+
+func (s *PermissionService) CanAccessBusinessStripeDashboard(ctx context.Context, accountId int, businessId int) (bool, error) {
+	if accountId == 0 {
+		return false, errors.New("account id is 0")
+	}
+
+	if businessId == 0 {
+		return false, errors.New("business id is 0")
+	}
+
+	member, err := s.repo.Business().GetBusinessMember(ctx, businessId, accountId)
+	if err != nil {
+		return false, err
+	}
+
+	for _, permission := range member.Role.Permissions {
+		switch permission.Value {
+		case business.RolePermissionValueBusinessFullAccess:
+			return true, nil
+		}
+	}
+
+	return false, nil
+}
+
+func (s *PermissionService) CanManageBusinessStripe(ctx context.Context, accountId int, businessId int) (bool, error) {
+	if accountId == 0 {
+		return false, errors.New("account id is 0")
+	}
+
+	if businessId == 0 {
+		return false, errors.New("business id is 0")
+	}
+
+	member, err := s.repo.Business().GetBusinessMember(ctx, businessId, accountId)
+	if err != nil {
+		return false, err
+	}
+
+	for _, permission := range member.Role.Permissions {
+		switch permission.Value {
+		case business.RolePermissionValueBusinessFullAccess:
+			return true, nil
+		}
+	}
+
+	return false, nil
+}
+
+func (s *PermissionService) CanViewBusinessAnalytics(ctx context.Context, accountId int, businessId int) (bool, error) {
+	if accountId == 0 {
+		return false, errors.New("account id is 0")
+	}
+
+	if businessId == 0 {
+		return false, errors.New("business id is 0")
+	}
+
+	member, err := s.repo.Business().GetBusinessMember(ctx, businessId, accountId)
+	if err != nil {
+		return false, err
+	}
+
+	for _, permission := range member.Role.Permissions {
+		switch permission.Value {
+		case business.RolePermissionValueBusinessFullAccess:
+			return true, nil
+		}
+	}
+
+	return false, nil
+}
+
+func (s *PermissionService) CanViewVentureAnalytics(ctx context.Context, accountId int, businessId int) (bool, error) {
+	if accountId == 0 {
+		return false, errors.New("account id is 0")
+	}
+
+	if businessId == 0 {
+		return false, errors.New("business id is 0")
+	}
+
+	member, err := s.repo.Business().GetBusinessMember(ctx, businessId, accountId)
+	if err != nil {
+		return false, err
+	}
+
+	for _, permission := range member.Role.Permissions {
+		switch permission.Value {
+		case business.RolePermissionValueBusinessFullAccess:
+			return true, nil
+		}
+	}
+
+	return false, nil
+}
+
+func (s *PermissionService) CanViewRoundAnalytics(ctx context.Context, accountId int, businessId int) (bool, error) {
+	if accountId == 0 {
+		return false, errors.New("account id is 0")
+	}
+
+	if businessId == 0 {
+		return false, errors.New("business id is 0")
+	}
+
+	member, err := s.repo.Business().GetBusinessMember(ctx, businessId, accountId)
+	if err != nil {
+		return false, err
+	}
+
+	for _, permission := range member.Role.Permissions {
+		switch permission.Value {
+		case business.RolePermissionValueBusinessFullAccess:
+			return true, nil
+		}
+	}
+
+	return false, nil
+}
+
+func (s *PermissionService) CanCreateVenture(ctx context.Context, accountId int, businessId int) (bool, error) {
+	if accountId == 0 {
+		return false, errors.New("account id is 0")
+	}
+
+	if businessId == 0 {
+		return false, errors.New("business id is 0")
+	}
+
+	member, err := s.repo.Business().GetBusinessMember(ctx, businessId, accountId)
+	if err != nil {
+		return false, err
+	}
+
+	for _, permission := range member.Role.Permissions {
+		switch permission.Value {
+		case business.RolePermissionValueBusinessFullAccess:
+			return true, nil
+		}
+	}
+
+	return false, nil
+}
+
+func (s *PermissionService) CanCreateRound(ctx context.Context, accountId int, businessId int) (bool, error) {
+	if accountId == 0 {
+		return false, errors.New("account id is 0")
+	}
+
+	if businessId == 0 {
+		return false, errors.New("business id is 0")
+	}
+
+	member, err := s.repo.Business().GetBusinessMember(ctx, businessId, accountId)
+	if err != nil {
+		return false, err
+	}
+
+	for _, permission := range member.Role.Permissions {
+		switch permission.Value {
+		case business.RolePermissionValueBusinessFullAccess:
+			return true, nil
+		}
+	}
+
+	return false, nil
+}
+
+func (s *PermissionService) CanViewVentureInvestments(ctx context.Context, accountId int, ventureId int) (bool, error) {
+	if accountId == 0 {
+		return false, errors.New("account id is 0")
+	}
+
+	if ventureId == 0 {
+		return false, errors.New("venture id is 0")
+	}
+
+	member, err := s.repo.Business().GetBusinessMember(ctx, ventureId, accountId)
+	if err != nil {
+		return false, err
+	}
+
+	for _, permission := range member.Role.Permissions {
+		switch permission.Value {
+		case business.RolePermissionValueBusinessFullAccess:
+			return true, nil
+		}
+	}
+
+	return false, nil
+}
+
+func (s *PermissionService) CanUpdateVenture(ctx context.Context, accountId int, ventureId int) (bool, error) {
+	if accountId == 0 {
+		return false, errors.New("account id is 0")
+	}
+
+	if ventureId == 0 {
+		return false, errors.New("venture id is 0")
+	}
+
+	member, err := s.repo.Business().GetBusinessMember(ctx, ventureId, accountId)
+	if err != nil {
+		return false, err
+	}
+
+	for _, permission := range member.Role.Permissions {
+		switch permission.Value {
+		case business.RolePermissionValueBusinessFullAccess:
+			return true, nil
+		}
+	}
+
+	return false, nil
+}
+
+func (s *PermissionService) CanDeleteVenture(ctx context.Context, accountId int, ventureId int) (bool, error) {
+	if accountId == 0 {
+		return false, errors.New("account id is 0")
+	}
+
+	if ventureId == 0 {
+		return false, errors.New("venture id is 0")
+	}
+
+	member, err := s.repo.Business().GetBusinessMember(ctx, ventureId, accountId)
+	if err != nil {
+		return false, err
+	}
+
+	for _, permission := range member.Role.Permissions {
+		switch permission.Value {
+		case business.RolePermissionValueBusinessFullAccess:
+			return true, nil
+		}
+	}
+
+	return false, nil
+}
+
+func (s *PermissionService) CanViewRoundInvestments(ctx context.Context, accountId int, roundId int) (bool, error) {
+	if accountId == 0 {
+		return false, errors.New("account id is 0")
+	}
+
+	if roundId == 0 {
+		return false, errors.New("round id is 0")
+	}
+
+	member, err := s.repo.Business().GetBusinessMember(ctx, roundId, accountId)
+	if err != nil {
+		return false, err
+	}
+
+	for _, permission := range member.Role.Permissions {
+		switch permission.Value {
+		case business.RolePermissionValueBusinessFullAccess:
+			return true, nil
+		}
+	}
+
+	return false, nil
+}
+
+func (s *PermissionService) CanDeleteRound(ctx context.Context, accountId int, roundId int) (bool, error) {
+	if accountId == 0 {
+		return false, errors.New("account id is 0")
+	}
+
+	if roundId == 0 {
+		return false, errors.New("round id is 0")
+	}
+
+	member, err := s.repo.Business().GetBusinessMember(ctx, roundId, accountId)
+	if err != nil {
+		return false, err
+	}
+
+	for _, permission := range member.Role.Permissions {
+		switch permission.Value {
+		case business.RolePermissionValueBusinessFullAccess:
+			return true, nil
+		}
+	}
+
+	return false, nil
+}
