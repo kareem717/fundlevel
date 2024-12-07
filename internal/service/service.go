@@ -84,7 +84,7 @@ type RoundService interface {
 }
 
 type BusinessService interface {
-	Create(ctx context.Context, params business.CreateBusinessParams) (business.Business, error)
+	Create(ctx context.Context, params business.CreateBusinessParams) error
 	Delete(ctx context.Context, id int) error
 	GetById(ctx context.Context, id int) (business.Business, error)
 	Update(ctx context.Context, id int, params business.UpdateBusinessParams) (business.Business, error)

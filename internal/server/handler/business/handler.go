@@ -57,7 +57,7 @@ type CreateBusinessRequest struct {
 	Body business.CreateBusinessParams `json:"business"`
 }
 
-func (h *httpHandler) create(ctx context.Context, input *CreateBusinessRequest) (*shared.SingleBusinessResponse, error) {
+func (h *httpHandler) create(ctx context.Context, input *CreateBusinessRequest) (*shared.MessageOutput, error) {
 	if account := shared.GetAuthenticatedAccount(ctx); account.ID != input.Body.Business.OwnerAccountID {
 		h.logger.Error("input account id does not match authenticated account id",
 			zap.Any("input account id", input.Body.Business.OwnerAccountID),
@@ -66,15 +66,14 @@ func (h *httpHandler) create(ctx context.Context, input *CreateBusinessRequest) 
 		return nil, huma.Error403Forbidden("Cannot create business for another account")
 	}
 
-	business, err := h.service.BusinessService.Create(ctx, input.Body)
+	err := h.service.BusinessService.Create(ctx, input.Body)
 	if err != nil {
 		h.logger.Error("failed to create business", zap.Error(err))
 		return nil, huma.Error500InternalServerError("An error occurred while creating the business")
 	}
 
-	resp := &shared.SingleBusinessResponse{}
+	resp := &shared.MessageOutput{}
 	resp.Body.Message = "Business created successfully"
-	resp.Body.Business = &business
 
 	return resp, nil
 }

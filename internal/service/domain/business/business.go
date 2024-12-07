@@ -23,9 +23,8 @@ func NewBusinessService(repositories storage.Repository, stripeAPIKey string) *B
 	}
 }
 
-func (s *BusinessService) Create(ctx context.Context, params business.CreateBusinessParams) (business.Business, error) {
+func (s *BusinessService) Create(ctx context.Context, params business.CreateBusinessParams) error {
 	params.Business.Status = business.BusinessStatusPending
-	resp := business.Business{}
 
 	err := s.repositories.RunInTx(ctx, func(ctx context.Context, tx storage.Transaction) error {
 		stripe.Key = s.stripeAPIKey
@@ -64,16 +63,15 @@ func (s *BusinessService) Create(ctx context.Context, params business.CreateBusi
 		}
 
 		// TODO: We need to delete the stripe connected account if the business creation fails
-		businessRecord, err := tx.Business().Create(ctx, params)
+		err = tx.Business().Create(ctx, params)
 		if err != nil {
 			return err
 		}
-		resp = businessRecord
 
 		return nil
 	})
 
-	return resp, err
+	return err
 }
 
 func (s *BusinessService) Delete(ctx context.Context, id int) error {

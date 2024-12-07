@@ -1092,6 +1092,101 @@
         }
       ]
     },
+    "business_industries": {
+      "id": "public.business_industries",
+      "schemaName": "public",
+      "tableName": "business_industries",
+      "fields": [
+        {
+          "id": "public.business_industries.business_id",
+          "name": "business_id",
+          "columnName": "business_id",
+          "type": "int4",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": true,
+          "maxLength": null
+        },
+        {
+          "id": "public.business_industries.industry_id",
+          "name": "industry_id",
+          "columnName": "industry_id",
+          "type": "int4",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": true,
+          "maxLength": null
+        },
+        {
+          "id": "public.business_industries.created_at",
+          "name": "created_at",
+          "columnName": "created_at",
+          "type": "timestamptz",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": true,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "name": "businesses",
+          "type": "businesses",
+          "isRequired": true,
+          "kind": "object",
+          "relationName": "business_industriesTobusinesses",
+          "relationFromFields": [
+            "business_id"
+          ],
+          "relationToFields": [
+            "id"
+          ],
+          "isList": false,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        },
+        {
+          "name": "industries",
+          "type": "industries",
+          "isRequired": true,
+          "kind": "object",
+          "relationName": "business_industriesToindustries",
+          "relationFromFields": [
+            "industry_id"
+          ],
+          "relationToFields": [
+            "id"
+          ],
+          "isList": false,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        }
+      ],
+      "uniqueConstraints": [
+        {
+          "name": "business_industries_pkey",
+          "fields": [
+            "business_id",
+            "industry_id"
+          ],
+          "nullNotDistinct": false
+        }
+      ]
+    },
     "business_stripe_accounts": {
       "id": "public.business_stripe_accounts",
       "schemaName": "public",
@@ -1360,20 +1455,6 @@
           "maxLength": null
         },
         {
-          "id": "public.businesses.industry_id",
-          "name": "industry_id",
-          "columnName": "industry_id",
-          "type": "int4",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
           "id": "public.businesses.address_id",
           "name": "address_id",
           "columnName": "address_id",
@@ -1466,24 +1547,6 @@
           "hasDefaultValue": false
         },
         {
-          "name": "industries",
-          "type": "industries",
-          "isRequired": true,
-          "kind": "object",
-          "relationName": "businessesToindustries",
-          "relationFromFields": [
-            "industry_id"
-          ],
-          "relationToFields": [
-            "id"
-          ],
-          "isList": false,
-          "isId": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false
-        },
-        {
           "name": "business_favourites",
           "type": "business_favourites",
           "isRequired": false,
@@ -1503,6 +1566,20 @@
           "isRequired": false,
           "kind": "object",
           "relationName": "business_impressionsTobusinesses",
+          "relationFromFields": [],
+          "relationToFields": [],
+          "isList": true,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        },
+        {
+          "name": "business_industries",
+          "type": "business_industries",
+          "isRequired": false,
+          "kind": "object",
+          "relationName": "business_industriesTobusinesses",
           "relationFromFields": [],
           "relationToFields": [],
           "isList": true,
@@ -2973,11 +3050,11 @@
           "maxLength": null
         },
         {
-          "name": "businesses",
-          "type": "businesses",
+          "name": "business_industries",
+          "type": "business_industries",
           "isRequired": false,
           "kind": "object",
-          "relationName": "businessesToindustries",
+          "relationName": "business_industriesToindustries",
           "relationFromFields": [],
           "relationToFields": [],
           "isList": true,

@@ -16,6 +16,8 @@ import (
 	"fundlevel/internal/storage/postgres/user"
 	"fundlevel/internal/storage/postgres/venture"
 
+	businessEntity "fundlevel/internal/entities/business"
+
 	"github.com/alexlast/bunzap"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/jackc/pgx/v5/stdlib"
@@ -210,6 +212,8 @@ func NewDB(config Config, ctx context.Context, logger *zap.Logger) (*bun.DB, err
 			logger.Fatal("ping failed: %v", zap.Error(err))
 		}
 	}
+
+	db.RegisterModel((*businessEntity.BusinessToIndustry)(nil))
 
 	logger.Info("Successfully connected to the database.")
 

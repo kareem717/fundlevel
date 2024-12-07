@@ -30,8 +30,11 @@ const main = async () => {
   // Seed the database with 10 users
   await seed.users((x) => x(10));
 
+  await seed.industries((x) => x(50));
+
   await seed.accounts((x) => x(10, {
     businesses: (x) => x({ min: 0, max: 5 }, {
+      business_industries: (x) => x({ min: 1, max: 8 }),
       ventures: (x) => x({ min: 0, max: 15 }, {
         rounds: (x) => x({ min: 0, max: 1 }, {
           ...generateRoundDates()

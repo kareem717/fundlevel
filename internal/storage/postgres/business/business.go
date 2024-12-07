@@ -18,51 +18,57 @@ func NewBusinessRepository(db bun.IDB, ctx context.Context) *BusinessRepository 
 	return &BusinessRepository{db: db, ctx: ctx}
 }
 
-func (r *BusinessRepository) Create(ctx context.Context, params business.CreateBusinessParams) (business.Business, error) {
-	resp := business.Business{}
-	var address address.Address
-	var stripeAccount business.BusinessStripeAccount
-
+func (r *BusinessRepository) Create(ctx context.Context, params business.CreateBusinessParams) error {
 	err := r.db.RunInTx(ctx, nil, func(ctx context.Context, tx bun.Tx) error {
+		addressRecord := address.Address{}
 		err := tx.NewInsert().
 			Model(&params.Address).
 			ModelTableExpr("addresses").
 			Returning("*").
-			Scan(ctx, &address)
+			Scan(ctx, &addressRecord)
 		if err != nil {
 			return err
 		}
 
-		resp.Address = &address
+		params.Business.AddressID = addressRecord.ID
 
-		params.Business.AddressID = address.ID
+		var businessRecord business.Business
 		err = tx.NewInsert().
 			Model(&params.Business).
 			ModelTableExpr("businesses").
 			Returning("*").
-			Scan(ctx, &resp)
+			Scan(ctx, &businessRecord)
 		if err != nil {
 			return err
 		}
 
-		params.StripeAccount.BusinessID = resp.ID
-		err = tx.NewInsert().
+		params.StripeAccount.BusinessID = businessRecord.ID
+		_, err = tx.NewInsert().
 			Model(&params.StripeAccount).
 			ModelTableExpr("business_stripe_accounts").
-			Returning("*").
-			Scan(ctx, &stripeAccount)
+			Exec(ctx)
 		if err != nil {
 			return err
 		}
 
-		resp.StripeAccount = &stripeAccount
+		industryIds := make([]business.BusinessIndustry, len(params.IndustryIds))
+		for i, industryId := range params.IndustryIds {
+			industryIds[i].BusinessID = businessRecord.ID
+			industryIds[i].IndustryID = industryId
+		}
+
+		_, err = tx.NewInsert().
+			Model(&industryIds).
+			ModelTableExpr("business_industries").
+			Exec(ctx)
+		if err != nil {
+			return err
+		}
+
 		return nil
 	})
-	if err != nil {
-		return resp, err
-	}
 
-	return resp, nil
+	return err
 }
 
 func (r *BusinessRepository) GetById(ctx context.Context, id int) (business.Business, error) {

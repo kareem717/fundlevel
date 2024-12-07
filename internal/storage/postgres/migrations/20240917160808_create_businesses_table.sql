@@ -22,11 +22,18 @@ CREATE TABLE
         status business_status NOT NULL DEFAULT 'pending',
         team_size team_size NOT NULL DEFAULT '1',
         is_remote BOOLEAN NOT NULL DEFAULT FALSE,
-        industry_id INTEGER NOT NULL REFERENCES industries (id),
         address_id INTEGER NOT NULL REFERENCES addresses (id),
         created_at timestamptz DEFAULT CLOCK_TIMESTAMP(),
         updated_at timestamptz,
         deleted_at timestamptz
+    );
+
+CREATE TABLE
+    business_industries (
+        business_id INTEGER NOT NULL REFERENCES businesses (id),
+        industry_id INTEGER NOT NULL REFERENCES industries (id),
+        created_at timestamptz DEFAULT CLOCK_TIMESTAMP(),
+        PRIMARY KEY (business_id, industry_id)
     );
 
 CREATE TRIGGER sync_businesses_updated_at BEFORE
@@ -36,6 +43,8 @@ EXECUTE PROCEDURE sync_updated_at_column ();
 -- +goose StatementEnd
 -- +goose Down
 -- +goose StatementBegin
+DROP TABLE business_industries;
+
 DROP TABLE businesses;
 
 DROP TYPE team_size;

@@ -43,7 +43,7 @@ db-status:
 		(echo "Error: Failed to get migration status" && exit 1)
 
 db-seed:
-	@npx tsx seed.ts
+	@cd ${SUPABASE_DIRECTORY} && bunx tsx seed.ts && cd ..
 	
 db-up:
 	@GOOSE_DRIVER=${GOOSE_DRIVER} GOOSE_DBSTRING='${DATABASE_URL}' goose -dir=${GOOSE_MIGRATIONS_PATH} up
