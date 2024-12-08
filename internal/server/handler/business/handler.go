@@ -389,7 +389,7 @@ func (h *httpHandler) getStripeDashboardURL(ctx context.Context, input *shared.P
 type GetOffsetPaginatedBusinessMembersOutput struct {
 	Body struct {
 		shared.MessageResponse
-		Members []business.BusinessMemberWithRoleName `json:"members"`
+		Members []business.BusinessMemberWithRoleNameAndAccount `json:"members"`
 		shared.OffsetPaginationResponse
 	} `json:"body"`
 }

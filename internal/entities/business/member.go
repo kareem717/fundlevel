@@ -1,6 +1,7 @@
 package business
 
 import (
+	"fundlevel/internal/entities/account"
 	"fundlevel/internal/entities/shared"
 
 	"github.com/uptrace/bun"
@@ -42,10 +43,11 @@ type BusinessMemberWithRole struct {
 	Role BusinessMemberRole `bun:"rel:has-one,join:role_id=id"`
 }
 
-type BusinessMemberWithRoleName struct {
+type BusinessMemberWithRoleNameAndAccount struct {
 	bun.BaseModel `json:"-" bun:"business_members,alias:business_member"`
 	BusinessMember
-	Role string `json:"role" description:"The name of the role of the member"`
+	Role    string              `json:"role" description:"The name of the role of the member"`
+	Account account.SafeAccount `json:"account" bun:"rel:has-one,join:account_id=id"`
 }
 
 type CreateBusinessMemberParams struct {
