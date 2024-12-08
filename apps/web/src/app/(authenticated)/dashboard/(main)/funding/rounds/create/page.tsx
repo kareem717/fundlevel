@@ -1,3 +1,5 @@
+import { CreateRoundForm } from "./components/create-round-form";
+
 export default function CreateRoundPage() {
-  return <div>Create Round</div>
+  return <CreateRoundForm />
 }
