@@ -174,4 +174,13 @@ func RegisterHumaRoutes(
 			},
 		},
 	}, handler.getStripeDashboardURL)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-business-members-by-page",
+		Method:      http.MethodGet,
+		Path:        "/business/{id}/members/page",
+		Summary:     "Get business members",
+		Description: "Get business members.",
+		Tags:        []string{"Businesses", "Members"},
+	}, handler.getMembersByPage)
 }

@@ -17,7 +17,7 @@ func NewBusinessRepository(db bun.IDB, ctx context.Context) *BusinessRepository 
 	return &BusinessRepository{db: db, ctx: ctx}
 }
 
-//TODO: this logic should be in a service, not in the repository
+// TODO: this logic should be in a service, not in the repository
 func (r *BusinessRepository) Create(ctx context.Context, params business.CreateBusinessParams) error {
 	err := r.db.RunInTx(ctx, nil, func(ctx context.Context, tx bun.Tx) error {
 		var businessRecord business.Business
@@ -45,7 +45,7 @@ func (r *BusinessRepository) Create(ctx context.Context, params business.CreateB
 
 		businessOwnerRolePermission := business.RolePermission{
 			RoleId: businessOwnerRole.ID,
-			Value: business.RolePermissionValueBusinessFullAccess,
+			Value:  business.RolePermissionValueBusinessFullAccess,
 		}
 
 		err = tx.NewInsert().
@@ -64,6 +64,9 @@ func (r *BusinessRepository) Create(ctx context.Context, params business.CreateB
 
 		err = tx.NewInsert().
 			Model(&businessMember).
+			Column("business_id").
+			Column("account_id").
+			Column("role_id").
 			ModelTableExpr("business_members").
 			Returning("*").
 			Scan(ctx, &businessMember)

@@ -40,7 +40,7 @@ type CreateRoundInput struct {
 
 func (i *CreateRoundInput) Resolve(ctx huma.Context) []error {
 
-	if i.Body.BeginsAt.Before(time.Now().AddDate(0, 0, 1)) {
+	if i.Body.BeginsAt.Before(time.Now()) {
 		return []error{&huma.ErrorDetail{
 			Message:  "begins at must be in the future",
 			Location: "round.beginsAt",
