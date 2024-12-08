@@ -16,6 +16,7 @@ import {
 	offsetPaginationSchema,
 } from "@/actions/validations/shared";
 import { object } from "yup";
+import { getBusinessMembersByPage as getBusinessMembersByPageApi } from "@/lib/api";
 
 /**
  * Create a venture
@@ -129,6 +130,26 @@ export const getBusinessInvestmentsByPage = actionClientWithAccount
 				query: {
 					...pagination,
 				},
+			});
+
+			return res.data;
+		}
+	);
+
+export const getBusinessMembersByPage = actionClientWithAccount
+	.schema(
+		object().shape({
+			businessId: intIdSchema.required(),
+			pagination: offsetPaginationSchema.required(),
+		})
+	)
+	.action(
+		async ({ parsedInput: { businessId, pagination }, ctx: { apiClient } }) => {
+			const res = await getBusinessMembersByPageApi({
+				client: apiClient,
+				throwOnError: true,
+				path: { id: businessId },
+				query: { ...pagination },
 			});
 
 			return res.data;
