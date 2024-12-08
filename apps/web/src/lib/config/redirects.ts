@@ -1,5 +1,3 @@
-
-
 const redirects = {
 	privacy: "/privacy-policy",
 	terms: "/terms-of-service",
@@ -25,7 +23,7 @@ const redirects = {
 			index: "/portfolio",
 			investments: {
 				root: "/portfolio/investments",
-				history: "/portfolio/investments/history",	
+				history: "/portfolio/investments/history",
 				insights: "/portfolio/investments/insights",
 				payments: "/portfolio/investments/payments",
 				create: (roundId: string) => `/portfolio/investments/create/${roundId}`,
@@ -38,6 +36,11 @@ const redirects = {
 			index: "/dashboard",
 			business: {
 				create: "/dashboard/create-business",
+				members: {
+					root: "/dashboard/members",
+					index: "/dashboard/members",
+					roles: "/dashboard/members/roles",
+				},
 			},
 			funding: {
 				index: "/dashboard/funding",
