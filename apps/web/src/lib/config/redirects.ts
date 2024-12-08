@@ -36,11 +36,7 @@ const redirects = {
 			index: "/dashboard",
 			business: {
 				create: "/dashboard/create-business",
-				members: {
-					root: "/dashboard/members",
-					index: "/dashboard/members",
-					roles: "/dashboard/members/roles",
-				},
+				members: "/dashboard/members",
 			},
 			funding: {
 				index: "/dashboard/funding",

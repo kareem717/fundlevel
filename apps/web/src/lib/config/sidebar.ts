@@ -39,18 +39,8 @@ const dashboard: NavigationMenu[] = [
 			},
 			{
 				title: "Members",
-				root: redirects.app.dashboard.business.members.root,
+				url: redirects.app.dashboard.business.members,
 				icon: Icons.users,
-				items: [
-					{
-						title: "Overview",
-						url: redirects.app.dashboard.business.members.index,
-					},
-					{
-						title: "Roles",
-						url: redirects.app.dashboard.business.members.roles,
-					},
-				],
 			},
 		],
 	},

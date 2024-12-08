@@ -56,13 +56,10 @@ export const employeeCount = {
 } as const;
 
 export type BusinessMemberRole = {
-    businessId: number;
-    createdAt: Date;
-    deletedAt: (Date) | null;
+    description: string;
     id: number;
     name: string;
     permissions: Array<RolePermission> | null;
-    updatedAt: (Date) | null;
 };
 
 export type BusinessMemberWithRoleNameAndAccount = {
@@ -440,7 +437,8 @@ export type OnboardStripeConnectedAccountInputBody = {
 };
 
 export type RolePermission = {
-    roleId: number;
+    description: string;
+    id: number;
     value: string;
 };
 
@@ -966,12 +964,6 @@ export type GetBusinessMembersByPageData = {
 export type GetBusinessMembersByPageResponse = (GetOffsetPaginatedBusinessMembersOutputBody);
 
 export type GetBusinessMembersByPageError = (ErrorModel);
-
-export type GetBusinessMemberRolesData = {
-    path: {
-        id: number;
-    };
-};
 
 export type GetBusinessMemberRolesResponse = (GetAllMemberRolesOutputBody);
 
@@ -1584,37 +1576,6 @@ export const GetOffsetPaginatedBusinessMembersOutputBodyModelResponseTransformer
 
 export const GetBusinessMembersByPageResponseTransformer: GetBusinessMembersByPageResponseTransformer = async (data) => {
     GetOffsetPaginatedBusinessMembersOutputBodyModelResponseTransformer(data);
-    return data;
-};
-
-export type GetBusinessMemberRolesResponseTransformer = (data: any) => Promise<GetBusinessMemberRolesResponse>;
-
-export type GetAllMemberRolesOutputBodyModelResponseTransformer = (data: any) => GetAllMemberRolesOutputBody;
-
-export type BusinessMemberRoleModelResponseTransformer = (data: any) => BusinessMemberRole;
-
-export const BusinessMemberRoleModelResponseTransformer: BusinessMemberRoleModelResponseTransformer = data => {
-    if (data?.createdAt) {
-        data.createdAt = new Date(data.createdAt);
-    }
-    if (data?.deletedAt) {
-        data.deletedAt = new Date(data.deletedAt);
-    }
-    if (data?.updatedAt) {
-        data.updatedAt = new Date(data.updatedAt);
-    }
-    return data;
-};
-
-export const GetAllMemberRolesOutputBodyModelResponseTransformer: GetAllMemberRolesOutputBodyModelResponseTransformer = data => {
-    if (Array.isArray(data?.roles)) {
-        data.roles.forEach(BusinessMemberRoleModelResponseTransformer);
-    }
-    return data;
-};
-
-export const GetBusinessMemberRolesResponseTransformer: GetBusinessMemberRolesResponseTransformer = async (data) => {
-    GetAllMemberRolesOutputBodyModelResponseTransformer(data);
     return data;
 };
 

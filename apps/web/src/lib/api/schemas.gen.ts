@@ -161,20 +161,12 @@ export const BusinessSchema = {
 export const BusinessMemberRoleSchema = {
     additionalProperties: false,
     properties: {
-        businessId: {
-            format: 'int64',
-            type: 'integer'
-        },
-        createdAt: {
-            format: 'date-time',
+        description: {
             type: 'string'
-        },
-        deletedAt: {
-            format: 'date-time',
-            type: ['string', 'null']
         },
         id: {
             format: 'int64',
+            minimum: 1,
             type: 'integer'
         },
         name: {
@@ -185,13 +177,9 @@ export const BusinessMemberRoleSchema = {
                 '$ref': '#/components/schemas/RolePermission'
             },
             type: ['array', 'null']
-        },
-        updatedAt: {
-            format: 'date-time',
-            type: ['string', 'null']
         }
     },
-    required: ['id', 'businessId', 'name', 'permissions', 'createdAt', 'updatedAt', 'deletedAt'],
+    required: ['name', 'description', 'permissions', 'id'],
     type: 'object'
 } as const;
 
@@ -1165,7 +1153,10 @@ export const OnboardStripeConnectedAccountInputBodySchema = {
 export const RolePermissionSchema = {
     additionalProperties: false,
     properties: {
-        roleId: {
+        description: {
+            type: 'string'
+        },
+        id: {
             format: 'int64',
             minimum: 1,
             type: 'integer'
@@ -1174,7 +1165,7 @@ export const RolePermissionSchema = {
             type: 'string'
         }
     },
-    required: ['roleId', 'value'],
+    required: ['value', 'description', 'id'],
     type: 'object'
 } as const;
 
