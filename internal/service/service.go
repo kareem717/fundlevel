@@ -90,6 +90,7 @@ type BusinessService interface {
 	GetTotalFunding(ctx context.Context, businessId int) (int, error)
 
 	GetMembersByPage(ctx context.Context, businessId int, pageSize int, page int) ([]business.BusinessMemberWithRoleNameAndAccount, int, error)
+	GetAllMemberRoles(ctx context.Context, businessId int) ([]business.BusinessMemberRole, error)
 }
 
 type InvestmentService interface {
@@ -151,7 +152,7 @@ type PermissionService interface {
 	CanAccessBusinessStripeDashboard(ctx context.Context, accountId int, businessId int) (bool, error)
 	CanViewBusinessAnalytics(ctx context.Context, accountId int, businessId int) (bool, error)
 	CanViewBusinessMembers(ctx context.Context, accountId int, businessId int) (bool, error)
-
+	CanViewBusinessMemberRoles(ctx context.Context, accountId int, businessId int) (bool, error)
 	CanViewRoundAnalytics(ctx context.Context, accountId int, roundId int) (bool, error)
 	CanViewRoundInvestments(ctx context.Context, accountId int, roundId int) (bool, error)
 	CanCreateRound(ctx context.Context, accountId int, businessId int) (bool, error)

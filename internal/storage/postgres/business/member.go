@@ -40,3 +40,16 @@ func (r *BusinessRepository) GetMembersByPage(ctx context.Context, businessId in
 
 	return resp, count, err
 }
+
+func (r *BusinessRepository) GetAllMemberRoles(ctx context.Context, businessId int) ([]business.BusinessMemberRole, error) {
+	resp := []business.BusinessMemberRole{}
+	err := r.db.
+		NewSelect().
+		Model(&resp).
+		Relation("Permissions").
+		
+		Where("business_member_role.business_id = ?", businessId).
+		Scan(ctx)
+
+	return resp, err
+}

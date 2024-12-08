@@ -23,6 +23,7 @@ type BusinessMemberRole struct {
 	bun.BaseModel `bun:"business_member_roles"`
 
 	ID          int              `json:"id" bun:",pk"`
+	BusinessId  int              `json:"businessId"`
 	Name        string           `json:"name"`
 	Permissions []RolePermission `json:"permissions" bun:"rel:has-many,join:id=role_id"`
 	shared.Timestamps
