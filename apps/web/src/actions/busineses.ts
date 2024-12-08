@@ -11,13 +11,12 @@ import {
 } from "@/lib/api";
 import { createBusinessSchema } from "@/actions/validations/business";
 import {
-	cursorPaginationSchema,
 	intIdSchema,
 	offsetPaginationSchema,
 } from "@/actions/validations/shared";
 import { object } from "yup";
 import { getBusinessMembersByPage as getBusinessMembersByPageApi } from "@/lib/api";
-
+import { getBusinessMemberRoles as getBusinessMemberRolesApi } from "@/lib/api";
 /**
  * Create a venture
  */
@@ -155,3 +154,15 @@ export const getBusinessMembersByPage = actionClientWithAccount
 			return res.data;
 		}
 	);
+
+export const getBusinessMemberRoles = actionClientWithAccount
+	.schema(intIdSchema.required())
+	.action(async ({ parsedInput, ctx: { apiClient } }) => {
+		const res = await getBusinessMemberRolesApi({
+			client: apiClient,
+			throwOnError: true,
+			path: { id: parsedInput },
+		});
+
+		return res.data;
+	});

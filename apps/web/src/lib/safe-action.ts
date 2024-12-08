@@ -1,6 +1,6 @@
 import {
-  createSafeActionClient,
-  DEFAULT_SERVER_ERROR_MESSAGE,
+	createSafeActionClient,
+	DEFAULT_SERVER_ERROR_MESSAGE,
 } from "next-safe-action";
 import { yupAdapter } from "next-safe-action/adapters/yup";
 import { env } from "@/env";
@@ -19,7 +19,7 @@ export const actionClient = createSafeActionClient({
 				message: err.detail ?? DEFAULT_SERVER_ERROR_MESSAGE,
 				statusCode: err.status ?? 500,
 			};
-		} catch (error) {
+		} catch (err) {
 			console.error(
 				JSON.stringify(
 					{
@@ -43,24 +43,24 @@ export const actionClient = createSafeActionClient({
 		baseUrl: env.NEXT_PUBLIC_BACKEND_API_URL,
 	});
 
-  return next({
-    ctx: {
-      apiClient: client,
-    },
-  });
+	return next({
+		ctx: {
+			apiClient: client,
+		},
+	});
 });
 
 export const actionClientWithUser = actionClient.use(async ({ next, ctx }) => {
 	const sb = await createSupabaseServerClient();
 
-  const {
-    data: { session },
-    error: sessionError,
-  } = await sb.auth.getSession();
+	const {
+		data: { session },
+		error: sessionError,
+	} = await sb.auth.getSession();
 
-  if (sessionError) {
-    console.error("Error getting user session: ", sessionError);
-  }
+	if (sessionError) {
+		console.error("Error getting user session: ", sessionError);
+	}
 
 	let user = null;
 	if (session) {
@@ -79,7 +79,9 @@ export const actionClientWithUser = actionClient.use(async ({ next, ctx }) => {
 		user = data?.user;
 	}
 
-	console.log(`userId: ${user?.id}\n---------\naccess_token: ${session?.access_token}`)
+	console.log(
+		`userId: ${user?.id}\n---------\naccess_token: ${session?.access_token}`
+	);
 
 	return next({
 		ctx: {

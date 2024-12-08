@@ -1,4 +1,9 @@
-export default function MembersRolesPage() {
-  return <div>Members Roles</div>
-}
+import { RoleDropdowns } from "./components/role-dropdown";
 
+export default function MembersRolesPage() {
+  return (
+    <div>
+      <RoleDropdowns />
+    </div>
+  );
+}

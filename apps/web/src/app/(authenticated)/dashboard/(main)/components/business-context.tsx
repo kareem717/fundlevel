@@ -49,6 +49,7 @@ export const BusinessContextProvider: FC<{
   const [businesses] = useState<Business[]>(businessData);
   const [currentBusiness, setCurrentBusiness] = useState<Business>(businessData[0]);
 
+  // TODO: bring to server side
   const [currentBusinessId, setCurrentBusinessId] = useQueryState(
     'business',
     parseAsInteger
