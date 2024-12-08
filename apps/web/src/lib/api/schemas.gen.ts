@@ -158,6 +158,43 @@ export const BusinessSchema = {
     type: 'object'
 } as const;
 
+export const BusinessMemberRoleSchema = {
+    additionalProperties: false,
+    properties: {
+        businessId: {
+            format: 'int64',
+            type: 'integer'
+        },
+        createdAt: {
+            format: 'date-time',
+            type: 'string'
+        },
+        deletedAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        },
+        id: {
+            format: 'int64',
+            type: 'integer'
+        },
+        name: {
+            type: 'string'
+        },
+        permissions: {
+            items: {
+                '$ref': '#/components/schemas/RolePermission'
+            },
+            type: ['array', 'null']
+        },
+        updatedAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        }
+    },
+    required: ['id', 'businessId', 'name', 'permissions', 'createdAt', 'updatedAt', 'deletedAt'],
+    type: 'object'
+} as const;
+
 export const BusinessMemberWithRoleNameAndAccountSchema = {
     additionalProperties: false,
     properties: {
@@ -655,6 +692,29 @@ export const GetAllIndustriesResponseBodySchema = {
     type: 'object'
 } as const;
 
+export const GetAllMemberRolesOutputBodySchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/GetAllMemberRolesOutputBody.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        message: {
+            type: 'string'
+        },
+        roles: {
+            items: {
+                '$ref': '#/components/schemas/BusinessMemberRole'
+            },
+            type: ['array', 'null']
+        }
+    },
+    required: ['roles', 'message'],
+    type: 'object'
+} as const;
+
 export const GetBusinessesOutputBodySchema = {
     additionalProperties: false,
     properties: {
@@ -1099,6 +1159,22 @@ export const OnboardStripeConnectedAccountInputBodySchema = {
         }
     },
     required: ['returnURL', 'refreshURL'],
+    type: 'object'
+} as const;
+
+export const RolePermissionSchema = {
+    additionalProperties: false,
+    properties: {
+        roleId: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
+        value: {
+            type: 'string'
+        }
+    },
+    required: ['roleId', 'value'],
     type: 'object'
 } as const;
 

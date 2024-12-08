@@ -55,6 +55,16 @@ export const employeeCount = {
     _1000_: '1000+'
 } as const;
 
+export type BusinessMemberRole = {
+    businessId: number;
+    createdAt: Date;
+    deletedAt: (Date) | null;
+    id: number;
+    name: string;
+    permissions: Array<RolePermission> | null;
+    updatedAt: (Date) | null;
+};
+
 export type BusinessMemberWithRoleNameAndAccount = {
     account: SafeAccount;
     accountId: number;
@@ -247,6 +257,15 @@ export type GetAllIndustriesResponseBody = {
     message: string;
 };
 
+export type GetAllMemberRolesOutputBody = {
+    /**
+     * A URL to the JSON Schema for this object.
+     */
+    readonly $schema?: string;
+    message: string;
+    roles: Array<BusinessMemberRole> | null;
+};
+
 export type GetBusinessesOutputBody = {
     /**
      * A URL to the JSON Schema for this object.
@@ -418,6 +437,11 @@ export type OnboardStripeConnectedAccountInputBody = {
     readonly $schema?: string;
     refreshURL: string;
     returnURL: string;
+};
+
+export type RolePermission = {
+    roleId: number;
+    value: string;
 };
 
 export type Round = {
@@ -942,6 +966,16 @@ export type GetBusinessMembersByPageData = {
 export type GetBusinessMembersByPageResponse = (GetOffsetPaginatedBusinessMembersOutputBody);
 
 export type GetBusinessMembersByPageError = (ErrorModel);
+
+export type GetBusinessMemberRolesData = {
+    path: {
+        id: number;
+    };
+};
+
+export type GetBusinessMemberRolesResponse = (GetAllMemberRolesOutputBody);
+
+export type GetBusinessMemberRolesError = (ErrorModel);
 
 export type GetBusinessRoundsByCursorData = {
     path: {
@@ -1550,6 +1584,37 @@ export const GetOffsetPaginatedBusinessMembersOutputBodyModelResponseTransformer
 
 export const GetBusinessMembersByPageResponseTransformer: GetBusinessMembersByPageResponseTransformer = async (data) => {
     GetOffsetPaginatedBusinessMembersOutputBodyModelResponseTransformer(data);
+    return data;
+};
+
+export type GetBusinessMemberRolesResponseTransformer = (data: any) => Promise<GetBusinessMemberRolesResponse>;
+
+export type GetAllMemberRolesOutputBodyModelResponseTransformer = (data: any) => GetAllMemberRolesOutputBody;
+
+export type BusinessMemberRoleModelResponseTransformer = (data: any) => BusinessMemberRole;
+
+export const BusinessMemberRoleModelResponseTransformer: BusinessMemberRoleModelResponseTransformer = data => {
+    if (data?.createdAt) {
+        data.createdAt = new Date(data.createdAt);
+    }
+    if (data?.deletedAt) {
+        data.deletedAt = new Date(data.deletedAt);
+    }
+    if (data?.updatedAt) {
+        data.updatedAt = new Date(data.updatedAt);
+    }
+    return data;
+};
+
+export const GetAllMemberRolesOutputBodyModelResponseTransformer: GetAllMemberRolesOutputBodyModelResponseTransformer = data => {
+    if (Array.isArray(data?.roles)) {
+        data.roles.forEach(BusinessMemberRoleModelResponseTransformer);
+    }
+    return data;
+};
+
+export const GetBusinessMemberRolesResponseTransformer: GetBusinessMemberRolesResponseTransformer = async (data) => {
+    GetAllMemberRolesOutputBodyModelResponseTransformer(data);
     return data;
 };
 
