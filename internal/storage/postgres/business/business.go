@@ -32,11 +32,13 @@ func (r *BusinessRepository) Create(ctx context.Context, params business.CreateB
 
 		businessOwnerRole := business.BusinessMemberRole{
 			Name: "Owner",
+			BusinessId: businessRecord.ID,
 		}
 
 		err = tx.NewInsert().
 			Model(&businessOwnerRole).
 			Column("name").
+			Column("business_id").
 			Returning("*").
 			Scan(ctx, &businessOwnerRole)
 		if err != nil {

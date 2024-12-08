@@ -3,6 +3,7 @@
 CREATE TABLE
     business_member_roles (
         id serial PRIMARY KEY,
+        business_id INT NOT NULL REFERENCES businesses (id),
         NAME TEXT NOT NULL,
         created_at timestamptz NOT NULL DEFAULT CLOCK_TIMESTAMP(),
         updated_at timestamptz,
