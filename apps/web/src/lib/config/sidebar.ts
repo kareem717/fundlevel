@@ -58,6 +58,21 @@ const dashboard: NavigationMenu[] = [
 				url: redirects.app.dashboard.funding.investors.index,
 				icon: Icons.users,
 			},
+			{
+				title: "Rounds",
+				root: redirects.app.dashboard.funding.rounds.root,
+				icon: Icons.handCoins,
+				items: [
+					{
+						title: "Overview",
+						url: redirects.app.dashboard.funding.rounds.index,
+					},
+					{
+						title: "Create",
+						url: redirects.app.dashboard.funding.rounds.create,
+					},
+				],
+			},
 		],
 	},
 ];

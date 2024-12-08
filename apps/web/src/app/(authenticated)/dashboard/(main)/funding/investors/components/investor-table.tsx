@@ -21,7 +21,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { DataTablePagination } from "@/components/data-table"
-import { ComponentPropsWithoutRef, FC, useState } from "react"
+import { ComponentPropsWithoutRef, FC, useEffect, useMemo, useState } from "react"
 import { faker } from "@faker-js/faker"
 import { Input } from "@/components/ui/input"
 import {
@@ -42,13 +42,6 @@ type Investor = {
   expiry: Date | null
 }
 
-// use faker.js to generate 15 investors
-const investors: Investor[] = Array.from({ length: 15 }, () => ({
-  name: faker.person.fullName(),
-  buyIn: faker.number.int({ min: 1000, max: 1000000 }),
-  stake: faker.number.float({ min: 1, max: 95 }),
-  expiry: faker.date.future(),
-}))
 
 export const columns: ColumnDef<Investor>[] = [
   {
@@ -122,7 +115,16 @@ interface InvestorTableProps extends ComponentPropsWithoutRef<typeof Table> {
 }
 
 export const InvestorTable: FC<InvestorTableProps> = ({ className }) => {
-  const data = investors
+  // use faker.js to generate 15 investors
+  const [data, setData] = useState<Investor[]>([])
+  useEffect(() => {
+    setData(Array.from({ length: 15 }, () => ({
+      name: faker.person.fullName(),
+      buyIn: faker.number.int({ min: 1000, max: 1000000 }),
+      stake: faker.number.float({ min: 1, max: 95 }),
+      expiry: faker.date.future(),
+    })))
+  }, [])
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10,

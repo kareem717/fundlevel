@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { VentureRound } from "@/lib/api";
+// import { VentureRound } from "@/lib/api";
 import { cn, formatCurrency } from "@/lib/utils";
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { format } from "date-fns";
@@ -21,7 +21,7 @@ import { FC, ComponentPropsWithoutRef } from "react";
 import { parseAsBoolean, useQueryState } from "nuqs";
 
 interface InvestmentDialogProps extends ComponentPropsWithoutRef<typeof DialogContent> {
-  round: VentureRound;
+  // round: VentureRound;
   triggerProps?: ComponentPropsWithoutRef<typeof Button>;
   redirectUrl: string;
 }

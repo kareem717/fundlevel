@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import redirects from "@/lib/config/redirects";
 import { getAccountCached, getUserCached } from "@/actions/auth";
-import AuthProvider from "@/components/providers/auth-provider";
+import { AuthProvider } from "@/components/providers/auth-provider";
 
 export default async function AuthenticatedLayout({ children }: { children: React.ReactNode }) {
   let user

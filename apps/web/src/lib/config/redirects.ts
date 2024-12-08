@@ -47,6 +47,11 @@ const redirects = {
 				investors: {
 					index: "/dashboard/funding/investors",
 				},
+				rounds: {
+					root: "/dashboard/funding/rounds",
+					index: "/dashboard/funding/rounds",
+					create: "/dashboard/funding/rounds/create",
+				},
 			},
 		},
 	},

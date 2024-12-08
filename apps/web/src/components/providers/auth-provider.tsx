@@ -1,36 +1,29 @@
 "use client";
 
-import { ReactNode } from "react";
+import { FC, ReactNode } from "react";
 import { User as SupabaseUser } from "@supabase/supabase-js";
 import { createContext, useContext } from "react";
 import { Account } from "@/lib/api";
 
-export type AuthContextType = {
-  user: SupabaseUser | undefined;
-  account: Account | undefined;
+export interface AuthProviderProps {
+  user?: SupabaseUser | undefined;
+  account?: Account | undefined;
 };
 
-const AuthContext = createContext<AuthContextType>({
+const AuthContext = createContext<AuthProviderProps>({
   user: undefined,
   account: undefined,
 });
 
-export function useAuth() {
+export const useAuth = () => {
   return useContext(AuthContext);
 }
 
-export default function AuthProvider({
-  children,
-  user,
-  account,
-}: {
-  children: ReactNode;
-  user: SupabaseUser | undefined;
-  account: Account | undefined;
-}) {
-  return (
-    <AuthContext.Provider value={{ user, account }}>
-      {children}
-    </AuthContext.Provider>
-  );
-}
+export const AuthProvider: FC<AuthProviderProps & { children: ReactNode }> =
+  ({ children, user, account }) => {
+    return (
+      <AuthContext.Provider value={{ user, account }}>
+        {children}
+      </AuthContext.Provider>
+    );
+  }

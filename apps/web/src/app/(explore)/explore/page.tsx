@@ -1,6 +1,6 @@
 import React from "react";
 import FilterBar from "./components/filter-bar";
-import { VentureList } from "./components/venture-list";
+// import { VentureList } from "./components/venture-list";
 import { Suspense } from "@/components/suspense";
 import Link from "next/link";
 
@@ -9,7 +9,7 @@ export default async function ExplorePage() {
     <div className="flex flex-col space-y-6 py-6">
       <Hero />
       <FilterBar />
-      <VentureList />
+      {/* <VentureList /> */}
     </div>
   );
 }

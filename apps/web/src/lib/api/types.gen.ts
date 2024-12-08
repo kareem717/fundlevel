@@ -152,13 +152,13 @@ export type CreateRoundParams = {
      */
     readonly $schema?: string;
     beginsAt: Date;
+    businessId: number;
     description: string;
     endsAt: Date;
     investorCount: number;
     percentageOffered: number;
     percentageValue: number;
     valueCurrency: 'usd' | 'gbp' | 'eur' | 'cad' | 'aud' | 'jpy';
-    ventureId: number;
 };
 
 export type valueCurrency = 'usd' | 'gbp' | 'eur' | 'cad' | 'aud' | 'jpy';
@@ -171,17 +171,6 @@ export const valueCurrency = {
     AUD: 'aud',
     JPY: 'jpy'
 } as const;
-
-export type CreateVentureParams = {
-    /**
-     * A URL to the JSON Schema for this object.
-     */
-    readonly $schema?: string;
-    businessId: number;
-    description: string;
-    name: string;
-    overview: string;
-};
 
 export type ErrorDetail = {
     /**
@@ -300,17 +289,6 @@ export type GetCursorPaginatedRoundsOutputBody = {
     rounds: Array<Round> | null;
 };
 
-export type GetCursorPaginatedVenturesOutputBody = {
-    /**
-     * A URL to the JSON Schema for this object.
-     */
-    readonly $schema?: string;
-    hasMore: boolean;
-    message: string;
-    nextCursor: (number) | null;
-    ventures: Array<Venture> | null;
-};
-
 export type GetDailyAggregatedBusinessAnalyticsOutputBody = {
     /**
      * A URL to the JSON Schema for this object.
@@ -326,15 +304,6 @@ export type GetDailyAggregatedRoundAnalyticsOutputBody = {
      */
     readonly $schema?: string;
     analytics: Array<SimplifiedDailyAggregatedRoundAnalytics> | null;
-    message: string;
-};
-
-export type GetDailyAggregatedVentureAnalyticsOutputBody = {
-    /**
-     * A URL to the JSON Schema for this object.
-     */
-    readonly $schema?: string;
-    analytics: Array<SimplifiedDailyAggregatedVentureAnalytics> | null;
     message: string;
 };
 
@@ -367,17 +336,6 @@ export type GetOffsetPaginatedRoundsOutputBody = {
     message: string;
     rounds: Array<Round> | null;
     total: number;
-};
-
-export type GetOffsetPaginatedVenturesOutputBody = {
-    /**
-     * A URL to the JSON Schema for this object.
-     */
-    readonly $schema?: string;
-    hasMore: boolean;
-    message: string;
-    total: number;
-    ventures: Array<Venture> | null;
 };
 
 export type ImpressionCountOutputBody = {
@@ -442,6 +400,7 @@ export type OnboardStripeConnectedAccountInputBody = {
 
 export type Round = {
     beginsAt: Date;
+    businessId: number;
     buyIn: number;
     createdAt: Date;
     deletedAt: (Date) | null;
@@ -454,8 +413,6 @@ export type Round = {
     status: 'active' | 'successful' | 'failed';
     updatedAt: (Date) | null;
     valueCurrency: 'usd' | 'gbp' | 'eur' | 'cad' | 'aud' | 'jpy';
-    venture: Venture;
-    ventureId: number;
 };
 
 export type status = 'active' | 'successful' | 'failed';
@@ -512,6 +469,24 @@ export const status3 = {
     SUCCEEDED: 'succeeded'
 } as const;
 
+export type RoundWithBusiness = {
+    beginsAt: Date;
+    business: Business;
+    businessId: number;
+    buyIn: number;
+    createdAt: Date;
+    deletedAt: (Date) | null;
+    description: string;
+    endsAt: Date;
+    id: number;
+    investorCount: number;
+    percentageOffered: number;
+    percentageValue: number;
+    status: 'active' | 'successful' | 'failed';
+    updatedAt: (Date) | null;
+    valueCurrency: 'usd' | 'gbp' | 'eur' | 'cad' | 'aud' | 'jpy';
+};
+
 export type SimplifiedDailyAggregatedBusinessAnalytics = {
     dayOfYear: number;
     favouritedCount: number;
@@ -520,13 +495,6 @@ export type SimplifiedDailyAggregatedBusinessAnalytics = {
 };
 
 export type SimplifiedDailyAggregatedRoundAnalytics = {
-    dayOfYear: number;
-    favouritedCount: number;
-    impressionsCount: number;
-    uniquesImpressionsCount: number;
-};
-
-export type SimplifiedDailyAggregatedVentureAnalytics = {
     dayOfYear: number;
     favouritedCount: number;
     impressionsCount: number;
@@ -569,13 +537,13 @@ export type SingleRoundResponseBody = {
     round: Round;
 };
 
-export type SingleVentureResponseBody = {
+export type SingleRoundWithBusinessResponseBody = {
     /**
      * A URL to the JSON Schema for this object.
      */
     readonly $schema?: string;
     message: string;
-    venture: Venture;
+    round: RoundWithBusiness;
 };
 
 export type UrlOutputBody = {
@@ -603,40 +571,6 @@ export type UpdateMessageParams = {
     readonly $schema?: string;
     content: string;
     readAt: (Date) | null;
-};
-
-export type UpdateVentureParams = {
-    /**
-     * A URL to the JSON Schema for this object.
-     */
-    readonly $schema?: string;
-    description: string;
-    name: string;
-    overview: string;
-};
-
-export type Venture = {
-    activeRound?: VentureRound;
-    business: Business;
-    businessId: number;
-    createdAt: Date;
-    deletedAt: (Date) | null;
-    description: string;
-    id: number;
-    isHidden: boolean;
-    name: string;
-    overview: string;
-    updatedAt: (Date) | null;
-};
-
-export type VentureRound = {
-    buyIn: number;
-    id: number;
-    investorCount: number;
-    percentageOffered: number;
-    percentageValue: number;
-    valueCurrency: 'usd' | 'gbp' | 'eur' | 'cad' | 'aud' | 'jpy';
-    ventureId: number;
 };
 
 export type CreateAccountData = {
@@ -892,63 +826,6 @@ export type CreateRoundImpressionResponse = (MessageResponse);
 
 export type CreateRoundImpressionError = (ErrorModel);
 
-export type GetDailyAggregatedVentureAnalyticsData = {
-    path: {
-        id: number;
-    };
-    query?: {
-        maxDayOfYear?: number;
-        minDayOfYear?: number;
-    };
-};
-
-export type GetDailyAggregatedVentureAnalyticsResponse = (GetDailyAggregatedVentureAnalyticsOutputBody);
-
-export type GetDailyAggregatedVentureAnalyticsError = (ErrorModel);
-
-export type DeleteVentureFavouriteData = {
-    path: {
-        accountId: number;
-        id: number;
-    };
-};
-
-export type DeleteVentureFavouriteResponse = (MessageResponse);
-
-export type DeleteVentureFavouriteError = (ErrorModel);
-
-export type GetVentureFavouriteStatusData = {
-    path: {
-        accountId: number;
-        id: number;
-    };
-};
-
-export type GetVentureFavouriteStatusResponse = (IsFavouritedOutputBody);
-
-export type GetVentureFavouriteStatusError = (ErrorModel);
-
-export type CreateVentureFavouriteData = {
-    path: {
-        accountId: number;
-        id: number;
-    };
-};
-
-export type CreateVentureFavouriteResponse = (MessageResponse);
-
-export type CreateVentureFavouriteError = (ErrorModel);
-
-export type GetVentureFavouriteCountData = {
-    path: {
-        id: number;
-    };
-};
-
-export type GetVentureFavouriteCountResponse = (GetLikeCountOutputBody);
-
-export type GetVentureFavouriteCountError = (ErrorModel);
-
 export type CreateBusinessData = {
     body: CreateBusinessParams;
 };
@@ -1101,40 +978,6 @@ export type OnboardStripeConnectedAccountData = {
 export type OnboardStripeConnectedAccountResponse = (UrlOutputBody);
 
 export type OnboardStripeConnectedAccountError = (ErrorModel);
-
-export type GetBusinessVenturesByCursorData = {
-    path: {
-        id: number;
-    };
-    query?: {
-        cursor?: number;
-        isHidden?: Array<(boolean)> | null;
-        limit?: number;
-        sortBy?: 'created_at';
-        sortOrder?: 'asc' | 'desc';
-    };
-};
-
-export type GetBusinessVenturesByCursorResponse = (GetCursorPaginatedVenturesOutputBody);
-
-export type GetBusinessVenturesByCursorError = (ErrorModel);
-
-export type GetBusinessVenturesByPageData = {
-    path: {
-        id: number;
-    };
-    query?: {
-        isHidden?: Array<(boolean)> | null;
-        page?: number;
-        pageSize?: number;
-        sortBy?: 'created_at';
-        sortOrder?: 'asc' | 'desc';
-    };
-};
-
-export type GetBusinessVenturesByPageResponse = (GetOffsetPaginatedVenturesOutputBody);
-
-export type GetBusinessVenturesByPageError = (ErrorModel);
 
 export type CreateChatData = {
     body: CreateChatParams;
@@ -1310,43 +1153,9 @@ export type GetRoundByIdData = {
     };
 };
 
-export type GetRoundByIdResponse = (SingleRoundResponseBody);
+export type GetRoundByIdResponse = (SingleRoundWithBusinessResponseBody);
 
 export type GetRoundByIdError = (ErrorModel);
-
-export type GetRoundInvestmentsByCursorData = {
-    path: {
-        id: number;
-    };
-    query?: {
-        cursor?: number;
-        limit?: number;
-        sortBy?: 'created_at';
-        sortOrder?: 'asc' | 'desc';
-        status?: Array<('pending' | 'processing' | 'rejected' | 'withdrawn' | 'successful' | 'round_closed')> | null;
-    };
-};
-
-export type GetRoundInvestmentsByCursorResponse = (GetCursorPaginatedRoundInvestmentsOutputBody);
-
-export type GetRoundInvestmentsByCursorError = (ErrorModel);
-
-export type GetRoundInvestmentsByPageData = {
-    path: {
-        id: number;
-    };
-    query?: {
-        page?: number;
-        pageSize?: number;
-        sortBy?: 'created_at';
-        sortOrder?: 'asc' | 'desc';
-        status?: Array<('pending' | 'processing' | 'rejected' | 'withdrawn' | 'successful' | 'round_closed')> | null;
-    };
-};
-
-export type GetRoundInvestmentsByPageResponse = (GetOffsetPaginatedRoundInvestmentsOutputBody);
-
-export type GetRoundInvestmentsByPageError = (ErrorModel);
 
 export type GetUserAccountData = {
     path: {
@@ -1357,199 +1166,6 @@ export type GetUserAccountData = {
 export type GetUserAccountResponse = (SingleAccountResponseBody);
 
 export type GetUserAccountError = (ErrorModel);
-
-export type GetVenturesByCursorData = {
-    query?: {
-        cursor?: number;
-        isHidden?: Array<(boolean)> | null;
-        limit?: number;
-        sortBy?: 'created_at';
-        sortOrder?: 'asc' | 'desc';
-    };
-};
-
-export type GetVenturesByCursorResponse = (GetCursorPaginatedVenturesOutputBody);
-
-export type GetVenturesByCursorError = (ErrorModel);
-
-export type CreateVentureData = {
-    body: CreateVentureParams;
-};
-
-export type CreateVentureResponse = (SingleVentureResponseBody);
-
-export type CreateVentureError = (ErrorModel);
-
-export type GetVenturesByPageData = {
-    query?: {
-        isHidden?: Array<(boolean)> | null;
-        page?: number;
-        pageSize?: number;
-        sortBy?: 'created_at';
-        sortOrder?: 'asc' | 'desc';
-    };
-};
-
-export type GetVenturesByPageResponse = (GetOffsetPaginatedVenturesOutputBody);
-
-export type GetVenturesByPageError = (ErrorModel);
-
-export type DeleteVentureData = {
-    path: {
-        id: number;
-    };
-};
-
-export type DeleteVentureResponse = (MessageResponse);
-
-export type DeleteVentureError = (ErrorModel);
-
-export type GetVentureByIdData = {
-    path: {
-        id: number;
-    };
-};
-
-export type GetVentureByIdResponse = (SingleVentureResponseBody);
-
-export type GetVentureByIdError = (ErrorModel);
-
-export type UpdateVentureData = {
-    body: UpdateVentureParams;
-    path: {
-        id: number;
-    };
-};
-
-export type UpdateVentureResponse = (SingleVentureResponseBody);
-
-export type UpdateVentureError = (ErrorModel);
-
-export type GetVentureRoundInvestmentsByCursorData = {
-    path: {
-        id: number;
-    };
-    query?: {
-        cursor?: number;
-        limit?: number;
-        sortBy?: 'created_at';
-        sortOrder?: 'asc' | 'desc';
-        status?: Array<('pending' | 'processing' | 'rejected' | 'withdrawn' | 'successful' | 'round_closed')> | null;
-    };
-};
-
-export type GetVentureRoundInvestmentsByCursorResponse = (GetCursorPaginatedRoundInvestmentsOutputBody);
-
-export type GetVentureRoundInvestmentsByCursorError = (ErrorModel);
-
-export type GetVentureRoundInvestmentsByPageData = {
-    path: {
-        id: number;
-    };
-    query?: {
-        page?: number;
-        pageSize?: number;
-        sortBy?: 'created_at';
-        sortOrder?: 'asc' | 'desc';
-        status?: Array<('pending' | 'processing' | 'rejected' | 'withdrawn' | 'successful' | 'round_closed')> | null;
-    };
-};
-
-export type GetVentureRoundInvestmentsByPageResponse = (GetOffsetPaginatedRoundInvestmentsOutputBody);
-
-export type GetVentureRoundInvestmentsByPageError = (ErrorModel);
-
-export type GetVentureRoundsByCursorData = {
-    path: {
-        id: number;
-    };
-    query?: {
-        cursor?: number;
-        limit?: number;
-        maximumBeginsAt?: Date;
-        maximumBuyIn?: number;
-        maximumEndsAt?: Date;
-        maximumInvestorCount?: number;
-        maximumPercentageOffered?: number;
-        maximumPercentageValue?: number;
-        minimumBeginsAt?: Date;
-        minimumBuyIn?: number;
-        minimumEndsAt?: Date;
-        minimumInvestorCount?: number;
-        minimumPercentageOffered?: number;
-        minimumPercentageValue?: number;
-        sortBy?: 'begins_at' | 'ends_at' | 'percentage_offered' | 'percentage_value' | 'value_currency' | 'status' | 'investor_count' | 'buy_in' | 'created_at';
-        sortOrder?: 'asc' | 'desc';
-        status?: Array<('active' | 'successful' | 'failed')> | null;
-        valueCurrencies?: 'usd' | 'gbp' | 'eur' | 'cad' | 'aud' | 'jpy';
-    };
-};
-
-export type GetVentureRoundsByCursorResponse = (GetCursorPaginatedRoundsOutputBody);
-
-export type GetVentureRoundsByCursorError = (ErrorModel);
-
-export type GetVentureActiveRoundData = {
-    path: {
-        id: number;
-    };
-};
-
-export type GetVentureActiveRoundResponse = (SingleRoundResponseBody);
-
-export type GetVentureActiveRoundError = (ErrorModel);
-
-export type GetVentureRoundsByPageData = {
-    path: {
-        id: number;
-    };
-    query?: {
-        maximumBeginsAt?: Date;
-        maximumBuyIn?: number;
-        maximumEndsAt?: Date;
-        maximumInvestorCount?: number;
-        maximumPercentageOffered?: number;
-        maximumPercentageValue?: number;
-        minimumBeginsAt?: Date;
-        minimumBuyIn?: number;
-        minimumEndsAt?: Date;
-        minimumInvestorCount?: number;
-        minimumPercentageOffered?: number;
-        minimumPercentageValue?: number;
-        page?: number;
-        pageSize?: number;
-        sortBy?: 'begins_at' | 'ends_at' | 'percentage_offered' | 'percentage_value' | 'value_currency' | 'status' | 'investor_count' | 'buy_in' | 'created_at';
-        sortOrder?: 'asc' | 'desc';
-        status?: Array<('active' | 'successful' | 'failed')> | null;
-        valueCurrencies?: 'usd' | 'gbp' | 'eur' | 'cad' | 'aud' | 'jpy';
-    };
-};
-
-export type GetVentureRoundsByPageResponse = (GetOffsetPaginatedRoundsOutputBody);
-
-export type GetVentureRoundsByPageError = (ErrorModel);
-
-export type HandleStripeWebhookData = {
-    body: unknown;
-    headers?: {
-        'Stripe-Signature'?: string;
-    };
-};
-
-export type HandleStripeWebhookResponse = (void);
-
-export type HandleStripeWebhookError = (ErrorModel);
-
-export type HandleStripeConnectWebhookData = {
-    body: unknown;
-    headers?: {
-        'Stripe-Signature'?: string;
-    };
-};
-
-export type HandleStripeConnectWebhookResponse = (void);
-
-export type HandleStripeConnectWebhookError = (ErrorModel);
 
 export type CreateAccountResponseTransformer = (data: any) => Promise<CreateAccountResponse>;
 
@@ -1744,24 +1360,6 @@ export const RoundInvestmentPaymentModelResponseTransformer: RoundInvestmentPaym
 
 export type RoundModelResponseTransformer = (data: any) => Round;
 
-export type VentureModelResponseTransformer = (data: any) => Venture;
-
-export const VentureModelResponseTransformer: VentureModelResponseTransformer = data => {
-    if (data?.business) {
-        BusinessModelResponseTransformer(data.business);
-    }
-    if (data?.createdAt) {
-        data.createdAt = new Date(data.createdAt);
-    }
-    if (data?.deletedAt) {
-        data.deletedAt = new Date(data.deletedAt);
-    }
-    if (data?.updatedAt) {
-        data.updatedAt = new Date(data.updatedAt);
-    }
-    return data;
-};
-
 export const RoundModelResponseTransformer: RoundModelResponseTransformer = data => {
     if (data?.beginsAt) {
         data.beginsAt = new Date(data.beginsAt);
@@ -1777,9 +1375,6 @@ export const RoundModelResponseTransformer: RoundModelResponseTransformer = data
     }
     if (data?.updatedAt) {
         data.updatedAt = new Date(data.updatedAt);
-    }
-    if (data?.venture) {
-        VentureModelResponseTransformer(data.venture);
     }
     return data;
 };
@@ -1893,38 +1488,6 @@ export const GetOffsetPaginatedRoundsOutputBodyModelResponseTransformer: GetOffs
 
 export const GetBusinessRoundsByPageResponseTransformer: GetBusinessRoundsByPageResponseTransformer = async (data) => {
     GetOffsetPaginatedRoundsOutputBodyModelResponseTransformer(data);
-    return data;
-};
-
-export type GetBusinessVenturesByCursorResponseTransformer = (data: any) => Promise<GetBusinessVenturesByCursorResponse>;
-
-export type GetCursorPaginatedVenturesOutputBodyModelResponseTransformer = (data: any) => GetCursorPaginatedVenturesOutputBody;
-
-export const GetCursorPaginatedVenturesOutputBodyModelResponseTransformer: GetCursorPaginatedVenturesOutputBodyModelResponseTransformer = data => {
-    if (Array.isArray(data?.ventures)) {
-        data.ventures.forEach(VentureModelResponseTransformer);
-    }
-    return data;
-};
-
-export const GetBusinessVenturesByCursorResponseTransformer: GetBusinessVenturesByCursorResponseTransformer = async (data) => {
-    GetCursorPaginatedVenturesOutputBodyModelResponseTransformer(data);
-    return data;
-};
-
-export type GetBusinessVenturesByPageResponseTransformer = (data: any) => Promise<GetBusinessVenturesByPageResponse>;
-
-export type GetOffsetPaginatedVenturesOutputBodyModelResponseTransformer = (data: any) => GetOffsetPaginatedVenturesOutputBody;
-
-export const GetOffsetPaginatedVenturesOutputBodyModelResponseTransformer: GetOffsetPaginatedVenturesOutputBodyModelResponseTransformer = data => {
-    if (Array.isArray(data?.ventures)) {
-        data.ventures.forEach(VentureModelResponseTransformer);
-    }
-    return data;
-};
-
-export const GetBusinessVenturesByPageResponseTransformer: GetBusinessVenturesByPageResponseTransformer = async (data) => {
-    GetOffsetPaginatedVenturesOutputBodyModelResponseTransformer(data);
     return data;
 };
 
@@ -2054,22 +1617,41 @@ export const GetRoundsByPageResponseTransformer: GetRoundsByPageResponseTransfor
 
 export type GetRoundByIdResponseTransformer = (data: any) => Promise<GetRoundByIdResponse>;
 
+export type SingleRoundWithBusinessResponseBodyModelResponseTransformer = (data: any) => SingleRoundWithBusinessResponseBody;
+
+export type RoundWithBusinessModelResponseTransformer = (data: any) => RoundWithBusiness;
+
+export const RoundWithBusinessModelResponseTransformer: RoundWithBusinessModelResponseTransformer = data => {
+    if (data?.beginsAt) {
+        data.beginsAt = new Date(data.beginsAt);
+    }
+    if (data?.business) {
+        BusinessModelResponseTransformer(data.business);
+    }
+    if (data?.createdAt) {
+        data.createdAt = new Date(data.createdAt);
+    }
+    if (data?.deletedAt) {
+        data.deletedAt = new Date(data.deletedAt);
+    }
+    if (data?.endsAt) {
+        data.endsAt = new Date(data.endsAt);
+    }
+    if (data?.updatedAt) {
+        data.updatedAt = new Date(data.updatedAt);
+    }
+    return data;
+};
+
+export const SingleRoundWithBusinessResponseBodyModelResponseTransformer: SingleRoundWithBusinessResponseBodyModelResponseTransformer = data => {
+    if (data?.round) {
+        RoundWithBusinessModelResponseTransformer(data.round);
+    }
+    return data;
+};
+
 export const GetRoundByIdResponseTransformer: GetRoundByIdResponseTransformer = async (data) => {
-    SingleRoundResponseBodyModelResponseTransformer(data);
-    return data;
-};
-
-export type GetRoundInvestmentsByCursorResponseTransformer = (data: any) => Promise<GetRoundInvestmentsByCursorResponse>;
-
-export const GetRoundInvestmentsByCursorResponseTransformer: GetRoundInvestmentsByCursorResponseTransformer = async (data) => {
-    GetCursorPaginatedRoundInvestmentsOutputBodyModelResponseTransformer(data);
-    return data;
-};
-
-export type GetRoundInvestmentsByPageResponseTransformer = (data: any) => Promise<GetRoundInvestmentsByPageResponse>;
-
-export const GetRoundInvestmentsByPageResponseTransformer: GetRoundInvestmentsByPageResponseTransformer = async (data) => {
-    GetOffsetPaginatedRoundInvestmentsOutputBodyModelResponseTransformer(data);
+    SingleRoundWithBusinessResponseBodyModelResponseTransformer(data);
     return data;
 };
 
@@ -2077,84 +1659,5 @@ export type GetUserAccountResponseTransformer = (data: any) => Promise<GetUserAc
 
 export const GetUserAccountResponseTransformer: GetUserAccountResponseTransformer = async (data) => {
     SingleAccountResponseBodyModelResponseTransformer(data);
-    return data;
-};
-
-export type GetVenturesByCursorResponseTransformer = (data: any) => Promise<GetVenturesByCursorResponse>;
-
-export const GetVenturesByCursorResponseTransformer: GetVenturesByCursorResponseTransformer = async (data) => {
-    GetCursorPaginatedVenturesOutputBodyModelResponseTransformer(data);
-    return data;
-};
-
-export type CreateVentureResponseTransformer = (data: any) => Promise<CreateVentureResponse>;
-
-export type SingleVentureResponseBodyModelResponseTransformer = (data: any) => SingleVentureResponseBody;
-
-export const SingleVentureResponseBodyModelResponseTransformer: SingleVentureResponseBodyModelResponseTransformer = data => {
-    if (data?.venture) {
-        VentureModelResponseTransformer(data.venture);
-    }
-    return data;
-};
-
-export const CreateVentureResponseTransformer: CreateVentureResponseTransformer = async (data) => {
-    SingleVentureResponseBodyModelResponseTransformer(data);
-    return data;
-};
-
-export type GetVenturesByPageResponseTransformer = (data: any) => Promise<GetVenturesByPageResponse>;
-
-export const GetVenturesByPageResponseTransformer: GetVenturesByPageResponseTransformer = async (data) => {
-    GetOffsetPaginatedVenturesOutputBodyModelResponseTransformer(data);
-    return data;
-};
-
-export type GetVentureByIdResponseTransformer = (data: any) => Promise<GetVentureByIdResponse>;
-
-export const GetVentureByIdResponseTransformer: GetVentureByIdResponseTransformer = async (data) => {
-    SingleVentureResponseBodyModelResponseTransformer(data);
-    return data;
-};
-
-export type UpdateVentureResponseTransformer = (data: any) => Promise<UpdateVentureResponse>;
-
-export const UpdateVentureResponseTransformer: UpdateVentureResponseTransformer = async (data) => {
-    SingleVentureResponseBodyModelResponseTransformer(data);
-    return data;
-};
-
-export type GetVentureRoundInvestmentsByCursorResponseTransformer = (data: any) => Promise<GetVentureRoundInvestmentsByCursorResponse>;
-
-export const GetVentureRoundInvestmentsByCursorResponseTransformer: GetVentureRoundInvestmentsByCursorResponseTransformer = async (data) => {
-    GetCursorPaginatedRoundInvestmentsOutputBodyModelResponseTransformer(data);
-    return data;
-};
-
-export type GetVentureRoundInvestmentsByPageResponseTransformer = (data: any) => Promise<GetVentureRoundInvestmentsByPageResponse>;
-
-export const GetVentureRoundInvestmentsByPageResponseTransformer: GetVentureRoundInvestmentsByPageResponseTransformer = async (data) => {
-    GetOffsetPaginatedRoundInvestmentsOutputBodyModelResponseTransformer(data);
-    return data;
-};
-
-export type GetVentureRoundsByCursorResponseTransformer = (data: any) => Promise<GetVentureRoundsByCursorResponse>;
-
-export const GetVentureRoundsByCursorResponseTransformer: GetVentureRoundsByCursorResponseTransformer = async (data) => {
-    GetCursorPaginatedRoundsOutputBodyModelResponseTransformer(data);
-    return data;
-};
-
-export type GetVentureActiveRoundResponseTransformer = (data: any) => Promise<GetVentureActiveRoundResponse>;
-
-export const GetVentureActiveRoundResponseTransformer: GetVentureActiveRoundResponseTransformer = async (data) => {
-    SingleRoundResponseBodyModelResponseTransformer(data);
-    return data;
-};
-
-export type GetVentureRoundsByPageResponseTransformer = (data: any) => Promise<GetVentureRoundsByPageResponse>;
-
-export const GetVentureRoundsByPageResponseTransformer: GetVentureRoundsByPageResponseTransformer = async (data) => {
-    GetOffsetPaginatedRoundsOutputBodyModelResponseTransformer(data);
     return data;
 };

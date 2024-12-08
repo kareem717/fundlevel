@@ -17,6 +17,10 @@ export default defineConfig({
 		lint: "eslint",
 		path: "./src/lib/api",
 	},
+	services: {
+		// Exclude webhook services
+		filter: "^(?!.*webhook).*$",
+	},
 	types: {
 		dates: "types+transform",
 		enums: "javascript",
