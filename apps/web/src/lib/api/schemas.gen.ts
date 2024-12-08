@@ -162,11 +162,13 @@ export const BusinessParamsSchema = {
     additionalProperties: false,
     properties: {
         businessColour: {
-            maxLength: 6,
-            minLength: 6,
+            examples: ['#E9743E'],
+            maxLength: 7,
+            minLength: 7,
             type: ['string', 'null']
         },
         displayName: {
+            examples: ['Acme Inc.'],
             minLength: 1,
             type: 'string'
         },
@@ -345,6 +347,7 @@ export const CreateBusinessParamsSchema = {
             '$ref': '#/components/schemas/BusinessParams'
         },
         industryIds: {
+            examples: [[1]],
             items: {
                 format: 'int64',
                 type: 'integer'
@@ -472,6 +475,11 @@ export const CreateRoundParamsSchema = {
             format: 'date-time',
             type: 'string'
         },
+        businessId: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
         description: {
             maxLength: 3000,
             minLength: 10,
@@ -487,12 +495,14 @@ export const CreateRoundParamsSchema = {
             type: 'integer'
         },
         percentageOffered: {
+            examples: [10],
             format: 'double',
             maximum: 100,
             minimum: 0,
             type: 'number'
         },
         percentageValue: {
+            examples: [1000000],
             format: 'int64',
             minimum: 1,
             type: 'integer'
@@ -500,48 +510,9 @@ export const CreateRoundParamsSchema = {
         valueCurrency: {
             enum: ['usd', 'gbp', 'eur', 'cad', 'aud', 'jpy'],
             type: 'string'
-        },
-        ventureId: {
-            format: 'int64',
-            minimum: 1,
-            type: 'integer'
         }
     },
-    required: ['ventureId', 'beginsAt', 'endsAt', 'percentageOffered', 'valueCurrency', 'percentageValue', 'investorCount', 'description'],
-    type: 'object'
-} as const;
-
-export const CreateVentureParamsSchema = {
-    additionalProperties: false,
-    properties: {
-        '$schema': {
-            examples: ['https://example.com/schemas/CreateVentureParams.json'],
-            format: 'uri',
-            readOnly: true,
-            type: 'string'
-        },
-        businessId: {
-            format: 'int64',
-            minimum: 1,
-            type: 'integer'
-        },
-        description: {
-            maxLength: 5000,
-            minLength: 3,
-            type: 'string'
-        },
-        name: {
-            maxLength: 100,
-            minLength: 3,
-            type: 'string'
-        },
-        overview: {
-            maxLength: 30,
-            minLength: 10,
-            type: 'string'
-        }
-    },
-    required: ['businessId', 'name', 'description', 'overview'],
+    required: ['businessId', 'beginsAt', 'endsAt', 'percentageOffered', 'valueCurrency', 'percentageValue', 'investorCount', 'description'],
     type: 'object'
 } as const;
 
@@ -789,36 +760,6 @@ export const GetCursorPaginatedRoundsOutputBodySchema = {
     type: 'object'
 } as const;
 
-export const GetCursorPaginatedVenturesOutputBodySchema = {
-    additionalProperties: false,
-    properties: {
-        '$schema': {
-            examples: ['https://example.com/schemas/GetCursorPaginatedVenturesOutputBody.json'],
-            format: 'uri',
-            readOnly: true,
-            type: 'string'
-        },
-        hasMore: {
-            type: 'boolean'
-        },
-        message: {
-            type: 'string'
-        },
-        nextCursor: {
-            format: 'int64',
-            type: ['integer', 'null']
-        },
-        ventures: {
-            items: {
-                '$ref': '#/components/schemas/Venture'
-            },
-            type: ['array', 'null']
-        }
-    },
-    required: ['ventures', 'message', 'nextCursor', 'hasMore'],
-    type: 'object'
-} as const;
-
 export const GetDailyAggregatedBusinessAnalyticsOutputBodySchema = {
     additionalProperties: false,
     properties: {
@@ -854,29 +795,6 @@ export const GetDailyAggregatedRoundAnalyticsOutputBodySchema = {
         analytics: {
             items: {
                 '$ref': '#/components/schemas/SimplifiedDailyAggregatedRoundAnalytics'
-            },
-            type: ['array', 'null']
-        },
-        message: {
-            type: 'string'
-        }
-    },
-    required: ['analytics', 'message'],
-    type: 'object'
-} as const;
-
-export const GetDailyAggregatedVentureAnalyticsOutputBodySchema = {
-    additionalProperties: false,
-    properties: {
-        '$schema': {
-            examples: ['https://example.com/schemas/GetDailyAggregatedVentureAnalyticsOutputBody.json'],
-            format: 'uri',
-            readOnly: true,
-            type: 'string'
-        },
-        analytics: {
-            items: {
-                '$ref': '#/components/schemas/SimplifiedDailyAggregatedVentureAnalytics'
             },
             type: ['array', 'null']
         },
@@ -966,36 +884,6 @@ export const GetOffsetPaginatedRoundsOutputBodySchema = {
         }
     },
     required: ['rounds', 'message', 'hasMore', 'total'],
-    type: 'object'
-} as const;
-
-export const GetOffsetPaginatedVenturesOutputBodySchema = {
-    additionalProperties: false,
-    properties: {
-        '$schema': {
-            examples: ['https://example.com/schemas/GetOffsetPaginatedVenturesOutputBody.json'],
-            format: 'uri',
-            readOnly: true,
-            type: 'string'
-        },
-        hasMore: {
-            type: 'boolean'
-        },
-        message: {
-            type: 'string'
-        },
-        total: {
-            format: 'int64',
-            type: 'integer'
-        },
-        ventures: {
-            items: {
-                '$ref': '#/components/schemas/Venture'
-            },
-            type: ['array', 'null']
-        }
-    },
-    required: ['ventures', 'message', 'hasMore', 'total'],
     type: 'object'
 } as const;
 
@@ -1153,6 +1041,11 @@ export const RoundSchema = {
             format: 'date-time',
             type: 'string'
         },
+        businessId: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
         buyIn: {
             format: 'double',
             minimum: 1,
@@ -1207,17 +1100,9 @@ export const RoundSchema = {
         valueCurrency: {
             enum: ['usd', 'gbp', 'eur', 'cad', 'aud', 'jpy'],
             type: 'string'
-        },
-        venture: {
-            '$ref': '#/components/schemas/Venture'
-        },
-        ventureId: {
-            format: 'int64',
-            minimum: 1,
-            type: 'integer'
         }
     },
-    required: ['ventureId', 'beginsAt', 'endsAt', 'percentageOffered', 'percentageValue', 'valueCurrency', 'status', 'investorCount', 'buyIn', 'description', 'venture', 'id', 'createdAt', 'updatedAt', 'deletedAt'],
+    required: ['businessId', 'beginsAt', 'endsAt', 'percentageOffered', 'percentageValue', 'valueCurrency', 'status', 'investorCount', 'buyIn', 'description', 'id', 'createdAt', 'updatedAt', 'deletedAt'],
     type: 'object'
 } as const;
 
@@ -1301,6 +1186,81 @@ export const RoundInvestmentPaymentSchema = {
     type: 'object'
 } as const;
 
+export const RoundWithBusinessSchema = {
+    additionalProperties: false,
+    properties: {
+        beginsAt: {
+            format: 'date-time',
+            type: 'string'
+        },
+        business: {
+            '$ref': '#/components/schemas/Business'
+        },
+        businessId: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
+        buyIn: {
+            format: 'double',
+            minimum: 1,
+            type: 'number'
+        },
+        createdAt: {
+            format: 'date-time',
+            type: 'string'
+        },
+        deletedAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        },
+        description: {
+            maxLength: 3000,
+            minLength: 10,
+            type: 'string'
+        },
+        endsAt: {
+            format: 'date-time',
+            type: 'string'
+        },
+        id: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
+        investorCount: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
+        percentageOffered: {
+            format: 'double',
+            maximum: 100,
+            minimum: 0,
+            type: 'number'
+        },
+        percentageValue: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
+        status: {
+            enum: ['active', 'successful', 'failed'],
+            type: 'string'
+        },
+        updatedAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        },
+        valueCurrency: {
+            enum: ['usd', 'gbp', 'eur', 'cad', 'aud', 'jpy'],
+            type: 'string'
+        }
+    },
+    required: ['business', 'businessId', 'beginsAt', 'endsAt', 'percentageOffered', 'percentageValue', 'valueCurrency', 'status', 'investorCount', 'buyIn', 'description', 'id', 'createdAt', 'updatedAt', 'deletedAt'],
+    type: 'object'
+} as const;
+
 export const SimplifiedDailyAggregatedBusinessAnalyticsSchema = {
     additionalProperties: false,
     properties: {
@@ -1326,30 +1286,6 @@ export const SimplifiedDailyAggregatedBusinessAnalyticsSchema = {
 } as const;
 
 export const SimplifiedDailyAggregatedRoundAnalyticsSchema = {
-    additionalProperties: false,
-    properties: {
-        dayOfYear: {
-            format: 'int64',
-            type: 'integer'
-        },
-        favouritedCount: {
-            format: 'int64',
-            type: 'integer'
-        },
-        impressionsCount: {
-            format: 'int64',
-            type: 'integer'
-        },
-        uniquesImpressionsCount: {
-            format: 'int64',
-            type: 'integer'
-        }
-    },
-    required: ['dayOfYear', 'impressionsCount', 'uniquesImpressionsCount', 'favouritedCount'],
-    type: 'object'
-} as const;
-
-export const SimplifiedDailyAggregatedVentureAnalyticsSchema = {
     additionalProperties: false,
     properties: {
         dayOfYear: {
@@ -1453,11 +1389,11 @@ export const SingleRoundResponseBodySchema = {
     type: 'object'
 } as const;
 
-export const SingleVentureResponseBodySchema = {
+export const SingleRoundWithBusinessResponseBodySchema = {
     additionalProperties: false,
     properties: {
         '$schema': {
-            examples: ['https://example.com/schemas/SingleVentureResponseBody.json'],
+            examples: ['https://example.com/schemas/SingleRoundWithBusinessResponseBody.json'],
             format: 'uri',
             readOnly: true,
             type: 'string'
@@ -1465,11 +1401,11 @@ export const SingleVentureResponseBodySchema = {
         message: {
             type: 'string'
         },
-        venture: {
-            '$ref': '#/components/schemas/Venture'
+        round: {
+            '$ref': '#/components/schemas/RoundWithBusiness'
         }
     },
-    required: ['venture', 'message'],
+    required: ['round', 'message'],
     type: 'object'
 } as const;
 
@@ -1541,131 +1477,5 @@ export const UpdateMessageParamsSchema = {
         }
     },
     required: ['content', 'readAt'],
-    type: 'object'
-} as const;
-
-export const UpdateVentureParamsSchema = {
-    additionalProperties: false,
-    properties: {
-        '$schema': {
-            examples: ['https://example.com/schemas/UpdateVentureParams.json'],
-            format: 'uri',
-            readOnly: true,
-            type: 'string'
-        },
-        description: {
-            maxLength: 5000,
-            minLength: 3,
-            type: 'string'
-        },
-        name: {
-            maxLength: 100,
-            minLength: 3,
-            type: 'string'
-        },
-        overview: {
-            maxLength: 30,
-            minLength: 10,
-            type: 'string'
-        }
-    },
-    required: ['name', 'description', 'overview'],
-    type: 'object'
-} as const;
-
-export const VentureSchema = {
-    additionalProperties: false,
-    properties: {
-        activeRound: {
-            '$ref': '#/components/schemas/VentureRound'
-        },
-        business: {
-            '$ref': '#/components/schemas/Business'
-        },
-        businessId: {
-            format: 'int64',
-            minimum: 1,
-            type: 'integer'
-        },
-        createdAt: {
-            format: 'date-time',
-            type: 'string'
-        },
-        deletedAt: {
-            format: 'date-time',
-            type: ['string', 'null']
-        },
-        description: {
-            maxLength: 5000,
-            minLength: 3,
-            type: 'string'
-        },
-        id: {
-            format: 'int64',
-            minimum: 1,
-            type: 'integer'
-        },
-        isHidden: {
-            type: 'boolean'
-        },
-        name: {
-            maxLength: 100,
-            minLength: 3,
-            type: 'string'
-        },
-        overview: {
-            maxLength: 30,
-            minLength: 10,
-            type: 'string'
-        },
-        updatedAt: {
-            format: 'date-time',
-            type: ['string', 'null']
-        }
-    },
-    required: ['businessId', 'isHidden', 'business', 'name', 'description', 'overview', 'id', 'createdAt', 'updatedAt', 'deletedAt'],
-    type: 'object'
-} as const;
-
-export const VentureRoundSchema = {
-    additionalProperties: false,
-    properties: {
-        buyIn: {
-            format: 'double',
-            minimum: 1,
-            type: 'number'
-        },
-        id: {
-            format: 'int64',
-            minimum: 1,
-            type: 'integer'
-        },
-        investorCount: {
-            format: 'int64',
-            minimum: 1,
-            type: 'integer'
-        },
-        percentageOffered: {
-            format: 'double',
-            maximum: 100,
-            minimum: 0,
-            type: 'number'
-        },
-        percentageValue: {
-            format: 'int64',
-            minimum: 1,
-            type: 'integer'
-        },
-        valueCurrency: {
-            enum: ['usd', 'gbp', 'eur', 'cad', 'aud', 'jpy'],
-            type: 'string'
-        },
-        ventureId: {
-            format: 'int64',
-            minimum: 1,
-            type: 'integer'
-        }
-    },
-    required: ['ventureId', 'percentageOffered', 'percentageValue', 'valueCurrency', 'investorCount', 'buyIn', 'id'],
     type: 'object'
 } as const;

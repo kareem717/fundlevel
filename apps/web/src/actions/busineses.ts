@@ -3,8 +3,6 @@
 import { actionClient, actionClientWithAccount } from "@/lib/safe-action";
 import {
 	createBusiness as createBusinessApi,
-	getBusinessVenturesByCursor as getBusinessVenturesByCursorApi,
-	getBusinessVenturesByPage as getBusinessVenturesByPageApi,
 	getBusinessById as getBusinessByIdApi,
 	getAccountBusinesses as getAccountBusinessesApi,
 	getBusinessRoundsByPage as getBusinessRoundsByPageApi,
@@ -64,54 +62,6 @@ export const getAccountBusinesses = actionClientWithAccount.action(
 		return res.data;
 	}
 );
-
-export const getBusinessVentures = actionClientWithAccount
-	.schema(
-		object().shape({
-			businessId: intIdSchema.required(),
-			pagination: offsetPaginationSchema.required(),
-		})
-	)
-	.action(
-		async ({ parsedInput: { businessId, pagination }, ctx: { apiClient } }) => {
-			const res = await getBusinessVenturesByPageApi({
-				client: apiClient,
-				throwOnError: true,
-				query: {
-					...pagination,
-				},
-				path: {
-					id: businessId,
-				},
-			});
-
-			return res.data;
-		}
-	);
-
-export const getBusinessVenturesInfinite = actionClientWithAccount
-	.schema(
-		object().shape({
-			businessId: intIdSchema.required(),
-			pagination: cursorPaginationSchema.required(),
-		})
-	)
-	.action(
-		async ({ parsedInput: { businessId, pagination }, ctx: { apiClient } }) => {
-			const res = await getBusinessVenturesByCursorApi({
-				client: apiClient,
-				throwOnError: true,
-				query: {
-					...pagination,
-				},
-				path: {
-					id: businessId,
-				},
-			});
-
-			return res.data;
-		}
-	);
 
 export const getBusinessById = actionClientWithAccount
 	.schema(intIdSchema.required())

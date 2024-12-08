@@ -13,7 +13,7 @@ export const createRoundSchema = object<CreateRoundParams>()
 		percentageOffered: number().moreThan(0).lessThan(100).required(),
 		percentageValue: number().min(1).required(),
 		valueCurrency: currency.required(),
-		ventureId: number().min(1).required(),
+		businessId: number().min(1).required(),
 		description: string().min(10).max(3000).required(),
 		investorCount: number().min(1).required(),
 	})

@@ -37,7 +37,7 @@ export default async function RoundViewPage(props: { params: Promise<{ id: strin
     throw new Error("Something went wrong")
   }
 
-  const { venture: { business, ...venture }, ...round } = roundResp.data.round
+  const { business, ...round } = roundResp.data.round
 
   const accountResp = await getAccount();
   const account = accountResp?.data;
@@ -56,7 +56,7 @@ export default async function RoundViewPage(props: { params: Promise<{ id: strin
     <Card className="w-full relative max-w-screen-lg mx-auto">
       <CardHeader>
         <CardTitle className="flex flex-row items-center justify-between w-full">
-          Round for {venture.name}
+          Round for {business.displayName}
           <RoundViewActions roundId={round.id} isLiked={isLiked} />
         </CardTitle>
         <CardDescription>
@@ -74,7 +74,8 @@ export default async function RoundViewPage(props: { params: Promise<{ id: strin
             <Separator className="w-full" />
             <span className="text-lg font-semibold">Business Details</span>
             <BusinessOverview
-              overview={venture.overview}
+              //TODO: add overview
+              overview={"N/A"}
               teamSize={business.employeeCount!}
               businessId={business.id}
             />
@@ -82,9 +83,9 @@ export default async function RoundViewPage(props: { params: Promise<{ id: strin
             <span className="text-lg font-semibold">Round Description</span>
             <div className="flex flex-col items-start justify-start">
               <p>
-                {truncateText(venture.description, 350)}
+                {truncateText(round.description, 350)}
               </p>
-              {venture.description.length > 150 && (
+              {round.description.length > 150 && (
                 <Dialog>
                   <DialogTrigger asChild>
                     <Button variant="outline" size="sm" className="mt-4">

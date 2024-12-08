@@ -4,17 +4,8 @@ import Link from "next/link";
 import React from "react";
 import { ExploreNav } from "./(explore)/explore/components/layout/nav";
 import Image from "next/image";
-import { Category, Venture } from "@/lib/dev/types";
-import { VentureCard } from "./(explore)/explore/components/venture-card";
-import { categories, ventures } from "@/lib/dev/config";
 
-const getVenturesByCategory = (category: string): Venture[] => {
-  return ventures
-    .filter((venture) => venture.category === category)
-    .slice(0, 3) as Venture[];
-};
-
-export default function Home() {
+export default async function Home() {
   return (
     <div className="flex flex-col">
       <ExploreNav />
@@ -85,37 +76,7 @@ export default function Home() {
             </div>
           </div>
         </section>
-
-        <div className="flex flex-col space-y-6 py-6 max-w-6xl mx-auto">
-          {categories.map((category) => (
-            <VentureList key={category.label} category={category} />
-          ))}
-        </div>
       </div>
-    </div>
-  );
-}
-
-function VentureList({ category }: { category: Category }) {
-  return (
-    <div key={category.label} className="flex flex-col space-y-6">
-      <div className="space-y-2">
-        <h2 className="text-3xl font-semibold">{category.label}</h2>
-        <p className="text-lg text-neutral-500">{category.description}</p>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {getVenturesByCategory(category.label).map((venture) => (
-          <VentureCard key={venture.slug} venture={venture} />
-        ))}
-      </div>
-
-      <Link
-        href={category.href}
-        className={cn(buttonVariants({ variant: "outline" }), "w-fit mx-auto")}
-      >
-        View More {category.label} Ventures
-      </Link>
     </div>
   );
 }
