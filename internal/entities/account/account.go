@@ -15,6 +15,14 @@ type Account struct {
 	shared.Timestamps
 }
 
+type SafeAccount struct {
+	bun.BaseModel `bun:"table:accounts,alias:account"`
+	shared.IntegerID
+	FirstName string `json:"firstName"`
+	LastName  string `json:"lastName"`
+	shared.Timestamps
+}
+
 // CreateAccountParams contains the parameters for creating a new account.
 type CreateAccountParams struct {
 	UpdateAccountParams

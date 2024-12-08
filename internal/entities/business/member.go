@@ -1,6 +1,7 @@
 package business
 
 import (
+	"fundlevel/internal/entities/account"
 	"fundlevel/internal/entities/shared"
 
 	"github.com/uptrace/bun"
@@ -26,14 +27,27 @@ type BusinessMemberRole struct {
 	Permissions []RolePermission `json:"permissions" bun:"rel:has-many,join:id=role_id"`
 	shared.Timestamps
 }
+
 type BusinessMember struct {
 	bun.BaseModel `json:"-" bun:"business_members"`
-	BusinessId    int `bun:",pk"`
-	AccountId     int `bun:",pk"`
-	RoleId        int
+	BusinessId    int `json:"businessId" bun:",pk"`
+	AccountId     int `json:"accountId" bun:",pk"`
+	RoleId        int `json:"roleId"`
 
-	Role BusinessMemberRole `bun:"rel:has-one,join:role_id=id"`
 	shared.Timestamps
+}
+
+type BusinessMemberWithRole struct {
+	bun.BaseModel `json:"-" bun:"business_members,alias:business_member"`
+	BusinessMember
+	Role BusinessMemberRole `bun:"rel:has-one,join:role_id=id"`
+}
+
+type BusinessMemberWithRoleNameAndAccount struct {
+	bun.BaseModel `json:"-" bun:"business_members,alias:business_member"`
+	BusinessMember
+	Role    string              `json:"role" description:"The name of the role of the member"`
+	Account account.SafeAccount `json:"account" bun:"rel:has-one,join:account_id=id"`
 }
 
 type CreateBusinessMemberParams struct {

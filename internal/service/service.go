@@ -88,6 +88,8 @@ type BusinessService interface {
 
 	// GetTotalFunding gets the amount the business has successfully raised through rounds
 	GetTotalFunding(ctx context.Context, businessId int) (int, error)
+
+	GetMembersByPage(ctx context.Context, businessId int, pageSize int, page int) ([]business.BusinessMemberWithRoleNameAndAccount, int, error)
 }
 
 type InvestmentService interface {
@@ -148,6 +150,7 @@ type PermissionService interface {
 	CanManageBusinessStripe(ctx context.Context, accountId int, businessId int) (bool, error)
 	CanAccessBusinessStripeDashboard(ctx context.Context, accountId int, businessId int) (bool, error)
 	CanViewBusinessAnalytics(ctx context.Context, accountId int, businessId int) (bool, error)
+	CanViewBusinessMembers(ctx context.Context, accountId int, businessId int) (bool, error)
 
 	CanViewRoundAnalytics(ctx context.Context, accountId int, roundId int) (bool, error)
 	CanViewRoundInvestments(ctx context.Context, accountId int, roundId int) (bool, error)
