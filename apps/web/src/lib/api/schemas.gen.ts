@@ -158,6 +158,44 @@ export const BusinessSchema = {
     type: 'object'
 } as const;
 
+export const BusinessMemberWithRoleNameAndAccountSchema = {
+    additionalProperties: false,
+    properties: {
+        account: {
+            '$ref': '#/components/schemas/SafeAccount'
+        },
+        accountId: {
+            format: 'int64',
+            type: 'integer'
+        },
+        businessId: {
+            format: 'int64',
+            type: 'integer'
+        },
+        createdAt: {
+            format: 'date-time',
+            type: 'string'
+        },
+        deletedAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        },
+        role: {
+            type: 'string'
+        },
+        roleId: {
+            format: 'int64',
+            type: 'integer'
+        },
+        updatedAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        }
+    },
+    required: ['role', 'account', 'businessId', 'accountId', 'roleId', 'createdAt', 'updatedAt', 'deletedAt'],
+    type: 'object'
+} as const;
+
 export const BusinessParamsSchema = {
     additionalProperties: false,
     properties: {
@@ -827,6 +865,36 @@ export const GetLikeCountOutputBodySchema = {
     type: 'object'
 } as const;
 
+export const GetOffsetPaginatedBusinessMembersOutputBodySchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/GetOffsetPaginatedBusinessMembersOutputBody.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        hasMore: {
+            type: 'boolean'
+        },
+        members: {
+            items: {
+                '$ref': '#/components/schemas/BusinessMemberWithRoleNameAndAccount'
+            },
+            type: ['array', 'null']
+        },
+        message: {
+            type: 'string'
+        },
+        total: {
+            format: 'int64',
+            type: 'integer'
+        }
+    },
+    required: ['members', 'message', 'hasMore', 'total'],
+    type: 'object'
+} as const;
+
 export const GetOffsetPaginatedRoundInvestmentsOutputBodySchema = {
     additionalProperties: false,
     properties: {
@@ -1258,6 +1326,37 @@ export const RoundWithBusinessSchema = {
         }
     },
     required: ['business', 'businessId', 'beginsAt', 'endsAt', 'percentageOffered', 'percentageValue', 'valueCurrency', 'status', 'investorCount', 'buyIn', 'description', 'id', 'createdAt', 'updatedAt', 'deletedAt'],
+    type: 'object'
+} as const;
+
+export const SafeAccountSchema = {
+    additionalProperties: false,
+    properties: {
+        createdAt: {
+            format: 'date-time',
+            type: 'string'
+        },
+        deletedAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        },
+        firstName: {
+            type: 'string'
+        },
+        id: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
+        lastName: {
+            type: 'string'
+        },
+        updatedAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        }
+    },
+    required: ['firstName', 'lastName', 'id', 'createdAt', 'updatedAt', 'deletedAt'],
     type: 'object'
 } as const;
 

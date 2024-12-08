@@ -55,6 +55,17 @@ export const employeeCount = {
     _1000_: '1000+'
 } as const;
 
+export type BusinessMemberWithRoleNameAndAccount = {
+    account: SafeAccount;
+    accountId: number;
+    businessId: number;
+    createdAt: Date;
+    deletedAt: (Date) | null;
+    role: string;
+    roleId: number;
+    updatedAt: (Date) | null;
+};
+
 export type BusinessParams = {
     businessColour?: (string) | null;
     displayName: string;
@@ -316,6 +327,17 @@ export type GetLikeCountOutputBody = {
     message: string;
 };
 
+export type GetOffsetPaginatedBusinessMembersOutputBody = {
+    /**
+     * A URL to the JSON Schema for this object.
+     */
+    readonly $schema?: string;
+    hasMore: boolean;
+    members: Array<BusinessMemberWithRoleNameAndAccount> | null;
+    message: string;
+    total: number;
+};
+
 export type GetOffsetPaginatedRoundInvestmentsOutputBody = {
     /**
      * A URL to the JSON Schema for this object.
@@ -485,6 +507,15 @@ export type RoundWithBusiness = {
     status: 'active' | 'successful' | 'failed';
     updatedAt: (Date) | null;
     valueCurrency: 'usd' | 'gbp' | 'eur' | 'cad' | 'aud' | 'jpy';
+};
+
+export type SafeAccount = {
+    createdAt: Date;
+    deletedAt: (Date) | null;
+    firstName: string;
+    id: number;
+    lastName: string;
+    updatedAt: (Date) | null;
 };
 
 export type SimplifiedDailyAggregatedBusinessAnalytics = {
@@ -897,6 +928,20 @@ export type GetBusinessInvestmentsByPageData = {
 export type GetBusinessInvestmentsByPageResponse = (GetOffsetPaginatedRoundInvestmentsOutputBody);
 
 export type GetBusinessInvestmentsByPageError = (ErrorModel);
+
+export type GetBusinessMembersByPageData = {
+    path: {
+        id: number;
+    };
+    query?: {
+        page?: number;
+        pageSize?: number;
+    };
+};
+
+export type GetBusinessMembersByPageResponse = (GetOffsetPaginatedBusinessMembersOutputBody);
+
+export type GetBusinessMembersByPageError = (ErrorModel);
 
 export type GetBusinessRoundsByCursorData = {
     path: {
@@ -1456,6 +1501,55 @@ export type GetBusinessInvestmentsByPageResponseTransformer = (data: any) => Pro
 
 export const GetBusinessInvestmentsByPageResponseTransformer: GetBusinessInvestmentsByPageResponseTransformer = async (data) => {
     GetOffsetPaginatedRoundInvestmentsOutputBodyModelResponseTransformer(data);
+    return data;
+};
+
+export type GetBusinessMembersByPageResponseTransformer = (data: any) => Promise<GetBusinessMembersByPageResponse>;
+
+export type GetOffsetPaginatedBusinessMembersOutputBodyModelResponseTransformer = (data: any) => GetOffsetPaginatedBusinessMembersOutputBody;
+
+export type BusinessMemberWithRoleNameAndAccountModelResponseTransformer = (data: any) => BusinessMemberWithRoleNameAndAccount;
+
+export type SafeAccountModelResponseTransformer = (data: any) => SafeAccount;
+
+export const SafeAccountModelResponseTransformer: SafeAccountModelResponseTransformer = data => {
+    if (data?.createdAt) {
+        data.createdAt = new Date(data.createdAt);
+    }
+    if (data?.deletedAt) {
+        data.deletedAt = new Date(data.deletedAt);
+    }
+    if (data?.updatedAt) {
+        data.updatedAt = new Date(data.updatedAt);
+    }
+    return data;
+};
+
+export const BusinessMemberWithRoleNameAndAccountModelResponseTransformer: BusinessMemberWithRoleNameAndAccountModelResponseTransformer = data => {
+    if (data?.account) {
+        SafeAccountModelResponseTransformer(data.account);
+    }
+    if (data?.createdAt) {
+        data.createdAt = new Date(data.createdAt);
+    }
+    if (data?.deletedAt) {
+        data.deletedAt = new Date(data.deletedAt);
+    }
+    if (data?.updatedAt) {
+        data.updatedAt = new Date(data.updatedAt);
+    }
+    return data;
+};
+
+export const GetOffsetPaginatedBusinessMembersOutputBodyModelResponseTransformer: GetOffsetPaginatedBusinessMembersOutputBodyModelResponseTransformer = data => {
+    if (Array.isArray(data?.members)) {
+        data.members.forEach(BusinessMemberWithRoleNameAndAccountModelResponseTransformer);
+    }
+    return data;
+};
+
+export const GetBusinessMembersByPageResponseTransformer: GetBusinessMembersByPageResponseTransformer = async (data) => {
+    GetOffsetPaginatedBusinessMembersOutputBodyModelResponseTransformer(data);
     return data;
 };
 
