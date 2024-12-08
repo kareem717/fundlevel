@@ -1,3 +1,9 @@
+import { MemberTable } from "./components/members-table";
+
 export default function MembersPage() {
-  return <div>Members</div>
+  return (
+    <div>
+      <MemberTable />
+    </div>
+  );
 }
