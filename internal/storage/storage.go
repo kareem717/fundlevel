@@ -96,7 +96,7 @@ type BusinessRepository interface {
 	GetTotalFunding(ctx context.Context, businessId int) (int, error)
 
 	GetBusinessMember(ctx context.Context, businessId int, accountId int) (business.BusinessMemberWithRole, error)
-	GetMembersByPage(ctx context.Context, businessId int, paginationParams shared.OffsetPagination) ([]business.BusinessMemberWithRoleName, int, error)
+	GetMembersByPage(ctx context.Context, businessId int, paginationParams shared.OffsetPagination) ([]business.BusinessMemberWithRoleNameAndAccount, int, error)
 }
 
 type AnalyticRepository interface {
