@@ -98,7 +98,7 @@ type BusinessRepository interface {
 	GetBusinessMember(ctx context.Context, businessId int, accountId int) (business.BusinessMemberWithRole, error)
 	GetMembersByPage(ctx context.Context, businessId int, paginationParams shared.OffsetPagination) ([]business.BusinessMemberWithRoleNameAndAccount, int, error)
 
-	GetAllMemberRoles(ctx context.Context, businessId int) ([]business.BusinessMemberRole, error)
+	GetAllMemberRoles(ctx context.Context) ([]business.BusinessMemberRole, error)
 }
 
 type AnalyticRepository interface {

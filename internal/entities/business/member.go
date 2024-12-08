@@ -15,18 +15,35 @@ const (
 
 type RolePermission struct {
 	bun.BaseModel `bun:"business_member_role_permissions"`
-	RoleId        int                 `json:"roleId" minimum:"1"`
-	Value         RolePermissionValue `json:"value"`
+	shared.IntegerID
+	Value       RolePermissionValue `json:"value"`
+	Description string              `json:"description"`
 }
+
+type BusinessMemberRoleName string
+
+const (
+	BusinessMemberRoleNameOwner  BusinessMemberRoleName = "owner"
+	BusinessMemberRoleNameAdmin  BusinessMemberRoleName = "admin"
+	BusinessMemberRoleNameMember BusinessMemberRoleName = "member"
+)
 
 type BusinessMemberRole struct {
 	bun.BaseModel `bun:"business_member_roles"`
 
-	ID          int              `json:"id" bun:",pk"`
-	BusinessId  int              `json:"businessId"`
-	Name        string           `json:"name"`
-	Permissions []RolePermission `json:"permissions" bun:"rel:has-many,join:id=role_id"`
-	shared.Timestamps
+	shared.IntegerID
+	Name        BusinessMemberRoleName `json:"name"`
+	Description string                 `json:"description"`
+	// Many-to-many relationship with permissions through the assignments table
+	Permissions []RolePermission `json:"permissions" bun:"m2m:business_member_role_permission_assignments,join:Role=Permission"`
+}
+
+type BusinessMemberRolePermissionAssignment struct {
+	bun.BaseModel `bun:"business_member_role_permission_assignments"`
+	RoleID        int                 `json:"roleId" minimum:"1" bun:",pk"`
+	Role          *BusinessMemberRole `json:"role" bun:"rel:belongs-to,join:role_id=id"`
+	PermissionID  int                 `json:"permissionId" minimum:"1" bun:",pk"`
+	Permission    *RolePermission     `json:"permission" bun:"rel:belongs-to,join:permission_id=id"`
 }
 
 type BusinessMember struct {
@@ -35,20 +52,23 @@ type BusinessMember struct {
 	AccountId     int `json:"accountId" bun:",pk"`
 	RoleId        int `json:"roleId"`
 
+	// Define the belongs-to relationships
+	Role    *BusinessMemberRole  `json:"role" bun:"rel:belongs-to,join:role_id=id"`
+	Account *account.SafeAccount `json:"account" bun:"rel:belongs-to,join:account_id=id"`
 	shared.Timestamps
 }
 
 type BusinessMemberWithRole struct {
 	bun.BaseModel `json:"-" bun:"business_members,alias:business_member"`
 	BusinessMember
-	Role BusinessMemberRole `bun:"rel:has-one,join:role_id=id"`
+	Role BusinessMemberRole `json:"role" bun:"rel:belongs-to,join:role_id=id"`
 }
 
 type BusinessMemberWithRoleNameAndAccount struct {
 	bun.BaseModel `json:"-" bun:"business_members,alias:business_member"`
 	BusinessMember
 	Role    string              `json:"role" description:"The name of the role of the member"`
-	Account account.SafeAccount `json:"account" bun:"rel:has-one,join:account_id=id"`
+	Account account.SafeAccount `json:"account" bun:"rel:belongs-to,join:account_id=id"`
 }
 
 type CreateBusinessMemberParams struct {

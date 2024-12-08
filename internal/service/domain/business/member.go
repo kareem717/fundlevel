@@ -13,6 +13,6 @@ func (s *BusinessService) GetMembersByPage(ctx context.Context, businessId int, 
 	})
 }
 
-func (s *BusinessService) GetAllMemberRoles(ctx context.Context, businessId int) ([]business.BusinessMemberRole, error) {
-	return s.repositories.Business().GetAllMemberRoles(ctx, businessId)
+func (s *BusinessService) GetAllMemberRoles(ctx context.Context) ([]business.BusinessMemberRole, error) {
+	return s.repositories.Business().GetAllMemberRoles(ctx)
 }

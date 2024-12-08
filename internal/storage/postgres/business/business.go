@@ -3,6 +3,7 @@ package business
 import (
 	"context"
 	"errors"
+	"fmt"
 	"fundlevel/internal/entities/business"
 
 	"github.com/uptrace/bun"
@@ -30,48 +31,39 @@ func (r *BusinessRepository) Create(ctx context.Context, params business.CreateB
 			return err
 		}
 
-		businessOwnerRole := business.BusinessMemberRole{
-			Name: "Owner",
-			BusinessId: businessRecord.ID,
-		}
-
-		err = tx.NewInsert().
-			Model(&businessOwnerRole).
-			Column("name").
-			Column("business_id").
-			Returning("*").
-			Scan(ctx, &businessOwnerRole)
-		if err != nil {
-			return err
-		}
-
-		businessOwnerRolePermission := business.RolePermission{
-			RoleId: businessOwnerRole.ID,
-			Value:  business.RolePermissionValueBusinessFullAccess,
-		}
-
-		err = tx.NewInsert().
-			Model(&businessOwnerRolePermission).
-			Returning("*").
-			Scan(ctx, &businessOwnerRolePermission)
-		if err != nil {
-			return err
-		}
-
 		businessMember := business.BusinessMember{
 			BusinessId: businessRecord.ID,
 			AccountId:  params.InitialOwnerID,
-			RoleId:     businessOwnerRole.ID,
 		}
 
-		err = tx.NewInsert().
+		fmt.Println(tx.NewInsert().
 			Model(&businessMember).
 			Column("business_id").
 			Column("account_id").
 			Column("role_id").
+			Value("role_id", "(?)",
+				tx.NewSelect().
+					Model(&business.BusinessMemberRole{}).
+					Where("name = ?", business.BusinessMemberRoleNameOwner).
+					ColumnExpr("id"),
+			).
 			ModelTableExpr("business_members").
-			Returning("*").
-			Scan(ctx, &businessMember)
+			String())
+
+		_, err = tx.NewInsert().
+			Model(&businessMember).
+			Column("business_id").
+			Column("account_id").
+			Column("role_id").
+			Value("role_id", "(?)",
+				tx.NewSelect().
+					Model(&business.BusinessMemberRole{}).
+					Where("name = ?", business.BusinessMemberRoleNameOwner).
+					ColumnExpr("id"),
+			).
+			ModelTableExpr("business_members").
+			Exec(ctx)
+
 		if err != nil {
 			return err
 		}

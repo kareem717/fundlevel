@@ -444,23 +444,8 @@ type GetAllMemberRolesOutput struct {
 	} `json:"body"`
 }
 
-func (h *httpHandler) getAllMemberRoles(ctx context.Context, input *shared.PathIDParam) (*GetAllMemberRolesOutput, error) {
-	account := shared.GetAuthenticatedAccount(ctx)
-	authorized, err := h.service.PermissionService.CanViewBusinessMembers(ctx, account.ID, input.ID)
-	if err != nil {
-		h.logger.Error("failed to check if account can view business member roles", zap.Error(err))
-		return nil, huma.Error500InternalServerError("An error occurred while checking authorization")
-	}
-
-	if !authorized {
-		h.logger.Error("account is not authorized to view business member roles",
-			zap.Any("account id", account.ID),
-			zap.Any("business id", input.ID))
-
-		return nil, huma.Error403Forbidden("Account is not authorized to view business member roles")
-	}
-
-	roles, err := h.service.BusinessService.GetAllMemberRoles(ctx, input.ID)
+func (h *httpHandler) getAllMemberRoles(ctx context.Context, input *struct{}) (*GetAllMemberRolesOutput, error) {
+	roles, err := h.service.BusinessService.GetAllMemberRoles(ctx)
 	if err != nil {
 		h.logger.Error("failed to fetch member roles", zap.Error(err))
 		return nil, huma.Error500InternalServerError("An error occurred while fetching the member roles")
