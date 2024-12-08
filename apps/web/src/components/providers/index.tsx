@@ -1,15 +1,34 @@
-import React, { ReactNode } from "react";
-import NuqsProvider from "./nuqs-provider";
-import ThemeProvider from "./theme-provider";
-import { Toaster } from "sonner";
+import { FC, ReactNode } from "react";
+import { NuqsProvider, NuqsProviderProps } from "./nuqs-provider";
+import { ThemeProvider, ThemeProviderProps } from "./theme-provider";
+import { Toaster, ToasterProps } from "sonner";
+import { AuthProvider, AuthProviderProps } from "./auth-provider";
 
-export function Providers({ children }: { children: ReactNode }) {
+export interface ProvidersProps {
+  children: ReactNode;
+  nuqsProps?: NuqsProviderProps;
+  themeProps?: ThemeProviderProps;
+  toasterProps?: ToasterProps;
+  authProps?: AuthProviderProps;
+}
+
+export const Providers: FC<ProvidersProps> = ({
+  children,
+  nuqsProps,
+  themeProps,
+  toasterProps,
+  authProps,
+}) => {
   return (
-    <NuqsProvider>
-      <ThemeProvider>
-        {children}
-        <Toaster />
+    <NuqsProvider {...nuqsProps}>
+      <ThemeProvider {...themeProps}>
+        {authProps ? (
+          <AuthProvider {...authProps}>
+            {children}
+          </AuthProvider>
+        ) : children}
+        <Toaster {...toasterProps} />
       </ThemeProvider>
     </NuqsProvider>
   );
-}
+};

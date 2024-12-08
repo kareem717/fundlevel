@@ -43,10 +43,16 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={GeistSans.className}>
-      <body>
-        <Providers>{children}</Providers>
+    <html
+      lang="en"
+      className={GeistSans.className}
+      suppressHydrationWarning
+    >
+      <body >
+        <Providers>
+          {children}
+        </Providers>
       </body>
-    </html>
+    </html >
   );
 }
