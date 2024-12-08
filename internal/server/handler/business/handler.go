@@ -395,21 +395,20 @@ type GetOffsetPaginatedBusinessMembersOutput struct {
 }
 
 func (h *httpHandler) getMembersByPage(ctx context.Context, input *shared.GetOffsetPaginatedByParentPathIDInput) (*GetOffsetPaginatedBusinessMembersOutput, error) {
+	account := shared.GetAuthenticatedAccount(ctx)
+	authorized, err := h.service.PermissionService.CanViewBusinessMembers(ctx, account.ID, input.ID)
+	if err != nil {
+		h.logger.Error("failed to check if account can view business members", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while checking authorization")
+	}
 
-	// account := shared.GetAuthenticatedAccount(ctx)
-	// authorized, err := h.service.PermissionService.CanAccessBusinessInvestments(ctx, account.ID, business.ID)
-	// if err != nil {
-	// 	h.logger.Error("failed to check if account can access business investments", zap.Error(err))
-	// 	return nil, huma.Error500InternalServerError("An error occurred while checking authorization")
-	// }
+	if !authorized {
+		h.logger.Error("account is not authorized to view business members",
+			zap.Any("account id", account.ID),
+			zap.Any("business id", input.ID))
 
-	// if !authorized {
-	// 	h.logger.Error("account is not authorized to access business investments",
-	// 		zap.Any("account id", account.ID),
-	// 		zap.Any("business id", business.ID))
-
-	// 	return nil, huma.Error403Forbidden("Account is not authorized to access business investments")
-	// }
+		return nil, huma.Error403Forbidden("Account is not authorized to view business members")
+	}
 
 	members, total, err := h.service.BusinessService.GetMembersByPage(ctx, input.ID, input.PageSize, input.Page)
 	if err != nil {

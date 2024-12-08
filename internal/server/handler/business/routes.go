@@ -182,5 +182,16 @@ func RegisterHumaRoutes(
 		Summary:     "Get business members",
 		Description: "Get business members.",
 		Tags:        []string{"Businesses", "Members"},
+		Security: []map[string][]string{
+			{"bearerAuth": {}},
+		},
+		Middlewares: huma.Middlewares{
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
+			},
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithAccount(humaApi)(ctx, next, logger, service)
+			},
+		},
 	}, handler.getMembersByPage)
 }
