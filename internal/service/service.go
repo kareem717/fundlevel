@@ -88,6 +88,8 @@ type BusinessService interface {
 
 	// GetTotalFunding gets the amount the business has successfully raised through rounds
 	GetTotalFunding(ctx context.Context, businessId int) (int, error)
+
+	GetMembersByPage(ctx context.Context, businessId int, pageSize int, page int) ([]business.BusinessMemberWithRoleName, int, error)
 }
 
 type InvestmentService interface {

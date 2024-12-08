@@ -383,4 +383,58 @@ func (h *httpHandler) getStripeDashboardURL(ctx context.Context, input *shared.P
 	resp.Body.URL = url
 
 	return resp, nil
+
+}
+
+type GetOffsetPaginatedBusinessMembersOutput struct {
+	Body struct {
+		shared.MessageResponse
+		Members []business.BusinessMemberWithRoleName `json:"members"`
+		shared.OffsetPaginationResponse
+	} `json:"body"`
+}
+
+func (h *httpHandler) getMembersByPage(ctx context.Context, input *shared.GetOffsetPaginatedByParentPathIDInput) (*GetOffsetPaginatedBusinessMembersOutput, error) {
+
+	// account := shared.GetAuthenticatedAccount(ctx)
+	// authorized, err := h.service.PermissionService.CanAccessBusinessInvestments(ctx, account.ID, business.ID)
+	// if err != nil {
+	// 	h.logger.Error("failed to check if account can access business investments", zap.Error(err))
+	// 	return nil, huma.Error500InternalServerError("An error occurred while checking authorization")
+	// }
+
+	// if !authorized {
+	// 	h.logger.Error("account is not authorized to access business investments",
+	// 		zap.Any("account id", account.ID),
+	// 		zap.Any("business id", business.ID))
+
+	// 	return nil, huma.Error403Forbidden("Account is not authorized to access business investments")
+	// }
+
+	members, total, err := h.service.BusinessService.GetMembersByPage(ctx, input.ID, input.PageSize, input.Page)
+	if err != nil {
+		h.logger.Error("failed to fetch members", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while fetching the members")
+	}
+
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("members not found")
+		default:
+			h.logger.Error("failed to fetch members", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the members")
+		}
+	}
+
+	resp := &GetOffsetPaginatedBusinessMembersOutput{}
+	resp.Body.Message = "Members fetched successfully"
+	resp.Body.Members = members
+	resp.Body.Total = total
+	if len(members) > input.PageSize {
+		resp.Body.HasMore = true
+		resp.Body.Members = resp.Body.Members[:len(resp.Body.Members)-1]
+	}
+
+	return resp, nil
 }
