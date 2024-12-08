@@ -37,6 +37,7 @@ type BusinessMember struct {
 }
 
 type BusinessMemberWithRole struct {
+	bun.BaseModel `json:"-" bun:"business_members,alias:business_member"`
 	BusinessMember
 	Role BusinessMemberRole `bun:"rel:has-one,join:role_id=id"`
 }
