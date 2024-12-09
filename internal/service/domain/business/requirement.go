@@ -11,9 +11,17 @@ func (s *BusinessService) GetRoundCreateRequirements(ctx context.Context, busine
 		return business.RoundCreateRequirements{}, err
 	}
 
-	return business.RoundCreateRequirements{
+	req := business.RoundCreateRequirements{
 		LegalSection:   businessRecord.BusinessLegalSectionID != nil,
 		AddressSection: businessRecord.AddressID != nil,
-		StripeAccount:  businessRecord.StripeAccount != nil,
-	}, nil
+	}
+
+	if businessRecord.StripeAccount != nil {
+		req.StripeAccount =
+			businessRecord.StripeAccount.StripePayoutsEnabled &&
+				businessRecord.StripeAccount.StripeTransfersEnabled &&
+				businessRecord.StripeAccount.StripeDisabledReason == nil
+	}
+
+	return req, nil
 }
