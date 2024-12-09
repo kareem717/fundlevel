@@ -10,27 +10,7 @@ export type Account = {
     userId: string;
 };
 
-export type Address = {
-    city: string;
-    country: string;
-    createdAt: Date;
-    deletedAt: (Date) | null;
-    district: string;
-    fullAddress: string;
-    id: number;
-    line1: string;
-    line2: string;
-    postalCode: string;
-    rawJson: unknown;
-    region: string;
-    regionCode: string;
-    updatedAt: (Date) | null;
-    xCoordinate: number;
-    yCoordinate: number;
-};
-
 export type Business = {
-    address: Address;
     businessColour: string;
     businessLegalSectionId?: (number) | null;
     createdAt: Date;
@@ -495,7 +475,6 @@ export const status = {
 } as const;
 
 export type RoundCreateRequirements = {
-    addressSection: boolean;
     legalSection: boolean;
     stripeAccount: boolean;
 };
@@ -1353,21 +1332,6 @@ export type GetBusinessesOutputBodyModelResponseTransformer = (data: any) => Get
 
 export type BusinessModelResponseTransformer = (data: any) => Business;
 
-export type AddressModelResponseTransformer = (data: any) => Address;
-
-export const AddressModelResponseTransformer: AddressModelResponseTransformer = data => {
-    if (data?.createdAt) {
-        data.createdAt = new Date(data.createdAt);
-    }
-    if (data?.deletedAt) {
-        data.deletedAt = new Date(data.deletedAt);
-    }
-    if (data?.updatedAt) {
-        data.updatedAt = new Date(data.updatedAt);
-    }
-    return data;
-};
-
 export type IndustryModelResponseTransformer = (data: any) => Industry;
 
 export const IndustryModelResponseTransformer: IndustryModelResponseTransformer = data => {
@@ -1399,9 +1363,6 @@ export const BusinessStripeAccountModelResponseTransformer: BusinessStripeAccoun
 };
 
 export const BusinessModelResponseTransformer: BusinessModelResponseTransformer = data => {
-    if (data?.address) {
-        AddressModelResponseTransformer(data.address);
-    }
     if (data?.createdAt) {
         data.createdAt = new Date(data.createdAt);
     }

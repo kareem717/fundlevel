@@ -45,73 +45,9 @@ export const AccountSchema = {
     type: 'object'
 } as const;
 
-export const AddressSchema = {
-    additionalProperties: false,
-    properties: {
-        city: {
-            type: 'string'
-        },
-        country: {
-            type: 'string'
-        },
-        createdAt: {
-            format: 'date-time',
-            type: 'string'
-        },
-        deletedAt: {
-            format: 'date-time',
-            type: ['string', 'null']
-        },
-        district: {
-            type: 'string'
-        },
-        fullAddress: {
-            type: 'string'
-        },
-        id: {
-            format: 'int64',
-            minimum: 1,
-            type: 'integer'
-        },
-        line1: {
-            type: 'string'
-        },
-        line2: {
-            type: 'string'
-        },
-        postalCode: {
-            type: 'string'
-        },
-        rawJson: {},
-        region: {
-            type: 'string'
-        },
-        regionCode: {
-            type: 'string'
-        },
-        updatedAt: {
-            format: 'date-time',
-            type: ['string', 'null']
-        },
-        xCoordinate: {
-            format: 'double',
-            type: 'number'
-        },
-        yCoordinate: {
-            format: 'double',
-            type: 'number'
-        }
-    },
-    required: ['id', 'xCoordinate', 'yCoordinate', 'line1', 'line2', 'city', 'region', 'postalCode', 'country', 'rawJson', 'district', 'regionCode', 'fullAddress', 'createdAt', 'updatedAt', 'deletedAt'],
-    type: 'object'
-} as const;
-
 export const BusinessSchema = {
     additionalProperties: false,
     properties: {
-        address: {
-            '$ref': '#/components/schemas/Address'
-        },
         businessColour: {
             type: 'string'
         },
@@ -159,7 +95,7 @@ export const BusinessSchema = {
             type: ['string', 'null']
         }
     },
-    required: ['address', 'stripeAccount', 'businessColour', 'displayName', 'foundingDate', 'industries', 'id', 'createdAt', 'updatedAt', 'deletedAt'],
+    required: ['stripeAccount', 'businessColour', 'displayName', 'foundingDate', 'industries', 'id', 'createdAt', 'updatedAt', 'deletedAt'],
     type: 'object'
 } as const;
 
@@ -1308,9 +1244,6 @@ export const RoundSchema = {
 export const RoundCreateRequirementsSchema = {
     additionalProperties: false,
     properties: {
-        addressSection: {
-            type: 'boolean'
-        },
         legalSection: {
             type: 'boolean'
         },
@@ -1318,7 +1251,7 @@ export const RoundCreateRequirementsSchema = {
             type: 'boolean'
         }
     },
-    required: ['legalSection', 'addressSection', 'stripeAccount'],
+    required: ['legalSection', 'stripeAccount'],
     type: 'object'
 } as const;
 
