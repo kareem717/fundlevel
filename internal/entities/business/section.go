@@ -10,5 +10,5 @@ type BusinessLegalSection struct {
 	bun.BaseModel `bun:"table:business_legal_section"`
 	shared.IntegerID
 	BusinessNumber string `json:"businessNumber"`
-	shared.Timestamps
+	shared.BasicTimestamps
 }
