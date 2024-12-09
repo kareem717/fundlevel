@@ -93,6 +93,8 @@ type BusinessService interface {
 
 	GetMembersByPage(ctx context.Context, businessId int, pageSize int, page int) ([]business.BusinessMemberWithRoleNameAndAccount, int, error)
 	GetAllMemberRoles(ctx context.Context) ([]business.BusinessMemberRole, error)
+
+	GetRoundCreateRequirements(ctx context.Context, businessId int) (business.RoundCreateRequirements, error)
 }
 
 type InvestmentService interface {
