@@ -60,8 +60,19 @@ func (i *CreateRoundInput) Resolve(ctx huma.Context) []error {
 }
 
 func (h *httpHandler) create(ctx context.Context, input *CreateRoundInput) (*shared.SingleRoundResponse, error) {
+	business, err := h.service.BusinessService.GetById(ctx, input.Body.BusinessID)
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("Business not found")
+		default:
+			h.logger.Error("failed to fetch business", zap.Error(err), zap.Int("business_id", input.Body.BusinessID))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the business")
+		}
+	}
+
 	account := shared.GetAuthenticatedAccount(ctx)
-	authorized, err := h.service.PermissionService.CanCreateRound(ctx, account.ID, input.Body.BusinessID)
+	authorized, err := h.service.PermissionService.CanAccountCreateRound(ctx, account.ID, input.Body.BusinessID)
 	if err != nil {
 		h.logger.Error("failed to check if account can create round", zap.Error(err), zap.Int("business_id", input.Body.BusinessID), zap.Int("account_id", account.ID))
 		return nil, huma.Error500InternalServerError("An error occurred while checking if the account can create the round")
@@ -70,7 +81,18 @@ func (h *httpHandler) create(ctx context.Context, input *CreateRoundInput) (*sha
 	if !authorized {
 		h.logger.Error("account does not have permission to create round", zap.Int("business_id", input.Body.BusinessID), zap.Int("account_id", account.ID))
 
-		return nil, huma.Error403Forbidden("Unauthorized to create round")
+		return nil, huma.Error403Forbidden("Account does not have permission to create round")
+	}
+
+	authorized, err = h.service.PermissionService.CanBusinessCreateRound(ctx, &business)
+	if err != nil {
+		h.logger.Error("failed to check if business can create round", zap.Error(err), zap.Int("business_id", input.Body.BusinessID))
+		return nil, huma.Error500InternalServerError("An error occurred while checking if the business can create the round")
+	}
+
+	if !authorized {
+		h.logger.Error("business does not have permission to create round", zap.Int("business_id", input.Body.BusinessID))
+		return nil, huma.Error403Forbidden("Business does not have permission to create round")
 	}
 
 	round, err := h.service.RoundService.Create(ctx, input.Body)
