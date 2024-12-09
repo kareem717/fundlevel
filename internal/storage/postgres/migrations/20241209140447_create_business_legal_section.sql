@@ -5,7 +5,7 @@ CREATE TABLE
         id serial PRIMARY KEY,
         business_number TEXT NOT NULL UNIQUE,
         created_at timestamptz NOT NULL DEFAULT CLOCK_TIMESTAMP(),
-        updated_at timestamptz,
+        updated_at timestamptz
     );
 
 CREATE TRIGGER sync_business_legal_section_updated_at BEFORE
