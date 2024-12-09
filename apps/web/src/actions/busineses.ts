@@ -14,8 +14,12 @@ import {
 	onboardStripeConnectedAccount as onboardStripeConnectedAccountApi,
 	getStripeDashboardUrl as getStripeDashboardUrlApi,
 	getBusinessStripeAccount as getBusinessStripeAccountApi,
+	upsertBusinessLegalSection as upsertBusinessLegalSectionApi,
 } from "@/lib/api";
-import { createBusinessSchema } from "@/actions/validations/business";
+import {
+	createBusinessSchema,
+	upsertBusinessLegalSectionSchema,
+} from "@/actions/validations/business";
 import {
 	intIdSchema,
 	offsetPaginationSchema,
@@ -233,3 +237,26 @@ export const getBusinessStripeAccount = actionClientWithAccount
 
 		return res.data;
 	});
+
+export const upsertBusinessLegalSection = actionClientWithAccount
+	.schema(
+		object().shape({
+			id: intIdSchema.required(),
+			upsertBusinessLegalSectionSchema,
+		})
+	)
+	.action(
+		async ({
+			parsedInput: { id, upsertBusinessLegalSectionSchema },
+			ctx: { apiClient },
+		}) => {
+			await upsertBusinessLegalSectionApi({
+				client: apiClient,
+				throwOnError: true,
+				path: { id },
+				body: {
+					...upsertBusinessLegalSectionSchema,
+				},
+			});
+		}
+	);

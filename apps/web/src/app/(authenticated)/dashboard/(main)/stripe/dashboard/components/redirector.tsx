@@ -34,7 +34,11 @@ export const StripeDashboardRedirector: FC<StripeDashboardRedirectorProps> = ({ 
 
   const { execute: getStripeAccount } = useAction(getBusinessStripeAccount, {
     onSuccess: ({ data }) => {
-      setStripeAccount(data);
+      if (data?.stripeAccount) {
+        setStripeAccount(data.stripeAccount);
+      } else {
+        toast.error("Failed to get Stripe account settings link");
+      }
     },
     onError: () => {
       toast.error("Failed to get Stripe account settings link");

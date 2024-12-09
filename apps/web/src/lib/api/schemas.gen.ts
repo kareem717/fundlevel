@@ -51,6 +51,9 @@ export const BusinessSchema = {
         businessColour: {
             type: 'string'
         },
+        businessLegalSection: {
+            '$ref': '#/components/schemas/BusinessLegalSection'
+        },
         businessLegalSectionId: {
             format: 'int64',
             minimum: 1,
@@ -95,7 +98,31 @@ export const BusinessSchema = {
             type: ['string', 'null']
         }
     },
-    required: ['stripeAccount', 'businessColour', 'displayName', 'foundingDate', 'industries', 'id', 'createdAt', 'updatedAt', 'deletedAt'],
+    required: ['stripeAccount', 'businessLegalSection', 'businessColour', 'displayName', 'foundingDate', 'industries', 'id', 'createdAt', 'updatedAt', 'deletedAt'],
+    type: 'object'
+} as const;
+
+export const BusinessLegalSectionSchema = {
+    additionalProperties: false,
+    properties: {
+        businessNumber: {
+            type: 'string'
+        },
+        createdAt: {
+            format: 'date-time',
+            type: 'string'
+        },
+        id: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
+        updatedAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        }
+    },
+    required: ['businessNumber', 'id', 'createdAt', 'updatedAt'],
     type: 'object'
 } as const;
 

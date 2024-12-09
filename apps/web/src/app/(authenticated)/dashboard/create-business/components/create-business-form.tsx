@@ -52,7 +52,7 @@ export const CreateBusinessForm = ({ className, ...props }: CreateBusinessFormPr
     }
   })
 
-  const { executeAsync } = useAction(createBusiness, {
+  const { executeAsync, isExecuting } = useAction(createBusiness, {
     onSuccess: () => {
       form.reset()
       toast.success("Done!", {
@@ -68,6 +68,8 @@ export const CreateBusinessForm = ({ className, ...props }: CreateBusinessFormPr
   })
 
   const onSubmit = async (values: InferType<typeof createBusinessSchema>) => {
+    if (isExecuting) return
+
     const res = await executeAsync(values)
     if (res?.serverError || res?.validationErrors) {
       return new Error("Something went wrong")
@@ -183,7 +185,10 @@ export const CreateBusinessForm = ({ className, ...props }: CreateBusinessFormPr
           )}
         />
 
-        <Button type="submit">Create Business</Button>
+        <Button type="submit" disabled={isExecuting}>
+          {isExecuting && <Icons.spinner className="w-4 h-4 animate-spin" />}
+          Create Business
+        </Button>
       </form>
     </Form>
   )

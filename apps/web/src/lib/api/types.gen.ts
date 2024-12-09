@@ -12,6 +12,7 @@ export type Account = {
 
 export type Business = {
     businessColour: string;
+    businessLegalSection: BusinessLegalSection;
     businessLegalSectionId?: (number) | null;
     createdAt: Date;
     deletedAt: (Date) | null;
@@ -35,6 +36,13 @@ export const employeeCount = {
     _501_1000: '501-1000',
     _1000_: '1000+'
 } as const;
+
+export type BusinessLegalSection = {
+    businessNumber: string;
+    createdAt: Date;
+    id: number;
+    updatedAt: (Date) | null;
+};
 
 export type BusinessMemberRole = {
     description: string;
@@ -1332,6 +1340,18 @@ export type GetBusinessesOutputBodyModelResponseTransformer = (data: any) => Get
 
 export type BusinessModelResponseTransformer = (data: any) => Business;
 
+export type BusinessLegalSectionModelResponseTransformer = (data: any) => BusinessLegalSection;
+
+export const BusinessLegalSectionModelResponseTransformer: BusinessLegalSectionModelResponseTransformer = data => {
+    if (data?.createdAt) {
+        data.createdAt = new Date(data.createdAt);
+    }
+    if (data?.updatedAt) {
+        data.updatedAt = new Date(data.updatedAt);
+    }
+    return data;
+};
+
 export type IndustryModelResponseTransformer = (data: any) => Industry;
 
 export const IndustryModelResponseTransformer: IndustryModelResponseTransformer = data => {
@@ -1363,6 +1383,9 @@ export const BusinessStripeAccountModelResponseTransformer: BusinessStripeAccoun
 };
 
 export const BusinessModelResponseTransformer: BusinessModelResponseTransformer = data => {
+    if (data?.businessLegalSection) {
+        BusinessLegalSectionModelResponseTransformer(data.businessLegalSection);
+    }
     if (data?.createdAt) {
         data.createdAt = new Date(data.createdAt);
     }
