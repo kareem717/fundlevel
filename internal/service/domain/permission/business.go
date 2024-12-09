@@ -269,3 +269,39 @@ func (s *PermissionService) CanViewBusinessMemberRoles(ctx context.Context, acco
 
 	return false, nil
 }
+
+func (s *PermissionService) CanBusinessCreateRound(ctx context.Context, businessProp *business.Business) (bool, error) {
+	if businessProp == nil {
+		return false, errors.New("business is nil")
+	}
+
+	if businessProp.Status == business.BusinessStatusActive {
+		return true, nil
+	}
+
+	return false, nil
+}
+
+func (s *PermissionService) CanAccountCreateRound(ctx context.Context, accountId int, businessId int) (bool, error) {
+	if accountId == 0 {
+		return false, errors.New("account id is 0")
+	}
+
+	if businessId == 0 {
+		return false, errors.New("business id is 0")
+	}
+
+	member, err := s.repo.Business().GetBusinessMember(ctx, businessId, accountId)
+	if err != nil {
+		return false, err
+	}
+
+	for _, permission := range member.Role.Permissions {
+		switch permission.Value {
+		case business.RolePermissionValueBusinessFullAccess:
+			return true, nil
+		}
+	}
+
+	return false, nil
+}

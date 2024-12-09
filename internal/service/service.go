@@ -154,8 +154,9 @@ type PermissionService interface {
 	CanViewBusinessMembers(ctx context.Context, accountId int, businessId int) (bool, error)
 	CanViewRoundAnalytics(ctx context.Context, accountId int, roundId int) (bool, error)
 	CanViewRoundInvestments(ctx context.Context, accountId int, roundId int) (bool, error)
-	CanCreateRound(ctx context.Context, accountId int, businessId int) (bool, error)
 	CanDeleteRound(ctx context.Context, accountId int, roundId int) (bool, error)
+	CanBusinessCreateRound(ctx context.Context, business *business.Business) (bool, error)
+	CanAccountCreateRound(ctx context.Context, accountId int, businessId int) (bool, error)
 
 	CanCreateBusiness(ctx context.Context, account account.Account) (bool, error)
 }
