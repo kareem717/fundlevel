@@ -79,6 +79,8 @@ type BusinessService interface {
 	UpdateStripeAccount(ctx context.Context, businessId int, params business.UpdateBusinessStripeAccountParams) (business.BusinessStripeAccount, error)
 	GetStripeConnectedAccountDashboardURL(ctx context.Context, accountID string) (string, error)
 
+	CreateBusinessLegalSection(ctx context.Context, businessId int, params business.CreateBusinessLegalSectionParams) error
+
 	GetRoundsByPage(ctx context.Context, businessId int, pageSize int, page int, filter round.RoundFilter) ([]round.Round, int, error)
 	GetRoundsByCursor(ctx context.Context, businessId int, limit int, cursor int, filter round.RoundFilter) ([]round.Round, error)
 
@@ -157,6 +159,7 @@ type PermissionService interface {
 	CanDeleteRound(ctx context.Context, accountId int, roundId int) (bool, error)
 	CanBusinessCreateRound(ctx context.Context, business *business.Business) (bool, error)
 	CanAccountCreateRound(ctx context.Context, accountId int, businessId int) (bool, error)
+	CanManageBusinessLegalSection(ctx context.Context, accountId int, businessId int) (bool, error)
 
 	CanCreateBusiness(ctx context.Context, account account.Account) (bool, error)
 }
