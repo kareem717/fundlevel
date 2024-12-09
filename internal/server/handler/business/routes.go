@@ -207,7 +207,7 @@ func RegisterHumaRoutes(
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "create-business-legal-section",
 		Method:      http.MethodPost,
-		Path:        "/business/{id}/legal-section",
+		Path:        "/business/{id}/sections/legal",
 		Summary:     "Create business legal section",
 		Description: "Create business legal section.",
 		Tags:        []string{"Businesses", "Legal Section"},
@@ -223,4 +223,24 @@ func RegisterHumaRoutes(
 			},
 		},
 	}, handler.createBusinessLegalSection)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-business-round-create-requirements",
+		Method:      http.MethodGet,
+		Path:        "/business/{id}/requirements/round-create",
+		Summary:     "Get round create requirements",
+		Description: "Get round create requirements.",
+		Tags:        []string{"Businesses", "Rounds"},
+		Security: []map[string][]string{
+			{"bearerAuth": {}},
+		},
+		Middlewares: huma.Middlewares{
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
+			},
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithAccount(humaApi)(ctx, next, logger, service)
+			},
+		},
+	}, handler.getRoundCreateRequirements)
 }

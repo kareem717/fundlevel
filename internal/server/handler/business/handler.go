@@ -506,3 +506,49 @@ func (h *httpHandler) createBusinessLegalSection(ctx context.Context, input *Cre
 
 	return resp, nil
 }
+
+type GetRoundCreateRequirementsOutput struct {
+	Body struct {
+		shared.MessageResponse
+		Requirements business.RoundCreateRequirements `json:"requirements"`
+	} `json:"body"`
+}
+
+func (h *httpHandler) getRoundCreateRequirements(ctx context.Context, input *shared.PathIDParam) (*GetRoundCreateRequirementsOutput, error) {
+	_, err := h.service.BusinessService.GetById(ctx, input.ID)	
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, huma.Error404NotFound("Business not found")
+		}
+
+		h.logger.Error("failed to fetch business", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while fetching the business")
+	}
+
+	account := shared.GetAuthenticatedAccount(ctx)
+	authorized, err := h.service.PermissionService.CanAccountCreateRound(ctx, account.ID, input.ID)
+	if err != nil {
+		h.logger.Error("failed to check if account can create round", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while checking authorization")
+	}
+
+	if !authorized {
+		h.logger.Error("account is not authorized to create round",
+			zap.Any("account id", account.ID),
+			zap.Any("business id", input.ID))
+
+		return nil, huma.Error403Forbidden("Account is not authorized to create round")
+	}
+
+	requirements, err := h.service.BusinessService.GetRoundCreateRequirements(ctx, input.ID)
+	if err != nil {
+		h.logger.Error("failed to fetch round create requirements", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while fetching the round create requirements")
+	}
+
+	resp := &GetRoundCreateRequirementsOutput{}
+	resp.Body.Message = "Round create requirements fetched successfully"
+	resp.Body.Requirements = requirements
+
+	return resp, nil
+}
