@@ -42,7 +42,7 @@ export const StripeDashboardRedirector: FC<StripeDashboardRedirectorProps> = ({ 
         ) : hasErrored ? (
           "Failed to load Stripe dashboard"
         ) : (
-          "Go to Stripe Dashboard"
+          "Go to Dashboard"
         )}
       </Button>
     </div>

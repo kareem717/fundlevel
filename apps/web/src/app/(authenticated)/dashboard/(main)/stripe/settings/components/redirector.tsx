@@ -9,9 +9,11 @@ import { useBusinessContext } from '../../../components/business-context';
 import { Button } from '@/components/ui/button';
 import { Icons } from '@/components/icons';
 
-export interface StripeSettingsRedirectorProps extends ComponentPropsWithoutRef<'div'> { }
+export interface StripeSettingsRedirectorProps extends ComponentPropsWithoutRef<'button'> {
+  text?: string;
+}
 
-export const StripeSettingsRedirector: FC<StripeSettingsRedirectorProps> = ({ className, ...props }) => {
+export const StripeSettingsRedirector: FC<StripeSettingsRedirectorProps> = ({ className, text, ...props }) => {
   const router = useRouter();
   const { currentBusiness } = useBusinessContext();
 
@@ -38,19 +40,17 @@ export const StripeSettingsRedirector: FC<StripeSettingsRedirectorProps> = ({ cl
   }
 
   return (
-    <div className={className} {...props}>
-      <Button disabled={isExecuting} onClick={handleClick}>
-        {isExecuting ? (
-          <>
-            <Icons.spinner className="mr-2 animate-spin" />
-            Redirecting to Stripe...
-          </>
-        ) : hasErrored ? (
-          "Failed to get Stripe account settings link"
-        ) : (
-          "Complete Stripe onboarding"
-        )}
-      </Button>
-    </div>
+    <Button disabled={isExecuting} onClick={handleClick} className={className} {...props}>
+      {isExecuting ? (
+        <>
+          <Icons.spinner className="mr-2 animate-spin" />
+          Redirecting...
+        </>
+      ) : hasErrored ? (
+        "Failed to get link. Please try again."
+      ) : (
+        text || "Complete Stripe onboarding"
+      )}
+    </Button>
   );
 };
