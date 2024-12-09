@@ -10,7 +10,7 @@ CREATE TABLE
 
 CREATE TRIGGER sync_business_legal_section_updated_at BEFORE
 UPDATE ON business_legal_section FOR EACH ROW
-EXECUTE PROCEDURE sync_updated_at_column ();
+EXECUTE PROCEDURE sync_updated_at_column_simple ();
 
 ALTER TABLE businesses
 ADD COLUMN business_legal_section_id INT REFERENCES business_legal_section (id);
