@@ -33,16 +33,18 @@ type Business struct {
 	bun.BaseModel `bun:"table:businesses"`
 	shared.IntegerID
 
-	Address       *address.Address       `json:"address" bun:"rel:has-one,join:address_id=id"`
-	StripeAccount *BusinessStripeAccount `json:"stripeAccount" bun:"rel:has-one,join:id=business_id"`
+	Address              *address.Address       `json:"address" bun:"rel:has-one,join:address_id=id"`
+	StripeAccount        *BusinessStripeAccount `json:"stripeAccount" bun:"rel:has-one,join:id=business_id"`
+	// BusinessLegalSection *BusinessLegalSection  `json:"businessLegalSection" bun:"rel:has-one,join:business_legal_section_id=id"`
 
-	BusinessColour string               `json:"businessColour"`
-	DisplayName    string               `json:"displayName" minLength:"1"`
-	FoundingDate   time.Time            `json:"foundingDate" format:"date-time"`
-	Status         BusinessStatus      `json:"status" hidden:"true" required:"false"`
-	AddressID      *int                 `json:"addressId" minimum:"1" hidden:"true" required:"false"`
-	EmployeeCount  EmployeeCountRange  `json:"employeeCount" enum:"1,2-10,11-50,51-200,201-500,501-1000,1000+" required:"false"`
-	Industries     []industry.Industry `json:"industries" bun:"m2m:business_industries,join:Business=Industry"`
+	BusinessLegalSectionID *int                `json:"businessLegalSectionId" minimum:"1" required:"false"`
+	BusinessColour         string              `json:"businessColour"`
+	DisplayName            string              `json:"displayName" minLength:"1"`
+	FoundingDate           time.Time           `json:"foundingDate" format:"date-time"`
+	Status                 BusinessStatus      `json:"status" hidden:"true" required:"false"`
+	AddressID              *int                `json:"addressId" minimum:"1" hidden:"true" required:"false"`
+	EmployeeCount          EmployeeCountRange  `json:"employeeCount" enum:"1,2-10,11-50,51-200,201-500,501-1000,1000+" required:"false"`
+	Industries             []industry.Industry `json:"industries" bun:"m2m:business_industries,join:Business=Industry"`
 	shared.Timestamps
 }
 
