@@ -43,6 +43,12 @@ func (s *BusinessService) Create(ctx context.Context, params business.CreateBusi
 					Payments: stripe.String("application"),
 				},
 			},
+			Capabilities: &stripe.AccountCapabilitiesParams{
+				Transfers: &stripe.AccountCapabilitiesTransfersParams{Requested: stripe.Bool(true)},
+			},
+			TOSAcceptance: &stripe.AccountTOSAcceptanceParams{
+				ServiceAgreement: stripe.String("full"),
+			},
 		})
 		if err != nil {
 			return err
