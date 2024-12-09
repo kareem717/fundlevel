@@ -3,10 +3,11 @@
 import { getStripeAccountSettingsLink } from '@/actions/busineses';
 import { useAction } from 'next-safe-action/hooks';
 import { useRouter } from 'next/navigation';
-import { FC, ComponentPropsWithoutRef, useEffect } from 'react';
+import { FC, ComponentPropsWithoutRef } from 'react';
 import { toast } from 'sonner';
 import { useBusinessContext } from '../../../components/business-context';
-import { env } from '@/env';
+import { Button } from '@/components/ui/button';
+import { Icons } from '@/components/icons';
 
 export interface StripeSettingsRedirectorProps extends ComponentPropsWithoutRef<'div'> { }
 
@@ -27,22 +28,29 @@ export const StripeSettingsRedirector: FC<StripeSettingsRedirectorProps> = ({ cl
     }
   })
 
-  useEffect(() => {
+  const handleClick = () => {
     execute({
       id: currentBusiness.id,
       //TODO: this is just for local testing
       refreshURL: "https://fundlevel.app",
       returnURL: "https://fundlevel.app",
     });
-  }, [execute]);
+  }
 
   return (
     <div className={className} {...props}>
-      {
-        hasErrored ? "Failed to get Stripe account settings link" :
-          isExecuting ? "Redirecting..." :
-            "You will be redirected to Stripe to complete the onboarding process."
-      }
+      <Button disabled={isExecuting} onClick={handleClick}>
+        {isExecuting ? (
+          <>
+            <Icons.spinner className="mr-2 animate-spin" />
+            Redirecting to Stripe...
+          </>
+        ) : hasErrored ? (
+          "Failed to get Stripe account settings link"
+        ) : (
+          "Complete Stripe onboarding"
+        )}
+      </Button>
     </div>
   );
 };
