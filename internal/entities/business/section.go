@@ -14,6 +14,7 @@ type BusinessLegalSection struct {
 }
 
 type CreateBusinessLegalSectionParams struct {
+	bun.BaseModel  `bun:"table:business_legal_section"`
 	BusinessNumber string `json:"businessNumber" minLength:"1" maxLength:"10"`
 }
 

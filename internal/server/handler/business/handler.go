@@ -437,6 +437,7 @@ func (h *httpHandler) getMembersByPage(ctx context.Context, input *shared.GetOff
 
 	return resp, nil
 }
+
 type GetAllMemberRolesOutput struct {
 	Body struct {
 		shared.MessageResponse
@@ -454,6 +455,54 @@ func (h *httpHandler) getAllMemberRoles(ctx context.Context, input *struct{}) (*
 	resp := &GetAllMemberRolesOutput{}
 	resp.Body.Message = "Member roles fetched successfully"
 	resp.Body.Roles = roles
+
+	return resp, nil
+}
+
+type CreateBusinessLegalSectionInput struct {
+	shared.PathIDParam
+	Body business.CreateBusinessLegalSectionParams
+}
+
+func (h *httpHandler) createBusinessLegalSection(ctx context.Context, input *CreateBusinessLegalSectionInput) (*shared.MessageOutput, error) {
+	business, err := h.service.BusinessService.GetById(ctx, input.ID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, huma.Error404NotFound("Business not found")
+		}
+
+		h.logger.Error("failed to fetch business", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while fetching the business")
+	}
+
+	account := shared.GetAuthenticatedAccount(ctx)
+
+	authorized, err := h.service.PermissionService.CanManageBusinessLegalSection(ctx, account.ID, business.ID)
+	if err != nil {
+		h.logger.Error("failed to check if account can manage business legal section", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while checking authorization")
+	}
+
+	if !authorized {
+		h.logger.Error("account is not authorized to manage business legal section",
+			zap.Any("account id", account.ID),
+			zap.Any("business id", business.ID))
+
+		return nil, huma.Error403Forbidden("Account is not authorized to manage business legal section")
+	}
+
+	if business.BusinessLegalSectionID != nil {
+		return nil, huma.Error400BadRequest("Business already has a legal section")
+	}
+
+	err = h.service.BusinessService.CreateBusinessLegalSection(ctx, business.ID, input.Body)
+	if err != nil {
+		h.logger.Error("failed to create business legal section", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while creating the business legal section")
+	}
+
+	resp := &shared.MessageOutput{}
+	resp.Body.Message = "Business legal section created successfully"
 
 	return resp, nil
 }

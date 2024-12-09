@@ -310,3 +310,27 @@ func (s *PermissionService) CanAccountCreateRound(ctx context.Context, accountId
 
 	return false, nil
 }
+
+func (s *PermissionService) CanManageBusinessLegalSection(ctx context.Context, accountId int, businessId int) (bool, error) {
+	if accountId == 0 {
+		return false, errors.New("account id is 0")
+	}
+
+	if businessId == 0 {
+		return false, errors.New("business id is 0")
+	}
+
+	member, err := s.repo.Business().GetBusinessMember(ctx, businessId, accountId)
+	if err != nil {
+		return false, err
+	}
+
+	for _, permission := range member.Role.Permissions {
+		switch permission.Value {
+		case business.RolePermissionValueBusinessFullAccess:
+			return true, nil
+		}
+	}
+
+	return false, nil
+}
