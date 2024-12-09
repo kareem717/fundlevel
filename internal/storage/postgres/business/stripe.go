@@ -25,8 +25,6 @@ func (r *BusinessRepository) UpdateStripeAccount(ctx context.Context, id int, pa
 		ModelTableExpr("business_stripe_accounts").
 		Where("business_id = ?", id).
 		Returning("*").
-		SetColumn("stripe_disabled_reason", "?", params.StripeDisabledReason).
-		OmitZero().
 		Scan(ctx, &resp)
 
 	return resp, err
