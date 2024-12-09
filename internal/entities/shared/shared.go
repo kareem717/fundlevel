@@ -25,6 +25,11 @@ type Timestamps struct {
 	DeletedAt *time.Time `json:"deletedAt" bun:",soft_delete" format:"date-time"`
 }
 
+type BasicTimestamps struct {
+	CreatedAt time.Time  `json:"createdAt" format:"date-time"`
+	UpdatedAt *time.Time `json:"updatedAt" format:"date-time"`
+}
+
 type IntegerID struct {
 	ID int `json:"id" minimum:"1" bun:",pk"`
 }
