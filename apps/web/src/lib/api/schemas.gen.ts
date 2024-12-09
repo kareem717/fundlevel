@@ -115,6 +115,11 @@ export const BusinessSchema = {
         businessColour: {
             type: 'string'
         },
+        businessLegalSectionId: {
+            format: 'int64',
+            minimum: 1,
+            type: ['integer', 'null']
+        },
         createdAt: {
             format: 'date-time',
             type: 'string'
@@ -394,6 +399,25 @@ export const CreateAccountParamsSchema = {
         }
     },
     required: ['userId', 'firstName', 'lastName'],
+    type: 'object'
+} as const;
+
+export const CreateBusinessLegalSectionParamsSchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/CreateBusinessLegalSectionParams.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        businessNumber: {
+            maxLength: 10,
+            minLength: 1,
+            type: 'string'
+        }
+    },
+    required: ['businessNumber'],
     type: 'object'
 } as const;
 
@@ -1003,6 +1027,26 @@ export const GetOffsetPaginatedRoundsOutputBodySchema = {
     type: 'object'
 } as const;
 
+export const GetRoundCreateRequirementsOutputBodySchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/GetRoundCreateRequirementsOutputBody.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        message: {
+            type: 'string'
+        },
+        requirements: {
+            '$ref': '#/components/schemas/RoundCreateRequirements'
+        }
+    },
+    required: ['requirements', 'message'],
+    type: 'object'
+} as const;
+
 export const ImpressionCountOutputBodySchema = {
     additionalProperties: false,
     properties: {
@@ -1238,6 +1282,23 @@ export const RoundSchema = {
         }
     },
     required: ['businessId', 'beginsAt', 'endsAt', 'percentageOffered', 'percentageValue', 'valueCurrency', 'status', 'investorCount', 'buyIn', 'description', 'id', 'createdAt', 'updatedAt', 'deletedAt'],
+    type: 'object'
+} as const;
+
+export const RoundCreateRequirementsSchema = {
+    additionalProperties: false,
+    properties: {
+        addressSection: {
+            type: 'boolean'
+        },
+        legalSection: {
+            type: 'boolean'
+        },
+        stripeAccount: {
+            type: 'boolean'
+        }
+    },
+    required: ['legalSection', 'addressSection', 'stripeAccount'],
     type: 'object'
 } as const;
 

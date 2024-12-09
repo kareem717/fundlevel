@@ -32,6 +32,7 @@ export type Address = {
 export type Business = {
     address: Address;
     businessColour: string;
+    businessLegalSectionId?: (number) | null;
     createdAt: Date;
     deletedAt: (Date) | null;
     displayName: string;
@@ -119,6 +120,14 @@ export type CreateAccountParams = {
     firstName: string;
     lastName: string;
     userId: string;
+};
+
+export type CreateBusinessLegalSectionParams = {
+    /**
+     * A URL to the JSON Schema for this object.
+     */
+    readonly $schema?: string;
+    businessNumber: string;
 };
 
 export type CreateBusinessParams = {
@@ -376,6 +385,15 @@ export type GetOffsetPaginatedRoundsOutputBody = {
     total: number;
 };
 
+export type GetRoundCreateRequirementsOutputBody = {
+    /**
+     * A URL to the JSON Schema for this object.
+     */
+    readonly $schema?: string;
+    message: string;
+    requirements: RoundCreateRequirements;
+};
+
 export type ImpressionCountOutputBody = {
     /**
      * A URL to the JSON Schema for this object.
@@ -466,6 +484,12 @@ export const status = {
     SUCCESSFUL: 'successful',
     FAILED: 'failed'
 } as const;
+
+export type RoundCreateRequirements = {
+    addressSection: boolean;
+    legalSection: boolean;
+    stripeAccount: boolean;
+};
 
 export type RoundInvestment = {
     createdAt: Date;
@@ -965,6 +989,16 @@ export type GetBusinessMembersByPageResponse = (GetOffsetPaginatedBusinessMember
 
 export type GetBusinessMembersByPageError = (ErrorModel);
 
+export type GetBusinessRoundCreateRequirementsData = {
+    path: {
+        id: number;
+    };
+};
+
+export type GetBusinessRoundCreateRequirementsResponse = (GetRoundCreateRequirementsOutputBody);
+
+export type GetBusinessRoundCreateRequirementsError = (ErrorModel);
+
 export type GetBusinessMemberRolesResponse = (GetAllMemberRolesOutputBody);
 
 export type GetBusinessMemberRolesError = (ErrorModel);
@@ -1028,6 +1062,17 @@ export type GetBusinessRoundsByPageData = {
 export type GetBusinessRoundsByPageResponse = (GetOffsetPaginatedRoundsOutputBody);
 
 export type GetBusinessRoundsByPageError = (ErrorModel);
+
+export type CreateBusinessLegalSectionData = {
+    body: CreateBusinessLegalSectionParams;
+    path: {
+        id: number;
+    };
+};
+
+export type CreateBusinessLegalSectionResponse = (MessageResponse);
+
+export type CreateBusinessLegalSectionError = (ErrorModel);
 
 export type GetStripeDashboardUrlData = {
     path: {
