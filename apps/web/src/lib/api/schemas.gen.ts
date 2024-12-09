@@ -338,25 +338,6 @@ export const CreateAccountParamsSchema = {
     type: 'object'
 } as const;
 
-export const CreateBusinessLegalSectionParamsSchema = {
-    additionalProperties: false,
-    properties: {
-        '$schema': {
-            examples: ['https://example.com/schemas/CreateBusinessLegalSectionParams.json'],
-            format: 'uri',
-            readOnly: true,
-            type: 'string'
-        },
-        businessNumber: {
-            maxLength: 10,
-            minLength: 1,
-            type: 'string'
-        }
-    },
-    required: ['businessNumber'],
-    type: 'object'
-} as const;
-
 export const CreateBusinessParamsSchema = {
     additionalProperties: false,
     properties: {
@@ -1657,5 +1638,24 @@ export const UpdateMessageParamsSchema = {
         }
     },
     required: ['content', 'readAt'],
+    type: 'object'
+} as const;
+
+export const UpsertBusinessLegalSectionParamsSchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/UpsertBusinessLegalSectionParams.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        businessNumber: {
+            maxLength: 10,
+            minLength: 1,
+            type: 'string'
+        }
+    },
+    required: ['businessNumber'],
     type: 'object'
 } as const;

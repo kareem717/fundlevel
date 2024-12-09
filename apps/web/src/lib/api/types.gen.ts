@@ -102,14 +102,6 @@ export type CreateAccountParams = {
     userId: string;
 };
 
-export type CreateBusinessLegalSectionParams = {
-    /**
-     * A URL to the JSON Schema for this object.
-     */
-    readonly $schema?: string;
-    businessNumber: string;
-};
-
 export type CreateBusinessParams = {
     /**
      * A URL to the JSON Schema for this object.
@@ -638,6 +630,14 @@ export type UpdateMessageParams = {
     readAt: (Date) | null;
 };
 
+export type UpsertBusinessLegalSectionParams = {
+    /**
+     * A URL to the JSON Schema for this object.
+     */
+    readonly $schema?: string;
+    businessNumber: string;
+};
+
 export type CreateAccountData = {
     body: CreateAccountParams;
 };
@@ -1051,16 +1051,16 @@ export type GetBusinessRoundsByPageResponse = (GetOffsetPaginatedRoundsOutputBod
 
 export type GetBusinessRoundsByPageError = (ErrorModel);
 
-export type CreateBusinessLegalSectionData = {
-    body: CreateBusinessLegalSectionParams;
+export type UpsertBusinessLegalSectionData = {
+    body: UpsertBusinessLegalSectionParams;
     path: {
         id: number;
     };
 };
 
-export type CreateBusinessLegalSectionResponse = (MessageResponse);
+export type UpsertBusinessLegalSectionResponse = (MessageResponse);
 
-export type CreateBusinessLegalSectionError = (ErrorModel);
+export type UpsertBusinessLegalSectionError = (ErrorModel);
 
 export type GetBusinessStripeAccountData = {
     path: {
