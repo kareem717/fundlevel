@@ -8,6 +8,9 @@ import {
 	getBusinessRoundsByPage as getBusinessRoundsByPageApi,
 	getBusinessTotalFunding,
 	getBusinessInvestmentsByPage as getBusinessInvestmentsByPageApi,
+	getBusinessMembersByPage as getBusinessMembersByPageApi,
+	getBusinessMemberRoles as getBusinessMemberRolesApi,
+	getBusinessRoundCreateRequirements as getBusinessCreateRoundrequirementsApi,
 } from "@/lib/api";
 import { createBusinessSchema } from "@/actions/validations/business";
 import {
@@ -15,8 +18,6 @@ import {
 	offsetPaginationSchema,
 } from "@/actions/validations/shared";
 import { object } from "yup";
-import { getBusinessMembersByPage as getBusinessMembersByPageApi } from "@/lib/api";
-import { getBusinessMemberRoles as getBusinessMemberRolesApi } from "@/lib/api";
 /**
  * Create a venture
  */
@@ -159,6 +160,18 @@ export const getBusinessMemberRoles = actionClientWithAccount
 	.schema(intIdSchema.required())
 	.action(async ({ parsedInput, ctx: { apiClient } }) => {
 		const res = await getBusinessMemberRolesApi({
+			client: apiClient,
+			throwOnError: true,
+			path: { id: parsedInput },
+		});
+
+		return res.data;
+	});
+
+export const getBusinessCreateRoundrequirements = actionClientWithAccount
+	.schema(intIdSchema.required())
+	.action(async ({ parsedInput, ctx: { apiClient } }) => {
+		const res = await getBusinessCreateRoundrequirementsApi({
 			client: apiClient,
 			throwOnError: true,
 			path: { id: parsedInput },
