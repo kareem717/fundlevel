@@ -12,7 +12,8 @@ func (s *BusinessService) GetRoundCreateRequirements(ctx context.Context, busine
 	}
 
 	req := business.RoundCreateRequirements{
-		LegalSection: businessRecord.BusinessLegalSectionID != nil,
+		LegalSection:    businessRecord.BusinessLegalSectionID != nil,
+		HasActiveStatus: businessRecord.Status == business.BusinessStatusActive,
 	}
 
 	if businessRecord.StripeAccount != nil {
