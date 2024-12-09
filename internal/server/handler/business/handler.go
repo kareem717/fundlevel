@@ -346,6 +346,53 @@ func (h *httpHandler) onboardStripeConnectedAccount(ctx context.Context, input *
 	return resp, nil
 }
 
+type GetStripeAccountOutput struct {
+	Body struct {
+		shared.MessageResponse
+		StripeAccount business.BusinessStripeAccount `json:"stripeAccount"`
+	} `json:"body"`
+}
+
+func (h *httpHandler) getStripeAccount(ctx context.Context, input *shared.PathIDParam) (*GetStripeAccountOutput, error) {
+	business, err := h.service.BusinessService.GetById(ctx, input.ID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, huma.Error404NotFound("Business not found")
+		}
+
+		h.logger.Error("failed to fetch business", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while fetching the business")
+	}
+
+	account := shared.GetAuthenticatedAccount(ctx)
+
+	authorized, err := h.service.PermissionService.CanManageBusinessStripe(ctx, account.ID, business.ID)
+	if err != nil {
+		h.logger.Error("failed to check if account can access business stripe details", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while checking authorization")
+	}
+
+	if !authorized {
+		h.logger.Error("account is not authorized to access business stripe details",
+			zap.Any("account id", account.ID),
+			zap.Any("business id", business.ID))
+
+		return nil, huma.Error403Forbidden("Account is not authorized to access business stripe details")
+	}
+
+	stripeAccount, err := h.service.BusinessService.GetStripeAccount(ctx, input.ID)
+	if err != nil {
+		return nil, huma.Error500InternalServerError("An error occurred while fetching the stripe account")
+	}
+
+	resp := &GetStripeAccountOutput{}
+	resp.Body.Message = "Stripe account fetched successfully"
+	resp.Body.StripeAccount = stripeAccount
+
+	return resp, nil
+
+}
+
 func (h *httpHandler) getStripeDashboardURL(ctx context.Context, input *shared.PathIDParam) (*shared.URLOutput, error) {
 	account := shared.GetAuthenticatedAccount(ctx)
 
@@ -515,7 +562,7 @@ type GetRoundCreateRequirementsOutput struct {
 }
 
 func (h *httpHandler) getRoundCreateRequirements(ctx context.Context, input *shared.PathIDParam) (*GetRoundCreateRequirementsOutput, error) {
-	_, err := h.service.BusinessService.GetById(ctx, input.ID)	
+	_, err := h.service.BusinessService.GetById(ctx, input.ID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, huma.Error404NotFound("Business not found")

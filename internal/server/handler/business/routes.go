@@ -243,4 +243,24 @@ func RegisterHumaRoutes(
 			},
 		},
 	}, handler.getRoundCreateRequirements)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-business-stripe-account",
+		Method:      http.MethodGet,
+		Path:        "/business/{id}/stripe",
+		Summary:     "Get business stripe account",
+		Description: "Get business stripe account.",
+		Tags:        []string{"Businesses"},
+		Security: []map[string][]string{
+			{"bearerAuth": {}},
+		},
+		Middlewares: huma.Middlewares{
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
+			},
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithAccount(humaApi)(ctx, next, logger, service)
+			},
+		},
+	}, handler.getStripeAccount)
 }
