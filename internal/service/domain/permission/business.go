@@ -275,11 +275,16 @@ func (s *PermissionService) CanBusinessCreateRound(ctx context.Context, business
 		return false, errors.New("business is nil")
 	}
 
-	if businessProp.Status == business.BusinessStatusActive {
-		return true, nil
+	// If the business does not have a legal section, we cannot create a round
+	if businessProp.BusinessLegalSectionID == nil {
+		return false, nil
 	}
 
-	return false, nil
+	if businessProp.Status != business.BusinessStatusActive {
+		return false, nil
+	}
+
+	return true, nil
 }
 
 func (s *PermissionService) CanAccountCreateRound(ctx context.Context, accountId int, businessId int) (bool, error) {
