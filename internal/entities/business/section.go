@@ -12,3 +12,11 @@ type BusinessLegalSection struct {
 	BusinessNumber string `json:"businessNumber"`
 	shared.BasicTimestamps
 }
+
+type CreateBusinessLegalSectionParams struct {
+	BusinessNumber string `json:"businessNumber" minLength:"1" maxLength:"10"`
+}
+
+type UpdateBusinessLegalSectionParams struct {
+	BusinessNumber string `json:"businessNumber" minLength:"1" maxLength:"10"`
+}
