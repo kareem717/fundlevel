@@ -11,13 +11,14 @@ import {
 	getBusinessMembersByPage as getBusinessMembersByPageApi,
 	getBusinessMemberRoles as getBusinessMemberRolesApi,
 	getBusinessRoundCreateRequirements as getBusinessCreateRoundrequirementsApi,
+	onboardStripeConnectedAccount as onboardStripeConnectedAccountApi,
 } from "@/lib/api";
 import { createBusinessSchema } from "@/actions/validations/business";
 import {
 	intIdSchema,
 	offsetPaginationSchema,
 } from "@/actions/validations/shared";
-import { object } from "yup";
+import { object, string } from "yup";
 /**
  * Create a venture
  */
@@ -179,3 +180,30 @@ export const getBusinessCreateRoundrequirements = actionClientWithAccount
 
 		return res.data;
 	});
+
+export const getStripeAccountSettingsLink = actionClientWithAccount
+	.schema(
+		object().shape({
+			id: intIdSchema.required(),
+			refreshURL: string().url().required(),
+			returnURL: string().url().required(),
+		})
+	)
+	.action(
+		async ({
+			parsedInput: { id, refreshURL, returnURL },
+			ctx: { apiClient },
+		}) => {
+			const res = await onboardStripeConnectedAccountApi({
+				client: apiClient,
+				throwOnError: true,
+				body: {
+					refreshURL,
+					returnURL,
+				},
+				path: { id },
+			});
+
+			return res.data;
+		}
+	);
