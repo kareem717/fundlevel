@@ -43,6 +43,11 @@ const dashboard: NavigationMenu[] = [
 				icon: Icons.users,
 			},
 			{
+				title: "Settings",
+				url: redirects.app.dashboard.business.settings,
+				icon: Icons.settings,
+			},
+			{
 				title: "Stripe",
 				root: redirects.app.dashboard.business.stripe.root,
 				icon: Icons.settings,

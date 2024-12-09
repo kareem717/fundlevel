@@ -37,6 +37,7 @@ const redirects = {
 			business: {
 				create: "/dashboard/create-business",
 				members: "/dashboard/members",
+				settings: "/dashboard/settings",
 				stripe: {
 					root: "/dashboard/stripe",
 					dashboard: "/dashboard/stripe/dashboard",
