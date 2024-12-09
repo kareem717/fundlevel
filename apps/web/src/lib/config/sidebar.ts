@@ -42,6 +42,17 @@ const dashboard: NavigationMenu[] = [
 				url: redirects.app.dashboard.business.members,
 				icon: Icons.users,
 			},
+			{
+				title: "Stripe",
+				root: redirects.app.dashboard.business.stripe.root,
+				icon: Icons.settings,
+				items: [
+					{
+						title: "Dashboard",
+						url: redirects.app.dashboard.business.stripe.dashboard,
+					},
+				],
+			},
 		],
 	},
 	{
