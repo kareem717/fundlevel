@@ -13,11 +13,7 @@ type BusinessLegalSection struct {
 	shared.BasicTimestamps
 }
 
-type CreateBusinessLegalSectionParams struct {
+type UpsertBusinessLegalSectionParams struct {
 	bun.BaseModel  `bun:"table:business_legal_section"`
-	BusinessNumber string `json:"businessNumber" minLength:"1" maxLength:"10"`
-}
-
-type UpdateBusinessLegalSectionParams struct {
 	BusinessNumber string `json:"businessNumber" minLength:"1" maxLength:"10"`
 }

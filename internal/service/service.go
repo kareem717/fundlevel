@@ -79,7 +79,7 @@ type BusinessService interface {
 	UpdateStripeAccount(ctx context.Context, businessId int, params business.UpdateBusinessStripeAccountParams) (business.BusinessStripeAccount, error)
 	GetStripeConnectedAccountDashboardURL(ctx context.Context, accountID string) (string, error)
 
-	CreateBusinessLegalSection(ctx context.Context, businessId int, params business.CreateBusinessLegalSectionParams) error
+	UpsertBusinessLegalSection(ctx context.Context, businessId int, params business.UpsertBusinessLegalSectionParams) error
 
 	GetRoundsByPage(ctx context.Context, businessId int, pageSize int, page int, filter round.RoundFilter) ([]round.Round, int, error)
 	GetRoundsByCursor(ctx context.Context, businessId int, limit int, cursor int, filter round.RoundFilter) ([]round.Round, error)

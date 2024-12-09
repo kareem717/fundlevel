@@ -205,11 +205,11 @@ func RegisterHumaRoutes(
 	}, handler.getAllMemberRoles)
 
 	huma.Register(humaApi, huma.Operation{
-		OperationID: "create-business-legal-section",
-		Method:      http.MethodPost,
+		OperationID: "upsert-business-legal-section",
+		Method:      http.MethodPut,
 		Path:        "/business/{id}/sections/legal",
-		Summary:     "Create business legal section",
-		Description: "Create business legal section.",
+		Summary:     "Upsert business legal section",
+		Description: "Upsert business legal section.",
 		Tags:        []string{"Businesses", "Legal Section"},
 		Security: []map[string][]string{
 			{"bearerAuth": {}},
@@ -222,7 +222,7 @@ func RegisterHumaRoutes(
 				middleware.WithAccount(humaApi)(ctx, next, logger, service)
 			},
 		},
-	}, handler.createBusinessLegalSection)
+	}, handler.upsertBusinessLegalSection)
 
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "get-business-round-create-requirements",
