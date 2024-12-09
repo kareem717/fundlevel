@@ -394,6 +394,15 @@ export type GetRoundCreateRequirementsOutputBody = {
     requirements: RoundCreateRequirements;
 };
 
+export type GetStripeAccountOutputBody = {
+    /**
+     * A URL to the JSON Schema for this object.
+     */
+    readonly $schema?: string;
+    message: string;
+    stripeAccount: BusinessStripeAccount;
+};
+
 export type ImpressionCountOutputBody = {
     /**
      * A URL to the JSON Schema for this object.
@@ -1074,6 +1083,16 @@ export type CreateBusinessLegalSectionResponse = (MessageResponse);
 
 export type CreateBusinessLegalSectionError = (ErrorModel);
 
+export type GetBusinessStripeAccountData = {
+    path: {
+        id: number;
+    };
+};
+
+export type GetBusinessStripeAccountResponse = (GetStripeAccountOutputBody);
+
+export type GetBusinessStripeAccountError = (ErrorModel);
+
 export type GetStripeDashboardUrlData = {
     path: {
         id: number;
@@ -1653,6 +1672,22 @@ export const GetOffsetPaginatedRoundsOutputBodyModelResponseTransformer: GetOffs
 
 export const GetBusinessRoundsByPageResponseTransformer: GetBusinessRoundsByPageResponseTransformer = async (data) => {
     GetOffsetPaginatedRoundsOutputBodyModelResponseTransformer(data);
+    return data;
+};
+
+export type GetBusinessStripeAccountResponseTransformer = (data: any) => Promise<GetBusinessStripeAccountResponse>;
+
+export type GetStripeAccountOutputBodyModelResponseTransformer = (data: any) => GetStripeAccountOutputBody;
+
+export const GetStripeAccountOutputBodyModelResponseTransformer: GetStripeAccountOutputBodyModelResponseTransformer = data => {
+    if (data?.stripeAccount) {
+        BusinessStripeAccountModelResponseTransformer(data.stripeAccount);
+    }
+    return data;
+};
+
+export const GetBusinessStripeAccountResponseTransformer: GetBusinessStripeAccountResponseTransformer = async (data) => {
+    GetStripeAccountOutputBodyModelResponseTransformer(data);
     return data;
 };
 

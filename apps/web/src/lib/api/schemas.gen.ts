@@ -1047,6 +1047,26 @@ export const GetRoundCreateRequirementsOutputBodySchema = {
     type: 'object'
 } as const;
 
+export const GetStripeAccountOutputBodySchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/GetStripeAccountOutputBody.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        message: {
+            type: 'string'
+        },
+        stripeAccount: {
+            '$ref': '#/components/schemas/BusinessStripeAccount'
+        }
+    },
+    required: ['stripeAccount', 'message'],
+    type: 'object'
+} as const;
+
 export const ImpressionCountOutputBodySchema = {
     additionalProperties: false,
     properties: {
