@@ -12,6 +12,7 @@ import {
 	getBusinessMemberRoles as getBusinessMemberRolesApi,
 	getBusinessRoundCreateRequirements as getBusinessCreateRoundrequirementsApi,
 	onboardStripeConnectedAccount as onboardStripeConnectedAccountApi,
+	getStripeDashboardUrl as getStripeDashboardUrlApi,
 } from "@/lib/api";
 import { createBusinessSchema } from "@/actions/validations/business";
 import {
@@ -207,3 +208,15 @@ export const getStripeAccountSettingsLink = actionClientWithAccount
 			return res.data;
 		}
 	);
+
+export const getStripeDashboardUrl = actionClientWithAccount
+	.schema(intIdSchema.required())
+	.action(async ({ parsedInput: id, ctx: { apiClient } }) => {
+		const res = await getStripeDashboardUrlApi({
+			client: apiClient,
+			throwOnError: true,
+			path: { id },
+		});
+
+		return res.data;
+	});
