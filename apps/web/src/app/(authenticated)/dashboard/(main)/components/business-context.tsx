@@ -50,17 +50,7 @@ export const BusinessContextProvider: FC<{
   const [currentBusiness, setCurrentBusiness] = useState<Business>(businessData[0]);
 
   // TODO: bring to server side
-  const [currentBusinessId, setCurrentBusinessId] = useQueryState(
-    'business',
-    parseAsInteger
-      .withDefault(businessData[0].id)
-      .withOptions({
-        // Send updates to the server maximum once every second
-        shallow: false,
-        throttleMs: 1000,
-        clearOnDefault: false
-      })
-  )
+  const [currentBusinessId, setCurrentBusinessId] = useState<number>(businessData[0].id);
 
   //TODO: i'd assume there's a better way to do this
   useEffect(() => {
