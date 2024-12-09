@@ -40,6 +40,7 @@ const redirects = {
 				stripe: {
 					root: "/dashboard/stripe",
 					dashboard: "/dashboard/stripe/dashboard",
+					settings: "/dashboard/stripe/settings",
 				},
 			},
 			funding: {

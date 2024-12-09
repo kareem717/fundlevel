@@ -51,6 +51,10 @@ const dashboard: NavigationMenu[] = [
 						title: "Dashboard",
 						url: redirects.app.dashboard.business.stripe.dashboard,
 					},
+					{
+						title: "Settings",
+						url: redirects.app.dashboard.business.stripe.settings,
+					},
 				],
 			},
 		],
