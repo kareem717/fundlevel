@@ -475,6 +475,7 @@ export const status = {
 } as const;
 
 export type RoundCreateRequirements = {
+    hasActiveStatus: boolean;
     legalSection: boolean;
     stripeAccount: boolean;
 };

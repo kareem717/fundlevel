@@ -1252,6 +1252,9 @@ export const RoundSchema = {
 export const RoundCreateRequirementsSchema = {
     additionalProperties: false,
     properties: {
+        hasActiveStatus: {
+            type: 'boolean'
+        },
         legalSection: {
             type: 'boolean'
         },
@@ -1259,7 +1262,7 @@ export const RoundCreateRequirementsSchema = {
             type: 'boolean'
         }
     },
-    required: ['legalSection', 'stripeAccount'],
+    required: ['hasActiveStatus', 'legalSection', 'stripeAccount'],
     type: 'object'
 } as const;
 
