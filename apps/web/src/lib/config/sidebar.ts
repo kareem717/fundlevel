@@ -44,8 +44,14 @@ const dashboard: NavigationMenu[] = [
 			},
 			{
 				title: "Settings",
-				url: redirects.app.dashboard.business.settings,
+				root: redirects.app.dashboard.business.settings.root,
 				icon: Icons.settings,
+				items: [
+					{
+						title: "Profile",
+						url: redirects.app.dashboard.business.settings.stripe,
+					},
+				],
 			},
 			{
 				title: "Stripe",
