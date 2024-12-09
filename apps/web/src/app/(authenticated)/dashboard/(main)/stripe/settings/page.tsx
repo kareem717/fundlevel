@@ -1,4 +1,4 @@
-import { StripeSettingsRedirector } from "./components/redirector";
+import { StripeSettingsRedirector } from "../components/stripe-settings-redirector";
 
 export default function StripeSettingsPage() {
   return (

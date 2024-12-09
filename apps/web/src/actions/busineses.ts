@@ -13,6 +13,7 @@ import {
 	getBusinessRoundCreateRequirements as getBusinessCreateRoundrequirementsApi,
 	onboardStripeConnectedAccount as onboardStripeConnectedAccountApi,
 	getStripeDashboardUrl as getStripeDashboardUrlApi,
+	getBusinessStripeAccount as getBusinessStripeAccountApi,
 } from "@/lib/api";
 import { createBusinessSchema } from "@/actions/validations/business";
 import {
@@ -213,6 +214,18 @@ export const getStripeDashboardUrl = actionClientWithAccount
 	.schema(intIdSchema.required())
 	.action(async ({ parsedInput: id, ctx: { apiClient } }) => {
 		const res = await getStripeDashboardUrlApi({
+			client: apiClient,
+			throwOnError: true,
+			path: { id },
+		});
+
+		return res.data;
+	});
+
+export const getBusinessStripeAccount = actionClientWithAccount
+	.schema(intIdSchema.required())
+	.action(async ({ parsedInput: id, ctx: { apiClient } }) => {
+		const res = await getBusinessStripeAccountApi({
 			client: apiClient,
 			throwOnError: true,
 			path: { id },

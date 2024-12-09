@@ -5,7 +5,7 @@ import { useAction } from 'next-safe-action/hooks';
 import { useRouter } from 'next/navigation';
 import { FC, ComponentPropsWithoutRef } from 'react';
 import { toast } from 'sonner';
-import { useBusinessContext } from '../../../components/business-context';
+import { useBusinessContext } from '../../components/business-context';
 import { Button } from '@/components/ui/button';
 import { Icons } from '@/components/icons';
 
