@@ -79,8 +79,8 @@ type BusinessRepository interface {
 	Delete(ctx context.Context, id int) error
 	// GetByStripeConnectedAccountId(ctx context.Context, stripeConnectedAccountId string) (business.Business, error)
 
-	CreateBusinessLegalSection(ctx context.Context, businessId int, params business.CreateBusinessLegalSectionParams) error
-	
+	UpsertBusinessLegalSection(ctx context.Context, businessId int, params business.UpsertBusinessLegalSectionParams) error
+
 	GetStripeAccountByAccountId(ctx context.Context, accountId string) (business.BusinessStripeAccount, error)
 	UpdateStripeAccount(ctx context.Context, businessId int, params business.UpdateBusinessStripeAccountParams) (business.BusinessStripeAccount, error)
 	GetStripeAccount(ctx context.Context, businessId int) (business.BusinessStripeAccount, error)
