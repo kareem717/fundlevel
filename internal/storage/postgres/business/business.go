@@ -104,6 +104,7 @@ func (r *BusinessRepository) GetById(ctx context.Context, id int) (business.Busi
 		Model(&resp).
 		Relation("StripeAccount").
 		Relation("Industries").
+		Relation("Legal").
 		Where("business.id = ?", id).
 		Scan(ctx)
 
