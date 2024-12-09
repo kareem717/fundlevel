@@ -33,7 +33,7 @@ type Business struct {
 	shared.IntegerID
 
 	StripeAccount *BusinessStripeAccount `json:"stripeAccount" bun:"rel:has-one,join:id=business_id"`
-	// BusinessLegalSection *BusinessLegalSection  `json:"businessLegalSection" bun:"rel:has-one,join:business_legal_section_id=id"`
+	Legal         *BusinessLegalSection  `json:"businessLegalSection" bun:"rel:has-one,join:business_legal_section_id=id"`
 
 	BusinessLegalSectionID *int                `json:"businessLegalSectionId" minimum:"1" required:"false"`
 	BusinessColour         string              `json:"businessColour"`
