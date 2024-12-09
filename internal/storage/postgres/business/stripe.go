@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fundlevel/internal/entities/business"
-	// "github.com/uptrace/bun"
 )
 
 func (r *BusinessRepository) GetStripeAccountByAccountId(ctx context.Context, accountId string) (business.BusinessStripeAccount, error) {
@@ -26,6 +25,7 @@ func (r *BusinessRepository) UpdateStripeAccount(ctx context.Context, id int, pa
 		ModelTableExpr("business_stripe_accounts").
 		Where("business_id = ?", id).
 		Returning("*").
+		SetColumn("stripe_disabled_reason", "?", params.StripeDisabledReason).
 		OmitZero().
 		Scan(ctx, &resp)
 
