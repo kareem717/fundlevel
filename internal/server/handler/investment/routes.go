@@ -117,7 +117,7 @@ func RegisterHumaRoutes(
 				middleware.WithAccount(humaApi)(ctx, next, logger, service)
 			},
 		},
-	}, handler.getInvestmentById)
+	}, handler.getInvestmentIntentById)
 
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "create-investment-payment-intent",

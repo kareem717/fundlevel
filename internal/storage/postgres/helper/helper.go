@@ -18,7 +18,7 @@ func ApplyRangeFilter[T any](query *bun.SelectQuery, field string, min, max T, i
 	if !isZero(max) {
 		query.Where(fmt.Sprintf("%s <= ?", field), max)
 	}
-} 
+}
 
 // ApplyTimeRangeFilter applies a time range filter to a select query.
 func ApplyTimeRangeFilter(query *bun.SelectQuery, field string, min, max time.Time) {
@@ -95,15 +95,15 @@ func ApplyRoundFilter(query *bun.SelectQuery, filter round.RoundFilter) *bun.Sel
 	return query
 }
 
-func ApplyInvestmentFilter(query *bun.SelectQuery, filter investment.InvestmentFilter) *bun.SelectQuery {
+func ApplyInvestmentFilter(query *bun.SelectQuery, filter investment.InvestmentIntentFilter) *bun.SelectQuery {
 	if len(filter.Status) > 0 {
-		query.Where("round_investment.status IN (?)", bun.In(filter.Status))
+		query.Where("investment.status IN (?)", bun.In(filter.Status))
 	}
 
 	if filter.SortBy != "" {
-		query.OrderExpr(fmt.Sprintf("%s, round_investment.id %s", filter.SortBy, filter.SortOrder))
+		query.OrderExpr(fmt.Sprintf("%s, investment.id %s", filter.SortBy, filter.SortOrder))
 	} else {
-		query.Order(fmt.Sprintf("round_investment.id %s", filter.SortOrder))
+		query.Order(fmt.Sprintf("investment.id %s", filter.SortOrder))
 	}
 
 	return query

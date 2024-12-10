@@ -59,12 +59,12 @@ type GetRoundsByParentAndPageInput struct {
 
 type GetInvestmentsByParentAndCursorInput struct {
 	GetCursorPaginatedByParentPathIDInput
-	investment.InvestmentFilter
+	investment.InvestmentIntentFilter
 }
 
 type GetInvestmentsByParentAndPageInput struct {
 	GetOffsetPaginatedByParentPathIDInput
-	investment.InvestmentFilter
+	investment.InvestmentIntentFilter
 }
 
 type FundingOutput struct {
@@ -136,18 +136,18 @@ type GetOffsetPaginatedRoundsOutput struct {
 	}
 }
 
-type GetCursorPaginatedRoundInvestmentsOutput struct {
+type GetCursorPaginatedInvestmentsOutput struct {
 	Body struct {
 		MessageResponse
-		Investments []investment.RoundInvestment `json:"investments"`
+		Investments []investment.InvestmentIntent `json:"investments"`
 		CursorPaginationResponse
 	}
 }
 
-type GetOffsetPaginatedRoundInvestmentsOutput struct {
+type GetOffsetPaginatedInvestmentsOutput struct {
 	Body struct {
 		MessageResponse
-		Investments []investment.RoundInvestment `json:"investments"`
+		Investments []investment.InvestmentIntent `json:"investments"`
 		OffsetPaginationResponse
 	}
 }
@@ -182,7 +182,7 @@ type GetOffsetPaginatedBusinessesOutput struct {
 type SingleInvestmentResponse struct {
 	Body struct {
 		MessageResponse
-		Investment *investment.RoundInvestment `json:"investment"`
+		Investment *investment.InvestmentIntent `json:"investment"`
 	}
 }
 

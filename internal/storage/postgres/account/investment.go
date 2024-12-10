@@ -10,21 +10,21 @@ import (
 	"github.com/uptrace/bun"
 )
 
-func (r *AccountRepository) GetInvestmentsByCursor(ctx context.Context, accountId int, paginationParams postgres.CursorPagination, filter investment.InvestmentFilter) ([]investment.RoundInvestment, error) {
-	resp := []investment.RoundInvestment{}
+func (r *AccountRepository) GetInvestmentsByCursor(ctx context.Context, accountId int, paginationParams postgres.CursorPagination, filter investment.InvestmentIntentFilter) ([]investment.InvestmentIntent, error) {
+	resp := []investment.InvestmentIntent{}
 
 	query := r.db.
 		NewSelect().
 		Model(&resp).
 		Relation("Round").
-		Where("round_investment.investor_id = ?", accountId).
+		Where("investment.investor_id = ?", accountId).
 		Limit(paginationParams.Limit)
 
 	query = helper.ApplyInvestmentFilter(query, filter)
 
-	cursorCondition := "round_investment.id >= ?"
+	cursorCondition := "investment.id >= ?"
 	if filter.SortOrder != "asc" && paginationParams.Cursor > 0 {
-		cursorCondition = "round_investment.id <= ?"
+		cursorCondition = "investment.id <= ?"
 	}
 
 	err := query.Where(cursorCondition, paginationParams.Cursor).Scan(ctx, &resp)
@@ -32,15 +32,15 @@ func (r *AccountRepository) GetInvestmentsByCursor(ctx context.Context, accountI
 	return resp, err
 }
 
-func (r *AccountRepository) GetInvestmentsByPage(ctx context.Context, accountId int, paginationParams postgres.OffsetPagination, filter investment.InvestmentFilter) ([]investment.RoundInvestment, int, error) {
-	resp := []investment.RoundInvestment{}
+func (r *AccountRepository) GetInvestmentsByPage(ctx context.Context, accountId int, paginationParams postgres.OffsetPagination, filter investment.InvestmentIntentFilter) ([]investment.InvestmentIntent, int, error) {
+	resp := []investment.InvestmentIntent{}
 	offset := (paginationParams.Page - 1) * paginationParams.PageSize
 
 	query := r.db.
 		NewSelect().
 		Model(&resp).
 		Relation("Round").
-		Where("round_investment.investor_id = ?", accountId).
+		Where("investment.investor_id = ?", accountId).
 		Offset(offset).
 		Limit(paginationParams.PageSize + 1)
 
@@ -49,8 +49,9 @@ func (r *AccountRepository) GetInvestmentsByPage(ctx context.Context, accountId 
 	return resp, count, err
 }
 
+// TODO: I don't think this logic works anymore
 func (r *AccountRepository) IsInvestedInRound(ctx context.Context, accountId int, roundId int) (bool, error) {
-	statusArray := []investment.InvestmentStatus{investment.InvestmentStatusProcessing, investment.InvestmentStatusPending}
+	statusArray := []investment.InvestmentIntentStatus{investment.InvestmentIntentStatusTerms, investment.InvestmentIntentStatusPayment}
 	stringStatusArray := make([]string, len(statusArray))
 	for i, status := range statusArray {
 		stringStatusArray[i] = string(status)
@@ -58,24 +59,24 @@ func (r *AccountRepository) IsInvestedInRound(ctx context.Context, accountId int
 
 	exists, err := r.db.
 		NewSelect().
-		Model(&investment.RoundInvestment{}).
-		Where("round_investment.investor_id = ?", accountId).
-		Where("round_investment.round_id = ?", roundId).
-		WhereOr("round_investment.status IN (?)", bun.In(stringStatusArray)).
+		Model(&investment.InvestmentIntent{}).
+		Where("investment.investor_id = ?", accountId).
+		Where("investment.round_id = ?", roundId).
+		WhereOr("investment.status IN (?)", bun.In(stringStatusArray)).
 		Exists(ctx)
 
 	return exists, err
 }
 
-func (r *AccountRepository) GetInvestmentById(ctx context.Context, accountId int, investmentId int) (investment.RoundInvestment, error) {
-	resp := investment.RoundInvestment{}
+func (r *AccountRepository) GetInvestmentById(ctx context.Context, accountId int, investmentId int) (investment.InvestmentIntent, error) {
+	resp := investment.InvestmentIntent{}
 
 	err := r.db.
 		NewSelect().
 		Model(&resp).
 		Relation("Round").
-		Where("round_investment.investor_id = ?", accountId).
-		Where("round_investment.id = ?", investmentId).
+		Where("investment.investor_id = ?", accountId).
+		Where("investment.id = ?", investmentId).
 		Scan(ctx)
 
 	return resp, err

@@ -37,9 +37,9 @@ type AccountService interface {
 	Update(ctx context.Context, id int, params account.UpdateAccountParams) (account.Account, error)
 	GetById(ctx context.Context, id int) (account.Account, error)
 
-	GetInvestmentsByCursor(ctx context.Context, accountId int, limit int, cursor int, filter investment.InvestmentFilter) ([]investment.RoundInvestment, error)
-	GetInvestmentsByPage(ctx context.Context, accountId int, pageSize int, page int, filter investment.InvestmentFilter) ([]investment.RoundInvestment, int, error)
-	GetInvestmentById(ctx context.Context, accountId int, investmentId int) (investment.RoundInvestment, error)
+	GetInvestmentsByCursor(ctx context.Context, accountId int, limit int, cursor int, filter investment.InvestmentIntentFilter) ([]investment.InvestmentIntent, error)
+	GetInvestmentsByPage(ctx context.Context, accountId int, pageSize int, page int, filter investment.InvestmentIntentFilter) ([]investment.InvestmentIntent, int, error)
+	GetInvestmentById(ctx context.Context, accountId int, investmentId int) (investment.InvestmentIntent, error)
 	IsInvestedInRound(ctx context.Context, accountId int, roundId int) (bool, error)
 
 	GetAllBusinesses(ctx context.Context, accountId int) ([]business.Business, error)
@@ -62,8 +62,8 @@ type RoundService interface {
 	GetByCursor(ctx context.Context, limit int, cursor int, filter round.RoundFilter) ([]round.Round, error)
 	GetByPage(ctx context.Context, pageSize int, page int, filter round.RoundFilter) ([]round.Round, int, error)
 
-	GetInvestmentsByCursor(ctx context.Context, roundId int, limit int, cursor int, filter investment.InvestmentFilter) ([]investment.RoundInvestment, error)
-	GetInvestmentsByPage(ctx context.Context, roundId int, pageSize int, page int, filter investment.InvestmentFilter) ([]investment.RoundInvestment, int, error)
+	GetInvestmentsByCursor(ctx context.Context, roundId int, limit int, cursor int, filter investment.InvestmentIntentFilter) ([]investment.InvestmentIntent, error)
+	GetInvestmentsByPage(ctx context.Context, roundId int, pageSize int, page int, filter investment.InvestmentIntentFilter) ([]investment.InvestmentIntent, int, error)
 }
 
 type BusinessService interface {
@@ -85,8 +85,8 @@ type BusinessService interface {
 	GetRoundsByCursor(ctx context.Context, businessId int, limit int, cursor int, filter round.RoundFilter) ([]round.Round, error)
 
 	// GetInvestmentsByCursor gets all of the investments received on the rounds related to the business using cursor pagination
-	GetInvestmentsByCursor(ctx context.Context, businessId int, limit int, cursor int, filter investment.InvestmentFilter) ([]investment.RoundInvestment, error)
-	GetInvestmentsByPage(ctx context.Context, businessId int, pageSize int, page int, filter investment.InvestmentFilter) ([]investment.RoundInvestment, int, error)
+	GetInvestmentsByCursor(ctx context.Context, businessId int, limit int, cursor int, filter investment.InvestmentIntentFilter) ([]investment.InvestmentIntent, error)
+	GetInvestmentsByPage(ctx context.Context, businessId int, pageSize int, page int, filter investment.InvestmentIntentFilter) ([]investment.InvestmentIntent, int, error)
 
 	// GetTotalFunding gets the amount the business has successfully raised through rounds
 	GetTotalFunding(ctx context.Context, businessId int) (int, error)
@@ -100,13 +100,13 @@ type BusinessService interface {
 type InvestmentService interface {
 	// WithdrawInvestment(ctx context.Context, investmentId int) error
 	// DeleteInvestment(ctx context.Context, investmentId int) error
-	// Create(ctx context.Context, params investment.CreateInvestmentParams) (investment.RoundInvestment, error)
-	GetById(ctx context.Context, id int) (investment.RoundInvestment, error)
-	// Update(ctx context.Context, id int, params investment.UpdateInvestmentParams) (investment.RoundInvestment, error)
+	// Create(ctx context.Context, params investment.CreateInvestmentParams) (investment.InvestmentIntent, error)
+	GetIntentById(ctx context.Context, id int) (investment.InvestmentIntent, error)
+	// Update(ctx context.Context, id int, params investment.UpdateInvestmentParams) (investment.InvestmentIntent, error)
 
 	// ProcessInvestment(ctx context.Context, investmentId int) error
 	CreatePaymentIntent(ctx context.Context, roundId int, investorId int) (*stripe.PaymentIntent, error)
-	HandleInvestmentPaymentIntentSuccess(ctx context.Context, intentID string) error
+	// HandleInvestmentPaymentIntentSuccess(ctx context.Context, intentID string) error
 	// HandleInvestmentPaymentIntentPaymentFailed(ctx context.Context, intentID string) error
 	// HandleInvestmentPaymentIntentProcessing(ctx context.Context, intentID string) error
 	// HandleInvestmentPaymentIntentCancelled(ctx context.Context, intentID string) error
@@ -157,7 +157,7 @@ type PermissionService interface {
 	CanViewBusinessAnalytics(ctx context.Context, accountId int, businessId int) (bool, error)
 	CanViewBusinessMembers(ctx context.Context, accountId int, businessId int) (bool, error)
 	CanViewRoundAnalytics(ctx context.Context, accountId int, roundId int) (bool, error)
-	CanViewRoundInvestments(ctx context.Context, accountId int, roundId int) (bool, error)
+	CanViewInvestments(ctx context.Context, accountId int, roundId int) (bool, error)
 	CanDeleteRound(ctx context.Context, accountId int, roundId int) (bool, error)
 	CanBusinessCreateRound(ctx context.Context, business *business.Business) (bool, error)
 	CanAccountCreateRound(ctx context.Context, accountId int, businessId int) (bool, error)

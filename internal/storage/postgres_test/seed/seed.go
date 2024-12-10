@@ -15,7 +15,7 @@ type SeedConfig struct {
 	numRegularDynamicRounds int
 	numPartialTotalRounds   int
 	numDutchDynamicRounds   int
-	numRoundInvestments     int
+	numInvestments          int
 }
 
 // SeedConfigOption is a option function that alters the SeedConfig
@@ -31,7 +31,7 @@ func NewSeedConfig(opts ...SeedConfigOption) SeedConfig {
 		numRegularDynamicRounds: 10,
 		numPartialTotalRounds:   10,
 		numDutchDynamicRounds:   10,
-		numRoundInvestments:     10,
+		numInvestments:          10,
 	}
 
 	for _, opt := range opts {
@@ -86,10 +86,10 @@ func WithDutchDynamicRounds(numDutchDynamicRounds int) SeedConfigOption {
 	}
 }
 
-// WithRoundInvestments sets the number of round investments to seed.
-func WithRoundInvestments(numRoundInvestments int) SeedConfigOption {
+// WithInvestments sets the number of round investments to seed.
+func WithInvestments(numInvestments int) SeedConfigOption {
 	return func(config *SeedConfig) {
-		config.numRoundInvestments = numRoundInvestments
+		config.numInvestments = numInvestments
 	}
 }
 

@@ -44,7 +44,7 @@ func newHTTPHandler(service *service.Service, logger *zap.Logger) *httpHandler {
 // 		}
 // 	}
 
-// 	if investmentResult.Status != investment.InvestmentStatusPending {
+// 	if investmentResult.Status != investment.InvestmentIntentStatusPending {
 // 		h.logger.Error("investment is not pending", zap.Int("investment id", input.ID))
 // 		return nil, huma.Error400BadRequest("Investment is not pending")
 // 	}
@@ -101,7 +101,7 @@ func newHTTPHandler(service *service.Service, logger *zap.Logger) *httpHandler {
 // 		return nil, huma.Error403Forbidden("Cannot withdraw investment for another account")
 // 	}
 
-// 	if investmentResult.Status != investment.InvestmentStatusPending {
+// 	if investmentResult.Status != investment.InvestmentIntentStatusPending {
 // 		return nil, huma.Error400BadRequest("Cannot withdraw investment that is not pending")
 // 	}
 
@@ -215,8 +215,8 @@ func (h *httpHandler) createPaymentIntent(ctx context.Context, input *GetInvestm
 	return resp, nil
 }
 
-func (h *httpHandler) getInvestmentById(ctx context.Context, input *shared.PathIDParam) (*shared.SingleInvestmentResponse, error) {
-	investment, err := h.service.InvestmentService.GetById(ctx, input.ID)
+func (h *httpHandler) getInvestmentIntentById(ctx context.Context, input *shared.PathIDParam) (*shared.SingleInvestmentResponse, error) {
+	investment, err := h.service.InvestmentService.GetIntentById(ctx, input.ID)
 	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):

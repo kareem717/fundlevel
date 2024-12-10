@@ -8,21 +8,21 @@ import (
 	postgres "fundlevel/internal/storage/shared"
 )
 
-func (r *RoundRepository) GetInvestmentsByCursor(ctx context.Context, roundId int, paginationParams postgres.CursorPagination, filter investment.InvestmentFilter) ([]investment.RoundInvestment, error) {
-	resp := []investment.RoundInvestment{}
+func (r *RoundRepository) GetInvestmentsByCursor(ctx context.Context, roundId int, paginationParams postgres.CursorPagination, filter investment.InvestmentIntentFilter) ([]investment.InvestmentIntent, error) {
+	resp := []investment.InvestmentIntent{}
 
 	query := r.db.
 		NewSelect().
 		Model(&resp).
 		Relation("Investor").
-		Where("round_investment.round_id = ?", roundId).
+		Where("investment.round_id = ?", roundId).
 		Limit(paginationParams.Limit)
 
 	query = helper.ApplyInvestmentFilter(query, filter)
 
-	cursorCondition := "round_investment.id >= ?"
+	cursorCondition := "investment.id >= ?"
 	if filter.SortOrder != "asc" && paginationParams.Cursor > 0 {
-		cursorCondition = "round_investment.id <= ?"
+		cursorCondition = "investment.id <= ?"
 	}
 
 	err := query.Where(cursorCondition, paginationParams.Cursor).Scan(ctx, &resp)
@@ -30,15 +30,15 @@ func (r *RoundRepository) GetInvestmentsByCursor(ctx context.Context, roundId in
 	return resp, err
 }
 
-func (r *RoundRepository) GetInvestmentsByPage(ctx context.Context, roundId int, paginationParams postgres.OffsetPagination, filter investment.InvestmentFilter) ([]investment.RoundInvestment, int, error) {
-	resp := []investment.RoundInvestment{}
+func (r *RoundRepository) GetInvestmentsByPage(ctx context.Context, roundId int, paginationParams postgres.OffsetPagination, filter investment.InvestmentIntentFilter) ([]investment.InvestmentIntent, int, error) {
+	resp := []investment.InvestmentIntent{}
 	offset := (paginationParams.Page - 1) * paginationParams.PageSize
 
 	query := r.db.
 		NewSelect().
 		Model(&resp).
 		Relation("Investor").
-		Where("round_investment.round_id = ?", roundId).
+		Where("investment.round_id = ?", roundId).
 		Offset(offset).
 		Limit(paginationParams.PageSize + 1)
 
