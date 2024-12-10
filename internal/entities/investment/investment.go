@@ -30,6 +30,7 @@ type Investment struct {
 	CompletedAt        *string `json:"completedAt,omitempty"`
 	// Round              *round.Round     `json:"round" bun:"rel:belongs-to,join:round_id=id" required:"false"`
 	// Investor           *account.Account `json:"investor" bun:"rel:belongs-to,join:investor_id=id" required:"false"`
+	Payments []InvestmentPayment `json:"payments" bun:"rel:has-many,join:id=investment_id" required:"false"`
 	shared.Timestamps
 }
 
