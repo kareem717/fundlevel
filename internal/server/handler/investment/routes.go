@@ -138,4 +138,24 @@ func RegisterHumaRoutes(
 			},
 		},
 	}, handler.createStripePaymentIntent)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-investment-payments",
+		Method:      http.MethodGet,
+		Path:        "/investments/{id}/payments",
+		Summary:     "Get a round investment payments",
+		Description: "Get a round investment payments.",
+		Tags:        []string{"Investments"},
+		Security: []map[string][]string{
+			{"bearerAuth": {}},
+		},
+		Middlewares: huma.Middlewares{
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
+			},
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithAccount(humaApi)(ctx, next, logger, service)
+			},
+		},
+	}, handler.getInvestmentPayments)
 }
