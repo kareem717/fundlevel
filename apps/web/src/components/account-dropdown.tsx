@@ -61,7 +61,7 @@ export const AccountDropdown: FC<AccountDropdownProps> = ({
         <DropdownMenuGroup>
           <DropdownMenuLabel>Investor</DropdownMenuLabel>
           <DropdownMenuItem>
-            <Link href={redirects.app.portfolio.index}>Portfolio</Link>
+            <Link href={redirects.app.wallet.index}>Wallet</Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>
