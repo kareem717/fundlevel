@@ -520,30 +520,30 @@ export const CreateRoundParamsSchema = {
             format: 'date-time',
             type: 'string'
         },
+        investmentsRequireApproval: {
+            default: false,
+            type: 'boolean'
+        },
         investorCount: {
             format: 'int64',
             minimum: 1,
             type: 'integer'
         },
-        percentageOffered: {
+        percentageSelling: {
             examples: [10],
             format: 'double',
             maximum: 100,
             minimum: 0,
             type: 'number'
         },
-        percentageValue: {
+        valuationAmountUSDCents: {
             examples: [1000000],
             format: 'int64',
             minimum: 1,
             type: 'integer'
-        },
-        valueCurrency: {
-            enum: ['usd', 'gbp', 'eur', 'cad', 'aud', 'jpy'],
-            type: 'string'
         }
     },
-    required: ['businessId', 'beginsAt', 'endsAt', 'percentageOffered', 'valueCurrency', 'percentageValue', 'investorCount', 'description'],
+    required: ['businessId', 'beginsAt', 'endsAt', 'percentageSelling', 'valuationAmountUSDCents', 'investorCount', 'description', 'investmentsRequireApproval'],
     type: 'object'
 } as const;
 
@@ -754,11 +754,11 @@ export const GetChatsOutputBodySchema = {
     type: 'object'
 } as const;
 
-export const GetCursorPaginatedRoundInvestmentsOutputBodySchema = {
+export const GetCursorPaginatedInvestmentsOutputBodySchema = {
     additionalProperties: false,
     properties: {
         '$schema': {
-            examples: ['https://example.com/schemas/GetCursorPaginatedRoundInvestmentsOutputBody.json'],
+            examples: ['https://example.com/schemas/GetCursorPaginatedInvestmentsOutputBody.json'],
             format: 'uri',
             readOnly: true,
             type: 'string'
@@ -768,7 +768,7 @@ export const GetCursorPaginatedRoundInvestmentsOutputBodySchema = {
         },
         investments: {
             items: {
-                '$ref': '#/components/schemas/RoundInvestment'
+                '$ref': '#/components/schemas/Investment'
             },
             type: ['array', 'null']
         },
@@ -860,6 +860,49 @@ export const GetDailyAggregatedRoundAnalyticsOutputBodySchema = {
     type: 'object'
 } as const;
 
+export const GetInvestmentActivePaymentOutputBodySchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/GetInvestmentActivePaymentOutputBody.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        investmentPayment: {
+            '$ref': '#/components/schemas/InvestmentPayment'
+        },
+        message: {
+            type: 'string'
+        }
+    },
+    required: ['investmentPayment', 'message'],
+    type: 'object'
+} as const;
+
+export const GetInvestmentPaymentsOutputBodySchema = {
+    additionalProperties: false,
+    properties: {
+        '$schema': {
+            examples: ['https://example.com/schemas/GetInvestmentPaymentsOutputBody.json'],
+            format: 'uri',
+            readOnly: true,
+            type: 'string'
+        },
+        investmentPayments: {
+            items: {
+                '$ref': '#/components/schemas/InvestmentPayment'
+            },
+            type: ['array', 'null']
+        },
+        message: {
+            type: 'string'
+        }
+    },
+    required: ['investmentPayments', 'message'],
+    type: 'object'
+} as const;
+
 export const GetLikeCountOutputBodySchema = {
     additionalProperties: false,
     properties: {
@@ -911,11 +954,11 @@ export const GetOffsetPaginatedBusinessMembersOutputBodySchema = {
     type: 'object'
 } as const;
 
-export const GetOffsetPaginatedRoundInvestmentsOutputBodySchema = {
+export const GetOffsetPaginatedInvestmentsOutputBodySchema = {
     additionalProperties: false,
     properties: {
         '$schema': {
-            examples: ['https://example.com/schemas/GetOffsetPaginatedRoundInvestmentsOutputBody.json'],
+            examples: ['https://example.com/schemas/GetOffsetPaginatedInvestmentsOutputBody.json'],
             format: 'uri',
             readOnly: true,
             type: 'string'
@@ -925,7 +968,7 @@ export const GetOffsetPaginatedRoundInvestmentsOutputBodySchema = {
         },
         investments: {
             items: {
-                '$ref': '#/components/schemas/RoundInvestment'
+                '$ref': '#/components/schemas/Investment'
             },
             type: ['array', 'null']
         },
@@ -1081,6 +1124,99 @@ export const IndustrySchema = {
     type: 'object'
 } as const;
 
+export const InvestmentSchema = {
+    additionalProperties: false,
+    properties: {
+        completedAt: {
+            type: 'string'
+        },
+        createdAt: {
+            format: 'date-time',
+            type: 'string'
+        },
+        deletedAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        },
+        id: {
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
+        },
+        investorId: {
+            format: 'int64',
+            type: 'integer'
+        },
+        paymentCompletedAt: {
+            type: 'string'
+        },
+        payments: {
+            items: {
+                '$ref': '#/components/schemas/InvestmentPayment'
+            },
+            type: ['array', 'null']
+        },
+        requiresApproval: {
+            type: 'boolean'
+        },
+        roundId: {
+            format: 'int64',
+            type: 'integer'
+        },
+        status: {
+            enum: ['awaiting_term_acceptance', 'awaiting_payment', 'investor_tasks_completed', 'failed_to_accept_terms', 'failed_to_make_payment', 'investor_withdrew', 'business_rejected', 'round_closed_before_investor_tasks_completed'],
+            type: 'string'
+        },
+        termsCompletedAt: {
+            type: 'string'
+        },
+        updatedAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        }
+    },
+    required: ['id', 'roundId', 'investorId', 'status', 'requiresApproval', 'createdAt', 'updatedAt', 'deletedAt'],
+    type: 'object'
+} as const;
+
+export const InvestmentPaymentSchema = {
+    additionalProperties: false,
+    properties: {
+        createdAt: {
+            format: 'date-time',
+            type: 'string'
+        },
+        deletedAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        },
+        id: {
+            format: 'int64',
+            type: 'integer'
+        },
+        investmentId: {
+            format: 'int64',
+            type: 'integer'
+        },
+        status: {
+            enum: ['cancelled', 'processing', 'requires_action', 'requires_capture', 'requires_confirmation', 'requires_payment_method', 'succeeded'],
+            type: 'string'
+        },
+        stripePaymentIntentClientSecret: {
+            type: 'string'
+        },
+        stripePaymentIntentId: {
+            type: 'string'
+        },
+        updatedAt: {
+            format: 'date-time',
+            type: ['string', 'null']
+        }
+    },
+    required: ['id', 'investmentId', 'status', 'stripePaymentIntentId', 'stripePaymentIntentClientSecret', 'createdAt', 'updatedAt', 'deletedAt'],
+    type: 'object'
+} as const;
+
 export const InvestmentPaymentIntentClientSecretOutputBodySchema = {
     additionalProperties: false,
     properties: {
@@ -1189,11 +1325,6 @@ export const RoundSchema = {
             minimum: 1,
             type: 'integer'
         },
-        buyIn: {
-            format: 'double',
-            minimum: 1,
-            type: 'number'
-        },
         createdAt: {
             format: 'date-time',
             type: 'string'
@@ -1216,21 +1347,21 @@ export const RoundSchema = {
             minimum: 1,
             type: 'integer'
         },
+        investmentsRequireApproval: {
+            default: false,
+            type: 'boolean'
+        },
         investorCount: {
             format: 'int64',
             minimum: 1,
             type: 'integer'
         },
-        percentageOffered: {
+        percentageSelling: {
+            examples: [10],
             format: 'double',
             maximum: 100,
             minimum: 0,
             type: 'number'
-        },
-        percentageValue: {
-            format: 'int64',
-            minimum: 1,
-            type: 'integer'
         },
         status: {
             enum: ['active', 'successful', 'failed'],
@@ -1240,12 +1371,14 @@ export const RoundSchema = {
             format: 'date-time',
             type: ['string', 'null']
         },
-        valueCurrency: {
-            enum: ['usd', 'gbp', 'eur', 'cad', 'aud', 'jpy'],
-            type: 'string'
+        valuationAmountUSDCents: {
+            examples: [1000000],
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
         }
     },
-    required: ['businessId', 'beginsAt', 'endsAt', 'percentageOffered', 'percentageValue', 'valueCurrency', 'status', 'investorCount', 'buyIn', 'description', 'id', 'createdAt', 'updatedAt', 'deletedAt'],
+    required: ['businessId', 'beginsAt', 'endsAt', 'percentageSelling', 'valuationAmountUSDCents', 'status', 'investorCount', 'description', 'investmentsRequireApproval', 'id', 'createdAt', 'updatedAt', 'deletedAt'],
     type: 'object'
 } as const;
 
@@ -1266,86 +1399,6 @@ export const RoundCreateRequirementsSchema = {
     type: 'object'
 } as const;
 
-export const RoundInvestmentSchema = {
-    additionalProperties: false,
-    properties: {
-        createdAt: {
-            format: 'date-time',
-            type: 'string'
-        },
-        deletedAt: {
-            format: 'date-time',
-            type: ['string', 'null']
-        },
-        id: {
-            format: 'int64',
-            minimum: 1,
-            type: 'integer'
-        },
-        investor: {
-            '$ref': '#/components/schemas/Account'
-        },
-        investorId: {
-            format: 'int64',
-            type: 'integer'
-        },
-        payment: {
-            '$ref': '#/components/schemas/RoundInvestmentPayment'
-        },
-        round: {
-            '$ref': '#/components/schemas/Round'
-        },
-        roundId: {
-            format: 'int64',
-            type: 'integer'
-        },
-        status: {
-            enum: ['pending', 'processing', 'rejected', 'withdrawn', 'successful', 'round_closed'],
-            type: 'string'
-        },
-        updatedAt: {
-            format: 'date-time',
-            type: ['string', 'null']
-        }
-    },
-    required: ['status', 'payment', 'id', 'roundId', 'investorId', 'createdAt', 'updatedAt', 'deletedAt'],
-    type: 'object'
-} as const;
-
-export const RoundInvestmentPaymentSchema = {
-    additionalProperties: false,
-    properties: {
-        createdAt: {
-            format: 'date-time',
-            type: 'string'
-        },
-        deletedAt: {
-            format: 'date-time',
-            type: ['string', 'null']
-        },
-        roundInvestmentId: {
-            format: 'int64',
-            type: 'integer'
-        },
-        status: {
-            enum: ['cancelled', 'processing', 'requires_action', 'requires_capture', 'requires_confirmation', 'requires_payment_method', 'succeeded'],
-            type: 'string'
-        },
-        stripePaymentIntentClientSecret: {
-            type: 'string'
-        },
-        stripePaymentIntentId: {
-            type: 'string'
-        },
-        updatedAt: {
-            format: 'date-time',
-            type: ['string', 'null']
-        }
-    },
-    required: ['roundInvestmentId', 'status', 'stripePaymentIntentId', 'stripePaymentIntentClientSecret', 'createdAt', 'updatedAt', 'deletedAt'],
-    type: 'object'
-} as const;
-
 export const RoundWithBusinessSchema = {
     additionalProperties: false,
     properties: {
@@ -1360,11 +1413,6 @@ export const RoundWithBusinessSchema = {
             format: 'int64',
             minimum: 1,
             type: 'integer'
-        },
-        buyIn: {
-            format: 'double',
-            minimum: 1,
-            type: 'number'
         },
         createdAt: {
             format: 'date-time',
@@ -1388,21 +1436,21 @@ export const RoundWithBusinessSchema = {
             minimum: 1,
             type: 'integer'
         },
+        investmentsRequireApproval: {
+            default: false,
+            type: 'boolean'
+        },
         investorCount: {
             format: 'int64',
             minimum: 1,
             type: 'integer'
         },
-        percentageOffered: {
+        percentageSelling: {
+            examples: [10],
             format: 'double',
             maximum: 100,
             minimum: 0,
             type: 'number'
-        },
-        percentageValue: {
-            format: 'int64',
-            minimum: 1,
-            type: 'integer'
         },
         status: {
             enum: ['active', 'successful', 'failed'],
@@ -1412,12 +1460,14 @@ export const RoundWithBusinessSchema = {
             format: 'date-time',
             type: ['string', 'null']
         },
-        valueCurrency: {
-            enum: ['usd', 'gbp', 'eur', 'cad', 'aud', 'jpy'],
-            type: 'string'
+        valuationAmountUSDCents: {
+            examples: [1000000],
+            format: 'int64',
+            minimum: 1,
+            type: 'integer'
         }
     },
-    required: ['business', 'businessId', 'beginsAt', 'endsAt', 'percentageOffered', 'percentageValue', 'valueCurrency', 'status', 'investorCount', 'buyIn', 'description', 'id', 'createdAt', 'updatedAt', 'deletedAt'],
+    required: ['business', 'businessId', 'beginsAt', 'endsAt', 'percentageSelling', 'valuationAmountUSDCents', 'status', 'investorCount', 'description', 'investmentsRequireApproval', 'id', 'createdAt', 'updatedAt', 'deletedAt'],
     type: 'object'
 } as const;
 
@@ -1550,7 +1600,7 @@ export const SingleInvestmentResponseBodySchema = {
             type: 'string'
         },
         investment: {
-            '$ref': '#/components/schemas/RoundInvestment'
+            '$ref': '#/components/schemas/Investment'
         },
         message: {
             type: 'string'

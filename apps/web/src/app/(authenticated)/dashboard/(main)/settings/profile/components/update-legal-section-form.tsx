@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { ComponentPropsWithoutRef, useEffect, useState } from "react"
+import { ComponentPropsWithoutRef, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import {
   Form,
@@ -17,14 +17,11 @@ import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useAction } from "next-safe-action/hooks";
-import { useRouter } from "next/navigation";
 import { getBusinessById, upsertBusinessLegalSection } from "@/actions/busineses";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { InferType } from "yup";
 import { upsertBusinessLegalSectionSchema } from "@/actions/validations/business";
-import redirects from "@/lib/config/redirects";
 import { useBusinessContext } from "../../../components/business-context";
-import { Business } from "@/lib/api";
 
 export interface UpdateLegalSectionFormProps extends ComponentPropsWithoutRef<"form"> { }
 

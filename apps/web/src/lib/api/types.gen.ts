@@ -162,22 +162,11 @@ export type CreateRoundParams = {
     businessId: number;
     description: string;
     endsAt: Date;
+    investmentsRequireApproval: boolean;
     investorCount: number;
-    percentageOffered: number;
-    percentageValue: number;
-    valueCurrency: 'usd' | 'gbp' | 'eur' | 'cad' | 'aud' | 'jpy';
+    percentageSelling: number;
+    valuationAmountUSDCents: number;
 };
-
-export type valueCurrency = 'usd' | 'gbp' | 'eur' | 'cad' | 'aud' | 'jpy';
-
-export const valueCurrency = {
-    USD: 'usd',
-    GBP: 'gbp',
-    EUR: 'eur',
-    CAD: 'cad',
-    AUD: 'aud',
-    JPY: 'jpy'
-} as const;
 
 export type ErrorDetail = {
     /**
@@ -283,13 +272,13 @@ export type GetChatsOutputBody = {
     nextCursor: (Date) | null;
 };
 
-export type GetCursorPaginatedRoundInvestmentsOutputBody = {
+export type GetCursorPaginatedInvestmentsOutputBody = {
     /**
      * A URL to the JSON Schema for this object.
      */
     readonly $schema?: string;
     hasMore: boolean;
-    investments: Array<RoundInvestment> | null;
+    investments: Array<Investment> | null;
     message: string;
     nextCursor: (number) | null;
 };
@@ -323,6 +312,24 @@ export type GetDailyAggregatedRoundAnalyticsOutputBody = {
     message: string;
 };
 
+export type GetInvestmentActivePaymentOutputBody = {
+    /**
+     * A URL to the JSON Schema for this object.
+     */
+    readonly $schema?: string;
+    investmentPayment: InvestmentPayment;
+    message: string;
+};
+
+export type GetInvestmentPaymentsOutputBody = {
+    /**
+     * A URL to the JSON Schema for this object.
+     */
+    readonly $schema?: string;
+    investmentPayments: Array<InvestmentPayment> | null;
+    message: string;
+};
+
 export type GetLikeCountOutputBody = {
     /**
      * A URL to the JSON Schema for this object.
@@ -343,13 +350,13 @@ export type GetOffsetPaginatedBusinessMembersOutputBody = {
     total: number;
 };
 
-export type GetOffsetPaginatedRoundInvestmentsOutputBody = {
+export type GetOffsetPaginatedInvestmentsOutputBody = {
     /**
      * A URL to the JSON Schema for this object.
      */
     readonly $schema?: string;
     hasMore: boolean;
-    investments: Array<RoundInvestment> | null;
+    investments: Array<Investment> | null;
     message: string;
     total: number;
 };
@@ -408,6 +415,57 @@ export type Industry = {
     updatedAt: (Date) | null;
 };
 
+export type Investment = {
+    completedAt?: string;
+    createdAt: Date;
+    deletedAt: (Date) | null;
+    id: number;
+    investorId: number;
+    paymentCompletedAt?: string;
+    payments?: Array<InvestmentPayment> | null;
+    requiresApproval: boolean;
+    roundId: number;
+    status: 'awaiting_term_acceptance' | 'awaiting_payment' | 'investor_tasks_completed' | 'failed_to_accept_terms' | 'failed_to_make_payment' | 'investor_withdrew' | 'business_rejected' | 'round_closed_before_investor_tasks_completed';
+    termsCompletedAt?: string;
+    updatedAt: (Date) | null;
+};
+
+export type status = 'awaiting_term_acceptance' | 'awaiting_payment' | 'investor_tasks_completed' | 'failed_to_accept_terms' | 'failed_to_make_payment' | 'investor_withdrew' | 'business_rejected' | 'round_closed_before_investor_tasks_completed';
+
+export const status = {
+    AWAITING_TERM_ACCEPTANCE: 'awaiting_term_acceptance',
+    AWAITING_PAYMENT: 'awaiting_payment',
+    INVESTOR_TASKS_COMPLETED: 'investor_tasks_completed',
+    FAILED_TO_ACCEPT_TERMS: 'failed_to_accept_terms',
+    FAILED_TO_MAKE_PAYMENT: 'failed_to_make_payment',
+    INVESTOR_WITHDREW: 'investor_withdrew',
+    BUSINESS_REJECTED: 'business_rejected',
+    ROUND_CLOSED_BEFORE_INVESTOR_TASKS_COMPLETED: 'round_closed_before_investor_tasks_completed'
+} as const;
+
+export type InvestmentPayment = {
+    createdAt: Date;
+    deletedAt: (Date) | null;
+    id: number;
+    investmentId: number;
+    status: 'cancelled' | 'processing' | 'requires_action' | 'requires_capture' | 'requires_confirmation' | 'requires_payment_method' | 'succeeded';
+    stripePaymentIntentClientSecret: string;
+    stripePaymentIntentId: string;
+    updatedAt: (Date) | null;
+};
+
+export type status2 = 'cancelled' | 'processing' | 'requires_action' | 'requires_capture' | 'requires_confirmation' | 'requires_payment_method' | 'succeeded';
+
+export const status2 = {
+    CANCELLED: 'cancelled',
+    PROCESSING: 'processing',
+    REQUIRES_ACTION: 'requires_action',
+    REQUIRES_CAPTURE: 'requires_capture',
+    REQUIRES_CONFIRMATION: 'requires_confirmation',
+    REQUIRES_PAYMENT_METHOD: 'requires_payment_method',
+    SUCCEEDED: 'succeeded'
+} as const;
+
 export type InvestmentPaymentIntentClientSecretOutputBody = {
     /**
      * A URL to the JSON Schema for this object.
@@ -452,23 +510,22 @@ export type RolePermission = {
 export type Round = {
     beginsAt: Date;
     businessId: number;
-    buyIn: number;
     createdAt: Date;
     deletedAt: (Date) | null;
     description: string;
     endsAt: Date;
     id: number;
+    investmentsRequireApproval: boolean;
     investorCount: number;
-    percentageOffered: number;
-    percentageValue: number;
+    percentageSelling: number;
     status: 'active' | 'successful' | 'failed';
     updatedAt: (Date) | null;
-    valueCurrency: 'usd' | 'gbp' | 'eur' | 'cad' | 'aud' | 'jpy';
+    valuationAmountUSDCents: number;
 };
 
-export type status = 'active' | 'successful' | 'failed';
+export type status3 = 'active' | 'successful' | 'failed';
 
-export const status = {
+export const status3 = {
     ACTIVE: 'active',
     SUCCESSFUL: 'successful',
     FAILED: 'failed'
@@ -480,68 +537,21 @@ export type RoundCreateRequirements = {
     stripeAccount: boolean;
 };
 
-export type RoundInvestment = {
-    createdAt: Date;
-    deletedAt: (Date) | null;
-    id: number;
-    investor?: Account;
-    investorId: number;
-    payment: RoundInvestmentPayment;
-    round?: Round;
-    roundId: number;
-    status: 'pending' | 'processing' | 'rejected' | 'withdrawn' | 'successful' | 'round_closed';
-    updatedAt: (Date) | null;
-};
-
-export type status2 = 'pending' | 'processing' | 'rejected' | 'withdrawn' | 'successful' | 'round_closed';
-
-export const status2 = {
-    PENDING: 'pending',
-    PROCESSING: 'processing',
-    REJECTED: 'rejected',
-    WITHDRAWN: 'withdrawn',
-    SUCCESSFUL: 'successful',
-    ROUND_CLOSED: 'round_closed'
-} as const;
-
-export type RoundInvestmentPayment = {
-    createdAt: Date;
-    deletedAt: (Date) | null;
-    roundInvestmentId: number;
-    status: 'cancelled' | 'processing' | 'requires_action' | 'requires_capture' | 'requires_confirmation' | 'requires_payment_method' | 'succeeded';
-    stripePaymentIntentClientSecret: string;
-    stripePaymentIntentId: string;
-    updatedAt: (Date) | null;
-};
-
-export type status3 = 'cancelled' | 'processing' | 'requires_action' | 'requires_capture' | 'requires_confirmation' | 'requires_payment_method' | 'succeeded';
-
-export const status3 = {
-    CANCELLED: 'cancelled',
-    PROCESSING: 'processing',
-    REQUIRES_ACTION: 'requires_action',
-    REQUIRES_CAPTURE: 'requires_capture',
-    REQUIRES_CONFIRMATION: 'requires_confirmation',
-    REQUIRES_PAYMENT_METHOD: 'requires_payment_method',
-    SUCCEEDED: 'succeeded'
-} as const;
-
 export type RoundWithBusiness = {
     beginsAt: Date;
     business: Business;
     businessId: number;
-    buyIn: number;
     createdAt: Date;
     deletedAt: (Date) | null;
     description: string;
     endsAt: Date;
     id: number;
+    investmentsRequireApproval: boolean;
     investorCount: number;
-    percentageOffered: number;
-    percentageValue: number;
+    percentageSelling: number;
     status: 'active' | 'successful' | 'failed';
     updatedAt: (Date) | null;
-    valueCurrency: 'usd' | 'gbp' | 'eur' | 'cad' | 'aud' | 'jpy';
+    valuationAmountUSDCents: number;
 };
 
 export type SafeAccount = {
@@ -590,7 +600,7 @@ export type SingleInvestmentResponseBody = {
      * A URL to the JSON Schema for this object.
      */
     readonly $schema?: string;
-    investment: RoundInvestment;
+    investment: Investment;
     message: string;
 };
 
@@ -719,11 +729,11 @@ export type GetAccountInvestmentsByCursorData = {
         limit?: number;
         sortBy?: 'created_at';
         sortOrder?: 'asc' | 'desc';
-        status?: Array<('pending' | 'processing' | 'rejected' | 'withdrawn' | 'successful' | 'round_closed')> | null;
+        status?: Array<('awaiting_term_acceptance' | 'awaiting_payment' | 'investor_tasks_completed' | 'failed_to_accept_terms' | 'failed_to_make_payment' | 'investor_withdrew' | 'business_rejected' | 'round_closed_before_investor_tasks_completed')> | null;
     };
 };
 
-export type GetAccountInvestmentsByCursorResponse = (GetCursorPaginatedRoundInvestmentsOutputBody);
+export type GetAccountInvestmentsByCursorResponse = (GetCursorPaginatedInvestmentsOutputBody);
 
 export type GetAccountInvestmentsByCursorError = (ErrorModel);
 
@@ -736,11 +746,11 @@ export type GetAccountInvestmentsByPageData = {
         pageSize?: number;
         sortBy?: 'created_at';
         sortOrder?: 'asc' | 'desc';
-        status?: Array<('pending' | 'processing' | 'rejected' | 'withdrawn' | 'successful' | 'round_closed')> | null;
+        status?: Array<('awaiting_term_acceptance' | 'awaiting_payment' | 'investor_tasks_completed' | 'failed_to_accept_terms' | 'failed_to_make_payment' | 'investor_withdrew' | 'business_rejected' | 'round_closed_before_investor_tasks_completed')> | null;
     };
 };
 
-export type GetAccountInvestmentsByPageResponse = (GetOffsetPaginatedRoundInvestmentsOutputBody);
+export type GetAccountInvestmentsByPageResponse = (GetOffsetPaginatedInvestmentsOutputBody);
 
 export type GetAccountInvestmentsByPageError = (ErrorModel);
 
@@ -947,11 +957,11 @@ export type GetBusinessInvestmentsByCursorData = {
         limit?: number;
         sortBy?: 'created_at';
         sortOrder?: 'asc' | 'desc';
-        status?: Array<('pending' | 'processing' | 'rejected' | 'withdrawn' | 'successful' | 'round_closed')> | null;
+        status?: Array<('awaiting_term_acceptance' | 'awaiting_payment' | 'investor_tasks_completed' | 'failed_to_accept_terms' | 'failed_to_make_payment' | 'investor_withdrew' | 'business_rejected' | 'round_closed_before_investor_tasks_completed')> | null;
     };
 };
 
-export type GetBusinessInvestmentsByCursorResponse = (GetCursorPaginatedRoundInvestmentsOutputBody);
+export type GetBusinessInvestmentsByCursorResponse = (GetCursorPaginatedInvestmentsOutputBody);
 
 export type GetBusinessInvestmentsByCursorError = (ErrorModel);
 
@@ -964,11 +974,11 @@ export type GetBusinessInvestmentsByPageData = {
         pageSize?: number;
         sortBy?: 'created_at';
         sortOrder?: 'asc' | 'desc';
-        status?: Array<('pending' | 'processing' | 'rejected' | 'withdrawn' | 'successful' | 'round_closed')> | null;
+        status?: Array<('awaiting_term_acceptance' | 'awaiting_payment' | 'investor_tasks_completed' | 'failed_to_accept_terms' | 'failed_to_make_payment' | 'investor_withdrew' | 'business_rejected' | 'round_closed_before_investor_tasks_completed')> | null;
     };
 };
 
-export type GetBusinessInvestmentsByPageResponse = (GetOffsetPaginatedRoundInvestmentsOutputBody);
+export type GetBusinessInvestmentsByPageResponse = (GetOffsetPaginatedInvestmentsOutputBody);
 
 export type GetBusinessInvestmentsByPageError = (ErrorModel);
 
@@ -1007,22 +1017,6 @@ export type GetBusinessRoundsByCursorData = {
     query?: {
         cursor?: number;
         limit?: number;
-        maximumBeginsAt?: Date;
-        maximumBuyIn?: number;
-        maximumEndsAt?: Date;
-        maximumInvestorCount?: number;
-        maximumPercentageOffered?: number;
-        maximumPercentageValue?: number;
-        minimumBeginsAt?: Date;
-        minimumBuyIn?: number;
-        minimumEndsAt?: Date;
-        minimumInvestorCount?: number;
-        minimumPercentageOffered?: number;
-        minimumPercentageValue?: number;
-        sortBy?: 'begins_at' | 'ends_at' | 'percentage_offered' | 'percentage_value' | 'value_currency' | 'status' | 'investor_count' | 'buy_in' | 'created_at';
-        sortOrder?: 'asc' | 'desc';
-        status?: Array<('active' | 'successful' | 'failed')> | null;
-        valueCurrencies?: 'usd' | 'gbp' | 'eur' | 'cad' | 'aud' | 'jpy';
     };
 };
 
@@ -1035,24 +1029,8 @@ export type GetBusinessRoundsByPageData = {
         id: number;
     };
     query?: {
-        maximumBeginsAt?: Date;
-        maximumBuyIn?: number;
-        maximumEndsAt?: Date;
-        maximumInvestorCount?: number;
-        maximumPercentageOffered?: number;
-        maximumPercentageValue?: number;
-        minimumBeginsAt?: Date;
-        minimumBuyIn?: number;
-        minimumEndsAt?: Date;
-        minimumInvestorCount?: number;
-        minimumPercentageOffered?: number;
-        minimumPercentageValue?: number;
         page?: number;
         pageSize?: number;
-        sortBy?: 'begins_at' | 'ends_at' | 'percentage_offered' | 'percentage_value' | 'value_currency' | 'status' | 'investor_count' | 'buy_in' | 'created_at';
-        sortOrder?: 'asc' | 'desc';
-        status?: Array<('active' | 'successful' | 'failed')> | null;
-        valueCurrencies?: 'usd' | 'gbp' | 'eur' | 'cad' | 'aud' | 'jpy';
     };
 };
 
@@ -1178,6 +1156,16 @@ export type GetAllIndustriesResponse = (GetAllIndustriesResponseBody);
 
 export type GetAllIndustriesError = (ErrorModel);
 
+export type CreateRoundInvestmentData = {
+    path: {
+        id: number;
+    };
+};
+
+export type CreateRoundInvestmentResponse = (SingleInvestmentResponseBody);
+
+export type CreateRoundInvestmentError = (ErrorModel);
+
 export type GetInvestmentByIdData = {
     path: {
         id: number;
@@ -1187,6 +1175,16 @@ export type GetInvestmentByIdData = {
 export type GetInvestmentByIdResponse = (SingleInvestmentResponseBody);
 
 export type GetInvestmentByIdError = (ErrorModel);
+
+export type GetInvestmentActivePaymentData = {
+    path: {
+        id: number;
+    };
+};
+
+export type GetInvestmentActivePaymentResponse = (GetInvestmentActivePaymentOutputBody);
+
+export type GetInvestmentActivePaymentError = (ErrorModel);
 
 export type CreateInvestmentPaymentIntentData = {
     path: {
@@ -1198,26 +1196,20 @@ export type CreateInvestmentPaymentIntentResponse = (InvestmentPaymentIntentClie
 
 export type CreateInvestmentPaymentIntentError = (ErrorModel);
 
+export type GetInvestmentPaymentsData = {
+    path: {
+        id: number;
+    };
+};
+
+export type GetInvestmentPaymentsResponse = (GetInvestmentPaymentsOutputBody);
+
+export type GetInvestmentPaymentsError = (ErrorModel);
+
 export type GetRoundByCursorData = {
     query?: {
         cursor?: number;
         limit?: number;
-        maximumBeginsAt?: Date;
-        maximumBuyIn?: number;
-        maximumEndsAt?: Date;
-        maximumInvestorCount?: number;
-        maximumPercentageOffered?: number;
-        maximumPercentageValue?: number;
-        minimumBeginsAt?: Date;
-        minimumBuyIn?: number;
-        minimumEndsAt?: Date;
-        minimumInvestorCount?: number;
-        minimumPercentageOffered?: number;
-        minimumPercentageValue?: number;
-        sortBy?: 'begins_at' | 'ends_at' | 'percentage_offered' | 'percentage_value' | 'value_currency' | 'status' | 'investor_count' | 'buy_in' | 'created_at';
-        sortOrder?: 'asc' | 'desc';
-        status?: Array<('active' | 'successful' | 'failed')> | null;
-        valueCurrencies?: 'usd' | 'gbp' | 'eur' | 'cad' | 'aud' | 'jpy';
     };
 };
 
@@ -1235,24 +1227,8 @@ export type CreateRoundError = (ErrorModel);
 
 export type GetRoundsByPageData = {
     query?: {
-        maximumBeginsAt?: Date;
-        maximumBuyIn?: number;
-        maximumEndsAt?: Date;
-        maximumInvestorCount?: number;
-        maximumPercentageOffered?: number;
-        maximumPercentageValue?: number;
-        minimumBeginsAt?: Date;
-        minimumBuyIn?: number;
-        minimumEndsAt?: Date;
-        minimumInvestorCount?: number;
-        minimumPercentageOffered?: number;
-        minimumPercentageValue?: number;
         page?: number;
         pageSize?: number;
-        sortBy?: 'begins_at' | 'ends_at' | 'percentage_offered' | 'percentage_value' | 'value_currency' | 'status' | 'investor_count' | 'buy_in' | 'created_at';
-        sortOrder?: 'asc' | 'desc';
-        status?: Array<('active' | 'successful' | 'failed')> | null;
-        valueCurrencies?: 'usd' | 'gbp' | 'eur' | 'cad' | 'aud' | 'jpy';
     };
 };
 
@@ -1459,13 +1435,13 @@ export const GetAccountChatsResponseTransformer: GetAccountChatsResponseTransfor
 
 export type GetAccountInvestmentsByCursorResponseTransformer = (data: any) => Promise<GetAccountInvestmentsByCursorResponse>;
 
-export type GetCursorPaginatedRoundInvestmentsOutputBodyModelResponseTransformer = (data: any) => GetCursorPaginatedRoundInvestmentsOutputBody;
+export type GetCursorPaginatedInvestmentsOutputBodyModelResponseTransformer = (data: any) => GetCursorPaginatedInvestmentsOutputBody;
 
-export type RoundInvestmentModelResponseTransformer = (data: any) => RoundInvestment;
+export type InvestmentModelResponseTransformer = (data: any) => Investment;
 
-export type RoundInvestmentPaymentModelResponseTransformer = (data: any) => RoundInvestmentPayment;
+export type InvestmentPaymentModelResponseTransformer = (data: any) => InvestmentPayment;
 
-export const RoundInvestmentPaymentModelResponseTransformer: RoundInvestmentPaymentModelResponseTransformer = data => {
+export const InvestmentPaymentModelResponseTransformer: InvestmentPaymentModelResponseTransformer = data => {
     if (data?.createdAt) {
         data.createdAt = new Date(data.createdAt);
     }
@@ -1478,20 +1454,15 @@ export const RoundInvestmentPaymentModelResponseTransformer: RoundInvestmentPaym
     return data;
 };
 
-export type RoundModelResponseTransformer = (data: any) => Round;
-
-export const RoundModelResponseTransformer: RoundModelResponseTransformer = data => {
-    if (data?.beginsAt) {
-        data.beginsAt = new Date(data.beginsAt);
-    }
+export const InvestmentModelResponseTransformer: InvestmentModelResponseTransformer = data => {
     if (data?.createdAt) {
         data.createdAt = new Date(data.createdAt);
     }
     if (data?.deletedAt) {
         data.deletedAt = new Date(data.deletedAt);
     }
-    if (data?.endsAt) {
-        data.endsAt = new Date(data.endsAt);
+    if (Array.isArray(data?.payments)) {
+        data.payments.forEach(InvestmentPaymentModelResponseTransformer);
     }
     if (data?.updatedAt) {
         data.updatedAt = new Date(data.updatedAt);
@@ -1499,53 +1470,31 @@ export const RoundModelResponseTransformer: RoundModelResponseTransformer = data
     return data;
 };
 
-export const RoundInvestmentModelResponseTransformer: RoundInvestmentModelResponseTransformer = data => {
-    if (data?.createdAt) {
-        data.createdAt = new Date(data.createdAt);
-    }
-    if (data?.deletedAt) {
-        data.deletedAt = new Date(data.deletedAt);
-    }
-    if (data?.investor) {
-        AccountModelResponseTransformer(data.investor);
-    }
-    if (data?.payment) {
-        RoundInvestmentPaymentModelResponseTransformer(data.payment);
-    }
-    if (data?.round) {
-        RoundModelResponseTransformer(data.round);
-    }
-    if (data?.updatedAt) {
-        data.updatedAt = new Date(data.updatedAt);
-    }
-    return data;
-};
-
-export const GetCursorPaginatedRoundInvestmentsOutputBodyModelResponseTransformer: GetCursorPaginatedRoundInvestmentsOutputBodyModelResponseTransformer = data => {
+export const GetCursorPaginatedInvestmentsOutputBodyModelResponseTransformer: GetCursorPaginatedInvestmentsOutputBodyModelResponseTransformer = data => {
     if (Array.isArray(data?.investments)) {
-        data.investments.forEach(RoundInvestmentModelResponseTransformer);
+        data.investments.forEach(InvestmentModelResponseTransformer);
     }
     return data;
 };
 
 export const GetAccountInvestmentsByCursorResponseTransformer: GetAccountInvestmentsByCursorResponseTransformer = async (data) => {
-    GetCursorPaginatedRoundInvestmentsOutputBodyModelResponseTransformer(data);
+    GetCursorPaginatedInvestmentsOutputBodyModelResponseTransformer(data);
     return data;
 };
 
 export type GetAccountInvestmentsByPageResponseTransformer = (data: any) => Promise<GetAccountInvestmentsByPageResponse>;
 
-export type GetOffsetPaginatedRoundInvestmentsOutputBodyModelResponseTransformer = (data: any) => GetOffsetPaginatedRoundInvestmentsOutputBody;
+export type GetOffsetPaginatedInvestmentsOutputBodyModelResponseTransformer = (data: any) => GetOffsetPaginatedInvestmentsOutputBody;
 
-export const GetOffsetPaginatedRoundInvestmentsOutputBodyModelResponseTransformer: GetOffsetPaginatedRoundInvestmentsOutputBodyModelResponseTransformer = data => {
+export const GetOffsetPaginatedInvestmentsOutputBodyModelResponseTransformer: GetOffsetPaginatedInvestmentsOutputBodyModelResponseTransformer = data => {
     if (Array.isArray(data?.investments)) {
-        data.investments.forEach(RoundInvestmentModelResponseTransformer);
+        data.investments.forEach(InvestmentModelResponseTransformer);
     }
     return data;
 };
 
 export const GetAccountInvestmentsByPageResponseTransformer: GetAccountInvestmentsByPageResponseTransformer = async (data) => {
-    GetOffsetPaginatedRoundInvestmentsOutputBodyModelResponseTransformer(data);
+    GetOffsetPaginatedInvestmentsOutputBodyModelResponseTransformer(data);
     return data;
 };
 
@@ -1568,14 +1517,14 @@ export const GetBusinessByIdResponseTransformer: GetBusinessByIdResponseTransfor
 export type GetBusinessInvestmentsByCursorResponseTransformer = (data: any) => Promise<GetBusinessInvestmentsByCursorResponse>;
 
 export const GetBusinessInvestmentsByCursorResponseTransformer: GetBusinessInvestmentsByCursorResponseTransformer = async (data) => {
-    GetCursorPaginatedRoundInvestmentsOutputBodyModelResponseTransformer(data);
+    GetCursorPaginatedInvestmentsOutputBodyModelResponseTransformer(data);
     return data;
 };
 
 export type GetBusinessInvestmentsByPageResponseTransformer = (data: any) => Promise<GetBusinessInvestmentsByPageResponse>;
 
 export const GetBusinessInvestmentsByPageResponseTransformer: GetBusinessInvestmentsByPageResponseTransformer = async (data) => {
-    GetOffsetPaginatedRoundInvestmentsOutputBodyModelResponseTransformer(data);
+    GetOffsetPaginatedInvestmentsOutputBodyModelResponseTransformer(data);
     return data;
 };
 
@@ -1631,6 +1580,27 @@ export const GetBusinessMembersByPageResponseTransformer: GetBusinessMembersByPa
 export type GetBusinessRoundsByCursorResponseTransformer = (data: any) => Promise<GetBusinessRoundsByCursorResponse>;
 
 export type GetCursorPaginatedRoundsOutputBodyModelResponseTransformer = (data: any) => GetCursorPaginatedRoundsOutputBody;
+
+export type RoundModelResponseTransformer = (data: any) => Round;
+
+export const RoundModelResponseTransformer: RoundModelResponseTransformer = data => {
+    if (data?.beginsAt) {
+        data.beginsAt = new Date(data.beginsAt);
+    }
+    if (data?.createdAt) {
+        data.createdAt = new Date(data.createdAt);
+    }
+    if (data?.deletedAt) {
+        data.deletedAt = new Date(data.deletedAt);
+    }
+    if (data?.endsAt) {
+        data.endsAt = new Date(data.endsAt);
+    }
+    if (data?.updatedAt) {
+        data.updatedAt = new Date(data.updatedAt);
+    }
+    return data;
+};
 
 export const GetCursorPaginatedRoundsOutputBodyModelResponseTransformer: GetCursorPaginatedRoundsOutputBodyModelResponseTransformer = data => {
     if (Array.isArray(data?.rounds)) {
@@ -1754,19 +1724,58 @@ export const GetAllIndustriesResponseTransformer: GetAllIndustriesResponseTransf
     return data;
 };
 
-export type GetInvestmentByIdResponseTransformer = (data: any) => Promise<GetInvestmentByIdResponse>;
+export type CreateRoundInvestmentResponseTransformer = (data: any) => Promise<CreateRoundInvestmentResponse>;
 
 export type SingleInvestmentResponseBodyModelResponseTransformer = (data: any) => SingleInvestmentResponseBody;
 
 export const SingleInvestmentResponseBodyModelResponseTransformer: SingleInvestmentResponseBodyModelResponseTransformer = data => {
     if (data?.investment) {
-        RoundInvestmentModelResponseTransformer(data.investment);
+        InvestmentModelResponseTransformer(data.investment);
     }
     return data;
 };
 
+export const CreateRoundInvestmentResponseTransformer: CreateRoundInvestmentResponseTransformer = async (data) => {
+    SingleInvestmentResponseBodyModelResponseTransformer(data);
+    return data;
+};
+
+export type GetInvestmentByIdResponseTransformer = (data: any) => Promise<GetInvestmentByIdResponse>;
+
 export const GetInvestmentByIdResponseTransformer: GetInvestmentByIdResponseTransformer = async (data) => {
     SingleInvestmentResponseBodyModelResponseTransformer(data);
+    return data;
+};
+
+export type GetInvestmentActivePaymentResponseTransformer = (data: any) => Promise<GetInvestmentActivePaymentResponse>;
+
+export type GetInvestmentActivePaymentOutputBodyModelResponseTransformer = (data: any) => GetInvestmentActivePaymentOutputBody;
+
+export const GetInvestmentActivePaymentOutputBodyModelResponseTransformer: GetInvestmentActivePaymentOutputBodyModelResponseTransformer = data => {
+    if (data?.investmentPayment) {
+        InvestmentPaymentModelResponseTransformer(data.investmentPayment);
+    }
+    return data;
+};
+
+export const GetInvestmentActivePaymentResponseTransformer: GetInvestmentActivePaymentResponseTransformer = async (data) => {
+    GetInvestmentActivePaymentOutputBodyModelResponseTransformer(data);
+    return data;
+};
+
+export type GetInvestmentPaymentsResponseTransformer = (data: any) => Promise<GetInvestmentPaymentsResponse>;
+
+export type GetInvestmentPaymentsOutputBodyModelResponseTransformer = (data: any) => GetInvestmentPaymentsOutputBody;
+
+export const GetInvestmentPaymentsOutputBodyModelResponseTransformer: GetInvestmentPaymentsOutputBodyModelResponseTransformer = data => {
+    if (Array.isArray(data?.investmentPayments)) {
+        data.investmentPayments.forEach(InvestmentPaymentModelResponseTransformer);
+    }
+    return data;
+};
+
+export const GetInvestmentPaymentsResponseTransformer: GetInvestmentPaymentsResponseTransformer = async (data) => {
+    GetInvestmentPaymentsOutputBodyModelResponseTransformer(data);
     return data;
 };
 
