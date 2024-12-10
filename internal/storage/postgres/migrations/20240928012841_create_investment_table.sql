@@ -34,7 +34,7 @@ EXECUTE PROCEDURE sync_updated_at_column ();
 -- +goose StatementEnd
 -- +goose Down
 -- +goose StatementBegin
-DROP TABLE investment;
+DROP TABLE investments;
 
 DROP TYPE investment_status;
 
