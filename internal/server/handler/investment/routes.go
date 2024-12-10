@@ -121,7 +121,7 @@ func RegisterHumaRoutes(
 
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "create-investment-payment-intent",
-		Method:      http.MethodGet,
+		Method:      http.MethodPost,
 		Path:        "/investments/{id}/pay",
 		Summary:     "Create a stripe payment intent",
 		Description: "Create a stripe payment intent for an investment.",
@@ -138,6 +138,26 @@ func RegisterHumaRoutes(
 			},
 		},
 	}, handler.createStripePaymentIntent)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-investment-active-payment",
+		Method:      http.MethodGet,
+		Path:        "/investments/{id}/pay",
+		Summary:     "Get the active payment for an investment",
+		Description: "Get the payment for the current investment that is either processing or succeeded.",
+		Tags:        []string{"Investments"},
+		Security: []map[string][]string{
+			{"bearerAuth": {}},
+		},
+		Middlewares: huma.Middlewares{
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
+			},
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithAccount(humaApi)(ctx, next, logger, service)
+			},
+		},
+	}, handler.getInvestmentActivePayment)
 
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "get-investment-payments",

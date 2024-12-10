@@ -1,7 +1,7 @@
 -- +goose Up
 -- +goose StatementBegin
 CREATE TYPE stripe_payment_intent_status AS ENUM(
-    'cancelled',
+    'canceled',
     'processing',
     'requires_action',
     'requires_capture',
