@@ -104,18 +104,17 @@ func (s *InvestmentService) HandleStripePaymentIntentCreated(ctx context.Context
 	}
 
 	err = s.repositories.RunInTx(ctx, func(ctx context.Context, tx storage.Transaction) error {
-		paymentRecord, err := s.repositories.Investment().CreatePayment(ctx, investment.CreateInvestmentPaymentParams{
+		paymentRecord, err := tx.Investment().CreatePayment(ctx, investment.CreateInvestmentPaymentParams{
 			InvestmentID:                    parsedInvestmentId,
 			StripePaymentIntentID:           intent.ID,
 			StripePaymentIntentClientSecret: intent.ClientSecret,
 			Status:                          intent.Status,
 		})
-
 		if err != nil {
 			return err
 		}
 
-		_, err = s.repositories.Investment().Update(ctx, parsedInvestmentId, investment.UpdateInvestmentParams{
+		_, err = tx.Investment().Update(ctx, parsedInvestmentId, investment.UpdateInvestmentParams{
 			Status: investment.InvestmentStatusPayment,
 		})
 		if err != nil {
@@ -125,7 +124,7 @@ func (s *InvestmentService) HandleStripePaymentIntentCreated(ctx context.Context
 		// Add the payment ID to the metadata so we can find it later need be
 		// This is arguably unnesseary but might help to debug or decouple
 		// from stripe later down the line
-		if _, err = paymentintent.Update(intent.ID, &stripe.PaymentIntentParams{
+		if _, err := paymentintent.Update(intent.ID, &stripe.PaymentIntentParams{
 			Metadata: map[string]string{
 				InvestmentPaymentIDMetadatakey: strconv.Itoa(paymentRecord.ID),
 			},
