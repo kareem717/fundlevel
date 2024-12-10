@@ -4,11 +4,10 @@ import (
 	"context"
 
 	"fundlevel/internal/entities/round"
-	"fundlevel/internal/storage/postgres/helper"
 	postgres "fundlevel/internal/storage/shared"
 )
 
-func (r *BusinessRepository) GetRoundsByCursor(ctx context.Context, businessId int, paginationParams postgres.CursorPagination, filter round.RoundFilter) ([]round.Round, error) {
+func (r *BusinessRepository) GetRoundsByCursor(ctx context.Context, businessId int, paginationParams postgres.CursorPagination) ([]round.Round, error) {
 	resp := []round.Round{}
 
 	query := r.db.
@@ -17,7 +16,7 @@ func (r *BusinessRepository) GetRoundsByCursor(ctx context.Context, businessId i
 		Where("business_id = ?", businessId).
 		Limit(paginationParams.Limit)
 
-	query = helper.ApplyRoundFilter(query, filter)
+	// query = helper.ApplyRoundFilter(query, filter)
 
 	cursorCondition := "round.id >= ?"
 	if paginationParams.Cursor > 0 {
@@ -29,7 +28,7 @@ func (r *BusinessRepository) GetRoundsByCursor(ctx context.Context, businessId i
 	return resp, err
 }
 
-func (r *BusinessRepository) GetRoundsByPage(ctx context.Context, businessId int, paginationParams postgres.OffsetPagination, filter round.RoundFilter) ([]round.Round, int, error) {
+func (r *BusinessRepository) GetRoundsByPage(ctx context.Context, businessId int, paginationParams postgres.OffsetPagination) ([]round.Round, int, error) {
 	resp := []round.Round{}
 	offset := (paginationParams.Page - 1) * paginationParams.PageSize
 
@@ -39,8 +38,9 @@ func (r *BusinessRepository) GetRoundsByPage(ctx context.Context, businessId int
 		Where("business_id = ?", businessId).
 		Offset(offset).
 		Limit(paginationParams.PageSize + 1)
+	// query = helper.ApplyRoundFilter(query, filter)
 
-	count, err := helper.ApplyRoundFilter(query, filter).ScanAndCount(ctx, &resp)
+	count, err := query.ScanAndCount(ctx, &resp)
 
 	return resp, count, err
 }

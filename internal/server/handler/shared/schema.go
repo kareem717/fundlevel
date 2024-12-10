@@ -49,12 +49,14 @@ type HandleStripeWebhookInput struct {
 
 type GetRoundsByParentAndCursorInput struct {
 	GetCursorPaginatedByParentPathIDInput
-	round.RoundFilter
+	// TODO: Add round filter
+	// round.RoundFilter
 }
 
 type GetRoundsByParentAndPageInput struct {
 	GetOffsetPaginatedByParentPathIDInput
-	round.RoundFilter
+	// TODO: Add round filter
+	// round.RoundFilter
 }
 
 type GetInvestmentsByParentAndCursorInput struct {

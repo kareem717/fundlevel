@@ -130,7 +130,7 @@ func (h *httpHandler) delete(ctx context.Context, input *shared.PathIDParam) (*D
 func (h *httpHandler) getRoundsByCursor(ctx context.Context, input *shared.GetRoundsByParentAndCursorInput) (*shared.GetCursorPaginatedRoundsOutput, error) {
 	limit := input.Limit + 1
 
-	rounds, err := h.service.BusinessService.GetRoundsByCursor(ctx, input.ID, limit, input.Cursor, input.RoundFilter)
+	rounds, err := h.service.BusinessService.GetRoundsByCursor(ctx, input.ID, limit, input.Cursor)
 
 	if err != nil {
 		switch {
@@ -156,7 +156,7 @@ func (h *httpHandler) getRoundsByCursor(ctx context.Context, input *shared.GetRo
 }
 
 func (h *httpHandler) getRoundsByPage(ctx context.Context, input *shared.GetRoundsByParentAndPageInput) (*shared.GetOffsetPaginatedRoundsOutput, error) {
-	rounds, total, err := h.service.BusinessService.GetRoundsByPage(ctx, input.ID, input.PageSize, input.Page, input.RoundFilter)
+	rounds, total, err := h.service.BusinessService.GetRoundsByPage(ctx, input.ID, input.PageSize, input.Page)
 
 	if err != nil {
 		switch {

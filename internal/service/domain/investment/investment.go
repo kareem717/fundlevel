@@ -2,7 +2,9 @@ package investment
 
 import (
 	"context"
+	"errors"
 	"fundlevel/internal/entities/investment"
+	"fundlevel/internal/entities/round"
 	"fundlevel/internal/storage"
 )
 
@@ -34,8 +36,38 @@ func (s *InvestmentService) Update(ctx context.Context, id int, params investmen
 	return s.repositories.Investment().Update(ctx, id, params)
 }
 
-func (s *InvestmentService) Create(ctx context.Context, params investment.CreateInvestmentParams) (investment.Investment, error) {
+func (s *InvestmentService) Create(
+	ctx context.Context,
+	investorID int,
+	round *round.Round,
+) (investment.Investment, error) {
+	if round == nil {
+		return investment.Investment{}, errors.New("round is required")
+	}
+
+	params := investment.CreateInvestmentParams{
+		RoundID:    round.ID,
+		InvestorID: investorID,
+		AmountUSDCents: calculateBuyInCents(
+			round.ValuationAmountUSDCents,
+			round.PercentageSelling,
+			round.InvestorCount,
+		),
+		Status:           investment.InvestmentStatusTerms,
+		RequiresApproval: round.InvestmentsRequireApproval,
+	}
+
 	return s.repositories.Investment().Create(ctx, params)
+}
+
+func calculateBuyInCents(
+	valuationAmountUSDCents int,
+	percentageSelling float64,
+	investorCount int,
+) int {
+	percentagePerInvestor := percentageSelling / float64(investorCount)
+	buyInCents := int(float64(valuationAmountUSDCents) / percentagePerInvestor)
+	return buyInCents
 }
 
 // TODO: account for cancelling

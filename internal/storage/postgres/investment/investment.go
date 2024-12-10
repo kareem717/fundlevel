@@ -49,9 +49,9 @@ func (r *InvestmentRepository) GetById(ctx context.Context, id int) (investment.
 
 	err := r.db.NewSelect().
 		Model(&resp).
-		Relation("Round").
-		Relation("Investor").
-		Relation("Payment").
+		// Relation("Round").
+		// Relation("Investor").
+		Relation("Payments").
 		Where("investment.id = ?", id).
 		Scan(ctx)
 
@@ -64,8 +64,8 @@ func (r *InvestmentRepository) GetByCursor(ctx context.Context, paginationParams
 	query := r.db.
 		NewSelect().
 		Model(&resp).
-		Relation("Round").
-		Relation("Investor").
+		// Relation("Round").
+		// Relation("Investor").
 		Limit(paginationParams.Limit)
 
 	query = helper.ApplyInvestmentFilter(query, filter)
@@ -87,8 +87,8 @@ func (r *InvestmentRepository) GetByPage(ctx context.Context, paginationParams p
 	query := r.db.
 		NewSelect().
 		Model(&resp).
-		Relation("Round").
-		Relation("Investor").
+			// Relation("Round").
+			// Relation("Investor").
 		Offset(offset).
 		Limit(paginationParams.PageSize + 1)
 
@@ -115,8 +115,8 @@ func (r *InvestmentRepository) GetByRoundIdAndAccountId(ctx context.Context, rou
 
 	err := r.db.NewSelect().
 		Model(&resp).
-		Relation("Round").
-		Relation("Investor").
+		// Relation("Round").
+		// Relation("Investor").
 		Where("investment.round_id = ?", roundId).
 		Where("investment.investor_id = ?", accountId).
 		Scan(ctx)

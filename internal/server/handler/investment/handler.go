@@ -4,6 +4,8 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fundlevel/internal/entities/investment"
+	"fundlevel/internal/entities/round"
 	"fundlevel/internal/server/handler/shared"
 	"fundlevel/internal/service"
 
@@ -147,46 +149,35 @@ func newHTTPHandler(service *service.Service, logger *zap.Logger) *httpHandler {
 // 	resp.Message = "Investment deleted successfully"
 
 // 	return resp, nil
-// }
+// }.
 
-// func (h *httpHandler) create(ctx context.Context, input *shared.PathIDParam) (*shared.SingleInvestmentResponse, error) {
-// 	account := shared.GetAuthenticatedAccount(ctx)
+func (h *httpHandler) create(ctx context.Context, input *shared.PathIDParam) (*shared.SingleInvestmentResponse, error) {
+	account := shared.GetAuthenticatedAccount(ctx)
 
-// 	round, err := h.service.RoundService.GetById(ctx, input.ID)
-// 	if err != nil {
-// 		h.logger.Error("failed to get round", zap.Error(err))
-// 		return nil, huma.Error500InternalServerError("Failed to get round")
-// 	}
+	// todo: add ABAC checks
+	roundRecord, err := h.service.RoundService.GetById(ctx, input.ID)
+	if err != nil {
+		h.logger.Error("failed to get round", zap.Error(err))
+		return nil, huma.Error500InternalServerError("Failed to get round")
+	}
 
-// 	if account.ID == round.Venture.Business.OwnerAccountID {
-// 		return nil, huma.Error400BadRequest("Business owners cannot invest in their own rounds")
-// 	}
+	if roundRecord.Status != round.RoundStatusActive {
+		h.logger.Error("round is not active", zap.Int("round id", input.ID))
+		return nil, huma.Error400BadRequest("Round is not active")
+	}
 
-// 	isInvested, err := h.service.AccountService.IsInvestedInRound(ctx, account.ID, input.ID)
-// 	if err != nil {
-// 		h.logger.Error("failed to check if account is invested in round", zap.Error(err))
-// 		return nil, huma.Error500InternalServerError("An error occurred while checking if the account is invested in the round")
-// 	}
+	investment, err := h.service.InvestmentService.Create(ctx, account.ID, &roundRecord.Round)
+	if err != nil {
+		h.logger.Error("failed to create investment", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while creating the investment")
+	}
 
-// 	if isInvested {
-// 		return nil, huma.Error400BadRequest("You already have a pending investment in this round, complete or withdraw that investment before creating a new one")
-// 	}
+	resp := &shared.SingleInvestmentResponse{}
+	resp.Body.Message = "Investment created successfully"
+	resp.Body.Investment = &investment
 
-// 	investment, err := h.service.InvestmentService.Create(ctx, investment.CreateInvestmentParams{
-// 		RoundID:    input.ID,
-// 		InvestorID: account.ID,
-// 	})
-// 	if err != nil {
-// 		h.logger.Error("failed to create investment", zap.Error(err))
-// 		return nil, huma.Error500InternalServerError("An error occurred while creating the investment")
-// 	}
-
-// 	resp := &shared.SingleInvestmentResponse{}
-// 	resp.Body.Message = "Investment created successfully"
-// 	resp.Body.Investment = &investment
-
-// 	return resp, nil
-// }
+	return resp, nil
+}
 
 type GetInvestmentPaymentIntentClientSecretInput struct {
 	shared.PathIDParam
@@ -204,7 +195,8 @@ func (h *httpHandler) createStripePaymentIntent(ctx context.Context, input *GetI
 	//todo: add ABAC checks
 
 	// just checking if the investment exists, arguably costly
-	if _, err := h.service.InvestmentService.GetById(ctx, input.ID); err != nil {
+	investmentRecord, err := h.service.InvestmentService.GetById(ctx, input.ID)
+	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
 			h.logger.Error("investment not found", zap.Int("investment id", input.ID))
@@ -213,6 +205,18 @@ func (h *httpHandler) createStripePaymentIntent(ctx context.Context, input *GetI
 			h.logger.Error("failed to fetch investment", zap.Error(err))
 			return nil, huma.Error500InternalServerError("An error occurred while fetching the investment")
 		}
+	}
+
+	if investmentRecord.TermsCompletedAt == nil {
+		h.logger.Error("investment terms are not completed", zap.Int("investment id", input.ID))
+		return nil, huma.Error400BadRequest("Investment terms are not completed")
+	}
+
+	if investmentRecord.Status != investment.InvestmentStatusTerms {
+		h.logger.Error("investment status is not terms",
+			zap.Int("investment id", input.ID),
+			zap.String("status", string(investmentRecord.Status)))
+		return nil, huma.Error400BadRequest("Investment is not in the correct state to create a payment intent")
 	}
 
 	payment, err := h.service.InvestmentService.CreateStripePaymentIntent(ctx, input.ID)
