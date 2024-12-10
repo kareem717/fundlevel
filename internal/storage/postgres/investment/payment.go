@@ -4,6 +4,8 @@ import (
 	"context"
 
 	"fundlevel/internal/entities/investment"
+
+	"github.com/stripe/stripe-go/v80"
 )
 
 func (r *InvestmentRepository) CreatePayment(ctx context.Context, params investment.CreateInvestmentPaymentParams) (investment.InvestmentPayment, error) {
@@ -60,6 +62,18 @@ func (r *InvestmentRepository) GetPaymentsByInvestmentId(ctx context.Context, in
 	err := r.db.NewSelect().
 		Model(&resp).
 		Where("investment_payment.investment_id = ?", investmentId).
+		Scan(ctx)
+
+	return resp, err
+}
+
+func (r *InvestmentRepository) GetCurrentPayment(ctx context.Context, investmentId int) (investment.InvestmentPayment, error) {
+	resp := investment.InvestmentPayment{}
+
+	err := r.db.NewSelect().
+		Model(&resp).
+		Where("investment_payment.investment_id = ?", investmentId).
+		Where("investment_payment.status != ?", stripe.PaymentIntentStatusCanceled).
 		Scan(ctx)
 
 	return resp, err

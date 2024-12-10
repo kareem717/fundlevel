@@ -284,3 +284,29 @@ func (h *httpHandler) getInvestmentPayments(ctx context.Context, input *shared.P
 
 	return resp, nil
 }
+
+type GetInvestmentActivePaymentOutput struct {
+	Body struct {
+		shared.MessageResponse
+		InvestmentPayment investment.InvestmentPayment `json:"investmentPayment"`
+	}
+}
+
+func (h *httpHandler) getInvestmentActivePayment(ctx context.Context, input *shared.PathIDParam) (*GetInvestmentActivePaymentOutput, error) {
+	payment, err := h.service.InvestmentService.GetCurrentPayment(ctx, input.ID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			h.logger.Error("investment active payment not found", zap.Int("investment id", input.ID))
+			return nil, huma.Error404NotFound("Investment does not have an active payment")
+		}
+
+		h.logger.Error("failed to fetch investment active payment", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while fetching the investment active payment")
+	}
+
+	resp := &GetInvestmentActivePaymentOutput{}
+	resp.Body.Message = "Investment active payment fetched successfully"
+	resp.Body.InvestmentPayment = payment
+
+	return resp, nil
+}
