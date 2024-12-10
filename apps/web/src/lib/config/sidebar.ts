@@ -133,6 +133,10 @@ const wallet: NavigationMenu[] = [
 				icon: Icons.chart,
 				items: [
 					{
+						title: "History",
+						url: redirects.app.wallet.positions.investments.history,
+					},
+					{
 						title: "Payments",
 						url: redirects.app.wallet.positions.investments.payments,
 					},

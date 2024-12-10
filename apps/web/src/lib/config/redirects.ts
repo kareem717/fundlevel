@@ -25,6 +25,7 @@ const redirects = {
 				root: "/wallet/positions",
 				investments: {
 					root: "/wallet/positions/investments",
+					history: "/wallet/positions/investments/history",
 					payments: "/wallet/positions/investments/payments",
 				},
 			},
