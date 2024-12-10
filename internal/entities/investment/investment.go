@@ -45,7 +45,7 @@ type CreateInvestmentParams struct {
 
 type UpdateInvestmentParams struct {
 	Status             InvestmentStatus `json:"status" enum:"awaiting_term_acceptance,awaiting_payment,investor_tasks_completed,failed_to_accept_terms,failed_to_make_payment,investor_withdrew,business_rejected,round_closed_before_investor_tasks_completed"`
-	IntentCompletedAt  *string          `json:"intentCompletedAt,omitempty"`
+	TermsCompletedAt   *string          `json:"termsCompletedAt,omitempty"`
 	PaymentCompletedAt *string          `json:"paymentCompletedAt,omitempty"`
 	CompletedAt        *string          `json:"completedAt,omitempty"`
 }
