@@ -122,9 +122,9 @@ func RegisterHumaRoutes(
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "create-investment-payment-intent",
 		Method:      http.MethodGet,
-		Path:        "/investments/{id}/payment-intent",
+		Path:        "/investments/{id}/pay",
 		Summary:     "Create a stripe payment intent",
-		Description: "Create a stripe payment intent.",
+		Description: "Create a stripe payment intent for an investment.",
 		Tags:        []string{"Investments"},
 		Security: []map[string][]string{
 			{"bearerAuth": {}},
@@ -137,5 +137,5 @@ func RegisterHumaRoutes(
 				middleware.WithAccount(humaApi)(ctx, next, logger, service)
 			},
 		},
-	}, handler.createPaymentIntent)
+	}, handler.createStripePaymentIntent)
 }

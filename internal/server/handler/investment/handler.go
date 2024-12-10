@@ -199,10 +199,23 @@ type InvestmentPaymentIntentClientSecretOutput struct {
 	}
 }
 
-func (h *httpHandler) createPaymentIntent(ctx context.Context, input *GetInvestmentPaymentIntentClientSecretInput) (*InvestmentPaymentIntentClientSecretOutput, error) {
-	account := shared.GetAuthenticatedAccount(ctx)
+func (h *httpHandler) createStripePaymentIntent(ctx context.Context, input *GetInvestmentPaymentIntentClientSecretInput) (*InvestmentPaymentIntentClientSecretOutput, error) {
+	// account := shared.GetAuthenticatedAccount(ctx)
+	//todo: add ABAC checks
 
-	payment, err := h.service.InvestmentService.CreateStripePaymentIntent(ctx, input.ID, account.ID)
+	// just checking if the investment exists, arguably costly
+	if _, err := h.service.InvestmentService.GetById(ctx, input.ID); err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			h.logger.Error("investment not found", zap.Int("investment id", input.ID))
+			return nil, huma.Error404NotFound("Investment not found")
+		default:
+			h.logger.Error("failed to fetch investment", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the investment")
+		}
+	}
+
+	payment, err := h.service.InvestmentService.CreateStripePaymentIntent(ctx, input.ID)
 	if err != nil {
 		h.logger.Error("failed to create investment payment intent", zap.Error(err))
 		return nil, huma.Error500InternalServerError("Failed to create investment payment intent")

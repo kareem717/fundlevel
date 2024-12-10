@@ -104,8 +104,12 @@ type InvestmentService interface {
 	GetById(ctx context.Context, id int) (investment.Investment, error)
 	// Update(ctx context.Context, id int, params investment.UpdateInvestmentParams) (investment.Investment, error)
 
-	// ProcessInvestment(ctx context.Context, investmentId int) error
-	CreateStripePaymentIntent(ctx context.Context, roundId int, investorId int) (*stripe.PaymentIntent, error)
+	// CreateStripePaymentIntent simply creates a Stripe payment intent for the given investment.
+	CreateStripePaymentIntent(ctx context.Context, investmentId int) (*stripe.PaymentIntent, error)
+	// HandleStripePaymentIntentCreated is a callback function that is called when a Stripe payment intent is created.
+	// It tries to create a `investment_payment` record in the database, cancelling the Stripe payment intent if it fails.
+	HandleStripePaymentIntentCreated(ctx context.Context, intentID string) error
+
 	// HandleInvestmentPaymentIntentSuccess(ctx context.Context, intentID string) error
 	// HandleInvestmentPaymentIntentPaymentFailed(ctx context.Context, intentID string) error
 	// HandleInvestmentPaymentIntentProcessing(ctx context.Context, intentID string) error
