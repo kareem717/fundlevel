@@ -19,6 +19,7 @@ CREATE TABLE
         status investment_status NOT NULL DEFAULT 'awaiting_term_acceptance',
         amount_usd_cents BIGINT NOT NULL CHECK (amount_usd_cents>99),
         requires_approval BOOLEAN NOT NULL DEFAULT FALSE,
+        approved_at timestamptz,
         terms_completed_at timestamptz,
         payment_completed_at timestamptz,
         completed_at timestamptz,
