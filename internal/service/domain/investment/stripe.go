@@ -2,8 +2,10 @@ package investment
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 
+	"fundlevel/internal/entities/investment"
 	"fundlevel/internal/storage"
 
 	"github.com/stripe/stripe-go/v80"
@@ -11,20 +13,25 @@ import (
 )
 
 const (
-	RoundIDMetadataKey    = "round_id"
-	InvestorIDMetadataKey = "investor_id"
+	InvestmentIDMetadataKey        = "investment_id"
+	InvestmentPaymentIDMetadatakey = "investment_payment_id"
 )
 
 func (s *InvestmentService) CreateStripePaymentIntent(
 	ctx context.Context,
-	roundId int,
-	investorId int,
+	investmentId int,
 ) (*stripe.PaymentIntent, error) {
-	round, err := s.repositories.Round().GetById(ctx, roundId)
+	investment, err := s.repositories.Investment().GetById(ctx, investmentId)
 	if err != nil {
 		return nil, err
 	}
 
+	round, err := s.repositories.Round().GetById(ctx, investment.RoundID)
+	if err != nil {
+		return nil, err
+	}
+
+	// So we know who to send the money to after payment
 	businessStripeAccount, err := s.repositories.Business().GetStripeAccount(ctx, round.BusinessID)
 	if err != nil {
 		return nil, err
@@ -59,8 +66,7 @@ func (s *InvestmentService) CreateStripePaymentIntent(
 				},
 			},
 			Metadata: map[string]string{
-				RoundIDMetadataKey:    strconv.Itoa(roundId),
-				InvestorIDMetadataKey: strconv.Itoa(investorId),
+				InvestmentIDMetadataKey: strconv.Itoa(investmentId),
 			},
 		}
 
@@ -73,6 +79,63 @@ func (s *InvestmentService) CreateStripePaymentIntent(
 	})
 
 	return resp, nil
+}
+
+func (s *InvestmentService) HandleStripePaymentIntentCreated(ctx context.Context, intentID string) error {
+	stripe.Key = s.stripeAPIKey
+
+	intent, err := paymentintent.Get(intentID, nil)
+	if err != nil {
+		return err
+	}
+
+	investmentId, ok := intent.Metadata[InvestmentIDMetadataKey]
+	if !ok {
+		return fmt.Errorf("investment ID not found in session metadata")
+	}
+
+	parsedInvestmentId, err := strconv.Atoi(investmentId)
+	if err != nil {
+		return fmt.Errorf("failed to convert investment ID to int: %w", err)
+	}
+
+	err = s.repositories.RunInTx(ctx, func(ctx context.Context, tx storage.Transaction) error {
+		paymentRecord, err := s.repositories.Investment().CreatePayment(ctx, investment.CreateInvestmentPaymentParams{
+			InvestmentID:                    parsedInvestmentId,
+			StripePaymentIntentID:           intent.ID,
+			StripePaymentIntentClientSecret: intent.ClientSecret,
+			Status:                          intent.Status,
+		})
+
+		if err != nil {
+			return err
+		}
+
+		// Add the payment ID to the metadata so we can find it later need be
+		// This is arguably unnesseary but might help to debug or decouple
+		// from stripe later down the line
+		if _, err = paymentintent.Update(intent.ID, &stripe.PaymentIntentParams{
+			Metadata: map[string]string{
+				InvestmentPaymentIDMetadatakey: strconv.Itoa(paymentRecord.ID),
+			},
+		}); err != nil {
+			return err
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		// If we're unable to create the payment record, we need to cancel the Stripe payment intent
+		_, err = paymentintent.Cancel(intent.ID, nil)
+		if err != nil {
+			return fmt.Errorf("failed to cancel Stripe payment intent: %w", err)
+		}
+
+		return err
+	}
+
+	return nil
 }
 
 // func (s *InvestmentService) HandleInvestmentPaymentIntentSuccess(ctx context.Context, intentID string) error {
@@ -362,8 +425,3 @@ func (s *InvestmentService) CreateStripePaymentIntent(
 
 // 	return err
 // }
-
-func (s *InvestmentService) getStripePaymentIntent(intentID string) (*stripe.PaymentIntent, error) {
-	stripe.Key = s.stripeAPIKey
-	return paymentintent.Get(intentID, nil)
-}

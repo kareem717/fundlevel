@@ -46,6 +46,8 @@ func WithUser(api huma.API) func(ctx huma.Context, next func(huma.Context), logg
 	}
 }
 
+
+// TODO: We should call WithUser inside of this middleware, this way we can stop having to call both middlewares just to use this one
 func WithAccount(api huma.API) func(ctx huma.Context, next func(huma.Context), logger *zap.Logger, sv *service.Service) {
 	return func(ctx huma.Context, next func(huma.Context), logger *zap.Logger, sv *service.Service) {
 		user := shared.GetAuthenticatedUser(ctx.Context())
