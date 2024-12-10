@@ -219,6 +219,11 @@ func (h *httpHandler) createStripePaymentIntent(ctx context.Context, input *GetI
 		return nil, huma.Error400BadRequest("Investment is not in the correct state to create a payment intent")
 	}
 
+	if investmentRecord.RequiresApproval == true && investmentRecord.ApprovedAt == nil {
+		h.logger.Error("investment requires approval but is not approved", zap.Int("investment id", input.ID))
+		return nil, huma.Error400BadRequest("Investment requires approval but is not approved")
+	}
+
 	payment, err := h.service.InvestmentService.CreateStripePaymentIntent(ctx, input.ID)
 	if err != nil {
 		h.logger.Error("failed to create investment payment intent", zap.Error(err))
