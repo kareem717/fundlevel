@@ -1,4 +1,4 @@
-import { PortfolioSidebar } from "./components/portfolio-sidebar"
+import { PortfolioSidebar } from "./components/wallet-sidebar"
 import {
   SidebarInset,
   SidebarProvider,

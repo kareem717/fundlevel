@@ -16,7 +16,7 @@ export interface PortfolioSidebarProps extends ComponentPropsWithoutRef<typeof S
 }
 
 export const PortfolioSidebar: React.FC<PortfolioSidebarProps> = ({ ...props }: PortfolioSidebarProps) => {
-  const { portfolio } = SidebarConfig
+  const { wallet } = SidebarConfig
   const { user, account } = useAuth()
 
   if (!user || !account) {
@@ -26,7 +26,7 @@ export const PortfolioSidebar: React.FC<PortfolioSidebarProps> = ({ ...props }: 
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarContent>
-        {portfolio.map((menu) => (
+        {wallet.map((menu) => (
           <SidebarMenu key={menu.name} config={menu} />
         ))}
       </SidebarContent>
