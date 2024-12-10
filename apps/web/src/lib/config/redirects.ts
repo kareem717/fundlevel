@@ -20,13 +20,12 @@ const redirects = {
 			},
 		},
 		wallet: {
-			index: "/portfolio",
-
+			index: "/wallet",
 			positions: {
-				root: "/portfolio/positions",
+				root: "/wallet/positions",
 				investments: {
-					root: "/portfolio/investments",
-					payments: "/portfolio/investments/payments",
+					root: "/wallet/positions/investments",
+					payments: "/wallet/positions/investments/payments",
 				},
 			},
 		},
