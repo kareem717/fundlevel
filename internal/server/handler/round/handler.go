@@ -145,7 +145,7 @@ func (h *httpHandler) delete(ctx context.Context, input *shared.PathIDParam) (*s
 	return resp, nil
 }
 
-func (h *httpHandler) getInvestmentsByCursor(ctx context.Context, input *shared.GetInvestmentsByParentAndCursorInput) (*shared.GetCursorPaginatedRoundInvestmentsOutput, error) {
+func (h *httpHandler) getInvestmentsByCursor(ctx context.Context, input *shared.GetInvestmentsByParentAndCursorInput) (*shared.GetCursorPaginatedInvestmentsOutput, error) {
 	round, err := h.service.RoundService.GetById(ctx, input.ID)
 	if err != nil {
 		switch {
@@ -158,7 +158,7 @@ func (h *httpHandler) getInvestmentsByCursor(ctx context.Context, input *shared.
 	}
 
 	account := shared.GetAuthenticatedAccount(ctx)
-	authorized, err := h.service.PermissionService.CanViewRoundInvestments(ctx, account.ID, round.Business.ID)
+	authorized, err := h.service.PermissionService.CanViewInvestments(ctx, account.ID, round.Business.ID)
 	if err != nil {
 		h.logger.Error("failed to check if account can view round investments", zap.Error(err), zap.Int("round_id", input.ID), zap.Int("account_id", account.ID))
 		return nil, huma.Error500InternalServerError("An error occurred while checking if the account can view round investments")
@@ -172,7 +172,7 @@ func (h *httpHandler) getInvestmentsByCursor(ctx context.Context, input *shared.
 
 	limit := input.Limit + 1
 
-	investments, err := h.service.RoundService.GetInvestmentsByCursor(ctx, input.ID, limit, input.Cursor, input.InvestmentFilter)
+	investments, err := h.service.RoundService.GetInvestmentsByCursor(ctx, input.ID, limit, input.Cursor, input.InvestmentIntentFilter)
 
 	if err != nil {
 		switch {
@@ -184,7 +184,7 @@ func (h *httpHandler) getInvestmentsByCursor(ctx context.Context, input *shared.
 		}
 	}
 
-	resp := &shared.GetCursorPaginatedRoundInvestmentsOutput{}
+	resp := &shared.GetCursorPaginatedInvestmentsOutput{}
 	resp.Body.Message = "Investments fetched successfully"
 	resp.Body.Investments = investments
 
@@ -197,7 +197,7 @@ func (h *httpHandler) getInvestmentsByCursor(ctx context.Context, input *shared.
 	return resp, nil
 }
 
-func (h *httpHandler) getInvestmentsByPage(ctx context.Context, input *shared.GetInvestmentsByParentAndPageInput) (*shared.GetOffsetPaginatedRoundInvestmentsOutput, error) {
+func (h *httpHandler) getInvestmentsByPage(ctx context.Context, input *shared.GetInvestmentsByParentAndPageInput) (*shared.GetOffsetPaginatedInvestmentsOutput, error) {
 	round, err := h.service.RoundService.GetById(ctx, input.ID)
 	if err != nil {
 		switch {
@@ -210,7 +210,7 @@ func (h *httpHandler) getInvestmentsByPage(ctx context.Context, input *shared.Ge
 	}
 
 	account := shared.GetAuthenticatedAccount(ctx)
-	authorized, err := h.service.PermissionService.CanViewRoundInvestments(ctx, account.ID, round.Business.ID)
+	authorized, err := h.service.PermissionService.CanViewInvestments(ctx, account.ID, round.Business.ID)
 	if err != nil {
 		h.logger.Error("failed to check if account can view round investments", zap.Error(err), zap.Int("round_id", input.ID), zap.Int("account_id", account.ID))
 		return nil, huma.Error500InternalServerError("An error occurred while checking if the account can view round investments")
@@ -222,7 +222,7 @@ func (h *httpHandler) getInvestmentsByPage(ctx context.Context, input *shared.Ge
 		return nil, huma.Error403Forbidden("Unauthorized to view round investments")
 	}
 
-	investments, total, err := h.service.RoundService.GetInvestmentsByPage(ctx, input.ID, input.PageSize, input.Page, input.InvestmentFilter)
+	investments, total, err := h.service.RoundService.GetInvestmentsByPage(ctx, input.ID, input.PageSize, input.Page, input.InvestmentIntentFilter)
 
 	if err != nil {
 		switch {
@@ -234,7 +234,7 @@ func (h *httpHandler) getInvestmentsByPage(ctx context.Context, input *shared.Ge
 		}
 	}
 
-	resp := &shared.GetOffsetPaginatedRoundInvestmentsOutput{}
+	resp := &shared.GetOffsetPaginatedInvestmentsOutput{}
 	resp.Body.Message = "Investments fetched successfully"
 	resp.Body.Investments = investments
 	resp.Body.Total = total

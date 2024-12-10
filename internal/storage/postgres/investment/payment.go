@@ -1,55 +1,55 @@
 package investment
 
-import (
-	"context"
+// import (
+// 	"context"
 
-	"fundlevel/internal/entities/investment"
-)
+// 	"fundlevel/internal/entities/investment"
+// )
 
-func (r *InvestmentRepository) CreatePayment(ctx context.Context, params investment.CreateRoundInvestmentPaymentParams) (investment.RoundInvestmentPayment, error) {
-	resp := investment.RoundInvestmentPayment{}
+// func (r *InvestmentRepository) CreatePayment(ctx context.Context, params investment.CreateInvestmentPaymentParams) (investment.InvestmentIntentPayment, error) {
+// 	resp := investment.InvestmentIntentPayment{}
 
-	err := r.db.NewInsert().
-		Model(&params).
-		ModelTableExpr("round_investment_payments").
-		Returning("*").
-		Scan(ctx, &resp)
+// 	err := r.db.NewInsert().
+// 		Model(&params).
+// 		ModelTableExpr("investment_payments").
+// 		Returning("*").
+// 		Scan(ctx, &resp)
 
-	return resp, err
-}
+// 	return resp, err
+// }
 
-func (r *InvestmentRepository) UpdatePayment(ctx context.Context, investmentId int, params investment.UpdateRoundInvestmentPaymentParams) (investment.RoundInvestmentPayment, error) {
-	resp := investment.RoundInvestmentPayment{}
+// func (r *InvestmentRepository) UpdatePayment(ctx context.Context, investmentId int, params investment.UpdateInvestmentPaymentParams) (investment.InvestmentIntentPayment, error) {
+// 	resp := investment.InvestmentIntentPayment{}
 
-	err := r.db.NewUpdate().
-		Model(&params).
-		ModelTableExpr("round_investment_payments").
-		Where("round_investment_payments.round_investment_id = ?", investmentId).
-		OmitZero().
-		Returning("*").
-		Scan(ctx, &resp)
+// 	err := r.db.NewUpdate().
+// 		Model(&params).
+// 		ModelTableExpr("investment_payments").
+// 		Where("investment_payments.investment_id = ?", investmentId).
+// 		OmitZero().
+// 		Returning("*").
+// 		Scan(ctx, &resp)
 
-	return resp, err
-}
+// 	return resp, err
+// }
 
-func (r *InvestmentRepository) GetPayment(ctx context.Context, roundInvestmentId int) (investment.RoundInvestmentPayment, error) {
-	resp := investment.RoundInvestmentPayment{}
+// func (r *InvestmentRepository) GetPayment(ctx context.Context, investmentId int) (investment.InvestmentIntentPayment, error) {
+// 	resp := investment.InvestmentIntentPayment{}
 
-	err := r.db.NewSelect().
-		Model(&resp).
-		Where("round_investment_payment.round_investment_id = ?", roundInvestmentId).
-		Scan(ctx)
+// 	err := r.db.NewSelect().
+// 		Model(&resp).
+// 		Where("investment_payment.investment_id = ?", investmentId).
+// 		Scan(ctx)
 
-	return resp, err
-}
+// 	return resp, err
+// }
 
-func (r *InvestmentRepository) GetPaymentByIntentId(ctx context.Context, intentId string) (investment.RoundInvestmentPayment, error) {
-	resp := investment.RoundInvestmentPayment{}
+// func (r *InvestmentRepository) GetPaymentByIntentId(ctx context.Context, intentId string) (investment.InvestmentIntentPayment, error) {
+// 	resp := investment.InvestmentIntentPayment{}
 
-	err := r.db.NewSelect().
-		Model(&resp).
-		Where("round_investment_payment.stripe_payment_intent_id = ?", intentId).
-		Scan(ctx)
+// 	err := r.db.NewSelect().
+// 		Model(&resp).
+// 		Where("investment_payment.stripe_payment_intent_id = ?", intentId).
+// 		Scan(ctx)
 
-	return resp, err
-}
+// 	return resp, err
+// }

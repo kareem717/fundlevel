@@ -358,11 +358,11 @@
           "hasDefaultValue": false
         },
         {
-          "name": "round_investments",
-          "type": "round_investments",
+          "name": "investments",
+          "type": "investments",
           "isRequired": false,
           "kind": "object",
-          "relationName": "round_investmentsToaccounts",
+          "relationName": "investmentsToaccounts",
           "relationFromFields": [],
           "relationToFields": [],
           "isList": true,
@@ -5039,15 +5039,15 @@
         }
       ]
     },
-    "round_investment_payments": {
-      "id": "public.round_investment_payments",
+    "investment_payments": {
+      "id": "public.investment_payments",
       "schemaName": "public",
-      "tableName": "round_investment_payments",
+      "tableName": "investment_payments",
       "fields": [
         {
-          "id": "public.round_investment_payments.round_investment_id",
-          "name": "round_investment_id",
-          "columnName": "round_investment_id",
+          "id": "public.investment_payments.investment_id",
+          "name": "investment_id",
+          "columnName": "investment_id",
           "type": "int4",
           "isRequired": true,
           "kind": "scalar",
@@ -5059,7 +5059,7 @@
           "maxLength": null
         },
         {
-          "id": "public.round_investment_payments.stripe_payment_intent_id",
+          "id": "public.investment_payments.stripe_payment_intent_id",
           "name": "stripe_payment_intent_id",
           "columnName": "stripe_payment_intent_id",
           "type": "text",
@@ -5073,7 +5073,7 @@
           "maxLength": null
         },
         {
-          "id": "public.round_investment_payments.stripe_payment_intent_client_secret",
+          "id": "public.investment_payments.stripe_payment_intent_client_secret",
           "name": "stripe_payment_intent_client_secret",
           "columnName": "stripe_payment_intent_client_secret",
           "type": "text",
@@ -5087,7 +5087,7 @@
           "maxLength": null
         },
         {
-          "id": "public.round_investment_payments.status",
+          "id": "public.investment_payments.status",
           "name": "status",
           "columnName": "status",
           "type": "payment_status",
@@ -5101,7 +5101,7 @@
           "maxLength": null
         },
         {
-          "id": "public.round_investment_payments.created_at",
+          "id": "public.investment_payments.created_at",
           "name": "created_at",
           "columnName": "created_at",
           "type": "timestamptz",
@@ -5115,7 +5115,7 @@
           "maxLength": null
         },
         {
-          "id": "public.round_investment_payments.updated_at",
+          "id": "public.investment_payments.updated_at",
           "name": "updated_at",
           "columnName": "updated_at",
           "type": "timestamptz",
@@ -5129,7 +5129,7 @@
           "maxLength": null
         },
         {
-          "id": "public.round_investment_payments.deleted_at",
+          "id": "public.investment_payments.deleted_at",
           "name": "deleted_at",
           "columnName": "deleted_at",
           "type": "timestamptz",
@@ -5143,13 +5143,13 @@
           "maxLength": null
         },
         {
-          "name": "round_investments",
-          "type": "round_investments",
+          "name": "investments",
+          "type": "investments",
           "isRequired": true,
           "kind": "object",
-          "relationName": "round_investment_paymentsToround_investments",
+          "relationName": "investment_paymentsToinvestments",
           "relationFromFields": [
-            "round_investment_id"
+            "investment_id"
           ],
           "relationToFields": [
             "id"
@@ -5163,14 +5163,14 @@
       ],
       "uniqueConstraints": [
         {
-          "name": "round_investment_payments_pkey",
+          "name": "investment_payments_pkey",
           "fields": [
-            "round_investment_id"
+            "investment_id"
           ],
           "nullNotDistinct": false
         },
         {
-          "name": "round_investment_payments_stripe_payment_intent_id_idx",
+          "name": "investment_payments_stripe_payment_intent_id_idx",
           "fields": [
             "stripe_payment_intent_id"
           ],
@@ -5178,13 +5178,13 @@
         }
       ]
     },
-    "round_investments": {
-      "id": "public.round_investments",
+    "investments": {
+      "id": "public.investments",
       "schemaName": "public",
-      "tableName": "round_investments",
+      "tableName": "investments",
       "fields": [
         {
-          "id": "public.round_investments.id",
+          "id": "public.investments.id",
           "name": "id",
           "columnName": "id",
           "type": "int4",
@@ -5193,7 +5193,7 @@
           "isList": false,
           "isGenerated": false,
           "sequence": {
-            "identifier": "\"public\".\"round_investments_id_seq\"",
+            "identifier": "\"public\".\"investments_id_seq\"",
             "increment": 1,
             "start": 1
           },
@@ -5202,7 +5202,7 @@
           "maxLength": null
         },
         {
-          "id": "public.round_investments.round_id",
+          "id": "public.investments.round_id",
           "name": "round_id",
           "columnName": "round_id",
           "type": "int4",
@@ -5216,7 +5216,7 @@
           "maxLength": null
         },
         {
-          "id": "public.round_investments.investor_id",
+          "id": "public.investments.investor_id",
           "name": "investor_id",
           "columnName": "investor_id",
           "type": "int4",
@@ -5230,7 +5230,7 @@
           "maxLength": null
         },
         {
-          "id": "public.round_investments.status",
+          "id": "public.investments.status",
           "name": "status",
           "columnName": "status",
           "type": "investment_status",
@@ -5244,7 +5244,7 @@
           "maxLength": null
         },
         {
-          "id": "public.round_investments.created_at",
+          "id": "public.investments.created_at",
           "name": "created_at",
           "columnName": "created_at",
           "type": "timestamptz",
@@ -5258,7 +5258,7 @@
           "maxLength": null
         },
         {
-          "id": "public.round_investments.updated_at",
+          "id": "public.investments.updated_at",
           "name": "updated_at",
           "columnName": "updated_at",
           "type": "timestamptz",
@@ -5272,7 +5272,7 @@
           "maxLength": null
         },
         {
-          "id": "public.round_investments.deleted_at",
+          "id": "public.investments.deleted_at",
           "name": "deleted_at",
           "columnName": "deleted_at",
           "type": "timestamptz",
@@ -5290,7 +5290,7 @@
           "type": "accounts",
           "isRequired": true,
           "kind": "object",
-          "relationName": "round_investmentsToaccounts",
+          "relationName": "investmentsToaccounts",
           "relationFromFields": [
             "investor_id"
           ],
@@ -5308,7 +5308,7 @@
           "type": "rounds",
           "isRequired": true,
           "kind": "object",
-          "relationName": "round_investmentsTorounds",
+          "relationName": "investmentsTorounds",
           "relationFromFields": [
             "round_id"
           ],
@@ -5322,11 +5322,11 @@
           "hasDefaultValue": false
         },
         {
-          "name": "round_investment_payments",
-          "type": "round_investment_payments",
+          "name": "investment_payments",
+          "type": "investment_payments",
           "isRequired": false,
           "kind": "object",
-          "relationName": "round_investment_paymentsToround_investments",
+          "relationName": "investment_paymentsToinvestments",
           "relationFromFields": [],
           "relationToFields": [],
           "isList": true,
@@ -5338,7 +5338,7 @@
       ],
       "uniqueConstraints": [
         {
-          "name": "round_investments_pkey",
+          "name": "investments_pkey",
           "fields": [
             "id"
           ],
@@ -5612,11 +5612,11 @@
           "hasDefaultValue": false
         },
         {
-          "name": "round_investments",
-          "type": "round_investments",
+          "name": "investments",
+          "type": "investments",
           "isRequired": false,
           "kind": "object",
-          "relationName": "round_investmentsTorounds",
+          "relationName": "investmentsTorounds",
           "relationFromFields": [],
           "relationToFields": [],
           "isList": true,

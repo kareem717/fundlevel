@@ -174,7 +174,7 @@ func (s *PermissionService) CanCreateRound(ctx context.Context, accountId int, b
 	return false, nil
 }
 
-func (s *PermissionService) CanViewRoundInvestments(ctx context.Context, accountId int, roundId int) (bool, error) {
+func (s *PermissionService) CanViewInvestments(ctx context.Context, accountId int, roundId int) (bool, error) {
 	if accountId == 0 {
 		return false, errors.New("account id is 0")
 	}

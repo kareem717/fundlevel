@@ -127,7 +127,7 @@ func (t *transaction) Analytic() storage.AnalyticRepository {
 }
 
 func (t *transaction) Investment() storage.InvestmentRepository {
-	return t.investmentRepo
+	return t.investmentRepo	
 }
 
 func (t *transaction) Industry() storage.IndustryRepository {
