@@ -39,15 +39,19 @@ func (s *InvestmentService) CreateStripePaymentIntent(
 
 	var resp *stripe.PaymentIntent
 	err = s.repositories.RunInTx(ctx, func(ctx context.Context, tx storage.Transaction) error {
-		buyInCents := int(round.BuyIn * 100)
+		buyInCents := calculateBuyInCents(round.ValuationAmountUSDCents, round.PercentageSelling, round.InvestorCount)
 
-		feeCents := (float64(buyInCents) * s.feePercentage)
-		totalAmount := (float64(buyInCents) + feeCents)
+		//TODO: how can we make this not hard coded?
+		feeCents := float64(buyInCents) * s.feePercentage
+
+		totalAmount := float64(buyInCents) + feeCents
+
 		stripe.Key = s.stripeAPIKey
 
 		paymentIntentParams := &stripe.PaymentIntentParams{
-			Amount:               stripe.Int64(int64(totalAmount)),
-			Currency:             stripe.String(string(round.ValueCurrency)),
+			Amount: stripe.Int64(int64(totalAmount)),
+			// TODO: make this dynamic
+			Currency:             stripe.String(string(stripe.CurrencyUSD)),
 			ApplicationFeeAmount: stripe.Int64(int64(feeCents)),
 			TransferData: &stripe.PaymentIntentTransferDataParams{
 				Destination: stripe.String(businessStripeAccount.StripeConnectedAccountID),
@@ -107,6 +111,13 @@ func (s *InvestmentService) HandleStripePaymentIntentCreated(ctx context.Context
 			Status:                          intent.Status,
 		})
 
+		if err != nil {
+			return err
+		}
+
+		_, err = s.repositories.Investment().Update(ctx, parsedInvestmentId, investment.UpdateInvestmentParams{
+			Status: investment.InvestmentStatusPayment,
+		})
 		if err != nil {
 			return err
 		}

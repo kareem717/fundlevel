@@ -23,8 +23,8 @@ type RoundRepository interface {
 	Create(ctx context.Context, params round.CreateRoundParams) (round.Round, error)
 	Delete(ctx context.Context, id int) error
 	GetById(ctx context.Context, id int) (round.RoundWithBusiness, error)
-	GetByCursor(ctx context.Context, paginationParams shared.CursorPagination, filter round.RoundFilter) ([]round.Round, error)
-	GetByPage(ctx context.Context, paginationParams shared.OffsetPagination, filter round.RoundFilter) ([]round.Round, int, error)
+	GetByCursor(ctx context.Context, paginationParams shared.CursorPagination) ([]round.Round, error)
+	GetByPage(ctx context.Context, paginationParams shared.OffsetPagination) ([]round.Round, int, error)
 	Update(ctx context.Context, id int, params round.UpdateRoundParams) (round.Round, error)
 
 	// GetInvestmentsByCursor gets all of the investments received on the round using cursor pagination
@@ -86,8 +86,8 @@ type BusinessRepository interface {
 	GetStripeAccount(ctx context.Context, businessId int) (business.BusinessStripeAccount, error)
 	DeleteStripeAccount(ctx context.Context, businessId int) error
 
-	GetRoundsByPage(ctx context.Context, businessId int, paginationParams shared.OffsetPagination, filter round.RoundFilter) ([]round.Round, int, error)
-	GetRoundsByCursor(ctx context.Context, businessId int, paginationParams shared.CursorPagination, filter round.RoundFilter) ([]round.Round, error)
+	GetRoundsByPage(ctx context.Context, businessId int, paginationParams shared.OffsetPagination) ([]round.Round, int, error)
+	GetRoundsByCursor(ctx context.Context, businessId int, paginationParams shared.CursorPagination) ([]round.Round, error)
 
 	// GetInvestmentsByCursor gets all of the investments received on the rounds related to the business using cursor pagination
 	GetInvestmentsByCursor(ctx context.Context, businessId int, paginationParams shared.CursorPagination, filter investment.InvestmentFilter) ([]investment.Investment, error)

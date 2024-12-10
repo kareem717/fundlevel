@@ -248,13 +248,12 @@ func (h *httpHandler) getInvestmentsByPage(ctx context.Context, input *shared.Ge
 
 type GetByCursorInput struct {
 	shared.CursorPaginationRequest
-	round.RoundFilter
 }
 
 func (h *httpHandler) getByCursor(ctx context.Context, input *GetByCursorInput) (*shared.GetCursorPaginatedRoundsOutput, error) {
 	limit := input.Limit + 1
 
-	rounds, err := h.service.RoundService.GetByCursor(ctx, limit, input.Cursor, input.RoundFilter)
+	rounds, err := h.service.RoundService.GetByCursor(ctx, limit, input.Cursor)
 
 	if err != nil {
 		switch {
@@ -281,11 +280,10 @@ func (h *httpHandler) getByCursor(ctx context.Context, input *GetByCursorInput) 
 
 type GetByPageInput struct {
 	shared.OffsetPaginationRequest
-	round.RoundFilter
 }
 
 func (h *httpHandler) getByPage(ctx context.Context, input *GetByPageInput) (*shared.GetOffsetPaginatedRoundsOutput, error) {
-	rounds, total, err := h.service.RoundService.GetByPage(ctx, input.PageSize, input.Page, input.RoundFilter)
+	rounds, total, err := h.service.RoundService.GetByPage(ctx, input.PageSize, input.Page)
 
 	if err != nil {
 		switch {

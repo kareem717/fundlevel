@@ -31,7 +31,6 @@ func (s *RoundService) Create(ctx context.Context, params round.CreateRoundParam
 		return round.Round{}, errors.New("business is not active")
 	}
 
-	params.BuyIn = float64(params.PercentageValue) / float64(params.InvestorCount)
 	params.Status = round.RoundStatusActive
 
 	return s.repositories.Round().Create(ctx, params)
@@ -41,22 +40,22 @@ func (s *RoundService) GetById(ctx context.Context, id int) (round.RoundWithBusi
 	return s.repositories.Round().GetById(ctx, id)
 }
 
-func (s *RoundService) GetByPage(ctx context.Context, pageSize int, page int, filter round.RoundFilter) ([]round.Round, int, error) {
+func (s *RoundService) GetByPage(ctx context.Context, pageSize int, page int) ([]round.Round, int, error) {
 	paginationParams := postgres.OffsetPagination{
 		PageSize: pageSize,
 		Page:     page,
 	}
 
-	return s.repositories.Round().GetByPage(ctx, paginationParams, filter)
+	return s.repositories.Round().GetByPage(ctx, paginationParams)
 }
 
-func (s *RoundService) GetByCursor(ctx context.Context, limit int, cursor int, filter round.RoundFilter) ([]round.Round, error) {
+func (s *RoundService) GetByCursor(ctx context.Context, limit int, cursor int) ([]round.Round, error) {
 	paginationParams := postgres.CursorPagination{
 		Limit:  limit,
 		Cursor: cursor,
 	}
 
-	return s.repositories.Round().GetByCursor(ctx, paginationParams, filter)
+	return s.repositories.Round().GetByCursor(ctx, paginationParams)
 }
 
 func (s *RoundService) Delete(ctx context.Context, id int) error {

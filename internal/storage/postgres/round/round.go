@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"fundlevel/internal/entities/round"
-	"fundlevel/internal/storage/postgres/helper"
 	postgres "fundlevel/internal/storage/shared"
 
 	"github.com/uptrace/bun"
@@ -40,7 +39,6 @@ func (r *RoundRepository) GetById(ctx context.Context, id int) (round.RoundWithB
 func (r *RoundRepository) GetByCursor(
 	ctx context.Context,
 	paginationParams postgres.CursorPagination,
-	filter round.RoundFilter,
 ) ([]round.Round, error) {
 	resp := []round.Round{}
 
@@ -49,10 +47,10 @@ func (r *RoundRepository) GetByCursor(
 		Model(&resp).
 		Limit(paginationParams.Limit)
 
-	query = helper.ApplyRoundFilter(query, filter)
+	// query = helper.ApplyRoundFilter(query, filter)
 
 	cursorCondition := "round.id >= ?"
-	if filter.SortOrder != "asc" && paginationParams.Cursor > 0 {
+	if paginationParams.Cursor > 0 {
 		cursorCondition = "round.id <= ?"
 	}
 
@@ -66,7 +64,6 @@ func (r *RoundRepository) GetByCursor(
 func (r *RoundRepository) GetByPage(
 	ctx context.Context,
 	paginationParams postgres.OffsetPagination,
-	filter round.RoundFilter,
 ) ([]round.Round, int, error) {
 	resp := []round.Round{}
 	offset := (paginationParams.Page - 1) * paginationParams.PageSize
@@ -78,7 +75,7 @@ func (r *RoundRepository) GetByPage(
 		Offset(offset).
 		Limit(paginationParams.PageSize + 1)
 
-	count, err := helper.ApplyRoundFilter(query, filter).ScanAndCount(ctx, &resp)
+	count, err := query.ScanAndCount(ctx, &resp)
 
 	return resp, count, err
 }

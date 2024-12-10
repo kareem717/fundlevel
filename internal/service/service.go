@@ -59,8 +59,8 @@ type RoundService interface {
 	Create(ctx context.Context, params round.CreateRoundParams) (round.Round, error)
 	Delete(ctx context.Context, id int) error
 	GetById(ctx context.Context, id int) (round.RoundWithBusiness, error)
-	GetByCursor(ctx context.Context, limit int, cursor int, filter round.RoundFilter) ([]round.Round, error)
-	GetByPage(ctx context.Context, pageSize int, page int, filter round.RoundFilter) ([]round.Round, int, error)
+	GetByCursor(ctx context.Context, limit int, cursor int) ([]round.Round, error)
+	GetByPage(ctx context.Context, pageSize int, page int) ([]round.Round, int, error)
 
 	GetInvestmentsByCursor(ctx context.Context, roundId int, limit int, cursor int, filter investment.InvestmentFilter) ([]investment.Investment, error)
 	GetInvestmentsByPage(ctx context.Context, roundId int, pageSize int, page int, filter investment.InvestmentFilter) ([]investment.Investment, int, error)
@@ -81,8 +81,8 @@ type BusinessService interface {
 
 	UpsertBusinessLegalSection(ctx context.Context, businessId int, params business.UpsertBusinessLegalSectionParams) error
 
-	GetRoundsByPage(ctx context.Context, businessId int, pageSize int, page int, filter round.RoundFilter) ([]round.Round, int, error)
-	GetRoundsByCursor(ctx context.Context, businessId int, limit int, cursor int, filter round.RoundFilter) ([]round.Round, error)
+	GetRoundsByPage(ctx context.Context, businessId int, pageSize int, page int) ([]round.Round, int, error)
+	GetRoundsByCursor(ctx context.Context, businessId int, limit int, cursor int) ([]round.Round, error)
 
 	// GetInvestmentsByCursor gets all of the investments received on the rounds related to the business using cursor pagination
 	GetInvestmentsByCursor(ctx context.Context, businessId int, limit int, cursor int, filter investment.InvestmentFilter) ([]investment.Investment, error)
@@ -100,7 +100,10 @@ type BusinessService interface {
 type InvestmentService interface {
 	// WithdrawInvestment(ctx context.Context, investmentId int) error
 	// DeleteInvestment(ctx context.Context, investmentId int) error
-	// Create(ctx context.Context, params investment.CreateInvestmentParams) (investment.Investment, error)
+
+	// Create creates an investment record and returns the investment record.
+	// If round is not provided, it will fetch it from the database.
+	Create(ctx context.Context, investorId int, round *round.Round) (investment.Investment, error)
 	GetById(ctx context.Context, id int) (investment.Investment, error)
 	// Update(ctx context.Context, id int, params investment.UpdateInvestmentParams) (investment.Investment, error)
 
