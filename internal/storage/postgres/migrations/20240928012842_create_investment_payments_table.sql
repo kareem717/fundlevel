@@ -26,6 +26,16 @@ CREATE TRIGGER sync_investment_payments_updated_at BEFORE
 UPDATE ON investment_payments FOR EACH ROW
 EXECUTE PROCEDURE sync_updated_at_column ();
 
+CREATE UNIQUE INDEX ON investment_payments (investment_id, stripe_payment_intent_id)
+WHERE
+    deleted_at IS NULL
+    AND status='processing';
+
+CREATE UNIQUE INDEX ON investment_payments (investment_id, stripe_payment_intent_id)
+WHERE
+    deleted_at IS NULL
+    AND status='succeeded';
+
 CREATE UNIQUE INDEX ON investment_payments (stripe_payment_intent_id)
 WHERE
     deleted_at IS NULL;
