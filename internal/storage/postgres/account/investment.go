@@ -10,8 +10,8 @@ import (
 	"github.com/uptrace/bun"
 )
 
-func (r *AccountRepository) GetInvestmentsByCursor(ctx context.Context, accountId int, paginationParams postgres.CursorPagination, filter investment.InvestmentIntentFilter) ([]investment.InvestmentIntent, error) {
-	resp := []investment.InvestmentIntent{}
+func (r *AccountRepository) GetInvestmentsByCursor(ctx context.Context, accountId int, paginationParams postgres.CursorPagination, filter investment.InvestmentFilter) ([]investment.Investment, error) {
+	resp := []investment.Investment{}
 
 	query := r.db.
 		NewSelect().
@@ -32,8 +32,8 @@ func (r *AccountRepository) GetInvestmentsByCursor(ctx context.Context, accountI
 	return resp, err
 }
 
-func (r *AccountRepository) GetInvestmentsByPage(ctx context.Context, accountId int, paginationParams postgres.OffsetPagination, filter investment.InvestmentIntentFilter) ([]investment.InvestmentIntent, int, error) {
-	resp := []investment.InvestmentIntent{}
+func (r *AccountRepository) GetInvestmentsByPage(ctx context.Context, accountId int, paginationParams postgres.OffsetPagination, filter investment.InvestmentFilter) ([]investment.Investment, int, error) {
+	resp := []investment.Investment{}
 	offset := (paginationParams.Page - 1) * paginationParams.PageSize
 
 	query := r.db.
@@ -51,7 +51,7 @@ func (r *AccountRepository) GetInvestmentsByPage(ctx context.Context, accountId 
 
 // TODO: I don't think this logic works anymore
 func (r *AccountRepository) IsInvestedInRound(ctx context.Context, accountId int, roundId int) (bool, error) {
-	statusArray := []investment.InvestmentIntentStatus{investment.InvestmentIntentStatusTerms, investment.InvestmentIntentStatusPayment}
+	statusArray := []investment.InvestmentStatus{investment.InvestmentStatusTerms, investment.InvestmentStatusPayment}
 	stringStatusArray := make([]string, len(statusArray))
 	for i, status := range statusArray {
 		stringStatusArray[i] = string(status)
@@ -59,7 +59,7 @@ func (r *AccountRepository) IsInvestedInRound(ctx context.Context, accountId int
 
 	exists, err := r.db.
 		NewSelect().
-		Model(&investment.InvestmentIntent{}).
+		Model(&investment.Investment{}).
 		Where("investment.investor_id = ?", accountId).
 		Where("investment.round_id = ?", roundId).
 		WhereOr("investment.status IN (?)", bun.In(stringStatusArray)).
@@ -68,8 +68,8 @@ func (r *AccountRepository) IsInvestedInRound(ctx context.Context, accountId int
 	return exists, err
 }
 
-func (r *AccountRepository) GetInvestmentById(ctx context.Context, accountId int, investmentId int) (investment.InvestmentIntent, error) {
-	resp := investment.InvestmentIntent{}
+func (r *AccountRepository) GetInvestmentById(ctx context.Context, accountId int, investmentId int) (investment.Investment, error) {
+	resp := investment.Investment{}
 
 	err := r.db.
 		NewSelect().

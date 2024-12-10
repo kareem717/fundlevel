@@ -12,7 +12,7 @@ CREATE TYPE investment_status AS ENUM(
 );
 
 CREATE TABLE
-    investment_intents (
+    investments (
         id SERIAL PRIMARY KEY,
         round_id INT NOT NULL REFERENCES rounds (id),
         investor_id INT NOT NULL REFERENCES accounts (id),
@@ -27,8 +27,8 @@ CREATE TABLE
         deleted_at timestamptz
     );
 
-CREATE TRIGGER sync_investment_intents_updated_at BEFORE
-UPDATE ON investment_intents FOR EACH ROW
+CREATE TRIGGER sync_investments_updated_at BEFORE
+UPDATE ON investments FOR EACH ROW
 EXECUTE PROCEDURE sync_updated_at_column ();
 
 -- CREATE TYPE payment_status AS ENUM(
@@ -61,7 +61,7 @@ EXECUTE PROCEDURE sync_updated_at_column ();
 -- +goose StatementBegin
 -- DROP TABLE investment_payments;
 -- DROP TYPE payment_status;
-DROP TABLE investments;
+DROP TABLE investment;
 
 DROP TYPE investment_status;
 

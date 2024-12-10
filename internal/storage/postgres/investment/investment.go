@@ -23,8 +23,8 @@ func NewInvestmentRepository(db bun.IDB, ctx context.Context) *InvestmentReposit
 	}
 }
 
-func (r *InvestmentRepository) CreateIntent(ctx context.Context, params investment.CreateInvestmentIntentParams) (investment.InvestmentIntent, error) {
-	resp := investment.InvestmentIntent{}
+func (r *InvestmentRepository) Create(ctx context.Context, params investment.CreateInvestmentParams) (investment.Investment, error) {
+	resp := investment.Investment{}
 
 	err := r.db.NewInsert().
 		Model(&params).
@@ -35,17 +35,17 @@ func (r *InvestmentRepository) CreateIntent(ctx context.Context, params investme
 	return resp, err
 }
 
-func (r *InvestmentRepository) DeleteIntent(ctx context.Context, id int) error {
+func (r *InvestmentRepository) Delete(ctx context.Context, id int) error {
 	_, err := r.db.NewDelete().
-		Model(&investment.InvestmentIntent{}).
+		Model(&investment.Investment{}).
 		Where("investment.id = ?", id).
 		Exec(ctx)
 
 	return err
 }
 
-func (r *InvestmentRepository) GetIntentById(ctx context.Context, id int) (investment.InvestmentIntent, error) {
-	resp := investment.InvestmentIntent{}
+func (r *InvestmentRepository) GetById(ctx context.Context, id int) (investment.Investment, error) {
+	resp := investment.Investment{}
 
 	err := r.db.NewSelect().
 		Model(&resp).
@@ -58,8 +58,8 @@ func (r *InvestmentRepository) GetIntentById(ctx context.Context, id int) (inves
 	return resp, err
 }
 
-func (r *InvestmentRepository) GetIntentByCursor(ctx context.Context, paginationParams postgres.CursorPagination, filter investment.InvestmentIntentFilter) ([]investment.InvestmentIntent, error) {
-	resp := []investment.InvestmentIntent{}
+func (r *InvestmentRepository) GetByCursor(ctx context.Context, paginationParams postgres.CursorPagination, filter investment.InvestmentFilter) ([]investment.Investment, error) {
+	resp := []investment.Investment{}
 
 	query := r.db.
 		NewSelect().
@@ -80,8 +80,8 @@ func (r *InvestmentRepository) GetIntentByCursor(ctx context.Context, pagination
 	return resp, err
 }
 
-func (r *InvestmentRepository) GetIntentByPage(ctx context.Context, paginationParams postgres.OffsetPagination, filter investment.InvestmentIntentFilter) ([]investment.InvestmentIntent, int, error) {
-	resp := []investment.InvestmentIntent{}
+func (r *InvestmentRepository) GetByPage(ctx context.Context, paginationParams postgres.OffsetPagination, filter investment.InvestmentFilter) ([]investment.Investment, int, error) {
+	resp := []investment.Investment{}
 	offset := (paginationParams.Page - 1) * paginationParams.PageSize
 
 	query := r.db.
@@ -97,8 +97,8 @@ func (r *InvestmentRepository) GetIntentByPage(ctx context.Context, paginationPa
 	return resp, count, err
 }
 
-func (r *InvestmentRepository) UpdateIntent(ctx context.Context, id int, params investment.UpdateInvestmentIntentParams) (investment.InvestmentIntent, error) {
-	resp := investment.InvestmentIntent{}
+func (r *InvestmentRepository) Update(ctx context.Context, id int, params investment.UpdateInvestmentParams) (investment.Investment, error) {
+	resp := investment.Investment{}
 
 	err := r.db.NewUpdate().
 		Model(&params).
@@ -110,8 +110,8 @@ func (r *InvestmentRepository) UpdateIntent(ctx context.Context, id int, params 
 	return resp, err
 }
 
-func (r *InvestmentRepository) GetIntentByRoundIdAndAccountId(ctx context.Context, roundId int, accountId int) (investment.InvestmentIntent, error) {
-	resp := investment.InvestmentIntent{}
+func (r *InvestmentRepository) GetByRoundIdAndAccountId(ctx context.Context, roundId int, accountId int) (investment.Investment, error) {
+	resp := investment.Investment{}
 
 	err := r.db.NewSelect().
 		Model(&resp).
@@ -124,12 +124,12 @@ func (r *InvestmentRepository) GetIntentByRoundIdAndAccountId(ctx context.Contex
 	return resp, err
 }
 
-func (r *InvestmentRepository) UpdateProcessingAndPendingInvestmentIntentsByRoundId(ctx context.Context, roundId int, status investment.InvestmentIntentStatus) error {
+func (r *InvestmentRepository) UpdateProcessingAndPendingInvestmentsByRoundId(ctx context.Context, roundId int, status investment.InvestmentStatus) error {
 	_, err := r.db.NewUpdate().
-		Model(&investment.InvestmentIntent{}).
+		Model(&investment.Investment{}).
 		Where("investment.round_id = ?", roundId).
 		//TODO: This is logic doesn't work anymore
-		Where("investment.status IN (?)", bun.In([]investment.InvestmentIntentStatus{investment.InvestmentIntentStatusTerms, investment.InvestmentIntentStatusPayment})).
+		Where("investment.status IN (?)", bun.In([]investment.InvestmentStatus{investment.InvestmentStatusTerms, investment.InvestmentStatusPayment})).
 		Set("status = ?", status).
 		Exec(ctx)
 

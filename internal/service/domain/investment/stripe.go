@@ -110,7 +110,7 @@ func (s *InvestmentService) CreatePaymentIntent(
 // 		investmentRecord, err := s.repositories.Investment().Create(ctx, investment.CreateInvestmentParams{
 // 			RoundID:    parsedRoundId,
 // 			InvestorID: parsedInvestorId,
-// 			Status:     investment.InvestmentIntentStatusSuccessful,
+// 			Status:     investment.InvestmentStatusSuccessful,
 // 		})
 // 		if err != nil {
 // 			return err
@@ -183,7 +183,7 @@ func (s *InvestmentService) CreatePaymentIntent(
 // 	stripe.Key = s.stripeAPIKey
 
 // 	updateParams := investment.UpdateInvestmentParams{}
-// 	updateParams.Status = investment.InvestmentIntentStatusSuccessful
+// 	updateParams.Status = investment.InvestmentStatusSuccessful
 
 // 	return s.repositories.RunInTx(ctx, func(ctx context.Context, tx storage.Transaction) error {
 // 		investmentRecord, err := s.repositories.Investment().Update(ctx, investmentId, updateParams)
@@ -216,7 +216,7 @@ func (s *InvestmentService) CreatePaymentIntent(
 // 			ctx,
 // 			investmentRecord.ID,
 // 			investment.UpdateInvestmentParams{
-// 				Status: investment.InvestmentIntentStatusSuccessful,
+// 				Status: investment.InvestmentStatusSuccessful,
 // 			})
 // 		if err != nil {
 // 			return fmt.Errorf("failed to update investment: %w", err)
@@ -237,7 +237,7 @@ func (s *InvestmentService) CreatePaymentIntent(
 // 			UpdateProcessingAndPendingInvestmentsByRoundId(
 // 				ctx,
 // 				investmentRecord.RoundID,
-// 				investment.InvestmentIntentStatusRoundClosed,
+// 				investment.InvestmentStatusRoundClosed,
 // 			)
 // 		if err != nil {
 // 			return fmt.Errorf("failed to update non successful investments: %w", err)

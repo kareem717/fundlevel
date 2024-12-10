@@ -28,25 +28,25 @@ type RoundRepository interface {
 	Update(ctx context.Context, id int, params round.UpdateRoundParams) (round.Round, error)
 
 	// GetInvestmentsByCursor gets all of the investments received on the round using cursor pagination
-	GetInvestmentsByCursor(ctx context.Context, roundId int, paginationParams shared.CursorPagination, filter investment.InvestmentIntentFilter) ([]investment.InvestmentIntent, error)
+	GetInvestmentsByCursor(ctx context.Context, roundId int, paginationParams shared.CursorPagination, filter investment.InvestmentFilter) ([]investment.Investment, error)
 	// GetInvestmentsByPage gets all of the investments received on the round using offset pagination
-	GetInvestmentsByPage(ctx context.Context, roundId int, paginationParams shared.OffsetPagination, filter investment.InvestmentIntentFilter) ([]investment.InvestmentIntent, int, error)
+	GetInvestmentsByPage(ctx context.Context, roundId int, paginationParams shared.OffsetPagination, filter investment.InvestmentFilter) ([]investment.Investment, int, error)
 }
 
 type InvestmentRepository interface {
-	CreateIntent(ctx context.Context, params investment.CreateInvestmentIntentParams) (investment.InvestmentIntent, error)
-	DeleteIntent(ctx context.Context, id int) error
-	UpdateIntent(ctx context.Context, id int, params investment.UpdateInvestmentIntentParams) (investment.InvestmentIntent, error)
-	GetIntentById(ctx context.Context, id int) (investment.InvestmentIntent, error)
-	GetIntentByCursor(ctx context.Context, paginationParams shared.CursorPagination, filter investment.InvestmentIntentFilter) ([]investment.InvestmentIntent, error)
-	GetIntentByPage(ctx context.Context, paginationParams shared.OffsetPagination, filter investment.InvestmentIntentFilter) ([]investment.InvestmentIntent, int, error)
-	GetIntentByRoundIdAndAccountId(ctx context.Context, roundId int, accountId int) (investment.InvestmentIntent, error)
-	UpdateProcessingAndPendingInvestmentIntentsByRoundId(ctx context.Context, roundId int, status investment.InvestmentIntentStatus) error
+	Create(ctx context.Context, params investment.CreateInvestmentParams) (investment.Investment, error)
+	Delete(ctx context.Context, id int) error
+	Update(ctx context.Context, id int, params investment.UpdateInvestmentParams) (investment.Investment, error)
+	GetById(ctx context.Context, id int) (investment.Investment, error)
+	GetByCursor(ctx context.Context, paginationParams shared.CursorPagination, filter investment.InvestmentFilter) ([]investment.Investment, error)
+	GetByPage(ctx context.Context, paginationParams shared.OffsetPagination, filter investment.InvestmentFilter) ([]investment.Investment, int, error)
+	GetByRoundIdAndAccountId(ctx context.Context, roundId int, accountId int) (investment.Investment, error)
+	UpdateProcessingAndPendingInvestmentsByRoundId(ctx context.Context, roundId int, status investment.InvestmentStatus) error
 
-	// CreatePayment(ctx context.Context, params investment.CreateInvestmentPaymentParams) (investment.InvestmentIntentPayment, error)
-	// UpdatePayment(ctx context.Context, investmentId int, params investment.UpdateInvestmentPaymentParams) (investment.InvestmentIntentPayment, error)
-	// GetPayment(ctx context.Context, investmentId int) (investment.InvestmentIntentPayment, error)
-	// GetPaymentByIntentId(ctx context.Context, intentId string) (investment.InvestmentIntentPayment, error)
+	// CreatePayment(ctx context.Context, params investment.CreateInvestmentPaymentParams) (investment.InvestmentPayment, error)
+	// UpdatePayment(ctx context.Context, investmentId int, params investment.UpdateInvestmentPaymentParams) (investment.InvestmentPayment, error)
+	// GetPayment(ctx context.Context, investmentId int) (investment.InvestmentPayment, error)
+	// GetPaymentByIntentId(ctx context.Context, intentId string) (investment.InvestmentPayment, error)
 }
 
 type AccountRepository interface {
@@ -56,12 +56,12 @@ type AccountRepository interface {
 	GetById(ctx context.Context, id int) (account.Account, error)
 
 	// GetInvestmentsByCursor gets all of the investments the account has made on rounds using cursor pagination
-	GetInvestmentsByCursor(ctx context.Context, accountId int, paginationParams shared.CursorPagination, filter investment.InvestmentIntentFilter) ([]investment.InvestmentIntent, error)
+	GetInvestmentsByCursor(ctx context.Context, accountId int, paginationParams shared.CursorPagination, filter investment.InvestmentFilter) ([]investment.Investment, error)
 	// GetInvestmentsByPage gets all of the investments the account has made on rounds using offset pagination
-	GetInvestmentsByPage(ctx context.Context, accountId int, paginationParams shared.OffsetPagination, filter investment.InvestmentIntentFilter) ([]investment.InvestmentIntent, int, error)
+	GetInvestmentsByPage(ctx context.Context, accountId int, paginationParams shared.OffsetPagination, filter investment.InvestmentFilter) ([]investment.Investment, int, error)
 	// GetInvestment attempts to get an investment on a round made by the account that is not withdrawn
 	IsInvestedInRound(ctx context.Context, accountId int, roundId int) (bool, error)
-	GetInvestmentById(ctx context.Context, accountId int, investmentId int) (investment.InvestmentIntent, error)
+	GetInvestmentById(ctx context.Context, accountId int, investmentId int) (investment.Investment, error)
 
 	GetChatsByCursor(ctx context.Context, accountId int, pagination shared.TimeCursorPagination) ([]chat.Chat, error)
 
@@ -90,9 +90,9 @@ type BusinessRepository interface {
 	GetRoundsByCursor(ctx context.Context, businessId int, paginationParams shared.CursorPagination, filter round.RoundFilter) ([]round.Round, error)
 
 	// GetInvestmentsByCursor gets all of the investments received on the rounds related to the business using cursor pagination
-	GetInvestmentsByCursor(ctx context.Context, businessId int, paginationParams shared.CursorPagination, filter investment.InvestmentIntentFilter) ([]investment.InvestmentIntent, error)
+	GetInvestmentsByCursor(ctx context.Context, businessId int, paginationParams shared.CursorPagination, filter investment.InvestmentFilter) ([]investment.Investment, error)
 	// GetInvestmentsByPage gets all of the investments received on the rounds related to the business using offset pagination
-	GetInvestmentsByPage(ctx context.Context, businessId int, paginationParams shared.OffsetPagination, filter investment.InvestmentIntentFilter) ([]investment.InvestmentIntent, int, error)
+	GetInvestmentsByPage(ctx context.Context, businessId int, paginationParams shared.OffsetPagination, filter investment.InvestmentFilter) ([]investment.Investment, int, error)
 
 	// GetTotalFunding gets the amount the business has successfully raised through rounds
 	GetTotalFunding(ctx context.Context, businessId int) (int, error)
