@@ -1127,7 +1127,12 @@ export const IndustrySchema = {
 export const InvestmentSchema = {
     additionalProperties: false,
     properties: {
+        approvedAt: {
+            format: 'date-time',
+            type: 'string'
+        },
         completedAt: {
+            format: 'date-time',
             type: 'string'
         },
         createdAt: {
@@ -1148,6 +1153,7 @@ export const InvestmentSchema = {
             type: 'integer'
         },
         paymentCompletedAt: {
+            format: 'date-time',
             type: 'string'
         },
         payments: {
@@ -1168,6 +1174,7 @@ export const InvestmentSchema = {
             type: 'string'
         },
         termsCompletedAt: {
+            format: 'date-time',
             type: 'string'
         },
         updatedAt: {

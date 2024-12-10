@@ -416,17 +416,18 @@ export type Industry = {
 };
 
 export type Investment = {
-    completedAt?: string;
+    approvedAt?: Date;
+    completedAt?: Date;
     createdAt: Date;
     deletedAt: (Date) | null;
     id: number;
     investorId: number;
-    paymentCompletedAt?: string;
+    paymentCompletedAt?: Date;
     payments?: Array<InvestmentPayment> | null;
     requiresApproval: boolean;
     roundId: number;
     status: 'awaiting_term_acceptance' | 'awaiting_payment' | 'investor_tasks_completed' | 'failed_to_accept_terms' | 'failed_to_make_payment' | 'investor_withdrew' | 'business_rejected' | 'round_closed_before_investor_tasks_completed';
-    termsCompletedAt?: string;
+    termsCompletedAt?: Date;
     updatedAt: (Date) | null;
 };
 
@@ -1455,14 +1456,26 @@ export const InvestmentPaymentModelResponseTransformer: InvestmentPaymentModelRe
 };
 
 export const InvestmentModelResponseTransformer: InvestmentModelResponseTransformer = data => {
+    if (data?.approvedAt) {
+        data.approvedAt = new Date(data.approvedAt);
+    }
+    if (data?.completedAt) {
+        data.completedAt = new Date(data.completedAt);
+    }
     if (data?.createdAt) {
         data.createdAt = new Date(data.createdAt);
     }
     if (data?.deletedAt) {
         data.deletedAt = new Date(data.deletedAt);
     }
+    if (data?.paymentCompletedAt) {
+        data.paymentCompletedAt = new Date(data.paymentCompletedAt);
+    }
     if (Array.isArray(data?.payments)) {
         data.payments.forEach(InvestmentPaymentModelResponseTransformer);
+    }
+    if (data?.termsCompletedAt) {
+        data.termsCompletedAt = new Date(data.termsCompletedAt);
     }
     if (data?.updatedAt) {
         data.updatedAt = new Date(data.updatedAt);
