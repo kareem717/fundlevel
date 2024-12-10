@@ -8,8 +8,8 @@ import (
 	postgres "fundlevel/internal/storage/shared"
 )
 
-func (r *RoundRepository) GetInvestmentsByCursor(ctx context.Context, roundId int, paginationParams postgres.CursorPagination, filter investment.InvestmentIntentFilter) ([]investment.InvestmentIntent, error) {
-	resp := []investment.InvestmentIntent{}
+func (r *RoundRepository) GetInvestmentsByCursor(ctx context.Context, roundId int, paginationParams postgres.CursorPagination, filter investment.InvestmentFilter) ([]investment.Investment, error) {
+	resp := []investment.Investment{}
 
 	query := r.db.
 		NewSelect().
@@ -30,8 +30,8 @@ func (r *RoundRepository) GetInvestmentsByCursor(ctx context.Context, roundId in
 	return resp, err
 }
 
-func (r *RoundRepository) GetInvestmentsByPage(ctx context.Context, roundId int, paginationParams postgres.OffsetPagination, filter investment.InvestmentIntentFilter) ([]investment.InvestmentIntent, int, error) {
-	resp := []investment.InvestmentIntent{}
+func (r *RoundRepository) GetInvestmentsByPage(ctx context.Context, roundId int, paginationParams postgres.OffsetPagination, filter investment.InvestmentFilter) ([]investment.Investment, int, error) {
+	resp := []investment.Investment{}
 	offset := (paginationParams.Page - 1) * paginationParams.PageSize
 
 	query := r.db.

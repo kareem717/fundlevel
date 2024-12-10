@@ -95,7 +95,7 @@ func ApplyRoundFilter(query *bun.SelectQuery, filter round.RoundFilter) *bun.Sel
 	return query
 }
 
-func ApplyInvestmentFilter(query *bun.SelectQuery, filter investment.InvestmentIntentFilter) *bun.SelectQuery {
+func ApplyInvestmentFilter(query *bun.SelectQuery, filter investment.InvestmentFilter) *bun.SelectQuery {
 	if len(filter.Status) > 0 {
 		query.Where("investment.status IN (?)", bun.In(filter.Status))
 	}

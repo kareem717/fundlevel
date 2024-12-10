@@ -7,7 +7,7 @@ import (
 	postgres "fundlevel/internal/storage/shared"
 )
 
-func (s *BusinessService) GetInvestmentsByCursor(ctx context.Context, businessId int, limit int, cursor int, filter investment.InvestmentIntentFilter) ([]investment.InvestmentIntent, error) {
+func (s *BusinessService) GetInvestmentsByCursor(ctx context.Context, businessId int, limit int, cursor int, filter investment.InvestmentFilter) ([]investment.Investment, error) {
 	paginationParams := postgres.CursorPagination{
 		Limit:  limit,
 		Cursor: cursor,
@@ -16,7 +16,7 @@ func (s *BusinessService) GetInvestmentsByCursor(ctx context.Context, businessId
 	return s.repositories.Business().GetInvestmentsByCursor(ctx, businessId, paginationParams, filter)
 }
 
-func (s *BusinessService) GetInvestmentsByPage(ctx context.Context, businessId int, pageSize int, page int, filter investment.InvestmentIntentFilter) ([]investment.InvestmentIntent, int, error) {
+func (s *BusinessService) GetInvestmentsByPage(ctx context.Context, businessId int, pageSize int, page int, filter investment.InvestmentFilter) ([]investment.Investment, int, error) {
 	paginationParams := postgres.OffsetPagination{
 		PageSize: pageSize,
 		Page:     page,

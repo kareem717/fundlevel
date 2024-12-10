@@ -8,23 +8,23 @@ import (
 	"github.com/uptrace/bun"
 )
 
-type InvestmentIntentStatus string
+type InvestmentStatus string
 
 const (
-	InvestmentIntentStatusTerms         InvestmentIntentStatus = "awaiting_term_acceptance"
-	InvestmentIntentStatusPayment       InvestmentIntentStatus = "awaiting_payment"
-	InvestmentIntentStatusCompleted     InvestmentIntentStatus = "investor_tasks_completed"
-	InvestmentIntentStatusFailedTerms   InvestmentIntentStatus = "failed_to_accept_terms"
-	InvestmentIntentStatusFailedPayment InvestmentIntentStatus = "failed_to_make_payment"
-	InvestmentIntentStatusWithdrawn     InvestmentIntentStatus = "investor_withdrew"
-	InvestmentIntentStatusRejected      InvestmentIntentStatus = "business_rejected"
-	InvestmentIntentStatusRoundClosed   InvestmentIntentStatus = "round_closed_before_investor_tasks_completed"
+	InvestmentStatusTerms         InvestmentStatus = "awaiting_term_acceptance"
+	InvestmentStatusPayment       InvestmentStatus = "awaiting_payment"
+	InvestmentStatusCompleted     InvestmentStatus = "investor_tasks_completed"
+	InvestmentStatusFailedTerms   InvestmentStatus = "failed_to_accept_terms"
+	InvestmentStatusFailedPayment InvestmentStatus = "failed_to_make_payment"
+	InvestmentStatusWithdrawn     InvestmentStatus = "investor_withdrew"
+	InvestmentStatusRejected      InvestmentStatus = "business_rejected"
+	InvestmentStatusRoundClosed   InvestmentStatus = "round_closed_before_investor_tasks_completed"
 )
 
-type InvestmentIntent struct {
-	bun.BaseModel `bun:"table:investment_intents"`
+type Investment struct {
+	bun.BaseModel `bun:"table:investments"`
 	shared.IntegerID
-	CreateInvestmentIntentParams
+	CreateInvestmentParams
 	IntentCompletedAt  *string `json:"intentCompletedAt,omitempty"`
 	PaymentCompletedAt *string `json:"paymentCompletedAt,omitempty"`
 	CompletedAt        *string `json:"completedAt,omitempty"`
@@ -33,23 +33,23 @@ type InvestmentIntent struct {
 	shared.Timestamps
 }
 
-type CreateInvestmentIntentParams struct {
+type CreateInvestmentParams struct {
 	RoundID          int              `json:"roundId"`
 	InvestorID       int              `json:"investorId"`
-	Status           InvestmentIntentStatus `json:"status" enum:"intent,payment,completed,failed_terms,failed_payment,investor_withdrawn,business_rejected,round_closed"`
+	Status           InvestmentStatus `json:"status" enum:"awaiting_term_acceptance,awaiting_payment,investor_tasks_completed,failed_to_accept_terms,failed_to_make_payment,investor_withdrew,business_rejected,round_closed_before_investor_tasks_completed"`
 	AmountUSDCents   int32            `json:"amountUsdCents" min:"100"`
 	RequiresApproval bool             `json:"requiresApproval"`
 }
 
-type UpdateInvestmentIntentParams struct {
-	Status             InvestmentIntentStatus `json:"status" enum:"intent,payment,completed,failed_terms,failed_payment,investor_withdrawn,business_rejected,round_closed"`
-	IntentCompletedAt  *string                `json:"intentCompletedAt,omitempty"`
-	PaymentCompletedAt *string                `json:"paymentCompletedAt,omitempty"`
-	CompletedAt        *string                `json:"completedAt,omitempty"`
+type UpdateInvestmentParams struct {
+	Status             InvestmentStatus `json:"status" enum:"awaiting_term_acceptance,awaiting_payment,investor_tasks_completed,failed_to_accept_terms,failed_to_make_payment,investor_withdrew,business_rejected,round_closed_before_investor_tasks_completed"`
+	IntentCompletedAt  *string          `json:"intentCompletedAt,omitempty"`
+	PaymentCompletedAt *string          `json:"paymentCompletedAt,omitempty"`
+	CompletedAt        *string          `json:"completedAt,omitempty"`
 }
 
-type InvestmentIntentFilter struct {
-	Status []string `query:"status" required:"false" enum:"intent,payment,completed,failed_terms,failed_payment,investor_withdrawn,business_rejected,round_closed"`
+type InvestmentFilter struct {
+	Status []string `query:"status" required:"false" enum:"awaiting_term_acceptance,awaiting_payment,investor_tasks_completed,failed_to_accept_terms,failed_to_make_payment,investor_withdrew,business_rejected,round_closed_before_investor_tasks_completed"`
 
 	SortBy    string `query:"sortBy" required:"false" enum:"created_at"`
 	SortOrder string `query:"sortOrder" required:"false" enum:"asc,desc" default:"desc"`

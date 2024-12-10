@@ -6,8 +6,8 @@ package investment
 // 	"fundlevel/internal/entities/investment"
 // )
 
-// func (r *InvestmentRepository) CreatePayment(ctx context.Context, params investment.CreateInvestmentPaymentParams) (investment.InvestmentIntentPayment, error) {
-// 	resp := investment.InvestmentIntentPayment{}
+// func (r *InvestmentRepository) CreatePayment(ctx context.Context, params investment.CreateInvestmentPaymentParams) (investment.InvestmentPayment, error) {
+// 	resp := investment.InvestmentPayment{}
 
 // 	err := r.db.NewInsert().
 // 		Model(&params).
@@ -18,8 +18,8 @@ package investment
 // 	return resp, err
 // }
 
-// func (r *InvestmentRepository) UpdatePayment(ctx context.Context, investmentId int, params investment.UpdateInvestmentPaymentParams) (investment.InvestmentIntentPayment, error) {
-// 	resp := investment.InvestmentIntentPayment{}
+// func (r *InvestmentRepository) UpdatePayment(ctx context.Context, investmentId int, params investment.UpdateInvestmentPaymentParams) (investment.InvestmentPayment, error) {
+// 	resp := investment.InvestmentPayment{}
 
 // 	err := r.db.NewUpdate().
 // 		Model(&params).
@@ -32,8 +32,8 @@ package investment
 // 	return resp, err
 // }
 
-// func (r *InvestmentRepository) GetPayment(ctx context.Context, investmentId int) (investment.InvestmentIntentPayment, error) {
-// 	resp := investment.InvestmentIntentPayment{}
+// func (r *InvestmentRepository) GetPayment(ctx context.Context, investmentId int) (investment.InvestmentPayment, error) {
+// 	resp := investment.InvestmentPayment{}
 
 // 	err := r.db.NewSelect().
 // 		Model(&resp).
@@ -43,8 +43,8 @@ package investment
 // 	return resp, err
 // }
 
-// func (r *InvestmentRepository) GetPaymentByIntentId(ctx context.Context, intentId string) (investment.InvestmentIntentPayment, error) {
-// 	resp := investment.InvestmentIntentPayment{}
+// func (r *InvestmentRepository) GetPaymentByIntentId(ctx context.Context, intentId string) (investment.InvestmentPayment, error) {
+// 	resp := investment.InvestmentPayment{}
 
 // 	err := r.db.NewSelect().
 // 		Model(&resp).

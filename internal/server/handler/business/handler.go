@@ -210,7 +210,7 @@ func (h *httpHandler) getInvestmentsByCursor(ctx context.Context, input *shared.
 
 	limit := input.Limit + 1
 
-	investments, err := h.service.BusinessService.GetInvestmentsByCursor(ctx, input.ID, limit, input.Cursor, input.InvestmentIntentFilter)
+	investments, err := h.service.BusinessService.GetInvestmentsByCursor(ctx, input.ID, limit, input.Cursor, input.InvestmentFilter)
 
 	if err != nil {
 		switch {
@@ -261,7 +261,7 @@ func (h *httpHandler) getInvestmentsByPage(ctx context.Context, input *shared.Ge
 		return nil, huma.Error403Forbidden("Account is not authorized to access business investments")
 	}
 
-	investments, total, err := h.service.BusinessService.GetInvestmentsByPage(ctx, input.ID, input.PageSize, input.Page, input.InvestmentIntentFilter)
+	investments, total, err := h.service.BusinessService.GetInvestmentsByPage(ctx, input.ID, input.PageSize, input.Page, input.InvestmentFilter)
 
 	if err != nil {
 		switch {

@@ -178,7 +178,7 @@ func (h *httpHandler) getInvestmentsByCursor(ctx context.Context, input *shared.
 
 	limit := input.Limit + 1
 
-	investments, err := h.service.AccountService.GetInvestmentsByCursor(ctx, input.ID, limit, input.Cursor, input.InvestmentIntentFilter)
+	investments, err := h.service.AccountService.GetInvestmentsByCursor(ctx, input.ID, limit, input.Cursor, input.InvestmentFilter)
 
 	if err != nil {
 		switch {
@@ -212,7 +212,7 @@ func (h *httpHandler) getInvestmentsByPage(ctx context.Context, input *shared.Ge
 		return nil, huma.Error403Forbidden("Cannot get investments for another account")
 	}
 
-	investments, total, err := h.service.AccountService.GetInvestmentsByPage(ctx, input.ID, input.PageSize, input.Page, input.InvestmentIntentFilter)
+	investments, total, err := h.service.AccountService.GetInvestmentsByPage(ctx, input.ID, input.PageSize, input.Page, input.InvestmentFilter)
 
 	if err != nil {
 		switch {
