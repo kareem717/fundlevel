@@ -43,10 +43,10 @@ type InvestmentRepository interface {
 	GetByRoundIdAndAccountId(ctx context.Context, roundId int, accountId int) (investment.Investment, error)
 	UpdateProcessingAndPendingInvestmentsByRoundId(ctx context.Context, roundId int, status investment.InvestmentStatus) error
 
-	// CreatePayment(ctx context.Context, params investment.CreateInvestmentPaymentParams) (investment.InvestmentPayment, error)
-	// UpdatePayment(ctx context.Context, investmentId int, params investment.UpdateInvestmentPaymentParams) (investment.InvestmentPayment, error)
-	// GetPayment(ctx context.Context, investmentId int) (investment.InvestmentPayment, error)
-	// GetPaymentByIntentId(ctx context.Context, intentId string) (investment.InvestmentPayment, error)
+	CreatePayment(ctx context.Context, params investment.CreateInvestmentPaymentParams) (investment.InvestmentPayment, error)
+	UpdatePayment(ctx context.Context, id int, params investment.UpdateInvestmentPaymentParams) (investment.InvestmentPayment, error)
+	GetPaymentById(ctx context.Context, id int) (investment.InvestmentPayment, error)
+	GetPaymentByIntentId(ctx context.Context, intentId string) (investment.InvestmentPayment, error)
 }
 
 type AccountRepository interface {

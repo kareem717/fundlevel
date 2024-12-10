@@ -202,7 +202,7 @@ type InvestmentPaymentIntentClientSecretOutput struct {
 func (h *httpHandler) createPaymentIntent(ctx context.Context, input *GetInvestmentPaymentIntentClientSecretInput) (*InvestmentPaymentIntentClientSecretOutput, error) {
 	account := shared.GetAuthenticatedAccount(ctx)
 
-	payment, err := h.service.InvestmentService.CreatePaymentIntent(ctx, input.ID, account.ID)
+	payment, err := h.service.InvestmentService.CreateStripePaymentIntent(ctx, input.ID, account.ID)
 	if err != nil {
 		h.logger.Error("failed to create investment payment intent", zap.Error(err))
 		return nil, huma.Error500InternalServerError("Failed to create investment payment intent")
