@@ -261,3 +261,26 @@ func (h *httpHandler) getInvestmentById(ctx context.Context, input *shared.PathI
 
 	return resp, nil
 }
+
+type GetInvestmentPaymentsOutput struct {
+	Body struct {
+		shared.MessageResponse
+		InvestmentPayments []investment.InvestmentPayment `json:"investmentPayments"`
+	}
+}
+
+func (h *httpHandler) getInvestmentPayments(ctx context.Context, input *shared.PathIDParam) (*GetInvestmentPaymentsOutput, error) {
+	//todo: add ABAC checks
+
+	payments, err := h.service.InvestmentService.GetPayments(ctx, input.ID)
+	if err != nil {
+		h.logger.Error("failed to fetch investment payments", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while fetching the investment payments")
+	}
+
+	resp := &GetInvestmentPaymentsOutput{}
+	resp.Body.Message = "Investment payments fetched successfully"
+	resp.Body.InvestmentPayments = payments
+
+	return resp, nil
+}

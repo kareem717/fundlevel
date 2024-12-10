@@ -47,6 +47,7 @@ type InvestmentRepository interface {
 	UpdatePayment(ctx context.Context, id int, params investment.UpdateInvestmentPaymentParams) (investment.InvestmentPayment, error)
 	GetPaymentById(ctx context.Context, id int) (investment.InvestmentPayment, error)
 	GetPaymentByIntentId(ctx context.Context, intentId string) (investment.InvestmentPayment, error)
+	GetPaymentsByInvestmentId(ctx context.Context, investmentId int) ([]investment.InvestmentPayment, error)
 }
 
 type AccountRepository interface {

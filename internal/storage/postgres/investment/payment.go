@@ -53,3 +53,14 @@ func (r *InvestmentRepository) GetPaymentByIntentId(ctx context.Context, intentI
 
 	return resp, err
 }
+
+func (r *InvestmentRepository) GetPaymentsByInvestmentId(ctx context.Context, investmentId int) ([]investment.InvestmentPayment, error) {
+	resp := []investment.InvestmentPayment{}
+
+	err := r.db.NewSelect().
+		Model(&resp).
+		Where("investment_payment.investment_id = ?", investmentId).
+		Scan(ctx)
+
+	return resp, err
+}

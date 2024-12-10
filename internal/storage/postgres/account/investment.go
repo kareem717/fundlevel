@@ -16,7 +16,6 @@ func (r *AccountRepository) GetInvestmentsByCursor(ctx context.Context, accountI
 	query := r.db.
 		NewSelect().
 		Model(&resp).
-		Relation("Round").
 		Where("investment.investor_id = ?", accountId).
 		Limit(paginationParams.Limit)
 
@@ -39,7 +38,6 @@ func (r *AccountRepository) GetInvestmentsByPage(ctx context.Context, accountId 
 	query := r.db.
 		NewSelect().
 		Model(&resp).
-		Relation("Round").
 		Where("investment.investor_id = ?", accountId).
 		Offset(offset).
 		Limit(paginationParams.PageSize + 1)
