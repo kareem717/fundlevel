@@ -2,11 +2,8 @@ package investment
 
 import (
 	"context"
-	// "fmt"
 	"strconv"
 
-	// "fundlevel/internal/entities/investment"
-	// "fundlevel/internal/entities/round"
 	"fundlevel/internal/storage"
 
 	"github.com/stripe/stripe-go/v80"
@@ -18,7 +15,7 @@ const (
 	InvestorIDMetadataKey = "investor_id"
 )
 
-func (s *InvestmentService) CreatePaymentIntent(
+func (s *InvestmentService) CreateStripePaymentIntent(
 	ctx context.Context,
 	roundId int,
 	investorId int,
@@ -110,7 +107,7 @@ func (s *InvestmentService) CreatePaymentIntent(
 // 		investmentRecord, err := s.repositories.Investment().Create(ctx, investment.CreateInvestmentParams{
 // 			RoundID:    parsedRoundId,
 // 			InvestorID: parsedInvestorId,
-// 			Status:     investment.InvestmentStatusSuccessful,
+// 			Status:     investment.,
 // 		})
 // 		if err != nil {
 // 			return err

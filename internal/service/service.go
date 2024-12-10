@@ -105,7 +105,7 @@ type InvestmentService interface {
 	// Update(ctx context.Context, id int, params investment.UpdateInvestmentParams) (investment.Investment, error)
 
 	// ProcessInvestment(ctx context.Context, investmentId int) error
-	CreatePaymentIntent(ctx context.Context, roundId int, investorId int) (*stripe.PaymentIntent, error)
+	CreateStripePaymentIntent(ctx context.Context, roundId int, investorId int) (*stripe.PaymentIntent, error)
 	// HandleInvestmentPaymentIntentSuccess(ctx context.Context, intentID string) error
 	// HandleInvestmentPaymentIntentPaymentFailed(ctx context.Context, intentID string) error
 	// HandleInvestmentPaymentIntentProcessing(ctx context.Context, intentID string) error
