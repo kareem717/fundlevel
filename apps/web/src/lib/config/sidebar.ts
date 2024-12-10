@@ -109,47 +109,34 @@ const dashboard: NavigationMenu[] = [
 ];
 
 /**
- * An array of navigation items for the portfolio dashboard sidebar.
+ * An array of navigation items for the wallet dashboard sidebar.
  */
-const portfolio: NavigationMenu[] = [
+const wallet: NavigationMenu[] = [
 	{
-		name: "Portfolio",
-		path: redirects.app.portfolio.index,
+		name: "Wallet",
+		path: redirects.app.wallet.index,
 		items: [
 			{
 				title: "Overview",
-				url: redirects.app.portfolio.index,
+				url: redirects.app.wallet.index,
 				icon: Icons.layoutGrid,
 			},
 		],
 	},
 	{
-		name: "Holdings",
-		path: redirects.app.portfolio.index,
+		name: "Positions",
+		path: redirects.app.wallet.positions.root,
 		items: [
 			{
 				title: "Investments",
-				root: redirects.app.portfolio.investments.root,
+				root: redirects.app.wallet.positions.investments.root,
 				icon: Icons.chart,
 				items: [
 					{
-						title: "Insights",
-						url: redirects.app.portfolio.investments.insights,
-					},
-					{
-						title: "History",
-						url: redirects.app.portfolio.investments.history,
-					},
-					{
 						title: "Payments",
-						url: redirects.app.portfolio.investments.payments,
+						url: redirects.app.wallet.positions.investments.payments,
 					},
 				],
-			},
-			{
-				title: "Positions",
-				url: redirects.app.portfolio.positions.index,
-				icon: Icons.briefcase,
 			},
 		],
 	},
@@ -160,7 +147,7 @@ const portfolio: NavigationMenu[] = [
  */
 const SidebarConfig = {
 	dashboard,
-	portfolio,
+	wallet,
 };
 
 export default SidebarConfig;

@@ -19,17 +19,15 @@ const redirects = {
 				view: (id: string) => `/rounds/${id}`,
 			},
 		},
-		portfolio: {
+		wallet: {
 			index: "/portfolio",
-			investments: {
-				root: "/portfolio/investments",
-				history: "/portfolio/investments/history",
-				insights: "/portfolio/investments/insights",
-				payments: "/portfolio/investments/payments",
-				create: (roundId: string) => `/portfolio/investments/create/${roundId}`,
-			},
+
 			positions: {
-				index: "/portfolio/positions",
+				root: "/portfolio/positions",
+				investments: {
+					root: "/portfolio/investments",
+					payments: "/portfolio/investments/payments",
+				},
 			},
 		},
 		dashboard: {
