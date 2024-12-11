@@ -207,21 +207,26 @@ func (h *httpHandler) createStripePaymentIntent(ctx context.Context, input *GetI
 		}
 	}
 
+	if investmentRecord.PaymentCompletedAt != nil {
+		h.logger.Error("investment payment is already completed", zap.Int("investment id", input.ID))
+		return nil, huma.Error400BadRequest("Investment payment is already completed")
+	}
+
 	if investmentRecord.TermsCompletedAt == nil {
 		h.logger.Error("investment terms are not completed", zap.Int("investment id", input.ID))
 		return nil, huma.Error400BadRequest("Investment terms are not completed")
 	}
 
-	if investmentRecord.Status != investment.InvestmentStatusTerms {
-		h.logger.Error("investment status is not terms",
+	if investmentRecord.ApprovedAt == nil {
+		h.logger.Error("investment requires manual approval but is not approved", zap.Int("investment id", input.ID))
+		return nil, huma.Error400BadRequest("Investment has not been approved")
+	}
+
+	if investmentRecord.Status != investment.InvestmentStatusAwaitingApproval {
+		h.logger.Error("investment status is not awaiting approval",
 			zap.Int("investment id", input.ID),
 			zap.String("status", string(investmentRecord.Status)))
 		return nil, huma.Error400BadRequest("Investment is not in the correct state to create a payment intent")
-	}
-
-	if investmentRecord.RequiresApproval == true && investmentRecord.ApprovedAt == nil {
-		h.logger.Error("investment requires approval but is not approved", zap.Int("investment id", input.ID))
-		return nil, huma.Error400BadRequest("Investment requires approval but is not approved")
 	}
 
 	payment, err := h.service.InvestmentService.CreateStripePaymentIntent(ctx, input.ID)

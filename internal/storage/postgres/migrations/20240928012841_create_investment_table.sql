@@ -2,6 +2,7 @@
 -- +goose StatementBegin
 CREATE TYPE investment_status AS ENUM(
     'awaiting_term_acceptance',
+    'awaiting_approval',
     'awaiting_payment',
     'investor_tasks_completed',
     'failed_to_accept_terms',
@@ -11,6 +12,8 @@ CREATE TYPE investment_status AS ENUM(
     'round_closed_before_investor_tasks_completed'
 );
 
+-- Could add checks to ensure that the stuatuses are valid,
+-- i.e. if status = 'awaiting_payment' then approved_at must be null
 CREATE TABLE
     investments (
         id SERIAL PRIMARY KEY,
@@ -18,7 +21,7 @@ CREATE TABLE
         investor_id INT NOT NULL REFERENCES accounts (id),
         status investment_status NOT NULL DEFAULT 'awaiting_term_acceptance',
         amount_usd_cents BIGINT NOT NULL CHECK (amount_usd_cents>99),
-        requires_approval BOOLEAN NOT NULL DEFAULT FALSE,
+        requires_manual_approval BOOLEAN NOT NULL DEFAULT FALSE,
         approved_at timestamptz,
         terms_completed_at timestamptz,
         payment_completed_at timestamptz,
