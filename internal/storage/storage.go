@@ -50,6 +50,7 @@ type InvestmentRepository interface {
 	GetPaymentByIntentId(ctx context.Context, intentId string) (investment.InvestmentPayment, error)
 	GetPaymentsByInvestmentId(ctx context.Context, investmentId int) ([]investment.InvestmentPayment, error)
 	GetCurrentPayment(ctx context.Context, investmentId int) (investment.InvestmentPayment, error)
+	GetFailedPaymentCount(ctx context.Context, investmentId int) (int, error)
 }
 
 type AccountRepository interface {
