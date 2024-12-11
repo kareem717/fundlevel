@@ -117,6 +117,7 @@ type InvestmentService interface {
 	// HandleStripePaymentIntentSuccess is a callback function that is called when a Stripe payment intent is successful.
 	HandleStripePaymentIntentSucceeded(ctx context.Context, intentID string) error
 	HandleStripePaymentIntentStatusUpdated(ctx context.Context, intentID string) error
+	HandleStripePaymentIntentFailed(ctx context.Context, intentID string) error
 
 	GetPayments(ctx context.Context, investmentId int) ([]investment.InvestmentPayment, error)
 	GetCurrentPayment(ctx context.Context, investmentId int) (investment.InvestmentPayment, error)

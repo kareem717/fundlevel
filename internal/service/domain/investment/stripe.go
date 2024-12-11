@@ -171,6 +171,12 @@ func (s *InvestmentService) HandleStripePaymentIntentCreated(ctx context.Context
 	return nil
 }
 
+func (s *InvestmentService) HandleStripePaymentIntentFailed(ctx context.Context, intentID string) error {
+	stripe.Key = s.stripeAPIKey
+
+	return nil
+}
+
 func (s *InvestmentService) HandleStripePaymentIntentSucceeded(ctx context.Context, intentID string) error {
 	now := time.Now()
 	stripe.Key = s.stripeAPIKey
