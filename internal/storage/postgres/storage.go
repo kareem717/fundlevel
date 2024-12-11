@@ -12,6 +12,7 @@ import (
 	"fundlevel/internal/storage/postgres/chat"
 	"fundlevel/internal/storage/postgres/industry"
 	"fundlevel/internal/storage/postgres/investment"
+	"fundlevel/internal/storage/postgres/position"
 	"fundlevel/internal/storage/postgres/round"
 	"fundlevel/internal/storage/postgres/user"
 
@@ -90,6 +91,7 @@ func configDBPool(config Config) (*pgxpool.Config, error) {
 }
 
 type transaction struct {
+	positionRepo   *position.PositionRepository
 	accountRepo    *account.AccountRepository
 	roundRepo      *round.RoundRepository
 	userRepo       *user.UserRepository
@@ -127,11 +129,15 @@ func (t *transaction) Analytic() storage.AnalyticRepository {
 }
 
 func (t *transaction) Investment() storage.InvestmentRepository {
-	return t.investmentRepo	
+	return t.investmentRepo
 }
 
 func (t *transaction) Industry() storage.IndustryRepository {
 	return t.industryRepo
+}
+
+func (t *transaction) Position() storage.PositionRepository {
+	return t.positionRepo
 }
 
 func (t *transaction) Commit() error {
@@ -149,6 +155,7 @@ func (t *transaction) SubTransaction() (storage.Transaction, error) {
 	}
 
 	return &transaction{
+		positionRepo:   position.NewPositionRepository(tx, t.ctx),
 		accountRepo:    account.NewAccountRepository(tx, t.ctx),
 		roundRepo:      round.NewRoundRepository(tx, t.ctx),
 		chatRepo:       chat.NewChatRepository(tx, t.ctx),
@@ -162,6 +169,7 @@ func (t *transaction) SubTransaction() (storage.Transaction, error) {
 }
 
 type Repository struct {
+	positionRepo   *position.PositionRepository
 	accountRepo    *account.AccountRepository
 	roundRepo      *round.RoundRepository
 	userRepo       *user.UserRepository
@@ -215,6 +223,7 @@ func NewDB(config Config, ctx context.Context, logger *zap.Logger) (*bun.DB, err
 
 func NewRepository(db *bun.DB, ctx context.Context) *Repository {
 	return &Repository{
+		positionRepo:   position.NewPositionRepository(db, ctx),
 		accountRepo:    account.NewAccountRepository(db, ctx),
 		roundRepo:      round.NewRoundRepository(db, ctx),
 		userRepo:       user.NewUserRepository(db, ctx),
@@ -260,6 +269,10 @@ func (r *Repository) Analytic() storage.AnalyticRepository {
 	return r.analyticRepo
 }
 
+func (r *Repository) Position() storage.PositionRepository {
+	return r.positionRepo
+}
+
 func (r *Repository) HealthCheck(ctx context.Context) error {
 	return r.db.PingContext(ctx)
 }
@@ -271,6 +284,7 @@ func (r *Repository) NewTransaction() (storage.Transaction, error) {
 	}
 
 	return &transaction{
+		positionRepo:   position.NewPositionRepository(tx, r.ctx),
 		accountRepo:    account.NewAccountRepository(tx, r.ctx),
 		userRepo:       user.NewUserRepository(tx, r.ctx),
 		roundRepo:      round.NewRoundRepository(tx, r.ctx),
