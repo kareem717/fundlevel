@@ -90,8 +90,21 @@ func (h *httpHandler) handleStripeWebhook(ctx context.Context, input *shared.Han
 
 		err = h.service.InvestmentService.HandleStripePaymentIntentCreated(ctx, eventBody.ID)
 		if err != nil {
-			h.logger.Error("failed to handle stripe checkout success", zap.Error(err))
-			return nil, huma.Error500InternalServerError("Failed to handle stripe checkout success")
+			h.logger.Error("failed to handle stripe payment intent created", zap.Error(err))
+			return nil, huma.Error500InternalServerError("Failed to handle stripe payment intent created")
+		}
+
+	case stripe.EventTypePaymentIntentSucceeded:
+		eventBody, err := shared.ParseStripeWebhook[stripe.PaymentIntent](event)
+		if err != nil {
+			h.logger.Error("failed to parse webhook json", zap.Error(err), zap.String("eventType", string(event.Type)))
+			return nil, huma.Error500InternalServerError("Failed to parse webhook json")
+		}
+
+		err = h.service.InvestmentService.HandleStripePaymentIntentSuccess(ctx, eventBody.ID)
+		if err != nil {
+			h.logger.Error("failed to handle stripe payment intent success", zap.Error(err))
+			return nil, huma.Error500InternalServerError("Failed to handle stripe payment intent success")
 		}
 
 	// case stripe.EventTypePaymentIntentCanceled:
