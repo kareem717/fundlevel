@@ -9,6 +9,7 @@ import (
 	"fundlevel/internal/entities/chat"
 	"fundlevel/internal/entities/industry"
 	"fundlevel/internal/entities/investment"
+	"fundlevel/internal/entities/position"
 	"fundlevel/internal/entities/round"
 	"fundlevel/internal/storage/shared"
 
@@ -142,6 +143,10 @@ type ChatRepository interface {
 	IsAccountInChat(ctx context.Context, chatID int, accountID int) (bool, error)
 }
 
+type PositionRepository interface {
+	Create(ctx context.Context, params position.CreatePositionParams) (position.Position, error)
+}
+
 type RepositoryProvider interface {
 	Account() AccountRepository
 	Round() RoundRepository
@@ -151,6 +156,7 @@ type RepositoryProvider interface {
 	Business() BusinessRepository
 	Analytic() AnalyticRepository
 	Industry() IndustryRepository
+	Position() PositionRepository
 }
 
 type Transaction interface {
