@@ -53,8 +53,8 @@ func (s *InvestmentService) Create(
 			round.PercentageSelling,
 			round.InvestorCount,
 		),
-		Status:           investment.InvestmentStatusTerms,
-		RequiresApproval: round.InvestmentsRequireApproval,
+		Status:                 investment.InvestmentStatusTerms,
+		RequiresManualApproval: round.InvestmentsRequireApproval,
 	}
 
 	return s.repositories.Investment().Create(ctx, params)

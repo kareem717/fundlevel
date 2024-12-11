@@ -103,6 +103,27 @@ func (s *InvestmentService) HandleStripePaymentIntentCreated(ctx context.Context
 		return fmt.Errorf("failed to convert investment ID to int: %w", err)
 	}
 
+	investmentRecord, err := s.repositories.Investment().GetById(ctx, parsedInvestmentId)
+	if err != nil {
+		return fmt.Errorf("failed to get investment: %w", err)
+	}
+
+	if investmentRecord.PaymentCompletedAt != nil {
+		return fmt.Errorf("investment payment is already completed")
+	}
+
+	if investmentRecord.TermsCompletedAt == nil {
+		return fmt.Errorf("investment terms are not completed")
+	}
+
+	if investmentRecord.ApprovedAt == nil {
+		return fmt.Errorf("investment requires manual approval but is not approved")
+	}
+
+	if investmentRecord.Status != investment.InvestmentStatusAwaitingApproval {
+		return fmt.Errorf("investment is not in the correct state to create a payment intent")
+	}
+
 	err = s.repositories.RunInTx(ctx, func(ctx context.Context, tx storage.Transaction) error {
 		paymentRecord, err := tx.Investment().CreatePayment(ctx, investment.CreateInvestmentPaymentParams{
 			InvestmentID:                    parsedInvestmentId,

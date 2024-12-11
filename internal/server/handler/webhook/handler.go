@@ -153,7 +153,7 @@ func (h *httpHandler) handleStripeConnectWebhook(ctx context.Context, input *sha
 
 		var updateParams business.UpdateBusinessStripeAccountParams
 		hasToUpdate := false
-		
+
 		if eventBody.Requirements.DisabledReason != "" {
 			h.logger.Error("business is disabled", zap.String("stripeConnectedAccountId", stripeConnectedAccountId), zap.String("disabledReason", string(eventBody.Requirements.DisabledReason)))
 			updateParams.StripeDisabledReason = &eventBody.Requirements.DisabledReason
