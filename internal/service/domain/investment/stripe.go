@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"strconv"
+	"time"
 
 	"fundlevel/internal/entities/investment"
 	"fundlevel/internal/storage"
@@ -170,7 +171,46 @@ func (s *InvestmentService) HandleStripePaymentIntentCreated(ctx context.Context
 }
 
 func (s *InvestmentService) HandleStripePaymentIntentSuccess(ctx context.Context, intentID string) error {
+	now := time.Now()
 	stripe.Key = s.stripeAPIKey
+
+	intent, err := paymentintent.Get(intentID, nil)
+	if err != nil {
+		return err
+	}
+
+	investmentId, ok := intent.Metadata[InvestmentIDMetadataKey]
+	if !ok {
+		return fmt.Errorf("investment ID not found in session metadata")
+	}
+
+	parsedInvestmentId, err := strconv.Atoi(investmentId)
+	if err != nil {
+		return fmt.Errorf("failed to convert investment ID to int: %w", err)
+	}
+
+	investmentRecord, err := s.repositories.Investment().GetById(ctx, parsedInvestmentId)
+	if err != nil {
+		return fmt.Errorf("failed to get investment: %w", err)
+	}
+
+	if investmentRecord.Status != investment.InvestmentStatusPayment {
+		return fmt.Errorf("investment status is not payment")
+	}
+
+	err = s.repositories.RunInTx(ctx, func(ctx context.Context, tx storage.Transaction) error {
+		_, err = tx.Investment().Update(ctx, parsedInvestmentId, investment.UpdateInvestmentParams{
+			Status: investment.InvestmentStatusCompleted,
+			PaymentCompletedAt: &now,
+			CompletedAt:        &now,
+		})
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
+
 	return nil
 }
 
