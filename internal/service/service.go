@@ -109,13 +109,14 @@ type InvestmentService interface {
 
 	// CreateStripePaymentIntent simply creates a Stripe payment intent for the given investment.
 	CreateStripePaymentIntent(ctx context.Context, investmentId int) (*stripe.PaymentIntent, error)
-	
+
 	// HandleStripePaymentIntentCreated is a callback function that is called when a Stripe payment intent is created.
 	// It tries to create a `investment_payment` record in the database, cancelling the Stripe payment intent if it fails.
 	HandleStripePaymentIntentCreated(ctx context.Context, intentID string) error
 
 	// HandleStripePaymentIntentSuccess is a callback function that is called when a Stripe payment intent is successful.
-	HandleStripePaymentIntentSuccess(ctx context.Context, intentID string) error
+	HandleStripePaymentIntentSucceeded(ctx context.Context, intentID string) error
+	HandleStripePaymentIntentStatusUpdated(ctx context.Context, intentID string) error
 
 	GetPayments(ctx context.Context, investmentId int) ([]investment.InvestmentPayment, error)
 	GetCurrentPayment(ctx context.Context, investmentId int) (investment.InvestmentPayment, error)

@@ -170,7 +170,7 @@ func (s *InvestmentService) HandleStripePaymentIntentCreated(ctx context.Context
 	return nil
 }
 
-func (s *InvestmentService) HandleStripePaymentIntentSuccess(ctx context.Context, intentID string) error {
+func (s *InvestmentService) HandleStripePaymentIntentSucceeded(ctx context.Context, intentID string) error {
 	now := time.Now()
 	stripe.Key = s.stripeAPIKey
 
@@ -200,9 +200,16 @@ func (s *InvestmentService) HandleStripePaymentIntentSuccess(ctx context.Context
 
 	err = s.repositories.RunInTx(ctx, func(ctx context.Context, tx storage.Transaction) error {
 		_, err = tx.Investment().Update(ctx, parsedInvestmentId, investment.UpdateInvestmentParams{
-			Status: investment.InvestmentStatusCompleted,
+			Status:             investment.InvestmentStatusCompleted,
 			PaymentCompletedAt: &now,
 			CompletedAt:        &now,
+		})
+		if err != nil {
+			return err
+		}
+
+		_, err = tx.Investment().UpdatePayment(ctx, parsedInvestmentId, investment.UpdateInvestmentPaymentParams{
+			Status: intent.Status,
 		})
 		if err != nil {
 			return err
@@ -212,6 +219,45 @@ func (s *InvestmentService) HandleStripePaymentIntentSuccess(ctx context.Context
 	})
 
 	return nil
+}
+
+func (s *InvestmentService) HandleStripePaymentIntentStatusUpdated(ctx context.Context, intentID string) error {
+	stripe.Key = s.stripeAPIKey
+
+	intent, err := paymentintent.Get(intentID, nil)
+	if err != nil {
+		return err
+	}
+
+	//TODO: consider turning into a map for constant time lookup
+	if intent.Status != stripe.PaymentIntentStatusRequiresAction &&
+		intent.Status != stripe.PaymentIntentStatusProcessing &&
+		intent.Status != stripe.PaymentIntentStatusRequiresCapture &&
+		intent.Status != stripe.PaymentIntentStatusRequiresPaymentMethod &&
+		intent.Status != stripe.PaymentIntentStatusRequiresConfirmation {
+		return fmt.Errorf("investment payment intent status is not in a valid state to update: %s", intent.Status)
+	}
+
+	paymentId, ok := intent.Metadata[InvestmentPaymentIDMetadatakey]
+	if !ok {
+		return fmt.Errorf("investment payment ID not found in session metadata")
+	}
+
+	parsedPaymentId, err := strconv.Atoi(paymentId)
+	if err != nil {
+		return fmt.Errorf("failed to convert investment payment ID to int: %w", err)
+	}
+
+	paymentRecord, err := s.repositories.Investment().GetPaymentById(ctx, parsedPaymentId)
+	if err != nil {
+		return fmt.Errorf("failed to get investment payment: %w", err)
+	}
+
+	_, err = s.repositories.Investment().UpdatePayment(ctx, paymentRecord.ID, investment.UpdateInvestmentPaymentParams{
+		Status: intent.Status,
+	})
+
+	return err
 }
 
 // func (s *InvestmentService) HandleInvestmentPaymentIntentProcessing(ctx context.Context, intentID string) error {
