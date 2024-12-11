@@ -169,69 +169,10 @@ func (s *InvestmentService) HandleStripePaymentIntentCreated(ctx context.Context
 	return nil
 }
 
-// func (s *InvestmentService) HandleInvestmentPaymentIntentSuccess(ctx context.Context, intentID string) error {
-// 	stripe.Key = s.stripeAPIKey
-
-// 	intent, err := s.getStripePaymentIntent(intentID)
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	roundId, ok := intent.Metadata[RoundIDMetadataKey]
-// 	if !ok {
-// 		return fmt.Errorf("round ID not found in session metadata")
-// 	}
-
-// 	parsedRoundId, err := strconv.Atoi(roundId)
-// 	if err != nil {
-// 		return fmt.Errorf("failed to convert round ID to int: %w", err)
-// 	}
-
-// 	investorId, ok := intent.Metadata[InvestorIDMetadataKey]
-// 	if !ok {
-// 		return fmt.Errorf("investor ID not found in session metadata")
-// 	}
-
-// 	parsedInvestorId, err := strconv.Atoi(investorId)
-// 	if err != nil {
-// 		return fmt.Errorf("failed to convert investor ID to int: %w", err)
-// 	}
-
-// 	err = s.repositories.RunInTx(ctx, func(ctx context.Context, tx storage.Transaction) error {
-// 		investmentRecord, err := s.repositories.Investment().Create(ctx, investment.CreateInvestmentParams{
-// 			RoundID:    parsedRoundId,
-// 			InvestorID: parsedInvestorId,
-// 			Status:     investment.,
-// 		})
-// 		if err != nil {
-// 			return err
-// 		}
-
-// 		_, err = tx.Investment().CreatePayment(ctx, investment.CreateInvestmentPaymentParams{
-// 			InvestmentID:                    investmentRecord.ID,
-// 			StripePaymentIntentID:           intent.ID,
-// 			StripePaymentIntentClientSecret: intent.ClientSecret,
-// 			Status:                          intent.Status,
-// 		})
-// 		if err != nil {
-// 			return err
-// 		}
-
-// 		_, err = s.repositories.Round().Update(
-// 			ctx,
-// 			investmentRecord.RoundID,
-// 			round.UpdateRoundParams{
-// 				Status: round.RoundStatusSuccessful,
-// 			})
-// 		if err != nil {
-// 			return fmt.Errorf("failed to update round: %w", err)
-// 		}
-
-// 		return nil
-// 	})
-
-// 	return err
-// }
+func (s *InvestmentService) HandleStripePaymentIntentSuccess(ctx context.Context, intentID string) error {
+	stripe.Key = s.stripeAPIKey
+	return nil
+}
 
 // func (s *InvestmentService) HandleInvestmentPaymentIntentProcessing(ctx context.Context, intentID string) error {
 // 	stripe.Key = s.stripeAPIKey
