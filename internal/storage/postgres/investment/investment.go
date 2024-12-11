@@ -105,6 +105,7 @@ func (r *InvestmentRepository) Update(ctx context.Context, id int, params invest
 		ModelTableExpr("investments").
 		Where("investments.id = ?", id).
 		Returning("*").
+		OmitZero().
 		Scan(ctx, &resp)
 
 	return resp, err
