@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"fundlevel/internal/entities/investment"
+	"fundlevel/internal/entities/position"
 	"fundlevel/internal/storage"
 
 	"github.com/stripe/stripe-go/v80"
@@ -210,6 +211,13 @@ func (s *InvestmentService) HandleStripePaymentIntentSucceeded(ctx context.Conte
 
 		_, err = tx.Investment().UpdatePayment(ctx, parsedInvestmentId, investment.UpdateInvestmentPaymentParams{
 			Status: intent.Status,
+		})
+		if err != nil {
+			return err
+		}
+
+		_, err = tx.Position().Create(ctx, position.CreatePositionParams{
+			InvestmentID: parsedInvestmentId,
 		})
 		if err != nil {
 			return err
