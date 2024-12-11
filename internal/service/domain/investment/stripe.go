@@ -3,6 +3,7 @@ package investment
 import (
 	"context"
 	"fmt"
+	"slices"
 	"strconv"
 	"time"
 
@@ -173,6 +174,51 @@ func (s *InvestmentService) HandleStripePaymentIntentCreated(ctx context.Context
 
 func (s *InvestmentService) HandleStripePaymentIntentFailed(ctx context.Context, intentID string) error {
 	stripe.Key = s.stripeAPIKey
+
+	intent, err := paymentintent.Get(intentID, nil)
+	if err != nil {
+		return err
+	}
+
+	investmentId, ok := intent.Metadata[InvestmentIDMetadataKey]
+	if !ok {
+		return fmt.Errorf("investment ID not found in session metadata")
+	}
+
+	parsedInvestmentId, err := strconv.Atoi(investmentId)
+	if err != nil {
+		return fmt.Errorf("failed to convert investment ID to int: %w", err)
+	}
+
+	failedPaymentCount, err := s.repositories.Investment().GetFailedPaymentCount(ctx, parsedInvestmentId)
+	if err != nil {
+		return err
+	}
+
+	//todo: O(n) is not ideal
+	// If the payment intent was cancelled due to a serious reason or we've tried too many times,
+	// we need to mark the investment as failed
+	if failedPaymentCount >= 4 || !slices.Contains([]stripe.PaymentIntentCancellationReason{
+		stripe.PaymentIntentCancellationReasonFailedInvoice,
+		stripe.PaymentIntentCancellationReasonAbandoned,
+		stripe.PaymentIntentCancellationReasonVoidInvoice,
+		stripe.PaymentIntentCancellationReasonAutomatic,
+	}, intent.CancellationReason) {
+		_, err := s.repositories.Investment().Update(ctx, parsedInvestmentId, investment.UpdateInvestmentParams{
+			Status: investment.InvestmentStatusFailedPayment,
+		})
+		if err != nil {
+			return err
+		}
+
+		return nil
+	}
+
+	// Otherwise, we lets let them try paying again
+	_, err = s.CreateStripePaymentIntent(ctx, parsedInvestmentId)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }

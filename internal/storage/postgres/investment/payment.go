@@ -78,3 +78,11 @@ func (r *InvestmentRepository) GetCurrentPayment(ctx context.Context, investment
 
 	return resp, err
 }
+
+func (r *InvestmentRepository) GetFailedPaymentCount(ctx context.Context, investmentId int) (int, error) {
+	return r.db.NewSelect().
+		Model(&investment.InvestmentPayment{}).
+		Where("investment_payment.investment_id = ?", investmentId).
+		Where("investment_payment.status = ?", stripe.PaymentIntentStatusCanceled).
+		Count(ctx)
+}
