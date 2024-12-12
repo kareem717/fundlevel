@@ -172,20 +172,20 @@ func (t *transaction) SubTransaction() (storage.Transaction, error) {
 }
 
 type Repository struct {
-	positionRepo      *position.PositionRepository
-	accountRepo       *account.AccountRepository
-	roundRepo         *round.RoundRepository
-	userRepo          *user.UserRepository
-	chatRepo          *chat.ChatRepository
-	investmentRepo    *investment.InvestmentRepository
-	workerRepo        *worker.WorkerRepository
-	industryRepo      *industry.IndustryRepository
-	businessRepo      *business.BusinessRepository
-	analyticRepo      *analytic.AnalyticRepository
-	riverClient       *river.Client[pgx.Tx]
-	db                *bun.DB
-	ctx               context.Context
-	pgxConfig         *pgxpool.Config
+	positionRepo   *position.PositionRepository
+	accountRepo    *account.AccountRepository
+	roundRepo      *round.RoundRepository
+	userRepo       *user.UserRepository
+	chatRepo       *chat.ChatRepository
+	investmentRepo *investment.InvestmentRepository
+	workerRepo     *worker.WorkerRepository
+	industryRepo   *industry.IndustryRepository
+	businessRepo   *business.BusinessRepository
+	analyticRepo   *analytic.AnalyticRepository
+	riverClient    *river.Client[pgx.Tx]
+	db             *bun.DB
+	ctx            context.Context
+	pgxPool        *pgxpool.Pool
 }
 
 // func NewDB(config Config, ctx context.Context, logger *zap.Logger) (*bun.DB, error) {
@@ -284,19 +284,22 @@ func NewRepository(
 		analyticRepo:   analytic.NewAnalyticRepository(db, ctx),
 		db:             db,
 		ctx:            ctx,
+		pgxPool:        pool,
 		riverClient:    riverClient,
 	}, nil
 }
 
-func (r *Repository) Shutdown() error {
+func (r *Repository) Shutdown(ctx context.Context) error {
 	err := r.db.Close()
 	if err != nil {
 		return err
 	}
 
-	if err := r.riverClient.Stop(r.ctx); err != nil {
-		// handle error
+	if err := r.riverClient.Stop(ctx); err != nil {
+		return err
 	}
+
+	r.pgxPool.Close()
 
 	return nil
 }

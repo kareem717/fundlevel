@@ -5,7 +5,7 @@ build:
 	@go build -o bin/fundlevel main.go
 
 run: build
-	@./bin/proj
+	@./bin/fundlevel
 
 install:
 	@go get ./...

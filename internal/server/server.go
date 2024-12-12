@@ -1,9 +1,11 @@
 package http
 
 import (
+	"context"
 	"net/http"
 
 	"fundlevel/internal/service"
+
 	"github.com/supabase-community/supabase-go"
 
 	"go.uber.org/zap"
@@ -45,4 +47,8 @@ func (s *Server) Serve(port string) error {
 	router := s.routes()
 
 	return http.ListenAndServe(port, router)
+}
+
+func (s *Server) Shutdown(ctx context.Context) error {
+	return s.services.Shutdown(ctx)
 }

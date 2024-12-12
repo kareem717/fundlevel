@@ -173,5 +173,5 @@ type Repository interface {
 	HealthCheck(ctx context.Context) error
 	NewTransaction() (Transaction, error)
 	RunInTx(ctx context.Context, fn func(ctx context.Context, tx Transaction) error) error
-	Shutdown() error
+	Shutdown(ctx context.Context) error
 }

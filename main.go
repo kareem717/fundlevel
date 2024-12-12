@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"time"
 
 	server "fundlevel/internal/server"
 	"fundlevel/internal/service"
@@ -110,8 +111,25 @@ func main() {
 		)
 
 		hooks.OnStart(func() {
-			fmt.Printf("Starting server on port %d...\n", options.Port)
+			logger.Info("Starting server...", zap.Int("port", options.Port))
 			server.Serve(fmt.Sprintf(":%d", options.Port))
+		})
+
+		hooks.OnStop(func() {
+			shutdownTimeout := 5 * time.Second
+			logger.Info("Beginning server graceful shutdown...", zap.Duration("timeout", shutdownTimeout))
+
+			// Give the server 5 seconds to gracefully shut down, then give up.
+			ctx, cancel := context.WithTimeout(context.Background(), shutdownTimeout)
+			defer cancel()
+
+			start := time.Now()
+
+			server.Shutdown(ctx)
+
+			duration := time.Since(start)
+
+			logger.Info("Server shutdown completed successfully!", zap.Int64("duration_ns", duration.Nanoseconds()))
 		})
 	})
 

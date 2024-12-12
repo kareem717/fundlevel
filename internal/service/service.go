@@ -182,6 +182,7 @@ type PermissionService interface {
 }
 
 type Service struct {
+	repositories      storage.Repository
 	RoundService      RoundService
 	AccountService    AccountService
 	HealthService     HealthService
@@ -201,6 +202,7 @@ func NewService(
 	feePercentage float64,
 ) *Service {
 	return &Service{
+		repositories:      repositories,
 		IndustryService:   industryService.NewIndustryService(repositories),
 		HealthService:     healthService.NewHealthService(repositories),
 		AnalyticService:   analyticService.NewAnalyticService(repositories),
@@ -212,4 +214,8 @@ func NewService(
 		ChatService:       chatService.NewChatService(repositories),
 		PermissionService: permission.NewPermissionService(repositories),
 	}
+}
+
+func (s *Service) Shutdown(ctx context.Context) error {
+	return s.repositories.Shutdown(ctx)
 }
