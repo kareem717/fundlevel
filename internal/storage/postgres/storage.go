@@ -15,80 +15,83 @@ import (
 	"fundlevel/internal/storage/postgres/position"
 	"fundlevel/internal/storage/postgres/round"
 	"fundlevel/internal/storage/postgres/user"
+	"fundlevel/internal/storage/postgres/worker"
 
 	businessEntity "fundlevel/internal/entities/business"
 
 	"github.com/alexlast/bunzap"
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/jackc/pgx/v5/stdlib"
+	"github.com/riverqueue/river"
+	"github.com/riverqueue/river/riverdriver/riverpgxv5"
 	"github.com/uptrace/bun"
 	"github.com/uptrace/bun/dialect/pgdialect"
 	"go.uber.org/zap"
 )
 
-type Config struct {
-	URL                   string
-	MaxConnections        int32
-	MinConnections        int32
-	MaxConnectionIdleTime time.Duration
-	MaxConnectionLifetime time.Duration
-}
+// type Config struct {
+// 	URL                   string
+// 	MaxConnections        int32
+// 	MinConnections        int32
+// 	MaxConnectionIdleTime time.Duration
+// 	MaxConnectionLifetime time.Duration
+// }
 
-type ConfigOption func(*Config)
+// func NewConfig(url string, options ...ConfigOption) Config {
+// 	config := Config{
+// 		URL:                   url,
+// 		MaxConnections:        10,
+// 		MinConnections:        1,
+// 		MaxConnectionIdleTime: 1 * time.Hour,
+// 		MaxConnectionLifetime: 1 * time.Hour,
+// 	}
 
-func NewConfig(url string, options ...ConfigOption) Config {
-	config := Config{
-		URL:                   url,
-		MaxConnections:        10,
-		MinConnections:        1,
-		MaxConnectionIdleTime: 1 * time.Hour,
-		MaxConnectionLifetime: 1 * time.Hour,
-	}
+// 	for _, option := range options {
+// 		option(&config)
+// 	}
 
-	for _, option := range options {
-		option(&config)
-	}
-
-	return config
-}
+//		return config
+//	}
+type ConfigOption func(*pgxpool.Config)
 
 func WithMaxConnections(maxConnections int32) ConfigOption {
-	return func(c *Config) {
-		c.MaxConnections = maxConnections
+	return func(c *pgxpool.Config) {
+		c.MaxConns = maxConnections
 	}
 }
 
 func WithMinConnections(minConnections int32) ConfigOption {
-	return func(c *Config) {
-		c.MinConnections = minConnections
+	return func(c *pgxpool.Config) {
+		c.MinConns = minConnections
 	}
 }
 
 func WithMaxConnectionIdleTime(maxConnectionIdleTime time.Duration) ConfigOption {
-	return func(c *Config) {
-		c.MaxConnectionIdleTime = maxConnectionIdleTime
+	return func(c *pgxpool.Config) {
+		c.MaxConnIdleTime = maxConnectionIdleTime
 	}
 }
 
 func WithMaxConnectionLifetime(maxConnectionLifetime time.Duration) ConfigOption {
-	return func(c *Config) {
-		c.MaxConnectionLifetime = maxConnectionLifetime
+	return func(c *pgxpool.Config) {
+		c.MaxConnLifetime = maxConnectionLifetime
 	}
 }
 
-func configDBPool(config Config) (*pgxpool.Config, error) {
-	poolConfig, err := pgxpool.ParseConfig(config.URL)
-	if err != nil {
-		return nil, err
-	}
+// func configDBPool(config Config) (*pgxpool.Config, error) {
+// 	poolConfig, err := pgxpool.ParseConfig(config.URL)
+// 	if err != nil {
+// 		return nil, err
+// 	}
 
-	poolConfig.MaxConns = config.MaxConnections
-	poolConfig.MinConns = config.MinConnections
-	poolConfig.MaxConnIdleTime = config.MaxConnectionIdleTime
-	poolConfig.MaxConnLifetime = config.MaxConnectionLifetime
+// 	poolConfig.MaxConns = config.MaxConnections
+// 	poolConfig.MinConns = config.MinConnections
+// 	poolConfig.MaxConnIdleTime = config.MaxConnectionIdleTime
+// 	poolConfig.MaxConnLifetime = config.MaxConnectionLifetime
 
-	return poolConfig, nil
-}
+// 	return poolConfig, nil
+// }
 
 type transaction struct {
 	positionRepo   *position.PositionRepository
@@ -169,23 +172,46 @@ func (t *transaction) SubTransaction() (storage.Transaction, error) {
 }
 
 type Repository struct {
-	positionRepo   *position.PositionRepository
-	accountRepo    *account.AccountRepository
-	roundRepo      *round.RoundRepository
-	userRepo       *user.UserRepository
-	chatRepo       *chat.ChatRepository
-	investmentRepo *investment.InvestmentRepository
-	industryRepo   *industry.IndustryRepository
-	businessRepo   *business.BusinessRepository
-	analyticRepo   *analytic.AnalyticRepository
-	db             *bun.DB
-	ctx            context.Context
+	positionRepo      *position.PositionRepository
+	accountRepo       *account.AccountRepository
+	roundRepo         *round.RoundRepository
+	userRepo          *user.UserRepository
+	chatRepo          *chat.ChatRepository
+	investmentRepo    *investment.InvestmentRepository
+	workerRepo        *worker.WorkerRepository
+	industryRepo      *industry.IndustryRepository
+	businessRepo      *business.BusinessRepository
+	analyticRepo      *analytic.AnalyticRepository
+	riverClient       *river.Client[pgx.Tx]
+	db                *bun.DB
+	ctx               context.Context
+	pgxConfig         *pgxpool.Config
 }
 
-func NewDB(config Config, ctx context.Context, logger *zap.Logger) (*bun.DB, error) {
-	poolConfig, err := configDBPool(config)
+// func NewDB(config Config, ctx context.Context, logger *zap.Logger) (*bun.DB, error) {
+
+// }
+
+func NewRepository(
+	// db *bun.DB,
+	url string,
+	logger *zap.Logger,
+	ctx context.Context,
+	opts ...ConfigOption,
+) (*Repository, error) {
+	poolConfig, err := pgxpool.ParseConfig(url)
 	if err != nil {
-		logger.Fatal("Error creating pool config: %v", zap.Error(err))
+		return nil, err
+	}
+
+	// set default options
+	poolConfig.MaxConns = 10
+	poolConfig.MinConns = 1
+	poolConfig.MaxConnIdleTime = 1 * time.Hour
+	poolConfig.MaxConnLifetime = 1 * time.Hour
+
+	for _, opt := range opts {
+		opt(poolConfig)
 	}
 
 	sqldb := stdlib.OpenDB(*poolConfig.ConnConfig)
@@ -197,10 +223,10 @@ func NewDB(config Config, ctx context.Context, logger *zap.Logger) (*bun.DB, err
 	}))
 
 	// Increase timeout duration
-	pingCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	pingCtx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	logger.Info("Attempting to ping the database...")
+	logger.Info("Attempting to ping the database (1/2)...")
 	err = db.PingContext(pingCtx)
 	if err != nil {
 		switch {
@@ -216,25 +242,63 @@ func NewDB(config Config, ctx context.Context, logger *zap.Logger) (*bun.DB, err
 	db.RegisterModel((*businessEntity.BusinessIndustries)(nil))
 	db.RegisterModel((*businessEntity.BusinessMemberRolePermissionAssignment)(nil))
 
+	// Create the pool
+	pool, err := pgxpool.NewWithConfig(ctx, poolConfig)
+	if err != nil {
+		return nil, err
+	}
+
+	logger.Info("Attempting to ping the database (2/2)...")
+	err = pool.Ping(ctx)
+	if err != nil {
+		return nil, err
+	}
+
 	logger.Info("Successfully connected to the database.")
 
-	return db, nil
-}
+	workerRepo, err := worker.NewWorkerRepository(db, ctx)
+	if err != nil {
+		return nil, err
+	}
 
-func NewRepository(db *bun.DB, ctx context.Context) *Repository {
+	riverClient, err := river.NewClient(riverpgxv5.New(pool), &river.Config{
+		Queues: map[string]river.QueueConfig{
+			river.QueueDefault: {MaxWorkers: 100},
+		},
+		Workers: workerRepo.Workers,
+	})
+	if err != nil {
+		// handle error
+	}
+
 	return &Repository{
 		positionRepo:   position.NewPositionRepository(db, ctx),
 		accountRepo:    account.NewAccountRepository(db, ctx),
 		roundRepo:      round.NewRoundRepository(db, ctx),
 		userRepo:       user.NewUserRepository(db, ctx),
 		investmentRepo: investment.NewInvestmentRepository(db, ctx),
+		workerRepo:     workerRepo,
 		industryRepo:   industry.NewIndustryRepository(db, ctx),
 		chatRepo:       chat.NewChatRepository(db, ctx),
 		businessRepo:   business.NewBusinessRepository(db, ctx),
 		analyticRepo:   analytic.NewAnalyticRepository(db, ctx),
 		db:             db,
 		ctx:            ctx,
+		riverClient:    riverClient,
+	}, nil
+}
+
+func (r *Repository) Shutdown() error {
+	err := r.db.Close()
+	if err != nil {
+		return err
 	}
+
+	if err := r.riverClient.Stop(r.ctx); err != nil {
+		// handle error
+	}
+
+	return nil
 }
 
 func (r *Repository) Chat() storage.ChatRepository {

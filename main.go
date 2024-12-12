@@ -69,13 +69,14 @@ func main() {
 				zapcore.NewJSONEncoder(zap.NewProductionConfig().EncoderConfig),
 				zapcore.AddSync(os.Stdout), zap.InfoLevel))
 
-		postgresConfig := postgres.NewConfig(options.DatabaseURL)
-		db, err := postgres.NewDB(postgresConfig, ctx, logger)
+		repositories, err := postgres.NewRepository(
+			options.DatabaseURL,
+			logger,
+			ctx,
+		)
 		if err != nil {
-			logger.Fatal("Failed to create database", zap.Error(err))
+			logger.Fatal("Failed to create repository layer", zap.Error(err))
 		}
-
-		repositories := postgres.NewRepository(db, ctx)
 
 		feePercentage, err := strconv.ParseFloat(options.FeePercentage, 64)
 		if err != nil {
