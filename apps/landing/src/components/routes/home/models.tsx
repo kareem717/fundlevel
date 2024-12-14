@@ -81,13 +81,13 @@ export const Models: FC<ComponentPropsWithoutRef<'section'>> = ({
                 </p>
               </div>
 
-              <Link
+              {/* <Link
                 href="/investors"
                 className="inline-flex items-center text-sm font-medium px-4 py-2 rounded-md bg-secondary-foreground/10 hover:bg-secondary-foreground/20 transition-colors w-fit"
               >
                 Learn more
                 <span className="ml-2">→</span>
-              </Link>
+              </Link> */}
             </div>
           ))}
         </Box>
