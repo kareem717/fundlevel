@@ -69,11 +69,11 @@ export const Header: FC<HeaderProps> = ({
         <div className="flex-row items-center justify-end gap-4 hidden lg:flex">
           <ModeToggle />
           <Link href="#" className={buttonVariants()}>
-            Invest
+            Get Started
           </Link>
-          <Link href="#" className={buttonVariants({ variant: "secondary" })}>
+          {/* <Link href="#" className={buttonVariants({ variant: "secondary" })}>
             Raise
-          </Link>
+          </Link> */}
         </div>
         <button
           onClick={() => setIsOpen(!isOpen)}

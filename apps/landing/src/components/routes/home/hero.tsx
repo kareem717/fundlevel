@@ -45,8 +45,8 @@ export const Hero: FC<ComponentPropsWithoutRef<'section'>> = ({
             to raise capital in a healthy, growth-conducive manner—all while
             maintaining shariah compliance.
           </p>
-          <div className="grid w-full max-w-2xl grid-cols-1 gap-4 mt-2 md:grid-cols-2">
-            <Link
+          <div className="grid w-full max-w-2xl grid-cols-1 gap-4 mt-2">
+            {/* <Link
               href="#"
               className={cn(
                 buttonVariants({ variant: 'outline', size: 'lg' }),
@@ -55,7 +55,7 @@ export const Hero: FC<ComponentPropsWithoutRef<'section'>> = ({
             >
               <ChartLine className="mr-2 size-4" />
               Invest
-            </Link>
+            </Link> */}
             <Link
               href="#"
               className={cn(
@@ -64,7 +64,7 @@ export const Hero: FC<ComponentPropsWithoutRef<'section'>> = ({
               )}
             >
               <Wallet className="mr-2 size-4" />
-              Raise
+              Get Started
             </Link>
           </div>
         </div>
