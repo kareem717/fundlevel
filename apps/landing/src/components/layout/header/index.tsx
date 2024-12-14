@@ -8,6 +8,7 @@ import { Icons } from "@/components/ui/icons";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { ModeToggle } from "@/components/layout/mode-toggle";
+import { env } from "@/env";
 
 interface HeaderProps extends ComponentPropsWithoutRef<"header"> {
   config: NavigationItem[];
@@ -68,7 +69,7 @@ export const Header: FC<HeaderProps> = ({
         />
         <div className="flex-row items-center justify-end gap-4 hidden lg:flex">
           <ModeToggle />
-          <Link href="#" className={buttonVariants()}>
+          <Link href={env.NEXT_PUBLIC_NEWS_LETTER_SIGN_UP_URL} className={buttonVariants()}>
             Get Started
           </Link>
           {/* <Link href="#" className={buttonVariants({ variant: "secondary" })}>

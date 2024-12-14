@@ -3,6 +3,7 @@ import { cn } from '@/lib/utils'
 import { ComponentPropsWithoutRef, createElement, FC } from 'react'
 import { Icons } from '@/components/ui/icons'
 import { contact } from '@/lib/config'
+import { NewsletterSubscribeForm } from '../newsletter-subscribe-form'
 
 const footerLinks: { title: string; links: { title: string; href: string }[] }[] = [
   // {
@@ -52,19 +53,7 @@ export const Footer: FC<ComponentPropsWithoutRef<'footer'>> = ({
               Fundlevel is your one stop shop for tech, business, and finance
               news you need to know.
             </p>
-            <form className="flex gap-2 mt-4">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              />
-              <button
-                type="submit"
-                className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
-              >
-                Subscribe
-              </button>
-            </form>
+            <NewsletterSubscribeForm className="flex flex-row gap-2 w-full" />
           </div>
           <div className="flex justify-start flex-wrap gap-4 break-words">
             {footerLinks.map((section) => (

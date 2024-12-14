@@ -1,6 +1,7 @@
 import { buttonVariants } from '@/components/ui/button'
 import { Cover } from '@/components/ui/cover'
 import { FlipWords } from '@/components/ui/flip-words'
+import { env } from '@/env'
 import { cn } from '@/lib/utils'
 import { ChartLine, Wallet } from 'lucide-react'
 import Image from 'next/image'
@@ -57,7 +58,7 @@ export const Hero: FC<ComponentPropsWithoutRef<'section'>> = ({
               Invest
             </Link> */}
             <Link
-              href="#"
+              href={env.NEXT_PUBLIC_NEWS_LETTER_SIGN_UP_URL}
               className={cn(
                 buttonVariants({ size: 'lg' }),
                 'flex flex-row items-center justify-center'
@@ -101,14 +102,14 @@ export const Hero: FC<ComponentPropsWithoutRef<'section'>> = ({
             pointer-events-none
             absolute -inset-[10px] opacity-80 dark:opacity-30 will-change-transform`,
               showRadialGradient &&
-                `[mask-image:radial-gradient(ellipse_at_100%_0%,black_5%,var(--transparent)_75%)]`
+              `[mask-image:radial-gradient(ellipse_at_100%_0%,black_5%,var(--transparent)_75%)]`
             )}
           />
         </div>
       </div>
 
       <div className="w-full py-4 overflow-hidden bg-accent">
-          <div className='w-full h-2 bg-foreground/50'/>
+        <div className='w-full h-2 bg-foreground/50' />
       </div>
     </section>
   )

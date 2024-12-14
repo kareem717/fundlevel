@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Mail } from 'lucide-react'
 import { ComponentPropsWithoutRef, FC } from 'react'
 import { Section, Container, Box } from '@/components/layout'
+import { NewsletterSubscribeForm } from '@/components/newsletter-subscribe-form'
 
 export const Newsletter: FC<ComponentPropsWithoutRef<'section'>> = ({
   className,
@@ -33,16 +34,7 @@ export const Newsletter: FC<ComponentPropsWithoutRef<'section'>> = ({
             <h3 className="hidden text-sm font-medium text-gray-600 dark:text-gray-300 lg:block">
               Subscribe to our newsletter
             </h3>
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <Input
-                type="email"
-                placeholder="Enter your email"
-                className="text-black bg-gray-100 border-gray-200 dark:bg-zinc-900 dark:border-zinc-800 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400"
-              />
-              <Button className="px-8 text-white bg-indigo-600 hover:bg-indigo-700">
-                Subscribe
-              </Button>
-            </div>
+            <NewsletterSubscribeForm className="flex flex-row gap-2 w-full" />
           </div>
         </Box>
       </Container>
