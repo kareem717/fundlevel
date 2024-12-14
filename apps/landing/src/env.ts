@@ -18,6 +18,7 @@ export const env = createEnv({
     SMTP_USER: z.string().min(1),
     SMTP_PASS: z.string().min(1),
     BEEHIIV_API_KEY: z.string().min(1),
+    BEEHIIV_PUBLICATION_ID: z.string().min(1),
   },
   client: {
     NEXT_PUBLIC_APP_URL: z.string().url().min(1),
