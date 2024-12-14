@@ -154,14 +154,14 @@ export const CTA: FC<ComponentPropsWithoutRef<'section'>> = ({
                     <Balancer>{item.description}</Balancer>
                   </motion.p>
                 </motion.div>
-                <div className="mt-auto">
+                {/* <div className="mt-auto">
                   <Button
                     variant="outline"
                     className="bg-[#4F5DFF] hover:bg-[#4F5DFF]/90 text-white"
                   >
                     {item.buttonText}
                   </Button>
-                </div>
+                </div> */}
               </motion.div>
 
               {/* Image */}
