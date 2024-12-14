@@ -22,7 +22,7 @@ const footerLinks: { title: string; links: { title: string; href: string }[] }[]
   //   ],
   // },
   // {
-  //   title: 'FundLevel Apps',
+  //   title: 'Fundlevel Apps',
   //   links: [
   //     { title: 'For Investors', href: '/investors' },
   //     { title: 'For Businesses', href: '/businesses' },
@@ -49,7 +49,7 @@ export const Footer: FC<ComponentPropsWithoutRef<'footer'>> = ({
           <div>
             <h3 className="text-lg font-semibold mb-4">Sign up for updates</h3>
             <p>
-              FundLevel is your one stop shop for tech, business, and finance
+              Fundlevel is your one stop shop for tech, business, and finance
               news you need to know.
             </p>
             <form className="flex gap-2 mt-4">
@@ -90,7 +90,7 @@ export const Footer: FC<ComponentPropsWithoutRef<'footer'>> = ({
         </div>
         <div className="border-t border-muted-foreground flex justify-between items-center pt-6 w-full">
           <div className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} FundLevel. All rights reserved.
+            © {new Date().getFullYear()} Fundlevel. All rights reserved.
           </div>
           <div className="flex space-x-4 mt-4 md:mt-0">
             {contact.socials.map((social, index) => (

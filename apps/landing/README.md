@@ -1,6 +1,6 @@
-# FundLevel Landing Page
+# Fundlevel Landing Page
 
-A modern landing page built with Next.js, PayloadCMS, React, Framer Motion, and TailwindCSS for FundLevel - an AI-powered, blockchain-secured investment platform.
+A modern landing page built with Next.js, PayloadCMS, React, Framer Motion, and TailwindCSS for Fundlevel - an AI-powered, blockchain-secured investment platform.
 
 ## Features
 
@@ -25,4 +25,3 @@ A modern landing page built with Next.js, PayloadCMS, React, Framer Motion, and 
 ## Getting Started
 
 1. Clone the repository:
-

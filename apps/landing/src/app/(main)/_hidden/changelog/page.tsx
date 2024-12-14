@@ -13,7 +13,7 @@ export default function ChangelogPage() {
       content: (
         <div>
           <p className="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-8">
-            Launched FundLevel platform with core investment and tokenization features
+            Launched Fundlevel platform with core investment and tokenization features
           </p>
           <div className="grid grid-cols-2 gap-4">
             <Image

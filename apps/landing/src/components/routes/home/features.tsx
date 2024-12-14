@@ -194,7 +194,7 @@ export const Features: FC<ComponentPropsWithoutRef<"section">> = ({
           </h2>
           <p className="max-w-[900px] text-muted-foreground">
             Whether you&apos;re an investor looking for opportunities or a
-            business seeking funding, FundLevel provides the tools you need to
+            business seeking funding, Fundlevel provides the tools you need to
             succeed.
           </p>
         </div>
