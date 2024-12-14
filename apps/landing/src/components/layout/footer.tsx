@@ -44,7 +44,7 @@ export const Footer: FC<ComponentPropsWithoutRef<'footer'>> = ({
 }) => {
   return (
     <footer className={cn('w-full px-6 pb-6', className)} {...props}>
-      <div className="rounded-lg text-card-foreground p-6 shadow-2xl bg-secondary">
+      <div className="rounded-lg text-card-foreground p-6 shadow-2xl bg-secondary flex flex-col">
         <div className="flex flex-col md:flex-row justify-between gap-8 px-6 pb-6">
           <div>
             <h3 className="text-lg font-semibold mb-4">Sign up for updates</h3>
@@ -88,7 +88,7 @@ export const Footer: FC<ComponentPropsWithoutRef<'footer'>> = ({
             ))}
           </div>
         </div>
-        <div className="border-t border-muted-foregroundflex flex-col sm:flex-row justify-between items-center pt-6 w-full">
+        <div className="border-t border-muted-foreground flex justify-between items-center pt-6 w-full">
           <div className="text-sm text-muted-foreground">
             © {new Date().getFullYear()} FundLevel. All rights reserved.
           </div>
