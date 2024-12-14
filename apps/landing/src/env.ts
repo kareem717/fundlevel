@@ -1,11 +1,11 @@
-import { createEnv } from "@t3-oss/env-nextjs";
-import { z } from "zod";
+import { createEnv } from '@t3-oss/env-nextjs'
+import { z } from 'zod'
 
 export const env = createEnv({
   server: {
     NODE_ENV: z
-      .enum(["development", "test", "production"])
-      .default("development"),
+      .enum(['development', 'test', 'production'])
+      .default('development'),
     DATABASE_URI: z.string().min(1),
     PAYLOAD_SECRET: z.string().min(1),
     AWS_URI: z.string().min(1),
@@ -17,6 +17,7 @@ export const env = createEnv({
     SMTP_PORT: z.string().min(1),
     SMTP_USER: z.string().min(1),
     SMTP_PASS: z.string().min(1),
+    BEEHIIV_API_KEY: z.string().min(1),
   },
   client: {
     NEXT_PUBLIC_APP_URL: z.string().url().min(1),
@@ -27,4 +28,4 @@ export const env = createEnv({
     NEXT_PUBLIC_NEWS_LETTER_SIGN_UP_URL:
       process.env.NEXT_PUBLIC_NEWS_LETTER_SIGN_UP_URL,
   },
-});
+})
