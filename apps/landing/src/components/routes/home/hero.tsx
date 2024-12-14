@@ -107,28 +107,8 @@ export const Hero: FC<ComponentPropsWithoutRef<'section'>> = ({
         </div>
       </div>
 
-      <div className="w-full py-4 overflow-hidden bg-neutral-800">
-        <div className="animate-marquee whitespace-nowrap">
-          <div className="inline-flex gap-4">
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="flex">
-                {bannerItems.map((item, index) => (
-                  <div
-                    key={`${i}-${index}`}
-                    className="flex flex-row items-center justify-center"
-                  >
-                    <div className="py-1">
-                      <p className="text-sm tracking-widest text-white uppercase">
-                        {item}
-                      </p>
-                    </div>
-                    <span className="inline-block w-4 h-2 mx-2 bg-white/50" />
-                  </div>
-                ))}
-              </div>
-            ))}
-          </div>
-        </div>
+      <div className="w-full py-4 overflow-hidden bg-accent">
+          <div className='w-full h-2 bg-foreground/50'/>
       </div>
     </section>
   )
