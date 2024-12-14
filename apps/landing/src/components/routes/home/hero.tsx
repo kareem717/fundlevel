@@ -72,19 +72,12 @@ export const Hero: FC<ComponentPropsWithoutRef<'section'>> = ({
         <div className="h-[35dvw] md:h-[27dvw] lg:h-[27dvw]   w-full relative mt-8 sm:mt-16 md:mt-24">
           <div className="container relative h-full mx-auto">
             <Image
-              className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[90dvw] md:w-[70dvw] h-auto"
-              src="https://perawallet.s3.amazonaws.com/images/pera-web.png"
+              className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[90dvw] md:w-[70dvw] h-auto rounded-t-md"
+              src="/assets/branding/dashboard.svg"
               alt="Pera Web"
               width={900}
               height={900}
               priority
-            />
-            <Image
-              className="absolute bottom-0 left-[calc(50%+40dvw)] md:left-[calc(50%+32dvw)] w-[8dvw] h-auto [animation:spinY_2s_linear_infinite] [transform-style:preserve-3d]"
-              src="https://perawallet.s3.amazonaws.com/images/coin.svg"
-              alt="Coin Icon"
-              width={100}
-              height={100}
             />
           </div>
         </div>
