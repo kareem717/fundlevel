@@ -113,6 +113,7 @@ export const TypographyBlock: React.FC<
             <CMSLink
               key={i}
               {...link.link}
+              appearance={link.link.appearance === 'none' ? 'default' : link.link.appearance}
               className="rounded-none"
               size="lg"
             />

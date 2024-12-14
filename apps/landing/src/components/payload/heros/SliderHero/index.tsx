@@ -72,11 +72,9 @@ export const SliderHero: React.FC<Page["hero"]> = ({
       </CarouselContent>
 
       <CarouselPrevious
-        variant="none"
         className="absolute left-2 top-1/2 transform -translate-y-1/2"
       />
       <CarouselNext
-        variant="none"
         className="absolute right-2 top-1/2 transform -translate-y-1/2"
       />
     </Carousel>
