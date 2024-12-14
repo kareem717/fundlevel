@@ -4,38 +4,38 @@ import { ComponentPropsWithoutRef, createElement, FC } from 'react'
 import { Icons } from '@/components/ui/icons'
 import { contact } from '@/lib/config'
 
-const footerLinks = [
-  {
-    title: 'Quick Links',
-    links: [
-      { title: 'About', href: '/about' },
-      { title: 'Contact', href: '/contact' },
-      { title: 'Support', href: '/support' },
-    ],
-  },
-  {
-    title: 'Resources',
-    links: [
-      { title: 'Blog', href: '/blog' },
-      { title: 'FAQs', href: '/faqs' },
-      { title: 'Changelog', href: '/changelog' },
-    ],
-  },
-  {
-    title: 'FundLevel Apps',
-    links: [
-      { title: 'For Investors', href: '/investors' },
-      { title: 'For Businesses', href: '/businesses' },
-    ],
-  },
-  {
-    title: 'Legal',
-    links: [
-      { title: 'Investment Terms', href: '/legal/investment-terms' },
-      { title: 'Business Agreement', href: '/legal/business-agreement' },
-      { title: 'Privacy Policy', href: '/legal/privacy-policy' },
-    ],
-  },
+const footerLinks: { title: string; links: { title: string; href: string }[] }[] = [
+  // {
+  //   title: 'Quick Links',
+  //   links: [
+  //     { title: 'About', href: '/about' },
+  //     { title: 'Contact', href: '/contact' },
+  //     { title: 'Support', href: '/support' },
+  //   ],
+  // },
+  // {
+  //   title: 'Resources',
+  //   links: [
+  //     { title: 'Blog', href: '/blog' },
+  //     { title: 'FAQs', href: '/faqs' },
+  //     { title: 'Changelog', href: '/changelog' },
+  //   ],
+  // },
+  // {
+  //   title: 'FundLevel Apps',
+  //   links: [
+  //     { title: 'For Investors', href: '/investors' },
+  //     { title: 'For Businesses', href: '/businesses' },
+  //   ],
+  // },
+  // {
+  //   title: 'Legal',
+  //   links: [
+  //     { title: 'Investment Terms', href: '/legal/investment-terms' },
+  //     { title: 'Business Agreement', href: '/legal/business-agreement' },
+  //     { title: 'Privacy Policy', href: '/legal/privacy-policy' },
+  //   ],
+  // },
 ]
 
 export const Footer: FC<ComponentPropsWithoutRef<'footer'>> = ({
