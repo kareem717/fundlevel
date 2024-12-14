@@ -167,7 +167,7 @@ export const CTA: FC<ComponentPropsWithoutRef<'section'>> = ({
               {/* Image */}
               <motion.div
                 className={cn(
-                  'absolute top-0 right-0 h-full overflow-hidden p-2'
+                  'absolute top-0 right-0 h-full overflow-hidden'
                 )}
                 animate={{
                   width: activeIndex === index ? '33.333333%' : '0%',
@@ -180,14 +180,14 @@ export const CTA: FC<ComponentPropsWithoutRef<'section'>> = ({
                   width: activeIndex === index ? '33.333333%' : '0%',
                 }}
               >
-                <div className="w-full h-full overflow-hidden rounded-lg">
-                  <Image
+                <div className="w-full h-full overflow-hidden rounded-r-lg bg-foreground">
+                  {/* <Image
                     src={item.image}
                     alt={`${item.header} interface`}
                     width={800}
                     height={1200}
                     className="object-cover w-full h-full"
-                  />
+                  /> */}
                 </div>
               </motion.div>
             </motion.div>
