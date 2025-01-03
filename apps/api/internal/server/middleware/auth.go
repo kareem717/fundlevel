@@ -2,8 +2,7 @@ package middleware
 
 import (
 	"net/http"
-
-	"fundlevel/internal/server/handler/shared"
+	"fundlevel/internal/server/utils"
 	"fundlevel/internal/service"
 
 	"github.com/danielgtaylor/huma/v2"
@@ -13,6 +12,7 @@ import (
 	"github.com/supabase-community/supabase-go"
 )
 
+// WithUser is a middleware that will get the user for the request
 func WithUser(api huma.API) func(ctx huma.Context, next func(huma.Context), logger *zap.Logger, supabaseClient *supabase.Client) {
 	return func(ctx huma.Context, next func(huma.Context), logger *zap.Logger, supabaseClient *supabase.Client) {
 		authHeader := ctx.Header("Authorization")
@@ -42,15 +42,14 @@ func WithUser(api huma.API) func(ctx huma.Context, next func(huma.Context), logg
 			return
 		}
 
-		next(huma.WithValue(ctx, shared.UserContextKey, resp.User))
+		next(huma.WithValue(ctx, utils.UserContextKey, &resp.User))
 	}
 }
 
-
-// TODO: We should call WithUser inside of this middleware, this way we can stop having to call both middlewares just to use this one
+// WithAccount is a middleware that will get the account for the request. It requires that the `WithUser` middleware has already been called.
 func WithAccount(api huma.API) func(ctx huma.Context, next func(huma.Context), logger *zap.Logger, sv *service.Service) {
 	return func(ctx huma.Context, next func(huma.Context), logger *zap.Logger, sv *service.Service) {
-		user := shared.GetAuthenticatedUser(ctx.Context())
+		user := utils.GetAuthenticatedUser(ctx.Context())
 		if user.ID == uuid.Nil {
 			huma.WriteErr(api, ctx, http.StatusUnauthorized,
 				"User not authenticated",
@@ -67,6 +66,6 @@ func WithAccount(api huma.API) func(ctx huma.Context, next func(huma.Context), l
 			return
 		}
 
-		next(huma.WithValue(ctx, shared.AccountContextKey, queryResp))
+		next(huma.WithValue(ctx, utils.AccountContextKey, &queryResp))
 	}
 }

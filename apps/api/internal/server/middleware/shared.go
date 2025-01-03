@@ -6,10 +6,9 @@ import (
 )
 
 func parseBearerToken(token string) (string, error) {
-	var accessToken string
-	accessToken = strings.Replace(token, "Bearer ", "", 1)
+	accessToken := strings.Replace(token, "Bearer ", "", 1)
 	if accessToken == "" {
-		return "", errors.New("An invalid access token was provided")
+		return "", errors.New("an invalid access token was provided")
 	}
 
 	return accessToken, nil
