@@ -1,0 +1,20 @@
+import { LogoDiv } from "@/components/logo-div";
+
+export default async function AuthLayout({
+	children,
+}: {
+	children: React.ReactNode;
+}) {
+	return (
+		<div className="h-screen w-full grid grid-cols-2">
+			<div className="bg-secondary hidden md:col-span-1 md:flex flex-col justify-between items-start p-8" >
+				<div className="flex items-center">
+					<LogoDiv />
+				</div>
+			</div>
+			<main className="col-span-2 md:col-span-1 flex flex-col justify-center items-center">
+				{children}
+			</main>
+		</div >
+	);
+}
