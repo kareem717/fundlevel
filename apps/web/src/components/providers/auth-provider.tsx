@@ -3,7 +3,7 @@
 import { FC, ReactNode } from "react";
 import { User as SupabaseUser } from "@supabase/supabase-js";
 import { createContext, useContext } from "react";
-import { Account } from "@/lib/api";
+import { Account } from "@repo/sdk";
 
 export interface AuthProviderProps {
   user?: SupabaseUser | undefined;

@@ -14,7 +14,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Icons } from "@/components/icons"
 import { DataTableColumnHeader } from "@/components/data-table"
 import { titleCase } from "title-case"
-import { RoundInvestment } from "@/lib/api"
+import { RoundInvestment } from "@repo/sdk"
 import Link from "next/link"
 import redirects from "@/lib/config/redirects"
 import {

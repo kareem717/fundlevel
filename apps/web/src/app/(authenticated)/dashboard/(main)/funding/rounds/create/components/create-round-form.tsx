@@ -21,7 +21,6 @@ import { useRouter } from "next/navigation";
 import { createRound } from "@/actions/rounds";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { InferType } from "yup";
-import { createRoundSchema } from "@/actions/validations/rounds";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
@@ -34,6 +33,9 @@ import {
 } from "@/components/ui/select";
 import redirects from "@/lib/config/redirects";
 import { useBusinessContext } from "../../../../components/business-context";
+import { zCreateRoundParams } from "@repo/sdk/zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 
 export interface CreateRoundFormProps extends ComponentPropsWithoutRef<"form"> { }
 
@@ -41,14 +43,14 @@ export const CreateRoundForm = ({ className, ...props }: CreateRoundFormProps) =
   const router = useRouter()
   const { currentBusiness } = useBusinessContext()
 
-  const form = useForm<InferType<typeof createRoundSchema>>({
-    resolver: yupResolver(createRoundSchema),
+  const form = useForm<z.infer<typeof zCreateRoundParams>>({
+    resolver: zodResolver(zCreateRoundParams),
     defaultValues: {
       businessId: currentBusiness.id,
-      beginsAt: new Date(Date.now() + 1000 * 60 * 60 * 24),
-      endsAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
-      percentageOffered: 0,
-      percentageValue: 0,
+      beginsAt: format(new Date(Date.now() + 1000 * 60 * 60 * 24), "yyyy-MM-dd"),
+      endsAt: format(new Date(Date.now() + 1000 * 60 * 60 * 24 * 30), "yyyy-MM-dd"),
+      percentageSelling: 0,
+      valuationAmountUSDCents: 0,
       valueCurrency: "usd",
       // causes uncontrolled component warning
       description: undefined,
@@ -71,7 +73,7 @@ export const CreateRoundForm = ({ className, ...props }: CreateRoundFormProps) =
     }
   })
 
-  const onSubmit = async (values: InferType<typeof createRoundSchema>) => {
+  const onSubmit = async (values: InferType<typeof zCreateRoundParams>) => {
     const res = await executeAsync(values)
     if (res?.serverError || res?.validationErrors) {
       return new Error("Something went wrong")

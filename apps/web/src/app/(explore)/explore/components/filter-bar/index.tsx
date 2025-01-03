@@ -33,7 +33,7 @@ import { WheelGesturesPlugin } from "embla-carousel-wheel-gestures";
 import { useAction } from "next-safe-action/hooks";
 import { getAllIndustries } from "@/actions/industries";
 import { useEffect, useState } from "react";
-// import { Industry } from "@/lib/api";
+// import { Industry } from "@repo/sdk";
 import { toast } from "sonner";
 import {
   Select,
@@ -137,7 +137,7 @@ export default function FilterBar() {
                     className={cn(
                       "flex flex-col rounded-md bg-muted items-center justify-center p-3 gap-2 w-full h-full hover:bg-muted/80 transition-colors",
                       filterIndustries?.includes(industry) &&
-                        "border-b-2 border-primary"
+                      "border-b-2 border-primary"
                     )}
                     onClick={() => handleIndustryChange(industry)}
                   >

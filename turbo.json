@@ -98,7 +98,7 @@
     "openapi:gen": {
       "cache": false,
       "dependsOn": [
-        "^openapi:gen:spec"
+        "^openapi:gen" 
       ],
       "outputs": [
         "openapi.yaml"

@@ -7,7 +7,7 @@ import {
 	// withdrawInvestment as withdrawInvestmentApi,
 	getInvestmentById as getInvestmentByIdApi,
 	// processInvestment as processInvestmentApi,
-} from "@/lib/api";
+} from "@repo/sdk";
 // import { createInvestmentSchema } from "@/actions/validations/investments";
 import { intIdSchema, offsetPaginationSchema } from "./validations/shared";
 import { cache } from "react";
@@ -17,13 +17,13 @@ import { cache } from "react";
 //  */
 // export const createInvestment = actionClientWithAccount
 // 	.schema(createInvestmentSchema)
-// 	.action(async ({ parsedInput, ctx: { apiClient, account } }) => {
+// 	.action(async ({ parsedInput, ctx: { axiosClient, account } }) => {
 // 		if (!account) {
 // 			throw new Error("Account not found");
 // 		}
 
 // 		const resp = await createRoundInvestmentApi({
-// 			client: apiClient,
+// 			client: axiosClient,
 // 			throwOnError: true,
 // 			body: {
 // 				...parsedInput,
@@ -36,13 +36,13 @@ import { cache } from "react";
 
 export const getAccountInvestmentsByPage = actionClientWithAccount
 	.schema(offsetPaginationSchema)
-	.action(async ({ parsedInput, ctx: { apiClient, account } }) => {
+	.action(async ({ parsedInput, ctx: { axiosClient, account } }) => {
 		if (!account) {
 			throw new Error("Account not found");
 		}
 
 		const resp = await getAccountInvestmentsByPageApi({
-			client: apiClient,
+			client: axiosClient,
 			path: {
 				id: account.id,
 			},
@@ -54,9 +54,9 @@ export const getAccountInvestmentsByPage = actionClientWithAccount
 
 // export const withdrawInvestment = actionClientWithAccount
 // 	.schema(intIdSchema.required())
-// 	.action(async ({ parsedInput, ctx: { apiClient } }) => {
+// 	.action(async ({ parsedInput, ctx: { axiosClient } }) => {
 // 		await withdrawInvestmentApi({
-// 			client: apiClient,
+// 			client: axiosClient,
 // 			path: {
 // 				id: parsedInput,
 // 			},
@@ -66,13 +66,13 @@ export const getAccountInvestmentsByPage = actionClientWithAccount
 
 // export const getInvestmentPaymentIntentClientSecret = actionClientWithAccount
 // 	.schema(intIdSchema.required())
-// 	.action(async ({ parsedInput, ctx: { apiClient, account } }) => {
+// 	.action(async ({ parsedInput, ctx: { axiosClient, account } }) => {
 // 		if (!account) {
 // 			throw new Error("Account not found");
 // 		}
 
 // 		const resp = await getInvestmentPaymentIntentClientSecretApi({
-// 			client: apiClient,
+// 			client: axiosClient,
 // 			path: {
 // 				id: parsedInput,
 // 			},
@@ -84,11 +84,11 @@ export const getAccountInvestmentsByPage = actionClientWithAccount
 
 export const getInvestmentById = actionClientWithAccount
 	.schema(intIdSchema.required())
-	.action(async ({ parsedInput, ctx: { apiClient } }) => {
+	.action(async ({ parsedInput, ctx: { axiosClient } }) => {
 		console.log("getting investment", parsedInput);
 
 		const resp = await getInvestmentByIdApi({
-			client: apiClient,
+			client: axiosClient,
 			path: {
 				id: parsedInput,
 			},
@@ -102,9 +102,9 @@ export const getInvestmentByIdCached = cache(getInvestmentById);
 
 export const createInvestmentPaymentIntent = actionClientWithAccount
 	.schema(intIdSchema.required())
-	.action(async ({ parsedInput, ctx: { apiClient } }) => {
+	.action(async ({ parsedInput, ctx: { axiosClient } }) => {
 		const resp = await createInvestmentPaymentIntentApi({
-			client: apiClient,
+			client: axiosClient,
 			path: {
 				id: parsedInput,
 			},
@@ -115,9 +115,9 @@ export const createInvestmentPaymentIntent = actionClientWithAccount
 
 // export const processInvestment = actionClientWithAccount
 // 	.schema(intIdSchema.required())
-// 	.action(async ({ parsedInput, ctx: { apiClient } }) => {
+// 	.action(async ({ parsedInput, ctx: { axiosClient } }) => {
 // 		await processInvestmentApi({
-// 			client: apiClient,
+// 			client: axiosClient,
 // 			path: {
 // 				id: parsedInput,
 // 			},

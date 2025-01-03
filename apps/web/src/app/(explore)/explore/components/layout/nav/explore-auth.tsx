@@ -1,7 +1,7 @@
 "use client";
 
 import { ComponentPropsWithoutRef, FC, useEffect, useState } from "react";
-import { Account } from "@/lib/api";
+import { Account } from "@repo/sdk";
 import { cn } from "@/lib/utils";
 import { AccountDropdown } from "@/components/account-dropdown";
 import { Button, buttonVariants } from "@/components/ui/button";

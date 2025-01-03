@@ -2,53 +2,39 @@ import {
 	createSafeActionClient,
 	DEFAULT_SERVER_ERROR_MESSAGE,
 } from "next-safe-action";
-import { yupAdapter } from "next-safe-action/adapters/yup";
+import { zodAdapter } from "next-safe-action/adapters/zod";
 import { env } from "@/env";
 import { createClient as createSupabaseServerClient } from "@/lib/utils/supabase/server";
-import { ErrorModel, getUserAccount } from "./api";
-import { createClient } from "@hey-api/client-fetch";
+import { zErrorModel } from "@repo/sdk/zod";
+import { createClient } from "@hey-api/client-axios";
+import { getUserAccount } from "@repo/sdk";
 
 export const actionClient = createSafeActionClient({
-	validationAdapter: yupAdapter(),
+	validationAdapter: zodAdapter(),
 	handleServerError: async (error) => {
-		try {
-			const err = JSON.parse(error.message) as ErrorModel; // Attempt to cast to ErrorModel
-			console.error(err);
+		const parsedError = zErrorModel.safeParse(error);
 
-			return {
-				message: err.detail ?? DEFAULT_SERVER_ERROR_MESSAGE,
-				statusCode: err.status ?? 500,
-			};
-		} catch (err) {
-			console.error(
-				JSON.stringify(
-					{
-						message:
-							"An error occured while trying to parse the error response from the server. This tends to happen when the error returned is an empty JSON object, or the error response was not the result of the server's error handling middleware.",
-						rawResponse: error,
-					},
-					null,
-					2
-				)
-			);
-
+		if (!parsedError.success) {
 			return {
 				message: DEFAULT_SERVER_ERROR_MESSAGE,
 				statusCode: 500,
 			};
 		}
-	},
-}).use(async ({ next }) => {
-	const client = createClient({
-		baseUrl: env.NEXT_PUBLIC_BACKEND_API_URL,
-	});
 
-	return next({
+		return {
+			message: parsedError.data.detail,
+			statusCode: parsedError.data.status,
+		};
+	},
+}).use(async ({ next }) =>
+	next({
 		ctx: {
-			apiClient: client,
+			axiosClient: createClient({
+				baseURL: env.NEXT_PUBLIC_BACKEND_API_URL,
+			}),
 		},
-	});
-});
+	})
+);
 
 export const actionClientWithUser = actionClient.use(async ({ next, ctx }) => {
 	const sb = await createSupabaseServerClient();
@@ -59,34 +45,35 @@ export const actionClientWithUser = actionClient.use(async ({ next, ctx }) => {
 	} = await sb.auth.getSession();
 
 	if (sessionError) {
-		console.error("Error getting user session: ", sessionError);
+		throw new Error("Error getting user session");
 	}
 
-	let user = null;
-	if (session) {
-		ctx.apiClient.setConfig({
-			headers: {
-				Authorization: `Bearer ${session?.access_token}`,
-			},
-		});
-
-		const { data, error } = await sb.auth.getUser();
-
-		if (error) {
-			console.error("Error getting user: ", error);
-		}
-
-		user = data?.user;
+	if (!session) {
+		throw new Error("User session empty");
 	}
 
-	console.log(
-		`userId: ${user?.id}\n---------\naccess_token: ${session?.access_token}`
-	);
+	console.debug("session access token", session.access_token);
+
+	ctx.axiosClient.setConfig({
+		headers: {
+			Authorization: `Bearer ${session.access_token}`,
+		},
+	});
+
+	const { data, error } = await sb.auth.getUser();
+
+	if (error) {
+		throw new Error("Error getting user");
+	}
+
+	if (!data?.user) {
+		throw new Error("User data empty");
+	}
 
 	return next({
 		ctx: {
 			...ctx,
-			user,
+			user: data.user,
 		},
 	});
 });
@@ -96,7 +83,7 @@ export const actionClientWithAccount = actionClientWithUser.use(
 		let account;
 		if (ctx.user?.id) {
 			const { data, error } = await getUserAccount({
-				client: ctx.apiClient,
+				client: ctx.axiosClient,
 				path: {
 					userId: ctx.user?.id,
 				},

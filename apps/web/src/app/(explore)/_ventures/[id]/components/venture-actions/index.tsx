@@ -12,7 +12,7 @@
 // import { useAction } from "next-safe-action/hooks";
 // import { isVentureLiked, likeVenture, unlikeVenture } from "@/actions/ventures";
 // import { useRouter } from "next/navigation";
-// import { Account } from "@/lib/api";
+// import { Account } from "@repo/sdk";
 // import { getAccount } from "@/actions/auth";
 // import { MessageSquare } from "lucide-react";
 // import Link from "next/link";

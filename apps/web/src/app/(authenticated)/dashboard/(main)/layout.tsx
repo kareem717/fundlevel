@@ -8,7 +8,7 @@ import { Metadata } from "next"
 import { redirect } from "next/navigation";
 import redirects from "@/lib/config/redirects";
 import { getAccountBusinesses } from "@/actions/busineses"
-import { Business } from "@/lib/api";
+import { Business } from "@repo/sdk";
 import { Separator } from "@/components/ui/separator";
 import { BusinessContextProvider } from "./components/business-context";
 

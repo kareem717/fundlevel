@@ -1,18 +1,18 @@
 "use server";
 
 import { actionClient } from "@/lib/safe-action";
-import { getAllIndustries as getIndustriesApi } from "@/lib/api";
+import { getAllIndustries as getIndustriesApi } from "@repo/sdk";
 
 /**
  * Create a venture
  */
 export const getAllIndustries = actionClient.action(
-	async ({ ctx: { apiClient } }) => {
+	async ({ ctx: { axiosClient } }) => {
 		const resp = await getIndustriesApi({
-			client: apiClient,
+			client: axiosClient,
 			throwOnError: true,
 		});
 
-    return resp.data
+		return resp.data;
 	}
 );

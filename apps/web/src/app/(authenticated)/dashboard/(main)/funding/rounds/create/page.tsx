@@ -3,7 +3,7 @@ import { getBusinessCreateRoundrequirements } from "@/actions/busineses";
 import { useBusinessContext } from "../../../components/business-context";
 import { CreateRoundForm } from "./components/create-round-form";
 import { useAction } from "next-safe-action/hooks";
-import { RoundCreateRequirements } from "@/lib/api";
+import { RoundCreateRequirements } from "@repo/sdk";
 import { useState, useEffect } from "react";
 
 export default function CreateRoundPage() {

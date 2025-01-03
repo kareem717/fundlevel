@@ -6,7 +6,7 @@
 // import { toast } from "sonner";
 // import { likeVenture } from "@/actions/ventures";
 // import { useOptimisticAction } from "next-safe-action/hooks";
-// import { Venture } from "@/lib/api";
+// import { Venture } from "@repo/sdk";
 // import { cn } from "@/lib/utils";
 // import { Icons } from "@/components/icons";
 

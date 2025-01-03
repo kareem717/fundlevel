@@ -15,32 +15,30 @@ import {
 	getStripeDashboardUrl as getStripeDashboardUrlApi,
 	getBusinessStripeAccount as getBusinessStripeAccountApi,
 	upsertBusinessLegalSection as upsertBusinessLegalSectionApi,
-} from "@/lib/api";
+} from "@repo/sdk";
 import {
-	createBusinessSchema,
-	upsertBusinessLegalSectionSchema,
-} from "@/actions/validations/business";
-import {
-	intIdSchema,
-	offsetPaginationSchema,
-} from "@/actions/validations/shared";
-import { object, string } from "yup";
+	zCreateBusinessParams,
+	zUpsertBusinessLegalSectionParams,
+} from "@repo/sdk/zod";
+import { pathIdSchema, offsetPaginationSchema } from "./validations";
+import { z } from "zod";
+
 /**
  * Create a venture
  */
 export const createBusiness = actionClientWithAccount
-	.schema(createBusinessSchema)
+	.schema(zCreateBusinessParams)
 	.action(
 		async ({
 			parsedInput: { business, industryIds },
-			ctx: { apiClient, account },
+			ctx: { axiosClient, account },
 		}) => {
 			if (!account) {
 				throw new Error("User not found");
 			}
 
 			await createBusinessApi({
-				client: apiClient,
+				client: axiosClient,
 				throwOnError: true,
 				body: {
 					business: {
@@ -54,13 +52,13 @@ export const createBusiness = actionClientWithAccount
 	);
 
 export const getAccountBusinesses = actionClientWithAccount.action(
-	async ({ ctx: { apiClient, account } }) => {
+	async ({ ctx: { axiosClient, account } }) => {
 		if (!account) {
 			throw new Error("User not found");
 		}
 
 		const res = await getAccountBusinessesApi({
-			client: apiClient,
+			client: axiosClient,
 			throwOnError: true,
 			path: {
 				id: account.id,
@@ -72,10 +70,10 @@ export const getAccountBusinesses = actionClientWithAccount.action(
 );
 
 export const getBusinessById = actionClientWithAccount
-	.schema(intIdSchema.required())
-	.action(async ({ parsedInput: id, ctx: { apiClient } }) => {
+	.schema(pathIdSchema)
+	.action(async ({ parsedInput: id, ctx: { axiosClient } }) => {
 		const res = await getBusinessByIdApi({
-			client: apiClient,
+			client: axiosClient,
 			throwOnError: true,
 			path: { id },
 		});
@@ -85,15 +83,18 @@ export const getBusinessById = actionClientWithAccount
 
 export const getBusinessRoundsByPage = actionClientWithAccount
 	.schema(
-		object().shape({
-			businessId: intIdSchema.required(),
-			pagination: offsetPaginationSchema.required(),
+		z.object({
+			businessId: pathIdSchema,
+			pagination: offsetPaginationSchema,
 		})
 	)
 	.action(
-		async ({ parsedInput: { businessId, pagination }, ctx: { apiClient } }) => {
+		async ({
+			parsedInput: { businessId, pagination },
+			ctx: { axiosClient },
+		}) => {
 			const res = await getBusinessRoundsByPageApi({
-				client: apiClient,
+				client: axiosClient,
 				throwOnError: true,
 				query: {
 					...pagination,
@@ -108,10 +109,10 @@ export const getBusinessRoundsByPage = actionClientWithAccount
 	);
 
 export const getBusinessFunding = actionClient
-	.schema(intIdSchema.required())
-	.action(async ({ parsedInput, ctx: { apiClient } }) => {
+	.schema(pathIdSchema)
+	.action(async ({ parsedInput, ctx: { axiosClient } }) => {
 		const res = await getBusinessTotalFunding({
-			client: apiClient,
+			client: axiosClient,
 			throwOnError: true,
 			path: { id: parsedInput },
 		});
@@ -121,15 +122,18 @@ export const getBusinessFunding = actionClient
 
 export const getBusinessInvestmentsByPage = actionClientWithAccount
 	.schema(
-		object().shape({
-			businessId: intIdSchema.required(),
-			pagination: offsetPaginationSchema.required(),
+		z.object({
+			businessId: pathIdSchema,
+			pagination: offsetPaginationSchema,
 		})
 	)
 	.action(
-		async ({ parsedInput: { businessId, pagination }, ctx: { apiClient } }) => {
+		async ({
+			parsedInput: { businessId, pagination },
+			ctx: { axiosClient },
+		}) => {
 			const res = await getBusinessInvestmentsByPageApi({
-				client: apiClient,
+				client: axiosClient,
 				throwOnError: true,
 				path: {
 					id: businessId,
@@ -145,15 +149,18 @@ export const getBusinessInvestmentsByPage = actionClientWithAccount
 
 export const getBusinessMembersByPage = actionClientWithAccount
 	.schema(
-		object().shape({
-			businessId: intIdSchema.required(),
-			pagination: offsetPaginationSchema.required(),
+		z.object({
+			businessId: pathIdSchema,
+			pagination: offsetPaginationSchema,
 		})
 	)
 	.action(
-		async ({ parsedInput: { businessId, pagination }, ctx: { apiClient } }) => {
+		async ({
+			parsedInput: { businessId, pagination },
+			ctx: { axiosClient },
+		}) => {
 			const res = await getBusinessMembersByPageApi({
-				client: apiClient,
+				client: axiosClient,
 				throwOnError: true,
 				path: { id: businessId },
 				query: { ...pagination },
@@ -164,22 +171,20 @@ export const getBusinessMembersByPage = actionClientWithAccount
 	);
 
 export const getBusinessMemberRoles = actionClientWithAccount
-	.schema(intIdSchema.required())
-	.action(async ({ parsedInput, ctx: { apiClient } }) => {
+	.action(async ({ ctx: { axiosClient } }) => {
 		const res = await getBusinessMemberRolesApi({
-			client: apiClient,
+			client: axiosClient,
 			throwOnError: true,
-			path: { id: parsedInput },
 		});
 
 		return res.data;
 	});
 
 export const getBusinessCreateRoundrequirements = actionClientWithAccount
-	.schema(intIdSchema.required())
-	.action(async ({ parsedInput, ctx: { apiClient } }) => {
+	.schema(pathIdSchema)
+	.action(async ({ parsedInput, ctx: { axiosClient } }) => {
 		const res = await getBusinessCreateRoundrequirementsApi({
-			client: apiClient,
+			client: axiosClient,
 			throwOnError: true,
 			path: { id: parsedInput },
 		});
@@ -189,19 +194,19 @@ export const getBusinessCreateRoundrequirements = actionClientWithAccount
 
 export const getStripeAccountSettingsLink = actionClientWithAccount
 	.schema(
-		object().shape({
-			id: intIdSchema.required(),
-			refreshURL: string().url().required(),
-			returnURL: string().url().required(),
+		z.object({
+			id: pathIdSchema,
+			refreshURL: z.string().url(),
+			returnURL: z.string().url(),
 		})
 	)
 	.action(
 		async ({
 			parsedInput: { id, refreshURL, returnURL },
-			ctx: { apiClient },
+			ctx: { axiosClient },
 		}) => {
 			const res = await onboardStripeConnectedAccountApi({
-				client: apiClient,
+				client: axiosClient,
 				throwOnError: true,
 				body: {
 					refreshURL,
@@ -215,10 +220,10 @@ export const getStripeAccountSettingsLink = actionClientWithAccount
 	);
 
 export const getStripeDashboardUrl = actionClientWithAccount
-	.schema(intIdSchema.required())
-	.action(async ({ parsedInput: id, ctx: { apiClient } }) => {
+	.schema(pathIdSchema)
+	.action(async ({ parsedInput: id, ctx: { axiosClient } }) => {
 		const res = await getStripeDashboardUrlApi({
-			client: apiClient,
+			client: axiosClient,
 			throwOnError: true,
 			path: { id },
 		});
@@ -227,10 +232,10 @@ export const getStripeDashboardUrl = actionClientWithAccount
 	});
 
 export const getBusinessStripeAccount = actionClientWithAccount
-	.schema(intIdSchema.required())
-	.action(async ({ parsedInput: id, ctx: { apiClient } }) => {
+	.schema(pathIdSchema)
+	.action(async ({ parsedInput: id, ctx: { axiosClient } }) => {
 		const res = await getBusinessStripeAccountApi({
-			client: apiClient,
+			client: axiosClient,
 			throwOnError: true,
 			path: { id },
 		});
@@ -240,23 +245,16 @@ export const getBusinessStripeAccount = actionClientWithAccount
 
 export const upsertBusinessLegalSection = actionClientWithAccount
 	.schema(
-		object().shape({
-			id: intIdSchema.required(),
-			upsertBusinessLegalSectionSchema,
+		z.object({
+			id: pathIdSchema,
+			params: zUpsertBusinessLegalSectionParams,
 		})
 	)
-	.action(
-		async ({
-			parsedInput: { id, upsertBusinessLegalSectionSchema },
-			ctx: { apiClient },
-		}) => {
-			await upsertBusinessLegalSectionApi({
-				client: apiClient,
-				throwOnError: true,
-				path: { id },
-				body: {
-					...upsertBusinessLegalSectionSchema,
-				},
-			});
-		}
-	);
+	.action(async ({ parsedInput: { id, params }, ctx: { axiosClient } }) => {
+		await upsertBusinessLegalSectionApi({
+			client: axiosClient,
+			throwOnError: true,
+			path: { id },
+			body: params,
+		});
+	});

@@ -16,7 +16,8 @@
     "db:status": "turbo run db:status",
     "db:restart": "turbo run db:restart",
     "openapi:gen": "turbo run openapi:gen",
-    "sdk:gen": "turbo run sdk:gen"
+    "sdk:gen": "turbo run sdk:gen",
+    "sdk:full": "turbo run openapi:gen && turbo run sdk:gen"
   },
   "devDependencies": {
     "turbo": "^2.3.3"

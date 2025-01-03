@@ -31,7 +31,7 @@ import {
 import { ComponentPropsWithoutRef, FC, useEffect, useMemo, useState } from "react"
 import { DataTablePagination, DataTableColumnHeader } from "@/components/data-table"
 import { Icons } from "@/components/icons"
-import { RoundInvestment } from "@/lib/api"
+import { RoundInvestment } from "@repo/sdk"
 import { format } from "date-fns"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useAction } from "next-safe-action/hooks"

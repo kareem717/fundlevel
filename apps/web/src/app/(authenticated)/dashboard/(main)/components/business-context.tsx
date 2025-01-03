@@ -1,7 +1,7 @@
 "use client"
 
 import { ComponentPropsWithoutRef, FC, useEffect } from "react"
-import { Business } from "@/lib/api"
+import { Business } from "@repo/sdk"
 import { ChevronsUpDown, Plus } from "lucide-react"
 import {
   DropdownMenu,

@@ -8,7 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Account } from "@/lib/api";
+import { Account } from "@repo/sdk";
 import { buttonVariants } from "./ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Icons } from "./icons";

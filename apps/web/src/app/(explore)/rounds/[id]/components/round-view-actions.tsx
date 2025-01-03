@@ -17,7 +17,7 @@ import { toast } from "sonner";
 import { useAction } from "next-safe-action/hooks";
 import { isRoundLiked, likeRound, unlikeRound } from "@/actions/rounds";
 import { useRouter } from "next/navigation";
-import { Account } from "@/lib/api";
+import { Account } from "@repo/sdk";
 import { getAccount } from "@/actions/auth";
 
 export interface RoundViewActionsProps extends ComponentPropsWithoutRef<typeof DropdownMenu> {

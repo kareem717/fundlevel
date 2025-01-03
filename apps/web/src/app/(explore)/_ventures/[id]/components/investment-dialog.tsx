@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-// import { VentureRound } from "@/lib/api";
+// import { VentureRound } from "@repo/sdk";
 import { cn, formatCurrency } from "@/lib/utils";
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { format } from "date-fns";
@@ -44,49 +44,49 @@ export const InvestmentDialog: FC<InvestmentDialogProps> = ({ round, className, 
           <DialogTitle className="text-4xl">Complete your investment</DialogTitle>
         </DialogHeader>
         <div className="flex flex-col-reverse md:flex-row gap-20 w-full max-h-[70dvh] overflow-y-auto relative px-2 py-4">
-      <div className="flex flex-col gap-4 w-full">
-        <Label className="text-2xl" htmlFor="refund-policy">
-          Your investment
-        </Label>
-        <div id="refund-policy">
-          You recieve {round.percentageOffered}% of this venture&apos;s profits for the next 16 months.{" "}
-          <Link href="#" className="font-semibold underline">Learn more</Link>.
-        </div>
-        <Separator className="my-4" />
-        <Label className="text-2xl" htmlFor="refund-policy">
-          Pay with
-        </Label>
-        <div id="refund-policy">
-          <CheckoutForm
-            roundId={round?.id ?? 0}
-            confirmParams={{
-              return_url: redirectUrl,
-            }}
-          />
-        </div>
-        <Separator className="my-4" />
-        <Label className="text-2xl" htmlFor="refund-policy">
-          Refund policy
-        </Label>
-        <div id="refund-policy">
-          You can get a partial refund for this investment if you request one before {format(new Date(new Date().setDate(new Date().getDate() + 5)), "PPP")}. After that, your refund depends on when you cancel.{" "}
-          <Link href="#" className="font-semibold underline">Learn more</Link>.
-        </div>
-        <Separator className="my-4" />
-        <CheckoutConfirmation
-          className="w-full"
-          prefetchUrl={redirectUrl}
-          confirmationDisclaimer={(
-            <>
-              {/* //todo: replace with real links */}
-              By pressing this button, you agree to the <Link href="#" className="font-semibold underline">investment agreement</Link>, <Link href="#" className="font-semibold underline">Fundlevel&apos;s terms of service</Link>, and the <Link href="#" className="font-semibold underline">payment policy</Link>. You agree to pay the total amount shown if the investment goes through.
-            </>
-          )}
-        />
-      </div>
-      <Card className="flex flex-col gap-4 p-4 w-full min-w-[300px] max-w-md h-min sticky top-0">
-        {/* //TODO add images and title */}
-        {/* <div className="flex justify-start items-center gap-4 w-full">
+          <div className="flex flex-col gap-4 w-full">
+            <Label className="text-2xl" htmlFor="refund-policy">
+              Your investment
+            </Label>
+            <div id="refund-policy">
+              You recieve {round.percentageOffered}% of this venture&apos;s profits for the next 16 months.{" "}
+              <Link href="#" className="font-semibold underline">Learn more</Link>.
+            </div>
+            <Separator className="my-4" />
+            <Label className="text-2xl" htmlFor="refund-policy">
+              Pay with
+            </Label>
+            <div id="refund-policy">
+              <CheckoutForm
+                roundId={round?.id ?? 0}
+                confirmParams={{
+                  return_url: redirectUrl,
+                }}
+              />
+            </div>
+            <Separator className="my-4" />
+            <Label className="text-2xl" htmlFor="refund-policy">
+              Refund policy
+            </Label>
+            <div id="refund-policy">
+              You can get a partial refund for this investment if you request one before {format(new Date(new Date().setDate(new Date().getDate() + 5)), "PPP")}. After that, your refund depends on when you cancel.{" "}
+              <Link href="#" className="font-semibold underline">Learn more</Link>.
+            </div>
+            <Separator className="my-4" />
+            <CheckoutConfirmation
+              className="w-full"
+              prefetchUrl={redirectUrl}
+              confirmationDisclaimer={(
+                <>
+                  {/* //todo: replace with real links */}
+                  By pressing this button, you agree to the <Link href="#" className="font-semibold underline">investment agreement</Link>, <Link href="#" className="font-semibold underline">Fundlevel&apos;s terms of service</Link>, and the <Link href="#" className="font-semibold underline">payment policy</Link>. You agree to pay the total amount shown if the investment goes through.
+                </>
+              )}
+            />
+          </div>
+          <Card className="flex flex-col gap-4 p-4 w-full min-w-[300px] max-w-md h-min sticky top-0">
+            {/* //TODO add images and title */}
+            {/* <div className="flex justify-start items-center gap-4 w-full">
               <Image src="/filler.jpeg" alt="Investment Price Breakdown" width={100} height={100} className="rounded-md" />
               <div className="flex flex-col gap-1">
                 <p className="font-medium text-lg">{round.id}</p>
@@ -94,10 +94,10 @@ export const InvestmentDialog: FC<InvestmentDialogProps> = ({ round, className, 
               </div>
             </div>
             <Separator className="my-4" /> */}
-        <div className="flex flex-col gap-2">
-          <Label className="text-2xl font-medium" htmlFor="price-details">Price details</Label>
-          <div id="price-details" className="flex flex-col gap-2">
-            <div className="flex justify-between">
+            <div className="flex flex-col gap-2">
+              <Label className="text-2xl font-medium" htmlFor="price-details">Price details</Label>
+              <div id="price-details" className="flex flex-col gap-2">
+                <div className="flex justify-between">
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>

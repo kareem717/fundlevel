@@ -3,7 +3,7 @@
 import { ComponentPropsWithoutRef, FC, useEffect, useState } from "react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { cn } from "@/lib/utils"
-import { Industry } from "@/lib/api"
+import { Industry } from "@repo/sdk"
 import { useAction } from "next-safe-action/hooks"
 import { getAllIndustries } from "@/actions/industries"
 import { toast } from "sonner"

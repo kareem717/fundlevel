@@ -2,7 +2,7 @@
 
 // import React, { useEffect, useState } from "react";
 // import { Carousel, CarouselApi } from "@/components/ui/carousel";
-// import { Venture } from "@/lib/api";
+// import { Venture } from "@repo/sdk";
 // import { VentureCard } from "@/app/(explore)/explore/components/venture-card";
 // import { ArrowRight } from "lucide-react";
 // import { Button } from "@/components/ui/button";

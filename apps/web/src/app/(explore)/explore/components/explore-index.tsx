@@ -5,7 +5,7 @@
 // import { useAction } from "next-safe-action/hooks"
 // import { getVenturesInfinite } from "@/actions/ventures"
 // import { getRoundsInfinite } from "@/actions/rounds"
-// import { Venture, Round } from "@/lib/api"
+// import { Venture, Round } from "@repo/sdk"
 // import { toast } from "sonner"
 // import { useInView } from "react-intersection-observer"
 // import { Icons } from "@/components/icons"

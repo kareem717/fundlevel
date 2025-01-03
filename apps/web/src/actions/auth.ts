@@ -11,7 +11,7 @@ import {
 import {
 	createAccount as createAccountApi,
 	updateAccount as updateAccountApi,
-} from "@/lib/api";
+} from "@repo/sdk";
 import { cache } from "react";
 
 /**
@@ -22,14 +22,14 @@ export const createAccount = actionClientWithUser
 	.action(
 		async ({
 			parsedInput: { firstName, lastName },
-			ctx: { apiClient, user },
+			ctx: { axiosClient, user },
 		}) => {
 			if (!user) {
 				throw new Error("User not found");
 			}
 
 			return await createAccountApi({
-				client: apiClient,
+				client: axiosClient,
 				body: {
 					firstName,
 					lastName,
@@ -48,14 +48,14 @@ export const updateAccount = actionClientWithAccount
 	.action(
 		async ({
 			parsedInput: { firstName, lastName },
-			ctx: { apiClient, account },
+			ctx: { axiosClient, account },
 		}) => {
 			if (!account) {
 				throw new Error("Account not found");
 			}
 
 			await updateAccountApi({
-				client: apiClient,
+				client: axiosClient,
 				path: {
 					id: account.id,
 				},

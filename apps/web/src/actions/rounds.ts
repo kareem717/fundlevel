@@ -9,26 +9,24 @@ import {
 	createRoundFavourite,
 	getRoundFavouriteStatus,
 	deleteRoundFavourite,
-} from "@/lib/api";
+} from "@repo/sdk";
 import {
 	cursorPaginationSchema,
-	intIdSchema,
 } from "@/actions/validations/shared";
-import { createRoundSchema } from "./validations/rounds";
 import { cache } from "react";
+import { zCreateRoundParams } from "@repo/sdk/zod";
+import { offsetPaginationSchema, pathIdSchema } from "./validations";
 
 /**
  * Create a venture
  */
 export const createRound = actionClientWithAccount
-	.schema(createRoundSchema)
-	.action(async ({ parsedInput, ctx: { apiClient } }) => {
+	.schema(zCreateRoundParams)
+	.action(async ({ parsedInput, ctx: { axiosClient } }) => {
 		await createRoundApi({
-			client: apiClient,
+			client: axiosClient,
 			throwOnError: true,
-			body: {
-				...parsedInput,
-			},
+			body: parsedInput,
 		});
 	});
 
@@ -37,10 +35,10 @@ export const createRound = actionClientWithAccount
  */
 export const getRoundById = cache(
 	actionClient
-		.schema(intIdSchema.required())
-		.action(async ({ parsedInput, ctx: { apiClient } }) => {
+		.schema(pathIdSchema)
+		.action(async ({ parsedInput, ctx: { axiosClient } }) => {
 			const response = await getRoundByIdApi({
-				client: apiClient,
+				client: axiosClient,
 				throwOnError: true,
 				path: {
 					id: parsedInput,
@@ -56,9 +54,9 @@ export const getRoundById = cache(
  */
 export const getRoundsInfinite = actionClient
 	.schema(cursorPaginationSchema)
-	.action(async ({ parsedInput, ctx: { apiClient } }) => {
+	.action(async ({ parsedInput, ctx: { axiosClient } }) => {
 		const response = await getRoundByCursor({
-			client: apiClient,
+			client: axiosClient,
 			throwOnError: true,
 			query: parsedInput,
 		});
@@ -70,32 +68,30 @@ export const getRoundsInfinite = actionClient
  * Get rounds by offset pagination
  */
 export const getRoundsByPage = actionClient
-	.schema(intIdSchema)
-	.action(async ({ parsedInput, ctx: { apiClient } }) => {
+	.schema(offsetPaginationSchema)
+	.action(async ({ parsedInput, ctx: { axiosClient } }) => {
 		if (!parsedInput) {
 			throw new Error("Round ID not found");
 		}
 
 		const response = await getRoundsByPageApi({
-			client: apiClient,
+			client: axiosClient,
 			throwOnError: true,
-			path: {
-				id: parsedInput,
-			},
+			query: parsedInput,
 		});
 
 		return response.data.rounds;
 	});
 
 export const isRoundLiked = actionClientWithAccount
-	.schema(intIdSchema.required())
-	.action(async ({ parsedInput, ctx: { apiClient, account } }) => {
+	.schema(pathIdSchema)
+	.action(async ({ parsedInput, ctx: { axiosClient, account } }) => {
 		if (!account) {
 			throw new Error("User not found");
 		}
 
 		const response = await getRoundFavouriteStatus({
-			client: apiClient,
+			client: axiosClient,
 			throwOnError: true,
 			path: {
 				id: parsedInput,
@@ -107,14 +103,14 @@ export const isRoundLiked = actionClientWithAccount
 	});
 
 export const likeRound = actionClientWithAccount
-	.schema(intIdSchema.required())
-	.action(async ({ parsedInput, ctx: { apiClient, account } }) => {
+	.schema(pathIdSchema)
+	.action(async ({ parsedInput, ctx: { axiosClient, account } }) => {
 		if (!account) {
 			throw new Error("User not found");
 		}
 
 		await createRoundFavourite({
-			client: apiClient,
+			client: axiosClient,
 			throwOnError: true,
 			path: {
 				id: parsedInput,
@@ -124,14 +120,14 @@ export const likeRound = actionClientWithAccount
 	});
 
 export const unlikeRound = actionClientWithAccount
-	.schema(intIdSchema.required())
-	.action(async ({ parsedInput, ctx: { apiClient, account } }) => {
+	.schema(pathIdSchema)
+	.action(async ({ parsedInput, ctx: { axiosClient, account } }) => {
 		if (!account) {
 			throw new Error("User not found");
 		}
 
 		await deleteRoundFavourite({
-			client: apiClient,
+			client: axiosClient,
 			throwOnError: true,
 			path: {
 				id: parsedInput,

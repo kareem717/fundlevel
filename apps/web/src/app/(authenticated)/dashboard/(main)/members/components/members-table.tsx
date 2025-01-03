@@ -34,7 +34,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
-import { BusinessMemberWithRoleNameAndAccount } from "@/lib/api"
+import { BusinessMemberWithRoleNameAndAccount } from "@repo/sdk"
 import { useAction } from "next-safe-action/hooks"
 import { useBusinessContext } from "../../components/business-context"
 import { createParser, parseAsInteger, useQueryState, useQueryStates } from "nuqs"
@@ -140,7 +140,7 @@ export const MemberTable: FC<MemberTableProps> = ({ className }) => {
   const [rowSelection, setRowSelection] = useState({})
 
   const { execute, isExecuting } = useAction(getBusinessMembersByPage, {
-    onSuccess: ({data}) => {
+    onSuccess: ({ data }) => {
       setData(data?.members || [])
       setRowCount(data?.total || 0)
 
