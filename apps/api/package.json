@@ -13,6 +13,7 @@
     "db:up-one": "source .env.local && GOOSE_DRIVER=$GOOSE_DRIVER GOOSE_DBSTRING=$DATABASE_URL goose -dir=$GOOSE_MIGRATIONS_PATH up-by-one",
     "db:down": "source .env.local && GOOSE_DRIVER=$GOOSE_DRIVER GOOSE_DBSTRING=$DATABASE_URL goose -dir=$GOOSE_MIGRATIONS_PATH down",
     "db:reset": "source .env.local && GOOSE_DRIVER=$GOOSE_DRIVER GOOSE_DBSTRING=$DATABASE_URL goose -dir=$GOOSE_MIGRATIONS_PATH reset",
-    "db:status": "source .env.local && GOOSE_DRIVER=$GOOSE_DRIVER GOOSE_DBSTRING=$DATABASE_URL goose -dir=$GOOSE_MIGRATIONS_PATH status"
+    "db:status": "source .env.local && GOOSE_DRIVER=$GOOSE_DRIVER GOOSE_DBSTRING=$DATABASE_URL goose -dir=$GOOSE_MIGRATIONS_PATH status",
+    "openapi:gen": "bun run build && ./bin/main -H openapi"
   }
 }

@@ -2,7 +2,7 @@
   "name": "fundlevel",
   "private": true,
   "scripts": {
-    "build": "turbo build",
+    "build": "turbo build && turbo run openapi:gen && turbo run sdk:gen",
     "dev": "turbo dev",
     "start": "turbo run start",
     "test": "turbo run test",
@@ -14,7 +14,9 @@
     "db:start": "turbo run db:start",
     "db:stop": "turbo run db:stop",
     "db:status": "turbo run db:status",
-    "db:restart": "turbo run db:restart"
+    "db:restart": "turbo run db:restart",
+    "openapi:gen": "turbo run openapi:gen",
+    "sdk:gen": "turbo run sdk:gen"
   },
   "devDependencies": {
     "turbo": "^2.3.3"

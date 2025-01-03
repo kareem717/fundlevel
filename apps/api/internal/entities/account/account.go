@@ -31,6 +31,6 @@ type CreateAccountParams struct {
 
 // UpdateAccountParams contains the parameters for updating a account.
 type UpdateAccountParams struct {
-	FirstName string `json:"firstName" minLength:"3" maxLength:"30" pattern:"^[a-zA-Z]+$" patternDescription:"Must be a alphabetical string with at least 3 characters"`
-	LastName  string `json:"lastName" minLength:"3" maxLength:"30" pattern:"^[a-zA-Z]+$" patternDescription:"Must be a alphabetical string with at least 3 characters"`
+	FirstName string `json:"firstName" minLength:"3" maxLength:"30" pattern:"^[a-zA-Z]+$"`
+	LastName  string `json:"lastName" minLength:"3" maxLength:"30" pattern:"^[a-zA-Z]+$"`
 }

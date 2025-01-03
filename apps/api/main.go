@@ -13,6 +13,7 @@ import (
 
 	"github.com/danielgtaylor/huma/v2/humacli"
 	"github.com/joho/godotenv"
+	"github.com/spf13/cobra"
 	"github.com/supabase-community/supabase-go"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -62,6 +63,8 @@ func main() {
 		fmt.Println("Error loading .env.local file")
 	}
 
+	serverInstance := new(server.Server)
+
 	cli := humacli.New(func(hooks humacli.Hooks, options *Options) {
 		options.config()
 
@@ -101,7 +104,7 @@ func main() {
 			logger.Fatal("Failed to create supabase client", zap.Error(err))
 		}
 
-		server := server.NewServer(
+		serverInstance = server.NewServer(
 			services,
 			logger,
 			supabaseClient,
@@ -130,8 +133,8 @@ func main() {
 
 				logger.Info("Health check completed successfully!")
 			}
-			
-			server.Serve(fmt.Sprintf(":%d", options.Port))
+
+			serverInstance.Serve(fmt.Sprintf(":%d", options.Port))
 		})
 
 		hooks.OnStop(func() {
@@ -144,12 +147,34 @@ func main() {
 
 			start := time.Now()
 
-			server.Shutdown(ctx)
+			serverInstance.Shutdown(ctx)
 
 			duration := time.Since(start)
 
 			logger.Info("Server shutdown completed successfully!", zap.Int64("duration_ns", duration.Nanoseconds()))
 		})
+	})
+
+	// Add a command to print the OpenAPI spec.
+	cli.Root().AddCommand(&cobra.Command{
+		Use:   "openapi",
+		Short: "Print the OpenAPI spec",
+		Run: func(cmd *cobra.Command, args []string) {
+			b, err := serverInstance.OpenAPI()
+			if err != nil {
+				fmt.Printf("Error generating OpenAPI spec: %v\n", err)
+				return
+			}
+
+			// Write the OpenAPI spec to a file.
+			err = os.WriteFile("openapi.yaml", b, 0644)
+			if err != nil {
+				fmt.Printf("Error writing OpenAPI spec to file: %v\n", err)
+				return
+			}
+
+			fmt.Println("OpenAPI spec written to openapi.yaml")
+		},
 	})
 
 	cli.Run()

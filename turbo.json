@@ -94,6 +94,21 @@
       "dependsOn": [
         "^db:reset"
       ]
+    },
+    "openapi:gen": {
+      "cache": false,
+      "dependsOn": [
+        "^openapi:gen:spec"
+      ],
+      "outputs": [
+        "openapi.yaml"
+      ]
+    },
+    "sdk:gen": {
+      "cache": false,
+      "dependsOn": [
+        "^sdk:gen"
+      ]
     }
   }
 }
