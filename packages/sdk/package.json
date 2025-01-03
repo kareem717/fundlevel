@@ -1,0 +1,31 @@
+{
+  "name": "@repo/sdk",
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "openapi-ts && tsc",
+    "openapi:gen:sdk": "openapi-ts",
+    "dev": "tsc --watch"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./zod": {
+      "types": "./dist/zod.gen.d.ts",
+      "default": "./dist/zod.gen.js"
+    }
+  },
+  "devDependencies": {
+    "@hey-api/client-axios": "^0.3.4",
+    "@types/bun": "latest",
+    "@hey-api/openapi-ts": "^0.60.1",
+    "axios": "^1.7.9",
+    "dotenv": "^16.4.7"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
