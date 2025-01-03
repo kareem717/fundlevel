@@ -33,7 +33,6 @@ type RoundRepository interface {
 	// GetInvestmentsByPage gets all of the investments received on the round using offset pagination
 	GetInvestmentsByPage(ctx context.Context, roundId int, paginationParams shared.OffsetPagination, filter investment.InvestmentFilter) ([]investment.Investment, int, error)
 }
-
 type InvestmentRepository interface {
 	Create(ctx context.Context, params investment.CreateInvestmentParams) (investment.Investment, error)
 	Delete(ctx context.Context, id int) error
@@ -52,7 +51,6 @@ type InvestmentRepository interface {
 	GetCurrentPayment(ctx context.Context, investmentId int) (investment.InvestmentPayment, error)
 	GetFailedPaymentCount(ctx context.Context, investmentId int) (int, error)
 }
-
 type AccountRepository interface {
 	Create(ctx context.Context, params account.CreateAccountParams) (account.Account, error)
 	Delete(ctx context.Context, id int) error
@@ -75,7 +73,6 @@ type AccountRepository interface {
 type UserRepository interface {
 	GetAccount(ctx context.Context, userId uuid.UUID) (account.Account, error)
 }
-
 type BusinessRepository interface {
 	Create(ctx context.Context, params business.CreateBusinessParams) error
 	GetById(ctx context.Context, id int) (business.Business, error)
@@ -106,7 +103,6 @@ type BusinessRepository interface {
 
 	GetAllMemberRoles(ctx context.Context) ([]business.BusinessMemberRole, error)
 }
-
 type AnalyticRepository interface {
 	GetDailyAggregatedBusinessAnalytics(ctx context.Context, businessId int, minDayOfYear int, maxDayOfYear int) ([]analytic.SimplifiedDailyAggregatedBusinessAnalytics, error)
 	GetDailyAggregatedRoundAnalytics(ctx context.Context, roundId int, minDayOfYear int, maxDayOfYear int) ([]analytic.SimplifiedDailyAggregatedRoundAnalytics, error)
@@ -127,7 +123,6 @@ type AnalyticRepository interface {
 	IsRoundFavouritedByAccount(ctx context.Context, roundId int, accountId int) (bool, error)
 	GetRoundFavouriteCount(ctx context.Context, roundId int) (int, error)
 }
-
 type ChatRepository interface {
 	CreateMessage(ctx context.Context, params chat.CreateMessageParams) (chat.ChatMessage, error)
 	UpdateMessage(ctx context.Context, id int, params chat.UpdateMessageParams) (chat.ChatMessage, error)
@@ -143,11 +138,9 @@ type ChatRepository interface {
 
 	IsAccountInChat(ctx context.Context, chatID int, accountID int) (bool, error)
 }
-
 type PositionRepository interface {
 	Create(ctx context.Context, params position.CreatePositionParams) (position.Position, error)
 }
-
 type RepositoryProvider interface {
 	Account() AccountRepository
 	Round() RoundRepository
