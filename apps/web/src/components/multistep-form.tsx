@@ -1,8 +1,8 @@
 "use client";
 
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@repo/ui/components/button";
 import { Icons } from "@/components/icons";
-import { Progress } from "@/components/ui/progress";
+import { Progress } from "@repo/ui/components/progress";
 import { cn } from "@/lib/utils";
 import {
   ComponentPropsWithoutRef,

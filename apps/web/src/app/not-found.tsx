@@ -2,7 +2,7 @@ import React from "react";
 import redirects from "@/lib/config/redirects";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@repo/ui/components/button";
 
 export default function NotFound() {
   return (

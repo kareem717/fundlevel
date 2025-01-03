@@ -12,9 +12,9 @@
 // import Link from "next/link";
 // import redirects from "@/lib/config/redirects";
 // import { formatTime, cn, truncateText, toFixedRound } from "@/lib/utils";
-// import { Card, CardHeader, CardContent, CardFooter, CardTitle, CardDescription } from "@/components/ui/card";
-// import { buttonVariants } from "@/components/ui/button";
-// import { Badge } from "@/components/ui/badge";
+// import { Card, CardHeader, CardContent, CardFooter, CardTitle, CardDescription } from "@repo/ui/components/card";
+// import { buttonVariants } from "@repo/ui/components/button";
+// import { Badge } from "@repo/ui/components/badge";
 // import { debounce } from 'lodash';
 
 // export interface VentureIndexCardProps extends ComponentPropsWithoutRef<typeof Card> {

@@ -19,11 +19,11 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@repo/ui/components/table"
 import { DataTablePagination } from "@/components/data-table"
 import { ComponentPropsWithoutRef, FC, useEffect, useMemo, useState } from "react"
 import { faker } from "@faker-js/faker"
-import { Input } from "@/components/ui/input"
+import { Input } from "@repo/ui/components/input"
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -31,15 +31,15 @@ import {
   DropdownMenuCheckboxItem,
   DropdownMenuItem,
   DropdownMenuLabel,
-} from "@/components/ui/dropdown-menu"
-import { Button } from "@/components/ui/button"
+} from "@repo/ui/components/dropdown-menu"
+import { Button } from "@repo/ui/components/button"
 import { Icons } from "@/components/icons"
 import { BusinessMemberWithRoleNameAndAccount } from "@repo/sdk"
 import { useAction } from "next-safe-action/hooks"
 import { useBusinessContext } from "../../components/business-context"
 import { createParser, parseAsInteger, useQueryState, useQueryStates } from "nuqs"
 import { object } from "yup"
-import { Skeleton } from "@/components/ui/skeleton"
+import { Skeleton } from "@repo/ui/components/skeleton"
 import { getBusinessMembersByPage } from "@/actions/busineses"
 
 export const columns: ColumnDef<BusinessMemberWithRoleNameAndAccount>[] = [

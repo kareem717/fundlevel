@@ -8,7 +8,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@repo/ui/components/card"
 import { cn } from "@/lib/utils"
 
 export interface ChartWrapperProps extends ComponentPropsWithoutRef<typeof Card> {

@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { ComponentPropsWithoutRef, FC, useEffect, useState } from "react"
-import { Button } from "@/components/ui/button";
+import { Button } from "@repo/ui/components/button";
 import { Icons } from "@/components/icons";
 import redirects from "@/lib/config/redirects";
 import {
@@ -12,7 +12,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@repo/ui/components/dropdown-menu"
 import { toast } from "sonner";
 import { useAction } from "next-safe-action/hooks";
 import { isRoundLiked, likeRound, unlikeRound } from "@/actions/rounds";

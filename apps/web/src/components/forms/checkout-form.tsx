@@ -10,7 +10,7 @@ import { env } from '@/env';
 import { useAction } from 'next-safe-action/hooks';
 import { createInvestmentPaymentIntent } from '@/actions/investments';
 import { toast } from 'sonner';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@repo/ui/components/skeleton';
 import { Button } from '../ui/button';
 import { useRouter } from 'next/navigation';
 import { Icons } from '../icons';

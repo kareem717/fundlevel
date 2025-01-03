@@ -1,7 +1,7 @@
 // "use client";
 
 // import React, { useState } from "react";
-// import { Button } from "@/components/ui/button";
+// import { Button } from "@repo/ui/components/button";
 // import { Heart } from "lucide-react";
 // import { toast } from "sonner";
 // import { likeVenture } from "@/actions/ventures";

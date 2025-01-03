@@ -7,7 +7,7 @@ import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart"
+} from "@repo/ui/components/chart"
 import { cn } from "@/lib/utils"
 
 const chartData = [

@@ -1,8 +1,8 @@
 "use client";
 
 import { EmptySectionCard } from "@/components/empty-section-card";
-import { Label } from "@/components/ui/label";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Label } from "@repo/ui/components/label";
+import { Skeleton } from "@repo/ui/components/skeleton";
 import { Round } from "@repo/sdk";
 import { cn } from "@/lib/utils";
 import { ComponentPropsWithoutRef, FC, useEffect, useState } from "react"

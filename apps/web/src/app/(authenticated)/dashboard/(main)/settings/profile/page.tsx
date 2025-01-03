@@ -3,7 +3,7 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion"
+} from "@repo/ui/components/accordion"
 import { UpdateLegalSectionForm } from "./components/update-legal-section-form";
 export default function ProfileSettingsPage() {
   return (

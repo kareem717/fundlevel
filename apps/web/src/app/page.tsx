@@ -1,4 +1,4 @@
-import { buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@repo/ui/components/button";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import React from "react";

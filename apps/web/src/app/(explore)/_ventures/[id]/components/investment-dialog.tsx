@@ -1,20 +1,20 @@
 "use client";
 
 import { CheckoutConfirmation, CheckoutForm } from "@/components/forms/checkout-form";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Button } from "@repo/ui/components/button";
+import { Card } from "@repo/ui/components/card";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
+} from "@repo/ui/components/dialog"
+import { Label } from "@repo/ui/components/label";
+import { Separator } from "@repo/ui/components/separator";
 // import { VentureRound } from "@repo/sdk";
 import { cn, formatCurrency } from "@/lib/utils";
-import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
+import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@repo/ui/components/tooltip";
 import { format } from "date-fns";
 import Link from "next/link";
 import { FC, ComponentPropsWithoutRef } from "react";

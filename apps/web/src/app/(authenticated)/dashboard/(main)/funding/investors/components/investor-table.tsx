@@ -19,11 +19,11 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@repo/ui/components/table"
 import { DataTablePagination } from "@/components/data-table"
 import { ComponentPropsWithoutRef, FC, useEffect, useMemo, useState } from "react"
 import { faker } from "@faker-js/faker"
-import { Input } from "@/components/ui/input"
+import { Input } from "@repo/ui/components/input"
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -31,8 +31,8 @@ import {
   DropdownMenuCheckboxItem,
   DropdownMenuItem,
   DropdownMenuLabel,
-} from "@/components/ui/dropdown-menu"
-import { Button } from "@/components/ui/button"
+} from "@repo/ui/components/dropdown-menu"
+import { Button } from "@repo/ui/components/button"
 import { Icons } from "@/components/icons"
 
 type Investor = {

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import {
   Dialog,
   DialogContent,
-} from "@/components/ui/dialog";
+} from "@repo/ui/components/dialog";
 
 export interface DialogLayoutProps extends ComponentPropsWithoutRef<typeof Dialog> {
   children: React.ReactNode;

@@ -3,13 +3,13 @@ import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
-} from "@/components/ui/sidebar"
+} from "@repo/ui/components/sidebar"
 import { Metadata } from "next"
 import { redirect } from "next/navigation";
 import redirects from "@/lib/config/redirects";
 import { getAccountBusinesses } from "@/actions/busineses"
 import { Business } from "@repo/sdk";
-import { Separator } from "@/components/ui/separator";
+import { Separator } from "@repo/ui/components/separator";
 import { BusinessContextProvider } from "./components/business-context";
 
 export const metadata: Metadata = {

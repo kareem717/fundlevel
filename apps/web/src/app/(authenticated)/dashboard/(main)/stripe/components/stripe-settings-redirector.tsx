@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { FC, ComponentPropsWithoutRef } from 'react';
 import { toast } from 'sonner';
 import { useBusinessContext } from '../../components/business-context';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/components/button';
 import { Icons } from '@/components/icons';
 
 export interface StripeSettingsRedirectorProps extends ComponentPropsWithoutRef<'button'> {

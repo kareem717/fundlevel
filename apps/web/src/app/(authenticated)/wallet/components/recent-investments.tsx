@@ -1,8 +1,8 @@
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea } from "@repo/ui/components/scroll-area";
 import { cn } from "@/lib/utils";
 import { ComponentPropsWithoutRef, FC } from "react"
 import { faker } from '@faker-js/faker';
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@repo/ui/components/badge";
 
 const recentInvestments = Array.from({ length: 25 }, (_, id) => ({
   id: id + 1,

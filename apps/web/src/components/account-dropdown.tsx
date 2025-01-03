@@ -7,10 +7,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@repo/ui/components/dropdown-menu";
 import { Account } from "@repo/sdk";
 import { buttonVariants } from "./ui/button";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@repo/ui/components/avatar";
 import { Icons } from "./icons";
 import { cn } from "@/lib/utils";
 import Link from "next/link";

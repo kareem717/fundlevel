@@ -1,8 +1,8 @@
 "use client";
 
 import { Icons } from "@/components/icons";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@repo/ui/components/button";
+import { Input } from "@repo/ui/components/input";
 import { OAuthButtons } from "@/components/oauth-buttons";
 import { useState, ComponentPropsWithoutRef, FC } from "react";
 import supabase from "@/lib/utils/supabase/client";
@@ -17,7 +17,7 @@ import {
 	FormItem,
 	FormLabel,
 	FormMessage,
-} from "@/components/ui/form"
+} from "@repo/ui/components/form"
 import { cn } from "@/lib/utils";
 import { env } from "@/env";
 import redirects from "@/lib/config/redirects";

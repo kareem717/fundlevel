@@ -1,6 +1,6 @@
-// import { Card } from "@/components/ui/card";
-// import { Button, buttonVariants } from "@/components/ui/button";
-// import { Badge } from "@/components/ui/badge";
+// import { Card } from "@repo/ui/components/card";
+// import { Button, buttonVariants } from "@repo/ui/components/button";
+// import { Badge } from "@repo/ui/components/badge";
 // import { ThumbsDown, ThumbsUp } from "lucide-react";
 // import Image from "next/image";
 // import { DislikeButton } from "./dislike-button";

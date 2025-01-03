@@ -2,12 +2,12 @@
 
 // import { cn } from "@/lib/utils";
 // import { ComponentPropsWithoutRef, FC, useEffect, useState } from "react";
-// import { Button } from "@/components/ui/button";
-// import { Icons } from "@/components/ui/icons";
+// import { Button } from "@repo/ui/components/button";
+// import { Icons } from "@repo/ui/components/icons";
 // import redirects from "@/lib/config/redirects";
 // import {
 //   DropdownMenu,
-// } from "@/components/ui/dropdown-menu";
+// } from "@repo/ui/components/dropdown-menu";
 // import { toast } from "sonner";
 // import { useAction } from "next-safe-action/hooks";
 // import { isVentureLiked, likeVenture, unlikeVenture } from "@/actions/ventures";

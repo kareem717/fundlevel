@@ -7,7 +7,7 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
   BreadcrumbLink,
-} from "@/components/ui/breadcrumb"
+} from "@repo/ui/components/breadcrumb"
 
 export type DynamicBreadcrumbItem = {
   title: string;

@@ -1,7 +1,7 @@
 "use client"
 
 import { Bell, ArrowUpRight, ArrowDownRight, DollarSign } from "lucide-react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@repo/ui/components/card"
 import { PositionSnapshotChart } from "./components/position-snapshot-chart"
 import { NotificationIndex } from "./components/notification-index"
 import { RecentTransactionsList } from "./components/recent-transactions"
@@ -27,7 +27,7 @@ export default function Component() {
             <CardDescription>A list of your current notifications</CardDescription>
           </CardHeader>
           <CardContent className="py-0">
-            <NotificationIndex className="h-[500px]"/>
+            <NotificationIndex className="h-[500px]" />
           </CardContent>
         </Card>
       </div>
@@ -38,7 +38,7 @@ export default function Component() {
             <CardDescription>A list of your recent investments</CardDescription>
           </CardHeader>
           <CardContent>
-            <RecentInvestmentsList className="h-72"/>
+            <RecentInvestmentsList className="h-72" />
           </CardContent>
         </Card>
         <Card>
@@ -47,7 +47,7 @@ export default function Component() {
             <CardDescription>A list of your recent payments</CardDescription>
           </CardHeader>
           <CardContent>
-            <RecentTransactionsList className="h-72"/>
+            <RecentTransactionsList className="h-72" />
           </CardContent>
         </Card>
       </div>

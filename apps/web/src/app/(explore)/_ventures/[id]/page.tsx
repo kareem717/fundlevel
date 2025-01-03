@@ -1,16 +1,16 @@
 // import { VentureViewActions } from "./components/venture-actions";
 // import { getVentureById } from "@/actions/ventures";
 // import { notFound } from "next/navigation";
-// import { Card, CardContent, CardFooter } from "@/components/ui/card";
+// import { Card, CardContent, CardFooter } from "@repo/ui/components/card";
 // import { Star } from "lucide-react";
 // import Image from "next/image";
-// import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+// import { Avatar, AvatarFallback, AvatarImage } from "@repo/ui/components/avatar";
 // import {
 //   Accordion,
 //   AccordionContent,
 //   AccordionItem,
 //   AccordionTrigger,
-// } from "@/components/ui/accordion";
+// } from "@repo/ui/components/accordion";
 // import BackButton from "./components/back-button";
 // import { VentureTabs } from "./components/tabs";
 // import redirects from "@/lib/config/redirects";

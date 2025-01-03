@@ -1,7 +1,7 @@
 "use client"
 
 import { ColumnDef, Row } from "@tanstack/react-table"
-import { Button } from "@/components/ui/button"
+import { Button } from "@repo/ui/components/button"
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -9,8 +9,8 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Checkbox } from "@/components/ui/checkbox"
+} from "@repo/ui/components/dropdown-menu"
+import { Checkbox } from "@repo/ui/components/checkbox"
 import { Icons } from "@/components/icons"
 import { DataTableColumnHeader } from "@/components/data-table"
 import { titleCase } from "title-case"
@@ -33,12 +33,12 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@repo/ui/components/table"
 import { DataTablePagination } from "@/components/data-table"
 import { ComponentPropsWithoutRef, FC, useEffect, useMemo, useState } from "react"
 import { useAction } from "next-safe-action/hooks"
 import { getAccountInvestmentsByPage } from "@/actions/investments"
-import { Skeleton } from "@/components/ui/skeleton"
+import { Skeleton } from "@repo/ui/components/skeleton"
 import { formatCurrency } from "@/lib/utils"
 import { cn } from "@/lib/utils"
 

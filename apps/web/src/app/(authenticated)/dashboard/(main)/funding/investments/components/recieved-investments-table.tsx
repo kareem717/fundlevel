@@ -17,9 +17,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
+} from "@repo/ui/components/table"
+import { Button } from "@repo/ui/components/button"
+import { Checkbox } from "@repo/ui/components/checkbox"
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -27,18 +27,18 @@ import {
   DropdownMenuCheckboxItem,
   DropdownMenuItem,
   DropdownMenuLabel,
-} from "@/components/ui/dropdown-menu"
+} from "@repo/ui/components/dropdown-menu"
 import { ComponentPropsWithoutRef, FC, useEffect, useMemo, useState } from "react"
 import { DataTablePagination, DataTableColumnHeader } from "@/components/data-table"
 import { Icons } from "@/components/icons"
 import { RoundInvestment } from "@repo/sdk"
 import { format } from "date-fns"
-import { Skeleton } from "@/components/ui/skeleton"
+import { Skeleton } from "@repo/ui/components/skeleton"
 import { useAction } from "next-safe-action/hooks"
 import { useBusinessContext } from "../../../components/business-context"
 import { createParser, parseAsInteger, useQueryState, useQueryStates } from "nuqs"
 import { getBusinessInvestmentsByPage } from "@/actions/busineses"
-import { Badge } from "@/components/ui/badge"
+import { Badge } from "@repo/ui/components/badge"
 import { titleCase } from "title-case"
 import { object } from "yup"
 import { formatCurrency } from "@/lib/utils"

@@ -4,9 +4,9 @@ import { Icons } from "@/components/icons";
 import { cn } from "@/lib/utils"
 import { ComponentPropsWithoutRef, FC, Fragment, useEffect, useState } from "react"
 import { faker } from "@faker-js/faker";
-import { Skeleton } from "@/components/ui/skeleton";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@repo/ui/components/skeleton";
+import { ScrollArea } from "@repo/ui/components/scroll-area";
+import { Separator } from "@repo/ui/components/separator";
 
 export interface NotificationIndexProps extends ComponentPropsWithoutRef<typeof ScrollArea> {
 

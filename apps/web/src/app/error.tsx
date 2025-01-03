@@ -2,7 +2,7 @@
 
 import React from "react";
 import { SmallLogoDiv } from "@/components/logo-div";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@repo/ui/components/button";
 import redirects from "@/lib/config/redirects";
 import { cn } from "@/lib/utils";
 import Link from "next/link";

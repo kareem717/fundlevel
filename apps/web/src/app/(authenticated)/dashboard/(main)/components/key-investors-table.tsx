@@ -19,7 +19,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@repo/ui/components/table"
 import { DataTablePagination } from "@/components/data-table"
 import { ComponentPropsWithoutRef, FC, useEffect, useState } from "react"
 import { faker } from "@faker-js/faker"
@@ -88,7 +88,7 @@ export const KeyInvestorsTable: FC<KeyInvestorTableProps> = () => {
       expiry: faker.date.future(),
     })))
   }, [])
-  
+
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10,

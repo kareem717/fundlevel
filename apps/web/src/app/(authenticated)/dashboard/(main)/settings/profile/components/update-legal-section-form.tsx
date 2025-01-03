@@ -11,10 +11,10 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
+} from "@repo/ui/components/form"
+import { Input } from "@repo/ui/components/input"
 import { Icons } from "@/components/icons";
-import { Button } from "@/components/ui/button";
+import { Button } from "@repo/ui/components/button";
 import { toast } from "sonner";
 import { useAction } from "next-safe-action/hooks";
 import { getBusinessById, upsertBusinessLegalSection } from "@/actions/busineses";

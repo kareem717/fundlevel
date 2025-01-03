@@ -9,7 +9,7 @@ import {
   ChartTooltipContent,
   ChartLegend,
   ChartLegendContent
-} from "@/components/ui/chart"
+} from "@repo/ui/components/chart"
 import { cn } from "@/lib/utils"
 export const description = "A stacked area chart"
 
@@ -58,7 +58,7 @@ export const VentureOwnershipChart: FC<VentureOwnershipChartProps> = ({ classNam
         <ChartTooltip
           cursor={false}
           content={<ChartTooltipContent indicator="dot" />}
-          
+
         />
         <ChartLegend
           content={<ChartLegendContent />}

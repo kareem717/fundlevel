@@ -1,7 +1,7 @@
 "use client";
 
 import { ComponentPropsWithoutRef, FC, useState } from "react";
-import { Input } from "@/components/ui/input";
+import { Input } from "@repo/ui/components/input";
 import { AddressAutofill } from "@mapbox/search-js-react";
 import { env } from "@/env";
 import type { AddressAutofillRetrieveResponse } from "@mapbox/search-js-core";

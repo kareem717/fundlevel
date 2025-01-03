@@ -2,25 +2,25 @@ import { RoundViewActions } from "./components/round-view-actions"
 import { getRoundById, isRoundLiked } from "@/actions/rounds";
 import { notFound } from "next/navigation";
 import { getAccount } from "@/actions/auth";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@repo/ui/components/card";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
+} from "@repo/ui/components/dialog"
+import { Button } from "@repo/ui/components/button";
+import { ScrollArea } from "@repo/ui/components/scroll-area";
 import { Icons } from "@/components/icons";
-import { Separator } from "@/components/ui/separator";
+import { Separator } from "@repo/ui/components/separator";
 import { cn, toFixedRound, truncateText } from "@/lib/utils";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip"
+} from "@repo/ui/components/tooltip"
 import { env } from "@/env";
 import { BusinessOverview } from "@/components/business-overview";
 

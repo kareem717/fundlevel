@@ -2,14 +2,14 @@
 
 import * as React from "react";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@repo/ui/components/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
+} from "@repo/ui/components/dialog";
+import { Input } from "@repo/ui/components/input";
 import {
   Filter,
   Search,
@@ -27,7 +27,7 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "@/components/ui/carousel";
+} from "@repo/ui/components/carousel";
 import { cn } from "@/lib/utils";
 import { WheelGesturesPlugin } from "embla-carousel-wheel-gestures";
 import { useAction } from "next-safe-action/hooks";
@@ -43,13 +43,13 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
+} from "@repo/ui/components/select";
+import { Label } from "@repo/ui/components/label";
+import { Checkbox } from "@repo/ui/components/checkbox";
 import { Industry } from "@/lib/dev/types";
 import { icons } from "lucide-react";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { DualRangeSlider } from "@/components/ui/range-slider";
+import { ScrollArea, ScrollBar } from "@repo/ui/components/scroll-area";
+import { DualRangeSlider } from "@repo/ui/components/range-slider";
 import {
   parseAsArrayOf,
   useQueryState,

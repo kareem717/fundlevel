@@ -1,17 +1,17 @@
 // "use client";
 
 // import React, { useEffect, useState } from "react";
-// import { Carousel, CarouselApi } from "@/components/ui/carousel";
+// import { Carousel, CarouselApi } from "@repo/ui/components/carousel";
 // import { Venture } from "@repo/sdk";
 // import { VentureCard } from "@/app/(explore)/explore/components/venture-card";
 // import { ArrowRight } from "lucide-react";
-// import { Button } from "@/components/ui/button";
+// import { Button } from "@repo/ui/components/button";
 // import {
 //   CarouselContent,
 //   CarouselItem,
 //   CarouselNext,
 //   CarouselPrevious,
-// } from "@/components/ui/carousel";
+// } from "@repo/ui/components/carousel";
 
 // export default function VentureListClient({
 //   ventures,

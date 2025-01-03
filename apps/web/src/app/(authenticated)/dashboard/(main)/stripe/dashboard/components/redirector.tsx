@@ -6,10 +6,10 @@ import { useRouter } from 'next/navigation';
 import { FC, ComponentPropsWithoutRef, useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import { useBusinessContext } from '../../../components/business-context';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/components/button';
 import { Icons } from '@/components/icons';
 import { StripeSettingsRedirector } from '../../components/stripe-settings-redirector';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Alert, AlertDescription, AlertTitle } from '@repo/ui/components/alert';
 import { BusinessStripeAccount } from '@/lib/api';
 
 export interface StripeDashboardRedirectorProps extends ComponentPropsWithoutRef<'div'> { }

@@ -5,7 +5,7 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarRail,
-} from "@/components/ui/sidebar"
+} from "@repo/ui/components/sidebar"
 import { SidebarMenu } from "@/components/sidebar-menu"
 import { ComponentPropsWithoutRef } from "react"
 import SidebarConfig from "@/lib/config/sidebar"
