@@ -1,6 +1,6 @@
 import { Icons } from "@/components/icons";
 import { ScrollArea } from "@repo/ui/components/scroll-area";
-import { cn } from "@/lib/utils";
+import { cn } from "@repo/ui/lib/utils";
 import { ComponentPropsWithoutRef, FC } from "react"
 import { faker } from '@faker-js/faker';
 import { Badge } from "@repo/ui/components/badge";

@@ -7,7 +7,6 @@ export const env = createEnv({
       .enum(['development', 'test', 'production'])
       .default('development'),
     DATABASE_URI: z.string().min(1),
-    PAYLOAD_SECRET: z.string().min(1),
     AWS_URI: z.string().min(1),
     AWS_ACCESS_KEY_ID: z.string().min(1),
     AWS_SECRET_ACCESS_KEY: z.string().min(1),

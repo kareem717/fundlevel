@@ -1,6 +1,6 @@
 import { ComponentPropsWithoutRef, FC, ReactNode } from "react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@repo/ui/components/select"
-import { cn } from "@/lib/utils"
+import { cn } from "@repo/ui/lib/utils"
 
 export type Unit = {
   value: string;

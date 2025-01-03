@@ -8,7 +8,7 @@
 // import { Venture } from "@/lib/dev/types";
 // import { isVentureLiked } from "@/actions/ventures";
 // import Link from "next/link";
-// import { cn } from "@/lib/utils";
+// import { cn } from "@repo/ui/lib/utils";
 
 // export const getRandomGradient = (title: string) => {
 //   const gradients = [

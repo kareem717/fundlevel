@@ -1,6 +1,6 @@
 // "use client";
 
-// import { cn } from "@/lib/utils";
+// import { cn } from "@repo/ui/lib/utils";
 // import { ComponentPropsWithoutRef, FC, useEffect, useState } from "react";
 // import { Button } from "@repo/ui/components/button";
 // import { Icons } from "@repo/ui/components/icons";

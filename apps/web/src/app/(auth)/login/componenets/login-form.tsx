@@ -18,7 +18,7 @@ import {
 	FormLabel,
 	FormMessage,
 } from "@repo/ui/components/form"
-import { cn } from "@/lib/utils";
+import { cn } from "@repo/ui/lib/utils";
 import { env } from "@/env";
 import redirects from "@/lib/config/redirects";
 

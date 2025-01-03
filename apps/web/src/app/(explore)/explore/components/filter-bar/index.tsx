@@ -28,7 +28,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@repo/ui/components/carousel";
-import { cn } from "@/lib/utils";
+import { cn } from "@repo/ui/lib/utils";
 import { WheelGesturesPlugin } from "embla-carousel-wheel-gestures";
 import { useAction } from "next-safe-action/hooks";
 import { getAllIndustries } from "@/actions/industries";

@@ -1,6 +1,6 @@
 'use client'
 
-import { cn } from '@/lib/utils'
+import { cn } from '@repo/ui/lib/utils'
 import { Section } from '@/components/layout'
 import { Container } from '@/components/layout'
 import Balancer from 'react-wrap-balancer'

@@ -1,7 +1,7 @@
 "use client"
 
 import { Icons } from "@/components/icons";
-import { cn } from "@/lib/utils"
+import { cn } from "@repo/ui/lib/utils"
 import { ComponentPropsWithoutRef, FC, Fragment, useEffect, useState } from "react"
 import { faker } from "@faker-js/faker";
 import { Skeleton } from "@repo/ui/components/skeleton";

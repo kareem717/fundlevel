@@ -1,5 +1,5 @@
 import { ComponentPropsWithoutRef, FC } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@repo/ui/lib/utils";
 import Link from "next/link";
 
 export type NavigationItem = {
@@ -55,7 +55,7 @@ export const NavMenu: FC<NavMenuProps> = ({
               className={cn(
                 "block",
                 direction === "column" &&
-                  "w-full py-2 px-4 hover:bg-accent rounded-md"
+                "w-full py-2 px-4 hover:bg-accent rounded-md"
               )}
             >
               {item.label}

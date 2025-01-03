@@ -1,5 +1,5 @@
 import { buttonVariants } from "@repo/ui/components/button";
-import { cn } from "@/lib/utils";
+import { cn } from "@repo/ui/lib/utils";
 import Link from "next/link";
 import React from "react";
 import { ExploreNav } from "./(explore)/explore/components/layout/nav";

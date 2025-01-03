@@ -1,5 +1,5 @@
 import { ComponentPropsWithoutRef, FC } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@repo/ui/lib/utils";
 import Link from "next/link";
 import { redirects } from "@/lib/config";
 import { Icons } from "../icons";

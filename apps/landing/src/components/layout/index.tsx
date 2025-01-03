@@ -1,6 +1,6 @@
 // This is a design system for building responsive layouts in React
 import React from 'react'
-import { cn } from '@/lib/utils'
+import { cn } from '@repo/ui/lib/utils'
 
 type MainProps = {
   children: React.ReactNode
@@ -31,33 +31,33 @@ type BoxProps = {
   children: React.ReactNode
   className?: string
   direction?:
-    | 'row'
-    | 'col'
-    | {
-        sm?: 'row' | 'col'
-        md?: 'row' | 'col'
-        lg?: 'row' | 'col'
-        xl?: 'row' | 'col'
-        '2xl'?: 'row' | 'col'
-      }
+  | 'row'
+  | 'col'
+  | {
+    sm?: 'row' | 'col'
+    md?: 'row' | 'col'
+    lg?: 'row' | 'col'
+    xl?: 'row' | 'col'
+    '2xl'?: 'row' | 'col'
+  }
   wrap?:
-    | boolean
-    | {
-        sm?: boolean
-        md?: boolean
-        lg?: boolean
-        xl?: boolean
-        '2xl'?: boolean
-      }
+  | boolean
+  | {
+    sm?: boolean
+    md?: boolean
+    lg?: boolean
+    xl?: boolean
+    '2xl'?: boolean
+  }
   gap?:
-    | number
-    | { sm?: number; md?: number; lg?: number; xl?: number; '2xl'?: number }
+  | number
+  | { sm?: number; md?: number; lg?: number; xl?: number; '2xl'?: number }
   cols?:
-    | number
-    | { sm?: number; md?: number; lg?: number; xl?: number; '2xl'?: number }
+  | number
+  | { sm?: number; md?: number; lg?: number; xl?: number; '2xl'?: number }
   rows?:
-    | number
-    | { sm?: number; md?: number; lg?: number; xl?: number; '2xl'?: number }
+  | number
+  | { sm?: number; md?: number; lg?: number; xl?: number; '2xl'?: number }
 }
 
 // Main Component

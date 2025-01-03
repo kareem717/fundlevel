@@ -3,7 +3,7 @@
 import { FC, useState } from 'react'
 import { buttonVariants } from '@repo/ui/components/button'
 import Link from 'next/link'
-import { cn } from '@/lib/utils'
+import { cn } from '@repo/ui/lib/utils'
 import Image from 'next/image'
 import { Container } from '@/components/layout'
 import { Section } from '@/components/layout'

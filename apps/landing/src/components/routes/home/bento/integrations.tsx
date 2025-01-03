@@ -7,7 +7,7 @@ import {
   FC,
 } from "react";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@repo/ui/lib/utils";
 import { AnimatedBeam } from "@/components/animated-beam";
 import { Icons } from "@/components/icons";
 

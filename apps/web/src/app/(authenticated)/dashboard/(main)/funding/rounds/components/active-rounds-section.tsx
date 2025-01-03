@@ -4,7 +4,7 @@ import { EmptySectionCard } from "@/components/empty-section-card";
 import { Label } from "@repo/ui/components/label";
 import { Skeleton } from "@repo/ui/components/skeleton";
 import { Round } from "@repo/sdk";
-import { cn } from "@/lib/utils";
+import { cn } from "@repo/ui/lib/utils";
 import { ComponentPropsWithoutRef, FC, useEffect, useState } from "react"
 
 export interface ActiveRoundsSectionProps extends ComponentPropsWithoutRef<"section"> {

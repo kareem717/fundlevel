@@ -40,7 +40,7 @@ import { useAction } from "next-safe-action/hooks"
 import { getAccountInvestmentsByPage } from "@/actions/investments"
 import { Skeleton } from "@repo/ui/components/skeleton"
 import { formatCurrency } from "@/lib/utils"
-import { cn } from "@/lib/utils"
+import { cn } from "@repo/ui/lib/utils"
 
 const ActionsCell: FC<{ row: Row<RoundInvestment> }> = ({ row }) => {
   const investment = row.original

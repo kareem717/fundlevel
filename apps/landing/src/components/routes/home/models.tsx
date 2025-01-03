@@ -2,7 +2,7 @@
 
 import { Box, Container } from '@/components/layout'
 import { Section } from '@/components/layout'
-import { cn } from '@/lib/utils'
+import { cn } from '@repo/ui/lib/utils'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import React, { ComponentPropsWithoutRef, FC, useState } from 'react'

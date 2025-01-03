@@ -1,7 +1,7 @@
 import { ComponentPropsWithoutRef, FC } from "react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@repo/ui/components/card"
 import { Button } from "@repo/ui/components/button"
-import { cn } from "@/lib/utils"
+import { cn } from "@repo/ui/lib/utils"
 import { Icons } from "./icons";
 import Image from "next/image";
 

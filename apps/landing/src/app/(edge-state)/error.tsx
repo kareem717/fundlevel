@@ -3,7 +3,7 @@
 import { SmallLogoDiv } from "@/components/layout/logo-div";
 import { Button, buttonVariants } from "@repo/ui/components/button";
 import { meta, redirects } from "@/lib/config";
-import { cn } from "@/lib/utils";
+import { cn } from "@repo/ui/lib/utils";
 import Link from "next/link";
 import { useEffect } from "react";
 

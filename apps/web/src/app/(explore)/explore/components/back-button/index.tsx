@@ -4,7 +4,7 @@ import React from "react";
 import { Button } from "@repo/ui/components/button";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { cn } from "@/lib/utils";
+import { cn } from "@repo/ui/lib/utils";
 
 type BackButtonProps = {
   className?: string;

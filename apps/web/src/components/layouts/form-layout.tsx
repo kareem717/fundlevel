@@ -1,7 +1,7 @@
 import { ComponentPropsWithoutRef, FC } from "react"
 import { Suspense } from "../suspense";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../ui/card";
-import { cn } from "@/lib/utils";
+import { cn } from "@repo/ui/lib/utils";
 
 export interface FormLayoutProps extends ComponentPropsWithoutRef<"div"> {
   cardProps?: ComponentPropsWithoutRef<typeof Card>

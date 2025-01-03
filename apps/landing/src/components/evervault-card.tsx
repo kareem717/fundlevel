@@ -3,9 +3,9 @@
 import { MotionValue, useMotionValue } from "framer-motion";
 import { useState, useEffect, FC, ComponentPropsWithoutRef } from "react";
 import { useMotionTemplate, motion } from "framer-motion";
-import { cn } from "@/lib/utils";
+import { cn } from "@repo/ui/lib/utils";
 
-export interface EvervaultCardProps extends ComponentPropsWithoutRef<"div"> { 
+export interface EvervaultCardProps extends ComponentPropsWithoutRef<"div"> {
   text?: string;
 }
 

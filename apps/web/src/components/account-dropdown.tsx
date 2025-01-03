@@ -12,7 +12,7 @@ import { Account } from "@repo/sdk";
 import { buttonVariants } from "./ui/button";
 import { Avatar, AvatarFallback } from "@repo/ui/components/avatar";
 import { Icons } from "./icons";
-import { cn } from "@/lib/utils";
+import { cn } from "@repo/ui/lib/utils";
 import Link from "next/link";
 import redirects from "@/lib/config/redirects";
 

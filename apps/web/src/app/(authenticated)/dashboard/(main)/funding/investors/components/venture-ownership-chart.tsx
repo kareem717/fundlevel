@@ -10,7 +10,7 @@ import {
   ChartLegend,
   ChartLegendContent
 } from "@repo/ui/components/chart"
-import { cn } from "@/lib/utils"
+import { cn } from "@repo/ui/lib/utils"
 export const description = "A stacked area chart"
 
 const chartData = [

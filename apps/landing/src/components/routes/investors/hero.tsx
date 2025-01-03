@@ -1,7 +1,7 @@
 import { FC } from 'react'
 import { buttonVariants } from '@repo/ui/components/button'
 import Link from 'next/link'
-import { cn } from '@/lib/utils'
+import { cn } from '@repo/ui/lib/utils'
 import { Container, Section } from '@/components/layout'
 import Balancer from 'react-wrap-balancer'
 

@@ -1,6 +1,6 @@
 import { ComponentPropsWithoutRef, FC, ReactNode } from "react";
 import { ArrowRightIcon } from "@radix-ui/react-icons";
-import { cn } from "@/lib/utils";
+import { cn } from "@repo/ui/lib/utils";
 import { Button } from "@repo/ui/components/button";
 
 export const BentoGrid: FC<ComponentPropsWithoutRef<"div">> = ({

@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@repo/ui/lib/utils";
 import React, { useEffect, useState } from "react";
 
 function Blocks({
@@ -34,10 +34,10 @@ function Blocks({
                 key={rowIndex}
                 className={cn(
                   `h-[6vh] w-full border-[1px] border-[#5dcece09] ${
-                    // @ts-ignore
-                    activeDivs[columnIndex]?.has(rowIndex)
-                      ? `${activeDivsClass}`
-                      : ""
+                  // @ts-ignore
+                  activeDivs[columnIndex]?.has(rowIndex)
+                    ? `${activeDivsClass}`
+                    : ""
                   }`,
                   divClass
                 )}

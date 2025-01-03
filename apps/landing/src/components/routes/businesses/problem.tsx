@@ -6,7 +6,7 @@ import { Card } from '@repo/ui/components/card'
 import { Icons } from '@/components/icons'
 import { Container } from '@/components/layout'
 import { Section } from '@/components/layout'
-import { cn } from '@/lib/utils'
+import { cn } from '@repo/ui/lib/utils'
 import Balancer from 'react-wrap-balancer'
 
 interface ProblemProps {

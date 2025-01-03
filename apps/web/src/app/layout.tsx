@@ -1,10 +1,10 @@
-import "./globals.css";
+import "@repo/ui/globals.css";
 
 import React from "react";
 import { env } from "@/env";
 import type { Metadata } from "next";
-import { GeistSans } from "geist/font/sans";
 import { Providers } from "@/components/providers";
+import { Geist, Geist_Mono } from "next/font/google"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -37,6 +37,16 @@ export const metadata: Metadata = {
   },
 };
 
+const fontSans = Geist({
+  subsets: ["latin"],
+  variable: "--font-sans",
+})
+
+const fontMono = Geist_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
+})
+
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -45,10 +55,11 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
-      className={GeistSans.className}
       suppressHydrationWarning
     >
-      <body >
+      <body 
+      className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased`}
+      >
         <Providers>
           {children}
         </Providers>

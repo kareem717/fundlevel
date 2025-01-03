@@ -2,7 +2,7 @@
 
 import { ComponentPropsWithoutRef, FC, useEffect, useState } from "react";
 import { Account } from "@repo/sdk";
-import { cn } from "@/lib/utils";
+import { cn } from "@repo/ui/lib/utils";
 import { AccountDropdown } from "@/components/account-dropdown";
 import { Button, buttonVariants } from "@repo/ui/components/button";
 import Link from "next/link";

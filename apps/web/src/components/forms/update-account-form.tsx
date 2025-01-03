@@ -16,7 +16,7 @@ import { updateAccount } from "@/actions/auth";
 import { ComponentPropsWithoutRef, FC } from "react";
 import { Icons } from "@/components/icons";
 import { useAction } from "next-safe-action/hooks";
-import { cn } from "@/lib/utils";
+import { cn } from "@repo/ui/lib/utils";
 import { InferType } from "yup";
 import { updateAccountSchema } from "@/actions/validations/account";
 import { yupResolver } from "@hookform/resolvers/yup";

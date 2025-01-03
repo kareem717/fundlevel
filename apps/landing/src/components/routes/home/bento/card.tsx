@@ -2,7 +2,7 @@
 
 import { motion, animate } from "framer-motion";
 import { ComponentPropsWithoutRef, FC, useEffect, useMemo } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@repo/ui/lib/utils";
 import { GoCopilot } from "react-icons/go";
 import { Icons } from "@/components/icons";
 

@@ -8,7 +8,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@repo/ui/components/chart"
-import { cn } from "@/lib/utils"
+import { cn } from "@repo/ui/lib/utils"
 
 const chartData = [
   { status: "pending", investments: 0, fill: "var(--color-active)" },

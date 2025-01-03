@@ -4,7 +4,7 @@ import { ComponentPropsWithoutRef, FC } from "react"
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Icons } from "./icons";
-import { cn } from "@/lib/utils";
+import { cn } from "@repo/ui/lib/utils";
 
 export interface QuickSearchProps extends ComponentPropsWithoutRef<"div"> {
   inputProps?: ComponentPropsWithoutRef<typeof Input>;

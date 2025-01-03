@@ -6,7 +6,7 @@ import { NavigationItem, NavMenu } from "./nav";
 import { buttonVariants } from "@repo/ui/components/button";
 import { Icons } from "@/components/icons";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
+import { cn } from "@repo/ui/lib/utils";
 import { ModeToggle } from "@/components/layout/mode-toggle";
 import { env } from "@/env";
 

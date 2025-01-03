@@ -3,7 +3,7 @@
 import { Button, buttonVariants } from "@repo/ui/components/button";
 import { Icons } from "@/components/icons";
 import { Progress } from "@repo/ui/components/progress";
-import { cn } from "@/lib/utils";
+import { cn } from "@repo/ui/lib/utils";
 import {
   ComponentPropsWithoutRef,
   useState,

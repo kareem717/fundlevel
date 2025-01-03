@@ -15,7 +15,7 @@ import { toast } from "sonner"
 import { ComponentPropsWithoutRef, FC } from "react";
 import { Icons } from "@/components/icons";
 import { useRouter } from "next/navigation";
-import { cn } from "@/lib/utils";
+import { cn } from "@repo/ui/lib/utils";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { InferType } from "yup";
 import { createAccount } from "@/actions/auth";

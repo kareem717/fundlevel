@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@repo/ui/lib/utils";
 import { Marquee } from "@/components/marquee";
 import Image from "next/image";
 import { ComponentPropsWithoutRef, FC } from "react";

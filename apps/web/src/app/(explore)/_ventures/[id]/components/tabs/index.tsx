@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@repo/ui/components/button";
-import { cn } from "@/lib/utils";
+import { cn } from "@repo/ui/lib/utils";
 import { useQueryState } from "nuqs";
 
 const tabTriggerStyles =

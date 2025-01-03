@@ -1,7 +1,7 @@
 'use client'
 
 import { FC, useState } from 'react'
-import { cn } from '@/lib/utils'
+import { cn } from '@repo/ui/lib/utils'
 import { Balancer } from 'react-wrap-balancer'
 import { Section } from '@/components/layout'
 import { Container } from '@/components/layout'
@@ -102,7 +102,7 @@ const standoutConfig = {
 }
 
 const StandoutSection: FC<StandoutProps> = ({ className }) => {
-  
+
 
   return (
     <Section className={cn('', className)}>

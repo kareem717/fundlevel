@@ -2,7 +2,7 @@
 
 import { ComponentPropsWithoutRef, FC, Suspense as ReactSuspense } from "react"
 import { Skeleton } from "./ui/skeleton";
-import { cn } from "@/lib/utils";
+import { cn } from "@repo/ui/lib/utils";
 
 export interface SuspenseProps<T extends React.ElementType = typeof Skeleton> extends ComponentPropsWithoutRef<typeof ReactSuspense> {
   orientation?: "landscape" | "portrait"

@@ -23,7 +23,7 @@ import {
   SelectValue,
 } from "@repo/ui/components/select"
 import { Column } from "@tanstack/react-table"
-import { cn } from "@/lib/utils"
+import { cn } from "@repo/ui/lib/utils"
 import { Button } from "@repo/ui/components/button"
 import {
   DropdownMenu,

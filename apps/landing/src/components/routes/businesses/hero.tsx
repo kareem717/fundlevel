@@ -4,7 +4,7 @@ import { Button } from '@repo/ui/components/button'
 import { motion } from 'framer-motion'
 import { FC } from 'react'
 import { Container, Section } from '@/components/layout'
-import { cn } from '@/lib/utils'
+import { cn } from '@repo/ui/lib/utils'
 import Balancer from 'react-wrap-balancer'
 
 interface HeroProps {

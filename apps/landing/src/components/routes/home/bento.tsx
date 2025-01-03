@@ -8,7 +8,7 @@ import {
   SpotLightItem,
 } from '@/components/spotlight'
 import { useMediaQuery } from '@/lib/hooks/use-media-query'
-import { cn } from '@/lib/utils'
+import { cn } from '@repo/ui/lib/utils'
 import { FC, ComponentPropsWithoutRef, useMemo } from 'react'
 import { CardDemo, Sparkles } from './bento/token-card'
 import { SparklesCore } from '@/components/sparkles'

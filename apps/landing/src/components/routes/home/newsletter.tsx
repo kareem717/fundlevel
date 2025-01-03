@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils'
+import { cn } from '@repo/ui/lib/utils'
 import { Input } from '@repo/ui/components/input'
 import { Button } from '@repo/ui/components/button'
 import { Mail } from 'lucide-react'

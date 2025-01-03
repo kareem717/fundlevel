@@ -14,7 +14,7 @@ import { Skeleton } from '@repo/ui/components/skeleton';
 import { Button } from '../ui/button';
 import { useRouter } from 'next/navigation';
 import { Icons } from '../icons';
-import { cn } from '@/lib/utils';
+import { cn } from '@repo/ui/lib/utils';
 
 interface CheckoutFormState {
   isExecuting: boolean;

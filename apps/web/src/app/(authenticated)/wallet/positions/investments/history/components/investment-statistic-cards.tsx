@@ -3,9 +3,9 @@
 import { format } from "date-fns"
 import { StatisticCard } from "@/components/statistic-card"
 import { ComponentPropsWithoutRef, FC, useEffect, useState } from "react"
-import { cn } from "@/lib/utils"
+import { cn } from "@repo/ui/lib/utils"
 
-export interface InvestmentStatisticLineProps extends ComponentPropsWithoutRef<"div"> {}
+export interface InvestmentStatisticLineProps extends ComponentPropsWithoutRef<"div"> { }
 
 export const LastInvestmentCard: FC<InvestmentStatisticLineProps> = ({ className, ...props }) => {
   const [isLoading, setIsLoading] = useState(true);

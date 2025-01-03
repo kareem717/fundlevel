@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@repo/ui/lib/utils";
 import { BentoCard, BentoGrid } from "@/components/bento-grid";
 import { Calendar } from "@repo/ui/components/calendar";
 import { AnimatedBeamDemo } from "./bento/integrations";

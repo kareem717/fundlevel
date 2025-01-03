@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@repo/ui/components/card"
-import { cn } from "@/lib/utils"
+import { cn } from "@repo/ui/lib/utils"
 
 export interface ChartWrapperProps extends ComponentPropsWithoutRef<typeof Card> {
   children: React.ReactNode

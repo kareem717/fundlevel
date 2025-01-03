@@ -1,6 +1,6 @@
 import { redirects } from "@/lib/config";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
+import { cn } from "@repo/ui/lib/utils";
 import { buttonVariants } from "@repo/ui/components/button";
 import { meta } from "@/lib/config";
 

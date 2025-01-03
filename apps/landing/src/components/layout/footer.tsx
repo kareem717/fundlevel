@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { cn } from '@/lib/utils'
+import { cn } from '@repo/ui/lib/utils'
 import { ComponentPropsWithoutRef, createElement, FC } from 'react'
 import { Icons } from '@/components/icons'
 import { contact } from '@/lib/config'

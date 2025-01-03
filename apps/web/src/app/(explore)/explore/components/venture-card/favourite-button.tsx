@@ -7,7 +7,7 @@
 // import { likeVenture } from "@/actions/ventures";
 // import { useOptimisticAction } from "next-safe-action/hooks";
 // import { Venture } from "@repo/sdk";
-// import { cn } from "@/lib/utils";
+// import { cn } from "@repo/ui/lib/utils";
 // import { Icons } from "@/components/icons";
 
 // type FavouriteButtonProps = {

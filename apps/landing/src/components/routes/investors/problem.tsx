@@ -1,5 +1,5 @@
 import { FC } from 'react'
-import { cn } from '@/lib/utils'
+import { cn } from '@repo/ui/lib/utils'
 import { Container, Section } from '@/components/layout'
 import Balancer from 'react-wrap-balancer'
 
