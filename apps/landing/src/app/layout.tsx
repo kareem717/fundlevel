@@ -1,11 +1,11 @@
 import "@repo/ui/styles/globals.css";
 
 import { Providers } from "@/components/providers";
-import { Geist, Geist_Mono } from "next/font/google"
 
 import { navigationConfig } from "@/lib/config/navigation";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { Geist, Geist_Mono } from "next/font/google"
 
 const fontSans = Geist({
   subsets: ["latin"],
@@ -29,7 +29,6 @@ export default async function RootLayout({
     >
       <body
         className={`${fontSans.variable} ${fontMono.variable} font-sans scroll-smooth antialiased focus:scroll-auto`}
-
       >
         <Providers
           themeProps={{

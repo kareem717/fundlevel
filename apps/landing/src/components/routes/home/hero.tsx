@@ -31,7 +31,7 @@ export const Hero: FC<ComponentPropsWithoutRef<'section'>> = ({
       {...props}
     >
       <div className="relative w-full">
-        <div className="container z-10 flex flex-col items-center justify-center w-full gap-4 px-4 pb-16 text-center sm:px-10 md:pb-24 lg:pb-32 pt-36">
+        <div className="container z-10 flex flex-col items-center justify-center w-full gap-4 px-4 pb-16 text-center sm:px-10 md:pb-24 lg:pb-32 pt-36 mx-auto">
           <h1 className="text-3xl font-medium sm:text-4xl lg:text-7xl">
             Simple Alternative Investing
             <br />
