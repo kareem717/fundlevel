@@ -4,7 +4,7 @@ import { motion, animate } from "framer-motion";
 import { ComponentPropsWithoutRef, FC, useEffect, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { GoCopilot } from "react-icons/go";
-import { Icons } from "@/components/ui/icons";
+import { Icons } from "@/components/icons";
 
 export const CardDemo: FC<ComponentPropsWithoutRef<"div">> = ({ ...props }) => {
   return (
@@ -223,7 +223,7 @@ export const CardSkeletonContainer: FC<CardSkeletonContainerProps> = ({
         "h-[15rem] md:h-[20rem] rounded-xl z-40",
         className,
         showGradient &&
-          "bg-neutral-300 dark:bg-[rgba(40,40,40,0.70)] [mask-image:radial-gradient(50%_50%_at_50%_50%,white_0%,transparent_100%)]"
+        "bg-neutral-300 dark:bg-[rgba(40,40,40,0.70)] [mask-image:radial-gradient(50%_50%_at_50%_50%,white_0%,transparent_100%)]"
       )}
     >
       {children}

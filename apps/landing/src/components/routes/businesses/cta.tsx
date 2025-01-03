@@ -1,7 +1,7 @@
 'use client'
 
 import { FC, useState } from 'react'
-import { buttonVariants } from '@/components/ui/button'
+import { buttonVariants } from '@repo/ui/components/button'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import Image from 'next/image'

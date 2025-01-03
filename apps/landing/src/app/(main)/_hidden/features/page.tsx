@@ -3,7 +3,7 @@ import { Container, Section } from '@/components/layout'
 import { cn } from '@/lib/utils'
 import Balancer from 'react-wrap-balancer'
 import Link from 'next/link'
-import { buttonVariants } from '@/components/ui/button'
+import { buttonVariants } from '@repo/ui/components/button'
 
 export const metadata = meta.features
 

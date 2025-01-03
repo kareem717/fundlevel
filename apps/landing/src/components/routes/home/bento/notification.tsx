@@ -1,4 +1,4 @@
-import { AnimatedList } from '@/components/ui/animated-list'
+import { AnimatedList } from '@/components/animated-list'
 import { cn } from '@/lib/utils'
 import { ComponentPropsWithoutRef, FC } from 'react'
 interface Item {

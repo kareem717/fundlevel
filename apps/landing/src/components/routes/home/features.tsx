@@ -1,11 +1,11 @@
 import { cn } from "@/lib/utils";
-import { BentoCard, BentoGrid } from "@/components/ui/bento-grid";
-import { Calendar } from "@/components/ui/calendar";
+import { BentoCard, BentoGrid } from "@/components/bento-grid";
+import { Calendar } from "@repo/ui/components/calendar";
 import { AnimatedBeamDemo } from "./bento/integrations";
-import { Marquee } from "@/components/ui/marquee";
+import { Marquee } from "@/components/marquee";
 import { AnimatedListDemo } from "./bento/notification";
-import { EvervaultCard } from "@/components/ui/evervault-card";
-import { Icons } from "@/components/ui/icons";
+import { EvervaultCard } from "@/components/evervault-card";
+import { Icons } from "@/components/icons";
 import { ComponentPropsWithoutRef, FC } from "react";
 
 const files = [

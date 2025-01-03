@@ -1,6 +1,6 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
+import { Button } from '@repo/ui/components/button'
 import { motion } from 'framer-motion'
 import { FC } from 'react'
 import { Container, Section } from '@/components/layout'

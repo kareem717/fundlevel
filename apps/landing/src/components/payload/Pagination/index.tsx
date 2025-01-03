@@ -12,7 +12,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from '@/components/ui/pagination'
+} from '@repo/ui/components/pagination'
 
 export const Pagination: React.FC<{
   className?: string

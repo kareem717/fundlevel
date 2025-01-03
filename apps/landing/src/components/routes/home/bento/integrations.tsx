@@ -8,8 +8,8 @@ import {
 } from "react";
 
 import { cn } from "@/lib/utils";
-import { AnimatedBeam } from "@/components/ui/animated-beam";
-import { Icons } from "@/components/ui/icons";
+import { AnimatedBeam } from "@/components/animated-beam";
+import { Icons } from "@/components/icons";
 
 const Circle: FC<ComponentPropsWithRef<"div">> = ({
   className,

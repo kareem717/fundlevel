@@ -1,6 +1,6 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
+import { Button } from '@repo/ui/components/button'
 import { cn } from '@/lib/utils'
 import { ArrowUpRight } from 'lucide-react'
 import Image from 'next/image'

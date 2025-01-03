@@ -3,8 +3,8 @@
 import { ComponentPropsWithoutRef, useEffect, useState, FC } from "react";
 import { LogoDiv } from "@/components/layout/logo-div";
 import { NavigationItem, NavMenu } from "./nav";
-import { buttonVariants } from "@/components/ui/button";
-import { Icons } from "@/components/ui/icons";
+import { buttonVariants } from "@repo/ui/components/button";
+import { Icons } from "@/components/icons";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { ModeToggle } from "@/components/layout/mode-toggle";

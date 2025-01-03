@@ -8,8 +8,8 @@ import {
   SelectValue,
   SelectContent,
   SelectItem,
-} from '@/components/ui/select'
-import { Button } from '@/components/ui/button'
+} from '@repo/ui/components/select'
+import { Button } from '@repo/ui/components/button'
 import clsx from 'clsx'
 import { useQueryStates } from 'nuqs'
 import { blogFiltersParsers } from './searchParams'

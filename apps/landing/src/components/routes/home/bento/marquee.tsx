@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { Marquee } from "@/components/ui/marquee";
+import { Marquee } from "@/components/marquee";
 import Image from "next/image";
 import { ComponentPropsWithoutRef, FC } from "react";
 

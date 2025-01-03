@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import { ComponentPropsWithoutRef, createElement, FC } from 'react'
-import { Icons } from '@/components/ui/icons'
+import { Icons } from '@/components/icons'
 import { contact } from '@/lib/config'
 import { NewsletterSubscribeForm } from '../newsletter-subscribe-form'
 

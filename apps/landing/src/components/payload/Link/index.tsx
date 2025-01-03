@@ -2,7 +2,7 @@ import React from "react";
 import { cn } from "@/lib/utils";
 import { OptimizedLink } from "./optimized-link";
 import type { Page, Post } from "@/payload-types";
-import { Button, type ButtonProps } from "@/components/ui/button";
+import { Button, type ButtonProps } from "@repo/ui/components/button";
 
 type CMSLinkType = {
   appearance?: "inline" | ButtonProps["variant"];
@@ -34,11 +34,10 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
 
   const href =
     type === "reference" &&
-    typeof reference?.value === "object" &&
-    reference.value.slug
-      ? `${reference?.relationTo !== "pages" ? `/${reference?.relationTo}` : ""}/${
-          reference.value.slug
-        }`
+      typeof reference?.value === "object" &&
+      reference.value.slug
+      ? `${reference?.relationTo !== "pages" ? `/${reference?.relationTo}` : ""}/${reference.value.slug
+      }`
       : url;
 
   if (!href) return null;

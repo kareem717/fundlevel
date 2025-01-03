@@ -1,19 +1,19 @@
 'use client'
 
 import { Box, Container, Section } from '@/components/layout'
-import { LampContainer } from '@/components/ui/lamp'
+import { LampContainer } from '@/components/lamp'
 import {
   Spotlight,
   SpotlightCard,
   SpotLightItem,
-} from '@/components/ui/spotlight'
+} from '@/components/spotlight'
 import { useMediaQuery } from '@/lib/hooks/use-media-query'
 import { cn } from '@/lib/utils'
 import { FC, ComponentPropsWithoutRef, useMemo } from 'react'
 import { CardDemo, Sparkles } from './bento/token-card'
-import { SparklesCore } from '@/components/ui/sparkles'
-import { EvervaultCard } from '@/components/ui/evervault-card'
-import { Marquee } from '@/components/ui/marquee'
+import { SparklesCore } from '@/components/sparkles'
+import { EvervaultCard } from '@/components/evervault-card'
+import { Marquee } from '@/components/marquee'
 import { AnimatedListDemo } from './bento/notification'
 import { motion } from 'framer-motion'
 import Balancer from 'react-wrap-balancer'

@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid, Col } from "@/components/ui/grid";
+import { Grid, Col } from "@/components/grid";
 import { GridBlockProps } from "./types";
 import { RenderBlocks } from "@/components/payload/blocks";
 import RichText from "@/components/payload/RichText";

@@ -7,7 +7,7 @@ import {
   CardFooter,
   CardTitle,
   CardHeader,
-} from "@/components/ui/card";
+} from "@repo/ui/components/card";
 import {
   FaMoon,
   FaSwimmer,

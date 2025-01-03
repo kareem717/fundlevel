@@ -1,7 +1,7 @@
 import { meta } from '@/lib/config'
 import Image from 'next/image'
 import React from 'react'
-import { Timeline } from '@/components/ui/timeline'
+import { Timeline } from '@/components/timeline'
 import { Container, Section } from '@/components/layout'
 import Balancer from 'react-wrap-balancer'
 export const metadata = meta.changelog

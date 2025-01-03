@@ -10,12 +10,12 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/components/card'
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from '@/components/ui/chart'
+} from '@repo/ui/components/chart'
 import NumberFlow from '@number-flow/react'
 
 // Generate sample data with fewer points

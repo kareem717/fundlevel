@@ -1,5 +1,5 @@
 import { FC } from 'react'
-import { buttonVariants } from '@/components/ui/button'
+import { buttonVariants } from '@repo/ui/components/button'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import { Container, Section } from '@/components/layout'

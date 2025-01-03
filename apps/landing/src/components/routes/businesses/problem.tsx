@@ -2,8 +2,8 @@
 
 import { motion } from 'framer-motion'
 import { FC } from 'react'
-import { Card } from '@/components/ui/card'
-import { Icons } from '@/components/ui/icons'
+import { Card } from '@repo/ui/components/card'
+import { Icons } from '@/components/icons'
 import { Container } from '@/components/layout'
 import { Section } from '@/components/layout'
 import { cn } from '@/lib/utils'

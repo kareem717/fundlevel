@@ -12,7 +12,7 @@ import {
   CarouselContent,
   CarouselPrevious,
   CarouselNext,
-} from "@/components/ui/carousel";
+} from "@repo/ui/components/carousel";
 
 export const SliderHero: React.FC<Page["hero"]> = ({
   slides,
