@@ -33,6 +33,8 @@ type Options struct {
 	InvestmentFeeProductID     string `help:"Investment Fee Product ID" short:"I"`
 	StripeWebhookSecret        string `help:"Stripe Webhook Secret" short:"W"`
 	StripeConnectWebhookSecret string `help:"Stripe Connect Webhook Secret" short:"C"`
+
+	RunHealthCheck bool `help:"Run Health Check" short:"H" default:"true"`
 }
 
 func (o *Options) config() {
@@ -51,7 +53,6 @@ func (o *Options) config() {
 	o.StripeWebhookSecret = os.Getenv("STRIPE_WEBHOOK_SECRET")
 	o.StripeConnectWebhookSecret = os.Getenv("STRIPE_CONNECT_WEBHOOK_SECRET")
 	o.FeePercentage = os.Getenv("FEE_PERCENTAGE")
-
 }
 
 func main() {
@@ -70,12 +71,13 @@ func main() {
 				zapcore.NewJSONEncoder(zap.NewProductionConfig().EncoderConfig),
 				zapcore.AddSync(os.Stdout), zap.InfoLevel))
 
-		repositories, err := postgres.NewRepository(
-			options.DatabaseURL,
-			logger,
+		repositories := postgres.NewRepository(
 			ctx,
+			postgres.NewConfig(options.DatabaseURL),
+			logger,
 		)
-		if err != nil {
+
+		if options.RunHealthCheck && err != nil {
 			logger.Fatal("Failed to create repository layer", zap.Error(err))
 		}
 
@@ -83,6 +85,7 @@ func main() {
 		if err != nil {
 			panic(fmt.Sprintf("Failed to parse FEE_PERCENTAGE: %v", err))
 		}
+
 		services := service.NewService(
 			repositories,
 			options.StripeAPIKey,
@@ -99,19 +102,35 @@ func main() {
 		}
 
 		server := server.NewServer(
-			&server.ServerConfig{
-				Services:                   services,
-				APIName:                    options.APIName,
-				APIVersion:                 options.APIVersion,
-				Logger:                     logger,
-				SupabaseClient:             supabaseClient,
-				StripeWebhookSecret:        options.StripeWebhookSecret,
-				StripeConnectWebhookSecret: options.StripeConnectWebhookSecret,
-			},
+			services,
+			logger,
+			supabaseClient,
+			options.StripeWebhookSecret,
+			options.StripeConnectWebhookSecret,
+			server.WithAPIName(options.APIName),
+			server.WithAPIVersion(options.APIVersion),
 		)
 
 		hooks.OnStart(func() {
 			logger.Info("Starting server...", zap.Int("port", options.Port))
+
+			if options.RunHealthCheck {
+				logger.Info("Starting health check...", zap.Int("port", options.Port))
+				logger.Info("(1/2) Checking database status...")
+				err := repositories.HealthCheck(ctx)
+				if err != nil {
+					logger.Fatal("Health check failed", zap.Error(err))
+				}
+
+				logger.Info("(2/2) Checking service status...")
+				err = services.HealthService.HealthCheck(ctx)
+				if err != nil {
+					logger.Fatal("Health check failed", zap.Error(err))
+				}
+
+				logger.Info("Health check completed successfully!")
+			}
+			
 			server.Serve(fmt.Sprintf(":%d", options.Port))
 		})
 

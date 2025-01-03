@@ -109,11 +109,25 @@ type transaction struct {
 }
 
 // NewRepository creates a new Repository instance
-func NewRepository(config Config, ctx context.Context, logger *zap.Logger) (storage.Repository, error) {
-	db, err := setupDatabase(config, ctx, logger)
+func NewRepository(ctx context.Context, config Config,logger *zap.Logger) storage.Repository  {
+	poolConfig, err := pgxpool.ParseConfig(config.URL)
 	if err != nil {
-		return nil, err
+		logger.Fatal("Error creating pool config", zap.Error(err))
 	}
+
+	poolConfig.MaxConns = config.MaxConnections
+	poolConfig.MinConns = config.MinConnections
+	poolConfig.MaxConnIdleTime = config.MaxConnectionIdleTime
+	poolConfig.MaxConnLifetime = config.MaxConnectionLifetime
+
+	sqldb := stdlib.OpenDB(*poolConfig.ConnConfig)
+	db := bun.NewDB(sqldb, pgdialect.New())
+
+	db.AddQueryHook(bunzap.NewQueryHook(bunzap.QueryHookOptions{
+		Logger:       logger,
+		SlowDuration: 200 * time.Millisecond,
+	}))
+
 
 	return &Repository{
 		db:         db,
@@ -128,7 +142,7 @@ func NewRepository(config Config, ctx context.Context, logger *zap.Logger) (stor
 		position:   position.NewPositionRepository(db, ctx),
 		round:      round.NewRoundRepository(db, ctx),
 		user:       user.NewUserRepository(db, ctx),
-	}, nil
+	}
 }
 
 // Repository interface methods
@@ -142,7 +156,6 @@ func (r *Repository) Position() storage.PositionRepository     { return r.positi
 func (r *Repository) Round() storage.RoundRepository           { return r.round }
 func (r *Repository) User() storage.UserRepository             { return r.user }
 func (r *Repository) Shutdown(ctx context.Context) error       { r.db.Close(); return nil }
-func (r *Repository) HealthCheck(ctx context.Context) error    { return r.db.PingContext(ctx) }
 
 // Transaction interface methods
 func (t *transaction) Account() storage.AccountRepository       { return t.account }
@@ -212,61 +225,23 @@ func (r *Repository) RunInTx(ctx context.Context, fn func(ctx context.Context, t
 	return tx.Commit()
 }
 
-// Database setup helpers
-func setupDatabase(config Config, ctx context.Context, logger *zap.Logger) (*bun.DB, error) {
-	poolConfig, err := configDBPool(config)
-	if err != nil {
-		logger.Fatal("Error creating pool config", zap.Error(err))
-		return nil, err
-	}
-
-	sqldb := stdlib.OpenDB(*poolConfig.ConnConfig)
-	db := bun.NewDB(sqldb, pgdialect.New())
-
-	db.AddQueryHook(bunzap.NewQueryHook(bunzap.QueryHookOptions{
-		Logger:       logger,
-		SlowDuration: 200 * time.Millisecond,
-	}))
-
-	if err := checkConnection(ctx, db, logger); err != nil {
-		return nil, err
-	}
-
-	return db, nil
-}
-
-func configDBPool(config Config) (*pgxpool.Config, error) {
-	poolConfig, err := pgxpool.ParseConfig(config.URL)
-	if err != nil {
-		return nil, err
-	}
-
-	poolConfig.MaxConns = config.MaxConnections
-	poolConfig.MinConns = config.MinConnections
-	poolConfig.MaxConnIdleTime = config.MaxConnectionIdleTime
-	poolConfig.MaxConnLifetime = config.MaxConnectionLifetime
-
-	return poolConfig, nil
-}
-
-func checkConnection(ctx context.Context, db *bun.DB, logger *zap.Logger) error {
-	//TODO: make ctx 5 seconds again
+func (r *Repository) HealthCheck(ctx context.Context) error {
 	pingCtx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	logger.Info("Attempting to ping the database...")
-	if err := db.PingContext(pingCtx); err != nil {
+	r.logger.Info("Attempting to ping the database...")
+	if err := r.db.PingContext(pingCtx); err != nil {
 		switch {
 		case errors.Is(err, context.Canceled):
-			logger.Fatal("ping was canceled by the client", zap.Error(err))
+			r.logger.Fatal("ping was canceled by the client", zap.Error(err))
 		case errors.Is(err, context.DeadlineExceeded):
-			logger.Fatal("ping timed out", zap.Error(err))
+			r.logger.Fatal("ping timed out", zap.Error(err))
 		default:
-			logger.Fatal("ping failed", zap.Error(err))
+			r.logger.Fatal("ping failed", zap.Error(err))
 		}
 		return err
 	}
 
-	logger.Info("Successfully connected to the database")
+	r.logger.Info("Successfully connected to the database")
 	return nil
 }
