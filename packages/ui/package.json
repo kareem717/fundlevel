@@ -66,6 +66,9 @@
     "./tailwind.config": "./tailwind.config.ts",
     "./lib/*": "./src/lib/*.ts",
     "./components/*": "./src/components/*.tsx",
-    "./hooks/*": "./src/hooks/*.ts"
+    "./hooks/*": {
+      "types": "./src/hooks/*.tsx",
+      "default": "./src/hooks/*.tsx"
+    }
   }
 }
