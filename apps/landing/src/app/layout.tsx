@@ -18,6 +18,7 @@ const fontMono = Geist_Mono({
   variable: "--font-mono",
 })
 
+//TODO: refactor
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -29,7 +30,7 @@ export default async function RootLayout({
       suppressHydrationWarning
     >
       <body
-        className={`${fontSans.variable} ${fontMono.variable} font-sans scroll-smooth antialiased focus:scroll-auto`}
+        className={`${fontSans.variable} ${fontMono.variable} font-sans scroll-smooth antialiased focus:scroll-auto max-w-screen-2xl mx-auto`}
       >
         <Providers
           themeProps={{
@@ -38,11 +39,13 @@ export default async function RootLayout({
             disableTransitionOnChange: true,
           }}
         >
-          <Header config={navigationConfig} currentPath={"/"} />
-          {children}
+          <Header config={navigationConfig} currentPath={"/"} className="max-w-screen-2xl mx-auto" />
+          <div className="px-4">
+            {children}
+          </div>
           <Footer className="mt-6" footerLinks={copy.landing.footer} />
         </Providers>
       </body>
-    </html>
+    </html >
   );
 }

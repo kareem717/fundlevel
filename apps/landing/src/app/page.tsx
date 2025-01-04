@@ -6,12 +6,12 @@ import { BentoFeatures } from "@/app/components/bento";
 
 export default async function Home() {
   return (
-    <main className="relative flex flex-col items-center w-full">
-      <Hero id="hero" />
+    <div className="flex flex-col items-center w-full space-y-20 md:space-y-40">
+      <Hero />
       <BentoFeatures />
       <Models />
       <CTA />
       <Newsletter />
-    </main>
+    </div>
   );
 }

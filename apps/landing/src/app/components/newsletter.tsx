@@ -3,7 +3,7 @@ import { Input } from '@repo/ui/components/input'
 import { Button } from '@repo/ui/components/button'
 import { Mail } from 'lucide-react'
 import { ComponentPropsWithoutRef, FC } from 'react'
-import { Section, Container, Box } from '@/app/components/layout'
+import { Section, Box } from '@/app/components/layout'
 import { NewsletterSubscribeForm } from '@/components/newsletter-subscribe-form'
 
 export const Newsletter: FC<ComponentPropsWithoutRef<'section'>> = ({
@@ -12,32 +12,29 @@ export const Newsletter: FC<ComponentPropsWithoutRef<'section'>> = ({
 }) => {
   return (
     <Section className={cn(className)} {...props}>
-      <Container>
-        <Box
-          cols={{ lg: 2 }}
-          className="relative items-start gap-6 px-6 py-12 rounded-lg sm:px-8 bg-secondary"
-        >
-          <div className="flex flex-col items-start gap-4 md:flex-row">
-            <div className="flex items-center justify-center flex-shrink-0 w-10 h-10 rounded-lg bg-foreground">
-              <Mail className="w-6 h-6 text-background" />
-            </div>
-            <div className="flex flex-col items-start gap-2">
-              <h2 className="font-sans text-3xl font-medium text-left">
-                Keep up with the latest
-              </h2>
-              <p className="text-muted-foreground">
-                Subscribe to our newsletter to get the latest Fundlevel news.
-              </p>
-            </div>
+      <div
+        className="grid grid-cols-1 md:grid-cols-2 gap-6 px-6 py-12 rounded-lg sm:px-8 bg-secondary"
+      >
+        <div className="flex flex-col items-start gap-4 md:flex-row">
+          <div className="flex items-center justify-center flex-shrink-0 w-10 h-10 rounded-lg bg-foreground">
+            <Mail className="w-6 h-6 text-background" />
           </div>
-          <div className="space-y-3">
-            <h3 className="hidden text-sm font-medium text-gray-600 dark:text-gray-300 lg:block">
-              Subscribe to our newsletter
-            </h3>
-            <NewsletterSubscribeForm className="flex flex-row gap-2 w-full" />
+          <div className="flex flex-col items-start gap-2">
+            <h2 className="font-sans text-3xl font-medium text-left">
+              Keep up with the latest
+            </h2>
+            <p className="text-muted-foreground">
+              Subscribe to our newsletter to get the latest Fundlevel news.
+            </p>
           </div>
-        </Box>
-      </Container>
+        </div>
+        <div className="space-y-3 w-full">
+          <h3 className="hidden text-sm font-medium text-gray-600 dark:text-gray-300 lg:block">
+            Subscribe to our newsletter
+          </h3>
+          <NewsletterSubscribeForm className="flex flex-row gap-2" inputClassName="bg-background" />
+        </div>
+      </div>
     </Section>
   )
 }

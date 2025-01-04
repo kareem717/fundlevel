@@ -1,21 +1,11 @@
 import { buttonVariants } from '@repo/ui/components/button'
-import { Cover } from '@/components/cover'
 import { FlipWords } from '@/components/flip-words'
 import { env } from '@/env'
 import { cn } from '@repo/ui/lib/utils'
-import { ChartLine, Wallet } from 'lucide-react'
+import { Wallet } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { ComponentPropsWithoutRef, FC } from 'react'
-
-const bannerItems = [
-  'Secure',
-  'Smart',
-  'Transparent',
-  'Fast',
-  'Fair',
-  'Inclusive',
-]
 
 export const Hero: FC<ComponentPropsWithoutRef<'section'>> = ({
   className,
@@ -25,7 +15,7 @@ export const Hero: FC<ComponentPropsWithoutRef<'section'>> = ({
   return (
     <section
       className={cn(
-        'w-full flex flex-col items-center overflow-x-hidden',
+        'w-full flex flex-col items-center',
         className
       )}
       {...props}
@@ -69,7 +59,6 @@ export const Hero: FC<ComponentPropsWithoutRef<'section'>> = ({
             </Link>
           </div>
         </div>
-
         <div className="h-[35dvw] md:h-[27dvw] lg:h-[27dvw]   w-full relative mt-8 sm:mt-16 md:mt-24">
           <div className="container relative h-full mx-auto">
             <Image
@@ -82,7 +71,6 @@ export const Hero: FC<ComponentPropsWithoutRef<'section'>> = ({
             />
           </div>
         </div>
-
         <div className="absolute inset-0 pointer-events-none -z-10 touch-none">
           <div
             className={cn(
@@ -106,10 +94,6 @@ export const Hero: FC<ComponentPropsWithoutRef<'section'>> = ({
             )}
           />
         </div>
-      </div>
-
-      <div className="w-full py-4 overflow-hidden bg-accent">
-        <div className='w-full h-2 bg-foreground/50' />
       </div>
     </section>
   )

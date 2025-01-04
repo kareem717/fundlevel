@@ -19,7 +19,7 @@ export const Footer: FC<FooterProps> = ({
   ...props
 }) => {
   return (
-    <footer className={cn('w-full px-6 pb-6', className)} {...props}>
+    <footer className={cn('w-full pb-6', className)} {...props}>
       <div className="rounded-lg text-card-foreground p-6 shadow-2xl bg-secondary flex flex-col">
         <div className="flex flex-wrap justify-start gap-4">
           {footerLinks.map((section) => (

@@ -1,11 +1,5 @@
-'use client'
-
-import { Box, Container } from '@/app/components/layout'
-import { Section } from '@/app/components/layout'
 import { cn } from '@repo/ui/lib/utils'
-import { motion } from 'framer-motion'
-import Link from 'next/link'
-import React, { ComponentPropsWithoutRef, FC, useState } from 'react'
+import React, { ComponentPropsWithoutRef, FC } from 'react'
 import Balancer from 'react-wrap-balancer'
 
 const models = [
@@ -47,51 +41,37 @@ export const Models: FC<ComponentPropsWithoutRef<'section'>> = ({
   className,
   ...props
 }) => {
-  const [activeIndex, setActiveIndex] = useState(0)
   return (
-    <Section className={cn(className)} {...props}>
-      <Container>
-        <Box
-          direction="col"
-          className="items-center justify-center gap-4 text-center"
-        >
-          <p className="text-sm text-muted-foreground">INVESTMENT MODELS</p>
-          <h2 className="text-4xl tracking-tight md:text-5xl">Our Services</h2>
-        </Box>
-        <Box cols={{ sm: 1, md: 2, lg: 4 }} gap={4}>
-          {models.map((model, index) => (
-            <div
-              key={index}
-              className={cn(
-                'group relative rounded-lg',
-                'p-6 flex flex-col h-[280px] lg:h-[350px] text-foreground gap-8',
-                'bg-secondary'
-              )}
-            >
-              <div className="text-sm font-medium text-muted-foreground">
-                {String(index + 1).padStart(2, '0')}
-              </div>
-
-              <div className="flex flex-col flex-1 gap-4">
-                <h3 className="text-xl font-medium">
-                  <Balancer>{model.title}</Balancer>
-                </h3>
-                <p className="text-muted-foreground mb-auto">
-                  <Balancer>{model.description}</Balancer>
-                </p>
-              </div>
-
-              {/* <Link
-                href="/investors"
-                className="inline-flex items-center text-sm font-medium px-4 py-2 rounded-md bg-secondary-foreground/10 hover:bg-secondary-foreground/20 transition-colors w-fit"
-              >
-                Learn more
-                <span className="ml-2">→</span>
-              </Link> */}
+    <section className={cn('space-y-12', className)} {...props}>
+      <div className="space-y-4 text-center">
+        <p className="text-sm text-muted-foreground">INVESTMENT MODELS</p>
+        <h2 className="text-4xl tracking-tight md:text-5xl">Our Services</h2>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {models.map((model, index) => (
+          <div
+            key={index}
+            className={cn(
+              'group relative rounded-lg',
+              'p-6 flex flex-col h-[280px] lg:h-[350px] text-foreground gap-8',
+              'bg-secondary'
+            )}
+          >
+            <div className="text-sm font-medium text-muted-foreground">
+              {String(index + 1).padStart(2, '0')}
             </div>
-          ))}
-        </Box>
-      </Container>
-    </Section>
+
+            <div className="flex flex-col flex-1 gap-4">
+              <h3 className="text-xl font-medium">
+                <Balancer>{model.title}</Balancer>
+              </h3>
+              <p className="text-muted-foreground mb-auto">
+                <Balancer>{model.description}</Balancer>
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
   )
 }

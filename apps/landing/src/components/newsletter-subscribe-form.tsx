@@ -25,9 +25,10 @@ const formSchema = z.object({
 export interface NewsletterSubscribeFormProps extends ComponentPropsWithoutRef<"form"> {
   className?: string
   buttonClassName?: string
+  inputClassName?: string
 }
 
-export const NewsletterSubscribeForm: FC<NewsletterSubscribeFormProps> = ({ className, buttonClassName, ...props }) => {
+export const NewsletterSubscribeForm: FC<NewsletterSubscribeFormProps> = ({ className, buttonClassName, inputClassName, ...props }) => {
   const { execute, result, isExecuting } = useAction(subscribeToNewsletter, {
     onSuccess: () => {
       form.reset()
@@ -66,7 +67,7 @@ export const NewsletterSubscribeForm: FC<NewsletterSubscribeFormProps> = ({ clas
           render={({ field }) => (
             <FormItem className="w-full">
               <FormControl>
-                <Input placeholder="you@example.com" {...field} />
+                <Input placeholder="you@example.com" {...field} className={inputClassName} />
               </FormControl>
               <FormMessage />
             </FormItem>
