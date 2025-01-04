@@ -3,11 +3,11 @@
 import { motion } from 'framer-motion'
 import { FC } from 'react'
 import { Card } from '@repo/ui/components/card'
-import { Icons } from '@/components/icons'
 import { Container } from '@/components/layout'
 import { Section } from '@/components/layout'
 import { cn } from '@repo/ui/lib/utils'
 import Balancer from 'react-wrap-balancer'
+import { AlertCircle, PieChart, Clock } from 'lucide-react'
 
 interface ProblemProps {
   className?: string
@@ -15,19 +15,19 @@ interface ProblemProps {
 
 const problems = [
   {
-    icon: Icons.warning,
+    icon: AlertCircle,
     title: 'High Cost of Capital',
     description:
       'Traditional financing often involves high interest rates and rigid repayment terms, which can stifle growth.',
   },
   {
-    icon: Icons.pieChart,
+    icon: PieChart,
     title: 'Ownership Dilution',
     description:
       'Many businesses are forced to give up significant equity to secure funding, losing control over their vision.',
   },
   {
-    icon: Icons.clock,
+    icon: Clock,
     title: 'Limited Access to Ethical Funding',
     description:
       'Finding Shariah-compliant and ethical funding sources is challenging, limiting options for many businesses.',

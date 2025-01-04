@@ -5,8 +5,8 @@ import { AnimatedBeamDemo } from "./bento/integrations";
 import { Marquee } from "@/components/marquee";
 import { AnimatedListDemo } from "./bento/notification";
 import { EvervaultCard } from "@/components/evervault-card";
-import { Icons } from "@/components/icons";
 import { ComponentPropsWithoutRef, FC } from "react";
+import { FileText, Share2, Bell, Lock } from "lucide-react";
 
 const files = [
   {
@@ -33,7 +33,7 @@ const files = [
 
 const features = [
   {
-    Icon: Icons.fileText,
+    Icon: FileText,
     name: "Save your files",
     description: "We automatically save your files as you type.",
     href: "#",
@@ -68,7 +68,7 @@ const features = [
     ),
   },
   {
-    Icon: Icons.bell,
+    Icon: Bell,
     name: "Notifications",
     description: "Get notified when something happens.",
     href: "#",
@@ -79,7 +79,7 @@ const features = [
     ),
   },
   {
-    Icon: Icons.share2,
+    Icon: Share2,
     name: "Integrations",
     description: "Supports 100+ integrations and counting.",
     href: "#",
@@ -90,7 +90,7 @@ const features = [
     ),
   },
   {
-    Icon: Icons.calendar,
+    Icon: Calendar,
     name: "Calendar",
     description: "Use the calendar to filter your files by date.",
     className: "col-span-3 lg:col-span-1",
@@ -108,7 +108,7 @@ const features = [
 
 const investorFeatures = [
   {
-    Icon: Icons.lock,
+    Icon: Lock,
     name: "Smart Contracts",
     description: "Invest and own smart contracts.",
     className: "col-span-3 lg:col-span-1",
@@ -123,7 +123,7 @@ const investorFeatures = [
   },
 
   {
-    Icon: Icons.bell,
+    Icon: Bell,
     name: "Notifications",
     description: "Get notified when something happens.",
     href: "#",
@@ -134,7 +134,7 @@ const investorFeatures = [
     ),
   },
   {
-    Icon: Icons.share2,
+    Icon: Share2,
     name: "Integrations",
     description: "Supports 100+ integrations and counting.",
     href: "#",
@@ -145,7 +145,7 @@ const investorFeatures = [
     ),
   },
   {
-    Icon: Icons.fileText,
+    Icon: FileText,
     name: "Save your files",
     description: "We automatically save your files as you type.",
     href: "#",

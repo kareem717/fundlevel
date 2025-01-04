@@ -3,8 +3,8 @@
 import { useTheme } from "next-themes";
 import { Button } from "@repo/ui/components/button";
 import { FC } from "react";
-import { Icons } from "@/components/icons";
 import React from "react";
+import { Moon, Sun } from "lucide-react";
 
 export const ModeToggle: FC = () => {
   const { setTheme, theme } = useTheme();
@@ -21,8 +21,8 @@ export const ModeToggle: FC = () => {
       aria-label="Toggle theme"
     >
       {/* rendering both icons fixes hydration errors */}
-      <Icons.moon className="size-5 dark:hidden" />
-      <Icons.sun className="hidden size-5 dark:block" />
+      <Moon className="size-5 dark:hidden" />
+      <Sun className="hidden size-5 dark:block" />
     </Button>
   );
 };

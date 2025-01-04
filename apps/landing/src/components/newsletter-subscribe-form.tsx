@@ -16,7 +16,7 @@ import {
 import { Input } from "@repo/ui/components/input"
 import { ComponentPropsWithoutRef, FC } from "react"
 import { toast } from "sonner"
-import { Icons } from "./icons"
+import { Loader2 } from "lucide-react"
 
 const formSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -73,7 +73,7 @@ export const NewsletterSubscribeForm: FC<NewsletterSubscribeFormProps> = ({ clas
           )}
         />
         <Button type="submit" disabled={isExecuting} className={buttonClassName}>
-          {isExecuting && <Icons.spinner className="w-4 h-4 animate-spin" />}
+          {isExecuting && <Loader2 className="w-4 h-4 animate-spin" />}
           Subscribe
         </Button>
       </form>

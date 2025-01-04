@@ -4,11 +4,11 @@ import { ComponentPropsWithoutRef, useEffect, useState, FC } from "react";
 import { LogoDiv } from "@/components/layout/logo-div";
 import { NavigationItem, NavMenu } from "./nav";
 import { buttonVariants } from "@repo/ui/components/button";
-import { Icons } from "@/components/icons";
 import Link from "next/link";
 import { cn } from "@repo/ui/lib/utils";
 import { ModeToggle } from "@/components/layout/mode-toggle";
 import { env } from "@/env";
+import { Menu } from "lucide-react";
 
 interface HeaderProps extends ComponentPropsWithoutRef<"header"> {
   config: NavigationItem[];
@@ -80,7 +80,7 @@ export const Header: FC<HeaderProps> = ({
           onClick={() => setIsOpen(!isOpen)}
           className="flex items-center justify-center lg:hidden"
         >
-          <Icons.menu className="size-6" />
+          <Menu className="size-6" />
         </button>
       </div>
 

@@ -1,9 +1,11 @@
-import { Icons } from '@/components/icons'
+import { XIcon } from '@repo/ui/icons'
+import { Linkedin } from 'lucide-react'
+import { ElementType } from 'react'
 
 type Social = {
   label: string
   link: string
-  icon: keyof typeof Icons
+  icon: ElementType
 }
 
 /**
@@ -13,12 +15,12 @@ const socials: Social[] = [
   {
     label: 'X',
     link: 'https://x.com/fundlevel',
-    icon: 'xTwitter',
+    icon: XIcon,
   },
   {
     label: 'LinkedIn',
     link: 'https://linkedin.com/company/fundlevel',
-    icon: 'linkedin',
+    icon: Linkedin,
   },
 ]
 

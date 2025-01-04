@@ -4,7 +4,7 @@ import { motion, animate } from "framer-motion";
 import { ComponentPropsWithoutRef, FC, useEffect, useMemo } from "react";
 import { cn } from "@repo/ui/lib/utils";
 import { GoCopilot } from "react-icons/go";
-import { Icons } from "@/components/icons";
+import { ClaudeIcon, OpenAIIcon, GoogleAI, MetaOutlineIcon } from "@repo/ui/icons";
 
 export const CardDemo: FC<ComponentPropsWithoutRef<"div">> = ({ ...props }) => {
   return (
@@ -94,19 +94,19 @@ export const Skeleton: FC<ComponentPropsWithoutRef<"div">> = ({
     >
       <div className="flex flex-row flex-shrink-0 justify-center items-center gap-2">
         <Container className="h-8 w-8 circle-1">
-          <Icons.claude className="h-4 w-4 " />
+          <ClaudeIcon className="h-4 w-4 " />
         </Container>
         <Container className="h-12 w-12 circle-2">
           <GoCopilot className="h-6 w-6 dark:text-white" />
         </Container>
         <Container className="circle-3">
-          <Icons.openAI className="h-8 w-8 dark:text-white" />
+          <OpenAIIcon className="h-8 w-8 dark:text-white" />
         </Container>
         <Container className="h-12 w-12 circle-4">
-          <Icons.metaOutline className="h-6 w-6 " />
+          <MetaOutlineIcon className="h-6 w-6 " />
         </Container>
         <Container className="h-8 w-8 circle-5">
-          <Icons.googleAI className="h-4 w-4 " />
+          <GoogleAI className="h-4 w-4 " />
         </Container>
       </div>
       <div className="h-40 w-px absolute top-20 m-auto z-40 bg-gradient-to-b from-transparent via-cyan-500 to-transparent animate-move">

@@ -69,6 +69,7 @@
     "./hooks/*": {
       "types": "./src/hooks/*.tsx",
       "default": "./src/hooks/*.tsx"
-    }
+    },
+    "./*": "./src/components/*.tsx"
   }
 }

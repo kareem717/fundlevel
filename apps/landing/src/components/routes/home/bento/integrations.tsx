@@ -9,7 +9,15 @@ import {
 
 import { cn } from "@repo/ui/lib/utils";
 import { AnimatedBeam } from "@/components/animated-beam";
-import { Icons } from "@/components/icons";
+import {
+  GoogleDriveIcon,
+  GoogleDocsIcon,
+  NotionIcon,
+  OpenAIAlternativeIcon,
+  ZapierIcon,
+  WhatsappIcon,
+  MessengerIcon,
+} from "@repo/ui/icons";
 
 const Circle: FC<ComponentPropsWithRef<"div">> = ({
   className,
@@ -52,29 +60,29 @@ export const AnimatedBeamDemo: FC<ComponentPropsWithoutRef<"div">> = ({
       <div className="flex size-full flex-col max-w-lg max-h-[200px] items-stretch justify-between gap-10">
         <div className="flex flex-row items-center justify-between">
           <Circle ref={div1Ref}>
-            <Icons.googleDrive />
+            <GoogleDriveIcon />
           </Circle>
           <Circle ref={div5Ref}>
-            <Icons.googleDocs />
+            <GoogleDocsIcon />
           </Circle>
         </div>
         <div className="flex flex-row items-center justify-between">
           <Circle ref={div2Ref}>
-            <Icons.notion />
+            <NotionIcon />
           </Circle>
           <Circle ref={div4Ref} className="size-16">
-            <Icons.openAIAlternative />
+            <OpenAIAlternativeIcon />
           </Circle>
           <Circle ref={div6Ref}>
-            <Icons.zapier />
+            <ZapierIcon />
           </Circle>
         </div>
         <div className="flex flex-row items-center justify-between">
           <Circle ref={div3Ref}>
-            <Icons.whatsapp />
+            <WhatsappIcon />
           </Circle>
           <Circle ref={div7Ref}>
-            <Icons.messenger />
+            <MessengerIcon />
           </Circle>
         </div>
       </div>
