@@ -1,12 +1,12 @@
 "use client";
 
 import { ComponentPropsWithoutRef, useEffect, useState, FC } from "react";
-import { LogoDiv } from "@/components/layout/logo-div";
+import { LogoDiv } from "@/components/logo-div";
 import { NavigationItem, NavMenu } from "./nav";
 import { buttonVariants } from "@repo/ui/components/button";
 import Link from "next/link";
 import { cn } from "@repo/ui/lib/utils";
-import { ModeToggle } from "@/components/layout/mode-toggle";
+import { ModeToggle } from "@/components/mode-toggle";
 import { env } from "@/env";
 import { Menu } from "lucide-react";
 
@@ -61,7 +61,7 @@ export const Header: FC<HeaderProps> = ({
       {...props}
     >
       <div className="flex flex-row items-center justify-between w-full p-6 h-[7vh]">
-        <LogoDiv className="justify-start" />
+        <LogoDiv className="justify-start"  />
         <NavMenu
           config={config}
           currentPath={currentPath}

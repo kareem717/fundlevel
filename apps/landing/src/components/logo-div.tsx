@@ -2,8 +2,7 @@ import { ComponentPropsWithoutRef, FC } from "react";
 import { cn } from "@repo/ui/lib/utils";
 import Link from "next/link";
 import { redirects } from "@/lib/config";
-import { LogoIcon } from "@repo/ui/icons";
-
+import { LogoIcon, SmallLogoIcon } from "@repo/ui/icons";
 interface LogoDivProps
   extends Omit<ComponentPropsWithoutRef<typeof Link>, "href"> {
   href?: string;
@@ -23,7 +22,7 @@ export const LogoDiv: FC<LogoDivProps> = ({
       href={href}
       {...props}
     >
-      <LogoIcon className="w-full h-auto fill-foreground" />
+      <LogoIcon className="w-full h-40 fill-foreground" />
     </Link>
   );
 };
@@ -42,7 +41,7 @@ export const SmallLogoDiv: FC<LogoDivProps> = ({
       href={href}
       {...props}
     >
-      <Icons.smallLogo className="size-9 fill-foreground" />
+      <SmallLogoIcon className="size-9 fill-foreground" />
     </Link>
   );
 };

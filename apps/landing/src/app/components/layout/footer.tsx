@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { cn } from '@repo/ui/lib/utils'
-import { ComponentPropsWithoutRef, createElement, FC } from 'react'
+import { ComponentPropsWithoutRef, FC } from 'react'
 import { contact } from '@/lib/config'
 import { NewsletterSubscribeForm } from '../../../components/newsletter-subscribe-form'
 
@@ -87,9 +87,7 @@ export const Footer: FC<ComponentPropsWithoutRef<'footer'>> = ({
                 href={social.link}
                 className="text-muted-foreground hover:text-black"
               >
-                {createElement(Icons[social.icon as keyof typeof Icons], {
-                  className: 'h-5 w-5',
-                })}
+                <social.icon className="size-5" />
                 <span className="sr-only">{social.label}</span>
               </Link>
             ))}
