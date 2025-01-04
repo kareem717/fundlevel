@@ -4,8 +4,9 @@ import { Providers } from "@/components/providers";
 
 import { navigationConfig } from "@/lib/config/navigation";
 import { Header } from "@/app/components/layout/header";
-import { Footer } from "@/app/components/layout/footer";
 import { Geist, Geist_Mono } from "next/font/google"
+import { copy } from "@/lib/config";
+import { Footer } from "./components/footer";
 
 const fontSans = Geist({
   subsets: ["latin"],
@@ -39,7 +40,7 @@ export default async function RootLayout({
         >
           <Header config={navigationConfig} currentPath={"/"} />
           {children}
-          <Footer className="mt-6" />
+          <Footer className="mt-6" footerLinks={copy.landing.footer} />
         </Providers>
       </body>
     </html>
