@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, Container, Section } from '@/components/layout'
+import { Box, Container, Section } from '@/app/components/layout'
 import { LampContainer } from '@/components/lamp'
 import {
   Spotlight,

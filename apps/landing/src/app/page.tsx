@@ -1,8 +1,8 @@
-import { Hero } from "@/components/routes/home/hero";
-import { CTA } from "@/components/routes/home/cta";
-import { Newsletter } from "@/components/routes/home/newsletter";
-import { Models } from "@/components/routes/home/models";
-import { BentoFeatures } from "@/components/routes/home/bento";
+import { Hero } from "@/app/components/hero";
+import { CTA } from "@/app/components/cta";
+import { Newsletter } from "@/app/components/newsletter";
+import { Models } from "@/app/components/models";
+import { BentoFeatures } from "@/app/components/bento";
 
 export default async function Home() {
   return (

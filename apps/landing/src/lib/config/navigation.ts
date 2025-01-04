@@ -1,4 +1,4 @@
-import { NavigationItem } from "@/components/layout/header/nav";
+import { NavigationItem } from '@/app/components/layout/header/nav'
 
 export const navigationConfig: NavigationItem[] = [
   // {
@@ -21,4 +21,4 @@ export const navigationConfig: NavigationItem[] = [
   //   label: "Changelog",
   //   href: "/changelog",
   // },
-];
+]

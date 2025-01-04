@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { cn } from '@repo/ui/lib/utils'
 import { ComponentPropsWithoutRef, createElement, FC } from 'react'
 import { contact } from '@/lib/config'
-import { NewsletterSubscribeForm } from '../newsletter-subscribe-form'
+import { NewsletterSubscribeForm } from '../../../components/newsletter-subscribe-form'
 
 const footerLinks: { title: string; links: { title: string; href: string }[] }[] = [
   // {

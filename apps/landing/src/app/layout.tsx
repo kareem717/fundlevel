@@ -3,8 +3,8 @@ import "@repo/ui/styles/globals.css";
 import { Providers } from "@/components/providers";
 
 import { navigationConfig } from "@/lib/config/navigation";
-import { Header } from "@/components/layout/header";
-import { Footer } from "@/components/layout/footer";
+import { Header } from "@/app/components/layout/header";
+import { Footer } from "@/app/components/layout/footer";
 import { Geist, Geist_Mono } from "next/font/google"
 
 const fontSans = Geist({

@@ -1,7 +1,7 @@
 'use client'
 
-import { Box, Container } from '@/components/layout'
-import { Section } from '@/components/layout'
+import { Box, Container } from '@/app/components/layout'
+import { Section } from '@/app/components/layout'
 import { cn } from '@repo/ui/lib/utils'
 import { motion } from 'framer-motion'
 import Link from 'next/link'

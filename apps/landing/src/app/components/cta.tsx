@@ -5,7 +5,7 @@ import { cn } from '@repo/ui/lib/utils'
 import { ArrowUpRight } from 'lucide-react'
 import Image from 'next/image'
 import React, { ComponentPropsWithoutRef, FC, useState } from 'react'
-import { Section, Box, Container } from '@/components/layout'
+import { Section, Box, Container } from '@/app/components/layout'
 import { motion } from 'framer-motion'
 import Balancer from 'react-wrap-balancer'
 

@@ -3,7 +3,7 @@ import { Input } from '@repo/ui/components/input'
 import { Button } from '@repo/ui/components/button'
 import { Mail } from 'lucide-react'
 import { ComponentPropsWithoutRef, FC } from 'react'
-import { Section, Container, Box } from '@/components/layout'
+import { Section, Container, Box } from '@/app/components/layout'
 import { NewsletterSubscribeForm } from '@/components/newsletter-subscribe-form'
 
 export const Newsletter: FC<ComponentPropsWithoutRef<'section'>> = ({
