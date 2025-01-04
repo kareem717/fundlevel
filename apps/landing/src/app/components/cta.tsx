@@ -3,7 +3,6 @@
 import { cn } from '@repo/ui/lib/utils'
 import { ArrowUpRight } from 'lucide-react'
 import React, { ComponentPropsWithoutRef, FC, useState } from 'react'
-import { motion } from 'framer-motion'
 import Balancer from 'react-wrap-balancer'
 
 const items = [
@@ -34,7 +33,6 @@ export const CTA: FC<ComponentPropsWithoutRef<'section'>> = ({
   ...props
 }) => {
   const [activeIndex, setActiveIndex] = useState(0)
-  const duration = 0.5
 
   return (
     <section className={cn('space-y-12', className)} {...props}>
@@ -48,38 +46,20 @@ export const CTA: FC<ComponentPropsWithoutRef<'section'>> = ({
       </div>
       <div className="flex flex-col md:flex-row gap-4">
         {items.map((item, index) => (
-          <motion.div
+          <div
             key={index}
             onMouseEnter={() => setActiveIndex(index)}
             className={cn(
-              'relative overflow-hidden rounded-2xl bg-secondary'
+              'relative overflow-hidden rounded-2xl bg-secondary transition-all duration-500 ease-in-out',
+              activeIndex === index ? 'w-full' : 'w-[66.666667%]'
             )}
-            animate={{
-              width: activeIndex === index ? '100%' : '66.666667%',
-            }}
-            transition={{
-              duration,
-              ease: 'easeInOut',
-            }}
-            initial={{
-              width: activeIndex === index ? '66.666667%' : '100%',
-            }}
           >
             {/* Content */}
-            <motion.div
+            <div
               className={cn(
-                'relative z-10 p-8 md:p-12 flex flex-col h-full min-h-[500px]'
+                'relative z-10 p-8 md:p-12 flex flex-col h-full min-h-[500px] transition-all duration-500 ease-in-out',
+                activeIndex === index ? 'w-[66.666667%]' : 'w-full'
               )}
-              animate={{
-                width: activeIndex === index ? '66.666667%' : '100%',
-              }}
-              transition={{
-                duration,
-                ease: 'easeInOut',
-              }}
-              initial={{
-                width: activeIndex === index ? '66.666667%' : '100%',
-              }}
             >
               <div className="flex flex-col gap-2">
                 <ArrowUpRight
@@ -88,87 +68,48 @@ export const CTA: FC<ComponentPropsWithoutRef<'section'>> = ({
                     activeIndex === index ? 'w-10 h-10' : 'w-8 h-8'
                   )}
                 />
-                <motion.h3
+                <h3
                   className={cn(
-                    'font-medium mt-8 text-4xl',
-                    activeIndex === index && 'mb-0'
+                    'font-medium mt-8 transition-all duration-500 ease-in-out',
+                    activeIndex === index ? 'text-5xl mb-0' : 'text-4xl'
                   )}
-                  animate={{
-                    fontSize: activeIndex === index ? '3rem' : '2.25rem',
-                  }}
-                  transition={{
-                    duration,
-                    ease: 'easeInOut',
-                  }}
-                  initial={{
-                    fontSize: '2.25rem',
-                  }}
                 >
                   {item.header}
-                </motion.h3>
+                </h3>
               </div>
-              <motion.div
+              <div
                 className={cn(
-                  'relative flex flex-col gap-8 py-4 my-4',
+                  'relative flex flex-col gap-8 py-4 my-4 transition-all duration-500 ease-in-out',
                   activeIndex === index ? 'w-2/3' : 'w-full'
                 )}
-                animate={{
-                  width: activeIndex === index ? '66.666667%' : '100%',
-                }}
-                transition={{
-                  duration,
-                  ease: 'easeInOut',
-                }}
               >
-                <motion.p
-                  className="text-xl md:text-2xl"
-                  animate={{
-                    y: activeIndex === index ? 4 : 96,
-                  }}
-                  transition={{ duration, ease: 'easeInOut' }}
+                <p
+                  className={cn(
+                    'text-xl md:text-2xl transition-all duration-500 ease-in-out',
+                    activeIndex === index ? 'translate-y-1' : 'translate-y-24'
+                  )}
                 >
                   <Balancer>{item.subheading}</Balancer>
-                </motion.p>
-                <motion.p
-                  initial={{ opacity: 0, y: 60 }}
-                  animate={{
-                    opacity: activeIndex === index ? 1 : 0,
-                    y: activeIndex === index ? 0 : 60,
-                  }}
-                  transition={{
-                    duration,
-                    ease: 'easeInOut',
-                  }}
-                  className="absolute text-muted-foreground top-full"
+                </p>
+                <p
+                  className={cn(
+                    'absolute text-muted-foreground top-full transition-all duration-500 ease-in-out',
+                    activeIndex === index
+                      ? 'opacity-100 translate-y-0'
+                      : 'opacity-0 translate-y-16'
+                  )}
                 >
                   <Balancer>{item.description}</Balancer>
-                </motion.p>
-              </motion.div>
-              {/* <div className="mt-auto">
-                  <Button
-                    variant="outline"
-                    className="bg-[#4F5DFF] hover:bg-[#4F5DFF]/90 text-white"
-                  >
-                    {item.buttonText}
-                  </Button>
-                </div> */}
-            </motion.div>
+                </p>
+              </div>
+            </div>
 
             {/* Image */}
-            <motion.div
+            <div
               className={cn(
-                'absolute top-0 right-0 h-full overflow-hidden'
+                'absolute top-0 right-0 h-full overflow-hidden transition-all duration-500 ease-in-out',
+                activeIndex === index ? 'w-[33.333333%]' : 'w-0'
               )}
-              animate={{
-                width: activeIndex === index ? '33.333333%' : '0%',
-              }}
-              transition={{
-                duration,
-                ease: 'easeInOut',
-              }}
-              initial={{
-                width: activeIndex === index ? '33.333333%' : '0%',
-              }}
             >
               <div className="w-full h-full overflow-hidden rounded-r-lg bg-foreground">
                 {/* <Image
@@ -179,8 +120,8 @@ export const CTA: FC<ComponentPropsWithoutRef<'section'>> = ({
                     className="object-cover w-full h-full"
                   /> */}
               </div>
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
         ))}
       </div>
     </section>
