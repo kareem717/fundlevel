@@ -1,4 +1,3 @@
-import { cn } from "@repo/ui/lib/utils"
 import { ComponentPropsWithoutRef } from "react";
 
 export function XIcon(props: ComponentPropsWithoutRef<"svg">) {
@@ -26,6 +25,7 @@ export function SmallLogoIcon(props: ComponentPropsWithoutRef<"svg">) {
     </svg>
   );
 }
+
 export function LogoIcon(props: ComponentPropsWithoutRef<"svg">) {
   return (
     <svg
