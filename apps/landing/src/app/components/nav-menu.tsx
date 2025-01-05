@@ -1,4 +1,4 @@
-import { ComponentPropsWithoutRef, FC } from "react";
+import { ComponentPropsWithoutRef } from "react";
 import { cn } from "@repo/ui/lib/utils";
 import Link from "next/link";
 
@@ -16,12 +16,13 @@ interface NavMenuProps extends ComponentPropsWithoutRef<"nav">, NavConfigProps {
   direction?: "row" | "column";
 }
 
-export const NavMenu: FC<NavMenuProps> = ({
+export function NavMenu({
   className,
   config,
   currentPath,
   direction = "row",
-}) => {
+  ...props
+}: NavMenuProps) {
   return (
     <nav
       className={cn(
@@ -29,6 +30,7 @@ export const NavMenu: FC<NavMenuProps> = ({
         direction === "column" ? "flex-col w-full" : "flex-row",
         className
       )}
+      {...props}
     >
       <ul
         className={cn(

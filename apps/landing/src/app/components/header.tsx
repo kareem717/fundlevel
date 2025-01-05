@@ -1,8 +1,8 @@
 "use client";
 
-import { ComponentPropsWithoutRef, useEffect, useState, FC } from "react";
+import { ComponentPropsWithoutRef, useEffect, useState } from "react";
 import { LogoDiv } from "@/components/logo-div";
-import { NavigationItem, NavMenu } from "./nav";
+import { NavigationItem, NavMenu } from "./nav-menu";
 import { buttonVariants } from "@repo/ui/components/button";
 import Link from "next/link";
 import { cn } from "@repo/ui/lib/utils";
@@ -15,12 +15,13 @@ interface HeaderProps extends ComponentPropsWithoutRef<"header"> {
   currentPath: string;
 }
 
-export const Header: FC<HeaderProps> = ({
+export function Header({
   className,
   config,
   currentPath,
   ...props
-}) => {
+}: HeaderProps) {
+  //TODO: simplify this
   const [scrolled, setScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -51,9 +52,9 @@ export const Header: FC<HeaderProps> = ({
   return (
     <header
       className={cn(
-        "fixed top-0 z-50 flex flex-col w-full transition-all duration-300 ease-in-out",
+        "fixed top-0 z-50 flex flex-col justify-center items-center transition-all duration-300 ease-in-out w-full",
         scrolled || isOpen
-          ? "bg-background/80 backdrop-blur-md shadow-xl mx-4 mt-4 rounded-2xl w-[calc(100%-2rem)] border"
+          ? "bg-background/80 backdrop-blur-md shadow-xl mt-4 rounded-2xl border"
           : "bg-transparent",
         isOpen && "!bg-background !backdrop-blur-xl",
         className
@@ -61,7 +62,7 @@ export const Header: FC<HeaderProps> = ({
       {...props}
     >
       <div className="flex flex-row items-center justify-between w-full p-6 h-[7vh]">
-        <LogoDiv className="justify-start"  />
+        <LogoDiv className="justify-start" />
         <NavMenu
           config={config}
           currentPath={currentPath}
@@ -83,7 +84,6 @@ export const Header: FC<HeaderProps> = ({
           <Menu className="size-6" />
         </button>
       </div>
-
       {isOpen && (
         <div className="flex flex-col lg:hidden border-t transition-all duration-300 ease-in-out">
           <div className="grid grid-cols-2 gap-4 p-4">

@@ -3,7 +3,7 @@ import "@repo/ui/styles/globals.css";
 import { Providers } from "@/components/providers";
 
 import { navigationConfig } from "@/lib/config/navigation";
-import { Header } from "@/app/components/layout/header";
+import { Header } from "@/app/components/header";
 import { Geist, Geist_Mono } from "next/font/google"
 import { copy } from "@/lib/config";
 import { Footer } from "./components/footer";
@@ -39,11 +39,11 @@ export default async function RootLayout({
             disableTransitionOnChange: true,
           }}
         >
-          <Header config={navigationConfig} currentPath={"/"} className="max-w-screen-2xl mx-auto" />
+          <Header config={navigationConfig} currentPath={"/"} className="max-w-screen-2xl" />
           <div className="px-4">
             {children}
           </div>
-          <Footer className="mt-6" footerLinks={copy.landing.footer} />
+          <Footer className="mt-20 md:mt-28" footerLinks={copy.landing.footer} />
         </Providers>
       </body>
     </html >
