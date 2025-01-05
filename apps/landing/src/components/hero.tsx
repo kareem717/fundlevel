@@ -48,6 +48,7 @@ export const Hero: FC<ComponentPropsWithoutRef<'section'>> = ({
               Invest
             </Link> */}
             <Link
+              aria-label="Get Started"
               href={env.NEXT_PUBLIC_NEWS_LETTER_SIGN_UP_URL}
               className={cn(
                 buttonVariants({ size: 'lg' }),

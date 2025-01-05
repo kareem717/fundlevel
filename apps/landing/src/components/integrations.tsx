@@ -13,7 +13,6 @@ import {
   GoogleDriveIcon,
   GoogleDocsIcon,
   NotionIcon,
-  OpenAIAlternativeIcon,
   ZapierIcon,
   WhatsappIcon,
   MessengerIcon,

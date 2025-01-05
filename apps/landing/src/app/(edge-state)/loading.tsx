@@ -1,5 +1,6 @@
 import { Loader2 } from "lucide-react";
 
+// TODO: Add a proper loading page
 export default function Loading() {
   return (
     <div className="grid place-items-center animate-pulse p-4 h-screen w-screen">

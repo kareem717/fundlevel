@@ -71,7 +71,11 @@ export function Header({
         />
         <div className="flex-row items-center justify-end gap-4 hidden lg:flex">
           <ModeToggle />
-          <Link href={env.NEXT_PUBLIC_NEWS_LETTER_SIGN_UP_URL} className={buttonVariants()}>
+          <Link
+            href={env.NEXT_PUBLIC_NEWS_LETTER_SIGN_UP_URL}
+            className={buttonVariants()}
+            aria-label="Get Started"
+          >
             Get Started
           </Link>
           {/* <Link href="#" className={buttonVariants({ variant: "secondary" })}>
@@ -94,7 +98,11 @@ export function Header({
               direction="column"
               className="col-span-2"
             />
-            <Link href="#" className={buttonVariants({ className: "w-full" })}>
+            <Link
+              href="#"
+              className={buttonVariants({ className: "w-full" })}
+              aria-label="Invest"
+            >
               Invest
             </Link>
             <Link
@@ -103,6 +111,7 @@ export function Header({
                 variant: "secondary",
                 className: "w-full",
               })}
+              aria-label="Raise"
             >
               Raise
             </Link>

@@ -36,7 +36,11 @@ export const Footer: FC<FooterProps> = ({
                 <ul className="space-y-1 sm:space-y-2 text-sm sm:text-base">
                   {section.links.map((link) => (
                     <li key={link.title}>
-                      <Link href={link.href} className="hover:underline">
+                      <Link
+                        href={link.href}
+                        className="hover:underline"
+                        aria-label={link.title}
+                      >
                         {link.title}
                       </Link>
                     </li>

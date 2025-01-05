@@ -18,7 +18,11 @@ export default function NotFound() {
       <p className="text-center text-xl text-muted-foreground">
         We couldn&#39;t find what you were looking for
       </p>
-      <Link href={redirects.home} className={cn(buttonVariants(), "px-8")}>
+      <Link
+        href={redirects.home}
+        className={cn(buttonVariants(), "px-8")}
+        aria-label="Redirect to home"
+      >
         Return Home
       </Link>
     </div>

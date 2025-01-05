@@ -50,6 +50,7 @@ export function NavMenu({
             )}
           >
             <Link
+              aria-label={item.label}
               href={item.href}
               legacyBehavior
               passHref

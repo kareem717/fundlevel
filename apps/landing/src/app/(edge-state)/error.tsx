@@ -33,6 +33,7 @@ export default function Error({
         </Button>
         <Link
           href={redirects.home}
+          aria-label="Redirect to home"
           className={cn(buttonVariants({ variant: "secondary" }), "w-full")}
         >
           Go back to home
