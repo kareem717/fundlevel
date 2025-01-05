@@ -10,7 +10,7 @@
       "@/*": ["./src/*"],
       "@payload-config": ["./src/payload.config.ts"],
       "@payload-types": ["./src/payload-types.ts"],
-      "@repo/ui/*": ["./../../packages/ui/src/*"]
+      // "@repo/ui/*": ["./../../packages/ui/src/*"]
     }
   },
   "include": [

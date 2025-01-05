@@ -1,4 +1,4 @@
-import "@repo/ui/styles/globals.css";
+import "@repo/ui/globals.css";
 
 import { Providers } from "@/components/providers";
 
