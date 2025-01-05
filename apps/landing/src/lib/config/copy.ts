@@ -1,6 +1,10 @@
 import { FooterItem } from '@/app/components/footer'
+import { CTA } from '@/app/components/cta-card'
 import { env } from '@/env'
 
+/**
+ * Contains all of links that are displayed in the footer on the landing page.
+ */
 const footerLinks: FooterItem[] = [
   {
     title: 'Quick Links',
@@ -36,6 +40,24 @@ const footerLinks: FooterItem[] = [
 ]
 
 /**
+ * Contains all of the copy written for CTA cards section on the landing page.
+ */
+const ctas: CTA[] = [
+  {
+    header: 'Invest',
+    subheading: 'Discover high growth investments.',
+    description:
+      'Access a range of shariah-compliant models, from revenue sharing to asset leasing, and grow your portfolio.',
+  },
+  {
+    header: 'Raise',
+    subheading: 'Secure capital without debt or interest.',
+    description:
+      'Connect with investors through equity crowdfunding, profit-sharing, and more. Grow your business ethically and efficiently.',
+  },
+]
+
+/**
  * Contains all of the copy written for the landing page.
  */
 const landing = {
@@ -47,6 +69,7 @@ const landing = {
     },
   },
   footer: footerLinks,
+  ctas,
 }
 
 /**
