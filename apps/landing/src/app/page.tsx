@@ -1,5 +1,5 @@
 import { Hero } from "@/app/components/hero";
-import { BentoFeatures } from "@/app/components/bento";
+import { FeatureSection } from "@/app/components/feature-section";
 import { LandingSection } from "./components/landing-section";
 import { CTACard } from "./components/cta-card";
 import { copy } from "@/lib/config/copy";
@@ -13,7 +13,12 @@ export default async function Home() {
   return (
     <div className="flex flex-col items-center w-full space-y-20 md:space-y-40">
       <Hero />
-      <BentoFeatures />
+      <LandingSection
+        title="Platform Features"
+        subheading="Powerful Tools & Features"
+      >
+        <FeatureSection />
+      </LandingSection >
       <LandingSection
         title="Investment Models"
         subheading="Our Services"
@@ -67,6 +72,6 @@ export default async function Home() {
           </div>
         </div>
       </LandingSection>
-    </div>
+    </div >
   );
 }

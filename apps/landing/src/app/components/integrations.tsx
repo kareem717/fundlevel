@@ -17,6 +17,7 @@ import {
   ZapierIcon,
   WhatsappIcon,
   MessengerIcon,
+  SmallLogoIcon,
 } from "@repo/ui/icons";
 
 const Circle: FC<ComponentPropsWithRef<"div">> = ({
@@ -51,7 +52,7 @@ export const AnimatedBeamDemo: FC<ComponentPropsWithoutRef<"div">> = ({
   return (
     <div
       className={cn(
-        "relative flex h-[500px] w-full items-center justify-center overflow-hidden rounded-lg border bg-background p-10 md:shadow-xl",
+        "relative flex w-full items-center justify-center p-10",
         className
       )}
       ref={containerRef}
@@ -71,7 +72,7 @@ export const AnimatedBeamDemo: FC<ComponentPropsWithoutRef<"div">> = ({
             <NotionIcon />
           </Circle>
           <Circle ref={div4Ref} className="size-16">
-            <OpenAIAlternativeIcon />
+            <SmallLogoIcon />
           </Circle>
           <Circle ref={div6Ref}>
             <ZapierIcon />
@@ -92,6 +93,7 @@ export const AnimatedBeamDemo: FC<ComponentPropsWithoutRef<"div">> = ({
         toRef={div4Ref}
         curvature={-75}
         endYOffset={-10}
+        reverse
       />
       <AnimatedBeam
         containerRef={containerRef}
@@ -117,7 +119,6 @@ export const AnimatedBeamDemo: FC<ComponentPropsWithoutRef<"div">> = ({
         containerRef={containerRef}
         fromRef={div6Ref}
         toRef={div4Ref}
-        reverse
       />
       <AnimatedBeam
         containerRef={containerRef}
