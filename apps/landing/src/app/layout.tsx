@@ -5,7 +5,7 @@ import { Providers } from "@/components/providers";
 import { navigationConfig } from "@/lib/config/navigation";
 import { Header } from "../components/header";
 import { Geist, Geist_Mono } from "next/font/google"
-import { copy } from "@/lib/config";
+import { copy, meta } from "@/lib/config";
 import { Footer } from "../components/footer";
 
 const fontSans = Geist({
@@ -17,6 +17,8 @@ const fontMono = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
 })
+
+export const metadata = meta.root;
 
 //TODO: refactor
 export default async function RootLayout({
