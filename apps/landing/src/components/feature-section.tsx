@@ -1,7 +1,7 @@
 import { cn } from '@repo/ui/lib/utils'
 import { ComponentPropsWithoutRef, ReactNode } from 'react'
-import { Marquee } from '@/components/marquee'
-import { AnimatedListDemo } from './notification'
+import { Marquee } from './marquee'
+import { NotificationList } from './notification-list'
 import { PortfolioLineGraph } from './portfolio-line-graph'
 import { AnimatedBeamDemo } from './integrations'
 
@@ -42,7 +42,7 @@ export const bentoItems: BentoItem[] = [
   {
     title: 'Clarity™',
     description: 'Our proprietary stack for investment and risk analysis, providing unparalleled insights and transparency.',
-    element: <AnimatedListDemo className="h-[300px] w-full border-none transition-all duration-300 ease-out [mask-image:linear-gradient(to_top,transparent_10%,#000_100%)] group-hover:scale-105" />
+    element: <NotificationList className="h-[300px] w-full border-none transition-all duration-300 ease-out [mask-image:linear-gradient(to_top,transparent_10%,#000_100%)] group-hover:scale-105" />
   },
   {
     title: 'Legal',

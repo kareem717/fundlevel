@@ -5,7 +5,7 @@ import { CTACard } from "../components/cta-card";
 import { copy } from "@/lib/config/copy";
 import { NumberedCard } from "../components/numbered-card";
 import { Mail } from "lucide-react";
-import { NewsletterSubscribeForm } from "@/components/newsletter-subscribe-form";
+import { NewsletterSubscribeForm } from "../components/newsletter-subscribe-form";
 
 export default async function Home() {
   const { ctas, models } = copy.landing;

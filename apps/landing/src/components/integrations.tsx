@@ -8,7 +8,7 @@ import {
 } from "react";
 
 import { cn } from "@repo/ui/lib/utils";
-import { AnimatedBeam } from "@/components/animated-beam";
+import { AnimatedBeam } from "./animated-beam";
 import {
   GoogleDriveIcon,
   GoogleDocsIcon,

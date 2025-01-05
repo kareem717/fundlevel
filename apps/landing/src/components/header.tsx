@@ -1,12 +1,12 @@
 "use client";
 
 import { ComponentPropsWithoutRef, useEffect, useState } from "react";
-import { LogoDiv } from "@/components/logo-div";
+import { LogoDiv } from "./logo-div";
 import { NavigationItem, NavMenu } from "./nav-menu";
 import { buttonVariants } from "@repo/ui/components/button";
 import Link from "next/link";
 import { cn } from "@repo/ui/lib/utils";
-import { ModeToggle } from "@/components/mode-toggle";
+import { ModeToggle } from "./mode-toggle";
 import { env } from "@/env";
 import { Menu } from "lucide-react";
 

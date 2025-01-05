@@ -1,5 +1,5 @@
 import { buttonVariants } from '@repo/ui/components/button'
-import { FlipWords } from '@/components/flip-words'
+import { FlipWords } from './flip-words'
 import { env } from '@/env'
 import { cn } from '@repo/ui/lib/utils'
 import { Wallet } from 'lucide-react'

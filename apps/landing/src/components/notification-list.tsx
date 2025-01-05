@@ -1,6 +1,7 @@
-import { AnimatedList } from '@/components/animated-list'
+import { AnimatedList } from './animated-list'
 import { cn } from '@repo/ui/lib/utils'
 import { ComponentPropsWithoutRef, FC } from 'react'
+
 interface Item {
   name: string
   description: string
@@ -121,10 +122,10 @@ const Notification: FC<ComponentPropsWithoutRef<'figure'> & Item> = ({
   </figure>
 )
 
-export const AnimatedListDemo: FC<ComponentPropsWithoutRef<'div'>> = ({
+export function NotificationList({
   className,
   ...props
-}) => {
+}: ComponentPropsWithoutRef<'div'>) {
   return (
     <div
       className={cn(
