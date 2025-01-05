@@ -15,6 +15,7 @@ interface HeaderProps extends ComponentPropsWithoutRef<"header"> {
   currentPath: string;
 }
 
+//TODO: the border is not smooth
 export function Header({
   className,
   config,
@@ -52,10 +53,10 @@ export function Header({
   return (
     <header
       className={cn(
-        "fixed top-0 z-50 flex flex-col justify-center items-center transition-all duration-300 ease-in-out w-full",
+        "fixed top-0 z-50 flex flex-col justify-center items-center transition-all duration-300 ease-in-out w-full rounded-2xl",
         scrolled || isOpen
-          ? "bg-background/80 backdrop-blur-md shadow-xl mt-4 rounded-2xl border"
-          : "bg-transparent",
+          ? "bg-background/80 backdrop-blur-md shadow-xl mt-4 border"
+          : "bg-transparent", 
         isOpen && "!bg-background !backdrop-blur-xl",
         className
       )}
