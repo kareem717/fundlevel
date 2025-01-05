@@ -10,7 +10,7 @@ export function LandingSection({ children, className, title, subheading, ...prop
   const hasHeader = title || subheading
 
   return (
-    <section className={cn(hasHeader && 'space-y-12', 'w-full', className)} {...props}>
+    <section className={cn(hasHeader && 'space-y-12', 'w-full')} {...props}>
       {hasHeader && (
         <div className="space-y-4 text-center">
           {title && (
@@ -25,7 +25,9 @@ export function LandingSection({ children, className, title, subheading, ...prop
           )}
         </div>
       )}
-      {children}
+      <div className={className}>
+        {children}
+      </div>
     </section>
   )
 }

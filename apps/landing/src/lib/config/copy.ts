@@ -81,17 +81,22 @@ const ctas: CTA[] = [
   },
 ]
 
+const hero = {
+  meetingCTA: 'Book meeting',
+  newsletter: {
+    CTA: 'Newsletter',
+    signUpURL: env.NEXT_PUBLIC_NEWS_LETTER_SIGN_UP_URL,
+  },
+  title: 'Simple Alternative Investing Aligned With Your Values',
+  description:
+    'Fundlevel enables access to alternative and private markets, allowing investors to find high-return opportunities and businesses to raise capital in a healthy, growth-conducive manner — all while maintaining shariah compliance.',
+}
+
 /**
  * Contains all of the copy written for the landing page.
  */
 const landing = {
-  hero: {
-    meetingCTA: 'Book meeting',
-    newsletter: {
-      CTA: 'Newsletter',
-      signUpURL: env.NEXT_PUBLIC_NEWS_LETTER_SIGN_UP_URL,
-    },
-  },
+  hero,
   footer: footerLinks,
   ctas,
   models,

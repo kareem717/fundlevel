@@ -77,6 +77,7 @@ export const bentoItems: BentoItem[] = [
   }
 ]
 
+// TODO: get rid of
 export function FeatureSection({
   className,
   ...props
