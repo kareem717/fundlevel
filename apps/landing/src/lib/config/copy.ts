@@ -1,6 +1,30 @@
 import { FooterItem } from '@/app/components/footer'
 import { CTA } from '@/app/components/cta-card'
 import { env } from '@/env'
+import { NumberedCard } from '@/app/components/numbered-card'
+
+const models: NumberedCard[] = [
+  {
+    title: 'Equity Financing',
+    description:
+      'Empowering investors to own a share of businesses, benefiting from dividends or capital growth.',
+  },
+  {
+    title: 'Revenue/Profit Sharing',
+    description:
+      'Offering a share of business profits over time, ideal for cash-flow positive ventures.',
+  },
+  {
+    title: 'Asset Funding Arrangements',
+    description:
+      'Facilitating shared ownership of assets, generating profits from their use.',
+  },
+  {
+    title: 'Mergers & Acquisitions',
+    description:
+      'Streamlining business growth and consolidation through strategic partnerships and acquisitions.',
+  },
+]
 
 /**
  * Contains all of links that are displayed in the footer on the landing page.
@@ -70,6 +94,7 @@ const landing = {
   },
   footer: footerLinks,
   ctas,
+  models,
 }
 
 /**
