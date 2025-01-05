@@ -3,7 +3,7 @@
 import { ComponentPropsWithoutRef, useEffect, useState } from "react";
 import { LogoDiv } from "./logo-div";
 import { NavigationItem, NavMenu } from "./nav-menu";
-import { buttonVariants } from "@repo/ui/components/button";
+import { Button, buttonVariants } from "@repo/ui/components/button";
 import Link from "next/link";
 import { cn } from "@repo/ui/lib/utils";
 import { ModeToggle } from "./mode-toggle";
@@ -56,7 +56,7 @@ export function Header({
         "fixed top-0 z-50 flex flex-col justify-center items-center transition-all duration-300 ease-in-out w-full rounded-2xl",
         scrolled || isOpen
           ? "bg-background/80 backdrop-blur-md shadow-xl mt-4 border"
-          : "bg-transparent", 
+          : "bg-transparent",
         isOpen && "!bg-background !backdrop-blur-xl",
         className
       )}
@@ -82,12 +82,15 @@ export function Header({
             Raise
           </Link> */}
         </div>
-        <button
+        <Button
+          variant="ghost"
+          size="icon"
           onClick={() => setIsOpen(!isOpen)}
           className="flex items-center justify-center lg:hidden"
+          aria-label="Open menu"
         >
           <Menu className="size-6" />
-        </button>
+        </Button>
       </div>
       {isOpen && (
         <div className="flex flex-col lg:hidden border-t transition-all duration-300 ease-in-out">

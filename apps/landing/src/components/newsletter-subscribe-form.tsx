@@ -73,7 +73,12 @@ export const NewsletterSubscribeForm: FC<NewsletterSubscribeFormProps> = ({ clas
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={isExecuting} className={buttonClassName}>
+        <Button
+          type="submit"
+          disabled={isExecuting}
+          className={buttonClassName}
+          aria-label="Subscribe"
+        >
           {isExecuting && <Loader2 className="w-4 h-4 animate-spin" />}
           Subscribe
         </Button>

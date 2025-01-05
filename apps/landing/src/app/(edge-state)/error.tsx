@@ -28,7 +28,11 @@ export default function Error({
         {error.message || "Something went wrong!"}{" "}
       </h2>
       <div className="flex gap-4 w-full md:w-1/3 max-w-md min-w-[200px]">
-        <Button onClick={() => reset()} className="w-full">
+        <Button
+          onClick={() => reset()}
+          className="w-full"
+          aria-label="Retry rendering"
+        >
           Try again
         </Button>
         <Link
