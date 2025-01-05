@@ -1,9 +1,9 @@
-import { Hero } from "@/app/components/hero";
-import { FeatureSection } from "@/app/components/feature-section";
-import { LandingSection } from "./components/landing-section";
-import { CTACard } from "./components/cta-card";
+import { Hero } from "@/components/hero";
+import { FeatureSection } from "@/components/feature-section";
+import { LandingSection } from "../components/landing-section";
+import { CTACard } from "../components/cta-card";
 import { copy } from "@/lib/config/copy";
-import { NumberedCard } from "./components/numbered-card";
+import { NumberedCard } from "../components/numbered-card";
 import { Mail } from "lucide-react";
 import { NewsletterSubscribeForm } from "@/components/newsletter-subscribe-form";
 

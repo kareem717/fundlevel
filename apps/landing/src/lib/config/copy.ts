@@ -1,7 +1,7 @@
-import { FooterItem } from '@/app/components/footer'
-import { CTA } from '@/app/components/cta-card'
+import { FooterItem } from '@/components/footer'
+import { CTA } from '@/components/cta-card'
 import { env } from '@/env'
-import { NumberedCard } from '@/app/components/numbered-card'
+import { NumberedCard } from '@/components/numbered-card'
 
 const models: NumberedCard[] = [
   {

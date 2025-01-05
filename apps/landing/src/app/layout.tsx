@@ -3,10 +3,10 @@ import "@repo/ui/styles/globals.css";
 import { Providers } from "@/components/providers";
 
 import { navigationConfig } from "@/lib/config/navigation";
-import { Header } from "@/app/components/header";
+import { Header } from "@/components/header";
 import { Geist, Geist_Mono } from "next/font/google"
 import { copy } from "@/lib/config";
-import { Footer } from "./components/footer";
+import { Footer } from "../components/footer";
 
 const fontSans = Geist({
   subsets: ["latin"],
