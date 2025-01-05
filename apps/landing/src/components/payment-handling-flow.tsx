@@ -6,18 +6,12 @@ import {
   useRef,
   FC,
 } from "react";
-
 import { cn } from "@repo/ui/lib/utils";
 import { AnimatedBeam } from "./animated-beam";
 import {
-  GoogleDriveIcon,
-  GoogleDocsIcon,
-  NotionIcon,
-  ZapierIcon,
-  WhatsappIcon,
-  MessengerIcon,
   SmallLogoIcon,
 } from "@repo/ui/icons";
+import { Banknote, Bitcoin, CreditCard, HandCoins, Landmark, Users } from "lucide-react";
 
 const Circle: FC<ComponentPropsWithRef<"div">> = ({
   className,
@@ -35,7 +29,7 @@ const Circle: FC<ComponentPropsWithRef<"div">> = ({
   </div>
 );
 
-export const AnimatedBeamDemo: FC<ComponentPropsWithoutRef<"div">> = ({
+export const PaymentHandlingFlow: FC<ComponentPropsWithoutRef<"div">> = ({
   className,
   ...props
 }) => {
@@ -60,29 +54,29 @@ export const AnimatedBeamDemo: FC<ComponentPropsWithoutRef<"div">> = ({
       <div className="flex size-full flex-col max-w-lg max-h-[200px] items-stretch justify-between gap-10">
         <div className="flex flex-row items-center justify-between">
           <Circle ref={div1Ref}>
-            <GoogleDriveIcon />
+            <Banknote />
           </Circle>
           <Circle ref={div5Ref}>
-            <GoogleDocsIcon />
+            <Users />
           </Circle>
         </div>
         <div className="flex flex-row items-center justify-between">
           <Circle ref={div2Ref}>
-            <NotionIcon />
+            <Landmark />
           </Circle>
           <Circle ref={div4Ref} className="size-16">
             <SmallLogoIcon />
           </Circle>
           <Circle ref={div6Ref}>
-            <ZapierIcon />
+            <Bitcoin />
           </Circle>
         </div>
         <div className="flex flex-row items-center justify-between">
           <Circle ref={div3Ref}>
-            <WhatsappIcon />
+            <HandCoins />
           </Circle>
           <Circle ref={div7Ref}>
-            <MessengerIcon />
+            <CreditCard />
           </Circle>
         </div>
       </div>
