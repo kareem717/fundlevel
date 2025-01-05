@@ -6,12 +6,7 @@ import { FC, ComponentPropsWithoutRef } from 'react'
 import { Marquee } from '@/components/marquee'
 import { AnimatedListDemo } from './bento/notification'
 import Balancer from 'react-wrap-balancer'
-import { Graph2 } from './bento/graph'
-import { Cell } from 'recharts'
-import { Pie } from 'recharts'
-import { PieChart } from 'recharts'
-import { ResponsiveContainer } from 'recharts'
-import { Tokenization } from './bento/tokenization'
+import { PortfolioLineGraph } from './bento/portfolio-line-graph'
 
 const colSpans = {
   1: 'lg:col-span-1',
@@ -44,94 +39,12 @@ const files = [
 
 const bentoItems = [
   {
-    id: 1,
-    title: 'Wallet',
-    color: 'bg-secondary',
-    element: (
-      <div className="flex flex-col justify-around h-full p-2 overflow-hidden group">
-        <div className="relative flex items-center justify-center scale-[0.8] [mask-image:linear-gradient(to_top,transparent_5%,#000_100%)]">
-          <svg
-            width="200"
-            height="200"
-            viewBox="0 0 24 24"
-            className="transition-transform duration-700 transform group-hover:scale-110"
-            style={{
-              filter: 'drop-shadow(0 0 8px rgba(59, 130, 246, 0.5))',
-            }}
-          >
-            <path
-              fill="rgb(34, 211, 238, 0.8)"
-              d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"
-            />
-          </svg>
-        </div>
-        <div className="relative z-10">
-          <h3 className="mb-2 text-xl font-medium tracking-tight">Wallet</h3>
-          <p className="text-muted-foreground">
-            <Balancer>
-              A centralized hub to manage all your assets seamlessly.
-            </Balancer>
-          </p>
-        </div>
-      </div>
-    ),
-    width: 1,
-    height: 2,
-  },
-  {
-    id: 2,
-    title: 'Portfolios™',
-    color: 'bg-secondary',
-    element: (
-      <div className="flex flex-col justify-around h-full p-2 group">
-        <div className="h-[200px] mb-4 [mask-image:linear-gradient(to_top,transparent_5%,#000_100%)] transition-transform duration-700 transform group-hover:scale-110">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={[
-                  { name: 'Private Equity', value: 40 },
-                  { name: 'Venture', value: 30 },
-                  { name: 'Crypto', value: 30 },
-                  { name: 'Other', value: 10 },
-                ]}
-                stroke="none"
-                className="pointer-events-none"
-                cx="50%"
-                cy="50%"
-                innerRadius={60}
-                outerRadius={80}
-                paddingAngle={5}
-                dataKey="value"
-              >
-                <Cell fill="rgb(34, 211, 238, 0.8)" />
-                <Cell fill="rgb(251, 146, 60, 0.8)" />
-                <Cell fill="rgb(34, 211, 238, 0.8)" />
-                <Cell fill="rgb(251, 146, 60, 0.8)" />
-                <Cell fill="rgb(34, 211, 238, 0.8)" />
-                <Cell fill="rgb(251, 146, 60, 0.8)" />
-              </Pie>
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
-        <h3 className="mb-2 text-xl font-medium tracking-tight">
-          Portfolios™
-        </h3>
-        <p className="text-muted-foreground">
-          Professionally managed funds, including private equity, venture, and
-          crypto, where you can invest with confidence.
-        </p>
-      </div>
-    ),
-    width: 1,
-    height: 2,
-  },
-  {
     id: 3,
     title: 'Numbers™',
     color: 'bg-secondary',
     element: (
       <div className="relative flex flex-col justify-around h-full p-2 overflow-hidden group">
-        <Graph2 />
+        <PortfolioLineGraph />
 
         <div className="relative z-10">
           <h3 className="mb-2 text-xl font-medium tracking-tight">
@@ -223,14 +136,6 @@ const bentoItems = [
         </div>
       </div>
     ),
-    width: 1,
-    height: 2,
-  },
-  {
-    id: 6,
-    title: 'Tokenization',
-    color: 'bg-secondary',
-    element: <Tokenization />,
     width: 1,
     height: 2,
   },
