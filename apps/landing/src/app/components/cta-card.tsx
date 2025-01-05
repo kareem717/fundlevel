@@ -2,7 +2,7 @@
 
 import { cn } from '@repo/ui/lib/utils'
 import { ArrowUpRight } from 'lucide-react'
-import { ComponentPropsWithoutRef, FC } from 'react'
+import { ComponentPropsWithoutRef } from 'react'
 import Balancer from 'react-wrap-balancer'
 import { useActiveIndex } from '@/hooks/use-active-index'
 
@@ -35,7 +35,7 @@ export function CTACard({
       onMouseLeave={() => setActiveIndex(null)}
       className={cn(
         'relative overflow-hidden rounded-2xl bg-secondary transition-all duration-500 ease-in-out hover:cursor-pointer',
-        activeIndex === index ? 'w-full' : 'w-[66.666667%]',
+        activeIndex === index ? 'w-full' : 'w-2/3',
         className
       )}
       {...props}
@@ -65,24 +65,24 @@ export function CTACard({
         </div>
         <div
           className={cn(
-            'relative flex flex-col gap-8 py-4 my-4 transition-all duration-500 ease-in-out',
+            'relative flex flex-col gap-4 py-4 my-4 transition-all duration-500 ease-in-out',
             activeIndex === index ? 'w-2/3' : 'w-full'
           )}
         >
           <p
             className={cn(
               'text-xl md:text-2xl transition-all duration-500 ease-in-out',
-              activeIndex === index ? 'translate-y-1' : 'translate-y-24'
+              activeIndex === index ? 'opacity-100' : 'opacity-40'
             )}
           >
             <Balancer>{subheading}</Balancer>
           </p>
           <p
             className={cn(
-              'absolute text-muted-foreground top-full transition-all duration-500 ease-in-out',
+              'text-muted-foreground transition-all duration-500 ease-in-out',
               activeIndex === index
-                ? 'opacity-100 translate-y-0'
-                : 'opacity-0 translate-y-16'
+                ? 'opacity-100 max-h-[200px]'
+                : 'opacity-0 max-h-0 overflow-hidden'
             )}
           >
             <Balancer>{description}</Balancer>
