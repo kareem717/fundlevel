@@ -63,7 +63,7 @@ export const Hero: FC<ComponentPropsWithoutRef<'section'>> = ({
           <div className="container relative h-full mx-auto">
             <Image
               className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[90dvw] md:w-[70dvw] h-auto rounded-t-md"
-              src="/assets/branding/dashboard.svg"
+              src="/dashboard.svg"
               alt="Pera Web"
               width={900}
               height={900}
