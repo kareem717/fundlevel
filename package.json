@@ -18,7 +18,9 @@
     "openapi:gen": "turbo run openapi:gen",
     "sdk:gen": "turbo run sdk:gen",
     "sdk:full": "turbo run openapi:gen && turbo run sdk:gen",
-    "landing:dev": "turbo run landing#dev"
+    "landing:dev": "turbo run landing#dev",
+    "landing:build": "turbo run landing#build",
+    "landing:start": "turbo run landing#start"
   },
   "devDependencies": {
     "turbo": "^2.3.3"

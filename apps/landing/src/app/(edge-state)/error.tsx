@@ -1,6 +1,6 @@
 "use client";
 
-import { SmallLogoDiv } from "@/components/layout/logo-div";
+import { SmallLogoDiv } from "@/components/logo-div";
 import { Button, buttonVariants } from "@repo/ui/components/button";
 import { meta, redirects } from "@/lib/config";
 import { cn } from "@repo/ui/lib/utils";

@@ -1,4 +1,4 @@
-import { NavigationItem } from '@/app/components/layout/header/nav'
+import { NavigationItem } from '@/components/nav-menu'
 
 export const navigationConfig: NavigationItem[] = [
   // {
