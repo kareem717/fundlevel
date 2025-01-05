@@ -3,6 +3,7 @@ import { cn } from '@repo/ui/lib/utils'
 import { ComponentPropsWithoutRef, FC } from 'react'
 import { contact } from '@/lib/config'
 import { Separator } from '@repo/ui/components/separator'
+import { LogoIcon } from '@repo/ui/icons'
 
 export type FooterItem = {
   title: string;
@@ -21,26 +22,29 @@ export const Footer: FC<FooterProps> = ({
   return (
     <footer className={cn('w-full pb-6', className)} {...props}>
       <div className="rounded-lg text-card-foreground p-6 shadow-2xl bg-secondary flex flex-col">
-        <div className="flex flex-wrap justify-start gap-4">
-          {footerLinks.map((section) => (
-            <div
-              key={section.title}
-              className="block flex-1 basis-0 flex-col gap-2 min-w-32"
-            >
-              <h3 className="text-base sm:text-lg font-semibold mb-2 sm:mb-4">
-                {section.title}
-              </h3>
-              <ul className="space-y-1 sm:space-y-2 text-sm sm:text-base">
-                {section.links.map((link) => (
-                  <li key={link.title}>
-                    <Link href={link.href} className="hover:underline">
-                      {link.title}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+        <div className="flex flex-col justify-center md:flex-row md:justify-start gap-8">
+          <LogoIcon className="h-20" />
+          <div className="flex flex-wrap justify-start gap-4 w-full">
+            {footerLinks.map((section) => (
+              <div
+                key={section.title}
+                className="block flex-1 basis-0 flex-col gap-2 min-w-32"
+              >
+                <h3 className="text-base sm:text-lg font-semibold mb-2 sm:mb-4">
+                  {section.title}
+                </h3>
+                <ul className="space-y-1 sm:space-y-2 text-sm sm:text-base">
+                  {section.links.map((link) => (
+                    <li key={link.title}>
+                      <Link href={link.href} className="hover:underline">
+                        {link.title}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
         </div>
         <Separator className="my-6 bg-muted-foreground" />
         <div className="flex justify-between items-center w-full">
