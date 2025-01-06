@@ -30,6 +30,7 @@ export default async function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
+      className="scroll-smooth"
     >
       <body
         className={`${fontSans.variable} ${fontMono.variable} font-sans scroll-smooth antialiased focus:scroll-auto max-w-screen-2xl mx-auto pb-8`}

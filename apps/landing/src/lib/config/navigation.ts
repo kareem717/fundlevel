@@ -1,24 +1,24 @@
 import { NavigationItem } from '@/components/nav-menu'
 
 export const navigationConfig: NavigationItem[] = [
-  // {
-  //   label: "Investors",
-  //   href: "/investors",
-  // },
-  // {
-  //   label: "Businesses",
-  //   href: "/businesses",
-  // },
-  // {
-  //   label: "Features",
-  //   href: "/features",
-  // },
-  // {
-  //   label: "Blog",
-  //   href: "/blog",
-  // },
-  // {
-  //   label: "Changelog",
-  //   href: "/changelog",
-  // },
+  {
+    label: "Home",
+    href: "#hero",
+  },
+  {
+    label: "Features",
+    href: "#features",
+  },
+  {
+    label: "Models",
+    href: "#models",
+  },
+  {
+    label: "Get Started",
+    href: "#ctas",
+  },
+  {
+    label: "Newsletter",
+    href: "#newsletter",
+  },
 ]

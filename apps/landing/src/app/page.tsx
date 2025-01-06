@@ -1,4 +1,3 @@
-import { FeatureSection } from "@/components/feature-section";
 import { LandingSection } from "../components/landing-section";
 import { CTACard } from "../components/cta-card";
 import { copy } from "@/lib/config/copy";
@@ -17,7 +16,7 @@ const { ctas, models, hero, features } = copy.landing;
 export default async function Home() {
   return (
     <div className="flex flex-col items-center w-full space-y-20 md:space-y-40">
-      <LandingSection className="relative w-full">
+      <LandingSection className="relative w-full" id="hero">
         <div className="container flex flex-col items-center justify-center w-full gap-4 px-4 pb-16 text-center sm:px-10 md:pb-24 lg:pb-32 pt-20 md:pt-36 mx-auto">
           <h1 className="text-3xl sm:text-4xl lg:text-7xl">
             <Balancer>
@@ -62,6 +61,7 @@ export default async function Home() {
         />
       </LandingSection>
       <LandingSection
+        id="features"
         title="Platform Features"
         subheading="Powerful Tools & Features"
         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"
@@ -90,6 +90,7 @@ export default async function Home() {
         ))}
       </LandingSection >
       <LandingSection
+        id="models"
         title="Investment Models"
         subheading="Our Services"
         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"
@@ -103,6 +104,7 @@ export default async function Home() {
         ))}
       </LandingSection>
       <LandingSection
+        id="ctas"
         title="Join Fundlevel"
         subheading="Invest and raise capital with confidence."
         className="flex flex-col md:flex-row gap-4 w-full"
@@ -116,6 +118,7 @@ export default async function Home() {
         ))}
       </LandingSection>
       <LandingSection
+        id="newsletter"
         className="grid grid-cols-1 md:grid-cols-2 gap-6 px-6 py-12 rounded-lg sm:px-8 bg-secondary"
       >
         <div className="flex flex-col items-start gap-4 md:flex-row">

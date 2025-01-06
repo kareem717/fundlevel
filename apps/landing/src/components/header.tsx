@@ -81,50 +81,49 @@ export function Header({
           >
             Get Started
           </Link>
-          {/* <Link href="#" className={buttonVariants({ variant: "secondary" })}>
+        </div>
+        {/* <Link href="#" className={buttonVariants({ variant: "secondary" })}>
             Raise
           </Link> */}
+        <div className="flex flex-row items-center justify-end gap-1 lg:hidden">
+          <ModeToggle />
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setIsOpen(!isOpen)}
+            className="flex items-center justify-center lg:hidden"
+            aria-label="Open menu"
+          >
+            <Menu className="size-6" />
+          </Button>
         </div>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center justify-center lg:hidden"
-          aria-label="Open menu"
-        >
-          <Menu className="size-6" />
-        </Button>
       </div>
+
       {isOpen && (
-        <div className="flex flex-col lg:hidden border-t transition-all duration-300 ease-in-out">
-          <div className="grid grid-cols-2 gap-4 p-4">
-            <NavMenu
-              config={config}
-              currentPath={currentPath}
-              direction="column"
-              className="col-span-2"
-            />
-            <Link
-              href="#"
-              className={buttonVariants({ className: "w-full" })}
-              aria-label="Invest"
-            >
-              Invest
-            </Link>
-            <Link
-              href="#"
-              className={buttonVariants({
-                variant: "secondary",
-                className: "w-full",
-              })}
-              aria-label="Raise"
-            >
-              Raise
-            </Link>
-            <div className="col-span-2 flex justify-center">
-              <ModeToggle />
-            </div>
-          </div>
+        <div className="lg:hidden border-t transition-all duration-300 ease-in-out grid grid-cols-2 gap-4 p-4 w-full">
+          <NavMenu
+            config={config}
+            currentPath={currentPath}
+            direction="column"
+            className="col-span-2"
+          />
+          <Link
+            href="#"
+            className={buttonVariants({ className: "w-full" })}
+            aria-label="Invest"
+          >
+            Invest
+          </Link>
+          <Link
+            href="#"
+            className={buttonVariants({
+              variant: "secondary",
+              className: "w-full",
+            })}
+            aria-label="Raise"
+          >
+            Raise
+          </Link>
         </div>
       )}
     </header>
