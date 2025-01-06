@@ -25,7 +25,7 @@ export function Header({
   //TODO: simplify this
   const [scrolled, setScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  
+
   useEffect(() => {
     const handleScroll = () => {
       const isScrolled = window.scrollY > 20;
@@ -56,7 +56,7 @@ export function Header({
   return (
     <header
       className={cn(
-        "fixed top-0 z-50 flex flex-col justify-center items-center transition-all duration-300 ease-in-out w-full rounded-2xl",
+        "fixed top-0 z-50 flex flex-col justify-center items-center transition-all duration-300 ease-in-out w-full left-1/2 -translate-x-1/2 rounded-2xl",
         scrolled || isOpen
           ? "bg-background/80 backdrop-blur-md shadow-xl mt-4 border"
           : "bg-transparent",

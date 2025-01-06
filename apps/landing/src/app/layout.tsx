@@ -32,7 +32,7 @@ export default async function RootLayout({
       suppressHydrationWarning
     >
       <body
-        className={`${fontSans.variable} ${fontMono.variable} font-sans scroll-smooth antialiased focus:scroll-auto max-w-screen-2xl mx-auto`}
+        className={`${fontSans.variable} ${fontMono.variable} font-sans scroll-smooth antialiased focus:scroll-auto max-w-screen-2xl mx-auto pb-8`}
       >
         <Providers
           themeProps={{
@@ -41,11 +41,11 @@ export default async function RootLayout({
             disableTransitionOnChange: true,
           }}
         >
-          <Header config={navigationConfig} currentPath={"/"} className="max-w-screen-2xl" />
+          <Header config={navigationConfig} currentPath={"/"} className="w-[calc(100%-16px)] max-w-screen-2xl"/>
           <div className="px-4">
             {children}
           </div>
-          <Footer className="mt-20 md:mt-28" footerLinks={copy.landing.footer} />
+          <Footer className="mt-20 md:mt-28 w-[calc(100%-16px)] mx-auto" footerLinks={copy.landing.footer} />
         </Providers>
       </body>
     </html >
