@@ -25,7 +25,7 @@ export function Header({
   //TODO: simplify this
   const [scrolled, setScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-
+  
   useEffect(() => {
     const handleScroll = () => {
       const isScrolled = window.scrollY > 20;
@@ -33,6 +33,9 @@ export function Header({
         setScrolled(isScrolled);
       }
     };
+
+    // Check initial scroll position
+    handleScroll();
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
