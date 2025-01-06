@@ -12,7 +12,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Balancer from "react-wrap-balancer";
 
-const { ctas, models, hero } = copy.landing;
+const { ctas, models, hero, features } = copy.landing;
 
 export default async function Home() {
   return (
@@ -64,8 +64,30 @@ export default async function Home() {
       <LandingSection
         title="Platform Features"
         subheading="Powerful Tools & Features"
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"
       >
-        <FeatureSection />
+        {features.map((item, index) => (
+          <div
+            key={index}
+            className={cn(
+              "p-4 rounded-lg overflow-hidden min-h-[300px] relative bg-secondary",
+              // isMobile && 'col-span-1 row-span-1/2',
+              'md:col-span-2 md:row-span-2' // Added md breakpoint styles
+            )}
+          >
+            <div className="relative flex flex-col justify-around gap-8 h-full p-2 overflow-hidden group">
+              <item.element />
+              <div className="relative z-10">
+                <h3 className="mb-2 text-xl font-medium tracking-tight">
+                  {item.title}
+                </h3>
+                <p className="text-base font-medium leading-relaxed text-muted-foreground/90">
+                  {item.description}
+                </p>
+              </div>
+            </div>
+          </div>
+        ))}
       </LandingSection >
       <LandingSection
         title="Investment Models"

@@ -46,7 +46,7 @@ const NOTIFICATION_CONTENT: Item[] = [
   },
   {
     name: 'Market Analysis',
-    description: 'Bonds showing strong buy signals',
+    description: 'Equities showing strong buy signals',
     time: '1h ago',
     icon: '📊',
     color: '#00C9A7',
@@ -129,7 +129,7 @@ export function NotificationList({
   return (
     <div
       className={cn(
-        'relative flex h-[500px] w-full flex-col p-6 overflow-hidden rounded-lg md:shadow-xl',
+        'relative flex h-[300px] w-full flex-col p-6 overflow-hidden rounded-lg',
         className
       )}
       {...props}

@@ -2,6 +2,11 @@ import { FooterItem } from '@/components/footer'
 import { CTA } from '@/components/cta-card'
 import { env } from '@/env'
 import { NumberedCard } from '@/components/numbered-card'
+import { ElementType, ReactNode } from 'react'
+import { PortfolioLineGraph } from '@/components/portfolio-line-graph'
+import { NotificationList } from '@/components/notification-list'
+import { LegalFiles } from '@/components/legal-files'
+import { PaymentHandlingFlow } from '@/components/payment-handling-flow'
 
 const models: NumberedCard[] = [
   {
@@ -92,6 +97,40 @@ const hero = {
     'Fundlevel enables access to alternative and private markets, allowing investors to find high-return opportunities and businesses to raise capital in a healthy, growth-conducive manner — all while maintaining shariah compliance.',
 }
 
+export type Feature = {
+  title: string
+  description: string
+  element: ElementType
+}
+
+const features: Feature[] = [
+  {
+    title: 'Numbers™',
+    description:
+      'A comprehensive suite of tools for businesses to analyze activities and assess overall business health.',
+    element: PortfolioLineGraph,
+  },
+  {
+    title: 'Clarity™',
+    description:
+      'Our proprietary stack for investment and risk analysis, providing unparalleled insights and transparency.',
+    // element: <NotificationList className="h-[300px] w-full border-none transition-all duration-300 ease-out [mask-image:linear-gradient(to_top,transparent_10%,#000_100%)] group-hover:scale-105" />
+    element: NotificationList,
+  },
+  {
+    title: 'Legal',
+    description:
+      'Comprehensive handling of all legal aspects, ensuring compliance and peace of mind.',
+    element: LegalFiles,
+  },
+  {
+    title: 'Integrations',
+    description:
+      'Comprehensive handling of all legal aspects, ensuring compliance and peace of mind.',
+    element: PaymentHandlingFlow,
+  },
+]
+
 /**
  * Contains all of the copy written for the landing page.
  */
@@ -100,6 +139,7 @@ const landing = {
   footer: footerLinks,
   ctas,
   models,
+  features,
 }
 
 /**
