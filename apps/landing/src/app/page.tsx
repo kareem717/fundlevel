@@ -54,10 +54,10 @@ export default async function Home() {
         {/* //TODO: Image is a huge SEO cost. maybe cause of svg format or priority tag? */}
         <Image
           className="h-full w-full rounded-md border-2 drop-shadow-xl"
-          src="/dashboard.svg"
+          src="/dashboard.jpeg"
           alt="Dashboard"
-          width={900}
-          height={900}
+          width={1550}
+          height={800}
           priority
         />
       </LandingSection>
