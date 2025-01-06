@@ -42,9 +42,9 @@ export default async function RootLayout({
           }}
         >
           <Header config={navigationConfig} currentPath={"/"} className="w-[calc(100%-16px)] max-w-screen-2xl"/>
-          <div className="px-4">
+          <main className="px-4">
             {children}
-          </div>
+          </main>
           <Footer className="mt-20 md:mt-28 w-[calc(100%-16px)] mx-auto" footerLinks={copy.landing.footer} />
         </Providers>
       </body>
