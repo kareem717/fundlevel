@@ -10,7 +10,7 @@ import { cn } from "@repo/ui/lib/utils";
 import { AnimatedBeam } from "./animated-beam";
 import {
   SmallLogoIcon,
-} from "@repo/ui/icons";
+} from "@/components/icons";
 import { Banknote, Bitcoin, CreditCard, HandCoins, Landmark, Users } from "lucide-react";
 
 const Circle: FC<ComponentPropsWithRef<"div">> = ({

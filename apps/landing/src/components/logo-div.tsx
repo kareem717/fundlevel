@@ -2,7 +2,7 @@ import { ComponentPropsWithoutRef, FC } from "react";
 import { cn } from "@repo/ui/lib/utils";
 import Link from "next/link";
 import { redirects } from "@/lib/config";
-import { LogoIcon, SmallLogoIcon } from "@repo/ui/icons";
+import { LogoIcon, SmallLogoIcon } from "@/components/icons";
 interface LogoDivProps
   extends Omit<ComponentPropsWithoutRef<typeof Link>, "href"> {
   href?: string;
@@ -17,13 +17,13 @@ export const LogoDiv: FC<LogoDivProps> = ({
     <Link
       aria-label="Redirect to home"
       className={cn(
-        "flex flex-row items-center justify-center text-2xl font-bold hover:cursor-pointer w-52",
+        "w-52",
         className
       )}
       href={href}
       {...props}
     >
-      <LogoIcon className="w-full h-40 fill-foreground" />
+      <LogoIcon className="h-min fill-foreground" />
     </Link>
   );
 };

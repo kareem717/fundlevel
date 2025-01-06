@@ -63,7 +63,7 @@ export function Header({
       {...props}
     >
       <div className="flex flex-row items-center justify-between w-full p-6 h-[7vh]">
-        <LogoDiv className="justify-start" />
+        <LogoDiv className="w-20 md:w-32" />
         <NavMenu
           config={config}
           currentPath={currentPath}

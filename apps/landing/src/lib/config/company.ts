@@ -1,4 +1,4 @@
-import { XIcon } from '@repo/ui/icons'
+import { XIcon } from '@/components/icons'
 import { Linkedin } from 'lucide-react'
 import { ElementType } from 'react'
 

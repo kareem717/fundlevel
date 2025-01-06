@@ -4,11 +4,11 @@
 		//"outDir": "dist"
 		"baseUrl": ".",
 		"paths": {
-			"@repo/ui/*": ["src/*"],
+			"@repo/ui/*": ["src/*"]
 		},
 		"resolveJsonModule": true,
 		"esModuleInterop": true
 	},
-	"include": ["."],
+	"include": [".", "src/icons.tsx"],
 	"exclude": ["node_modules", "dist"]
 }

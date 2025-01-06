@@ -3,7 +3,7 @@ import { cn } from '@repo/ui/lib/utils'
 import { ComponentPropsWithoutRef, FC } from 'react'
 import { contact } from '@/lib/config'
 import { Separator } from '@repo/ui/components/separator'
-import { LogoIcon } from '@repo/ui/icons'
+import { LogoDiv } from '@/components/logo-div'
 
 export type FooterItem = {
   title: string;
@@ -22,9 +22,9 @@ export const Footer: FC<FooterProps> = ({
   return (
     <footer className={cn('w-full pb-6', className)} {...props}>
       <div className="rounded-lg text-card-foreground p-6 shadow-2xl bg-secondary flex flex-col">
-        <div className="flex flex-col justify-center md:flex-row md:justify-start gap-8">
-          <LogoIcon className="h-20" />
-          <div className="flex flex-wrap justify-start gap-4 w-full">
+        <div className="flex flex-col justify-center md:flex-row md:justify-between gap-8">
+          <LogoDiv className="w-48" />
+          <div className="flex flex-wrap justify-start gap-16">
             {footerLinks.map((section) => (
               <div
                 key={section.title}
