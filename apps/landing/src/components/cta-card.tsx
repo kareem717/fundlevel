@@ -94,7 +94,7 @@ export function CTACard({
       <div
         className={cn(
           'absolute top-0 right-0 h-full overflow-hidden transition-all duration-500 ease-in-out',
-          activeIndex === index ? 'w-[33.333333%]' : 'w-0'
+          activeIndex === index ? 'w-1/3' : 'w-0'
         )}
       >
         <div className="w-full h-full overflow-hidden rounded-r-lg bg-foreground">

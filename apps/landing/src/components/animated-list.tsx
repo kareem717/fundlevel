@@ -4,6 +4,30 @@ import { Children, ComponentPropsWithoutRef, FC, memo, useEffect, useMemo, useSt
 import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@repo/ui/lib/utils";
 
+export function AnimatedListItem({
+  children,
+  className,
+  ...props
+}: ComponentPropsWithoutRef<typeof motion.div>) {
+  const animations = {
+    initial: { scale: 0, opacity: 0 },
+    animate: { scale: 1, opacity: 1, originY: 0 },
+    exit: { scale: 0, opacity: 0 },
+    transition: { type: "spring", stiffness: 350, damping: 40 },
+  };
+
+  return (
+    <motion.div
+      {...animations}
+      layout
+      className={cn("mx-auto w-full", className)}
+      {...props}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
 export interface AnimatedListProps extends ComponentPropsWithoutRef<"div"> {
   delay?: number;
 }
@@ -44,27 +68,3 @@ export const AnimatedList: FC<AnimatedListProps> = memo(
 );
 
 AnimatedList.displayName = "AnimatedList";
-
-export const AnimatedListItem: FC<ComponentPropsWithoutRef<typeof motion.div>> = ({
-  children,
-  className,
-  ...props
-}) => {
-  const animations = {
-    initial: { scale: 0, opacity: 0 },
-    animate: { scale: 1, opacity: 1, originY: 0 },
-    exit: { scale: 0, opacity: 0 },
-    transition: { type: "spring", stiffness: 350, damping: 40 },
-  };
-
-  return (
-    <motion.div
-      {...animations}
-      layout
-      className={cn("mx-auto w-full", className)}
-      {...props}
-    >
-      {children}
-    </motion.div>
-  );
-};

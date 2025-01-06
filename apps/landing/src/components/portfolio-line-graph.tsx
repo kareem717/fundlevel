@@ -16,7 +16,7 @@ import {
 import { ComponentPropsWithoutRef } from 'react'
 import { cn } from '@repo/ui/lib/utils'
 
-const chartData = [
+const CHART_DATA = [
   {
     date: "2023-01-01",
     value: 155467.06
@@ -99,14 +99,14 @@ const chartData = [
   }
 ]
 
-const chartConfig = {
+const CHART_CONFIG = {
   value: {
     label: "Value",
     color: "hsl(var(--primary))",
   },
 } satisfies ChartConfig
 
-const percentageChange = (chartData[chartData.length - 1]!.value! - chartData[0]!.value!) / chartData[0]!.value! * 100
+const PERCENTAGE_CHANGE = (CHART_DATA[CHART_DATA.length - 1]!.value! - CHART_DATA[0]!.value!) / CHART_DATA[0]!.value! * 100
 
 const formatCurrency = (value: any) => {
   return new Intl.NumberFormat('en-US', {
@@ -117,22 +117,22 @@ const formatCurrency = (value: any) => {
 
 export function PortfolioLineGraph({ className, ...props }: ComponentPropsWithoutRef<"div">) {
   return (
-    <div className={cn("flex flex-col [mask-image:linear-gradient(to_top,transparent_20%,#000_100%)]", className)} {...props} >
+    <div className={cn("flex flex-col", className)} {...props} >
       <div className="flex items-center text-xl font-medium">
-        {percentageChange.toFixed(2)}
+        {PERCENTAGE_CHANGE.toFixed(2)}
         <span className="ml-1">%</span>
       </div>
       <ChartContainer
-        config={chartConfig}
+        config={CHART_CONFIG}
         className="h-[200px]"
       >
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart
-            data={chartData}
+            data={CHART_DATA}
             margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
           >
             <defs>
-              <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="1">
+              <linearGradient id="fillValue" x1="0" y1="0" x2="0" y2="1">
                 <stop
                   offset="5%"
                   stopColor="var(--color-value)"
@@ -141,7 +141,7 @@ export function PortfolioLineGraph({ className, ...props }: ComponentPropsWithou
                 <stop
                   offset="95%"
                   stopColor="var(--color-value)"
-                  stopOpacity={0.1}
+                  stopOpacity={0}
                 />
               </linearGradient>
             </defs>
@@ -157,7 +157,7 @@ export function PortfolioLineGraph({ className, ...props }: ComponentPropsWithou
             <Area
               dataKey="value"
               type="natural"
-              fill="url(#gradient)"
+              fill="url(#fillValue)"
               fillOpacity={0.4}
               stroke="var(--color-value)"
               stackId="a"
