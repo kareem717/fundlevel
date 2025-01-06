@@ -1,0 +1,26 @@
+-- +goose Up
+-- +goose StatementBegin
+CREATE TABLE
+    round_impressions (
+        round_id INT NOT NULL REFERENCES rounds (id),
+        account_id INT NOT NULL REFERENCES accounts (id),
+        created_at timestamptz DEFAULT CLOCK_TIMESTAMP(),
+        PRIMARY KEY (round_id, account_id, created_at)
+    );
+
+CREATE TABLE
+    business_impressions (
+        business_id INT NOT NULL REFERENCES businesses (id),
+        account_id INT NOT NULL REFERENCES accounts (id),
+        created_at timestamptz DEFAULT CLOCK_TIMESTAMP(),
+        PRIMARY KEY (business_id, account_id, created_at)
+    );
+
+-- +goose StatementEnd
+-- +goose Down
+-- +goose StatementBegin
+DROP TABLE round_impressions;
+
+DROP TABLE business_impressions;
+
+-- +goose StatementEnd

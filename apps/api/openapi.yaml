@@ -1,0 +1,3763 @@
+components:
+  schemas:
+    Account:
+      additionalProperties: false
+      properties:
+        createdAt:
+          format: date-time
+          type: string
+        deletedAt:
+          format: date-time
+          nullable: true
+          type: string
+        firstName:
+          maxLength: 30
+          minLength: 3
+          pattern: ^[a-zA-Z]+$
+          type: string
+        id:
+          format: int64
+          minimum: 1
+          type: integer
+        lastName:
+          maxLength: 30
+          minLength: 3
+          pattern: ^[a-zA-Z]+$
+          type: string
+        updatedAt:
+          format: date-time
+          nullable: true
+          type: string
+        userId:
+          format: uuid
+          maxLength: 36
+          minLength: 36
+          type: string
+      required:
+        - id
+        - userId
+        - firstName
+        - lastName
+        - createdAt
+        - updatedAt
+        - deletedAt
+      type: object
+    Business:
+      additionalProperties: false
+      properties:
+        businessColour:
+          type: string
+        businessLegalSection:
+          $ref: "#/components/schemas/BusinessLegalSection"
+        businessLegalSectionId:
+          format: int64
+          minimum: 1
+          nullable: true
+          type: integer
+        createdAt:
+          format: date-time
+          type: string
+        deletedAt:
+          format: date-time
+          nullable: true
+          type: string
+        displayName:
+          minLength: 1
+          type: string
+        employeeCount:
+          enum:
+            - "1"
+            - 2-10
+            - 11-50
+            - 51-200
+            - 201-500
+            - 501-1000
+            - 1000+
+          type: string
+        foundingDate:
+          format: date-time
+          type: string
+        id:
+          format: int64
+          minimum: 1
+          type: integer
+        industries:
+          items:
+            $ref: "#/components/schemas/Industry"
+          nullable: true
+          type: array
+        stripeAccount:
+          $ref: "#/components/schemas/BusinessStripeAccount"
+        updatedAt:
+          format: date-time
+          nullable: true
+          type: string
+      required:
+        - stripeAccount
+        - businessLegalSection
+        - businessColour
+        - displayName
+        - foundingDate
+        - industries
+        - id
+        - createdAt
+        - updatedAt
+        - deletedAt
+      type: object
+    BusinessLegalSection:
+      additionalProperties: false
+      properties:
+        businessNumber:
+          type: string
+        createdAt:
+          format: date-time
+          type: string
+        id:
+          format: int64
+          minimum: 1
+          type: integer
+        updatedAt:
+          format: date-time
+          nullable: true
+          type: string
+      required:
+        - businessNumber
+        - id
+        - createdAt
+        - updatedAt
+      type: object
+    BusinessMemberRole:
+      additionalProperties: false
+      properties:
+        description:
+          type: string
+        id:
+          format: int64
+          minimum: 1
+          type: integer
+        name:
+          type: string
+        permissions:
+          items:
+            $ref: "#/components/schemas/RolePermission"
+          nullable: true
+          type: array
+      required:
+        - name
+        - description
+        - permissions
+        - id
+      type: object
+    BusinessMemberWithRoleNameAndAccount:
+      additionalProperties: false
+      properties:
+        account:
+          $ref: "#/components/schemas/SafeAccount"
+        accountId:
+          format: int64
+          type: integer
+        businessId:
+          format: int64
+          type: integer
+        createdAt:
+          format: date-time
+          type: string
+        deletedAt:
+          format: date-time
+          nullable: true
+          type: string
+        role:
+          type: string
+        roleId:
+          format: int64
+          type: integer
+        updatedAt:
+          format: date-time
+          nullable: true
+          type: string
+      required:
+        - role
+        - account
+        - businessId
+        - accountId
+        - roleId
+        - createdAt
+        - updatedAt
+        - deletedAt
+      type: object
+    BusinessParams:
+      additionalProperties: false
+      properties:
+        businessColour:
+          example: "#E9743E"
+          maxLength: 7
+          minLength: 7
+          nullable: true
+          type: string
+        displayName:
+          example: Acme Inc.
+          minLength: 1
+          type: string
+        employeeCount:
+          enum:
+            - "1"
+            - 2-10
+            - 11-50
+            - 51-200
+            - 201-500
+            - 501-1000
+            - 1000+
+          type: string
+        foundingDate:
+          format: date-time
+          type: string
+      required:
+        - displayName
+        - foundingDate
+        - employeeCount
+      type: object
+    BusinessStripeAccount:
+      additionalProperties: false
+      properties:
+        businessId:
+          format: int64
+          minimum: 1
+          type: integer
+        createdAt:
+          format: date-time
+          type: string
+        deletedAt:
+          format: date-time
+          nullable: true
+          type: string
+        stripeConnectedAccountId:
+          type: string
+        stripeDisabledReason:
+          nullable: true
+          type: string
+        stripePayoutsEnabled:
+          type: boolean
+        stripeTransfersEnabled:
+          type: boolean
+        updatedAt:
+          format: date-time
+          nullable: true
+          type: string
+      required:
+        - businessId
+        - stripeConnectedAccountId
+        - stripeDisabledReason
+        - stripeTransfersEnabled
+        - stripePayoutsEnabled
+        - createdAt
+        - updatedAt
+        - deletedAt
+      type: object
+    Chat:
+      additionalProperties: false
+      properties:
+        createdAt:
+          format: date-time
+          type: string
+        createdByAccountId:
+          format: int64
+          minimum: 1
+          type: integer
+        createdForAccountId:
+          format: int64
+          minimum: 1
+          type: integer
+        deletedAt:
+          format: date-time
+          nullable: true
+          type: string
+        id:
+          format: int64
+          minimum: 1
+          type: integer
+        lastMessageAt:
+          format: date-time
+          nullable: true
+          type: string
+        updatedAt:
+          format: date-time
+          nullable: true
+          type: string
+      required:
+        - lastMessageAt
+        - createdByAccountId
+        - createdForAccountId
+        - id
+        - createdAt
+        - updatedAt
+        - deletedAt
+      type: object
+    ChatMessage:
+      additionalProperties: false
+      properties:
+        content:
+          maxLength: 1000
+          minLength: 1
+          type: string
+        createdAt:
+          format: date-time
+          type: string
+        deletedAt:
+          format: date-time
+          nullable: true
+          type: string
+        id:
+          format: int64
+          minimum: 1
+          type: integer
+        readAt:
+          format: date-time
+          nullable: true
+          type: string
+        senderAccountId:
+          format: int64
+          minimum: 1
+          type: integer
+        updatedAt:
+          format: date-time
+          nullable: true
+          type: string
+      required:
+        - readAt
+        - content
+        - senderAccountId
+        - id
+        - createdAt
+        - updatedAt
+        - deletedAt
+      type: object
+    CreateAccountParams:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/CreateAccountParams.json
+          format: uri
+          readOnly: true
+          type: string
+        firstName:
+          maxLength: 30
+          minLength: 3
+          pattern: ^[a-zA-Z]+$
+          type: string
+        lastName:
+          maxLength: 30
+          minLength: 3
+          pattern: ^[a-zA-Z]+$
+          type: string
+        userId:
+          format: uuid
+          maxLength: 36
+          minLength: 36
+          type: string
+      required:
+        - userId
+        - firstName
+        - lastName
+      type: object
+    CreateBusinessParams:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/CreateBusinessParams.json
+          format: uri
+          readOnly: true
+          type: string
+        business:
+          $ref: "#/components/schemas/BusinessParams"
+        industryIds:
+          example:
+            - 1
+          items:
+            format: int64
+            type: integer
+          minItems: 1
+          nullable: true
+          type: array
+          uniqueItems: true
+        initialOwnerId:
+          format: int64
+          minimum: 1
+          type: integer
+      required:
+        - business
+        - initialOwnerId
+      type: object
+    CreateChatParams:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/CreateChatParams.json
+          format: uri
+          readOnly: true
+          type: string
+        createdByAccountId:
+          format: int64
+          minimum: 1
+          type: integer
+        createdForAccountId:
+          format: int64
+          minimum: 1
+          type: integer
+      required:
+        - createdByAccountId
+        - createdForAccountId
+      type: object
+    CreateChatResponseBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/CreateChatResponseBody.json
+          format: uri
+          readOnly: true
+          type: string
+        createdAt:
+          format: date-time
+          type: string
+        createdByAccountId:
+          format: int64
+          minimum: 1
+          type: integer
+        createdForAccountId:
+          format: int64
+          minimum: 1
+          type: integer
+        deletedAt:
+          format: date-time
+          nullable: true
+          type: string
+        id:
+          format: int64
+          minimum: 1
+          type: integer
+        lastMessageAt:
+          format: date-time
+          nullable: true
+          type: string
+        message:
+          type: string
+        updatedAt:
+          format: date-time
+          nullable: true
+          type: string
+      required:
+        - lastMessageAt
+        - createdByAccountId
+        - createdForAccountId
+        - id
+        - createdAt
+        - updatedAt
+        - deletedAt
+        - message
+      type: object
+    CreateMessageParams:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/CreateMessageParams.json
+          format: uri
+          readOnly: true
+          type: string
+        content:
+          maxLength: 1000
+          minLength: 1
+          type: string
+        senderAccountId:
+          format: int64
+          minimum: 1
+          type: integer
+      required:
+        - content
+        - senderAccountId
+      type: object
+    CreateRoundParams:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/CreateRoundParams.json
+          format: uri
+          readOnly: true
+          type: string
+        beginsAt:
+          format: date-time
+          type: string
+        businessId:
+          format: int64
+          minimum: 1
+          type: integer
+        description:
+          maxLength: 3000
+          minLength: 10
+          type: string
+        endsAt:
+          format: date-time
+          type: string
+        investmentsRequireApproval:
+          default: false
+          type: boolean
+        investorCount:
+          format: int64
+          minimum: 1
+          type: integer
+        percentageSelling:
+          example: 10
+          format: double
+          maximum: 100
+          minimum: 0
+          type: number
+        valuationAmountUSDCents:
+          example: 1000000
+          format: int64
+          minimum: 1
+          type: integer
+      required:
+        - businessId
+        - beginsAt
+        - endsAt
+        - percentageSelling
+        - valuationAmountUSDCents
+        - investorCount
+        - description
+        - investmentsRequireApproval
+      type: object
+    ErrorDetail:
+      additionalProperties: false
+      properties:
+        location:
+          description: Where the error occurred, e.g. 'body.items[3].tags' or 'path.thing-id'
+          type: string
+        message:
+          description: Error message text
+          type: string
+        value:
+          description: The value at the given location
+      type: object
+    ErrorModel:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/ErrorModel.json
+          format: uri
+          readOnly: true
+          type: string
+        detail:
+          description: A human-readable explanation specific to this occurrence of the problem.
+          example: Property foo is required but is missing.
+          type: string
+        errors:
+          description: Optional list of individual error details
+          items:
+            $ref: "#/components/schemas/ErrorDetail"
+          nullable: true
+          type: array
+        instance:
+          description: A URI reference that identifies the specific occurrence of the problem.
+          example: https://example.com/error-log/abc123
+          format: uri
+          type: string
+        status:
+          description: HTTP status code
+          example: 400
+          format: int64
+          type: integer
+        title:
+          description: A short, human-readable summary of the problem type. This value should not change between occurrences of the error.
+          example: Bad Request
+          type: string
+        type:
+          default: about:blank
+          description: A URI reference to human-readable documentation for the error.
+          example: https://example.com/errors/example
+          format: uri
+          type: string
+      type: object
+    FundingOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/FundingOutputBody.json
+          format: uri
+          readOnly: true
+          type: string
+        message:
+          type: string
+        totalFunding:
+          format: int64
+          type: integer
+      required:
+        - totalFunding
+        - message
+      type: object
+    GetAllIndustriesResponseBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/GetAllIndustriesResponseBody.json
+          format: uri
+          readOnly: true
+          type: string
+        industries:
+          items:
+            $ref: "#/components/schemas/Industry"
+          nullable: true
+          type: array
+        message:
+          type: string
+      required:
+        - industries
+        - message
+      type: object
+    GetAllMemberRolesOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/GetAllMemberRolesOutputBody.json
+          format: uri
+          readOnly: true
+          type: string
+        message:
+          type: string
+        roles:
+          items:
+            $ref: "#/components/schemas/BusinessMemberRole"
+          nullable: true
+          type: array
+      required:
+        - roles
+        - message
+      type: object
+    GetBusinessesOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/GetBusinessesOutputBody.json
+          format: uri
+          readOnly: true
+          type: string
+        businesses:
+          items:
+            $ref: "#/components/schemas/Business"
+          nullable: true
+          type: array
+        message:
+          type: string
+      required:
+        - businesses
+        - message
+      type: object
+    GetChatMessagesResponseBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/GetChatMessagesResponseBody.json
+          format: uri
+          readOnly: true
+          type: string
+        hasNext:
+          type: boolean
+        message:
+          type: string
+        messages:
+          items:
+            $ref: "#/components/schemas/ChatMessage"
+          nullable: true
+          type: array
+        nextCursor:
+          format: date-time
+          nullable: true
+          type: string
+      required:
+        - messages
+        - message
+        - nextCursor
+        - hasNext
+      type: object
+    GetChatsOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/GetChatsOutputBody.json
+          format: uri
+          readOnly: true
+          type: string
+        chats:
+          items:
+            $ref: "#/components/schemas/Chat"
+          nullable: true
+          type: array
+        hasNext:
+          type: boolean
+        message:
+          type: string
+        nextCursor:
+          format: date-time
+          nullable: true
+          type: string
+      required:
+        - chats
+        - nextCursor
+        - hasNext
+        - message
+      type: object
+    GetCursorPaginatedInvestmentsOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/GetCursorPaginatedInvestmentsOutputBody.json
+          format: uri
+          readOnly: true
+          type: string
+        hasMore:
+          type: boolean
+        investments:
+          items:
+            $ref: "#/components/schemas/Investment"
+          nullable: true
+          type: array
+        message:
+          type: string
+        nextCursor:
+          format: int64
+          nullable: true
+          type: integer
+      required:
+        - investments
+        - message
+        - nextCursor
+        - hasMore
+      type: object
+    GetCursorPaginatedRoundsOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/GetCursorPaginatedRoundsOutputBody.json
+          format: uri
+          readOnly: true
+          type: string
+        hasMore:
+          type: boolean
+        message:
+          type: string
+        nextCursor:
+          format: int64
+          nullable: true
+          type: integer
+        rounds:
+          items:
+            $ref: "#/components/schemas/Round"
+          nullable: true
+          type: array
+      required:
+        - rounds
+        - message
+        - nextCursor
+        - hasMore
+      type: object
+    GetDailyAggregatedBusinessAnalyticsOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/GetDailyAggregatedBusinessAnalyticsOutputBody.json
+          format: uri
+          readOnly: true
+          type: string
+        analytics:
+          items:
+            $ref: "#/components/schemas/SimplifiedDailyAggregatedBusinessAnalytics"
+          nullable: true
+          type: array
+        message:
+          type: string
+      required:
+        - analytics
+        - message
+      type: object
+    GetDailyAggregatedRoundAnalyticsOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/GetDailyAggregatedRoundAnalyticsOutputBody.json
+          format: uri
+          readOnly: true
+          type: string
+        analytics:
+          items:
+            $ref: "#/components/schemas/SimplifiedDailyAggregatedRoundAnalytics"
+          nullable: true
+          type: array
+        message:
+          type: string
+      required:
+        - analytics
+        - message
+      type: object
+    GetInvestmentActivePaymentOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/GetInvestmentActivePaymentOutputBody.json
+          format: uri
+          readOnly: true
+          type: string
+        investmentPayment:
+          $ref: "#/components/schemas/InvestmentPayment"
+        message:
+          type: string
+      required:
+        - investmentPayment
+        - message
+      type: object
+    GetInvestmentPaymentsOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/GetInvestmentPaymentsOutputBody.json
+          format: uri
+          readOnly: true
+          type: string
+        investmentPayments:
+          items:
+            $ref: "#/components/schemas/InvestmentPayment"
+          nullable: true
+          type: array
+        message:
+          type: string
+      required:
+        - investmentPayments
+        - message
+      type: object
+    GetLikeCountOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/GetLikeCountOutputBody.json
+          format: uri
+          readOnly: true
+          type: string
+        count:
+          format: int64
+          type: integer
+        message:
+          type: string
+      required:
+        - count
+        - message
+      type: object
+    GetOffsetPaginatedBusinessMembersOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/GetOffsetPaginatedBusinessMembersOutputBody.json
+          format: uri
+          readOnly: true
+          type: string
+        hasMore:
+          type: boolean
+        members:
+          items:
+            $ref: "#/components/schemas/BusinessMemberWithRoleNameAndAccount"
+          nullable: true
+          type: array
+        message:
+          type: string
+        total:
+          format: int64
+          type: integer
+      required:
+        - members
+        - message
+        - hasMore
+        - total
+      type: object
+    GetOffsetPaginatedInvestmentsOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/GetOffsetPaginatedInvestmentsOutputBody.json
+          format: uri
+          readOnly: true
+          type: string
+        hasMore:
+          type: boolean
+        investments:
+          items:
+            $ref: "#/components/schemas/Investment"
+          nullable: true
+          type: array
+        message:
+          type: string
+        total:
+          format: int64
+          type: integer
+      required:
+        - investments
+        - message
+        - hasMore
+        - total
+      type: object
+    GetOffsetPaginatedRoundsOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/GetOffsetPaginatedRoundsOutputBody.json
+          format: uri
+          readOnly: true
+          type: string
+        hasMore:
+          type: boolean
+        message:
+          type: string
+        rounds:
+          items:
+            $ref: "#/components/schemas/Round"
+          nullable: true
+          type: array
+        total:
+          format: int64
+          type: integer
+      required:
+        - rounds
+        - message
+        - hasMore
+        - total
+      type: object
+    GetRoundCreateRequirementsOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/GetRoundCreateRequirementsOutputBody.json
+          format: uri
+          readOnly: true
+          type: string
+        message:
+          type: string
+        requirements:
+          $ref: "#/components/schemas/RoundCreateRequirements"
+      required:
+        - requirements
+        - message
+      type: object
+    GetStripeAccountOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/GetStripeAccountOutputBody.json
+          format: uri
+          readOnly: true
+          type: string
+        message:
+          type: string
+        stripeAccount:
+          $ref: "#/components/schemas/BusinessStripeAccount"
+      required:
+        - stripeAccount
+        - message
+      type: object
+    ImpressionCountOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/ImpressionCountOutputBody.json
+          format: uri
+          readOnly: true
+          type: string
+        count:
+          format: int64
+          type: integer
+        message:
+          type: string
+      required:
+        - count
+        - message
+      type: object
+    ImpressionInputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/ImpressionInputBody.json
+          format: uri
+          readOnly: true
+          type: string
+        accountId:
+          format: int64
+          minimum: 1
+          type: integer
+      required:
+        - accountId
+      type: object
+    Industry:
+      additionalProperties: false
+      properties:
+        createdAt:
+          format: date-time
+          type: string
+        deletedAt:
+          format: date-time
+          nullable: true
+          type: string
+        id:
+          format: int64
+          minimum: 1
+          type: integer
+        label:
+          maxLength: 30
+          minLength: 3
+          type: string
+        updatedAt:
+          format: date-time
+          nullable: true
+          type: string
+      required:
+        - id
+        - label
+        - createdAt
+        - updatedAt
+        - deletedAt
+      type: object
+    Investment:
+      additionalProperties: false
+      properties:
+        approvedAt:
+          format: date-time
+          type: string
+        completedAt:
+          format: date-time
+          type: string
+        createdAt:
+          format: date-time
+          type: string
+        deletedAt:
+          format: date-time
+          nullable: true
+          type: string
+        id:
+          format: int64
+          minimum: 1
+          type: integer
+        investorId:
+          format: int64
+          type: integer
+        paymentCompletedAt:
+          format: date-time
+          type: string
+        payments:
+          items:
+            $ref: "#/components/schemas/InvestmentPayment"
+          nullable: true
+          type: array
+        requiresManualApproval:
+          type: boolean
+        roundId:
+          format: int64
+          type: integer
+        status:
+          enum:
+            - awaiting_term_acceptance
+            - awaiting_payment
+            - investor_tasks_completed
+            - failed_to_accept_terms
+            - failed_to_make_payment
+            - investor_withdrew
+            - business_rejected
+            - round_closed_before_investor_tasks_completed
+          type: string
+        termsCompletedAt:
+          format: date-time
+          type: string
+        updatedAt:
+          format: date-time
+          nullable: true
+          type: string
+      required:
+        - id
+        - roundId
+        - investorId
+        - status
+        - requiresManualApproval
+        - createdAt
+        - updatedAt
+        - deletedAt
+      type: object
+    InvestmentPayment:
+      additionalProperties: false
+      properties:
+        createdAt:
+          format: date-time
+          type: string
+        deletedAt:
+          format: date-time
+          nullable: true
+          type: string
+        id:
+          format: int64
+          type: integer
+        investmentId:
+          format: int64
+          type: integer
+        status:
+          enum:
+            - cancelled
+            - processing
+            - requires_action
+            - requires_capture
+            - requires_confirmation
+            - requires_payment_method
+            - succeeded
+          type: string
+        stripePaymentIntentClientSecret:
+          type: string
+        stripePaymentIntentId:
+          type: string
+        updatedAt:
+          format: date-time
+          nullable: true
+          type: string
+      required:
+        - id
+        - investmentId
+        - status
+        - stripePaymentIntentId
+        - stripePaymentIntentClientSecret
+        - createdAt
+        - updatedAt
+        - deletedAt
+      type: object
+    InvestmentPaymentIntentClientSecretOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/InvestmentPaymentIntentClientSecretOutputBody.json
+          format: uri
+          readOnly: true
+          type: string
+        clientSecret:
+          type: string
+        message:
+          type: string
+      required:
+        - clientSecret
+        - message
+      type: object
+    IsFavouritedOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/IsFavouritedOutputBody.json
+          format: uri
+          readOnly: true
+          type: string
+        favourited:
+          type: boolean
+        message:
+          type: string
+      required:
+        - favourited
+        - message
+      type: object
+    MessageResponse:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/MessageResponse.json
+          format: uri
+          readOnly: true
+          type: string
+        message:
+          type: string
+      required:
+        - message
+      type: object
+    OnboardStripeConnectedAccountInputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/OnboardStripeConnectedAccountInputBody.json
+          format: uri
+          readOnly: true
+          type: string
+        refreshURL:
+          type: string
+        returnURL:
+          type: string
+      required:
+        - returnURL
+        - refreshURL
+      type: object
+    RolePermission:
+      additionalProperties: false
+      properties:
+        description:
+          type: string
+        id:
+          format: int64
+          minimum: 1
+          type: integer
+        value:
+          type: string
+      required:
+        - value
+        - description
+        - id
+      type: object
+    Round:
+      additionalProperties: false
+      properties:
+        beginsAt:
+          format: date-time
+          type: string
+        businessId:
+          format: int64
+          minimum: 1
+          type: integer
+        createdAt:
+          format: date-time
+          type: string
+        deletedAt:
+          format: date-time
+          nullable: true
+          type: string
+        description:
+          maxLength: 3000
+          minLength: 10
+          type: string
+        endsAt:
+          format: date-time
+          type: string
+        id:
+          format: int64
+          minimum: 1
+          type: integer
+        investmentsRequireApproval:
+          default: false
+          type: boolean
+        investorCount:
+          format: int64
+          minimum: 1
+          type: integer
+        percentageSelling:
+          example: 10
+          format: double
+          maximum: 100
+          minimum: 0
+          type: number
+        status:
+          enum:
+            - active
+            - successful
+            - failed
+          type: string
+        updatedAt:
+          format: date-time
+          nullable: true
+          type: string
+        valuationAmountUSDCents:
+          example: 1000000
+          format: int64
+          minimum: 1
+          type: integer
+      required:
+        - businessId
+        - beginsAt
+        - endsAt
+        - percentageSelling
+        - valuationAmountUSDCents
+        - status
+        - investorCount
+        - description
+        - investmentsRequireApproval
+        - id
+        - createdAt
+        - updatedAt
+        - deletedAt
+      type: object
+    RoundCreateRequirements:
+      additionalProperties: false
+      properties:
+        hasActiveStatus:
+          type: boolean
+        legalSection:
+          type: boolean
+        stripeAccount:
+          type: boolean
+      required:
+        - hasActiveStatus
+        - legalSection
+        - stripeAccount
+      type: object
+    RoundWithBusiness:
+      additionalProperties: false
+      properties:
+        beginsAt:
+          format: date-time
+          type: string
+        business:
+          $ref: "#/components/schemas/Business"
+        businessId:
+          format: int64
+          minimum: 1
+          type: integer
+        createdAt:
+          format: date-time
+          type: string
+        deletedAt:
+          format: date-time
+          nullable: true
+          type: string
+        description:
+          maxLength: 3000
+          minLength: 10
+          type: string
+        endsAt:
+          format: date-time
+          type: string
+        id:
+          format: int64
+          minimum: 1
+          type: integer
+        investmentsRequireApproval:
+          default: false
+          type: boolean
+        investorCount:
+          format: int64
+          minimum: 1
+          type: integer
+        percentageSelling:
+          example: 10
+          format: double
+          maximum: 100
+          minimum: 0
+          type: number
+        status:
+          enum:
+            - active
+            - successful
+            - failed
+          type: string
+        updatedAt:
+          format: date-time
+          nullable: true
+          type: string
+        valuationAmountUSDCents:
+          example: 1000000
+          format: int64
+          minimum: 1
+          type: integer
+      required:
+        - business
+        - businessId
+        - beginsAt
+        - endsAt
+        - percentageSelling
+        - valuationAmountUSDCents
+        - status
+        - investorCount
+        - description
+        - investmentsRequireApproval
+        - id
+        - createdAt
+        - updatedAt
+        - deletedAt
+      type: object
+    SafeAccount:
+      additionalProperties: false
+      properties:
+        createdAt:
+          format: date-time
+          type: string
+        deletedAt:
+          format: date-time
+          nullable: true
+          type: string
+        firstName:
+          type: string
+        id:
+          format: int64
+          minimum: 1
+          type: integer
+        lastName:
+          type: string
+        updatedAt:
+          format: date-time
+          nullable: true
+          type: string
+      required:
+        - firstName
+        - lastName
+        - id
+        - createdAt
+        - updatedAt
+        - deletedAt
+      type: object
+    SimplifiedDailyAggregatedBusinessAnalytics:
+      additionalProperties: false
+      properties:
+        dayOfYear:
+          format: int64
+          type: integer
+        favouritedCount:
+          format: int64
+          type: integer
+        impressionsCount:
+          format: int64
+          type: integer
+        uniquesImpressionsCount:
+          format: int64
+          type: integer
+      required:
+        - dayOfYear
+        - impressionsCount
+        - uniquesImpressionsCount
+        - favouritedCount
+      type: object
+    SimplifiedDailyAggregatedRoundAnalytics:
+      additionalProperties: false
+      properties:
+        dayOfYear:
+          format: int64
+          type: integer
+        favouritedCount:
+          format: int64
+          type: integer
+        impressionsCount:
+          format: int64
+          type: integer
+        uniquesImpressionsCount:
+          format: int64
+          type: integer
+      required:
+        - dayOfYear
+        - impressionsCount
+        - uniquesImpressionsCount
+        - favouritedCount
+      type: object
+    SingleAccountResponseBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/SingleAccountResponseBody.json
+          format: uri
+          readOnly: true
+          type: string
+        account:
+          $ref: "#/components/schemas/Account"
+        message:
+          type: string
+      required:
+        - account
+        - message
+      type: object
+    SingleBusinessResponseBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/SingleBusinessResponseBody.json
+          format: uri
+          readOnly: true
+          type: string
+        business:
+          $ref: "#/components/schemas/Business"
+        message:
+          type: string
+      required:
+        - business
+        - message
+      type: object
+    SingleInvestmentResponseBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/SingleInvestmentResponseBody.json
+          format: uri
+          readOnly: true
+          type: string
+        investment:
+          $ref: "#/components/schemas/Investment"
+        message:
+          type: string
+      required:
+        - investment
+        - message
+      type: object
+    SingleRoundResponseBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/SingleRoundResponseBody.json
+          format: uri
+          readOnly: true
+          type: string
+        message:
+          type: string
+        round:
+          $ref: "#/components/schemas/Round"
+      required:
+        - round
+        - message
+      type: object
+    SingleRoundWithBusinessResponseBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/SingleRoundWithBusinessResponseBody.json
+          format: uri
+          readOnly: true
+          type: string
+        message:
+          type: string
+        round:
+          $ref: "#/components/schemas/RoundWithBusiness"
+      required:
+        - round
+        - message
+      type: object
+    URLOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/URLOutputBody.json
+          format: uri
+          readOnly: true
+          type: string
+        message:
+          type: string
+        url:
+          type: string
+      required:
+        - url
+        - message
+      type: object
+    UpdateAccountParams:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/UpdateAccountParams.json
+          format: uri
+          readOnly: true
+          type: string
+        firstName:
+          maxLength: 30
+          minLength: 3
+          pattern: ^[a-zA-Z]+$
+          type: string
+        lastName:
+          maxLength: 30
+          minLength: 3
+          pattern: ^[a-zA-Z]+$
+          type: string
+      required:
+        - firstName
+        - lastName
+      type: object
+    UpdateMessageParams:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/UpdateMessageParams.json
+          format: uri
+          readOnly: true
+          type: string
+        content:
+          maxLength: 1000
+          minLength: 1
+          type: string
+        readAt:
+          format: date-time
+          nullable: true
+          type: string
+      required:
+        - content
+        - readAt
+      type: object
+    UpsertBusinessLegalSectionParams:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/UpsertBusinessLegalSectionParams.json
+          format: uri
+          readOnly: true
+          type: string
+        businessNumber:
+          maxLength: 10
+          minLength: 1
+          type: string
+      required:
+        - businessNumber
+      type: object
+  securitySchemes:
+    bearerAuth:
+      bearerFormat: JWT
+      scheme: bearer
+      type: http
+info:
+  title: ""
+  version: ""
+openapi: 3.0.3
+paths:
+  /account:
+    post:
+      description: Create a account.
+      operationId: create-account
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateAccountParams"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SingleAccountResponseBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Create a account
+      tags:
+        - Accounts
+  /account/{id}:
+    delete:
+      description: Delete a account.
+      operationId: delete-account
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Delete a account
+      tags:
+        - Accounts
+    get:
+      description: Get account by ID.
+      operationId: get-account-by-id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SingleAccountResponseBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Get account by ID
+      tags:
+        - Accounts
+    put:
+      description: Update a account.
+      operationId: update-account
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateAccountParams"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SingleAccountResponseBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Update a account
+      tags:
+        - Accounts
+  /account/{id}/businesses:
+    get:
+      description: Get businesses.
+      operationId: get-account-businesses
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetBusinessesOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Get businesses
+      tags:
+        - Accounts
+        - Businesses
+  /account/{id}/chats:
+    get:
+      description: Get account chats.
+      operationId: get-account-chats
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+        - explode: false
+          in: query
+          name: cursor
+          schema:
+            format: date-time
+            type: string
+        - explode: false
+          in: query
+          name: limit
+          schema:
+            default: 10
+            format: int64
+            minimum: 1
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetChatsOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Get account chats
+      tags:
+        - Accounts
+        - Chats
+  /account/{id}/investments:
+    get:
+      description: Get round investments.
+      operationId: get-account-investments-by-cursor
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+        - explode: false
+          in: query
+          name: cursor
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+        - explode: false
+          in: query
+          name: limit
+          schema:
+            default: 10
+            format: int64
+            minimum: 1
+            type: integer
+        - explode: false
+          in: query
+          name: status
+          schema:
+            items:
+              enum:
+                - awaiting_term_acceptance
+                - awaiting_payment
+                - investor_tasks_completed
+                - failed_to_accept_terms
+                - failed_to_make_payment
+                - investor_withdrew
+                - business_rejected
+                - round_closed_before_investor_tasks_completed
+              type: string
+            nullable: true
+            type: array
+        - explode: false
+          in: query
+          name: sortBy
+          schema:
+            enum:
+              - created_at
+            type: string
+        - explode: false
+          in: query
+          name: sortOrder
+          schema:
+            default: desc
+            enum:
+              - asc
+              - desc
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetCursorPaginatedInvestmentsOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Get round investments
+      tags:
+        - Accounts
+        - Investments
+  /account/{id}/investments/page:
+    get:
+      description: Get round investments.
+      operationId: get-account-investments-by-page
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+        - explode: false
+          in: query
+          name: page
+          schema:
+            default: 1
+            format: int64
+            minimum: 1
+            type: integer
+        - explode: false
+          in: query
+          name: pageSize
+          schema:
+            default: 10
+            format: int64
+            minimum: 1
+            type: integer
+        - explode: false
+          in: query
+          name: status
+          schema:
+            items:
+              enum:
+                - awaiting_term_acceptance
+                - awaiting_payment
+                - investor_tasks_completed
+                - failed_to_accept_terms
+                - failed_to_make_payment
+                - investor_withdrew
+                - business_rejected
+                - round_closed_before_investor_tasks_completed
+              type: string
+            nullable: true
+            type: array
+        - explode: false
+          in: query
+          name: sortBy
+          schema:
+            enum:
+              - created_at
+            type: string
+        - explode: false
+          in: query
+          name: sortOrder
+          schema:
+            default: desc
+            enum:
+              - asc
+              - desc
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetOffsetPaginatedInvestmentsOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Get round investments
+      tags:
+        - Accounts
+        - Investments
+  /analytic/businesses/{id}:
+    get:
+      description: Get daily aggregated business analytics.
+      operationId: get-daily-aggregated-business-analytics
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+        - explode: false
+          in: query
+          name: minDayOfYear
+          schema:
+            default: 0
+            format: int64
+            multipleOf: 1
+            type: integer
+        - explode: false
+          in: query
+          name: maxDayOfYear
+          schema:
+            default: 366
+            format: int64
+            multipleOf: 1
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetDailyAggregatedBusinessAnalyticsOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Get daily aggregated business analytics
+      tags:
+        - Analytic
+        - Businesses
+  /analytic/businesses/{id}/account/{accountId}/favourite:
+    delete:
+      description: Delete a business favourite.
+      operationId: delete-business-favourite
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+        - in: path
+          name: accountId
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Delete a business favourite
+      tags:
+        - Analytic
+        - Businesses
+        - Favourites
+    get:
+      description: Get a business favourite status.
+      operationId: get-business-favourite-status
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+        - in: path
+          name: accountId
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IsFavouritedOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Get a business favourite status
+      tags:
+        - Analytic
+        - Businesses
+        - Favourites
+    post:
+      description: Create a business favourite.
+      operationId: create-business-favourite
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+        - in: path
+          name: accountId
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Create a business favourite
+      tags:
+        - Analytic
+        - Businesses
+        - Favourites
+  /analytic/businesses/{id}/favourites:
+    get:
+      description: Get a business favourite count.
+      operationId: get-business-favourite-count
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetLikeCountOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      summary: Get a business favourite count
+      tags:
+        - Analytic
+        - Businesses
+        - Favourites
+  /analytic/businesses/{id}/impressions:
+    get:
+      description: Get a business impression count.
+      operationId: get-business-impression-count
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImpressionCountOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      summary: Get a business impression count
+      tags:
+        - Analytic
+        - Businesses
+    post:
+      description: Create a business impression.
+      operationId: create-business-impression
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ImpressionInputBody"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Create a business impression
+      tags:
+        - Analytic
+        - Businesses
+  /analytic/rounds/{id}:
+    get:
+      description: Get daily aggregated round analytics.
+      operationId: get-daily-aggregated-round-analytics
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+        - explode: false
+          in: query
+          name: minDayOfYear
+          schema:
+            default: 0
+            format: int64
+            multipleOf: 1
+            type: integer
+        - explode: false
+          in: query
+          name: maxDayOfYear
+          schema:
+            default: 366
+            format: int64
+            multipleOf: 1
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetDailyAggregatedRoundAnalyticsOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Get daily aggregated round analytics
+      tags:
+        - Analytic
+        - Rounds
+  /analytic/rounds/{id}/account/{accountId}/favourite:
+    delete:
+      description: Delete a round favourite.
+      operationId: delete-round-favourite
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+        - in: path
+          name: accountId
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Delete a round favourite
+      tags:
+        - Analytic
+        - Rounds
+        - Favourites
+    get:
+      description: Get a round favourite status.
+      operationId: get-round-favourite-status
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+        - in: path
+          name: accountId
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IsFavouritedOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Get a round favourite status
+      tags:
+        - Analytic
+        - Rounds
+        - Favourites
+    post:
+      description: Create a round favourite.
+      operationId: create-round-favourite
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+        - in: path
+          name: accountId
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Create a round favourite
+      tags:
+        - Analytic
+        - Rounds
+        - Favourites
+  /analytic/rounds/{id}/favourites:
+    get:
+      description: Get a round favourite count.
+      operationId: get-round-favourite-count
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetLikeCountOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      summary: Get a round favourite count
+      tags:
+        - Analytic
+        - Rounds
+        - Favourites
+  /analytic/rounds/{id}/impressions:
+    get:
+      description: Get a round impression count.
+      operationId: get-round-impression-count
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImpressionCountOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      summary: Get a round impression count
+      tags:
+        - Analytic
+        - Rounds
+    post:
+      description: Create a round impression.
+      operationId: create-round-impression
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ImpressionInputBody"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Create a round impression
+      tags:
+        - Analytic
+        - Rounds
+  /business:
+    post:
+      description: Create a business.
+      operationId: create-business
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateBusinessParams"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Create a business
+      tags:
+        - Businesses
+  /business/{id}:
+    delete:
+      description: Delete a business.
+      operationId: delete-business
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Delete a business
+      tags:
+        - Businesses
+    get:
+      description: Get business by ID.
+      operationId: get-business-by-id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SingleBusinessResponseBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      summary: Get business by ID
+      tags:
+        - Businesses
+  /business/{id}/funding:
+    get:
+      description: Get total funding.
+      operationId: get-business-total-funding
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FundingOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      summary: Get total funding
+      tags:
+        - Businesses
+        - Funding
+  /business/{id}/investments:
+    get:
+      description: Get recieved round investments.
+      operationId: get-business-investments-by-cursor
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+        - explode: false
+          in: query
+          name: cursor
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+        - explode: false
+          in: query
+          name: limit
+          schema:
+            default: 10
+            format: int64
+            minimum: 1
+            type: integer
+        - explode: false
+          in: query
+          name: status
+          schema:
+            items:
+              enum:
+                - awaiting_term_acceptance
+                - awaiting_payment
+                - investor_tasks_completed
+                - failed_to_accept_terms
+                - failed_to_make_payment
+                - investor_withdrew
+                - business_rejected
+                - round_closed_before_investor_tasks_completed
+              type: string
+            nullable: true
+            type: array
+        - explode: false
+          in: query
+          name: sortBy
+          schema:
+            enum:
+              - created_at
+            type: string
+        - explode: false
+          in: query
+          name: sortOrder
+          schema:
+            default: desc
+            enum:
+              - asc
+              - desc
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetCursorPaginatedInvestmentsOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Get recieved round investments
+      tags:
+        - Businesses
+        - Investments
+  /business/{id}/investments/page:
+    get:
+      description: Get recieved round investments.
+      operationId: get-business-investments-by-page
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+        - explode: false
+          in: query
+          name: page
+          schema:
+            default: 1
+            format: int64
+            minimum: 1
+            type: integer
+        - explode: false
+          in: query
+          name: pageSize
+          schema:
+            default: 10
+            format: int64
+            minimum: 1
+            type: integer
+        - explode: false
+          in: query
+          name: status
+          schema:
+            items:
+              enum:
+                - awaiting_term_acceptance
+                - awaiting_payment
+                - investor_tasks_completed
+                - failed_to_accept_terms
+                - failed_to_make_payment
+                - investor_withdrew
+                - business_rejected
+                - round_closed_before_investor_tasks_completed
+              type: string
+            nullable: true
+            type: array
+        - explode: false
+          in: query
+          name: sortBy
+          schema:
+            enum:
+              - created_at
+            type: string
+        - explode: false
+          in: query
+          name: sortOrder
+          schema:
+            default: desc
+            enum:
+              - asc
+              - desc
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetOffsetPaginatedInvestmentsOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Get recieved round investments
+      tags:
+        - Businesses
+        - Investments
+  /business/{id}/members/page:
+    get:
+      description: Get business members.
+      operationId: get-business-members-by-page
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+        - explode: false
+          in: query
+          name: page
+          schema:
+            default: 1
+            format: int64
+            minimum: 1
+            type: integer
+        - explode: false
+          in: query
+          name: pageSize
+          schema:
+            default: 10
+            format: int64
+            minimum: 1
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetOffsetPaginatedBusinessMembersOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Get business members
+      tags:
+        - Businesses
+        - Members
+  /business/{id}/requirements/round-create:
+    get:
+      description: Get round create requirements.
+      operationId: get-business-round-create-requirements
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetRoundCreateRequirementsOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Get round create requirements
+      tags:
+        - Businesses
+        - Rounds
+  /business/{id}/roles:
+    get:
+      description: Get all the roles created for this business.
+      operationId: get-business-member-roles
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetAllMemberRolesOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      summary: Get business member roles
+      tags:
+        - Businesses
+        - Members
+  /business/{id}/rounds:
+    get:
+      description: Get rounds.
+      operationId: get-business-rounds-by-cursor
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+        - explode: false
+          in: query
+          name: cursor
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+        - explode: false
+          in: query
+          name: limit
+          schema:
+            default: 10
+            format: int64
+            minimum: 1
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetCursorPaginatedRoundsOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      summary: Get rounds
+      tags:
+        - Businesses
+        - Rounds
+  /business/{id}/rounds/page:
+    get:
+      description: Get rounds.
+      operationId: get-business-rounds-by-page
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+        - explode: false
+          in: query
+          name: page
+          schema:
+            default: 1
+            format: int64
+            minimum: 1
+            type: integer
+        - explode: false
+          in: query
+          name: pageSize
+          schema:
+            default: 10
+            format: int64
+            minimum: 1
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetOffsetPaginatedRoundsOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      summary: Get rounds
+      tags:
+        - Businesses
+        - Rounds
+  /business/{id}/sections/legal:
+    put:
+      description: Upsert business legal section.
+      operationId: upsert-business-legal-section
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpsertBusinessLegalSectionParams"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Upsert business legal section
+      tags:
+        - Businesses
+        - Legal Section
+  /business/{id}/stripe:
+    get:
+      description: Get business stripe account.
+      operationId: get-business-stripe-account
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetStripeAccountOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Get business stripe account
+      tags:
+        - Businesses
+  /business/{id}/stripe-dashboard-url:
+    get:
+      description: Get Stripe dashboard url.
+      operationId: get-stripe-dashboard-url
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/URLOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Get Stripe dashboard url
+      tags:
+        - Businesses
+  /business/{id}/stripe-onboard:
+    post:
+      description: Onboard Stripe connected account.
+      operationId: onboard-stripe-connected-account
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OnboardStripeConnectedAccountInputBody"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/URLOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Onboard Stripe connected account
+      tags:
+        - Businesses
+  /chat:
+    post:
+      description: Create a chat.
+      operationId: create-chat
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateChatParams"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateChatResponseBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Create a chat
+      tags:
+        - Chat
+  /chat/message/{id}:
+    delete:
+      description: Delete a chat message.
+      operationId: delete-chat-message
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Delete a chat message
+      tags:
+        - Chat
+    put:
+      description: Update a chat message.
+      operationId: update-chat-message
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateMessageParams"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Update a chat message
+      tags:
+        - Chat
+  /chat/{id}:
+    delete:
+      description: Delete a chat.
+      operationId: delete-chat
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Delete a chat
+      tags:
+        - Chat
+  /chat/{id}/messages:
+    get:
+      description: Get chat messages.
+      operationId: get-chat-messages
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+        - explode: false
+          in: query
+          name: cursor
+          schema:
+            format: date-time
+            type: string
+        - explode: false
+          in: query
+          name: limit
+          schema:
+            default: 10
+            format: int64
+            minimum: 1
+            type: integer
+        - explode: false
+          in: query
+          name: senderAccountIds
+          schema:
+            items:
+              format: int64
+              type: integer
+            maxItems: 2
+            minItems: 1
+            minimum: 1
+            nullable: true
+            type: array
+            uniqueItems: true
+        - explode: false
+          in: query
+          name: read
+          schema:
+            type: boolean
+        - explode: false
+          in: query
+          name: minCreatedAt
+          schema:
+            format: date-time
+            type: string
+        - explode: false
+          in: query
+          name: maxCreatedAt
+          schema:
+            format: date-time
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetChatMessagesResponseBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Get chat messages
+      tags:
+        - Chat
+    post:
+      description: Create a chat message.
+      operationId: create-chat-message
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateMessageParams"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Create a chat message
+      tags:
+        - Chat
+  /health:
+    get:
+      description: Health check.
+      operationId: health-check
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      summary: Health check
+      tags:
+        - Health
+  /industries:
+    get:
+      description: Get all industries.
+      operationId: get-all-industries
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetAllIndustriesResponseBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      summary: Get all industries
+      tags:
+        - Industries
+  /investments/round/{id}:
+    post:
+      description: Create a round investment.
+      operationId: create-round-investment
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SingleInvestmentResponseBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Create a round investment
+      tags:
+        - Investments
+  /investments/{id}:
+    get:
+      description: Get a round investment.
+      operationId: get-investment-by-id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SingleInvestmentResponseBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Get a round investment
+      tags:
+        - Investments
+  /investments/{id}/pay:
+    get:
+      description: Get the payment for the current investment that is either processing or succeeded.
+      operationId: get-investment-active-payment
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetInvestmentActivePaymentOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Get the active payment for an investment
+      tags:
+        - Investments
+    post:
+      description: Create a stripe payment intent for an investment.
+      operationId: create-investment-payment-intent
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InvestmentPaymentIntentClientSecretOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Create a stripe payment intent
+      tags:
+        - Investments
+  /investments/{id}/payments:
+    get:
+      description: Get a round investment payments.
+      operationId: get-investment-payments
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetInvestmentPaymentsOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Get a round investment payments
+      tags:
+        - Investments
+  /round:
+    get:
+      description: Get rounds by cursor.
+      operationId: get-round-by-cursor
+      parameters:
+        - explode: false
+          in: query
+          name: cursor
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+        - explode: false
+          in: query
+          name: limit
+          schema:
+            default: 10
+            format: int64
+            minimum: 1
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetCursorPaginatedRoundsOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      summary: Get rounds by cursor
+      tags:
+        - Round
+    post:
+      description: Create a round.
+      operationId: create-round
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateRoundParams"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SingleRoundResponseBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Create a round
+      tags:
+        - Round
+  /round/page:
+    get:
+      description: Get rounds by page.
+      operationId: get-rounds-by-page
+      parameters:
+        - explode: false
+          in: query
+          name: page
+          schema:
+            default: 1
+            format: int64
+            minimum: 1
+            type: integer
+        - explode: false
+          in: query
+          name: pageSize
+          schema:
+            default: 10
+            format: int64
+            minimum: 1
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetOffsetPaginatedRoundsOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      summary: Get rounds by page
+      tags:
+        - Round
+  /round/{id}:
+    delete:
+      description: Delete a round.
+      operationId: delete-round
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      responses:
+        "204":
+          description: No Content
+          headers:
+            Message:
+              schema:
+                type: string
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Delete a round
+      tags:
+        - Round
+    get:
+      description: Get round by ID.
+      operationId: get-round-by-id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SingleRoundWithBusinessResponseBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      summary: Get round by ID
+      tags:
+        - Round
+  /user/{userId}/account:
+    get:
+      description: Get the current account of a user.
+      operationId: get-user-account
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SingleAccountResponseBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Get a user's account
+      tags:
+        - Users
+        - Accounts
+  /webhook/stripe:
+    post:
+      description: Handle a stripe webhook.
+      operationId: handle-stripe-webhook
+      parameters:
+        - in: header
+          name: Stripe-Signature
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema: {}
+        required: true
+      responses:
+        "204":
+          description: No Content
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      summary: Handle a stripe webhook
+      tags:
+        - Webhook
+  /webhook/stripe-connect:
+    post:
+      description: Handle a stripe connect webhook.
+      operationId: handle-stripe-connect-webhook
+      parameters:
+        - in: header
+          name: Stripe-Signature
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema: {}
+        required: true
+      responses:
+        "204":
+          description: No Content
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      summary: Handle a stripe connect webhook
+      tags:
+        - Webhook
