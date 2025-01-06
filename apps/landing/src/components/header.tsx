@@ -3,12 +3,12 @@
 import { ComponentPropsWithoutRef, useEffect, useState } from "react";
 import { LogoDiv } from "./logo-div";
 import { NavigationItem, NavMenu } from "./nav-menu";
-import { Button, buttonVariants } from "@repo/ui/components/button";
-import Link from "next/link";
+import { Button } from "@repo/ui/components/button";
 import { cn } from "@repo/ui/lib/utils";
 import { ModeToggle } from "./mode-toggle";
-import { env } from "@/env";
 import { Menu } from "lucide-react";
+import { BetaRequestLink } from "./beta-request-link";
+import { LogoIcon } from "./icons";
 
 interface HeaderProps extends ComponentPropsWithoutRef<"header"> {
   config: NavigationItem[];
@@ -66,7 +66,7 @@ export function Header({
       {...props}
     >
       <div className="flex flex-row items-center justify-between w-full p-6 h-[7vh]">
-        <LogoDiv className="w-20 md:w-32" />
+        <LogoDiv className="w-24 md:w-32" />
         <NavMenu
           config={config}
           currentPath={currentPath}
@@ -74,17 +74,10 @@ export function Header({
         />
         <div className="flex-row items-center justify-end gap-4 hidden lg:flex">
           <ModeToggle />
-          <Link
-            href={env.NEXT_PUBLIC_NEWS_LETTER_SIGN_UP_URL}
-            className={buttonVariants()}
-            aria-label="Get Started"
-          >
+          <BetaRequestLink >
             Get Started
-          </Link>
+          </BetaRequestLink>
         </div>
-        {/* <Link href="#" className={buttonVariants({ variant: "secondary" })}>
-            Raise
-          </Link> */}
         <div className="flex flex-row items-center justify-end gap-1 lg:hidden">
           <ModeToggle />
           <Button
@@ -98,32 +91,24 @@ export function Header({
           </Button>
         </div>
       </div>
-
       {isOpen && (
-        <div className="lg:hidden border-t transition-all duration-300 ease-in-out grid grid-cols-2 gap-4 p-4 w-full">
+        <div className="lg:hidden border-t transition-all duration-300 ease-in-out grid sm:grid-cols-2 gap-4 p-4 w-full">
           <NavMenu
             config={config}
             currentPath={currentPath}
             direction="column"
-            className="col-span-2"
           />
-          <Link
-            href="#"
-            className={buttonVariants({ className: "w-full" })}
-            aria-label="Invest"
+          <div
+            className="flex gap-4 h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
           >
-            Invest
-          </Link>
-          <Link
-            href="#"
-            className={buttonVariants({
-              variant: "secondary",
-              className: "w-full",
-            })}
-            aria-label="Raise"
-          >
-            Raise
-          </Link>
+            <LogoIcon className="w-24 fill-foreground " />
+            <p className="text-sm leading-tight text-muted-foreground">
+              The best way to manage your investments.
+            </p>
+            <BetaRequestLink className="w-full">
+              Get Started
+            </BetaRequestLink>
+          </div>
         </div>
       )}
     </header>

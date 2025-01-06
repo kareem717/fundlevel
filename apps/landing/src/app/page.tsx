@@ -2,22 +2,24 @@ import { LandingSection } from "../components/landing-section";
 import { CTACard } from "../components/cta-card";
 import { copy } from "@/lib/config/copy";
 import { NumberedCard } from "../components/numbered-card";
-import { Wallet, Mail, ChartLine } from "lucide-react";
+import { Mail, ChartLine } from "lucide-react";
 import { NewsletterSubscribeForm } from "../components/newsletter-subscribe-form";
-import { buttonVariants } from "@repo/ui/components/button";
-import { env } from "@/env";
 import { cn } from "@repo/ui/lib/utils";
 import Image from "next/image";
-import Link from "next/link";
 import Balancer from "react-wrap-balancer";
+import { BetaRequestLink } from "@/components/beta-request-link";
+import { Badge } from "@repo/ui/components/badge";
 
 const { ctas, models, hero, features } = copy.landing;
 
 export default async function Home() {
   return (
     <div className="flex flex-col items-center w-full space-y-20 md:space-y-40">
-      <LandingSection className="relative w-full" id="hero">
-        <div className="container flex flex-col items-center justify-center w-full gap-4 px-4 pb-16 text-center sm:px-10 md:pb-24 lg:pb-32 pt-20 md:pt-36 mx-auto">
+      <LandingSection className="flex flex-col items-center justify-center w-full pt-16 md:pt-32" id="hero">
+        <Badge className="rounded-full border bg-green-500 mb-2 sm:mb-6 px-2 py-[1px] sm:px-2.5 sm:py-0.5">
+          Private Beta
+        </Badge>
+        <div className="container flex flex-col items-center justify-center w-full gap-4 px-4 pb-16 text-center sm:px-10 md:pb-24 lg:pb-32">
           <h1 className="text-3xl sm:text-4xl lg:text-7xl">
             <Balancer>
               {hero.title}
@@ -26,33 +28,14 @@ export default async function Home() {
           <p className="mx-auto text-sm md:text-lg md:w-2/3 text-muted-foreground font-light">
             {hero.description}
           </p>
-          <div className="grid w-full max-w-2xl grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
-            <Link
-              href="#"
-              className={cn(
-                buttonVariants({ variant: 'secondary', size: 'lg' }),
-                'flex flex-row items-center justify-center'
-              )}
-            >
-              <ChartLine className="mr-2 size-4" />
-              Invest
-            </Link>
-            <Link
-              aria-label="Get Started"
-              href={env.NEXT_PUBLIC_NEWS_LETTER_SIGN_UP_URL}
-              className={cn(
-                buttonVariants({ size: 'lg' }),
-                'flex flex-row items-center justify-center'
-              )}
-            >
-              <Wallet className="mr-2 size-4" />
-              Get Started
-            </Link  >
-          </div>
+          <BetaRequestLink className="md:w-4/5 max-w-2xl w-full" size="lg">
+            <ChartLine className="mr-2 size-4" />
+            Join now
+          </BetaRequestLink>
         </div>
         {/* //TODO: Image is a huge SEO cost. maybe cause of svg format or priority tag? */}
         <Image
-          className="h-full w-full rounded-md border-2 drop-shadow-xl"
+          className="h-full rounded-md border-2 drop-shadow-xl sm:w-4/5"
           src="/dashboard.jpeg"
           alt="Dashboard"
           width={1550}
