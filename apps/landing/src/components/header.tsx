@@ -101,7 +101,7 @@ export function Header({
           <div
             className="flex gap-4 h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
           >
-            <LogoIcon className="w-24 fill-foreground " />
+            <LogoIcon className="w-24 fill-foreground" />
             <p className="text-sm leading-tight text-muted-foreground">
               The best way to manage your investments.
             </p>

@@ -23,7 +23,7 @@ export const LogoDiv: FC<LogoDivProps> = ({
       href={href}
       {...props}
     >
-      <LogoIcon className="h-min fill-foreground" />
+      <LogoIcon className="fill-foreground" />
     </Link>
   );
 };
