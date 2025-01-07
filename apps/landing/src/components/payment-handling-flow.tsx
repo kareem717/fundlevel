@@ -65,7 +65,7 @@ export const PaymentHandlingFlow: FC<ComponentPropsWithoutRef<"div">> = ({
             <Landmark />
           </Circle>
           <Circle ref={div4Ref} className="size-16">
-            <SmallLogoIcon />
+            <SmallLogoIcon className="size-8" />
           </Circle>
           <Circle ref={div6Ref}>
             <Bitcoin />
