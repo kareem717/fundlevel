@@ -21,4 +21,8 @@ export const navigationConfig: NavigationItem[] = [
     label: "Newsletter",
     href: "#newsletter",
   },
+  {
+    label: "FAQs",
+    href: "#faq",
+  },
 ]

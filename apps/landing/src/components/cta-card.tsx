@@ -73,7 +73,6 @@ export function CTACard({
           <ArrowUpRight className={contentStyles.icon} />
           <h3 className={contentStyles.header}>{header}</h3>
         </div>
-
         <div className={contentStyles.textContainer}>
           <p className={contentStyles.subheading}>
             <Balancer>{subheading}</Balancer>
@@ -83,7 +82,6 @@ export function CTACard({
           </p>
         </div>
       </div>
-
       <div
         className={cn(
           'absolute top-0 right-0 h-full overflow-hidden transition-all duration-500 ease-in-out',

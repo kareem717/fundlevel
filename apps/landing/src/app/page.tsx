@@ -9,8 +9,14 @@ import Image from "next/image";
 import Balancer from "react-wrap-balancer";
 import { BetaRequestLink } from "@/components/beta-request-link";
 import { Badge } from "@repo/ui/components/badge";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@repo/ui/components/accordion"
 
-const { ctas, models, hero, features } = copy.landing;
+const { ctas, models, hero, features, faqs } = copy.landing;
 
 export default async function Home() {
   return (
@@ -99,6 +105,23 @@ export default async function Home() {
             cta={cta}
           />
         ))}
+      </LandingSection>
+      <LandingSection
+        id="faq"
+        title="Frequently Asked Questions"
+        subheading="All your questions answered."
+        className="flex flex-col md:flex-row gap-4 w-full"
+      >
+        <Accordion type="single" collapsible className="w-full max-w-4xl mx-auto">
+          {faqs.map((faq, index) => (
+            <AccordionItem value={`faq-${index}`} key={index}>
+              <AccordionTrigger>{faq.question}</AccordionTrigger>
+              <AccordionContent>
+                {faq.answer}
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
       </LandingSection>
       <LandingSection
         id="newsletter"

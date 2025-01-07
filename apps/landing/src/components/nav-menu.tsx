@@ -41,29 +41,21 @@ export function NavMenu({
         )}
       >
         {config.map((item, index) => (
-          <li
+          <Link
+            aria-label={item.label}
             key={index}
+            href={item.href}
+            legacyBehavior
+            passHref
+            prefetch
             className={cn(
-              "hover:text-primary text-md transition-colors",
-              direction === "column" && "w-full",
-              item.href === currentPath && "text-primary"
+              "block",
+              direction === "column" &&
+              "w-full py-2 px-4 hover:bg-accent rounded-md"
             )}
           >
-            <Link
-              aria-label={item.label}
-              href={item.href}
-              legacyBehavior
-              passHref
-              prefetch
-              className={cn(
-                "block",
-                direction === "column" &&
-                "w-full py-2 px-4 hover:bg-accent rounded-md"
-              )}
-            >
-              {item.label}
-            </Link>
-          </li>
+            {item.label}
+          </Link>
         ))}
       </ul>
     </nav>

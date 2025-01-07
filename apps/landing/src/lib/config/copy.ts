@@ -131,6 +131,14 @@ const features: Feature[] = [
   },
 ]
 
+const faqs = [
+  {
+    question: 'What is Fundlevel?',
+    answer:
+      'Fundlevel is a platform that allows you to invest in high-growth opportunities and raise capital without debt or interest.',
+  },
+]
+
 /**
  * Contains all of the copy written for the landing page.
  */
@@ -140,6 +148,7 @@ const landing = {
   ctas,
   models,
   features,
+  faqs,
 }
 
 /**
