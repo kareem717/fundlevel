@@ -1,8 +1,7 @@
 import { FooterItem } from '@/components/footer'
-import { CTA } from '@/components/cta-card'
 import { env } from '@/env'
 import { NumberedCard } from '@/components/numbered-card'
-import { ElementType, ReactNode } from 'react'
+import { ElementType } from 'react'
 import { PortfolioLineGraph } from '@/components/portfolio-line-graph'
 import { NotificationList } from '@/components/notification-list'
 import { LegalFiles } from '@/components/legal-files'
@@ -68,24 +67,6 @@ const footerLinks: FooterItem[] = [
   },
 ]
 
-/**
- * Contains all of the copy written for CTA cards section on the landing page.
- */
-const ctas: CTA[] = [
-  {
-    header: 'Invest',
-    subheading: 'Discover high growth investments.',
-    description:
-      'Access a range of shariah-compliant models, from revenue sharing to asset leasing, and grow your portfolio.',
-  },
-  {
-    header: 'Raise',
-    subheading: 'Secure capital without debt or interest.',
-    description:
-      'Connect with investors through equity crowdfunding, profit-sharing, and more. Grow your business ethically and efficiently.',
-  },
-]
-
 const hero = {
   meetingCTA: 'Book meeting',
   newsletter: {
@@ -145,7 +126,6 @@ const faqs = [
 const landing = {
   hero,
   footer: footerLinks,
-  ctas,
   models,
   features,
   faqs,

@@ -1,5 +1,4 @@
 import { LandingSection } from "../components/landing-section";
-import { CTACard } from "../components/cta-card";
 import { copy } from "@/lib/config/copy";
 import { NumberedCard } from "../components/numbered-card";
 import { Mail, ChartLine } from "lucide-react";
@@ -16,7 +15,7 @@ import {
   AccordionTrigger,
 } from "@repo/ui/components/accordion"
 
-const { ctas, models, hero, features, faqs } = copy.landing;
+const { models, hero, features, faqs } = copy.landing;
 
 export default async function Home() {
   return (
@@ -89,20 +88,6 @@ export default async function Home() {
             key={index}
             index={index}
             card={model}
-          />
-        ))}
-      </LandingSection>
-      <LandingSection
-        id="ctas"
-        title="Join Fundlevel"
-        subheading="Invest and raise capital with confidence."
-        className="flex flex-col md:flex-row gap-4 w-full"
-      >
-        {ctas.map((cta, index) => (
-          <CTACard
-            key={index}
-            index={index}
-            cta={cta}
           />
         ))}
       </LandingSection>

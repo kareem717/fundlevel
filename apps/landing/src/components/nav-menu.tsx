@@ -14,6 +14,7 @@ interface NavConfigProps {
 
 interface NavMenuProps extends ComponentPropsWithoutRef<"nav">, NavConfigProps {
   direction?: "row" | "column";
+  onClick?: () => void;
 }
 
 export function NavMenu({
@@ -21,6 +22,7 @@ export function NavMenu({
   config,
   currentPath,
   direction = "row",
+  onClick,
   ...props
 }: NavMenuProps) {
   return (
@@ -45,6 +47,7 @@ export function NavMenu({
             aria-label={item.label}
             key={index}
             href={item.href}
+            onClick={onClick}
             legacyBehavior
             passHref
             prefetch
