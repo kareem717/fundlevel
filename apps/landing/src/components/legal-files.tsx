@@ -2,22 +2,22 @@ import { cn } from "@repo/ui/lib/utils";
 
 export const files = [
   {
-    name: 'AGREEMENT-2024.pdf',
-    body: 'WHEREAS, the parties hereby agree to the terms and conditions set forth in this agreement as of the effective date...',
-    date: '03/15/2024',
-    pageCount: 24
+    name: 'F1-OFFERING-MEMORANDUM.pdf',
+    body: 'Form 45-106F1: This Offering Memorandum is furnished on a confidential basis to prospective investors for the purpose of...',
+    date: '03/15/2012',
+    pageCount: 42
   },
   {
-    name: 'NDA-v3.2.pdf',
-    body: 'This Non-Disclosure Agreement ("Agreement") is entered into by and between the undersigned parties...',
+    name: 'F6-REPORT-EXEMPT-DISTRIBUTION.pdf',
+    body: 'Form 45-106F6: Report of Exempt Distribution. For the purposes of the National Instrument 45-106 Prospectus...',
     date: '02/28/2024',
-    pageCount: 8
+    pageCount: 15
   },
   {
-    name: 'TERMS_OF_SERVICE.pdf',
-    body: 'IN CONSIDERATION OF the use of the services and the mutual covenants contained herein...',
-    date: '01/10/2024',
-    pageCount: 15
+    name: 'F15-RISK-ACKNOWLEDGEMENT.pdf',
+    body: 'Form 45-106F15: Risk Acknowledgement Form for Individual Accredited Investors. WARNING: This investment is risky...',
+    date: '01/10/2021',
+    pageCount: 8
   },
 ]
 

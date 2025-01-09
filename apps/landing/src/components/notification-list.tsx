@@ -14,7 +14,7 @@ interface Item {
 const NOTIFICATION_CONTENT: Item[] = [
   {
     name: 'New Investment Opportunity',
-    description: 'Green Energy ETF matches your profile',
+    description: 'Brand new real estate development project.',
     time: 'Just now',
     icon: '📈',
     color: '#00C9A7',
@@ -22,35 +22,27 @@ const NOTIFICATION_CONTENT: Item[] = [
   },
   {
     name: 'Risk Level Change',
-    description: 'Tech Portfolio risk increased to HIGH',
+    description: 'Portfolio risk increased to medium',
     time: '5m ago',
     icon: '⚠️',
     color: '#FF3D71',
-    riskLevel: 'high',
-  },
-  {
-    name: 'Position Update',
-    description: 'Added $5000 to Real Estate Fund',
-    time: '15m ago',
-    icon: '🏢',
-    color: '#1E86FF',
     riskLevel: 'medium',
   },
   {
+    name: 'Position Update',
+    description: 'Your portfolio company has been acquired.',
+    time: '15m ago',
+    icon: '🏢',
+    color: '#1E86FF',
+    riskLevel: 'low',
+  },
+  {
     name: 'Exit Opportunity',
-    description: 'Consider taking profits on Crypto position',
+    description: 'One of your portfolio companies is raising another round. This is your chance to exit.',
     time: '30m ago',
     icon: '🎯',
     color: '#FFB800',
     riskLevel: 'high',
-  },
-  {
-    name: 'Market Analysis',
-    description: 'Equities showing strong buy signals',
-    time: '1h ago',
-    icon: '📊',
-    color: '#00C9A7',
-    riskLevel: 'low',
   },
 ]
 
