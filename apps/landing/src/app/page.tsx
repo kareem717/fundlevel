@@ -14,8 +14,76 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@repo/ui/components/accordion"
+import { contact } from "@/lib/config/company";
+import { env } from "@/env";
+import Link from "next/link";
 
-const { services, hero, features, faqs } = copy.landing;
+const { services, hero, features } = copy.landing;
+
+const faqs = [
+  {
+    question: 'What is Fundlevel?',
+    answer: (
+      <>
+        <p>
+          Fundlevel is a platform that helps you raise capital and invest in high-growth opportunities.
+          We provide a white glove experience for all things equity crowdfunding.
+          We also offer a public marketplace for businesses to raise capital and for investors to explore investment opportunities.
+        </p>
+        <br />
+        <p>
+          Our services are also available to businesses that simply want to raise capital through their own channels - thus we offer
+          'modular' services that you can mix and match to fit your business needs, like compliance, payment processing, and more.
+        </p>
+      </>
+    ),
+  },
+  {
+    question: "What's the price?",
+    answer: (
+      <>
+        <p>
+          Simply put, the listing on our marketplace is free whilst our advanced services are paid. We are focused on providing real value by
+          helping companies who are fundraising save time and money - thus we only charge for services that
+          really ease the burden of raising capital. Our pricing is currently on a case by case basis, but we are working on making it more standardized.
+        </p>
+        <br />
+        <p>
+          Don't let that scare you though - we are very quick to respond with a accurate price if you reach out to us at:&nbsp;
+          <Link href={`mailto:${contact.email}`} aria-label="Email us at" className="text-primary underline">
+            {contact.email}
+          </Link>
+        </p>
+      </>
+    ),
+  },
+  {
+    question: 'Can anyone be listed?',
+    answer: (
+      <>
+        <p>
+          We adhere to a strict moral and ethical code of conduct. We do not list any businesses that are not in line with our values.
+          Companies that participate in gambling, sex work, certain forms of finance, etc. are not eligible for listing - though feel free to
+          submit a quick application to see if you qualify.
+        </p>
+      </>
+    ),
+  },
+  {
+    question: 'How can I get started?',
+    answer: (
+      <>
+        <p>
+          Currently we are operating in a private beta, and are only accepting a limited number of businesses. If you are interested as either an investor or business,
+          please <Link href={env.NEXT_PUBLIC_BETA_REQUEST_LINK} className="text-primary underline" aria-label="Click here to get started">click here to get started</Link>&nbsp;
+          or reach out to us at:&nbsp;<Link href={`mailto:${contact.email}`} aria-label="Email us at">
+            {contact.email}
+          </Link>
+        </p>
+      </>
+    ),
+  },
+]
 
 export default async function Home() {
   return (

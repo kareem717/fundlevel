@@ -14,10 +14,6 @@ export const navigationConfig: NavigationItem[] = [
     href: '#services',
   },
   {
-    label: 'Get Started',
-    href: '#ctas',
-  },
-  {
     label: 'Newsletter',
     href: '#newsletter',
   },

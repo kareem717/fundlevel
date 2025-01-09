@@ -1,7 +1,7 @@
 import { FooterItem } from '@/components/footer'
 import { env } from '@/env'
 import { NumberedCard } from '@/components/numbered-card'
-import { ElementType } from 'react'
+import { ElementType, ReactNode } from 'react'
 import { PortfolioLineGraph } from '@/components/portfolio-line-graph'
 import { NotificationList } from '@/components/notification-list'
 import { LegalFiles } from '@/components/legal-files'
@@ -125,13 +125,6 @@ const features: Feature[] = [
   },
 ]
 
-const faqs = [
-  {
-    question: 'What is Fundlevel?',
-    answer:
-      'Fundlevel is a platform that allows you to invest in high-growth opportunities and raise capital without debt or interest.',
-  },
-]
 
 /**
  * Contains all of the copy written for the landing page.
@@ -141,7 +134,6 @@ const landing = {
   footer: footerLinks,
   services,
   features,
-  faqs,
 }
 
 /**
