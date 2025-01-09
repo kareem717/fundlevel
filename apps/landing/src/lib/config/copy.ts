@@ -12,24 +12,34 @@ import { PaymentHandlingFlow } from '@/components/payment-handling-flow'
  */
 const services: NumberedCard[] = [
   {
-    title: 'Equity Financing',
+    title: 'Marketplace',
     description:
-      'Empowering investors to own a share of businesses, benefiting from dividends or capital growth.',
+      'List or find investment opportunities on our rich marketplace - completely free of charge for everyone.',
   },
   {
-    title: 'Revenue/Profit Sharing',
+    title: 'Express Equity Crowdfunding',
     description:
-      'Offering a share of business profits over time, ideal for cash-flow positive ventures.',
+      'Run and participate in a crowdfunding campaign without all of the hassle. We take care of all the legal, compliance, and payment processing. Campaigns can be run privately or publicly on our marketplace.',
   },
   {
-    title: 'Asset Funding Arrangements',
+    title: 'Out of the Box Share Issuance',
     description:
-      'Facilitating shared ownership of assets, generating profits from their use.',
+      'Distribute shares on our platform with a few clicks. We provide a seamless experience for both issuers and investors.',
   },
   {
-    title: 'Mergers & Acquisitions',
+    title: 'Transaction Management',
     description:
-      'Streamlining business growth and consolidation through strategic partnerships and acquisitions.',
+      'Let us handle the entire process of raising capital from start to finish. You can raise capital as easily as sending a link to your future investors!',
+  },
+  {
+    title: 'Due Diligence & Compliance',
+    description:
+      'Easily manage your due diligence and compliance requirements. We help you craft a comprehensive due diligence package that is tailored to your business.',
+  },
+  {
+    title: 'Mix & Match',
+    description:
+      'We provide a range of services to help you achieve your goals. You can mix and match the services you need to fit your business needs.',
   },
 ]
 
