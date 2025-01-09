@@ -34,6 +34,13 @@ const root: Metadata = {
 		"halal loan",
 		"halal",
 		"profit sharing",
+		"equity crowdfunding",
+		"equity crowdfunding platform",
+		"fundraising",
+		"fundraising platform",
+		"crowdfunding",
+		"crowdfunding platform",
+		"equity",
 	],
 	twitter: {
 		card: "summary_large_image",
