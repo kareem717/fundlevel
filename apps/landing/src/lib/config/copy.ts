@@ -1,11 +1,11 @@
-import { FooterItem } from '@/components/footer'
 import { env } from '@/env'
 import { NumberedCard } from '@/components/numbered-card'
-import { ElementType, ReactNode } from 'react'
+import { ElementType } from 'react'
 import { PortfolioLineGraph } from '@/components/portfolio-line-graph'
 import { NotificationList } from '@/components/notification-list'
 import { LegalFiles } from '@/components/legal-files'
 import { PaymentHandlingFlow } from '@/components/payment-handling-flow'
+import { navigationConfig } from './navigation'
 
 /**
  * Contains all of the copy written for services section of the landing page.
@@ -40,43 +40,6 @@ const services: NumberedCard[] = [
     title: 'Mix & Match',
     description:
       'We provide a range of services to help you achieve your goals. You can mix and match the services you need to fit your business needs.',
-  },
-]
-
-/**
- * Contains all of links that are displayed in the footer on the landing page.
- */
-const footerLinks: FooterItem[] = [
-  {
-    title: 'Quick Links',
-    links: [
-      { title: 'About', href: '/about' },
-      { title: 'Contact', href: '/contact' },
-      { title: 'Support', href: '/support' },
-    ],
-  },
-  {
-    title: 'Resources',
-    links: [
-      { title: 'Blog', href: '/blog' },
-      { title: 'FAQs', href: '/faqs' },
-      { title: 'Changelog', href: '/changelog' },
-    ],
-  },
-  {
-    title: 'Fundlevel Apps',
-    links: [
-      { title: 'For Investors', href: '/investors' },
-      { title: 'For Businesses', href: '/businesses' },
-    ],
-  },
-  {
-    title: 'Legal',
-    links: [
-      { title: 'Investment Terms', href: '/legal/investment-terms' },
-      { title: 'Business Agreement', href: '/legal/business-agreement' },
-      { title: 'Privacy Policy', href: '/legal/privacy-policy' },
-    ],
   },
 ]
 
@@ -125,13 +88,11 @@ const features: Feature[] = [
   },
 ]
 
-
 /**
  * Contains all of the copy written for the landing page.
  */
 const landing = {
   hero,
-  footer: footerLinks,
   services,
   features,
 }

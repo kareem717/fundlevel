@@ -5,7 +5,7 @@ import { Providers } from "@/components/providers";
 import { navigationConfig } from "@/lib/config/navigation";
 import { Header } from "../components/header";
 import { Geist, Geist_Mono } from "next/font/google"
-import { copy, meta } from "@/lib/config";
+import { meta } from "@/lib/config";
 import { Footer } from "../components/footer";
 
 const fontSans = Geist({
@@ -42,11 +42,11 @@ export default async function RootLayout({
             disableTransitionOnChange: true,
           }}
         >
-          <Header config={navigationConfig} currentPath={"/"} className="w-[calc(100%-16px)] max-w-screen-xl"/>
+          <Header config={navigationConfig} currentPath={"/"} className="w-[calc(100%-16px)] max-w-screen-xl" />
           <main className="px-4">
             {children}
           </main>
-          <Footer className="mt-20 md:mt-28 w-[calc(100%-16px)] mx-auto" footerLinks={copy.landing.footer} />
+          <Footer className="mt-20 md:mt-28 w-[calc(100%-16px)] mx-auto" />
         </Providers>
       </body>
     </html >
