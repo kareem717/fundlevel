@@ -7,7 +7,10 @@ import { NotificationList } from '@/components/notification-list'
 import { LegalFiles } from '@/components/legal-files'
 import { PaymentHandlingFlow } from '@/components/payment-handling-flow'
 
-const models: NumberedCard[] = [
+/**
+ * Contains all of the copy written for services section of the landing page.
+ */
+const services: NumberedCard[] = [
   {
     title: 'Equity Financing',
     description:
@@ -126,7 +129,7 @@ const faqs = [
 const landing = {
   hero,
   footer: footerLinks,
-  models,
+  services,
   features,
   faqs,
 }

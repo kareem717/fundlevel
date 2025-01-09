@@ -15,7 +15,7 @@ import {
   AccordionTrigger,
 } from "@repo/ui/components/accordion"
 
-const { models, hero, features, faqs } = copy.landing;
+const { services, hero, features, faqs } = copy.landing;
 
 export default async function Home() {
   return (
@@ -78,16 +78,16 @@ export default async function Home() {
         ))}
       </LandingSection >
       <LandingSection
-        id="models"
-        title="Investment Models"
-        subheading="Our Services"
+        id="services"
+        title="Services & Services"
+        subheading="Solutions for all scenarios"
         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"
       >
-        {models.map((model, index) => (
+        {services.map((service, index) => (
           <NumberedCard
             key={index}
             index={index}
-            card={model}
+            card={service}
           />
         ))}
       </LandingSection>
