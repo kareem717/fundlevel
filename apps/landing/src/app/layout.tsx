@@ -33,7 +33,7 @@ export default async function RootLayout({
       className="scroll-smooth"
     >
       <body
-        className={`${fontSans.variable} ${fontMono.variable} font-sans scroll-smooth antialiased focus:scroll-auto max-w-screen-2xl mx-auto pb-8`}
+        className={`${fontSans.variable} ${fontMono.variable} font-sans scroll-smooth antialiased focus:scroll-auto max-w-screen-xl mx-auto pb-8`}
       >
         <Providers
           themeProps={{
@@ -42,7 +42,7 @@ export default async function RootLayout({
             disableTransitionOnChange: true,
           }}
         >
-          <Header config={navigationConfig} currentPath={"/"} className="w-[calc(100%-16px)] max-w-screen-2xl"/>
+          <Header config={navigationConfig} currentPath={"/"} className="w-[calc(100%-16px)] max-w-screen-xl"/>
           <main className="px-4">
             {children}
           </main>
