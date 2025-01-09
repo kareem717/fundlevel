@@ -20,4 +20,5 @@ export const env = createEnv({
       process.env.NEXT_PUBLIC_NEWS_LETTER_SIGN_UP_URL,
     NEXT_PUBLIC_BETA_REQUEST_LINK: process.env.NEXT_PUBLIC_BETA_REQUEST_LINK,
   },
+  skipValidation: process.env.NODE_ENV === 'production',
 })
