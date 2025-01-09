@@ -22,7 +22,7 @@ const NOTIFICATION_CONTENT: Item[] = [
   },
   {
     name: 'Risk Level Change',
-    description: 'Portfolio risk increased to medium',
+    description: 'Portfolio risk increased to medium.',
     time: '5m ago',
     icon: '⚠️',
     color: '#FF3D71',

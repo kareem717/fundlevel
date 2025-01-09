@@ -5,7 +5,6 @@ import { PortfolioLineGraph } from '@/components/portfolio-line-graph'
 import { NotificationList } from '@/components/notification-list'
 import { LegalFiles } from '@/components/legal-files'
 import { PaymentHandlingFlow } from '@/components/payment-handling-flow'
-import { navigationConfig } from './navigation'
 
 /**
  * Contains all of the copy written for services section of the landing page.
@@ -44,14 +43,11 @@ const services: NumberedCard[] = [
 ]
 
 const hero = {
-  meetingCTA: 'Book meeting',
-  newsletter: {
-    CTA: 'Newsletter',
-    signUpURL: env.NEXT_PUBLIC_NEWS_LETTER_SIGN_UP_URL,
-  },
-  title: 'Simple Alternative Investing Aligned With Your Values',
-  description:
-    'Fundlevel enables access to alternative and private markets, allowing investors to find high-return opportunities and businesses to raise capital in a healthy, growth-conducive manner — all while maintaining shariah compliance.',
+  title: 'Simple and efficient equity crowdfunding',
+  description: `
+    Fundlevel is an out-of-the-box solution and marketplace for equity crowdfunding - providing 
+    services to handle all the complexities of raising capital.
+    `,
 }
 
 export type Feature = {

@@ -155,7 +155,7 @@ export default async function Home() {
       </LandingSection >
       <LandingSection
         id="services"
-        title="Services & Services"
+        title="Services & Solutions"
         subheading="Solutions for all scenarios"
         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
       >
