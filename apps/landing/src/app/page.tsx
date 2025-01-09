@@ -90,15 +90,12 @@ export default async function Home() {
   return (
     <div className="flex flex-col items-center w-full space-y-20 md:space-y-40">
       <LandingSection className="flex flex-col items-center justify-center w-full pt-16 md:pt-32" id="hero">
-        {/* <Badge className="rounded-full border bg-green-500 mb-2 sm:mb-6 px-2 py-[1px] sm:px-2.5 sm:py-0.5">
-          Private Beta
-        </Badge> */}
         <HeroBadge
           href={env.NEXT_PUBLIC_BETA_REQUEST_LINK}
           text="New! Private Beta"
           icon={<Megaphone className="h-4 w-4" />}
           endIcon={<ChevronRight className="h-4 w-4" />}
-          className="bg-blue-500 dark:bg-blue-700 mb-2 sm:mb-6"
+          className="bg-green-500 dark:bg-blue-700 mb-2 sm:mb-6"
         />
         <div className="container flex flex-col items-center justify-center w-full gap-4 px-4 pb-16 text-center sm:px-10 md:pb-24 lg:pb-32">
           <h1 className="text-3xl sm:text-4xl lg:text-7xl">
