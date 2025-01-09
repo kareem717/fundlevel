@@ -99,28 +99,28 @@ export type Feature = {
 
 const features: Feature[] = [
   {
-    title: 'Numbers™',
+    title: 'Crowdfunding',
     description:
-      'A comprehensive suite of tools for businesses to analyze activities and assess overall business health.',
+      'A marketplace for businesses to raise capital and explore investment opportunities. From private to public offerings, we have you covered.',
     element: PortfolioLineGraph,
   },
   {
-    title: 'Clarity™',
+    title: 'Fast Compliance',
     description:
-      'Our proprietary stack for investment and risk analysis, providing unparalleled insights and transparency.',
+      'We make compliance, due diligence, and all the other headaches of raising capital easy - finish transactions in minutes.',
     // element: <NotificationList className="h-[300px] w-full border-none transition-all duration-300 ease-out [mask-image:linear-gradient(to_top,transparent_10%,#000_100%)] group-hover:scale-105" />
     element: NotificationList,
   },
   {
-    title: 'Legal',
+    title: 'Seamless Share Distribution',
     description:
-      'Comprehensive handling of all legal aspects, ensuring compliance and peace of mind.',
+      'Issuing and buying shares is now easy. We handle all the legal aspects, ensuring both parties are protected.',
     element: LegalFiles,
   },
   {
-    title: 'Integrations',
+    title: 'Payment Processing',
     description:
-      'Comprehensive handling of all legal aspects, ensuring compliance and peace of mind.',
+      'Out of the box transaction processing. We seamlessly deal with all purchases and payments, letting you focus on the important stuff.',
     element: PaymentHandlingFlow,
   },
 ]
