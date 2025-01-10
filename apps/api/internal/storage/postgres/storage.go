@@ -5,6 +5,7 @@ import (
 	"errors"
 	"time"
 
+	businessentity "fundlevel/internal/entities/business"
 	"fundlevel/internal/storage"
 	"fundlevel/internal/storage/postgres/account"
 	"fundlevel/internal/storage/postgres/analytic"
@@ -121,6 +122,9 @@ func NewRepository(ctx context.Context, config Config, logger *zap.Logger) stora
 		Logger:       logger,
 		SlowDuration: 200 * time.Millisecond,
 	}))
+
+	db.RegisterModel((*businessentity.BusinessMemberRolePermissionAssignment)(nil))
+	db.RegisterModel((*businessentity.BusinessIndustries)(nil))
 
 	return &Repository{
 		db:         db,
