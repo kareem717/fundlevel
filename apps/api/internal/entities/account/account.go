@@ -11,6 +11,7 @@ type Account struct {
 
 	shared.IntegerID
 	CreateAccountParams
+	UserId int `json:"userId" minimum:"1"`
 	shared.Timestamps
 }
 
