@@ -28,7 +28,7 @@ import {
   SelectValue
 } from "@repo/ui/components/select";
 import { IndustrySelect } from "@/components/industry-select";
-import redirects from "@/lib/config/redirects";
+import { redirects } from "@/lib/config/redirects";
 import { zCreateBusinessParams } from "@repo/sdk/zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
@@ -158,7 +158,9 @@ export const CreateBusinessForm = ({ className, ...props }: CreateBusinessFormPr
                   <Calendar
                     mode="single"
                     selected={field.value ? new Date(field.value) : undefined}
-                    onSelect={field.onChange}
+                    onSelect={(date) => {
+                      field.onChange(date?.toISOString() || undefined)
+                    }}
                     disabled={(date) =>
                       date > new Date() || date < new Date("1800-01-01")
                     }

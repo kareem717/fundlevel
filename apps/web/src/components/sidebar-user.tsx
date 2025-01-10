@@ -22,7 +22,7 @@ import {
 import { ComponentPropsWithoutRef, FC } from "react"
 import { Icons } from "@/components/icons"
 import Link from "next/link"
-import redirects from "@/lib/config/redirects"
+import { redirects } from "@/lib/config/redirects"
 
 export interface SidebarUserProps extends ComponentPropsWithoutRef<typeof SidebarMenu> {
   firstName: string

@@ -20,7 +20,7 @@ import { createRound } from "@/actions/rounds";
 import { Popover, PopoverTrigger, PopoverContent } from "@repo/ui/components/popover";
 import { format } from "date-fns";
 import { Calendar } from "@repo/ui/components/calendar";
-import redirects from "@/lib/config/redirects";
+import { redirects } from "@/lib/config/redirects";
 import { useBusinessContext } from "../../../../components/business-context";
 import { zCreateRoundParams } from "@repo/sdk/zod";
 import { zodResolver } from "@hookform/resolvers/zod";

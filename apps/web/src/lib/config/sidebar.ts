@@ -1,6 +1,6 @@
 import { Icons } from "@/components/icons";
 import { LucideIcon } from "lucide-react";
-import redirects from "./redirects";
+import { redirects } from "./redirects";
 
 export type NavigationItem =
 	| {

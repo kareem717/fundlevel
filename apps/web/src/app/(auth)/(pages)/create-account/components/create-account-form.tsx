@@ -1,0 +1,137 @@
+"use client";
+
+import { Button } from "@repo/ui/components/button";
+import { cn } from "@repo/ui/lib/utils";
+import { ComponentPropsWithoutRef, useState } from "react";
+import { toast } from "sonner";
+import { createAccountAction } from "@/actions/auth";
+import { useRouter } from "next/navigation";
+import { redirects } from "@/lib/config/redirects";
+import { Loader2 } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@repo/ui/components/card";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@repo/ui/components/form";
+import { Input } from "@repo/ui/components/input";
+import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { zCreateAccountParams } from "@repo/sdk/zod";
+import Link from "next/link";
+
+export interface CreateAccountFormProps extends ComponentPropsWithoutRef<"div"> {
+  defaultEmail?: string
+  defaultFirstName?: string
+  defaultLastName?: string
+}
+
+export function CreateAccountForm({
+  defaultEmail = "",
+  defaultFirstName = "",
+  defaultLastName = "",
+  className,
+  ...props
+}: CreateAccountFormProps) {
+  const router = useRouter()
+
+  // We want to keep the loading state through redirect on success
+  // thus we can't use the isExecuting state from the action
+  const [isExecuting, setIsExecuting] = useState(false)
+
+  const { form, handleSubmitWithAction } =
+    useHookFormAction(createAccountAction, zodResolver(zCreateAccountParams), {
+      actionProps: {
+        onExecute: () => {
+          setIsExecuting(true)
+        },
+        onSuccess: () => {
+          toast.success("Account created", {
+            description: "Account created successfully. We are redirecting you to the app.",
+          })
+
+          form.reset()
+          router.push(redirects.app.index)
+        },
+        onError: ({ error }) => {
+          toast.error("Error", {
+            description: error.serverError?.message ?? "An error occurred",
+          })
+          setIsExecuting(false)
+        }
+      },
+      formProps: {
+        defaultValues: {
+          firstName: defaultFirstName,
+          lastName: defaultLastName,
+        },
+      },
+    });
+
+  return (
+    <div className={cn("flex flex-col gap-6", className)} {...props}>
+      <Card>
+        <CardHeader className="text-center">
+          <CardTitle className="text-xl">Create Account</CardTitle>
+          <CardDescription>
+            Create an account to get started
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Form {...form}>
+            <form onSubmit={handleSubmitWithAction} className="grid gap-6" >
+              <div className="grid md:grid-cols-2 gap-6">
+                <FormField
+                  control={form.control}
+                  name="firstName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>First Name</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="text"
+                          placeholder="Foo"
+                          autoComplete="first_name"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="lastName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Last Name</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="text"
+                          placeholder="Bar"
+                          autoComplete="last_name"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <Button type="submit" disabled={isExecuting}>
+                {isExecuting && <Loader2 className="w-4 h-4 animate-spin" />}
+                Create Account
+              </Button>
+            </form>
+          </Form>
+        </CardContent>
+      </Card>
+      <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:text-primary  ">
+        By clicking continue, you agree to our <Link href="#">Terms of Service</Link>{" "}
+        and <Link href="#">Privacy Policy</Link>.
+      </div>
+    </div>
+  );
+};

@@ -1,12 +1,14 @@
 "use client";
 
-import { Icons } from "./icons";
+import { Icons } from "@/components/icons";
 import { Button } from "@repo/ui/components/button";
-import supabase from "@/lib/utils/supabase/client";
+import { createClient } from "@/lib/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import { env } from "@/env";
-import { ComponentPropsWithoutRef, FC, useState } from "react";
-import redirects from "@/lib/config/redirects";
+import { ComponentPropsWithoutRef, useState } from "react";
+import { redirects } from "@/lib/config/redirects";
+import { cn } from "@/lib/utils";
+import { Loader2 } from "lucide-react";
 export type OAuthProvider = "google" | "github";
 
 export interface OAuthButtonProps extends ComponentPropsWithoutRef<typeof Button> {
@@ -16,25 +18,30 @@ export interface OAuthButtonProps extends ComponentPropsWithoutRef<typeof Button
   handleLogin: (provider: OAuthProvider) => void;
 }
 
-export const OAuthButton: FC<OAuthButtonProps> = ({ icon, provider, isLoading, handleLogin, ...props }) => {
+export function OAuthButton({ icon, provider, isLoading, handleLogin, disabled, ...props }: OAuthButtonProps) {
   const Icon = Icons[icon];
 
   return (
-    <Button className="w-full" variant="secondary" onClick={() => handleLogin(provider)} disabled={!!isLoading} {...props}>
+    <Button className="w-full" variant="secondary" onClick={() => handleLogin(provider)} disabled={!!isLoading || disabled} {...props}>
       {
-        isLoading === provider ? <Icons.spinner className="w-4 h-4 animate-spin" /> : <Icon className="w-4 h-4" />
+        isLoading === provider ? <Loader2 className="w-4 h-4 animate-spin" /> : <Icon className="w-4 h-4" />
       }
     </Button>
   )
 };
 
-export const OAuthButtons: FC<{ providers: { provider: OAuthProvider, icon: keyof typeof Icons }[], disabled?: boolean }> = ({ providers, disabled }) => {
+export interface OAuthButtonsProps extends ComponentPropsWithoutRef<"div"> {
+  providers: { provider: OAuthProvider, icon: keyof typeof Icons }[];
+  disabled?: boolean;
+}
+
+export function OAuthButtons({ providers, disabled, className, ...props }: OAuthButtonsProps) {
   const [isLoading, setIsLoading] = useState<string | null>(null);
   const router = useRouter();
 
   const handleLogin = async (provider: OAuthProvider) => {
     setIsLoading(provider);
-    const sb = supabase();
+    const sb = createClient();
 
     const { data, error } = await sb.auth.signInWithOAuth({
       provider: provider,
@@ -53,7 +60,7 @@ export const OAuthButtons: FC<{ providers: { provider: OAuthProvider, icon: keyo
 
   return (
 
-    <div className="grid grid-cols-2 gap-2 md:grid-cols-1">
+    <div className={cn("grid grid-cols-2 gap-2 md:gap-4 md:grid-cols-1", className)} {...props}>
       {providers.map(({ provider, icon }) => (
         <OAuthButton key={provider} provider={provider} icon={icon} isLoading={isLoading} handleLogin={handleLogin} disabled={disabled} />
       ))}

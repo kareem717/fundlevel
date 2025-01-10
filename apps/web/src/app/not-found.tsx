@@ -1,5 +1,5 @@
 import React from "react";
-import redirects from "@/lib/config/redirects";
+import { redirects } from "@/lib/config/redirects";
 import Link from "next/link";
 import { cn } from "@repo/ui/lib/utils";
 import { buttonVariants } from "@repo/ui/components/button";

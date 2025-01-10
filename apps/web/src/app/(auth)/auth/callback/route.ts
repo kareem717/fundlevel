@@ -1,7 +1,7 @@
 import { env } from "@/env";
 import { createClient } from "@/lib/utils/supabase/server";
 import { NextResponse } from "next/server";
-import redirects from "@/lib/config/redirects";
+import { redirects } from "@/lib/config/redirects";
 
 export async function GET(request: Request) {
 	// The `/auth/callback` route is required for the server-side auth flow implemented
@@ -23,7 +23,7 @@ export async function GET(request: Request) {
 		try {
 			const sb = await createClient();
 			await sb.auth.exchangeCodeForSession(code);
-		} catch (error) {
+		} catch {
 			return NextResponse.redirect(
 				`${env.NEXT_PUBLIC_APP_URL}/auth/error?error=An+error+occurred+while+authenticating`
 			);
@@ -32,6 +32,6 @@ export async function GET(request: Request) {
 
 	// URL to redirect to after sign up process completes
 	return NextResponse.redirect(
-		`${env.NEXT_PUBLIC_APP_URL}${redirects.auth.createAccount}`
+		`${env.NEXT_PUBLIC_APP_URL}${redirects.auth.afterLogin}`
 	);
 }

@@ -14,7 +14,7 @@ import { Avatar, AvatarFallback } from "@repo/ui/components/avatar";
 import { Icons } from "./icons";
 import { cn } from "@repo/ui/lib/utils";
 import Link from "next/link";
-import redirects from "@/lib/config/redirects";
+import { redirects } from "@/lib/config/redirects";
 
 export interface AccountDropdownProps
   extends ComponentPropsWithoutRef<typeof DropdownMenuTrigger> {

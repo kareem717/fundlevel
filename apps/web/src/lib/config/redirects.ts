@@ -1,15 +1,19 @@
-const redirects = {
+const appIndex = "/";
+
+export const redirects = {
 	privacy: "/privacy-policy",
 	terms: "/terms-of-service",
 	auth: {
+		callback: "/auth/callback",
 		login: "/login",
 		logout: "/logout",
-		afterLogin: "/",
 		afterLogout: "/login",
-		callback: "/auth/callback",
+		afterLogin: appIndex,
+		otp: (email: string) => `/otp?email=${email}`,
 		createAccount: "/create-account",
 	},
 	app: {
+		index: appIndex,
 		wallet: {
 			index: "/wallet",
 			positions: {
@@ -21,7 +25,6 @@ const redirects = {
 				},
 			},
 		},
-		index: "",
 		business: {
 			create: "/create-business",
 			members: "/members",
@@ -52,4 +55,3 @@ const redirects = {
 	},
 };
 
-export default redirects;

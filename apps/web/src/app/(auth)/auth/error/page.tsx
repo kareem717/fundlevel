@@ -1,5 +1,4 @@
-import { Icons } from '@/components/icons'
-
+import { AlertCircle } from "lucide-react";
 
 export default async function AuthErrorPage(props: { searchParams: Promise<{ error?: string | null }> }) {
   const searchParams = await props.searchParams;
@@ -13,7 +12,7 @@ export default async function AuthErrorPage(props: { searchParams: Promise<{ err
 
   return (
     <div className="flex flex-col items-center gap-4 justify-center h-screen w-full px-4">
-      <Icons.alert className='w-40 h-40 text-muted-foreground animate-pulse' />
+      <AlertCircle className='w-40 h-40 text-muted-foreground animate-pulse' />
       <h2 className='text-lg font-semibold'>{error} </h2>
     </div>
   )

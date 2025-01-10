@@ -1,4 +1,4 @@
-import redirects from "@/lib/config/redirects";
+import { redirects } from "@/lib/config/redirects";
 import { env } from "@/env";
 import { MetadataRoute } from "next";
 

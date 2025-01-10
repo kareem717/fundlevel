@@ -11,7 +11,7 @@ import {
 } from "@repo/ui/components/form";
 import { Input } from "@repo/ui/components/input";
 import { toast } from "sonner"
-import { updateAccount } from "@/actions/auth";
+import { updateAccountAction } from "@/actions/auth";
 import { ComponentPropsWithoutRef, FC } from "react";
 import { Icons } from "@/components/icons";
 import { cn } from "@repo/ui/lib/utils";
@@ -28,7 +28,7 @@ export const UpdateAccountForm: FC<UpdateAccountFormProps> = ({ className, onSuc
   const { account } = useAuth()
 
   const { form, action: { isExecuting }, handleSubmitWithAction } =
-    useHookFormAction(updateAccount, zodResolver(zUpdateAccountParams), {
+    useHookFormAction(updateAccountAction, zodResolver(zUpdateAccountParams), {
       actionProps: {
         onSuccess: () => {
           toast.success("Account updated successfully!");

@@ -1,7 +1,7 @@
 import { ComponentPropsWithoutRef, FC } from "react";
 import { cn } from "@repo/ui/lib/utils";
 import Link from "next/link";
-import redirects from "@/lib/config/redirects";
+import { redirects } from "@/lib/config/redirects";
 import { Icons } from "./icons";
 
 interface LogoDivProps extends Omit<ComponentPropsWithoutRef<typeof Link>, "href"> {
