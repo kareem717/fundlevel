@@ -17,7 +17,7 @@ export const zAccount = z.object({
     .max(30)
     .regex(/^[a-zA-Z]+$/),
   updatedAt: z.union([z.string().datetime(), z.null()]),
-  userId: z.string().uuid().length(36),
+  userId: z.number().gte(1),
 });
 
 export const zBusiness = z.object({
@@ -129,26 +129,6 @@ export const zBusinessStripeAccount = z.object({
   updatedAt: z.union([z.string().datetime(), z.null()]),
 });
 
-export const zChat = z.object({
-  createdAt: z.string().datetime(),
-  createdByAccountId: z.number().gte(1),
-  createdForAccountId: z.number().gte(1),
-  deletedAt: z.union([z.string().datetime(), z.null()]),
-  id: z.number().gte(1),
-  lastMessageAt: z.union([z.string().datetime(), z.null()]),
-  updatedAt: z.union([z.string().datetime(), z.null()]),
-});
-
-export const zChatMessage = z.object({
-  content: z.string().min(1).max(1000),
-  createdAt: z.string().datetime(),
-  deletedAt: z.union([z.string().datetime(), z.null()]),
-  id: z.number().gte(1),
-  readAt: z.union([z.string().datetime(), z.null()]),
-  senderAccountId: z.number().gte(1),
-  updatedAt: z.union([z.string().datetime(), z.null()]),
-});
-
 export const zCreateAccountParams = z.object({
   $schema: z.string().url().readonly().optional(),
   firstName: z
@@ -161,38 +141,12 @@ export const zCreateAccountParams = z.object({
     .min(3)
     .max(30)
     .regex(/^[a-zA-Z]+$/),
-  userId: z.string().uuid().length(36),
 });
 
 export const zCreateBusinessParams = z.object({
   $schema: z.string().url().readonly().optional(),
   business: zBusinessParams,
   industryIds: z.union([z.array(z.number()).min(1), z.null()]).optional(),
-  initialOwnerId: z.number().gte(1),
-});
-
-export const zCreateChatParams = z.object({
-  $schema: z.string().url().readonly().optional(),
-  createdByAccountId: z.number().gte(1),
-  createdForAccountId: z.number().gte(1),
-});
-
-export const zCreateChatResponseBody = z.object({
-  $schema: z.string().url().readonly().optional(),
-  createdAt: z.string().datetime(),
-  createdByAccountId: z.number().gte(1),
-  createdForAccountId: z.number().gte(1),
-  deletedAt: z.union([z.string().datetime(), z.null()]),
-  id: z.number().gte(1),
-  lastMessageAt: z.union([z.string().datetime(), z.null()]),
-  message: z.string(),
-  updatedAt: z.union([z.string().datetime(), z.null()]),
-});
-
-export const zCreateMessageParams = z.object({
-  $schema: z.string().url().readonly().optional(),
-  content: z.string().min(1).max(1000),
-  senderAccountId: z.number().gte(1),
 });
 
 export const zCreateRoundParams = z.object({
@@ -256,22 +210,6 @@ export const zGetBusinessesOutputBody = z.object({
   $schema: z.string().url().readonly().optional(),
   businesses: z.union([z.array(zBusiness), z.null()]),
   message: z.string(),
-});
-
-export const zGetChatMessagesResponseBody = z.object({
-  $schema: z.string().url().readonly().optional(),
-  hasNext: z.boolean(),
-  message: z.string(),
-  messages: z.union([z.array(zChatMessage), z.null()]),
-  nextCursor: z.union([z.string().datetime(), z.null()]),
-});
-
-export const zGetChatsOutputBody = z.object({
-  $schema: z.string().url().readonly().optional(),
-  chats: z.union([z.array(zChat), z.null()]),
-  hasNext: z.boolean(),
-  message: z.string(),
-  nextCursor: z.union([z.string().datetime(), z.null()]),
 });
 
 export const zGetCursorPaginatedInvestmentsOutputBody = z.object({
@@ -359,38 +297,6 @@ export const zGetCursorPaginatedRoundsOutputBody = z.object({
     ),
     z.null(),
   ]),
-});
-
-export const zGetDailyAggregatedBusinessAnalyticsOutputBody = z.object({
-  $schema: z.string().url().readonly().optional(),
-  analytics: z.union([
-    z.array(
-      z.object({
-        dayOfYear: z.number(),
-        favouritedCount: z.number(),
-        impressionsCount: z.number(),
-        uniquesImpressionsCount: z.number(),
-      }),
-    ),
-    z.null(),
-  ]),
-  message: z.string(),
-});
-
-export const zGetDailyAggregatedRoundAnalyticsOutputBody = z.object({
-  $schema: z.string().url().readonly().optional(),
-  analytics: z.union([
-    z.array(
-      z.object({
-        dayOfYear: z.number(),
-        favouritedCount: z.number(),
-        impressionsCount: z.number(),
-        uniquesImpressionsCount: z.number(),
-      }),
-    ),
-    z.null(),
-  ]),
-  message: z.string(),
 });
 
 export const zGetInvestmentActivePaymentOutputBody = z.object({
@@ -567,11 +473,6 @@ export const zImpressionCountOutputBody = z.object({
   message: z.string(),
 });
 
-export const zImpressionInputBody = z.object({
-  $schema: z.string().url().readonly().optional(),
-  accountId: z.number().gte(1),
-});
-
 export const zIndustry = z.object({
   createdAt: z.string().datetime(),
   deletedAt: z.union([z.string().datetime(), z.null()]),
@@ -725,20 +626,6 @@ export const zSafeAccount = z.object({
   updatedAt: z.union([z.string().datetime(), z.null()]),
 });
 
-export const zSimplifiedDailyAggregatedBusinessAnalytics = z.object({
-  dayOfYear: z.number(),
-  favouritedCount: z.number(),
-  impressionsCount: z.number(),
-  uniquesImpressionsCount: z.number(),
-});
-
-export const zSimplifiedDailyAggregatedRoundAnalytics = z.object({
-  dayOfYear: z.number(),
-  favouritedCount: z.number(),
-  impressionsCount: z.number(),
-  uniquesImpressionsCount: z.number(),
-});
-
 export const zSingleAccountResponseBody = z.object({
   $schema: z.string().url().readonly().optional(),
   account: zAccount,
@@ -789,28 +676,18 @@ export const zUpdateAccountParams = z.object({
     .regex(/^[a-zA-Z]+$/),
 });
 
-export const zUpdateMessageParams = z.object({
-  $schema: z.string().url().readonly().optional(),
-  content: z.string().min(1).max(1000),
-  readAt: z.union([z.string().datetime(), z.null()]),
-});
-
 export const zUpsertBusinessLegalSectionParams = z.object({
   $schema: z.string().url().readonly().optional(),
   businessNumber: z.string().min(1).max(10),
 });
 
-export const zCreateAccountResponse = zSingleAccountResponseBody;
+export const zGetAccountResponse = zSingleAccountResponseBody;
 
-export const zDeleteAccountResponse = zMessageResponse;
+export const zDeleteAccountResponse = z.void();
 
-export const zGetAccountByIdResponse = zSingleAccountResponseBody;
-
-export const zUpdateAccountResponse = zSingleAccountResponseBody;
+export const zUpdateAccountResponse = z.void();
 
 export const zGetAccountBusinessesResponse = zGetBusinessesOutputBody;
-
-export const zGetAccountChatsResponse = zGetChatsOutputBody;
 
 export const zGetAccountInvestmentsByCursorResponse =
   zGetCursorPaginatedInvestmentsOutputBody;
@@ -818,8 +695,7 @@ export const zGetAccountInvestmentsByCursorResponse =
 export const zGetAccountInvestmentsByPageResponse =
   zGetOffsetPaginatedInvestmentsOutputBody;
 
-export const zGetDailyAggregatedBusinessAnalyticsResponse =
-  zGetDailyAggregatedBusinessAnalyticsOutputBody;
+export const zCreateBusinessImpressionResponse = zMessageResponse;
 
 export const zDeleteBusinessFavouriteResponse = zMessageResponse;
 
@@ -831,24 +707,21 @@ export const zGetBusinessFavouriteCountResponse = zGetLikeCountOutputBody;
 
 export const zGetBusinessImpressionCountResponse = zImpressionCountOutputBody;
 
-export const zCreateBusinessImpressionResponse = zMessageResponse;
+export const zCreateRoundFavouriteResponse = zMessageResponse;
 
-export const zGetDailyAggregatedRoundAnalyticsResponse =
-  zGetDailyAggregatedRoundAnalyticsOutputBody;
+export const zCreateRoundImpressionResponse = zMessageResponse;
 
 export const zDeleteRoundFavouriteResponse = zMessageResponse;
 
 export const zGetRoundFavouriteStatusResponse = zIsFavouritedOutputBody;
 
-export const zCreateRoundFavouriteResponse = zMessageResponse;
-
 export const zGetRoundFavouriteCountResponse = zGetLikeCountOutputBody;
 
 export const zGetRoundImpressionCountResponse = zImpressionCountOutputBody;
 
-export const zCreateRoundImpressionResponse = zMessageResponse;
-
 export const zCreateBusinessResponse = zMessageResponse;
+
+export const zGetBusinessStripeAccountResponse = zGetStripeAccountOutputBody;
 
 export const zDeleteBusinessResponse = zMessageResponse;
 
@@ -878,23 +751,9 @@ export const zGetBusinessRoundsByPageResponse =
 
 export const zUpsertBusinessLegalSectionResponse = zMessageResponse;
 
-export const zGetBusinessStripeAccountResponse = zGetStripeAccountOutputBody;
-
 export const zGetStripeDashboardUrlResponse = zUrlOutputBody;
 
 export const zOnboardStripeConnectedAccountResponse = zUrlOutputBody;
-
-export const zCreateChatResponse = zCreateChatResponseBody;
-
-export const zDeleteChatMessageResponse = zMessageResponse;
-
-export const zUpdateChatMessageResponse = zMessageResponse;
-
-export const zDeleteChatResponse = zMessageResponse;
-
-export const zGetChatMessagesResponse = zGetChatMessagesResponseBody;
-
-export const zCreateChatMessageResponse = zMessageResponse;
 
 export const zHealthCheckResponse = zMessageResponse;
 
@@ -921,5 +780,3 @@ export const zGetRoundsByPageResponse = zGetOffsetPaginatedRoundsOutputBody;
 export const zDeleteRoundResponse = z.void();
 
 export const zGetRoundByIdResponse = zSingleRoundWithBusinessResponseBody;
-
-export const zGetUserAccountResponse = zSingleAccountResponseBody;

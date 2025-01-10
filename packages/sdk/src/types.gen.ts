@@ -7,7 +7,7 @@ export type Account = {
   id: number;
   lastName: string;
   updatedAt: string | null;
-  userId: string;
+  userId: number;
 };
 
 export type Business = {
@@ -82,26 +82,6 @@ export type BusinessStripeAccount = {
   updatedAt: string | null;
 };
 
-export type Chat = {
-  createdAt: string;
-  createdByAccountId: number;
-  createdForAccountId: number;
-  deletedAt: string | null;
-  id: number;
-  lastMessageAt: string | null;
-  updatedAt: string | null;
-};
-
-export type ChatMessage = {
-  content: string;
-  createdAt: string;
-  deletedAt: string | null;
-  id: number;
-  readAt: string | null;
-  senderAccountId: number;
-  updatedAt: string | null;
-};
-
 export type CreateAccountParams = {
   /**
    * A URL to the JSON Schema for this object.
@@ -109,7 +89,6 @@ export type CreateAccountParams = {
   readonly $schema?: string;
   firstName: string;
   lastName: string;
-  userId: string;
 };
 
 export type CreateBusinessParams = {
@@ -119,40 +98,6 @@ export type CreateBusinessParams = {
   readonly $schema?: string;
   business: BusinessParams;
   industryIds?: Array<number> | null;
-  initialOwnerId: number;
-};
-
-export type CreateChatParams = {
-  /**
-   * A URL to the JSON Schema for this object.
-   */
-  readonly $schema?: string;
-  createdByAccountId: number;
-  createdForAccountId: number;
-};
-
-export type CreateChatResponseBody = {
-  /**
-   * A URL to the JSON Schema for this object.
-   */
-  readonly $schema?: string;
-  createdAt: string;
-  createdByAccountId: number;
-  createdForAccountId: number;
-  deletedAt: string | null;
-  id: number;
-  lastMessageAt: string | null;
-  message: string;
-  updatedAt: string | null;
-};
-
-export type CreateMessageParams = {
-  /**
-   * A URL to the JSON Schema for this object.
-   */
-  readonly $schema?: string;
-  content: string;
-  senderAccountId: number;
 };
 
 export type CreateRoundParams = {
@@ -252,28 +197,6 @@ export type GetBusinessesOutputBody = {
   message: string;
 };
 
-export type GetChatMessagesResponseBody = {
-  /**
-   * A URL to the JSON Schema for this object.
-   */
-  readonly $schema?: string;
-  hasNext: boolean;
-  message: string;
-  messages: Array<ChatMessage> | null;
-  nextCursor: string | null;
-};
-
-export type GetChatsOutputBody = {
-  /**
-   * A URL to the JSON Schema for this object.
-   */
-  readonly $schema?: string;
-  chats: Array<Chat> | null;
-  hasNext: boolean;
-  message: string;
-  nextCursor: string | null;
-};
-
 export type GetCursorPaginatedInvestmentsOutputBody = {
   /**
    * A URL to the JSON Schema for this object.
@@ -294,24 +217,6 @@ export type GetCursorPaginatedRoundsOutputBody = {
   message: string;
   nextCursor: number | null;
   rounds: Array<Round> | null;
-};
-
-export type GetDailyAggregatedBusinessAnalyticsOutputBody = {
-  /**
-   * A URL to the JSON Schema for this object.
-   */
-  readonly $schema?: string;
-  analytics: Array<SimplifiedDailyAggregatedBusinessAnalytics> | null;
-  message: string;
-};
-
-export type GetDailyAggregatedRoundAnalyticsOutputBody = {
-  /**
-   * A URL to the JSON Schema for this object.
-   */
-  readonly $schema?: string;
-  analytics: Array<SimplifiedDailyAggregatedRoundAnalytics> | null;
-  message: string;
 };
 
 export type GetInvestmentActivePaymentOutputBody = {
@@ -399,14 +304,6 @@ export type ImpressionCountOutputBody = {
   readonly $schema?: string;
   count: number;
   message: string;
-};
-
-export type ImpressionInputBody = {
-  /**
-   * A URL to the JSON Schema for this object.
-   */
-  readonly $schema?: string;
-  accountId: number;
 };
 
 export type Industry = {
@@ -548,20 +445,6 @@ export type SafeAccount = {
   updatedAt: string | null;
 };
 
-export type SimplifiedDailyAggregatedBusinessAnalytics = {
-  dayOfYear: number;
-  favouritedCount: number;
-  impressionsCount: number;
-  uniquesImpressionsCount: number;
-};
-
-export type SimplifiedDailyAggregatedRoundAnalytics = {
-  dayOfYear: number;
-  favouritedCount: number;
-  impressionsCount: number;
-  uniquesImpressionsCount: number;
-};
-
 export type SingleAccountResponseBody = {
   /**
    * A URL to the JSON Schema for this object.
@@ -625,15 +508,6 @@ export type UpdateAccountParams = {
   lastName: string;
 };
 
-export type UpdateMessageParams = {
-  /**
-   * A URL to the JSON Schema for this object.
-   */
-  readonly $schema?: string;
-  content: string;
-  readAt: string | null;
-};
-
 export type UpsertBusinessLegalSectionParams = {
   /**
    * A URL to the JSON Schema for this object.
@@ -641,6 +515,31 @@ export type UpsertBusinessLegalSectionParams = {
   readonly $schema?: string;
   businessNumber: string;
 };
+
+export type GetAccountData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/account";
+};
+
+export type GetAccountErrors = {
+  /**
+   * Error
+   */
+  default: ErrorModel;
+};
+
+export type GetAccountError = GetAccountErrors[keyof GetAccountErrors];
+
+export type GetAccountResponses = {
+  /**
+   * OK
+   */
+  200: SingleAccountResponseBody;
+};
+
+export type GetAccountResponse = GetAccountResponses[keyof GetAccountResponses];
 
 export type CreateAccountData = {
   body: CreateAccountParams;
@@ -660,19 +559,14 @@ export type CreateAccountError = CreateAccountErrors[keyof CreateAccountErrors];
 
 export type CreateAccountResponses = {
   /**
-   * OK
+   * Created
    */
-  200: SingleAccountResponseBody;
+  201: unknown;
 };
-
-export type CreateAccountResponse =
-  CreateAccountResponses[keyof CreateAccountResponses];
 
 export type DeleteAccountData = {
   body?: never;
-  path: {
-    id: number;
-  };
+  path?: never;
   query?: never;
   url: "/account/{id}";
 };
@@ -688,48 +582,17 @@ export type DeleteAccountError = DeleteAccountErrors[keyof DeleteAccountErrors];
 
 export type DeleteAccountResponses = {
   /**
-   * OK
+   * No Content
    */
-  200: MessageResponse;
+  204: void;
 };
 
 export type DeleteAccountResponse =
   DeleteAccountResponses[keyof DeleteAccountResponses];
 
-export type GetAccountByIdData = {
-  body?: never;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: "/account/{id}";
-};
-
-export type GetAccountByIdErrors = {
-  /**
-   * Error
-   */
-  default: ErrorModel;
-};
-
-export type GetAccountByIdError =
-  GetAccountByIdErrors[keyof GetAccountByIdErrors];
-
-export type GetAccountByIdResponses = {
-  /**
-   * OK
-   */
-  200: SingleAccountResponseBody;
-};
-
-export type GetAccountByIdResponse =
-  GetAccountByIdResponses[keyof GetAccountByIdResponses];
-
 export type UpdateAccountData = {
   body: UpdateAccountParams;
-  path: {
-    id: number;
-  };
+  path?: never;
   query?: never;
   url: "/account/{id}";
 };
@@ -745,9 +608,9 @@ export type UpdateAccountError = UpdateAccountErrors[keyof UpdateAccountErrors];
 
 export type UpdateAccountResponses = {
   /**
-   * OK
+   * No Content
    */
-  200: SingleAccountResponseBody;
+  204: void;
 };
 
 export type UpdateAccountResponse =
@@ -755,9 +618,7 @@ export type UpdateAccountResponse =
 
 export type GetAccountBusinessesData = {
   body?: never;
-  path: {
-    id: number;
-  };
+  path?: never;
   query?: never;
   url: "/account/{id}/businesses";
 };
@@ -782,43 +643,9 @@ export type GetAccountBusinessesResponses = {
 export type GetAccountBusinessesResponse =
   GetAccountBusinessesResponses[keyof GetAccountBusinessesResponses];
 
-export type GetAccountChatsData = {
-  body?: never;
-  path: {
-    id: number;
-  };
-  query?: {
-    cursor?: string;
-    limit?: number;
-  };
-  url: "/account/{id}/chats";
-};
-
-export type GetAccountChatsErrors = {
-  /**
-   * Error
-   */
-  default: ErrorModel;
-};
-
-export type GetAccountChatsError =
-  GetAccountChatsErrors[keyof GetAccountChatsErrors];
-
-export type GetAccountChatsResponses = {
-  /**
-   * OK
-   */
-  200: GetChatsOutputBody;
-};
-
-export type GetAccountChatsResponse =
-  GetAccountChatsResponses[keyof GetAccountChatsResponses];
-
 export type GetAccountInvestmentsByCursorData = {
   body?: never;
-  path: {
-    id: number;
-  };
+  path?: never;
   query?: {
     cursor?: number;
     limit?: number;
@@ -860,9 +687,7 @@ export type GetAccountInvestmentsByCursorResponse =
 
 export type GetAccountInvestmentsByPageData = {
   body?: never;
-  path: {
-    id: number;
-  };
+  path?: never;
   query?: {
     page?: number;
     pageSize?: number;
@@ -902,46 +727,40 @@ export type GetAccountInvestmentsByPageResponses = {
 export type GetAccountInvestmentsByPageResponse =
   GetAccountInvestmentsByPageResponses[keyof GetAccountInvestmentsByPageResponses];
 
-export type GetDailyAggregatedBusinessAnalyticsData = {
+export type CreateBusinessImpressionData = {
   body?: never;
-  path: {
-    id: number;
-  };
-  query?: {
-    minDayOfYear?: number;
-    maxDayOfYear?: number;
-  };
-  url: "/analytic/businesses/{id}";
+  path?: never;
+  query?: never;
+  url: "/analytic/businesses/impressions";
 };
 
-export type GetDailyAggregatedBusinessAnalyticsErrors = {
+export type CreateBusinessImpressionErrors = {
   /**
    * Error
    */
   default: ErrorModel;
 };
 
-export type GetDailyAggregatedBusinessAnalyticsError =
-  GetDailyAggregatedBusinessAnalyticsErrors[keyof GetDailyAggregatedBusinessAnalyticsErrors];
+export type CreateBusinessImpressionError =
+  CreateBusinessImpressionErrors[keyof CreateBusinessImpressionErrors];
 
-export type GetDailyAggregatedBusinessAnalyticsResponses = {
+export type CreateBusinessImpressionResponses = {
   /**
    * OK
    */
-  200: GetDailyAggregatedBusinessAnalyticsOutputBody;
+  200: MessageResponse;
 };
 
-export type GetDailyAggregatedBusinessAnalyticsResponse =
-  GetDailyAggregatedBusinessAnalyticsResponses[keyof GetDailyAggregatedBusinessAnalyticsResponses];
+export type CreateBusinessImpressionResponse =
+  CreateBusinessImpressionResponses[keyof CreateBusinessImpressionResponses];
 
 export type DeleteBusinessFavouriteData = {
   body?: never;
   path: {
     id: number;
-    accountId: number;
   };
   query?: never;
-  url: "/analytic/businesses/{id}/account/{accountId}/favourite";
+  url: "/analytic/businesses/{id}/favourite";
 };
 
 export type DeleteBusinessFavouriteErrors = {
@@ -968,10 +787,9 @@ export type GetBusinessFavouriteStatusData = {
   body?: never;
   path: {
     id: number;
-    accountId: number;
   };
   query?: never;
-  url: "/analytic/businesses/{id}/account/{accountId}/favourite";
+  url: "/analytic/businesses/{id}/favourite";
 };
 
 export type GetBusinessFavouriteStatusErrors = {
@@ -998,10 +816,9 @@ export type CreateBusinessFavouriteData = {
   body?: never;
   path: {
     id: number;
-    accountId: number;
   };
   query?: never;
-  url: "/analytic/businesses/{id}/account/{accountId}/favourite";
+  url: "/analytic/businesses/{id}/favourite";
 };
 
 export type CreateBusinessFavouriteErrors = {
@@ -1082,75 +899,69 @@ export type GetBusinessImpressionCountResponses = {
 export type GetBusinessImpressionCountResponse =
   GetBusinessImpressionCountResponses[keyof GetBusinessImpressionCountResponses];
 
-export type CreateBusinessImpressionData = {
-  body: ImpressionInputBody;
+export type CreateRoundFavouriteData = {
+  body?: never;
   path: {
     id: number;
   };
   query?: never;
-  url: "/analytic/businesses/{id}/impressions";
+  url: "/analytic/rounds/favourites";
 };
 
-export type CreateBusinessImpressionErrors = {
+export type CreateRoundFavouriteErrors = {
   /**
    * Error
    */
   default: ErrorModel;
 };
 
-export type CreateBusinessImpressionError =
-  CreateBusinessImpressionErrors[keyof CreateBusinessImpressionErrors];
+export type CreateRoundFavouriteError =
+  CreateRoundFavouriteErrors[keyof CreateRoundFavouriteErrors];
 
-export type CreateBusinessImpressionResponses = {
+export type CreateRoundFavouriteResponses = {
   /**
    * OK
    */
   200: MessageResponse;
 };
 
-export type CreateBusinessImpressionResponse =
-  CreateBusinessImpressionResponses[keyof CreateBusinessImpressionResponses];
+export type CreateRoundFavouriteResponse =
+  CreateRoundFavouriteResponses[keyof CreateRoundFavouriteResponses];
 
-export type GetDailyAggregatedRoundAnalyticsData = {
+export type CreateRoundImpressionData = {
   body?: never;
-  path: {
-    id: number;
-  };
-  query?: {
-    minDayOfYear?: number;
-    maxDayOfYear?: number;
-  };
-  url: "/analytic/rounds/{id}";
+  path?: never;
+  query?: never;
+  url: "/analytic/rounds/impressions";
 };
 
-export type GetDailyAggregatedRoundAnalyticsErrors = {
+export type CreateRoundImpressionErrors = {
   /**
    * Error
    */
   default: ErrorModel;
 };
 
-export type GetDailyAggregatedRoundAnalyticsError =
-  GetDailyAggregatedRoundAnalyticsErrors[keyof GetDailyAggregatedRoundAnalyticsErrors];
+export type CreateRoundImpressionError =
+  CreateRoundImpressionErrors[keyof CreateRoundImpressionErrors];
 
-export type GetDailyAggregatedRoundAnalyticsResponses = {
+export type CreateRoundImpressionResponses = {
   /**
    * OK
    */
-  200: GetDailyAggregatedRoundAnalyticsOutputBody;
+  200: MessageResponse;
 };
 
-export type GetDailyAggregatedRoundAnalyticsResponse =
-  GetDailyAggregatedRoundAnalyticsResponses[keyof GetDailyAggregatedRoundAnalyticsResponses];
+export type CreateRoundImpressionResponse =
+  CreateRoundImpressionResponses[keyof CreateRoundImpressionResponses];
 
 export type DeleteRoundFavouriteData = {
   body?: never;
   path: {
     id: number;
-    accountId: number;
   };
   query?: never;
-  url: "/analytic/rounds/{id}/account/{accountId}/favourite";
+  url: "/analytic/rounds/{id}/favourite";
 };
 
 export type DeleteRoundFavouriteErrors = {
@@ -1177,10 +988,9 @@ export type GetRoundFavouriteStatusData = {
   body?: never;
   path: {
     id: number;
-    accountId: number;
   };
   query?: never;
-  url: "/analytic/rounds/{id}/account/{accountId}/favourite";
+  url: "/analytic/rounds/{id}/favourite";
 };
 
 export type GetRoundFavouriteStatusErrors = {
@@ -1202,36 +1012,6 @@ export type GetRoundFavouriteStatusResponses = {
 
 export type GetRoundFavouriteStatusResponse =
   GetRoundFavouriteStatusResponses[keyof GetRoundFavouriteStatusResponses];
-
-export type CreateRoundFavouriteData = {
-  body?: never;
-  path: {
-    id: number;
-    accountId: number;
-  };
-  query?: never;
-  url: "/analytic/rounds/{id}/account/{accountId}/favourite";
-};
-
-export type CreateRoundFavouriteErrors = {
-  /**
-   * Error
-   */
-  default: ErrorModel;
-};
-
-export type CreateRoundFavouriteError =
-  CreateRoundFavouriteErrors[keyof CreateRoundFavouriteErrors];
-
-export type CreateRoundFavouriteResponses = {
-  /**
-   * OK
-   */
-  200: MessageResponse;
-};
-
-export type CreateRoundFavouriteResponse =
-  CreateRoundFavouriteResponses[keyof CreateRoundFavouriteResponses];
 
 export type GetRoundFavouriteCountData = {
   body?: never;
@@ -1291,35 +1071,6 @@ export type GetRoundImpressionCountResponses = {
 export type GetRoundImpressionCountResponse =
   GetRoundImpressionCountResponses[keyof GetRoundImpressionCountResponses];
 
-export type CreateRoundImpressionData = {
-  body: ImpressionInputBody;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: "/analytic/rounds/{id}/impressions";
-};
-
-export type CreateRoundImpressionErrors = {
-  /**
-   * Error
-   */
-  default: ErrorModel;
-};
-
-export type CreateRoundImpressionError =
-  CreateRoundImpressionErrors[keyof CreateRoundImpressionErrors];
-
-export type CreateRoundImpressionResponses = {
-  /**
-   * OK
-   */
-  200: MessageResponse;
-};
-
-export type CreateRoundImpressionResponse =
-  CreateRoundImpressionResponses[keyof CreateRoundImpressionResponses];
-
 export type CreateBusinessData = {
   body: CreateBusinessParams;
   path?: never;
@@ -1346,6 +1097,35 @@ export type CreateBusinessResponses = {
 
 export type CreateBusinessResponse =
   CreateBusinessResponses[keyof CreateBusinessResponses];
+
+export type GetBusinessStripeAccountData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: "/business/{businessId}/stripe";
+};
+
+export type GetBusinessStripeAccountErrors = {
+  /**
+   * Error
+   */
+  default: ErrorModel;
+};
+
+export type GetBusinessStripeAccountError =
+  GetBusinessStripeAccountErrors[keyof GetBusinessStripeAccountErrors];
+
+export type GetBusinessStripeAccountResponses = {
+  /**
+   * OK
+   */
+  200: GetStripeAccountOutputBody;
+};
+
+export type GetBusinessStripeAccountResponse =
+  GetBusinessStripeAccountResponses[keyof GetBusinessStripeAccountResponses];
 
 export type DeleteBusinessData = {
   body?: never;
@@ -1442,18 +1222,6 @@ export type GetBusinessInvestmentsByCursorData = {
   query?: {
     cursor?: number;
     limit?: number;
-    status?: Array<
-      | "awaiting_term_acceptance"
-      | "awaiting_payment"
-      | "investor_tasks_completed"
-      | "failed_to_accept_terms"
-      | "failed_to_make_payment"
-      | "investor_withdrew"
-      | "business_rejected"
-      | "round_closed_before_investor_tasks_completed"
-    > | null;
-    sortBy?: "created_at";
-    sortOrder?: "asc" | "desc";
   };
   url: "/business/{id}/investments";
 };
@@ -1486,18 +1254,6 @@ export type GetBusinessInvestmentsByPageData = {
   query?: {
     page?: number;
     pageSize?: number;
-    status?: Array<
-      | "awaiting_term_acceptance"
-      | "awaiting_payment"
-      | "investor_tasks_completed"
-      | "failed_to_accept_terms"
-      | "failed_to_make_payment"
-      | "investor_withdrew"
-      | "business_rejected"
-      | "round_closed_before_investor_tasks_completed"
-    > | null;
-    sortBy?: "created_at";
-    sortOrder?: "asc" | "desc";
   };
   url: "/business/{id}/investments/page";
 };
@@ -1703,35 +1459,6 @@ export type UpsertBusinessLegalSectionResponses = {
 export type UpsertBusinessLegalSectionResponse =
   UpsertBusinessLegalSectionResponses[keyof UpsertBusinessLegalSectionResponses];
 
-export type GetBusinessStripeAccountData = {
-  body?: never;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: "/business/{id}/stripe";
-};
-
-export type GetBusinessStripeAccountErrors = {
-  /**
-   * Error
-   */
-  default: ErrorModel;
-};
-
-export type GetBusinessStripeAccountError =
-  GetBusinessStripeAccountErrors[keyof GetBusinessStripeAccountErrors];
-
-export type GetBusinessStripeAccountResponses = {
-  /**
-   * OK
-   */
-  200: GetStripeAccountOutputBody;
-};
-
-export type GetBusinessStripeAccountResponse =
-  GetBusinessStripeAccountResponses[keyof GetBusinessStripeAccountResponses];
-
 export type GetStripeDashboardUrlData = {
   body?: never;
   path: {
@@ -1789,181 +1516,6 @@ export type OnboardStripeConnectedAccountResponses = {
 
 export type OnboardStripeConnectedAccountResponse =
   OnboardStripeConnectedAccountResponses[keyof OnboardStripeConnectedAccountResponses];
-
-export type CreateChatData = {
-  body: CreateChatParams;
-  path?: never;
-  query?: never;
-  url: "/chat";
-};
-
-export type CreateChatErrors = {
-  /**
-   * Error
-   */
-  default: ErrorModel;
-};
-
-export type CreateChatError = CreateChatErrors[keyof CreateChatErrors];
-
-export type CreateChatResponses = {
-  /**
-   * OK
-   */
-  200: CreateChatResponseBody;
-};
-
-export type CreateChatResponse = CreateChatResponses[keyof CreateChatResponses];
-
-export type DeleteChatMessageData = {
-  body?: never;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: "/chat/message/{id}";
-};
-
-export type DeleteChatMessageErrors = {
-  /**
-   * Error
-   */
-  default: ErrorModel;
-};
-
-export type DeleteChatMessageError =
-  DeleteChatMessageErrors[keyof DeleteChatMessageErrors];
-
-export type DeleteChatMessageResponses = {
-  /**
-   * OK
-   */
-  200: MessageResponse;
-};
-
-export type DeleteChatMessageResponse =
-  DeleteChatMessageResponses[keyof DeleteChatMessageResponses];
-
-export type UpdateChatMessageData = {
-  body: UpdateMessageParams;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: "/chat/message/{id}";
-};
-
-export type UpdateChatMessageErrors = {
-  /**
-   * Error
-   */
-  default: ErrorModel;
-};
-
-export type UpdateChatMessageError =
-  UpdateChatMessageErrors[keyof UpdateChatMessageErrors];
-
-export type UpdateChatMessageResponses = {
-  /**
-   * OK
-   */
-  200: MessageResponse;
-};
-
-export type UpdateChatMessageResponse =
-  UpdateChatMessageResponses[keyof UpdateChatMessageResponses];
-
-export type DeleteChatData = {
-  body?: never;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: "/chat/{id}";
-};
-
-export type DeleteChatErrors = {
-  /**
-   * Error
-   */
-  default: ErrorModel;
-};
-
-export type DeleteChatError = DeleteChatErrors[keyof DeleteChatErrors];
-
-export type DeleteChatResponses = {
-  /**
-   * OK
-   */
-  200: MessageResponse;
-};
-
-export type DeleteChatResponse = DeleteChatResponses[keyof DeleteChatResponses];
-
-export type GetChatMessagesData = {
-  body?: never;
-  path: {
-    id: number;
-  };
-  query?: {
-    cursor?: string;
-    limit?: number;
-    senderAccountIds?: Array<number> | null;
-    read?: boolean;
-    minCreatedAt?: string;
-    maxCreatedAt?: string;
-  };
-  url: "/chat/{id}/messages";
-};
-
-export type GetChatMessagesErrors = {
-  /**
-   * Error
-   */
-  default: ErrorModel;
-};
-
-export type GetChatMessagesError =
-  GetChatMessagesErrors[keyof GetChatMessagesErrors];
-
-export type GetChatMessagesResponses = {
-  /**
-   * OK
-   */
-  200: GetChatMessagesResponseBody;
-};
-
-export type GetChatMessagesResponse =
-  GetChatMessagesResponses[keyof GetChatMessagesResponses];
-
-export type CreateChatMessageData = {
-  body: CreateMessageParams;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: "/chat/{id}/messages";
-};
-
-export type CreateChatMessageErrors = {
-  /**
-   * Error
-   */
-  default: ErrorModel;
-};
-
-export type CreateChatMessageError =
-  CreateChatMessageErrors[keyof CreateChatMessageErrors];
-
-export type CreateChatMessageResponses = {
-  /**
-   * OK
-   */
-  200: MessageResponse;
-};
-
-export type CreateChatMessageResponse =
-  CreateChatMessageResponses[keyof CreateChatMessageResponses];
 
 export type HealthCheckData = {
   body?: never;
@@ -2304,32 +1856,3 @@ export type GetRoundByIdResponses = {
 
 export type GetRoundByIdResponse =
   GetRoundByIdResponses[keyof GetRoundByIdResponses];
-
-export type GetUserAccountData = {
-  body?: never;
-  path: {
-    userId: string;
-  };
-  query?: never;
-  url: "/user/{userId}/account";
-};
-
-export type GetUserAccountErrors = {
-  /**
-   * Error
-   */
-  default: ErrorModel;
-};
-
-export type GetUserAccountError =
-  GetUserAccountErrors[keyof GetUserAccountErrors];
-
-export type GetUserAccountResponses = {
-  /**
-   * OK
-   */
-  200: SingleAccountResponseBody;
-};
-
-export type GetUserAccountResponse =
-  GetUserAccountResponses[keyof GetUserAccountResponses];

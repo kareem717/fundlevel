@@ -6,33 +6,29 @@ import {
   type Options,
 } from "@hey-api/client-axios";
 import type {
+  GetAccountData,
+  GetAccountError,
+  GetAccountResponse,
   CreateAccountData,
   CreateAccountError,
-  CreateAccountResponse,
   DeleteAccountData,
   DeleteAccountError,
   DeleteAccountResponse,
-  GetAccountByIdData,
-  GetAccountByIdError,
-  GetAccountByIdResponse,
   UpdateAccountData,
   UpdateAccountError,
   UpdateAccountResponse,
   GetAccountBusinessesData,
   GetAccountBusinessesError,
   GetAccountBusinessesResponse,
-  GetAccountChatsData,
-  GetAccountChatsError,
-  GetAccountChatsResponse,
   GetAccountInvestmentsByCursorData,
   GetAccountInvestmentsByCursorError,
   GetAccountInvestmentsByCursorResponse,
   GetAccountInvestmentsByPageData,
   GetAccountInvestmentsByPageError,
   GetAccountInvestmentsByPageResponse,
-  GetDailyAggregatedBusinessAnalyticsData,
-  GetDailyAggregatedBusinessAnalyticsError,
-  GetDailyAggregatedBusinessAnalyticsResponse,
+  CreateBusinessImpressionData,
+  CreateBusinessImpressionError,
+  CreateBusinessImpressionResponse,
   DeleteBusinessFavouriteData,
   DeleteBusinessFavouriteError,
   DeleteBusinessFavouriteResponse,
@@ -48,33 +44,30 @@ import type {
   GetBusinessImpressionCountData,
   GetBusinessImpressionCountError,
   GetBusinessImpressionCountResponse,
-  CreateBusinessImpressionData,
-  CreateBusinessImpressionError,
-  CreateBusinessImpressionResponse,
-  GetDailyAggregatedRoundAnalyticsData,
-  GetDailyAggregatedRoundAnalyticsError,
-  GetDailyAggregatedRoundAnalyticsResponse,
+  CreateRoundFavouriteData,
+  CreateRoundFavouriteError,
+  CreateRoundFavouriteResponse,
+  CreateRoundImpressionData,
+  CreateRoundImpressionError,
+  CreateRoundImpressionResponse,
   DeleteRoundFavouriteData,
   DeleteRoundFavouriteError,
   DeleteRoundFavouriteResponse,
   GetRoundFavouriteStatusData,
   GetRoundFavouriteStatusError,
   GetRoundFavouriteStatusResponse,
-  CreateRoundFavouriteData,
-  CreateRoundFavouriteError,
-  CreateRoundFavouriteResponse,
   GetRoundFavouriteCountData,
   GetRoundFavouriteCountError,
   GetRoundFavouriteCountResponse,
   GetRoundImpressionCountData,
   GetRoundImpressionCountError,
   GetRoundImpressionCountResponse,
-  CreateRoundImpressionData,
-  CreateRoundImpressionError,
-  CreateRoundImpressionResponse,
   CreateBusinessData,
   CreateBusinessError,
   CreateBusinessResponse,
+  GetBusinessStripeAccountData,
+  GetBusinessStripeAccountError,
+  GetBusinessStripeAccountResponse,
   DeleteBusinessData,
   DeleteBusinessError,
   DeleteBusinessResponse,
@@ -108,33 +101,12 @@ import type {
   UpsertBusinessLegalSectionData,
   UpsertBusinessLegalSectionError,
   UpsertBusinessLegalSectionResponse,
-  GetBusinessStripeAccountData,
-  GetBusinessStripeAccountError,
-  GetBusinessStripeAccountResponse,
   GetStripeDashboardUrlData,
   GetStripeDashboardUrlError,
   GetStripeDashboardUrlResponse,
   OnboardStripeConnectedAccountData,
   OnboardStripeConnectedAccountError,
   OnboardStripeConnectedAccountResponse,
-  CreateChatData,
-  CreateChatError,
-  CreateChatResponse,
-  DeleteChatMessageData,
-  DeleteChatMessageError,
-  DeleteChatMessageResponse,
-  UpdateChatMessageData,
-  UpdateChatMessageError,
-  UpdateChatMessageResponse,
-  DeleteChatData,
-  DeleteChatError,
-  DeleteChatResponse,
-  GetChatMessagesData,
-  GetChatMessagesError,
-  GetChatMessagesResponse,
-  CreateChatMessageData,
-  CreateChatMessageError,
-  CreateChatMessageResponse,
   HealthCheckData,
   HealthCheckError,
   HealthCheckResponse,
@@ -171,12 +143,26 @@ import type {
   GetRoundByIdData,
   GetRoundByIdError,
   GetRoundByIdResponse,
-  GetUserAccountData,
-  GetUserAccountError,
-  GetUserAccountResponse,
 } from "./types.gen";
 
 export const client = createClient(createConfig());
+
+/**
+ * Get account by user id
+ * Fetches the account for the currently authenticated user.
+ */
+export const getAccount = <ThrowOnError extends boolean = false>(
+  options?: Options<GetAccountData, ThrowOnError>,
+) => {
+  return (options?.client ?? client).get<
+    GetAccountResponse,
+    GetAccountError,
+    ThrowOnError
+  >({
+    ...options,
+    url: "/account",
+  });
+};
 
 /**
  * Create a account
@@ -186,7 +172,7 @@ export const createAccount = <ThrowOnError extends boolean = false>(
   options: Options<CreateAccountData, ThrowOnError>,
 ) => {
   return (options?.client ?? client).post<
-    CreateAccountResponse,
+    unknown,
     CreateAccountError,
     ThrowOnError
   >({
@@ -204,28 +190,11 @@ export const createAccount = <ThrowOnError extends boolean = false>(
  * Delete a account.
  */
 export const deleteAccount = <ThrowOnError extends boolean = false>(
-  options: Options<DeleteAccountData, ThrowOnError>,
+  options?: Options<DeleteAccountData, ThrowOnError>,
 ) => {
   return (options?.client ?? client).delete<
     DeleteAccountResponse,
     DeleteAccountError,
-    ThrowOnError
-  >({
-    ...options,
-    url: "/account/{id}",
-  });
-};
-
-/**
- * Get account by ID
- * Get account by ID.
- */
-export const getAccountById = <ThrowOnError extends boolean = false>(
-  options: Options<GetAccountByIdData, ThrowOnError>,
-) => {
-  return (options?.client ?? client).get<
-    GetAccountByIdResponse,
-    GetAccountByIdError,
     ThrowOnError
   >({
     ...options,
@@ -259,7 +228,7 @@ export const updateAccount = <ThrowOnError extends boolean = false>(
  * Get businesses.
  */
 export const getAccountBusinesses = <ThrowOnError extends boolean = false>(
-  options: Options<GetAccountBusinessesData, ThrowOnError>,
+  options?: Options<GetAccountBusinessesData, ThrowOnError>,
 ) => {
   return (options?.client ?? client).get<
     GetAccountBusinessesResponse,
@@ -272,30 +241,13 @@ export const getAccountBusinesses = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get account chats
- * Get account chats.
- */
-export const getAccountChats = <ThrowOnError extends boolean = false>(
-  options: Options<GetAccountChatsData, ThrowOnError>,
-) => {
-  return (options?.client ?? client).get<
-    GetAccountChatsResponse,
-    GetAccountChatsError,
-    ThrowOnError
-  >({
-    ...options,
-    url: "/account/{id}/chats",
-  });
-};
-
-/**
  * Get round investments
  * Get round investments.
  */
 export const getAccountInvestmentsByCursor = <
   ThrowOnError extends boolean = false,
 >(
-  options: Options<GetAccountInvestmentsByCursorData, ThrowOnError>,
+  options?: Options<GetAccountInvestmentsByCursorData, ThrowOnError>,
 ) => {
   return (options?.client ?? client).get<
     GetAccountInvestmentsByCursorResponse,
@@ -314,7 +266,7 @@ export const getAccountInvestmentsByCursor = <
 export const getAccountInvestmentsByPage = <
   ThrowOnError extends boolean = false,
 >(
-  options: Options<GetAccountInvestmentsByPageData, ThrowOnError>,
+  options?: Options<GetAccountInvestmentsByPageData, ThrowOnError>,
 ) => {
   return (options?.client ?? client).get<
     GetAccountInvestmentsByPageResponse,
@@ -327,21 +279,19 @@ export const getAccountInvestmentsByPage = <
 };
 
 /**
- * Get daily aggregated business analytics
- * Get daily aggregated business analytics.
+ * Create a business impression
+ * Create a business impression.
  */
-export const getDailyAggregatedBusinessAnalytics = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<GetDailyAggregatedBusinessAnalyticsData, ThrowOnError>,
+export const createBusinessImpression = <ThrowOnError extends boolean = false>(
+  options?: Options<CreateBusinessImpressionData, ThrowOnError>,
 ) => {
-  return (options?.client ?? client).get<
-    GetDailyAggregatedBusinessAnalyticsResponse,
-    GetDailyAggregatedBusinessAnalyticsError,
+  return (options?.client ?? client).post<
+    CreateBusinessImpressionResponse,
+    CreateBusinessImpressionError,
     ThrowOnError
   >({
     ...options,
-    url: "/analytic/businesses/{id}",
+    url: "/analytic/businesses/impressions",
   });
 };
 
@@ -358,7 +308,7 @@ export const deleteBusinessFavourite = <ThrowOnError extends boolean = false>(
     ThrowOnError
   >({
     ...options,
-    url: "/analytic/businesses/{id}/account/{accountId}/favourite",
+    url: "/analytic/businesses/{id}/favourite",
   });
 };
 
@@ -377,7 +327,7 @@ export const getBusinessFavouriteStatus = <
     ThrowOnError
   >({
     ...options,
-    url: "/analytic/businesses/{id}/account/{accountId}/favourite",
+    url: "/analytic/businesses/{id}/favourite",
   });
 };
 
@@ -394,7 +344,7 @@ export const createBusinessFavourite = <ThrowOnError extends boolean = false>(
     ThrowOnError
   >({
     ...options,
-    url: "/analytic/businesses/{id}/account/{accountId}/favourite",
+    url: "/analytic/businesses/{id}/favourite",
   });
 };
 
@@ -435,42 +385,36 @@ export const getBusinessImpressionCount = <
 };
 
 /**
- * Create a business impression
- * Create a business impression.
+ * Create a round favourite
+ * Create a round favourite.
  */
-export const createBusinessImpression = <ThrowOnError extends boolean = false>(
-  options: Options<CreateBusinessImpressionData, ThrowOnError>,
+export const createRoundFavourite = <ThrowOnError extends boolean = false>(
+  options: Options<CreateRoundFavouriteData, ThrowOnError>,
 ) => {
   return (options?.client ?? client).post<
-    CreateBusinessImpressionResponse,
-    CreateBusinessImpressionError,
+    CreateRoundFavouriteResponse,
+    CreateRoundFavouriteError,
     ThrowOnError
   >({
     ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-    url: "/analytic/businesses/{id}/impressions",
+    url: "/analytic/rounds/favourites",
   });
 };
 
 /**
- * Get daily aggregated round analytics
- * Get daily aggregated round analytics.
+ * Create a round impression
+ * Create a round impression.
  */
-export const getDailyAggregatedRoundAnalytics = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<GetDailyAggregatedRoundAnalyticsData, ThrowOnError>,
+export const createRoundImpression = <ThrowOnError extends boolean = false>(
+  options?: Options<CreateRoundImpressionData, ThrowOnError>,
 ) => {
-  return (options?.client ?? client).get<
-    GetDailyAggregatedRoundAnalyticsResponse,
-    GetDailyAggregatedRoundAnalyticsError,
+  return (options?.client ?? client).post<
+    CreateRoundImpressionResponse,
+    CreateRoundImpressionError,
     ThrowOnError
   >({
     ...options,
-    url: "/analytic/rounds/{id}",
+    url: "/analytic/rounds/impressions",
   });
 };
 
@@ -487,7 +431,7 @@ export const deleteRoundFavourite = <ThrowOnError extends boolean = false>(
     ThrowOnError
   >({
     ...options,
-    url: "/analytic/rounds/{id}/account/{accountId}/favourite",
+    url: "/analytic/rounds/{id}/favourite",
   });
 };
 
@@ -504,24 +448,7 @@ export const getRoundFavouriteStatus = <ThrowOnError extends boolean = false>(
     ThrowOnError
   >({
     ...options,
-    url: "/analytic/rounds/{id}/account/{accountId}/favourite",
-  });
-};
-
-/**
- * Create a round favourite
- * Create a round favourite.
- */
-export const createRoundFavourite = <ThrowOnError extends boolean = false>(
-  options: Options<CreateRoundFavouriteData, ThrowOnError>,
-) => {
-  return (options?.client ?? client).post<
-    CreateRoundFavouriteResponse,
-    CreateRoundFavouriteError,
-    ThrowOnError
-  >({
-    ...options,
-    url: "/analytic/rounds/{id}/account/{accountId}/favourite",
+    url: "/analytic/rounds/{id}/favourite",
   });
 };
 
@@ -560,27 +487,6 @@ export const getRoundImpressionCount = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Create a round impression
- * Create a round impression.
- */
-export const createRoundImpression = <ThrowOnError extends boolean = false>(
-  options: Options<CreateRoundImpressionData, ThrowOnError>,
-) => {
-  return (options?.client ?? client).post<
-    CreateRoundImpressionResponse,
-    CreateRoundImpressionError,
-    ThrowOnError
-  >({
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-    url: "/analytic/rounds/{id}/impressions",
-  });
-};
-
-/**
  * Create a business
  * Create a business.
  */
@@ -598,6 +504,23 @@ export const createBusiness = <ThrowOnError extends boolean = false>(
       ...options?.headers,
     },
     url: "/business",
+  });
+};
+
+/**
+ * Get business stripe account
+ * Get business stripe account.
+ */
+export const getBusinessStripeAccount = <ThrowOnError extends boolean = false>(
+  options: Options<GetBusinessStripeAccountData, ThrowOnError>,
+) => {
+  return (options?.client ?? client).get<
+    GetBusinessStripeAccountResponse,
+    GetBusinessStripeAccountError,
+    ThrowOnError
+  >({
+    ...options,
+    url: "/business/{businessId}/stripe",
   });
 };
 
@@ -801,23 +724,6 @@ export const upsertBusinessLegalSection = <
 };
 
 /**
- * Get business stripe account
- * Get business stripe account.
- */
-export const getBusinessStripeAccount = <ThrowOnError extends boolean = false>(
-  options: Options<GetBusinessStripeAccountData, ThrowOnError>,
-) => {
-  return (options?.client ?? client).get<
-    GetBusinessStripeAccountResponse,
-    GetBusinessStripeAccountError,
-    ThrowOnError
-  >({
-    ...options,
-    url: "/business/{id}/stripe",
-  });
-};
-
-/**
  * Get Stripe dashboard url
  * Get Stripe dashboard url.
  */
@@ -854,120 +760,6 @@ export const onboardStripeConnectedAccount = <
       ...options?.headers,
     },
     url: "/business/{id}/stripe-onboard",
-  });
-};
-
-/**
- * Create a chat
- * Create a chat.
- */
-export const createChat = <ThrowOnError extends boolean = false>(
-  options: Options<CreateChatData, ThrowOnError>,
-) => {
-  return (options?.client ?? client).post<
-    CreateChatResponse,
-    CreateChatError,
-    ThrowOnError
-  >({
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-    url: "/chat",
-  });
-};
-
-/**
- * Delete a chat message
- * Delete a chat message.
- */
-export const deleteChatMessage = <ThrowOnError extends boolean = false>(
-  options: Options<DeleteChatMessageData, ThrowOnError>,
-) => {
-  return (options?.client ?? client).delete<
-    DeleteChatMessageResponse,
-    DeleteChatMessageError,
-    ThrowOnError
-  >({
-    ...options,
-    url: "/chat/message/{id}",
-  });
-};
-
-/**
- * Update a chat message
- * Update a chat message.
- */
-export const updateChatMessage = <ThrowOnError extends boolean = false>(
-  options: Options<UpdateChatMessageData, ThrowOnError>,
-) => {
-  return (options?.client ?? client).put<
-    UpdateChatMessageResponse,
-    UpdateChatMessageError,
-    ThrowOnError
-  >({
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-    url: "/chat/message/{id}",
-  });
-};
-
-/**
- * Delete a chat
- * Delete a chat.
- */
-export const deleteChat = <ThrowOnError extends boolean = false>(
-  options: Options<DeleteChatData, ThrowOnError>,
-) => {
-  return (options?.client ?? client).delete<
-    DeleteChatResponse,
-    DeleteChatError,
-    ThrowOnError
-  >({
-    ...options,
-    url: "/chat/{id}",
-  });
-};
-
-/**
- * Get chat messages
- * Get chat messages.
- */
-export const getChatMessages = <ThrowOnError extends boolean = false>(
-  options: Options<GetChatMessagesData, ThrowOnError>,
-) => {
-  return (options?.client ?? client).get<
-    GetChatMessagesResponse,
-    GetChatMessagesError,
-    ThrowOnError
-  >({
-    ...options,
-    url: "/chat/{id}/messages",
-  });
-};
-
-/**
- * Create a chat message
- * Create a chat message.
- */
-export const createChatMessage = <ThrowOnError extends boolean = false>(
-  options: Options<CreateChatMessageData, ThrowOnError>,
-) => {
-  return (options?.client ?? client).post<
-    CreateChatMessageResponse,
-    CreateChatMessageError,
-    ThrowOnError
-  >({
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-    url: "/chat/{id}/messages",
   });
 };
 
@@ -1180,22 +972,5 @@ export const getRoundById = <ThrowOnError extends boolean = false>(
   >({
     ...options,
     url: "/round/{id}",
-  });
-};
-
-/**
- * Get a user's account
- * Get the current account of a user.
- */
-export const getUserAccount = <ThrowOnError extends boolean = false>(
-  options: Options<GetUserAccountData, ThrowOnError>,
-) => {
-  return (options?.client ?? client).get<
-    GetUserAccountResponse,
-    GetUserAccountError,
-    ThrowOnError
-  >({
-    ...options,
-    url: "/user/{userId}/account",
   });
 };
