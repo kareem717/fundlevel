@@ -15,6 +15,7 @@
     "db:stop": "turbo run db:stop",
     "db:status": "turbo run db:status",
     "db:restart": "turbo run db:restart",
+    "db:sync": "turbo run db:sync",
     "openapi:gen": "turbo run openapi:gen",
     "sdk:gen": "turbo run sdk:gen",
     "sdk:full": "turbo run openapi:gen && turbo run sdk:gen"
