@@ -9,7 +9,6 @@ import (
 	"fundlevel/internal/storage/postgres/account"
 	"fundlevel/internal/storage/postgres/analytic"
 	"fundlevel/internal/storage/postgres/business"
-	"fundlevel/internal/storage/postgres/chat"
 	"fundlevel/internal/storage/postgres/industry"
 	"fundlevel/internal/storage/postgres/investment"
 	"fundlevel/internal/storage/postgres/position"
@@ -84,7 +83,6 @@ type Repository struct {
 	account    *account.AccountRepository
 	analytic   *analytic.AnalyticRepository
 	business   *business.BusinessRepository
-	chat       *chat.ChatRepository
 	industry   *industry.IndustryRepository
 	investment *investment.InvestmentRepository
 	position   *position.PositionRepository
@@ -98,7 +96,6 @@ type transaction struct {
 	account    *account.AccountRepository
 	analytic   *analytic.AnalyticRepository
 	business   *business.BusinessRepository
-	chat       *chat.ChatRepository
 	industry   *industry.IndustryRepository
 	investment *investment.InvestmentRepository
 	position   *position.PositionRepository
@@ -132,7 +129,6 @@ func NewRepository(ctx context.Context, config Config, logger *zap.Logger) stora
 		account:    account.NewAccountRepository(db, ctx),
 		analytic:   analytic.NewAnalyticRepository(db, ctx),
 		business:   business.NewBusinessRepository(db, ctx),
-		chat:       chat.NewChatRepository(db, ctx),
 		industry:   industry.NewIndustryRepository(db, ctx),
 		investment: investment.NewInvestmentRepository(db, ctx),
 		position:   position.NewPositionRepository(db, ctx),
@@ -144,7 +140,6 @@ func NewRepository(ctx context.Context, config Config, logger *zap.Logger) stora
 func (r *Repository) Account() storage.AccountRepository       { return r.account }
 func (r *Repository) Analytic() storage.AnalyticRepository     { return r.analytic }
 func (r *Repository) Business() storage.BusinessRepository     { return r.business }
-func (r *Repository) Chat() storage.ChatRepository             { return r.chat }
 func (r *Repository) Industry() storage.IndustryRepository     { return r.industry }
 func (r *Repository) Investment() storage.InvestmentRepository { return r.investment }
 func (r *Repository) Position() storage.PositionRepository     { return r.position }
@@ -155,7 +150,6 @@ func (r *Repository) Shutdown(ctx context.Context) error       { r.db.Close(); r
 func (t *transaction) Account() storage.AccountRepository       { return t.account }
 func (t *transaction) Analytic() storage.AnalyticRepository     { return t.analytic }
 func (t *transaction) Business() storage.BusinessRepository     { return t.business }
-func (t *transaction) Chat() storage.ChatRepository             { return t.chat }
 func (t *transaction) Industry() storage.IndustryRepository     { return t.industry }
 func (t *transaction) Investment() storage.InvestmentRepository { return t.investment }
 func (t *transaction) Position() storage.PositionRepository     { return t.position }
@@ -173,7 +167,6 @@ func (t *transaction) SubTransaction() (storage.Transaction, error) {
 		account:    account.NewAccountRepository(tx, t.ctx),
 		analytic:   analytic.NewAnalyticRepository(tx, t.ctx),
 		business:   business.NewBusinessRepository(tx, t.ctx),
-		chat:       chat.NewChatRepository(tx, t.ctx),
 		industry:   industry.NewIndustryRepository(tx, t.ctx),
 		investment: investment.NewInvestmentRepository(tx, t.ctx),
 		position:   position.NewPositionRepository(tx, t.ctx),
@@ -194,7 +187,6 @@ func (r *Repository) NewTransaction() (storage.Transaction, error) {
 		account:    account.NewAccountRepository(tx, r.ctx),
 		analytic:   analytic.NewAnalyticRepository(tx, r.ctx),
 		business:   business.NewBusinessRepository(tx, r.ctx),
-		chat:       chat.NewChatRepository(tx, r.ctx),
 		industry:   industry.NewIndustryRepository(tx, r.ctx),
 		investment: investment.NewInvestmentRepository(tx, r.ctx),
 		position:   position.NewPositionRepository(tx, r.ctx),

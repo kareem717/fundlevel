@@ -159,24 +159,4 @@ func RegisterHumaRoutes(
 			},
 		},
 	}, handler.getAllBusinesses)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-account-chats",
-		Method:      http.MethodGet,
-		Path:        "/account/{id}/chats",
-		Summary:     "Get account chats",
-		Description: "Get account chats.",
-		Tags:        []string{"Accounts", "Chats"},
-		Security: []map[string][]string{
-			{"bearerAuth": {}},
-		},
-		Middlewares: huma.Middlewares{
-			func(ctx huma.Context, next func(huma.Context)) {
-				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
-			},
-			func(ctx huma.Context, next func(huma.Context)) {
-				middleware.WithAccount(humaApi)(ctx, next, logger, service)
-			},
-		},
-	}, handler.getChats)
 }

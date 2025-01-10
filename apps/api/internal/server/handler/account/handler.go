@@ -7,7 +7,6 @@ import (
 
 	"fundlevel/internal/entities/account"
 	"fundlevel/internal/entities/business"
-	"fundlevel/internal/entities/chat"
 	"fundlevel/internal/server/handler/shared"
 	"fundlevel/internal/server/utils"
 	"fundlevel/internal/service"
@@ -205,46 +204,6 @@ func (h *httpHandler) getAllBusinesses(ctx context.Context, input *struct{}) (*G
 	resp := &GetBusinessesOutput{}
 	resp.Body.Message = "Businesses fetched successfully"
 	resp.Body.Businesses = businesses
-
-	return resp, nil
-}
-
-type GetChatsOutput struct {
-	Body struct {
-		shared.TimeCursorPaginationResponse
-		shared.MessageResponse
-		Chats []chat.Chat `json:"chats"`
-	}
-}
-
-func (h *httpHandler) getChats(ctx context.Context, input *shared.TimeCursorPaginationRequest) (*GetChatsOutput, error) {
-	account := utils.GetAuthenticatedAccount(ctx)
-	if account == nil {
-		return nil, huma.Error401Unauthorized("Unauthorized")
-	}
-
-	chats, err := h.service.AccountService.GetChatsByCursor(ctx, account.ID, input.Limit, input.Cursor)
-	if err != nil {
-		h.logger.Error("failed to fetch chats", zap.Error(err))
-		return nil, huma.Error500InternalServerError("An error occurred while fetching the chats")
-	}
-
-	resp := &GetChatsOutput{}
-	resp.Body.Message = "Chats fetched successfully"
-	resp.Body.Chats = chats
-
-	if len(chats) == input.Limit {
-		// Whatsapp like pagination
-		lastChat := chats[len(chats)-1]
-		if lastChat.LastMessageAt == nil {
-			resp.Body.NextCursor = &lastChat.CreatedAt
-		} else {
-			resp.Body.NextCursor = lastChat.LastMessageAt
-		}
-
-		resp.Body.HasNext = true
-		resp.Body.Chats = resp.Body.Chats[:len(resp.Body.Chats)-1]
-	}
 
 	return resp, nil
 }

@@ -6,7 +6,6 @@ import (
 	"fundlevel/internal/entities/account"
 	"fundlevel/internal/entities/analytic"
 	"fundlevel/internal/entities/business"
-	"fundlevel/internal/entities/chat"
 	"fundlevel/internal/entities/industry"
 	"fundlevel/internal/entities/investment"
 	"fundlevel/internal/entities/position"
@@ -65,8 +64,6 @@ type AccountRepository interface {
 	IsInvestedInRound(ctx context.Context, accountId int, roundId int) (bool, error)
 	GetInvestmentById(ctx context.Context, accountId int, investmentId int) (investment.Investment, error)
 
-	GetChatsByCursor(ctx context.Context, accountId int, pagination shared.TimeCursorPagination) ([]chat.Chat, error)
-
 	GetAllBusinesses(ctx context.Context, accountId int) ([]business.Business, error)
 }
 
@@ -120,21 +117,7 @@ type AnalyticRepository interface {
 	IsRoundFavouritedByAccount(ctx context.Context, roundId int, accountId int) (bool, error)
 	GetRoundFavouriteCount(ctx context.Context, roundId int) (int, error)
 }
-type ChatRepository interface {
-	CreateMessage(ctx context.Context, params chat.CreateMessageParams) (chat.ChatMessage, error)
-	UpdateMessage(ctx context.Context, id int, params chat.UpdateMessageParams) (chat.ChatMessage, error)
-	DeleteMessage(ctx context.Context, id int) error
-	GetMessageById(ctx context.Context, messageId int) (chat.ChatMessage, error)
 
-	GetChatMessages(ctx context.Context, chatID int, filter chat.MessageFilter, pagination shared.TimeCursorPagination) ([]chat.ChatMessage, error)
-	Update(ctx context.Context, chatID int, chat chat.UpdateChatParams) (chat.Chat, error)
-	Create(ctx context.Context, params chat.CreateChatParams) (chat.Chat, error)
-	Delete(ctx context.Context, id int) error
-	GetById(ctx context.Context, chatID int) (chat.Chat, error)
-	GetChatByAccountIds(ctx context.Context, accountIdOne int, accountIdTwo int) (chat.Chat, error)
-
-	IsAccountInChat(ctx context.Context, chatID int, accountID int) (bool, error)
-}
 type PositionRepository interface {
 	Create(ctx context.Context, params position.CreatePositionParams) (position.Position, error)
 }
@@ -142,7 +125,6 @@ type RepositoryProvider interface {
 	Account() AccountRepository
 	Round() RoundRepository
 	Investment() InvestmentRepository
-	Chat() ChatRepository
 	Business() BusinessRepository
 	Analytic() AnalyticRepository
 	Industry() IndustryRepository
