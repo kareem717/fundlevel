@@ -10,15 +10,6 @@ const redirects = {
 		createAccount: "/create-account",
 	},
 	app: {
-		explore: {
-			index: "/",
-			venture: {
-				view: (id: string) => `/ventures/${id}`,
-			},
-			round: {
-				view: (id: string) => `/rounds/${id}`,
-			},
-		},
 		wallet: {
 			index: "/wallet",
 			positions: {

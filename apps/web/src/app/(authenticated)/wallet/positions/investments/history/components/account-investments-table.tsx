@@ -15,8 +15,6 @@ import { Icons } from "@/components/icons"
 import { DataTableColumnHeader } from "@/components/data-table"
 import { titleCase } from "title-case"
 import { Investment } from "@repo/sdk"
-import Link from "next/link"
-import redirects from "@/lib/config/redirects"
 import {
   VisibilityState,
   flexRender,
@@ -39,7 +37,6 @@ import { ComponentPropsWithoutRef, FC, useEffect, useMemo, useState } from "reac
 import { useAction } from "next-safe-action/hooks"
 import { getAccountInvestmentsByPage } from "@/actions/investments"
 import { Skeleton } from "@repo/ui/components/skeleton"
-import { formatCurrency } from "@/lib/utils"
 import { cn } from "@repo/ui/lib/utils"
 
 const ActionsCell: FC<{ row: Row<Investment> }> = ({ row }) => {
@@ -59,12 +56,6 @@ const ActionsCell: FC<{ row: Row<Investment> }> = ({ row }) => {
           onClick={() => navigator.clipboard.writeText(investment.id.toString())}
         >
           Copy investment ID
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          {/*//TODO: handle better*/}
-          <Link href={redirects.app.explore.round.view(investment?.roundId?.toString() ?? "")}>
-            View round
-          </Link>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

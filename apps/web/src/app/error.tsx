@@ -31,10 +31,10 @@ export default function Error({
           Try again
         </Button>
         <Link
-          href={redirects.app.explore.index}
+          href={redirects.app.dashboard.index}
           className={cn(buttonVariants({ variant: "secondary" }), "w-full")}
         >
-          Go back to home
+          Return to Dashboard
         </Link>
       </div>
     </div>

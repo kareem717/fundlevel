@@ -17,10 +17,10 @@ export default function NotFound() {
         We couldn&#39;t find what you were looking for
       </p>
       <Link
-        href={redirects.app.explore.index}
+        href={redirects.app.dashboard.index}
         className={cn(buttonVariants(), "px-8")}
       >
-        Return Home
+        Return to Dashboard
       </Link>
     </div>
   );
