@@ -34,9 +34,6 @@ func RegisterHumaRoutes(
 			func(ctx huma.Context, next func(huma.Context)) {
 				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
 			},
-			func(ctx huma.Context, next func(huma.Context)) {
-				middleware.WithAccount(humaApi)(ctx, next, logger, service)
-			},
 		},
 	}, handler.create)
 
