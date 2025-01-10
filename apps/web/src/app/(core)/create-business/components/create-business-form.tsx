@@ -37,7 +37,7 @@ export interface CreateBusinessFormProps extends ComponentPropsWithoutRef<"form"
 
 export const CreateBusinessForm = ({ className, ...props }: CreateBusinessFormProps) => {
   const router = useRouter()
- 
+
   const { form, action: { isExecuting }, handleSubmitWithAction } =
     useHookFormAction(createBusiness, zodResolver(zCreateBusinessParams), {
       actionProps: {
@@ -46,7 +46,7 @@ export const CreateBusinessForm = ({ className, ...props }: CreateBusinessFormPr
           toast.success("Done!", {
             description: "Your business has been created.",
           })
-          router.push(redirects.app.dashboard.index)
+          router.push(redirects.app.index)
         },
         onError: ({ error }) => {
           toast.error("Something went wrong", {

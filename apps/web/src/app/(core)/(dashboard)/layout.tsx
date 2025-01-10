@@ -36,7 +36,7 @@ export default async function DashboardLayout({
 
   if (!busineses || busineses?.length === 0) {
     console.log('No businesses found, redirecting to create business')
-    redirect(redirects.app.dashboard.business.create);
+    redirect(redirects.app.business.create);
   }
 
   return (

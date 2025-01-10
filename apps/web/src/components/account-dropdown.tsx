@@ -54,7 +54,7 @@ export const AccountDropdown: FC<AccountDropdownProps> = ({
         <DropdownMenuGroup>
           <DropdownMenuLabel>Business</DropdownMenuLabel>
           <DropdownMenuItem>
-            <Link href={redirects.app.dashboard.index}>Dashboard</Link>
+            <Link href={redirects.app.index}>Dashboard</Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />

@@ -21,34 +21,32 @@ const redirects = {
 				},
 			},
 		},
-		dashboard: {
-			index: "/dashboard",
-			business: {
-				create: "/dashboard/create-business",
-				members: "/dashboard/members",
-				settings: {
-					root: "/dashboard/settings",
-					stripe: "/dashboard/settings/profile",
-				},
-				stripe: {
-					root: "/dashboard/stripe",
-					dashboard: "/dashboard/stripe/dashboard",
-					settings: "/dashboard/stripe/settings",
-				},
+		index: "",
+		business: {
+			create: "/create-business",
+			members: "/members",
+			settings: {
+				root: "/settings",
+				stripe: "/settings/profile",
 			},
-			funding: {
-				index: "/dashboard/funding",
-				investments: {
-					index: "/dashboard/funding/investments",
-				},
-				investors: {
-					index: "/dashboard/funding/investors",
-				},
-				rounds: {
-					root: "/dashboard/funding/rounds",
-					index: "/dashboard/funding/rounds",
-					create: "/dashboard/funding/rounds/create",
-				},
+			stripe: {
+				root: "/stripe",
+				dashboard: "/stripe/dashboard",
+				settings: "/stripe/settings",
+			},
+		},
+		funding: {
+			index: "/funding",
+			investments: {
+				index: "/funding/investments",
+			},
+			investors: {
+				index: "/funding/investors",
+			},
+			rounds: {
+				root: "/funding/rounds",
+				index: "/funding/rounds",
+				create: "/funding/rounds/create",
 			},
 		},
 	},

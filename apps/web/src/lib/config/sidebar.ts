@@ -30,41 +30,41 @@ export type NavigationMenu = {
 const dashboard: NavigationMenu[] = [
 	{
 		name: "Business",
-		path: redirects.app.dashboard.index,
+		path: redirects.app.index,
 		items: [
 			{
 				title: "Overview",
-				url: redirects.app.dashboard.index,
+				url: redirects.app.index,
 				icon: Icons.layoutGrid,
 			},
 			{
 				title: "Members",
-				url: redirects.app.dashboard.business.members,
+				url: redirects.app.business.members,
 				icon: Icons.users,
 			},
 			{
 				title: "Settings",
-				root: redirects.app.dashboard.business.settings.root,
+				root: redirects.app.business.settings.root,
 				icon: Icons.settings,
 				items: [
 					{
 						title: "Profile",
-						url: redirects.app.dashboard.business.settings.stripe,
+						url: redirects.app.business.settings.stripe,
 					},
 				],
 			},
 			{
 				title: "Stripe",
-				root: redirects.app.dashboard.business.stripe.root,
+				root: redirects.app.business.stripe.root,
 				icon: Icons.settings,
 				items: [
 					{
 						title: "Dashboard",
-						url: redirects.app.dashboard.business.stripe.dashboard,
+						url: redirects.app.business.stripe.dashboard,
 					},
 					{
 						title: "Settings",
-						url: redirects.app.dashboard.business.stripe.settings,
+						url: redirects.app.business.stripe.settings,
 					},
 				],
 			},
@@ -72,35 +72,35 @@ const dashboard: NavigationMenu[] = [
 	},
 	{
 		name: "Funding",
-		path: redirects.app.dashboard.funding.index,
+		path: redirects.app.funding.index,
 		items: [
 			{
 				title: "Overview",
-				url: redirects.app.dashboard.funding.index,
+				url: redirects.app.funding.index,
 				icon: Icons.chart,
 			},
 			{
 				title: "Investments",
-				url: redirects.app.dashboard.funding.investments.index,
+				url: redirects.app.funding.investments.index,
 				icon: Icons.handCoins,
 			},
 			{
 				title: "Investors",
-				url: redirects.app.dashboard.funding.investors.index,
+				url: redirects.app.funding.investors.index,
 				icon: Icons.users,
 			},
 			{
 				title: "Rounds",
-				root: redirects.app.dashboard.funding.rounds.root,
+				root: redirects.app.funding.rounds.root,
 				icon: Icons.handCoins,
 				items: [
 					{
 						title: "Overview",
-						url: redirects.app.dashboard.funding.rounds.index,
+						url: redirects.app.funding.rounds.index,
 					},
 					{
 						title: "Create",
-						url: redirects.app.dashboard.funding.rounds.create,
+						url: redirects.app.funding.rounds.create,
 					},
 				],
 			},

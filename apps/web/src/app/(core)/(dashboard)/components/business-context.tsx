@@ -126,7 +126,7 @@ export const BusinessContextSelector: FC<BusinessContextSelectorProps> = ({ ...p
                 <Plus className="size-4" />
               </div>
               <Link
-                href={redirects.app.dashboard.business.create}
+                href={redirects.app.business.create}
                 className="font-medium text-muted-foreground"
               >
                 Add business
