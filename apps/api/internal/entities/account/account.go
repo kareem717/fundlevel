@@ -2,6 +2,8 @@ package account
 
 import (
 	"fundlevel/internal/entities/shared"
+
+	"github.com/google/uuid"
 	"github.com/uptrace/bun"
 )
 
@@ -11,7 +13,7 @@ type Account struct {
 
 	shared.IntegerID
 	CreateAccountParams
-	UserId int `json:"userId" minimum:"1"`
+	UserId uuid.UUID `json:"userId" minimum:"1"`
 	shared.Timestamps
 }
 
