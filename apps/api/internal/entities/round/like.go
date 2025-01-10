@@ -16,9 +16,3 @@ type RoundLike struct {
 	// CreatedAt is the timestamp of the creation.
 	CreatedAt time.Time `json:"createdAt" format:"date-time"`
 }
-
-// CreateRoundLikeParams contains the parameters for creating a new round like.
-type CreateRoundLikeParams struct {
-	RoundID   int `json:"roundId" minimum:"1"`
-	AccountID int `json:"accountId" minimum:"1"`
-}
