@@ -104,18 +104,18 @@ type AnalyticRepository interface {
 	GetDailyAggregatedBusinessAnalytics(ctx context.Context, businessId int, minDayOfYear int, maxDayOfYear int) ([]analytic.SimplifiedDailyAggregatedBusinessAnalytics, error)
 	GetDailyAggregatedRoundAnalytics(ctx context.Context, roundId int, minDayOfYear int, maxDayOfYear int) ([]analytic.SimplifiedDailyAggregatedRoundAnalytics, error)
 
-	CreateRoundImpression(ctx context.Context, params analytic.CreateRoundImpressionParams) error
-	CreateBusinessImpression(ctx context.Context, params analytic.CreateBusinessImpressionParams) error
+	CreateRoundImpression(ctx context.Context, roundId int, accountId int) error
+	CreateBusinessImpression(ctx context.Context, businessId int, accountId int) error
 
 	GetRoundImpressionCount(ctx context.Context, roundId int) (int, error)
 	GetBusinessImpressionCount(ctx context.Context, businessId int) (int, error)
 
-	CreateBusinessFavourite(ctx context.Context, params analytic.CreateBusinessFavouriteParams) error
+	CreateBusinessFavourite(ctx context.Context, businessId int, accountId int) error
 	DeleteBusinessFavourite(ctx context.Context, businessId int, accountId int) error
 	IsBusinessFavouritedByAccount(ctx context.Context, businessId int, accountId int) (bool, error)
 	GetBusinessFavouriteCount(ctx context.Context, businessId int) (int, error)
 
-	CreateRoundFavourite(ctx context.Context, params analytic.CreateRoundFavouriteParams) error
+	CreateRoundFavourite(ctx context.Context, roundId int, accountId int) error
 	DeleteRoundFavourite(ctx context.Context, roundId int, accountId int) error
 	IsRoundFavouritedByAccount(ctx context.Context, roundId int, accountId int) (bool, error)
 	GetRoundFavouriteCount(ctx context.Context, roundId int) (int, error)

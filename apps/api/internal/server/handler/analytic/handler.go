@@ -2,7 +2,6 @@ package analytic
 
 import (
 	"context"
-	"fundlevel/internal/entities/analytic"
 	"fundlevel/internal/server/handler/shared"
 	"fundlevel/internal/server/utils"
 	"fundlevel/internal/service"
@@ -41,10 +40,7 @@ func (h *httpHandler) createRoundImpression(ctx context.Context, input *CreateRo
 		return nil, huma.Error401Unauthorized("Unauthorized")
 	}
 
-	err := h.service.AnalyticService.CreateRoundImpression(ctx, analytic.CreateRoundImpressionParams{
-		RoundID:   input.ID,
-		AccountID: account.ID,
-	})
+	err := h.service.AnalyticService.CreateRoundImpression(ctx, input.ID, account.ID)
 
 	if err != nil {
 		h.logger.Error("failed to create round impression", zap.Error(err))
@@ -67,10 +63,7 @@ func (h *httpHandler) createBusinessImpression(ctx context.Context, input *Creat
 		return nil, huma.Error401Unauthorized("Unauthorized")
 	}
 
-	err := h.service.AnalyticService.CreateBusinessImpression(ctx, analytic.CreateBusinessImpressionParams{
-		BusinessID: input.ID,
-		AccountID:  account.ID,
-	})
+	err := h.service.AnalyticService.CreateBusinessImpression(ctx, input.ID, account.ID)
 
 	if err != nil {
 		h.logger.Error("failed to create business impression", zap.Error(err))
@@ -124,10 +117,7 @@ func (h *httpHandler) createRoundFavourite(ctx context.Context, input *shared.Pa
 		return nil, huma.Error401Unauthorized("Unauthorized")
 	}
 
-	err := h.service.AnalyticService.CreateRoundFavourite(ctx, analytic.CreateRoundFavouriteParams{
-		RoundID:   input.ID,
-		AccountID: account.ID,
-	})
+	err := h.service.AnalyticService.CreateRoundFavourite(ctx, input.ID, account.ID)
 
 	if err != nil {
 		h.logger.Error("failed to create round like", zap.Error(err))
@@ -197,10 +187,7 @@ func (h *httpHandler) createBusinessFavourite(ctx context.Context, input *shared
 		return nil, huma.Error401Unauthorized("Unauthorized")
 	}
 
-	err := h.service.AnalyticService.CreateBusinessFavourite(ctx, analytic.CreateBusinessFavouriteParams{
-		BusinessID: input.ID,
-		AccountID:  account.ID,
-	})
+	err := h.service.AnalyticService.CreateBusinessFavourite(ctx, input.ID, account.ID)
 
 	if err != nil {
 		h.logger.Error("failed to create business like", zap.Error(err))

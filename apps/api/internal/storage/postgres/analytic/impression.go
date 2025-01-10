@@ -5,11 +5,12 @@ import (
 	"fundlevel/internal/entities/analytic"
 )
 
-func (r *AnalyticRepository) CreateRoundImpression(ctx context.Context, params analytic.CreateRoundImpressionParams) error {
+func (r *AnalyticRepository) CreateRoundImpression(ctx context.Context, roundId int, accountId int) error {
 	_, err := r.db.
 		NewInsert().
-		Model(&params).
-		ModelTableExpr("round_impressions").
+		Model((*analytic.RoundImpression)(nil)).
+		Value("round_id", "?", roundId).
+		Value("account_id", "?", accountId).
 		Exec(ctx)
 
 	return err
@@ -24,11 +25,12 @@ func (r *AnalyticRepository) GetRoundImpressionCount(ctx context.Context, roundI
 		Count(ctx)
 }
 
-func (r *AnalyticRepository) CreateBusinessImpression(ctx context.Context, params analytic.CreateBusinessImpressionParams) error {
+func (r *AnalyticRepository) CreateBusinessImpression(ctx context.Context, businessId int, accountId int) error {
 	_, err := r.db.
 		NewInsert().
-		Model(&params).
-		ModelTableExpr("business_impressions").
+		Model((*analytic.BusinessImpression)(nil)).
+		Value("business_id", "?", businessId).
+		Value("account_id", "?", accountId).
 		Exec(ctx)
 
 	return err

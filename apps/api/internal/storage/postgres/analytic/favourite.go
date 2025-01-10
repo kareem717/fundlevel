@@ -15,10 +15,11 @@ func (r *AnalyticRepository) IsRoundFavouritedByAccount(ctx context.Context, rou
 		Exists(ctx)
 }
 
-func (r *AnalyticRepository) CreateRoundFavourite(ctx context.Context, params analytic.CreateRoundFavouriteParams) error {
+func (r *AnalyticRepository) CreateRoundFavourite(ctx context.Context, roundId int, accountId int) error {
 	_, err := r.db.NewInsert().
-		Model(&params).
-		ModelTableExpr("round_favourites").
+		Model((*analytic.RoundFavourite)(nil)).
+		Value("round_id", "?", roundId).
+		Value("account_id", "?", accountId).
 		Exec(ctx)
 
 	return err
@@ -52,10 +53,11 @@ func (r *AnalyticRepository) IsBusinessFavouritedByAccount(ctx context.Context, 
 		Exists(ctx)
 }
 
-func (r *AnalyticRepository) CreateBusinessFavourite(ctx context.Context, params analytic.CreateBusinessFavouriteParams) error {
+func (r *AnalyticRepository) CreateBusinessFavourite(ctx context.Context, businessId int, accountId int) error {
 	_, err := r.db.NewInsert().
-		Model(&params).
-		ModelTableExpr("business_favourites").
+		Model((*analytic.BusinessFavourite)(nil)).
+		Value("business_id", "?", businessId).
+		Value("account_id", "?", accountId).
 		Exec(ctx)
 
 	return err
