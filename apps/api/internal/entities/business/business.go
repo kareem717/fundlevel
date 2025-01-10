@@ -56,7 +56,6 @@ type BusinessParams struct {
 type CreateBusinessParams struct {
 	Business       BusinessParams                    `json:"business"`
 	StripeAccount  CreateBusinessStripeAccountParams `json:"stripeAccount" required:"false" hidden:"true"`
-	InitialOwnerID int                               `json:"initialOwnerId" minimum:"1"`
 	IndustryIDs    []int                             `json:"industryIds" required:"false" minItems:"1" type:"array" uniqueItems:"true" example:"[1]"`
 }
 

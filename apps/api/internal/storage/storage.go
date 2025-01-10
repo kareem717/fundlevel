@@ -71,7 +71,7 @@ type AccountRepository interface {
 }
 
 type BusinessRepository interface {
-	Create(ctx context.Context, params business.CreateBusinessParams) error
+	Create(ctx context.Context, params business.CreateBusinessParams, initialOwnerId int) error
 	GetById(ctx context.Context, id int) (business.Business, error)
 	Update(ctx context.Context, id int, params business.UpdateBusinessParams) (business.Business, error)
 	Delete(ctx context.Context, id int) error

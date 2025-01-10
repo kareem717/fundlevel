@@ -19,7 +19,7 @@ func NewBusinessRepository(db bun.IDB, ctx context.Context) *BusinessRepository 
 }
 
 // TODO: this logic should be in a service, not in the repository
-func (r *BusinessRepository) Create(ctx context.Context, params business.CreateBusinessParams) error {
+func (r *BusinessRepository) Create(ctx context.Context, params business.CreateBusinessParams, initialOwnerId int) error {
 	err := r.db.RunInTx(ctx, nil, func(ctx context.Context, tx bun.Tx) error {
 		var businessRecord business.Business
 		err := tx.NewInsert().
@@ -33,7 +33,7 @@ func (r *BusinessRepository) Create(ctx context.Context, params business.CreateB
 
 		businessMember := business.BusinessMember{
 			BusinessId: businessRecord.ID,
-			AccountId:  params.InitialOwnerID,
+			AccountId:  initialOwnerId,
 		}
 
 		fmt.Println(tx.NewInsert().

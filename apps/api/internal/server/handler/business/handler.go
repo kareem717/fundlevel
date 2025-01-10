@@ -77,7 +77,7 @@ func (h *httpHandler) create(ctx context.Context, input *CreateBusinessRequest) 
 		return nil, huma.Error403Forbidden("Account is not authorized to create business")
 	}
 
-	err = h.service.BusinessService.Create(ctx, input.Body)
+	err = h.service.BusinessService.Create(ctx, input.Body, account.ID)
 	if err != nil {
 		h.logger.Error("failed to create business", zap.Error(err))
 		return nil, huma.Error500InternalServerError("An error occurred while creating the business")
