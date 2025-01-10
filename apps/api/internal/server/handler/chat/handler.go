@@ -4,6 +4,7 @@ import (
 	"context"
 	"fundlevel/internal/entities/chat"
 	"fundlevel/internal/server/handler/shared"
+	"fundlevel/internal/server/utils"
 	"fundlevel/internal/service"
 	"time"
 
@@ -43,7 +44,10 @@ type CreateChatResponse struct {
 }
 
 func (h *httpHandler) createChat(ctx context.Context, req *CreateChatRequest) (*CreateChatResponse, error) {
-	account := shared.GetAuthenticatedAccount(ctx)
+	account := utils.GetAuthenticatedAccount(ctx)
+	if account == nil {
+		return nil, huma.Error401Unauthorized("You must be logged in to create a chat")
+	}
 
 	if req.Body.CreatedByAccountID != account.ID && req.Body.CreatedForAccountID != account.ID {
 		return nil, huma.Error400BadRequest("You cannot create a chat without yourself in it")
@@ -68,8 +72,11 @@ type CreateChatMessageRequest struct {
 }
 
 func (h *httpHandler) createChatMessage(ctx context.Context, req *CreateChatMessageRequest) (*shared.MessageOutput, error) {
-	account := shared.GetAuthenticatedAccount(ctx)
-	
+	account := utils.GetAuthenticatedAccount(ctx)
+	if account == nil {
+		return nil, huma.Error401Unauthorized("You must be logged in to create a chat message")
+	}
+
 	isInChat, err := h.service.ChatService.IsAccountInChat(ctx, req.ID, account.ID)
 	if err != nil {
 		h.logger.Error("failed to check if account is in chat", zap.Error(err))
@@ -81,6 +88,7 @@ func (h *httpHandler) createChatMessage(ctx context.Context, req *CreateChatMess
 	}
 
 	req.Body.ChatID = req.ID
+	req.Body.SenderAccountID = account.ID
 	message, err := h.service.ChatService.CreateMessage(ctx, req.Body)
 	if err != nil {
 		h.logger.Error("failed to create chat message", zap.Error(err))
@@ -113,13 +121,18 @@ type DeleteChatMessageRequest struct {
 }
 
 func (h *httpHandler) deleteChatMessage(ctx context.Context, req *DeleteChatMessageRequest) (*shared.MessageOutput, error) {
+	account := utils.GetAuthenticatedAccount(ctx)
+	if account == nil {
+		return nil, huma.Error401Unauthorized("You must be logged in to delete a chat message")
+	}
+
 	message, err := h.service.ChatService.GetMessageById(ctx, req.ID)
 	if err != nil {
 		h.logger.Error("failed to get chat message", zap.Error(err))
 		return nil, huma.Error500InternalServerError("An error occurred while getting the chat message")
 	}
 
-	if account := shared.GetAuthenticatedAccount(ctx); message.SenderAccountID != account.ID {
+	if message.SenderAccountID != account.ID {
 		return nil, huma.Error400BadRequest("You cannot delete a chat message that is not yours")
 	}
 
@@ -141,13 +154,18 @@ type UpdateChatMessageRequest struct {
 }
 
 func (h *httpHandler) updateChatMessage(ctx context.Context, req *UpdateChatMessageRequest) (*shared.MessageOutput, error) {
+	account := utils.GetAuthenticatedAccount(ctx)
+	if account == nil {
+		return nil, huma.Error401Unauthorized("You must be logged in to update a chat message")
+	}
+
 	message, err := h.service.ChatService.GetMessageById(ctx, req.ID)
 	if err != nil {
 		h.logger.Error("failed to get chat message", zap.Error(err))
 		return nil, huma.Error500InternalServerError("An error occurred while getting the chat message")
 	}
 
-	if account := shared.GetAuthenticatedAccount(ctx); message.SenderAccountID != account.ID {
+	if message.SenderAccountID != account.ID {
 		return nil, huma.Error400BadRequest("You cannot update a chat message that is not yours")
 	}
 
@@ -164,7 +182,11 @@ func (h *httpHandler) updateChatMessage(ctx context.Context, req *UpdateChatMess
 }
 
 func (h *httpHandler) deleteChat(ctx context.Context, req *shared.PathIDParam) (*shared.MessageOutput, error) {
-	account := shared.GetAuthenticatedAccount(ctx)
+	account := utils.GetAuthenticatedAccount(ctx)
+	if account == nil {
+		return nil, huma.Error401Unauthorized("You must be logged in to delete a chat")
+	}
+
 	isInChat, err := h.service.ChatService.IsAccountInChat(ctx, req.ID, account.ID)
 	if err != nil {
 		h.logger.Error("failed to check if account is in chat", zap.Error(err))
@@ -201,7 +223,11 @@ type GetChatMessagesResponse struct {
 }
 
 func (h *httpHandler) getChatMessages(ctx context.Context, req *GetChatMessagesRequest) (*GetChatMessagesResponse, error) {
-	account := shared.GetAuthenticatedAccount(ctx)
+	account := utils.GetAuthenticatedAccount(ctx)
+	if account == nil {
+		return nil, huma.Error401Unauthorized("You must be logged in to get chat messages")
+	}
+
 	isInChat, err := h.service.ChatService.IsAccountInChat(ctx, req.ID, account.ID)
 	if err != nil {
 		h.logger.Error("failed to check if account is in chat", zap.Error(err))

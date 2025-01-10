@@ -52,11 +52,11 @@ type InvestmentRepository interface {
 	GetFailedPaymentCount(ctx context.Context, investmentId int) (int, error)
 }
 type AccountRepository interface {
-	Create(ctx context.Context, params account.CreateAccountParams) (account.Account, error)
+	Create(ctx context.Context, params account.CreateAccountParams, userId uuid.UUID) (account.Account, error)
 	Delete(ctx context.Context, id int) error
 	Update(ctx context.Context, id int, params account.UpdateAccountParams) (account.Account, error)
 	GetById(ctx context.Context, id int) (account.Account, error)
-
+	GetByUserId(ctx context.Context, userId uuid.UUID) (account.Account, error)
 	// GetInvestmentsByCursor gets all of the investments the account has made on rounds using cursor pagination
 	GetInvestmentsByCursor(ctx context.Context, accountId int, paginationParams shared.CursorPagination, filter investment.InvestmentFilter) ([]investment.Investment, error)
 	// GetInvestmentsByPage gets all of the investments the account has made on rounds using offset pagination
@@ -70,9 +70,6 @@ type AccountRepository interface {
 	GetAllBusinesses(ctx context.Context, accountId int) ([]business.Business, error)
 }
 
-type UserRepository interface {
-	GetAccount(ctx context.Context, userId uuid.UUID) (account.Account, error)
-}
 type BusinessRepository interface {
 	Create(ctx context.Context, params business.CreateBusinessParams) error
 	GetById(ctx context.Context, id int) (business.Business, error)
@@ -146,7 +143,6 @@ type RepositoryProvider interface {
 	Round() RoundRepository
 	Investment() InvestmentRepository
 	Chat() ChatRepository
-	User() UserRepository
 	Business() BusinessRepository
 	Analytic() AnalyticRepository
 	Industry() IndustryRepository

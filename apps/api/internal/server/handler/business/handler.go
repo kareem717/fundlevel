@@ -6,7 +6,9 @@ import (
 	"errors"
 
 	"fundlevel/internal/entities/business"
+	"fundlevel/internal/entities/investment"
 	"fundlevel/internal/server/handler/shared"
+	"fundlevel/internal/server/utils"
 	"fundlevel/internal/service"
 
 	"github.com/danielgtaylor/huma/v2"
@@ -57,9 +59,12 @@ type CreateBusinessRequest struct {
 }
 
 func (h *httpHandler) create(ctx context.Context, input *CreateBusinessRequest) (*shared.MessageOutput, error) {
-	account := shared.GetAuthenticatedAccount(ctx)
+	account := utils.GetAuthenticatedAccount(ctx)
+	if account == nil {
+		return nil, huma.Error401Unauthorized("You must be logged in to create a business")
+	}
 
-	authorized, err := h.service.PermissionService.CanCreateBusiness(ctx, account)
+	authorized, err := h.service.PermissionService.CanCreateBusiness(ctx, *account)
 	if err != nil {
 		h.logger.Error("failed to check if account can create business", zap.Error(err))
 		return nil, huma.Error500InternalServerError("An error occurred while checking authorization")
@@ -99,7 +104,10 @@ func (h *httpHandler) delete(ctx context.Context, input *shared.PathIDParam) (*D
 		return nil, huma.Error500InternalServerError("An error occurred while fetching the business")
 	}
 
-	account := shared.GetAuthenticatedAccount(ctx)
+	account := utils.GetAuthenticatedAccount(ctx)
+	if account == nil {
+		return nil, huma.Error401Unauthorized("You must be logged in to delete a business")
+	}
 
 	canDelete, err := h.service.PermissionService.CanAccountDeleteBusiness(ctx, account.ID, business.ID)
 	if err != nil {
@@ -181,7 +189,12 @@ func (h *httpHandler) getRoundsByPage(ctx context.Context, input *shared.GetRoun
 	return resp, nil
 }
 
-func (h *httpHandler) getInvestmentsByCursor(ctx context.Context, input *shared.GetInvestmentsByParentAndCursorInput) (*shared.GetCursorPaginatedInvestmentsOutput, error) {
+type GetInvestmentsByCursorInput struct {
+	shared.GetCursorPaginatedByParentPathIDInput
+	InvestmentFilter investment.InvestmentFilter
+}
+
+func (h *httpHandler) getInvestmentsByCursor(ctx context.Context, input *GetInvestmentsByCursorInput) (*shared.GetCursorPaginatedInvestmentsOutput, error) {
 	business, err := h.service.BusinessService.GetById(ctx, input.ID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -192,7 +205,10 @@ func (h *httpHandler) getInvestmentsByCursor(ctx context.Context, input *shared.
 		return nil, huma.Error500InternalServerError("An error occurred while fetching the business")
 	}
 
-	account := shared.GetAuthenticatedAccount(ctx)
+	account := utils.GetAuthenticatedAccount(ctx)
+	if account == nil {
+		return nil, huma.Error401Unauthorized("You must be logged in to fetch business investments")
+	}
 
 	authorized, err := h.service.PermissionService.CanAccessBusinessInvestments(ctx, account.ID, business.ID)
 	if err != nil {
@@ -235,7 +251,12 @@ func (h *httpHandler) getInvestmentsByCursor(ctx context.Context, input *shared.
 	return resp, nil
 }
 
-func (h *httpHandler) getInvestmentsByPage(ctx context.Context, input *shared.GetInvestmentsByParentAndPageInput) (*shared.GetOffsetPaginatedInvestmentsOutput, error) {
+type GetInvestmentsByPageInput struct {
+	shared.GetOffsetPaginatedByParentPathIDInput
+	InvestmentFilter investment.InvestmentFilter
+}
+
+func (h *httpHandler) getInvestmentsByPage(ctx context.Context, input *GetInvestmentsByPageInput) (*shared.GetOffsetPaginatedInvestmentsOutput, error) {
 	business, err := h.service.BusinessService.GetById(ctx, input.ID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -246,7 +267,11 @@ func (h *httpHandler) getInvestmentsByPage(ctx context.Context, input *shared.Ge
 		return nil, huma.Error500InternalServerError("An error occurred while fetching the business")
 	}
 
-	account := shared.GetAuthenticatedAccount(ctx)
+	account := utils.GetAuthenticatedAccount(ctx)
+	if account == nil {
+		return nil, huma.Error401Unauthorized("You must be logged in to fetch business investments")
+	}
+
 	authorized, err := h.service.PermissionService.CanAccessBusinessInvestments(ctx, account.ID, business.ID)
 	if err != nil {
 		h.logger.Error("failed to check if account can access business investments", zap.Error(err))
@@ -318,7 +343,10 @@ func (h *httpHandler) onboardStripeConnectedAccount(ctx context.Context, input *
 		return nil, huma.Error500InternalServerError("An error occurred while fetching the business")
 	}
 
-	account := shared.GetAuthenticatedAccount(ctx)
+	account := utils.GetAuthenticatedAccount(ctx)
+	if account == nil {
+		return nil, huma.Error401Unauthorized("You must be logged in to onboard a stripe connected account")
+	}
 
 	authorized, err := h.service.PermissionService.CanManageBusinessStripe(ctx, account.ID, business.ID)
 	if err != nil {
@@ -364,7 +392,10 @@ func (h *httpHandler) getStripeAccount(ctx context.Context, input *shared.PathID
 		return nil, huma.Error500InternalServerError("An error occurred while fetching the business")
 	}
 
-	account := shared.GetAuthenticatedAccount(ctx)
+	account := utils.GetAuthenticatedAccount(ctx)
+	if account == nil {
+		return nil, huma.Error401Unauthorized("You must be logged in to fetch business stripe details")
+	}
 
 	authorized, err := h.service.PermissionService.CanManageBusinessStripe(ctx, account.ID, business.ID)
 	if err != nil {
@@ -394,7 +425,10 @@ func (h *httpHandler) getStripeAccount(ctx context.Context, input *shared.PathID
 }
 
 func (h *httpHandler) getStripeDashboardURL(ctx context.Context, input *shared.PathIDParam) (*shared.URLOutput, error) {
-	account := shared.GetAuthenticatedAccount(ctx)
+	account := utils.GetAuthenticatedAccount(ctx)
+	if account == nil {
+		return nil, huma.Error401Unauthorized("You must be logged in to fetch business stripe dashboard url")
+	}
 
 	business, err := h.service.BusinessService.GetById(ctx, input.ID)
 	if err != nil {
@@ -442,7 +476,11 @@ type GetOffsetPaginatedBusinessMembersOutput struct {
 }
 
 func (h *httpHandler) getMembersByPage(ctx context.Context, input *shared.GetOffsetPaginatedByParentPathIDInput) (*GetOffsetPaginatedBusinessMembersOutput, error) {
-	account := shared.GetAuthenticatedAccount(ctx)
+	account := utils.GetAuthenticatedAccount(ctx)
+	if account == nil {
+		return nil, huma.Error401Unauthorized("You must be logged in to fetch business members")
+	}
+
 	authorized, err := h.service.PermissionService.CanViewBusinessMembers(ctx, account.ID, input.ID)
 	if err != nil {
 		h.logger.Error("failed to check if account can view business members", zap.Error(err))
@@ -458,11 +496,6 @@ func (h *httpHandler) getMembersByPage(ctx context.Context, input *shared.GetOff
 	}
 
 	members, total, err := h.service.BusinessService.GetMembersByPage(ctx, input.ID, input.PageSize, input.Page)
-	if err != nil {
-		h.logger.Error("failed to fetch members", zap.Error(err))
-		return nil, huma.Error500InternalServerError("An error occurred while fetching the members")
-	}
-
 	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
@@ -512,7 +545,10 @@ type UpsertBusinessLegalSectionInput struct {
 }
 
 func (h *httpHandler) upsertBusinessLegalSection(ctx context.Context, input *UpsertBusinessLegalSectionInput) (*shared.MessageOutput, error) {
-	account := shared.GetAuthenticatedAccount(ctx)
+	account := utils.GetAuthenticatedAccount(ctx)
+	if account == nil {
+		return nil, huma.Error401Unauthorized("You must be logged in to upsert business legal section")
+	}
 
 	authorized, err := h.service.PermissionService.CanManageBusinessLegalSection(ctx, account.ID, input.ID)
 	if err != nil {
@@ -558,7 +594,11 @@ func (h *httpHandler) getRoundCreateRequirements(ctx context.Context, input *sha
 		return nil, huma.Error500InternalServerError("An error occurred while fetching the business")
 	}
 
-	account := shared.GetAuthenticatedAccount(ctx)
+	account := utils.GetAuthenticatedAccount(ctx)
+	if account == nil {
+		return nil, huma.Error401Unauthorized("You must be logged in to fetch round create requirements")
+	}
+
 	authorized, err := h.service.PermissionService.CanAccountCreateRound(ctx, account.ID, input.ID)
 	if err != nil {
 		h.logger.Error("failed to check if account can create round", zap.Error(err))

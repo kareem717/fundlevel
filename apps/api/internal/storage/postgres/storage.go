@@ -14,7 +14,6 @@ import (
 	"fundlevel/internal/storage/postgres/investment"
 	"fundlevel/internal/storage/postgres/position"
 	"fundlevel/internal/storage/postgres/round"
-	"fundlevel/internal/storage/postgres/user"
 
 	"github.com/alexlast/bunzap"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -90,7 +89,6 @@ type Repository struct {
 	investment *investment.InvestmentRepository
 	position   *position.PositionRepository
 	round      *round.RoundRepository
-	user       *user.UserRepository
 }
 
 // Transaction implements storage.Transaction interface
@@ -105,11 +103,10 @@ type transaction struct {
 	investment *investment.InvestmentRepository
 	position   *position.PositionRepository
 	round      *round.RoundRepository
-	user       *user.UserRepository
 }
 
 // NewRepository creates a new Repository instance
-func NewRepository(ctx context.Context, config Config,logger *zap.Logger) storage.Repository  {
+func NewRepository(ctx context.Context, config Config, logger *zap.Logger) storage.Repository {
 	poolConfig, err := pgxpool.ParseConfig(config.URL)
 	if err != nil {
 		logger.Fatal("Error creating pool config", zap.Error(err))
@@ -128,7 +125,6 @@ func NewRepository(ctx context.Context, config Config,logger *zap.Logger) storag
 		SlowDuration: 200 * time.Millisecond,
 	}))
 
-
 	return &Repository{
 		db:         db,
 		ctx:        ctx,
@@ -141,7 +137,6 @@ func NewRepository(ctx context.Context, config Config,logger *zap.Logger) storag
 		investment: investment.NewInvestmentRepository(db, ctx),
 		position:   position.NewPositionRepository(db, ctx),
 		round:      round.NewRoundRepository(db, ctx),
-		user:       user.NewUserRepository(db, ctx),
 	}
 }
 
@@ -154,7 +149,6 @@ func (r *Repository) Industry() storage.IndustryRepository     { return r.indust
 func (r *Repository) Investment() storage.InvestmentRepository { return r.investment }
 func (r *Repository) Position() storage.PositionRepository     { return r.position }
 func (r *Repository) Round() storage.RoundRepository           { return r.round }
-func (r *Repository) User() storage.UserRepository             { return r.user }
 func (r *Repository) Shutdown(ctx context.Context) error       { r.db.Close(); return nil }
 
 // Transaction interface methods
@@ -166,7 +160,6 @@ func (t *transaction) Industry() storage.IndustryRepository     { return t.indus
 func (t *transaction) Investment() storage.InvestmentRepository { return t.investment }
 func (t *transaction) Position() storage.PositionRepository     { return t.position }
 func (t *transaction) Round() storage.RoundRepository           { return t.round }
-func (t *transaction) User() storage.UserRepository             { return t.user }
 func (t *transaction) Commit() error                            { return t.tx.Commit() }
 func (t *transaction) Rollback() error                          { return t.tx.Rollback() }
 func (t *transaction) SubTransaction() (storage.Transaction, error) {
@@ -185,7 +178,6 @@ func (t *transaction) SubTransaction() (storage.Transaction, error) {
 		investment: investment.NewInvestmentRepository(tx, t.ctx),
 		position:   position.NewPositionRepository(tx, t.ctx),
 		round:      round.NewRoundRepository(tx, t.ctx),
-		user:       user.NewUserRepository(tx, t.ctx),
 	}, nil
 }
 
@@ -207,7 +199,6 @@ func (r *Repository) NewTransaction() (storage.Transaction, error) {
 		investment: investment.NewInvestmentRepository(tx, r.ctx),
 		position:   position.NewPositionRepository(tx, r.ctx),
 		round:      round.NewRoundRepository(tx, r.ctx),
-		user:       user.NewUserRepository(tx, r.ctx),
 	}, nil
 }
 

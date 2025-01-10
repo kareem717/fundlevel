@@ -21,7 +21,7 @@ func RegisterHumaRoutes(
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "create-round-impression",
 		Method:      http.MethodPost,
-		Path:        "/analytic/rounds/{id}/impressions",
+		Path:        "/analytic/rounds/impressions",
 		Summary:     "Create a round impression",
 		Description: "Create a round impression.",
 		Tags:        []string{"Analytic", "Rounds"},
@@ -50,7 +50,7 @@ func RegisterHumaRoutes(
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "create-business-impression",
 		Method:      http.MethodPost,
-		Path:        "/analytic/businesses/{id}/impressions",
+		Path:        "/analytic/businesses/impressions",
 		Summary:     "Create a business impression",
 		Description: "Create a business impression.",
 		Tags:        []string{"Analytic", "Businesses"},
@@ -79,7 +79,7 @@ func RegisterHumaRoutes(
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "create-round-favourite",
 		Method:      http.MethodPost,
-		Path:        "/analytic/rounds/{id}/account/{accountId}/favourite",
+		Path:        "/analytic/rounds/favourites",
 		Summary:     "Create a round favourite",
 		Description: "Create a round favourite.",
 		Tags:        []string{"Analytic", "Rounds", "Favourites"},
@@ -99,7 +99,7 @@ func RegisterHumaRoutes(
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "delete-round-favourite",
 		Method:      http.MethodDelete,
-		Path:        "/analytic/rounds/{id}/account/{accountId}/favourite",
+		Path:        "/analytic/rounds/{id}/favourite",
 		Summary:     "Delete a round favourite",
 		Description: "Delete a round favourite.",
 		Tags:        []string{"Analytic", "Rounds", "Favourites"},
@@ -119,7 +119,7 @@ func RegisterHumaRoutes(
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "get-round-favourite-status",
 		Method:      http.MethodGet,
-		Path:        "/analytic/rounds/{id}/account/{accountId}/favourite",
+		Path:        "/analytic/rounds/{id}/favourite",
 		Summary:     "Get a round favourite status",
 		Description: "Get a round favourite status.",
 		Tags:        []string{"Analytic", "Rounds", "Favourites"},
@@ -148,7 +148,7 @@ func RegisterHumaRoutes(
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "create-business-favourite",
 		Method:      http.MethodPost,
-		Path:        "/analytic/businesses/{id}/account/{accountId}/favourite",
+		Path:        "/analytic/businesses/{id}/favourite",
 		Summary:     "Create a business favourite",
 		Description: "Create a business favourite.",
 		Tags:        []string{"Analytic", "Businesses", "Favourites"},
@@ -168,7 +168,7 @@ func RegisterHumaRoutes(
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "delete-business-favourite",
 		Method:      http.MethodDelete,
-		Path:        "/analytic/businesses/{id}/account/{accountId}/favourite",
+		Path:        "/analytic/businesses/{id}/favourite",
 		Summary:     "Delete a business favourite",
 		Description: "Delete a business favourite.",
 		Tags:        []string{"Analytic", "Businesses", "Favourites"},
@@ -188,7 +188,7 @@ func RegisterHumaRoutes(
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "get-business-favourite-status",
 		Method:      http.MethodGet,
-		Path:        "/analytic/businesses/{id}/account/{accountId}/favourite",
+		Path:        "/analytic/businesses/{id}/favourite",
 		Summary:     "Get a business favourite status",
 		Description: "Get a business favourite status.",
 		Tags:        []string{"Analytic", "Businesses", "Favourites"},
@@ -213,44 +213,4 @@ func RegisterHumaRoutes(
 		Description: "Get a business favourite count.",
 		Tags:        []string{"Analytic", "Businesses", "Favourites"},
 	}, handler.getBusinessFavouriteCount)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-daily-aggregated-round-analytics",
-		Method:      http.MethodGet,
-		Path:        "/analytic/rounds/{id}",
-		Summary:     "Get daily aggregated round analytics",
-		Description: "Get daily aggregated round analytics.",
-		Tags:        []string{"Analytic", "Rounds"},
-		Security: []map[string][]string{
-			{"bearerAuth": {}},
-		},
-		Middlewares: huma.Middlewares{
-			func(ctx huma.Context, next func(huma.Context)) {
-				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
-			},
-			func(ctx huma.Context, next func(huma.Context)) {
-				middleware.WithAccount(humaApi)(ctx, next, logger, service)
-			},
-		},
-	}, handler.getDailyAggregatedRoundAnalytics)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-daily-aggregated-business-analytics",
-		Method:      http.MethodGet,
-		Path:        "/analytic/businesses/{id}",
-		Summary:     "Get daily aggregated business analytics",
-		Description: "Get daily aggregated business analytics.",
-		Tags:        []string{"Analytic", "Businesses"},
-		Security: []map[string][]string{
-			{"bearerAuth": {}},
-		},
-		Middlewares: huma.Middlewares{
-			func(ctx huma.Context, next func(huma.Context)) {
-				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
-			},
-			func(ctx huma.Context, next func(huma.Context)) {
-				middleware.WithAccount(humaApi)(ctx, next, logger, service)
-			},
-		},
-	}, handler.getDailyAggregatedBusinessAnalytics)
 }

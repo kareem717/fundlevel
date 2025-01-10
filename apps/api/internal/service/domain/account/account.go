@@ -5,6 +5,8 @@ import (
 
 	"fundlevel/internal/entities/account"
 	"fundlevel/internal/storage"
+
+	"github.com/google/uuid"
 )
 
 type AccountService struct {
@@ -22,8 +24,12 @@ func (s *AccountService) GetById(ctx context.Context, id int) (account.Account, 
 	return s.repositories.Account().GetById(ctx, id)
 }
 
-func (s *AccountService) Create(ctx context.Context, params account.CreateAccountParams) (account.Account, error) {
-	return s.repositories.Account().Create(ctx, params)
+func (s *AccountService) GetByUserId(ctx context.Context, userId uuid.UUID) (account.Account, error) {
+	return s.repositories.Account().GetByUserId(ctx, userId)
+}
+
+func (s *AccountService) Create(ctx context.Context, params account.CreateAccountParams, userId uuid.UUID) (account.Account, error) {
+	return s.repositories.Account().Create(ctx, params, userId)
 }
 
 func (s *AccountService) Delete(ctx context.Context, id int) error {

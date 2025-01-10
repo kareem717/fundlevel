@@ -7,6 +7,7 @@ import (
 	"fundlevel/internal/entities/investment"
 	"fundlevel/internal/entities/round"
 	"fundlevel/internal/server/handler/shared"
+	"fundlevel/internal/server/utils"
 	"fundlevel/internal/service"
 
 	"github.com/danielgtaylor/huma/v2"
@@ -152,7 +153,10 @@ func newHTTPHandler(service *service.Service, logger *zap.Logger) *httpHandler {
 // }.
 
 func (h *httpHandler) create(ctx context.Context, input *shared.PathIDParam) (*shared.SingleInvestmentResponse, error) {
-	account := shared.GetAuthenticatedAccount(ctx)
+	account := utils.GetAuthenticatedAccount(ctx)
+	if account == nil {
+		return nil, huma.Error401Unauthorized("You must be logged in to create an investment")
+	}
 
 	// todo: add ABAC checks
 	roundRecord, err := h.service.RoundService.GetById(ctx, input.ID)
@@ -255,7 +259,10 @@ func (h *httpHandler) getInvestmentById(ctx context.Context, input *shared.PathI
 		}
 	}
 
-	account := shared.GetAuthenticatedAccount(ctx)
+	account := utils.GetAuthenticatedAccount(ctx)
+	if account == nil {
+		return nil, huma.Error401Unauthorized("You must be logged in to fetch an investment")
+	}
 
 	if account.ID != investment.InvestorID {
 		h.logger.Error("input account id does not match authenticated account id",

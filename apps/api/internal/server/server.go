@@ -12,7 +12,6 @@ import (
 	"fundlevel/internal/server/handler/industry"
 	"fundlevel/internal/server/handler/investment"
 	"fundlevel/internal/server/handler/round"
-	"fundlevel/internal/server/handler/user"
 	"fundlevel/internal/server/handler/webhook"
 	"fundlevel/internal/server/middleware"
 	"fundlevel/internal/service"
@@ -49,12 +48,12 @@ func WithAPIVersion(version string) ServerOptFunc {
 }
 
 type Server struct {
-	services           *service.Service
-	logger             *zap.Logger
-	config             *ServerConfig
-	humaApi            huma.API
-	router             *chi.Mux
-	supabaseClient     *supabase.Client
+	services                   *service.Service
+	logger                     *zap.Logger
+	config                     *ServerConfig
+	humaApi                    huma.API
+	router                     *chi.Mux
+	supabaseClient             *supabase.Client
 	stripeWebhookSecret        string
 	stripeConnectWebhookSecret string
 }
@@ -104,12 +103,12 @@ func NewServer(
 	humaApi := humachi.New(r, humaConfig)
 
 	server := Server{
-		services:           services,
-		logger:             logger,
-		config:             config,
-		humaApi:            humaApi,
-		router:             r,
-		supabaseClient:     supabaseClient,
+		services:                   services,
+		logger:                     logger,
+		config:                     config,
+		humaApi:                    humaApi,
+		router:                     r,
+		supabaseClient:             supabaseClient,
 		stripeWebhookSecret:        stripeWebhookSecret,
 		stripeConnectWebhookSecret: stripeConnectWebhookSecret,
 	}
@@ -147,13 +146,6 @@ func (s *Server) registerRoutes() {
 	)
 
 	account.RegisterHumaRoutes(
-		s.services,
-		s.humaApi,
-		s.logger,
-		s.supabaseClient,
-	)
-
-	user.RegisterHumaRoutes(
 		s.services,
 		s.humaApi,
 		s.logger,

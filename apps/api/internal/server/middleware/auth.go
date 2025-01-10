@@ -6,7 +6,6 @@ import (
 	"fundlevel/internal/service"
 
 	"github.com/danielgtaylor/huma/v2"
-	"github.com/google/uuid"
 	"go.uber.org/zap"
 
 	"github.com/supabase-community/supabase-go"
@@ -50,14 +49,14 @@ func WithUser(api huma.API) func(ctx huma.Context, next func(huma.Context), logg
 func WithAccount(api huma.API) func(ctx huma.Context, next func(huma.Context), logger *zap.Logger, sv *service.Service) {
 	return func(ctx huma.Context, next func(huma.Context), logger *zap.Logger, sv *service.Service) {
 		user := utils.GetAuthenticatedUser(ctx.Context())
-		if user.ID == uuid.Nil {
+		if user == nil {
 			huma.WriteErr(api, ctx, http.StatusUnauthorized,
 				"User not authenticated",
 			)
 			return
 		}
 
-		queryResp, err := sv.UserService.GetAccount(ctx.Context(), user.ID)
+		queryResp, err := sv.AccountService.GetByUserId(ctx.Context(), user.ID)
 		if err != nil {
 			logger.Error("Error getting account", zap.Error(err))
 			huma.WriteErr(api, ctx, http.StatusInternalServerError,

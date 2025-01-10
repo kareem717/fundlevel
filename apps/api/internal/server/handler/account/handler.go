@@ -9,6 +9,7 @@ import (
 	"fundlevel/internal/entities/business"
 	"fundlevel/internal/entities/chat"
 	"fundlevel/internal/server/handler/shared"
+	"fundlevel/internal/server/utils"
 	"fundlevel/internal/service"
 
 	"github.com/danielgtaylor/huma/v2"
@@ -35,16 +36,13 @@ func newHTTPHandler(service *service.Service, logger *zap.Logger) *httpHandler {
 	}
 }
 
-func (h *httpHandler) getByID(ctx context.Context, input *shared.PathIDParam) (*shared.SingleAccountResponse, error) {
-	if account := shared.GetAuthenticatedAccount(ctx); account.ID != input.ID {
-		h.logger.Error("input account id does not match authenticated account id",
-			zap.Any("input account id", input.ID),
-			zap.Any("authenticated account id", account.ID))
-
-		return nil, huma.Error403Forbidden("Cannot get account for another user")
+func (h *httpHandler) getByUserId(ctx context.Context, input *struct{}) (*shared.SingleAccountResponse, error) {
+	user := utils.GetAuthenticatedUser(ctx)
+	if user == nil {
+		return nil, huma.Error401Unauthorized("Unauthorized")
 	}
 
-	account, err := h.service.AccountService.GetById(ctx, input.ID)
+	account, err := h.service.AccountService.GetByUserId(ctx, user.ID)
 	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
@@ -66,119 +64,65 @@ type CreateAccountInput struct {
 	Body account.CreateAccountParams `json:"account"`
 }
 
-func (h *httpHandler) create(ctx context.Context, input *CreateAccountInput) (*shared.SingleAccountResponse, error) {
-	if user := shared.GetAuthenticatedUser(ctx); user.ID != input.Body.UserID {
-		h.logger.Error(
-			"input user id does not match authenticated user id",
-			zap.Any("input user id", input.Body.UserID),
-			zap.Any("authenticated user id", user.ID),
-		)
-
-		return nil, huma.Error403Forbidden("Cannot create account for another user")
+func (h *httpHandler) create(ctx context.Context, input *CreateAccountInput) (*struct{}, error) {
+	user := utils.GetAuthenticatedUser(ctx)
+	if user == nil {
+		return nil, huma.Error401Unauthorized("Unauthorized")
 	}
 
-	account, err := h.service.AccountService.Create(ctx, input.Body)
+	_, err := h.service.AccountService.Create(ctx, input.Body, user.ID)
 	if err != nil {
 		h.logger.Error("failed to create account", zap.Error(err))
 		return nil, huma.Error500InternalServerError("An error occurred while creating the account")
 	}
 
-	resp := &shared.SingleAccountResponse{}
-	resp.Body.Message = "Account created successfully"
-	resp.Body.Account = &account
-
-	return resp, nil
+	return &struct{}{}, nil
 }
 
 type UpdateAccountInput struct {
-	shared.PathIDParam
 	Body account.UpdateAccountParams `json:"account"`
 }
 
-func (h *httpHandler) update(ctx context.Context, input *UpdateAccountInput) (*shared.SingleAccountResponse, error) {
-	if account := shared.GetAuthenticatedAccount(ctx); account.ID != input.ID {
-		h.logger.Error("input account id does not match authenticated account id",
-			zap.Any("input account id", input.ID),
-			zap.Any("authenticated account id", account.ID))
-
-		return nil, huma.Error403Forbidden("Cannot update account for another user")
+func (h *httpHandler) update(ctx context.Context, input *UpdateAccountInput) (*struct{}, error) {
+	account := utils.GetAuthenticatedAccount(ctx)
+	if account == nil {
+		return nil, huma.Error401Unauthorized("Unauthorized")
 	}
 
-	_, err := h.service.AccountService.GetById(ctx, input.ID)
-	if err != nil {
-		switch {
-		case errors.Is(err, sql.ErrNoRows):
-			return nil, huma.Error404NotFound("Account not found")
-		default:
-			h.logger.Error("failed to fetch account", zap.Error(err))
-			return nil, huma.Error500InternalServerError("An error occurred while fetching the account")
-		}
-	}
-
-	account, err := h.service.AccountService.Update(ctx, input.ID, input.Body)
-
+	_, err := h.service.AccountService.Update(ctx, account.ID, input.Body)
 	if err != nil {
 		h.logger.Error("failed to update account", zap.Error(err))
 		return nil, huma.Error500InternalServerError("An error occurred while updating the account")
 	}
 
-	resp := &shared.SingleAccountResponse{}
-	resp.Body.Message = "Account updated successfully"
-	resp.Body.Account = &account
-
-	return resp, nil
+	// TODO: Do we have to return anything?
+	return &struct{}{}, nil
 }
 
-type DeleteAccountResponse struct {
-	Body shared.MessageResponse
-}
-
-func (h *httpHandler) delete(ctx context.Context, input *shared.PathIDParam) (*DeleteAccountResponse, error) {
-	if account := shared.GetAuthenticatedAccount(ctx); account.ID != input.ID {
-		h.logger.Error("input account id does not match authenticated account id",
-			zap.Any("input account id", input.ID),
-			zap.Any("authenticated account id", account.ID))
-
-		return nil, huma.Error403Forbidden("Cannot delete account for another user")
+func (h *httpHandler) delete(ctx context.Context, input *struct{}) (*struct{}, error) {
+	account := utils.GetAuthenticatedAccount(ctx)
+	if account == nil {
+		return nil, huma.Error401Unauthorized("Unauthorized")
 	}
 
-	_, err := h.service.AccountService.GetById(ctx, input.ID)
-	if err != nil {
-		switch {
-		case errors.Is(err, sql.ErrNoRows):
-			return nil, huma.Error404NotFound("Account not found")
-		default:
-			h.logger.Error("failed to fetch account", zap.Error(err))
-			return nil, huma.Error500InternalServerError("An error occurred while fetching the account")
-		}
-	}
-
-	err = h.service.AccountService.Delete(ctx, input.ID)
+	err := h.service.AccountService.Delete(ctx, account.ID)
 	if err != nil {
 		h.logger.Error("failed to delete account", zap.Error(err))
 		return nil, huma.Error500InternalServerError("An error occurred while deleting the account")
 	}
 
-	resp := &DeleteAccountResponse{}
-	resp.Body.Message = "Account deleted successfully"
-
-	return resp, nil
+	return &struct{}{}, nil
 }
 
-func (h *httpHandler) getInvestmentsByCursor(ctx context.Context, input *shared.GetInvestmentsByParentAndCursorInput) (*shared.GetCursorPaginatedInvestmentsOutput, error) {
-	if account := shared.GetAuthenticatedAccount(ctx); account.ID != input.ID {
-		h.logger.Error(
-			"input account id does not match authenticated account id",
-			zap.Any("input account id", input.ID),
-			zap.Any("authenticated account id", account.ID),
-		)
-
-		return nil, huma.Error403Forbidden("Cannot get investments for another account")
+func (h *httpHandler) getInvestmentsByCursor(ctx context.Context, input *shared.GetInvestmentsByCursorInput) (*shared.GetCursorPaginatedInvestmentsOutput, error) {
+	account := utils.GetAuthenticatedAccount(ctx)
+	if account == nil {
+		return nil, huma.Error401Unauthorized("Unauthorized")
 	}
 
 	limit := input.Limit + 1
 
-	investments, err := h.service.AccountService.GetInvestmentsByCursor(ctx, input.ID, limit, input.Cursor, input.InvestmentFilter)
+	investments, err := h.service.AccountService.GetInvestmentsByCursor(ctx, account.ID, limit, input.Cursor, input.InvestmentFilter)
 
 	if err != nil {
 		switch {
@@ -203,16 +147,13 @@ func (h *httpHandler) getInvestmentsByCursor(ctx context.Context, input *shared.
 	return resp, nil
 }
 
-func (h *httpHandler) getInvestmentsByPage(ctx context.Context, input *shared.GetInvestmentsByParentAndPageInput) (*shared.GetOffsetPaginatedInvestmentsOutput, error) {
-	if account := shared.GetAuthenticatedAccount(ctx); account.ID != input.ID {
-		h.logger.Error("input account id does not match authenticated account id",
-			zap.Any("input account id", input.ID),
-			zap.Any("authenticated account id", account.ID))
-
-		return nil, huma.Error403Forbidden("Cannot get investments for another account")
+func (h *httpHandler) getInvestmentsByPage(ctx context.Context, input *shared.GetInvestmentsByPageInput) (*shared.GetOffsetPaginatedInvestmentsOutput, error) {
+	account := utils.GetAuthenticatedAccount(ctx)
+	if account == nil {
+		return nil, huma.Error401Unauthorized("Unauthorized")
 	}
 
-	investments, total, err := h.service.AccountService.GetInvestmentsByPage(ctx, input.ID, input.PageSize, input.Page, input.InvestmentFilter)
+	investments, total, err := h.service.AccountService.GetInvestmentsByPage(ctx, account.ID, input.PageSize, input.Page, input.InvestmentFilter)
 
 	if err != nil {
 		switch {
@@ -243,16 +184,13 @@ type GetBusinessesOutput struct {
 	}
 }
 
-func (h *httpHandler) getAllBusinesses(ctx context.Context, input *shared.PathIDParam) (*GetBusinessesOutput, error) {
-	if account := shared.GetAuthenticatedAccount(ctx); account.ID != input.ID {
-		h.logger.Error("input account id does not match authenticated account id",
-			zap.Any("input account id", input.ID),
-			zap.Any("authenticated account id", account.ID))
-
-		return nil, huma.Error403Forbidden("Cannot get businesses for another account")
+func (h *httpHandler) getAllBusinesses(ctx context.Context, input *struct{}) (*GetBusinessesOutput, error) {
+	account := utils.GetAuthenticatedAccount(ctx)
+	if account == nil {
+		return nil, huma.Error401Unauthorized("Unauthorized")
 	}
 
-	businesses, err := h.service.AccountService.GetAllBusinesses(ctx, input.ID)
+	businesses, err := h.service.AccountService.GetAllBusinesses(ctx, account.ID)
 
 	if err != nil {
 		switch {
@@ -271,11 +209,6 @@ func (h *httpHandler) getAllBusinesses(ctx context.Context, input *shared.PathID
 	return resp, nil
 }
 
-type GetChatsRequest struct {
-	shared.PathIDParam
-	shared.TimeCursorPaginationRequest
-}
-
 type GetChatsOutput struct {
 	Body struct {
 		shared.TimeCursorPaginationResponse
@@ -284,16 +217,13 @@ type GetChatsOutput struct {
 	}
 }
 
-func (h *httpHandler) getChats(ctx context.Context, input *GetChatsRequest) (*GetChatsOutput, error) {
-	if account := shared.GetAuthenticatedAccount(ctx); account.ID != input.ID {
-		h.logger.Error("input account id does not match authenticated account id",
-			zap.Any("input account id", input.ID),
-			zap.Any("authenticated account id", account.ID))
-
-		return nil, huma.Error403Forbidden("Cannot get chats for another account")
+func (h *httpHandler) getChats(ctx context.Context, input *shared.TimeCursorPaginationRequest) (*GetChatsOutput, error) {
+	account := utils.GetAuthenticatedAccount(ctx)
+	if account == nil {
+		return nil, huma.Error401Unauthorized("Unauthorized")
 	}
 
-	chats, err := h.service.AccountService.GetChatsByCursor(ctx, input.ID, input.Limit, input.Cursor)
+	chats, err := h.service.AccountService.GetChatsByCursor(ctx, account.ID, input.Limit, input.Cursor)
 	if err != nil {
 		h.logger.Error("failed to fetch chats", zap.Error(err))
 		return nil, huma.Error500InternalServerError("An error occurred while fetching the chats")

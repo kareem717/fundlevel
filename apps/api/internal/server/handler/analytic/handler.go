@@ -2,10 +2,9 @@ package analytic
 
 import (
 	"context"
-	"database/sql"
-	"errors"
 	"fundlevel/internal/entities/analytic"
 	"fundlevel/internal/server/handler/shared"
+	"fundlevel/internal/server/utils"
 	"fundlevel/internal/service"
 
 	"github.com/danielgtaylor/huma/v2"
@@ -32,27 +31,19 @@ func newHTTPHandler(service *service.Service, logger *zap.Logger) *httpHandler {
 	}
 }
 
-type ImpressionInput struct {
-	shared.PathIDParam
-	Body struct {
-		AccountID int `json:"accountId" minimum:"1"`
-	}
+type CreateRoundImpressionInput struct {
+	shared.IdParam
 }
 
-func (h *httpHandler) createRoundImpression(ctx context.Context, input *ImpressionInput) (*shared.MessageOutput, error) {
-	account := shared.GetAuthenticatedAccount(ctx)
-
-	if account.ID != input.Body.AccountID {
-		h.logger.Error("account id does not match authenticated account id",
-			zap.Any("authenticated account id", account.ID),
-			zap.Any("input account id", input.Body.AccountID))
-
-		return nil, huma.Error403Forbidden("Cannot view as another account")
+func (h *httpHandler) createRoundImpression(ctx context.Context, input *CreateRoundImpressionInput) (*shared.MessageOutput, error) {
+	account := utils.GetAuthenticatedAccount(ctx)
+	if account == nil {
+		return nil, huma.Error401Unauthorized("Unauthorized")
 	}
 
 	err := h.service.AnalyticService.CreateRoundImpression(ctx, analytic.CreateRoundImpressionParams{
 		RoundID:   input.ID,
-		AccountID: input.Body.AccountID,
+		AccountID: account.ID,
 	})
 
 	if err != nil {
@@ -66,21 +57,19 @@ func (h *httpHandler) createRoundImpression(ctx context.Context, input *Impressi
 	return resp, nil
 }
 
-func (h *httpHandler) createBusinessImpression(ctx context.Context, input *ImpressionInput) (*shared.MessageOutput, error) {
-	account := shared.GetAuthenticatedAccount(ctx)
-	//! this doesn't check if the business exists to minimize exec time
+type CreateBusinessImpressionInput struct {
+	shared.IdParam
+}
 
-	if account.ID != input.Body.AccountID {
-		h.logger.Error("account id does not match authenticated account id",
-			zap.Any("authenticated account id", account.ID),
-			zap.Any("input account id", input.Body.AccountID))
-
-		return nil, huma.Error403Forbidden("Cannot view as another account")
+func (h *httpHandler) createBusinessImpression(ctx context.Context, input *CreateBusinessImpressionInput) (*shared.MessageOutput, error) {
+	account := utils.GetAuthenticatedAccount(ctx)
+	if account == nil {
+		return nil, huma.Error401Unauthorized("Unauthorized")
 	}
 
 	err := h.service.AnalyticService.CreateBusinessImpression(ctx, analytic.CreateBusinessImpressionParams{
 		BusinessID: input.ID,
-		AccountID:  input.Body.AccountID,
+		AccountID:  account.ID,
 	})
 
 	if err != nil {
@@ -102,17 +91,6 @@ type ImpressionCountOutput struct {
 }
 
 func (h *httpHandler) getRoundImpressionCount(ctx context.Context, input *shared.PathIDParam) (*ImpressionCountOutput, error) {
-	_, err := h.service.RoundService.GetById(ctx, input.ID)
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			h.logger.Error("round not found", zap.Int("round id", input.ID))
-			return nil, huma.Error404NotFound("Round not found")
-		}
-
-		h.logger.Error("failed to get round", zap.Error(err))
-		return nil, huma.Error500InternalServerError("An error occurred while getting the round")
-	}
-
 	count, err := h.service.AnalyticService.GetRoundImpressionCount(ctx, input.ID)
 	if err != nil {
 		h.logger.Error("failed to get round impression count", zap.Error(err))
@@ -127,14 +105,6 @@ func (h *httpHandler) getRoundImpressionCount(ctx context.Context, input *shared
 }
 
 func (h *httpHandler) getBusinessImpressionCount(ctx context.Context, input *shared.PathIDParam) (*ImpressionCountOutput, error) {
-	_, err := h.service.BusinessService.GetById(ctx, input.ID)
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			h.logger.Error("business not found", zap.Int("business id", input.ID))
-			return nil, huma.Error404NotFound("Business not found")
-		}
-	}
-
 	count, err := h.service.AnalyticService.GetBusinessImpressionCount(ctx, input.ID)
 	if err != nil {
 		h.logger.Error("failed to get business impression count", zap.Error(err))
@@ -148,25 +118,15 @@ func (h *httpHandler) getBusinessImpressionCount(ctx context.Context, input *sha
 	return resp, nil
 }
 
-type FavouriteInput struct {
-	shared.PathIDParam
-	AccountID int `path:"accountId" minimum:"1"`
-}
-
-func (h *httpHandler) createRoundFavourite(ctx context.Context, input *FavouriteInput) (*shared.MessageOutput, error) {
-	account := shared.GetAuthenticatedAccount(ctx)
-
-	if account.ID != input.AccountID {
-		h.logger.Error("account id does not match authenticated account id",
-			zap.Any("authenticated account id", account.ID),
-			zap.Any("input account id", input.AccountID))
-
-		return nil, huma.Error403Forbidden("Cannot like for another account")
+func (h *httpHandler) createRoundFavourite(ctx context.Context, input *shared.PathIDParam) (*shared.MessageOutput, error) {
+	account := utils.GetAuthenticatedAccount(ctx)
+	if account == nil {
+		return nil, huma.Error401Unauthorized("Unauthorized")
 	}
 
 	err := h.service.AnalyticService.CreateRoundFavourite(ctx, analytic.CreateRoundFavouriteParams{
 		RoundID:   input.ID,
-		AccountID: input.AccountID,
+		AccountID: account.ID,
 	})
 
 	if err != nil {
@@ -180,18 +140,13 @@ func (h *httpHandler) createRoundFavourite(ctx context.Context, input *Favourite
 	return resp, nil
 }
 
-func (h *httpHandler) deleteRoundFavourite(ctx context.Context, input *FavouriteInput) (*shared.MessageOutput, error) {
-	account := shared.GetAuthenticatedAccount(ctx)
-
-	if account.ID != input.AccountID {
-		h.logger.Error("account id does not match authenticated account id",
-			zap.Any("authenticated account id", account.ID),
-			zap.Any("input account id", input.AccountID))
-
-		return nil, huma.Error403Forbidden("Cannot delete like for another account")
+func (h *httpHandler) deleteRoundFavourite(ctx context.Context, input *shared.PathIDParam) (*shared.MessageOutput, error) {
+	account := utils.GetAuthenticatedAccount(ctx)
+	if account == nil {
+		return nil, huma.Error401Unauthorized("Unauthorized")
 	}
 
-	err := h.service.AnalyticService.DeleteRoundFavourite(ctx, input.ID, input.AccountID)
+	err := h.service.AnalyticService.DeleteRoundFavourite(ctx, input.ID, account.ID)
 	if err != nil {
 		h.logger.Error("failed to delete round like", zap.Error(err))
 		return nil, huma.Error500InternalServerError("An error occurred while deleting the round like")
@@ -203,18 +158,13 @@ func (h *httpHandler) deleteRoundFavourite(ctx context.Context, input *Favourite
 	return resp, nil
 }
 
-func (h *httpHandler) isRoundFavouritedByAccount(ctx context.Context, input *FavouriteInput) (*shared.IsFavouritedOutput, error) {
-	account := shared.GetAuthenticatedAccount(ctx)
-
-	if account.ID != input.AccountID {
-		h.logger.Error("account id does not match authenticated account id",
-			zap.Any("authenticated account id", account.ID),
-			zap.Any("input account id", input.AccountID))
-
-		return nil, huma.Error403Forbidden("Cannot check if round is liked by another account")
+func (h *httpHandler) isRoundFavouritedByAccount(ctx context.Context, input *shared.PathIDParam) (*shared.IsFavouritedOutput, error) {
+	account := utils.GetAuthenticatedAccount(ctx)
+	if account == nil {
+		return nil, huma.Error401Unauthorized("Unauthorized")
 	}
 
-	favourited, err := h.service.AnalyticService.IsRoundFavouritedByAccount(ctx, input.ID, input.AccountID)
+	favourited, err := h.service.AnalyticService.IsRoundFavouritedByAccount(ctx, input.ID, account.ID)
 	if err != nil {
 		h.logger.Error("failed to check if round is liked by account", zap.Error(err))
 		return nil, huma.Error500InternalServerError("An error occurred while checking if the round is liked by the account")
@@ -241,31 +191,15 @@ func (h *httpHandler) getRoundFavouriteCount(ctx context.Context, input *shared.
 	return resp, nil
 }
 
-func (h *httpHandler) createBusinessFavourite(ctx context.Context, input *FavouriteInput) (*shared.MessageOutput, error) {
-	account := shared.GetAuthenticatedAccount(ctx)
-
-	if account.ID != input.AccountID {
-		h.logger.Error("account id does not match authenticated account id",
-			zap.Any("authenticated account id", account.ID),
-			zap.Any("input account id", input.AccountID))
-
-		return nil, huma.Error403Forbidden("Cannot like for another account")
+func (h *httpHandler) createBusinessFavourite(ctx context.Context, input *shared.PathIDParam) (*shared.MessageOutput, error) {
+	account := utils.GetAuthenticatedAccount(ctx)
+	if account == nil {
+		return nil, huma.Error401Unauthorized("Unauthorized")
 	}
 
-	_, err := h.service.BusinessService.GetById(ctx, input.ID)
-	if err != nil {
-		switch {
-		case errors.Is(err, sql.ErrNoRows):
-			return nil, huma.Error404NotFound("Business not found")
-		default:
-			h.logger.Error("failed to fetch business", zap.Error(err))
-			return nil, huma.Error500InternalServerError("An error occurred while fetching the business")
-		}
-	}
-
-	err = h.service.AnalyticService.CreateBusinessFavourite(ctx, analytic.CreateBusinessFavouriteParams{
+	err := h.service.AnalyticService.CreateBusinessFavourite(ctx, analytic.CreateBusinessFavouriteParams{
 		BusinessID: input.ID,
-		AccountID:  input.AccountID,
+		AccountID:  account.ID,
 	})
 
 	if err != nil {
@@ -279,29 +213,13 @@ func (h *httpHandler) createBusinessFavourite(ctx context.Context, input *Favour
 	return resp, nil
 }
 
-func (h *httpHandler) deleteBusinessFavourite(ctx context.Context, input *FavouriteInput) (*shared.MessageOutput, error) {
-	account := shared.GetAuthenticatedAccount(ctx)
-
-	if account.ID != input.AccountID {
-		h.logger.Error("account id does not match authenticated account id",
-			zap.Any("authenticated account id", account.ID),
-			zap.Any("input account id", input.AccountID))
-
-		return nil, huma.Error403Forbidden("Cannot delete like for another account")
+func (h *httpHandler) deleteBusinessFavourite(ctx context.Context, input *shared.PathIDParam) (*shared.MessageOutput, error) {
+	account := utils.GetAuthenticatedAccount(ctx)
+	if account == nil {
+		return nil, huma.Error401Unauthorized("Unauthorized")
 	}
 
-	_, err := h.service.BusinessService.GetById(ctx, input.ID)
-	if err != nil {
-		switch {
-		case errors.Is(err, sql.ErrNoRows):
-			return nil, huma.Error404NotFound("Business not found")
-		default:
-			h.logger.Error("failed to fetch business", zap.Error(err))
-			return nil, huma.Error500InternalServerError("An error occurred while fetching the business")
-		}
-	}
-
-	err = h.service.AnalyticService.DeleteBusinessFavourite(ctx, input.ID, input.AccountID)
+	err := h.service.AnalyticService.DeleteBusinessFavourite(ctx, input.ID, account.ID)
 	if err != nil {
 		h.logger.Error("failed to delete business like", zap.Error(err))
 		return nil, huma.Error500InternalServerError("An error occurred while deleting the business like")
@@ -313,18 +231,13 @@ func (h *httpHandler) deleteBusinessFavourite(ctx context.Context, input *Favour
 	return resp, nil
 }
 
-func (h *httpHandler) isBusinessFavouritedByAccount(ctx context.Context, input *FavouriteInput) (*shared.IsFavouritedOutput, error) {
-	account := shared.GetAuthenticatedAccount(ctx)
-
-	if account.ID != input.AccountID {
-		h.logger.Error("account id does not match authenticated account id",
-			zap.Any("authenticated account id", account.ID),
-			zap.Any("input account id", input.AccountID))
-
-		return nil, huma.Error403Forbidden("Cannot check if business is liked by another account")
+func (h *httpHandler) isBusinessFavouritedByAccount(ctx context.Context, input *shared.PathIDParam) (*shared.IsFavouritedOutput, error) {
+	account := utils.GetAuthenticatedAccount(ctx)
+	if account == nil {
+		return nil, huma.Error401Unauthorized("Unauthorized")
 	}
 
-	favourited, err := h.service.AnalyticService.IsBusinessFavouritedByAccount(ctx, input.ID, input.AccountID)
+	favourited, err := h.service.AnalyticService.IsBusinessFavouritedByAccount(ctx, input.ID, account.ID)
 	if err != nil {
 		h.logger.Error("failed to check if business is liked by account", zap.Error(err))
 		return nil, huma.Error500InternalServerError("An error occurred while checking if the business is liked by the account")
@@ -347,102 +260,6 @@ func (h *httpHandler) getBusinessFavouriteCount(ctx context.Context, input *shar
 	resp := &shared.GetLikeCountOutput{}
 	resp.Body.Message = "Business favourited count fetched successfully"
 	resp.Body.Count = count
-
-	return resp, nil
-}
-
-type GetDailyAggregatedAnalyticsInput struct {
-	shared.PathIDParam
-	MinDayOfYear int `query:"minDayOfYear" min:"0" max:"366" multipleOf:"1" default:"0" required:"false"`
-	MaxDayOfYear int `query:"maxDayOfYear" min:"0" max:"366" multipleOf:"1" default:"366" required:"false"`
-}
-
-type GetDailyAggregatedBusinessAnalyticsOutput struct {
-	Body struct {
-		shared.MessageResponse
-		Analytics []analytic.SimplifiedDailyAggregatedBusinessAnalytics `json:"analytics"`
-	} `json:"body"`
-}
-
-func (h *httpHandler) getDailyAggregatedBusinessAnalytics(ctx context.Context, input *GetDailyAggregatedAnalyticsInput) (*GetDailyAggregatedBusinessAnalyticsOutput, error) {
-	business, err := h.service.BusinessService.GetById(ctx, input.ID)
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			h.logger.Error("tried to get daily aggregated business analytics for a non-existent business", zap.Error(err), zap.Int("business_id", input.ID))
-		} else {
-			h.logger.Error("failed to get business", zap.Error(err), zap.Int("business_id", input.ID))
-		}
-
-		return nil, huma.Error500InternalServerError("An error occurred while getting the business")
-	}
-
-	account := shared.GetAuthenticatedAccount(ctx)
-
-	authorized, err := h.service.PermissionService.CanViewBusinessAnalytics(ctx, account.ID, business.ID)
-	if err != nil {
-		h.logger.Error("failed to check if account can view business analytics", zap.Error(err), zap.Int("business_id", input.ID), zap.Int("account_id", account.ID))
-		return nil, huma.Error500InternalServerError("An error occurred while checking if the account can view business analytics")
-	}
-
-	if !authorized {
-		h.logger.Error("account does not have permission to view business analytics", zap.Int("business_id", input.ID), zap.Int("account_id", account.ID))
-		return nil, huma.Error403Forbidden("Account does not have permission to view business analytics")
-	}
-
-	businessAnalytics, err := h.service.AnalyticService.GetDailyAggregatedBusinessAnalytics(ctx, business.ID, input.MinDayOfYear, input.MaxDayOfYear)
-	if err != nil {
-		h.logger.Error("failed to get daily aggregated business analytics", zap.Error(err), zap.Int("business_id", input.ID))
-		return nil, huma.Error500InternalServerError("An error occurred while getting the daily aggregated business analytics")
-	}
-
-	resp := &GetDailyAggregatedBusinessAnalyticsOutput{}
-	resp.Body.Message = "Daily aggregated business analytics fetched successfully"
-	resp.Body.Analytics = businessAnalytics
-
-	return resp, nil
-}
-
-type GetDailyAggregatedRoundAnalyticsOutput struct {
-	Body struct {
-		shared.MessageResponse
-		Analytics []analytic.SimplifiedDailyAggregatedRoundAnalytics `json:"analytics"`
-	} `json:"body"`
-}
-
-func (h *httpHandler) getDailyAggregatedRoundAnalytics(ctx context.Context, input *GetDailyAggregatedAnalyticsInput) (*GetDailyAggregatedRoundAnalyticsOutput, error) {
-	round, err := h.service.RoundService.GetById(ctx, input.ID)
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			h.logger.Error("tried to get daily aggregated round analytics for a non-existent round", zap.Error(err), zap.Int("round_id", input.ID))
-		} else {
-			h.logger.Error("failed to get round", zap.Error(err), zap.Int("round_id", input.ID))
-		}
-
-		return nil, huma.Error500InternalServerError("An error occurred while getting the round")
-	}
-
-	account := shared.GetAuthenticatedAccount(ctx)
-
-	authorized, err := h.service.PermissionService.CanViewRoundAnalytics(ctx, account.ID, round.ID)
-	if err != nil {
-		h.logger.Error("failed to check if account can view round analytics", zap.Error(err), zap.Int("round_id", input.ID), zap.Int("account_id", account.ID))
-		return nil, huma.Error500InternalServerError("An error occurred while checking if the account can view round analytics")
-	}
-
-	if !authorized {
-		h.logger.Error("account does not have permission to view round analytics", zap.Int("round_id", input.ID), zap.Int("account_id", account.ID))
-		return nil, huma.Error403Forbidden("Account does not have permission to view round analytics")
-	}
-
-	roundAnalytics, err := h.service.AnalyticService.GetDailyAggregatedRoundAnalytics(ctx, round.ID, input.MinDayOfYear, input.MaxDayOfYear)
-	if err != nil {
-		h.logger.Error("failed to get daily aggregated round analytics", zap.Error(err), zap.Int("round_id", input.ID))
-		return nil, huma.Error500InternalServerError("An error occurred while getting the daily aggregated round analytics")
-	}
-
-	resp := &GetDailyAggregatedRoundAnalyticsOutput{}
-	resp.Body.Message = "Daily aggregated round analytics fetched successfully"
-	resp.Body.Analytics = roundAnalytics
 
 	return resp, nil
 }

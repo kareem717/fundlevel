@@ -8,6 +8,7 @@ import (
 
 	"fundlevel/internal/entities/round"
 	"fundlevel/internal/server/handler/shared"
+	"fundlevel/internal/server/utils"
 	"fundlevel/internal/service"
 
 	"github.com/danielgtaylor/huma/v2"
@@ -71,7 +72,11 @@ func (h *httpHandler) create(ctx context.Context, input *CreateRoundInput) (*sha
 		}
 	}
 
-	account := shared.GetAuthenticatedAccount(ctx)
+	account := utils.GetAuthenticatedAccount(ctx)
+	if account == nil {
+		return nil, huma.Error401Unauthorized("You must be logged in to create a round")
+	}
+
 	authorized, err := h.service.PermissionService.CanAccountCreateRound(ctx, account.ID, input.Body.BusinessID)
 	if err != nil {
 		h.logger.Error("failed to check if account can create round", zap.Error(err), zap.Int("business_id", input.Body.BusinessID), zap.Int("account_id", account.ID))
@@ -120,7 +125,10 @@ func (h *httpHandler) delete(ctx context.Context, input *shared.PathIDParam) (*s
 		}
 	}
 
-	account := shared.GetAuthenticatedAccount(ctx)
+	account := utils.GetAuthenticatedAccount(ctx)
+	if account == nil {
+		return nil, huma.Error401Unauthorized("You must be logged in to delete a round")
+	}
 
 	authorized, err := h.service.PermissionService.CanDeleteRound(ctx, account.ID, round.Business.ID)
 	if err != nil {
@@ -141,107 +149,6 @@ func (h *httpHandler) delete(ctx context.Context, input *shared.PathIDParam) (*s
 
 	resp := &shared.MessageResponse{}
 	resp.Message = "Round deleted successfully"
-
-	return resp, nil
-}
-
-func (h *httpHandler) getInvestmentsByCursor(ctx context.Context, input *shared.GetInvestmentsByParentAndCursorInput) (*shared.GetCursorPaginatedInvestmentsOutput, error) {
-	round, err := h.service.RoundService.GetById(ctx, input.ID)
-	if err != nil {
-		switch {
-		case errors.Is(err, sql.ErrNoRows):
-			return nil, huma.Error404NotFound("round not found")
-		default:
-			h.logger.Error("failed to fetch round", zap.Error(err))
-			return nil, huma.Error500InternalServerError("An error occurred while fetching the round")
-		}
-	}
-
-	account := shared.GetAuthenticatedAccount(ctx)
-	authorized, err := h.service.PermissionService.CanViewInvestments(ctx, account.ID, round.Business.ID)
-	if err != nil {
-		h.logger.Error("failed to check if account can view round investments", zap.Error(err), zap.Int("round_id", input.ID), zap.Int("account_id", account.ID))
-		return nil, huma.Error500InternalServerError("An error occurred while checking if the account can view round investments")
-	}
-
-	if !authorized {
-		h.logger.Error("account does not have permission to view round investments", zap.Int("round_id", input.ID), zap.Int("account_id", account.ID))
-
-		return nil, huma.Error403Forbidden("Unauthorized to view round investments")
-	}
-
-	limit := input.Limit + 1
-
-	investments, err := h.service.RoundService.GetInvestmentsByCursor(ctx, input.ID, limit, input.Cursor, input.InvestmentFilter)
-
-	if err != nil {
-		switch {
-		case errors.Is(err, sql.ErrNoRows):
-			return nil, huma.Error404NotFound("investments not found")
-		default:
-			h.logger.Error("failed to fetch investments", zap.Error(err))
-			return nil, huma.Error500InternalServerError("An error occurred while fetching the investments")
-		}
-	}
-
-	resp := &shared.GetCursorPaginatedInvestmentsOutput{}
-	resp.Body.Message = "Investments fetched successfully"
-	resp.Body.Investments = investments
-
-	if len(investments) == limit {
-		resp.Body.NextCursor = &investments[len(investments)-1].ID
-		resp.Body.HasMore = true
-		resp.Body.Investments = resp.Body.Investments[:len(resp.Body.Investments)-1]
-	}
-
-	return resp, nil
-}
-
-func (h *httpHandler) getInvestmentsByPage(ctx context.Context, input *shared.GetInvestmentsByParentAndPageInput) (*shared.GetOffsetPaginatedInvestmentsOutput, error) {
-	round, err := h.service.RoundService.GetById(ctx, input.ID)
-	if err != nil {
-		switch {
-		case errors.Is(err, sql.ErrNoRows):
-			return nil, huma.Error404NotFound("round not found")
-		default:
-			h.logger.Error("failed to fetch round", zap.Error(err))
-			return nil, huma.Error500InternalServerError("An error occurred while fetching the round")
-		}
-	}
-
-	account := shared.GetAuthenticatedAccount(ctx)
-	authorized, err := h.service.PermissionService.CanViewInvestments(ctx, account.ID, round.Business.ID)
-	if err != nil {
-		h.logger.Error("failed to check if account can view round investments", zap.Error(err), zap.Int("round_id", input.ID), zap.Int("account_id", account.ID))
-		return nil, huma.Error500InternalServerError("An error occurred while checking if the account can view round investments")
-	}
-
-	if !authorized {
-		h.logger.Error("account does not have permission to view round investments", zap.Int("round_id", input.ID), zap.Int("account_id", account.ID))
-
-		return nil, huma.Error403Forbidden("Unauthorized to view round investments")
-	}
-
-	investments, total, err := h.service.RoundService.GetInvestmentsByPage(ctx, input.ID, input.PageSize, input.Page, input.InvestmentFilter)
-
-	if err != nil {
-		switch {
-		case errors.Is(err, sql.ErrNoRows):
-			return nil, huma.Error404NotFound("investments not found")
-		default:
-			h.logger.Error("failed to fetch investments", zap.Error(err))
-			return nil, huma.Error500InternalServerError("An error occurred while fetching the investments")
-		}
-	}
-
-	resp := &shared.GetOffsetPaginatedInvestmentsOutput{}
-	resp.Body.Message = "Investments fetched successfully"
-	resp.Body.Investments = investments
-	resp.Body.Total = total
-	if len(investments) > input.PageSize {
-		resp.Body.HasMore = true
-		resp.Body.Investments = resp.Body.Investments[:len(resp.Body.Investments)-1]
-	}
 
 	return resp, nil
 }

@@ -247,7 +247,7 @@ func RegisterHumaRoutes(
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "get-business-stripe-account",
 		Method:      http.MethodGet,
-		Path:        "/business/{id}/stripe",
+		Path:        "/business/{businessId}/stripe",
 		Summary:     "Get business stripe account",
 		Description: "Get business stripe account.",
 		Tags:        []string{"Businesses"},

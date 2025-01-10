@@ -23,13 +23,14 @@ func NewAccountRepository(db bun.IDB, ctx context.Context) *AccountRepository {
 	}
 }
 
-func (r *AccountRepository) Create(ctx context.Context, params account.CreateAccountParams) (account.Account, error) {
+func (r *AccountRepository) Create(ctx context.Context, params account.CreateAccountParams, userId uuid.UUID) (account.Account, error) {
 	resp := account.Account{}
 
 	err := r.db.
 		NewInsert().
 		Model(&params).
 		ModelTableExpr("accounts").
+		Value("user_id", "?", userId).
 		Returning("*").
 		Scan(ctx, &resp)
 

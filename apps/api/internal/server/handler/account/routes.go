@@ -18,13 +18,15 @@ func RegisterHumaRoutes(
 ) {
 
 	handler := newHTTPHandler(service, logger)
+
 	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-account-by-id",
-		Method:      http.MethodGet,
-		Path:        "/account/{id}",
-		Summary:     "Get account by ID",
-		Description: "Get account by ID.",
-		Tags:        []string{"Accounts"},
+		OperationID:   "create-account",
+		Method:        http.MethodPost,
+		Path:          "/account",
+		Summary:       "Create a account",
+		Description:   "Create a account.",
+		Tags:          []string{"Accounts"},
+		DefaultStatus: http.StatusCreated,
 		Security: []map[string][]string{
 			{"bearerAuth": {}},
 		},
@@ -36,15 +38,15 @@ func RegisterHumaRoutes(
 				middleware.WithAccount(humaApi)(ctx, next, logger, service)
 			},
 		},
-	}, handler.getByID)
+	}, handler.create)
 
 	huma.Register(humaApi, huma.Operation{
-		OperationID: "create-account",
-		Method:      http.MethodPost,
+		OperationID: "getAccount",
+		Method:      http.MethodGet,
 		Path:        "/account",
-		Summary:     "Create a account",
-		Description: "Create a account.",
-		Tags:        []string{"Accounts"},
+		Summary:     "Get account by user id",
+		Description: "Fetches the account for the currently authenticated user.",
+		Tags:        []string{"Account"},
 		Security: []map[string][]string{
 			{"bearerAuth": {}},
 		},
@@ -52,8 +54,11 @@ func RegisterHumaRoutes(
 			func(ctx huma.Context, next func(huma.Context)) {
 				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
 			},
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithAccount(humaApi)(ctx, next, logger, service)
+			},
 		},
-	}, handler.create)
+	}, handler.getByUserId)
 
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "update-account",

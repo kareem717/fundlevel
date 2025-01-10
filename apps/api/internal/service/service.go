@@ -20,22 +20,19 @@ import (
 	investmentService "fundlevel/internal/service/domain/investment"
 	"fundlevel/internal/service/domain/permission"
 	roundService "fundlevel/internal/service/domain/round"
-	userService "fundlevel/internal/service/domain/user"
 	"fundlevel/internal/storage"
 
 	"github.com/google/uuid"
+
 	"github.com/stripe/stripe-go/v80"
 )
 
-type UserService interface {
-	GetAccount(ctx context.Context, id uuid.UUID) (account.Account, error)
-}
-
 type AccountService interface {
-	Create(ctx context.Context, params account.CreateAccountParams) (account.Account, error)
+	Create(ctx context.Context, params account.CreateAccountParams, userId uuid.UUID) (account.Account, error)
 	Delete(ctx context.Context, id int) error
 	Update(ctx context.Context, id int, params account.UpdateAccountParams) (account.Account, error)
 	GetById(ctx context.Context, id int) (account.Account, error)
+	GetByUserId(ctx context.Context, userId uuid.UUID) (account.Account, error)
 
 	GetInvestmentsByCursor(ctx context.Context, accountId int, limit int, cursor int, filter investment.InvestmentFilter) ([]investment.Investment, error)
 	GetInvestmentsByPage(ctx context.Context, accountId int, pageSize int, page int, filter investment.InvestmentFilter) ([]investment.Investment, int, error)
@@ -188,7 +185,6 @@ type Service struct {
 	HealthService     HealthService
 	IndustryService   IndustryService
 	AnalyticService   AnalyticService
-	UserService       UserService
 	BusinessService   BusinessService
 	InvestmentService InvestmentService
 	ChatService       ChatService
@@ -207,7 +203,6 @@ func NewService(
 		HealthService:     healthService.NewHealthService(repositories),
 		AnalyticService:   analyticService.NewAnalyticService(repositories),
 		AccountService:    accountService.NewAccountService(repositories),
-		UserService:       userService.NewUserService(repositories),
 		RoundService:      roundService.NewRoundService(repositories),
 		InvestmentService: investmentService.NewInvestmentService(repositories, stripeAPIKey, feePercentage),
 		BusinessService:   businessService.NewBusinessService(repositories, stripeAPIKey),

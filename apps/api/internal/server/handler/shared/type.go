@@ -59,13 +59,13 @@ type GetRoundsByParentAndPageInput struct {
 	// round.RoundFilter
 }
 
-type GetInvestmentsByParentAndCursorInput struct {
-	GetCursorPaginatedByParentPathIDInput
+type GetInvestmentsByCursorInput struct {
+	CursorPaginationRequest
 	investment.InvestmentFilter
 }
 
-type GetInvestmentsByParentAndPageInput struct {
-	GetOffsetPaginatedByParentPathIDInput
+type GetInvestmentsByPageInput struct {
+	OffsetPaginationRequest
 	investment.InvestmentFilter
 }
 
@@ -92,6 +92,10 @@ type SingleRoundResponse struct {
 
 type PathUserIDParam struct {
 	UserID uuid.UUID `path:"userId"`
+}
+
+type IdParam struct {
+	ID int `json:"id" minimum:"1"`
 }
 
 type MessageResponse struct {
