@@ -26,7 +26,6 @@ export const LastInvestmentCard: FC<InvestmentStatisticLineProps> = ({ className
       value={isLoading ? "" : format(lastInvestment, "PPP")}
       icon="dollarSign"
       description="This is the total amount of investments you have made."
-      className={className}
       {...props}
     />
   );
@@ -50,7 +49,6 @@ export const TotalInvestmentsCard: FC<InvestmentStatisticLineProps> = ({ classNa
       value={isLoading ? "" : "1"}
       icon="dollarSign"
       description="This is the total amount of investments you have made."
-      className={className}
       {...props}
     />
   );

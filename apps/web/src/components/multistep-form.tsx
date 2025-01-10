@@ -8,7 +8,7 @@ import {
   ComponentPropsWithoutRef,
   useState,
 } from "react";
-import { Form } from "./ui/form";
+import { Form } from "@repo/ui/components/form";
 import { FieldValues, Path, UseFormReturn } from "react-hook-form";
 import Link from "next/link";
 
@@ -53,7 +53,7 @@ export const MultiStepForm = <T extends FieldValues>({
 
     console.log("Form values on next 1", formProps.getValues());
 
-    const currentFields = steps[step].fields;
+    const currentFields = steps[step]?.fields;
     const isValid = await formProps.trigger(currentFields);
 
     if (!isValid) return;

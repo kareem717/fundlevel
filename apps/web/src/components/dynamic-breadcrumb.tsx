@@ -37,13 +37,13 @@ export const DynamicBreadcrumb: FC<DynamicBreadcrumbProps> = ({ className, items
           </>
         ))}
         <BreadcrumbItem key={items.length - 1}>
-          {items[items.length - 1].url ? (
-            <BreadcrumbLink className="hidden md:block" href={items[items.length - 1].url}>
-              {items[items.length - 1].title}
+          {items[items.length - 1]?.url ? (
+            <BreadcrumbLink className="hidden md:block" href={items[items.length - 1]?.url}>
+              {items[items.length - 1]?.title}
             </BreadcrumbLink>
           ) : (
             <BreadcrumbItem className="hidden md:block">
-              {items[items.length - 1].title}
+              {items[items.length - 1]?.title}
             </BreadcrumbItem>
           )}
         </BreadcrumbItem>

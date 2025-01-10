@@ -19,7 +19,6 @@ import {
 } from "@repo/ui/components/sidebar"
 import Link from "next/link"
 import redirects from "@/lib/config/redirects"
-import { parseAsInteger, useQueryState } from 'nuqs'
 import { createContext, useContext, useState, ReactNode } from "react";
 
 export interface BusinessContext {
@@ -47,15 +46,17 @@ export const BusinessContextProvider: FC<{
   }
 
   const [businesses] = useState<Business[]>(businessData);
-  const [currentBusiness, setCurrentBusiness] = useState<Business>(businessData[0]);
+  const [currentBusiness, setCurrentBusiness] = useState<Business>(businessData[0]!);
 
   // TODO: bring to server side
-  const [currentBusinessId, setCurrentBusinessId] = useState<number>(businessData[0].id);
+  const [currentBusinessId, setCurrentBusinessId] = useState<number>(businessData[0]!.id);
 
   //TODO: i'd assume there's a better way to do this
   useEffect(() => {
-    //? Should we throw an error if the business isn't found instead of defaulting to the first one?
-    setCurrentBusiness(businesses.find(business => business.id === currentBusinessId) || businesses[0])
+    const foundBusiness = businesses.find(business => business.id === currentBusinessId)
+    if (foundBusiness) {
+      setCurrentBusiness(foundBusiness)
+    }
   }, [currentBusinessId, businesses])
 
   return (

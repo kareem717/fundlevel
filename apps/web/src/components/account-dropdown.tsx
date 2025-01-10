@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@repo/ui/components/dropdown-menu";
 import { Account } from "@repo/sdk";
-import { buttonVariants } from "./ui/button";
+import { buttonVariants } from "@repo/ui/components/button";
 import { Avatar, AvatarFallback } from "@repo/ui/components/avatar";
 import { Icons } from "./icons";
 import { cn } from "@repo/ui/lib/utils";

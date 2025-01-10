@@ -3,7 +3,7 @@
 import { ComponentPropsWithoutRef, FC } from "react"
 import { cn } from "@repo/ui/lib/utils";
 import { Icons } from "./icons";
-import { Button } from "./ui/button";
+import { Button } from "@repo/ui/components/button";
 import { useRouter } from "next/navigation";
 
 export interface NavBackProps extends ComponentPropsWithoutRef<typeof Button> {

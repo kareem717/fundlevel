@@ -2,7 +2,6 @@
 
 import { cn } from "@repo/ui/lib/utils";
 import { ComponentPropsWithoutRef } from "react"
-import { useForm } from "react-hook-form"
 import {
   Form,
   FormControl,
@@ -16,26 +15,16 @@ import { Input } from "@repo/ui/components/input"
 import { Icons } from "@/components/icons";
 import { Button } from "@repo/ui/components/button";
 import { toast } from "sonner";
-import { useAction } from "next-safe-action/hooks";
 import { useRouter } from "next/navigation";
 import { createRound } from "@/actions/rounds";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { InferType } from "yup";
 import { Popover, PopoverTrigger, PopoverContent } from "@repo/ui/components/popover";
 import { format } from "date-fns";
 import { Calendar } from "@repo/ui/components/calendar";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from "@repo/ui/components/select";
 import redirects from "@/lib/config/redirects";
 import { useBusinessContext } from "../../../../components/business-context";
 import { zCreateRoundParams } from "@repo/sdk/zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
 
 export interface CreateRoundFormProps extends ComponentPropsWithoutRef<"form"> { }
 
@@ -43,46 +32,39 @@ export const CreateRoundForm = ({ className, ...props }: CreateRoundFormProps) =
   const router = useRouter()
   const { currentBusiness } = useBusinessContext()
 
-  const form = useForm<z.infer<typeof zCreateRoundParams>>({
-    resolver: zodResolver(zCreateRoundParams),
-    defaultValues: {
-      businessId: currentBusiness.id,
-      beginsAt: format(new Date(Date.now() + 1000 * 60 * 60 * 24), "yyyy-MM-dd"),
-      endsAt: format(new Date(Date.now() + 1000 * 60 * 60 * 24 * 30), "yyyy-MM-dd"),
-      percentageSelling: 0,
-      valuationAmountUSDCents: 0,
-      valueCurrency: "usd",
-      // causes uncontrolled component warning
-      description: undefined,
-      investorCount: 1,
-    }
-  })
-
-  const { executeAsync } = useAction(createRound, {
-    onSuccess: () => {
-      form.reset()
-      toast.success("Done!", {
-        description: "Your funding round has been created.",
-      })
-      router.push(redirects.app.dashboard.index)
-    },
-    onError: ({ error }) => {
-      toast.error("Something went wrong", {
-        description: error.serverError?.message || "An unknown error occurred",
-      })
-    }
-  })
-
-  const onSubmit = async (values: InferType<typeof zCreateRoundParams>) => {
-    const res = await executeAsync(values)
-    if (res?.serverError || res?.validationErrors) {
-      return new Error("Something went wrong")
-    }
-  }
+  const { form, action: { isExecuting }, handleSubmitWithAction } =
+    useHookFormAction(createRound, zodResolver(zCreateRoundParams), {
+      actionProps: {
+        onSuccess: () => {
+          form.reset()
+          toast.success("Done!", {
+            description: "Your business has been created.",
+          })
+          router.push(redirects.app.dashboard.index)
+        },
+        onError: ({ error }) => {
+          toast.error("Something went wrong", {
+            description: error.serverError?.message || "An unknown error occurred",
+          })
+        }
+      },
+      formProps: {
+        defaultValues: {
+          businessId: currentBusiness.id,
+          beginsAt: format(new Date(Date.now() + 1000 * 60 * 60 * 24), "yyyy-MM-dd"),
+          endsAt: format(new Date(Date.now() + 1000 * 60 * 60 * 24 * 30), "yyyy-MM-dd"),
+          percentageSelling: 0,
+          valuationAmountUSDCents: 0,
+          // causes uncontrolled component warning
+          description: undefined,
+          investorCount: 1,
+        }
+      },
+    });
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className={cn("space-y-8 w-full max-w-md", className)} {...props}>
+      <form onSubmit={handleSubmitWithAction} className={cn("space-y-8 w-full max-w-md", className)} {...props}>
         <FormField
           control={form.control}
           name="beginsAt"
@@ -111,7 +93,7 @@ export const CreateRoundForm = ({ className, ...props }: CreateRoundFormProps) =
                 <PopoverContent className="w-auto p-0" align="start">
                   <Calendar
                     mode="single"
-                    selected={field.value}
+                    selected={new Date(field.value)}
                     onSelect={field.onChange}
                     disabled={(date) => date < new Date()}
                     initialFocus
@@ -154,9 +136,9 @@ export const CreateRoundForm = ({ className, ...props }: CreateRoundFormProps) =
                 <PopoverContent className="w-auto p-0" align="start">
                   <Calendar
                     mode="single"
-                    selected={field.value}
+                    selected={new Date(field.value)}
                     onSelect={field.onChange}
-                    disabled={(date) => date < form.getValues().beginsAt}
+                    disabled={(date) => date < new Date(form.getValues().beginsAt)}
                     initialFocus
                   />
                 </PopoverContent>
@@ -171,7 +153,7 @@ export const CreateRoundForm = ({ className, ...props }: CreateRoundFormProps) =
 
         <FormField
           control={form.control}
-          name="percentageOffered"
+          name="percentageSelling"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Percentage Offered</FormLabel>
@@ -188,41 +170,15 @@ export const CreateRoundForm = ({ className, ...props }: CreateRoundFormProps) =
 
         <FormField
           control={form.control}
-          name="percentageValue"
+          name="valuationAmountUSDCents"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Value</FormLabel>
+              <FormLabel>Valuation (USD)</FormLabel>
               <FormControl>
-                <Input type="number" min={0} {...field} />
+                <Input type="number" min={0} {...field} onChange={(e) => field.onChange(Number(e.target.value) * 100)} />
               </FormControl>
               <FormDescription>
-                What is the value of the offered equity?
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="valueCurrency"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Currency</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a currency" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="usd">USD</SelectItem>
-                  <SelectItem value="eur">EUR</SelectItem>
-                  <SelectItem value="gbp">GBP</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormDescription>
-                What currency is the value in?
+                What is the USD valuation of the company?
               </FormDescription>
               <FormMessage />
             </FormItem>

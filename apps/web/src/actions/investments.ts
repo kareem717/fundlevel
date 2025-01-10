@@ -4,35 +4,10 @@ import { actionClientWithAccount } from "@/lib/safe-action";
 import {
 	createInvestmentPaymentIntent as createInvestmentPaymentIntentApi,
 	getAccountInvestmentsByPage as getAccountInvestmentsByPageApi,
-	// withdrawInvestment as withdrawInvestmentApi,
 	getInvestmentById as getInvestmentByIdApi,
-	// processInvestment as processInvestmentApi,
 } from "@repo/sdk";
-// import { createInvestmentSchema } from "@/actions/validations/investments";
-import { intIdSchema, offsetPaginationSchema } from "./validations/shared";
 import { cache } from "react";
-
-/**
-//  * Create a investment on a round
-//  */
-// export const createInvestment = actionClientWithAccount
-// 	.schema(createInvestmentSchema)
-// 	.action(async ({ parsedInput, ctx: { axiosClient, account } }) => {
-// 		if (!account) {
-// 			throw new Error("Account not found");
-// 		}
-
-// 		const resp = await createRoundInvestmentApi({
-// 			client: axiosClient,
-// 			throwOnError: true,
-// 			body: {
-// 				...parsedInput,
-// 				investorId: account.id,
-// 			},
-// 		});
-
-// 		return resp.data.clientSecret;
-// 	});
+import { offsetPaginationSchema, pathIdSchema } from "./validations";
 
 export const getAccountInvestmentsByPage = actionClientWithAccount
 	.schema(offsetPaginationSchema)
@@ -43,9 +18,6 @@ export const getAccountInvestmentsByPage = actionClientWithAccount
 
 		const resp = await getAccountInvestmentsByPageApi({
 			client: axiosClient,
-			path: {
-				id: account.id,
-			},
 			query: parsedInput,
 		});
 
@@ -83,7 +55,7 @@ export const getAccountInvestmentsByPage = actionClientWithAccount
 // 	});
 
 export const getInvestmentById = actionClientWithAccount
-	.schema(intIdSchema.required())
+	.schema(pathIdSchema)
 	.action(async ({ parsedInput, ctx: { axiosClient } }) => {
 		console.log("getting investment", parsedInput);
 
@@ -101,7 +73,7 @@ export const getInvestmentById = actionClientWithAccount
 export const getInvestmentByIdCached = cache(getInvestmentById);
 
 export const createInvestmentPaymentIntent = actionClientWithAccount
-	.schema(intIdSchema.required())
+	.schema(pathIdSchema)
 	.action(async ({ parsedInput, ctx: { axiosClient } }) => {
 		const resp = await createInvestmentPaymentIntentApi({
 			client: axiosClient,

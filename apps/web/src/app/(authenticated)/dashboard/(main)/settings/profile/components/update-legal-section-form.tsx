@@ -2,7 +2,6 @@
 
 import { cn } from "@repo/ui/lib/utils";
 import { ComponentPropsWithoutRef, useEffect } from "react"
-import { useForm } from "react-hook-form"
 import {
   Form,
   FormControl,
@@ -18,35 +17,15 @@ import { Button } from "@repo/ui/components/button";
 import { toast } from "sonner";
 import { useAction } from "next-safe-action/hooks";
 import { getBusinessById, upsertBusinessLegalSection } from "@/actions/busineses";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { InferType } from "yup";
-import { upsertBusinessLegalSectionSchema } from "@/actions/validations/business";
 import { useBusinessContext } from "../../../components/business-context";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
+import { zUpsertBusinessLegalSectionParams } from "@repo/sdk/zod";
 
 export interface UpdateLegalSectionFormProps extends ComponentPropsWithoutRef<"form"> { }
 
 export const UpdateLegalSectionForm = ({ className, ...props }: UpdateLegalSectionFormProps) => {
   const { currentBusiness } = useBusinessContext()
-
-  const form = useForm<InferType<typeof upsertBusinessLegalSectionSchema>>({
-    resolver: yupResolver(upsertBusinessLegalSectionSchema),
-    defaultValues: {
-      businessNumber: ""
-    }
-  })
-
-  const { executeAsync, isExecuting } = useAction(upsertBusinessLegalSection, {
-    onSuccess: () => {
-      toast.success("Done!", {
-        description: "Your business has been updated.",
-      })
-    },
-    onError: ({ error }) => {
-      toast.error("Something went wrong", {
-        description: error.serverError?.message || "An unknown error occurred",
-      })
-    }
-  })
 
   const { executeAsync: getBusinessByIdAsync, isExecuting: getBusinessByIdIsExecuting } = useAction(getBusinessById, {
     onSuccess: ({ data }) => {
@@ -65,6 +44,26 @@ export const UpdateLegalSectionForm = ({ className, ...props }: UpdateLegalSecti
     }
   })
 
+  const { form, action: { isExecuting }, handleSubmitWithAction } =
+    useHookFormAction(upsertBusinessLegalSection, zodResolver(zUpsertBusinessLegalSectionParams), {
+      actionProps: {
+        onSuccess: () => {
+          toast.success("Done!", {
+            description: "Your business has been updated.",
+          })
+        },
+        onError: ({ error }) => {
+          toast.error("Something went wrong", {
+            description: error.serverError?.message || "An unknown error occurred",
+          })
+        }
+      },
+      formProps: {
+        defaultValues: {
+          businessNumber: ""
+        }
+      },
+    });
 
   useEffect(() => {
     if (currentBusiness?.id) {
@@ -72,25 +71,13 @@ export const UpdateLegalSectionForm = ({ className, ...props }: UpdateLegalSecti
     }
   }, [currentBusiness?.id])
 
-  const onSubmit = async (values: InferType<typeof upsertBusinessLegalSectionSchema>) => {
-    if (isExecuting) return
-    const res = await executeAsync({
-      id: currentBusiness?.id,
-      upsertBusinessLegalSectionSchema: values
-    })
-    if (res?.serverError || res?.validationErrors) {
-      return new Error("Something went wrong")
-    }
-  }
-
-  console.log(form.getValues())
   return (
     <Form {...form}>
       {getBusinessByIdIsExecuting ?
         <div>Loading...</div>
         :
         (
-          <form onSubmit={form.handleSubmit(onSubmit)} className={cn("space-y-8 w-full max-w-md", className)} {...props}>
+          <form onSubmit={handleSubmitWithAction} className={cn("space-y-8 w-full max-w-md", className)} {...props}>
             <FormField
               control={form.control}
               name="businessNumber"

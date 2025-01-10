@@ -1,8 +1,8 @@
 "use client";
 
 import { ComponentPropsWithoutRef, FC } from "react"
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
+import { Input } from "@repo/ui/components/input";
+import { Button } from "@repo/ui/components/button";
 import { Icons } from "./icons";
 import { cn } from "@repo/ui/lib/utils";
 

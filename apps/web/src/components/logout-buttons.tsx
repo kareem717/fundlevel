@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "./ui/button";
+import { Button } from "@repo/ui/components/button";
 import supabase from "@/lib/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner"

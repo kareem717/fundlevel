@@ -49,7 +49,6 @@ import { Checkbox } from "@repo/ui/components/checkbox";
 import { Industry } from "@/lib/dev/types";
 import { icons } from "lucide-react";
 import { ScrollArea, ScrollBar } from "@repo/ui/components/scroll-area";
-import { DualRangeSlider } from "@repo/ui/components/range-slider";
 import {
   parseAsArrayOf,
   useQueryState,
@@ -170,24 +169,6 @@ export default function FilterBar() {
           </DialogHeader>
           <div className="grid gap-4">
             <div className="space-y-6">
-              <div className="space-y-8">
-                <Label>Investment Amount Range</Label>
-                <div className="flex items-center gap-4">
-                  <DualRangeSlider
-                    label={(value) => <span>{formatValue(value || 100)}</span>}
-                    value={values}
-                    onValueChange={setValues}
-                    min={100}
-                    max={1000000}
-                    step={1}
-                  />
-                </div>
-                <div className="flex justify-between text-sm text-muted-foreground">
-                  <span>$1,000</span>
-                  <span>$1,000,000</span>
-                </div>
-              </div>
-
               <div className="space-y-2">
                 <Label>Investment Type</Label>
                 <div className="grid grid-cols-2 gap-4">

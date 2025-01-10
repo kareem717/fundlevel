@@ -1,6 +1,5 @@
 "use client";
 
-import { useForm } from "react-hook-form";
 import { Button } from "@repo/ui/components/button";
 import {
 	Form,
@@ -16,47 +15,44 @@ import { ComponentPropsWithoutRef, FC } from "react";
 import { Icons } from "@/components/icons";
 import { useRouter } from "next/navigation";
 import { cn } from "@repo/ui/lib/utils";
-import { yupResolver } from '@hookform/resolvers/yup';
-import { InferType } from "yup";
 import { createAccount } from "@/actions/auth";
-import { useAction } from "next-safe-action/hooks";
-import { createAccountSchema } from "@/actions/validations/account";
+import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { zCreateAccountParams } from "@repo/sdk/zod";
 
 export interface CreateAccountFormProps extends ComponentPropsWithoutRef<"form"> {
 }
 
 export const CreateAccountForm: FC<CreateAccountFormProps> = ({ className, ...props }) => {
 	const router = useRouter();
-	const form = useForm<InferType<typeof createAccountSchema>>({
-		resolver: yupResolver(createAccountSchema)
-	});
 
-	const { executeAsync, isExecuting } = useAction(createAccount, {
-		onSuccess: () => {
-			toast.success("Account created successfully!");
-			form.reset();
-			router.refresh();
-		},
-		onError: ({ error }) => {
-			console.log(error)
-			toast.error("Something went wrong", {
-				description: error.serverError?.message || "An unknown error occurred",
-			})
-		},
-	});
-
-
-	async function onSubmit(values: InferType<typeof createAccountSchema>) {
-		console.log(values)
-		await executeAsync({
-			...values,
+	const { form, action: { isExecuting }, handleSubmitWithAction, resetFormAndAction } =
+		useHookFormAction(createAccount, zodResolver(zCreateAccountParams), {
+			actionProps: {
+				onSuccess: () => {
+					toast.success("Account created successfully!");
+					form.reset();
+					router.refresh();
+				},
+				onError: ({ error }) => {
+					console.log(error)
+					toast.error("Something went wrong", {
+						description: error.serverError?.message || "An unknown error occurred",
+					})
+				},
+			},
+			formProps: {
+				defaultValues: {
+					firstName: "",
+					lastName: "",
+				},
+			},
 		});
-	}
 
 	return (
 
 		<Form {...form}>
-			<form onSubmit={form.handleSubmit(onSubmit)} className={cn("space-y-4", className)} {...props}>
+			<form onSubmit={handleSubmitWithAction} className={cn("space-y-4", className)} {...props}>
 				<FormField
 					control={form.control}
 					name="firstName"

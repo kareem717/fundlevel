@@ -5,36 +5,26 @@ import {
 	actionClientWithAccount,
 } from "@/lib/safe-action";
 import {
-	createAccountSchema,
-	updateAccountSchema,
-} from "@/actions/validations/account";
-import {
 	createAccount as createAccountApi,
 	updateAccount as updateAccountApi,
 } from "@repo/sdk";
+import { zCreateAccountParams, zUpdateAccountParams } from "@repo/sdk/zod";
 import { cache } from "react";
 
 /**
  * Create a new account for the currently authenticated user
  */
 export const createAccount = actionClientWithUser
-	.schema(createAccountSchema)
+	.schema(zCreateAccountParams)
 	.action(
 		async ({
-			parsedInput: { firstName, lastName },
-			ctx: { axiosClient, user },
+			parsedInput,
+			ctx: { axiosClient },
 		}) => {
-			if (!user) {
-				throw new Error("User not found");
-			}
 
 			return await createAccountApi({
 				client: axiosClient,
-				body: {
-					firstName,
-					lastName,
-					userId: user.id,
-				},
+				body: parsedInput,
 				throwOnError: true,
 			});
 		}
@@ -44,10 +34,10 @@ export const createAccount = actionClientWithUser
  * Update the currently authenticated account
  */
 export const updateAccount = actionClientWithAccount
-	.schema(updateAccountSchema)
+	.schema(zUpdateAccountParams)
 	.action(
 		async ({
-			parsedInput: { firstName, lastName },
+			parsedInput,
 			ctx: { axiosClient, account },
 		}) => {
 			if (!account) {
@@ -56,13 +46,7 @@ export const updateAccount = actionClientWithAccount
 
 			await updateAccountApi({
 				client: axiosClient,
-				path: {
-					id: account.id,
-				},
-				body: {
-					firstName,
-					lastName,
-				},
+				body: parsedInput,
 				throwOnError: true,
 			});
 		}

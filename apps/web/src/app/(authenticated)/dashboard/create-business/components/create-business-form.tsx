@@ -2,7 +2,6 @@
 
 import { cn } from "@repo/ui/lib/utils";
 import { ComponentPropsWithoutRef } from "react"
-import { useForm } from "react-hook-form"
 import {
   Form,
   FormControl,
@@ -16,12 +15,8 @@ import { Input } from "@repo/ui/components/input"
 import { Icons } from "@/components/icons";
 import { Button } from "@repo/ui/components/button";
 import { toast } from "sonner";
-import { useAction } from "next-safe-action/hooks";
 import { useRouter } from "next/navigation";
 import { createBusiness } from "@/actions/busineses";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { InferType } from "yup";
-import { createBusinessSchema } from "@/actions/validations/business";
 import { Popover, PopoverTrigger, PopoverContent } from "@repo/ui/components/popover";
 import { format } from "date-fns";
 import { Calendar } from "@repo/ui/components/calendar";
@@ -34,52 +29,46 @@ import {
 } from "@repo/ui/components/select";
 import { IndustrySelect } from "@/components/industry-select";
 import redirects from "@/lib/config/redirects";
+import { zCreateBusinessParams } from "@repo/sdk/zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
 
 export interface CreateBusinessFormProps extends ComponentPropsWithoutRef<"form"> { }
 
 export const CreateBusinessForm = ({ className, ...props }: CreateBusinessFormProps) => {
   const router = useRouter()
-
-  const form = useForm<InferType<typeof createBusinessSchema>>({
-    resolver: yupResolver(createBusinessSchema),
-    defaultValues: {
-      business: {
-        displayName: "",
-        foundingDate: new Date(),
-        employeeCount: "1",
+ 
+  const { form, action: { isExecuting }, handleSubmitWithAction } =
+    useHookFormAction(createBusiness, zodResolver(zCreateBusinessParams), {
+      actionProps: {
+        onSuccess: () => {
+          form.reset()
+          toast.success("Done!", {
+            description: "Your business has been created.",
+          })
+          router.push(redirects.app.dashboard.index)
+        },
+        onError: ({ error }) => {
+          toast.error("Something went wrong", {
+            description: error.serverError?.message || "An unknown error occurred",
+          })
+        }
       },
-      industryIds: [],
-    }
-  })
+      formProps: {
+        defaultValues: {
+          business: {
+            displayName: "",
+            foundingDate: new Date().toISOString(),
+            employeeCount: "1",
+          },
+          industryIds: [],
+        }
+      },
+    });
 
-  const { executeAsync, isExecuting } = useAction(createBusiness, {
-    onSuccess: () => {
-      form.reset()
-      toast.success("Done!", {
-        description: "Your business has been created.",
-      })
-      router.push(redirects.app.dashboard.index)
-    },
-    onError: ({ error }) => {
-      toast.error("Something went wrong", {
-        description: error.serverError?.message || "An unknown error occurred",
-      })
-    }
-  })
-
-  const onSubmit = async (values: InferType<typeof createBusinessSchema>) => {
-    if (isExecuting) return
-
-    const res = await executeAsync(values)
-    if (res?.serverError || res?.validationErrors) {
-      return new Error("Something went wrong")
-    }
-  }
-
-  console.log(form.getValues())
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className={cn("space-y-8 w-full max-w-md", className)} {...props}>
+      <form onSubmit={handleSubmitWithAction} className={cn("space-y-8 w-full max-w-md", className)} {...props}>
         <FormField
           control={form.control}
           name="business.displayName"
@@ -168,7 +157,7 @@ export const CreateBusinessForm = ({ className, ...props }: CreateBusinessFormPr
                 <PopoverContent className="w-auto p-0" align="start">
                   <Calendar
                     mode="single"
-                    selected={field.value}
+                    selected={field.value ? new Date(field.value) : undefined}
                     onSelect={field.onChange}
                     disabled={(date) =>
                       date > new Date() || date < new Date("1800-01-01")

@@ -7,7 +7,7 @@ import { env } from "@/env";
 import { createClient as createSupabaseServerClient } from "@/lib/utils/supabase/server";
 import { zErrorModel } from "@repo/sdk/zod";
 import { createClient } from "@hey-api/client-axios";
-import { getUserAccount } from "@repo/sdk";
+import { getAccount } from "@repo/sdk";
 
 export const actionClient = createSafeActionClient({
 	validationAdapter: zodAdapter(),
@@ -82,11 +82,8 @@ export const actionClientWithAccount = actionClientWithUser.use(
 	async ({ next, ctx }) => {
 		let account;
 		if (ctx.user?.id) {
-			const { data, error } = await getUserAccount({
+			const { data, error } = await getAccount({
 				client: ctx.axiosClient,
-				path: {
-					userId: ctx.user?.id,
-				},
 			});
 
 			if (error) {

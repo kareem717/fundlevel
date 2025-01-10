@@ -10,12 +10,13 @@ import {
 	getRoundFavouriteStatus,
 	deleteRoundFavourite,
 } from "@repo/sdk";
-import {
-	cursorPaginationSchema,
-} from "@/actions/validations/shared";
 import { cache } from "react";
 import { zCreateRoundParams } from "@repo/sdk/zod";
-import { offsetPaginationSchema, pathIdSchema } from "./validations";
+import {
+	cursorPaginationSchema,
+	offsetPaginationSchema,
+	pathIdSchema,
+} from "./validations";
 
 /**
  * Create a venture
@@ -95,7 +96,6 @@ export const isRoundLiked = actionClientWithAccount
 			throwOnError: true,
 			path: {
 				id: parsedInput,
-				accountId: account.id,
 			},
 		});
 
@@ -114,7 +114,6 @@ export const likeRound = actionClientWithAccount
 			throwOnError: true,
 			path: {
 				id: parsedInput,
-				accountId: account.id,
 			},
 		});
 	});
@@ -131,7 +130,6 @@ export const unlikeRound = actionClientWithAccount
 			throwOnError: true,
 			path: {
 				id: parsedInput,
-				accountId: account.id,
 			},
 		});
 	});

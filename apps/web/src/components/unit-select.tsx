@@ -22,7 +22,7 @@ export const UnitSelect: FC<UnitSelectProps> = ({ availableUnits = [], triggerPr
 
   return (
     <Select
-      defaultValue={availableUnits[0].value}
+      defaultValue={availableUnits[0]?.value}
       disabled={isSelectDisabled}
       {...props}
       onValueChange={(value) => {

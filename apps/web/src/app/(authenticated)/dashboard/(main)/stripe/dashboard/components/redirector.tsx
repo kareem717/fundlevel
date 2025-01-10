@@ -10,7 +10,7 @@ import { Button } from '@repo/ui/components/button';
 import { Icons } from '@/components/icons';
 import { StripeSettingsRedirector } from '../../components/stripe-settings-redirector';
 import { Alert, AlertDescription, AlertTitle } from '@repo/ui/components/alert';
-import { BusinessStripeAccount } from '@/lib/api';
+import { BusinessStripeAccount } from '@repo/sdk';
 
 export interface StripeDashboardRedirectorProps extends ComponentPropsWithoutRef<'div'> { }
 

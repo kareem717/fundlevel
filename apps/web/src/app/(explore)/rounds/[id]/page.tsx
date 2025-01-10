@@ -48,9 +48,9 @@ export default async function RoundViewPage(props: { params: Promise<{ id: strin
     isLiked = isLikedResp?.data?.favourited ?? false;
   }
 
-  const valuationAtPurchase = Math.round(round.percentageValue / (round.percentageOffered / 100));
-  const perInvestorPercentage = toFixedRound(round.investorCount > 1 ? round.percentageOffered / round.investorCount : round.percentageOffered, 3);
-  const buyInPrice = toFixedRound(round.buyIn * (1 + env.NEXT_PUBLIC_FEE_PERCENTAGE), 2);
+  const valuationAtPurchase = Math.round(round.valuationAmountUSDCents / (round.percentageSelling / 100));
+  const perInvestorPercentage = toFixedRound(round.investorCount > 1 ? round.percentageSelling / round.investorCount : round.percentageSelling, 3);
+  const buyInPrice = toFixedRound(round.valuationAmountUSDCents * (1 + env.NEXT_PUBLIC_FEE_PERCENTAGE), 2);
 
   return (
     <Card className="w-full relative max-w-screen-lg mx-auto">
@@ -61,7 +61,7 @@ export default async function RoundViewPage(props: { params: Promise<{ id: strin
         </CardTitle>
         <CardDescription>
           <span className="text-muted-foreground text-sm font-normal">
-            Seeking {round.percentageValue} for {round.percentageOffered} through {round.investorCount} investors{round.investorCount > 1 ? "s" : ""}
+            Seeking {round.percentageSelling}% for ${round.valuationAmountUSDCents} through {round.investorCount} investors{round.investorCount > 1 ? "s" : ""}
           </span>
         </CardDescription>
       </CardHeader>
@@ -139,7 +139,7 @@ export default async function RoundViewPage(props: { params: Promise<{ id: strin
                       Percentage:
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p>The venture is offering a total of {round.percentageOffered}%
+                      <p>The venture is offering a total of {round.percentageSelling}%
                         {round.investorCount > 1 && `, divided between ${round.investorCount} investors`}
                       </p>
                     </TooltipContent>
@@ -158,7 +158,7 @@ export default async function RoundViewPage(props: { params: Promise<{ id: strin
                     </TooltipContent>
                   </Tooltip>
                   <span className="font-semibold">
-                    ${round.buyIn}
+                    ${round.valuationAmountUSDCents}
                   </span>
                 </div>
                 <div className="flex flex-row justify-between items-center w-full">
@@ -171,7 +171,7 @@ export default async function RoundViewPage(props: { params: Promise<{ id: strin
                     </TooltipContent>
                   </Tooltip>
                   <span className="font-semibold">
-                    ${(round.buyIn * env.NEXT_PUBLIC_FEE_PERCENTAGE).toFixed(2)}
+                    ${toFixedRound(round.valuationAmountUSDCents * env.NEXT_PUBLIC_FEE_PERCENTAGE, 2)}
                   </span>
                 </div>
                 <Separator className="w-full bg-foreground my-2" />
@@ -181,7 +181,7 @@ export default async function RoundViewPage(props: { params: Promise<{ id: strin
                       Total
                     </TooltipTrigger>
                     <TooltipContent>
-                      This is your buy in price, calculated as {round.percentageOffered}% of ${valuationAtPurchase}
+                      This is your buy in price, calculated as {round.percentageSelling}% of ${valuationAtPurchase}
                     </TooltipContent>
                   </Tooltip>
                   <span>

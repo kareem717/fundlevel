@@ -14,7 +14,7 @@ import { Checkbox } from "@repo/ui/components/checkbox"
 import { Icons } from "@/components/icons"
 import { DataTableColumnHeader } from "@/components/data-table"
 import { titleCase } from "title-case"
-import { RoundInvestment } from "@repo/sdk"
+import { Investment } from "@repo/sdk"
 import Link from "next/link"
 import redirects from "@/lib/config/redirects"
 import {
@@ -42,7 +42,7 @@ import { Skeleton } from "@repo/ui/components/skeleton"
 import { formatCurrency } from "@/lib/utils"
 import { cn } from "@repo/ui/lib/utils"
 
-const ActionsCell: FC<{ row: Row<RoundInvestment> }> = ({ row }) => {
+const ActionsCell: FC<{ row: Row<Investment> }> = ({ row }) => {
   const investment = row.original
 
   return (
@@ -62,7 +62,7 @@ const ActionsCell: FC<{ row: Row<RoundInvestment> }> = ({ row }) => {
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           {/*//TODO: handle better*/}
-          <Link href={redirects.app.explore.round.view(investment?.round?.id?.toString() ?? "")}>
+          <Link href={redirects.app.explore.round.view(investment?.roundId?.toString() ?? "")}>
             View round
           </Link>
         </DropdownMenuItem>
@@ -71,7 +71,7 @@ const ActionsCell: FC<{ row: Row<RoundInvestment> }> = ({ row }) => {
   )
 }
 
-export const columns: ColumnDef<RoundInvestment>[] = [
+export const columns: ColumnDef<Investment>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -94,37 +94,7 @@ export const columns: ColumnDef<RoundInvestment>[] = [
     enableSorting: false,
     enableHiding: false,
   },
-  {
-    id: "buyIn",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Buy In" isSortable={false} />
-    ),
-    cell: ({ table, row }) => {
-      const round = row.original.round
-      // TODO: handle better
-      if (!round) {
-        return <div className="text-left font-medium">N/A</div>
-      }
-      // TODO: Add locale support
-      return <div className="text-left font-medium">
-        {formatCurrency(round.buyIn, round.valueCurrency)}
-      </div>
-    },
-  },
-  {
-    id: "percentageValue",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Ownership" isSortable={false} />
-    ),
-    cell: ({ row }) => {
-      const round = row.original.round
-      // TODO: handle better
-      if (!round) {
-        return <div className="text-left font-medium">N/A</div>
-      }
-      return <div className="text-left font-medium">{round.percentageValue}%</div>
-    },
-  },
+  
   {
     id: "status",
     header: ({ column }) => (
@@ -180,7 +150,7 @@ interface AccountInvestmentsTableProps extends ComponentPropsWithoutRef<"div"> {
 }
 
 export const AccountInvestmentsTable: FC<AccountInvestmentsTableProps> = ({ className, tableProps, ...props }) => {
-  const [data, setData] = useState<RoundInvestment[]>([])
+  const [data, setData] = useState<Investment[]>([])
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10,

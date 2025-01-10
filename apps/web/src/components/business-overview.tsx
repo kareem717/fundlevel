@@ -3,7 +3,7 @@
 import { ComponentPropsWithoutRef, FC, useEffect, useState } from "react"
 import { Icons } from "@/components/icons"
 import { cn } from "@repo/ui/lib/utils"
-import { Skeleton } from "./ui/skeleton";
+import { Skeleton } from "@repo/ui/components/skeleton";
 import { useAction } from "next-safe-action/hooks";
 import { getBusinessFunding } from "@/actions/busineses";
 import { toast } from "sonner";

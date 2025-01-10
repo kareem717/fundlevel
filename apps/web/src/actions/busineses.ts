@@ -45,7 +45,6 @@ export const createBusiness = actionClientWithAccount
 						...business,
 					},
 					industryIds,
-					initialOwnerId: account.id,
 				},
 			});
 		}
@@ -60,9 +59,6 @@ export const getAccountBusinesses = actionClientWithAccount.action(
 		const res = await getAccountBusinessesApi({
 			client: axiosClient,
 			throwOnError: true,
-			path: {
-				id: account.id,
-			},
 		});
 
 		return res.data;
@@ -170,15 +166,16 @@ export const getBusinessMembersByPage = actionClientWithAccount
 		}
 	);
 
-export const getBusinessMemberRoles = actionClientWithAccount
-	.action(async ({ ctx: { axiosClient } }) => {
+export const getBusinessMemberRoles = actionClientWithAccount.action(
+	async ({ ctx: { axiosClient } }) => {
 		const res = await getBusinessMemberRolesApi({
 			client: axiosClient,
 			throwOnError: true,
 		});
 
 		return res.data;
-	});
+	}
+);
 
 export const getBusinessCreateRoundrequirements = actionClientWithAccount
 	.schema(pathIdSchema)
@@ -247,10 +244,10 @@ export const upsertBusinessLegalSection = actionClientWithAccount
 	.schema(
 		z.object({
 			id: pathIdSchema,
-			params: zUpsertBusinessLegalSectionParams,
+			...zUpsertBusinessLegalSectionParams.shape,
 		})
 	)
-	.action(async ({ parsedInput: { id, params }, ctx: { axiosClient } }) => {
+	.action(async ({ parsedInput: { id, ...params }, ctx: { axiosClient } }) => {
 		await upsertBusinessLegalSectionApi({
 			client: axiosClient,
 			throwOnError: true,

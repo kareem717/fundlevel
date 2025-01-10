@@ -11,7 +11,7 @@ import { useAction } from 'next-safe-action/hooks';
 import { createInvestmentPaymentIntent } from '@/actions/investments';
 import { toast } from 'sonner';
 import { Skeleton } from '@repo/ui/components/skeleton';
-import { Button } from '../ui/button';
+import { Button } from '@repo/ui/components/button';
 import { useRouter } from 'next/navigation';
 import { Icons } from '../icons';
 import { cn } from '@repo/ui/lib/utils';
