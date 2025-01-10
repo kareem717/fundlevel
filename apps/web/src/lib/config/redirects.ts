@@ -1,4 +1,4 @@
-const appIndex = "/";
+const appRoot = "/";
 
 export const redirects = {
 	privacy: "/privacy-policy",
@@ -8,12 +8,12 @@ export const redirects = {
 		login: "/login",
 		logout: "/logout",
 		afterLogout: "/login",
-		afterLogin: appIndex,
+		afterLogin: appRoot,
 		otp: (email: string) => `/otp?email=${email}`,
 		createAccount: "/create-account",
 	},
 	app: {
-		index: appIndex,
+		index: appRoot,
 		wallet: {
 			index: "/wallet",
 			positions: {

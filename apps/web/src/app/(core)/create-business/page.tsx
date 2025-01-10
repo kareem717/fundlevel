@@ -1,15 +1,20 @@
-import { LogoDiv } from "@/components/logo-div";
+import { Card, CardTitle, CardHeader, CardContent } from "@repo/ui/components/card";
 import { CreateBusinessForm } from "./components/create-business-form";
+import { FormPageLayout } from "@/components/layouts/form-page-layout";
 
 export const dynamic = "force-dynamic";
 
 export default function CreateBusiness() {
   return (
-    <div className="flex flex-col h-screen w-full p-4">
-      <LogoDiv />
-      <div className="flex justify-center items-center h-full w-full ">
-        <CreateBusinessForm className="w-full" />
-      </div>
-    </div>
+    <FormPageLayout >
+      <Card>
+        <CardHeader>
+          <CardTitle>Create Business</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <CreateBusinessForm className="w-full" />
+        </CardContent>
+      </Card>
+    </FormPageLayout>
   );
 }

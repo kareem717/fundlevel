@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 export interface NavBackProps extends ComponentPropsWithoutRef<typeof Button> {
 };
 
-export const NavBack: FC<NavBackProps> = ({ className, children, ...props }) => {
+export const NavBack: FC<NavBackProps> = ({ children, ...props }) => {
   const router = useRouter();
 
   const handleClick = () => {
@@ -18,11 +18,10 @@ export const NavBack: FC<NavBackProps> = ({ className, children, ...props }) => 
 
   return (
     <Button
-      className={cn("text-muted-foreground", className)}
-      {...props}
-      onClick={handleClick}
       variant="ghost"
       size="sm"
+      {...props}
+      onClick={handleClick}
     >
       {children ?? (
         <>
