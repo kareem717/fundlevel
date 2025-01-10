@@ -12,6 +12,16 @@ const main = async () => {
 	// Truncate all tables in the database
 	await seed.$resetDatabase();
 
+	await seed.industries((x) =>
+		x(
+			{ min: 5, max: 100 },
+			{
+				deleted_at: null,
+				updated_at: null,
+			}
+		)
+	);
+
 	console.log("Database seeding completed!");
 
 	process.exit();
