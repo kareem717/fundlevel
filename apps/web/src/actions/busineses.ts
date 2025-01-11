@@ -22,6 +22,7 @@ import {
 } from "@repo/sdk/zod";
 import { pathIdSchema, offsetPaginationSchema } from "./validations";
 import { z } from "zod";
+import { cache } from "react";
 
 /**
  * Create a venture
@@ -50,32 +51,33 @@ export const createBusiness = actionClientWithAccount
 		}
 	);
 
-export const getAccountBusinesses = actionClientWithAccount.action(
-	async ({ ctx: { axiosClient, account } }) => {
-		if (!account) {
-			throw new Error("User not found");
-		}
-
+/**
+ * Get all businesses for the current account
+ */
+export const getBusinessesAction = cache(
+	actionClientWithAccount.action(async ({ ctx: { axiosClient } }) => {
 		const res = await getAccountBusinessesApi({
 			client: axiosClient,
 			throwOnError: true,
 		});
 
 		return res.data;
-	}
+	})
 );
 
-export const getBusinessById = actionClientWithAccount
-	.schema(pathIdSchema)
-	.action(async ({ parsedInput: id, ctx: { axiosClient } }) => {
-		const res = await getBusinessByIdApi({
-			client: axiosClient,
-			throwOnError: true,
-			path: { id },
-		});
+export const getBusinessByIdAction = cache(
+	actionClientWithAccount
+		.schema(pathIdSchema)
+		.action(async ({ parsedInput: id, ctx: { axiosClient } }) => {
+			const res = await getBusinessByIdApi({
+				client: axiosClient,
+				throwOnError: true,
+				path: { id },
+			});
 
-		return res.data;
-	});
+			return res.data;
+		})
+);
 
 export const getBusinessRoundsByPage = actionClientWithAccount
 	.schema(

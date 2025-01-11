@@ -1,6 +1,7 @@
 "use client";
+
 import { getBusinessCreateRoundrequirements } from "@/actions/busineses";
-import { useBusinessContext } from "../../../components/business-context";
+import { useBusiness } from "@/components/providers/business-provider";
 import { CreateRoundForm } from "./components/create-round-form";
 import { useAction } from "next-safe-action/hooks";
 import { RoundCreateRequirements } from "@repo/sdk";
@@ -8,7 +9,7 @@ import { useState, useEffect } from "react";
 
 export default function CreateRoundPage() {
   const [reqs, setReqs] = useState<RoundCreateRequirements | undefined>()
-  const { currentBusiness } = useBusinessContext()
+  const { selectedBusiness } = useBusiness()
   const { execute, isExecuting } = useAction(getBusinessCreateRoundrequirements, {
     onSuccess: ({ data }) => {
       console.log(data)
@@ -22,8 +23,8 @@ export default function CreateRoundPage() {
   })
 
   useEffect(() => {
-    execute(currentBusiness.id)
-  }, [currentBusiness.id])
+    execute(selectedBusiness.id)
+  }, [selectedBusiness.id])
 
   return (
     <div>

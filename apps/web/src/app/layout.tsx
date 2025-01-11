@@ -3,8 +3,9 @@ import "@repo/ui/globals.css";
 import React from "react";
 import { env } from "@/env";
 import type { Metadata } from "next";
-import { Providers } from "@/components/providers";
 import { Geist, Geist_Mono } from "next/font/google"
+import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { ThemeProvider } from "@/app/components/theme-provider";
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -57,12 +58,19 @@ export default async function RootLayout({
       lang="en"
       suppressHydrationWarning
     >
-      <body 
-      className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased`}
+      <body
+        className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased`}
       >
-        <Providers>
-          {children}
-        </Providers>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem={true}
+          disableTransitionOnChange={true}
+        >
+          <NuqsAdapter>
+            {children}
+          </NuqsAdapter>
+        </ThemeProvider>
       </body>
     </html >
   );

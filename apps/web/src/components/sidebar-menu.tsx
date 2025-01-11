@@ -1,7 +1,7 @@
 "use client";
 
 import { NavigationMenu } from "@/lib/config/sidebar";
-import { ComponentPropsWithoutRef, FC } from "react"
+import { ComponentPropsWithoutRef } from "react"
 import {
   Collapsible,
   CollapsibleContent,
@@ -17,14 +17,14 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@repo/ui/components/sidebar"
-import { Icons } from "./icons";
 import Link from "next/link";
+import { ChevronRight } from "lucide-react";
 
 export interface SidebarMenuProps extends ComponentPropsWithoutRef<typeof SidebarMenuComponent> {
   config: NavigationMenu
 };
 
-export const SidebarMenu: FC<SidebarMenuProps> = ({ config, ...props }) => {
+export function SidebarMenu({ config, ...props }: SidebarMenuProps) {
   return (
     <SidebarGroup>
       <SidebarGroupLabel>{config.name}</SidebarGroupLabel>
@@ -42,7 +42,7 @@ export const SidebarMenu: FC<SidebarMenuProps> = ({ config, ...props }) => {
                     {item.icon && <item.icon />}
                     <span>{item.title}</span>
                     {item.items && (
-                      <Icons.chevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                      <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                     )}
                   </SidebarMenuButton>
                 </CollapsibleTrigger>

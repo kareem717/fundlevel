@@ -16,8 +16,8 @@ import { Icons } from "@/components/icons";
 import { Button } from "@repo/ui/components/button";
 import { toast } from "sonner";
 import { useAction } from "next-safe-action/hooks";
-import { getBusinessById, upsertBusinessLegalSection } from "@/actions/busineses";
-import { useBusinessContext } from "../../../components/business-context";
+import { getBusinessByIdAction, upsertBusinessLegalSection } from "@/actions/busineses";
+import { useBusiness } from "@/components/providers/business-provider";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
 import { zUpsertBusinessLegalSectionParams } from "@repo/sdk/zod";
@@ -25,9 +25,9 @@ import { zUpsertBusinessLegalSectionParams } from "@repo/sdk/zod";
 export interface UpdateLegalSectionFormProps extends ComponentPropsWithoutRef<"form"> { }
 
 export const UpdateLegalSectionForm = ({ className, ...props }: UpdateLegalSectionFormProps) => {
-  const { currentBusiness } = useBusinessContext()
+  const { selectedBusiness } = useBusiness()
 
-  const { executeAsync: getBusinessByIdAsync, isExecuting: getBusinessByIdIsExecuting } = useAction(getBusinessById, {
+  const { executeAsync: getBusinessByIdAsync, isExecuting: getBusinessByIdIsExecuting } = useAction(getBusinessByIdAction, {
     onSuccess: ({ data }) => {
       if (data?.business) {
         form.setValue("businessNumber", data?.business?.businessLegalSection?.businessNumber || "")
@@ -66,10 +66,10 @@ export const UpdateLegalSectionForm = ({ className, ...props }: UpdateLegalSecti
     });
 
   useEffect(() => {
-    if (currentBusiness?.id) {
-      getBusinessByIdAsync(currentBusiness?.id)
+    if (selectedBusiness?.id) {
+      getBusinessByIdAsync(selectedBusiness?.id)
     }
-  }, [currentBusiness?.id])
+  }, [selectedBusiness?.id])
 
   return (
     <Form {...form}>

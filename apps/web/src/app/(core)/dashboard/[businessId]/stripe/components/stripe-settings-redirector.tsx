@@ -5,7 +5,7 @@ import { useAction } from 'next-safe-action/hooks';
 import { useRouter } from 'next/navigation';
 import { FC, ComponentPropsWithoutRef } from 'react';
 import { toast } from 'sonner';
-import { useBusinessContext } from '../../components/business-context';
+import { useBusiness } from '@/components/providers/business-provider';
 import { Button } from '@repo/ui/components/button';
 import { Icons } from '@/components/icons';
 
@@ -15,7 +15,7 @@ export interface StripeSettingsRedirectorProps extends ComponentPropsWithoutRef<
 
 export const StripeSettingsRedirector: FC<StripeSettingsRedirectorProps> = ({ className, text, ...props }) => {
   const router = useRouter();
-  const { currentBusiness } = useBusinessContext();
+  const { selectedBusiness } = useBusiness();
 
   const { execute, hasErrored, isExecuting } = useAction(getStripeAccountSettingsLink, {
     onSuccess: ({ data }) => {
@@ -32,7 +32,7 @@ export const StripeSettingsRedirector: FC<StripeSettingsRedirectorProps> = ({ cl
 
   const handleClick = () => {
     execute({
-      id: currentBusiness.id,
+      id: selectedBusiness.id,
       //TODO: this is just for local testing
       refreshURL: "https://fundlevel.app",
       returnURL: "https://fundlevel.app",

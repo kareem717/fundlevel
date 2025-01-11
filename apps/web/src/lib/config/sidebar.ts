@@ -1,6 +1,7 @@
 import { Icons } from "@/components/icons";
 import { LucideIcon } from "lucide-react";
 import { redirects } from "./redirects";
+import BusinessDashboard from "@/app/(core)/dashboard/[businessId]/page";
 
 export type NavigationItem =
 	| {
@@ -27,7 +28,7 @@ export type NavigationMenu = {
 /**
  * An array of navigation items for the business dashboard sidebar.
  */
-const dashboard: NavigationMenu[] = [
+const businessDashboard = (businessId: number): NavigationMenu[] => [
 	{
 		name: "Business",
 		path: redirects.app.index,
@@ -39,32 +40,32 @@ const dashboard: NavigationMenu[] = [
 			},
 			{
 				title: "Members",
-				url: redirects.app.business.members,
+				url: redirects.app.businessDashboard(businessId).members,
 				icon: Icons.users,
 			},
 			{
 				title: "Settings",
-				root: redirects.app.business.settings.root,
+				root: redirects.app.businessDashboard(businessId).settings.root,
 				icon: Icons.settings,
 				items: [
 					{
 						title: "Profile",
-						url: redirects.app.business.settings.stripe,
+						url: redirects.app.businessDashboard(businessId).settings.stripe,
 					},
 				],
 			},
 			{
 				title: "Stripe",
-				root: redirects.app.business.stripe.root,
+				root: redirects.app.businessDashboard(businessId).stripe.root,
 				icon: Icons.settings,
 				items: [
 					{
 						title: "Dashboard",
-						url: redirects.app.business.stripe.dashboard,
+						url: redirects.app.businessDashboard(businessId).stripe.dashboard,
 					},
 					{
 						title: "Settings",
-						url: redirects.app.business.stripe.settings,
+						url: redirects.app.businessDashboard(businessId).stripe.settings,
 					},
 				],
 			},
@@ -72,41 +73,50 @@ const dashboard: NavigationMenu[] = [
 	},
 	{
 		name: "Funding",
-		path: redirects.app.funding.index,
+		path: redirects.app.businessDashboard(businessId).funding.index,
 		items: [
 			{
 				title: "Overview",
-				url: redirects.app.funding.index,
+				url: redirects.app.businessDashboard(businessId).funding.index,
 				icon: Icons.chart,
 			},
 			{
 				title: "Investments",
-				url: redirects.app.funding.investments.index,
+				url: redirects.app.businessDashboard(businessId).funding.investments
+					.index,
 				icon: Icons.handCoins,
 			},
 			{
 				title: "Investors",
-				url: redirects.app.funding.investors.index,
+				url: redirects.app.businessDashboard(businessId).funding.investors
+					.index,
 				icon: Icons.users,
 			},
 			{
 				title: "Rounds",
-				root: redirects.app.funding.rounds.root,
+				root: redirects.app.businessDashboard(businessId).funding.rounds.root,
 				icon: Icons.handCoins,
 				items: [
 					{
 						title: "Overview",
-						url: redirects.app.funding.rounds.index,
+						url: redirects.app.businessDashboard(businessId).funding.rounds
+							.index,
 					},
 					{
 						title: "Create",
-						url: redirects.app.funding.rounds.create,
+						url: redirects.app.businessDashboard(businessId).funding.rounds
+							.create,
 					},
 				],
 			},
 		],
 	},
 ];
+
+/**
+ * An array of navigation items for the dashboard sidebar.
+ */
+const dashboard: NavigationMenu[] = [];
 
 /**
  * An array of navigation items for the wallet dashboard sidebar.
@@ -149,9 +159,8 @@ const wallet: NavigationMenu[] = [
 /**
  * A configuration object for sidebar navigation items.
  */
-const SidebarConfig = {
+export const sidebar = {
+	businessDashboard,
 	dashboard,
 	wallet,
 };
-
-export default SidebarConfig;

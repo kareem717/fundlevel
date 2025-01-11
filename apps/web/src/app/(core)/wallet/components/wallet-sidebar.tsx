@@ -8,7 +8,7 @@ import {
 } from "@repo/ui/components/sidebar"
 import { SidebarMenu } from "@/components/sidebar-menu"
 import { ComponentPropsWithoutRef } from "react"
-import SidebarConfig from "@/lib/config/sidebar"
+import { sidebar } from "@/lib/config/sidebar"
 import { SidebarUser } from "@/components/sidebar-user"
 import { useAuth } from "@/components/providers/auth-provider"
 
@@ -16,7 +16,7 @@ export interface PortfolioSidebarProps extends ComponentPropsWithoutRef<typeof S
 }
 
 export const PortfolioSidebar: React.FC<PortfolioSidebarProps> = ({ ...props }: PortfolioSidebarProps) => {
-  const { wallet } = SidebarConfig
+  const { wallet } = sidebar
   const { user, account } = useAuth()
 
   if (!user || !account) {
@@ -31,7 +31,7 @@ export const PortfolioSidebar: React.FC<PortfolioSidebarProps> = ({ ...props }: 
         ))}
       </SidebarContent>
       <SidebarFooter>
-        <SidebarUser firstName={account.firstName} lastName={account.lastName} email={user.email} />
+        <SidebarUser />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

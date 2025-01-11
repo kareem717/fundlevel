@@ -5,7 +5,7 @@ import { useAction } from 'next-safe-action/hooks';
 import { useRouter } from 'next/navigation';
 import { FC, ComponentPropsWithoutRef, useState, useEffect } from 'react';
 import { toast } from 'sonner';
-import { useBusinessContext } from '../../../components/business-context';
+import { useBusiness } from '@/components/providers/business-provider';
 import { Button } from '@repo/ui/components/button';
 import { Icons } from '@/components/icons';
 import { StripeSettingsRedirector } from '../../components/stripe-settings-redirector';
@@ -16,7 +16,7 @@ export interface StripeDashboardRedirectorProps extends ComponentPropsWithoutRef
 
 export const StripeDashboardRedirector: FC<StripeDashboardRedirectorProps> = ({ className, ...props }) => {
   const router = useRouter();
-  const { currentBusiness } = useBusinessContext();
+  const { selectedBusiness } = useBusiness();
   const [stripeAccount, setStripeAccount] = useState<BusinessStripeAccount | null>(null);
 
   const { execute, hasErrored, isExecuting } = useAction(getStripeDashboardUrl, {
@@ -46,15 +46,15 @@ export const StripeDashboardRedirector: FC<StripeDashboardRedirectorProps> = ({ 
   });
 
   useEffect(() => {
-    getStripeAccount(currentBusiness.id);
-  }, [currentBusiness.id]);
+    getStripeAccount(selectedBusiness.id);
+  }, [selectedBusiness.id]);
 
   return (
     <div className={className} {...props}>
       {stripeAccount?.stripeDisabledReason == null ?
         (
           <Button
-            onClick={() => execute(currentBusiness.id)}
+            onClick={() => execute(selectedBusiness.id)}
             disabled={isExecuting}
           >
             {isExecuting ? (

@@ -2,7 +2,6 @@
 
 import { ColumnDef } from "@tanstack/react-table"
 import { DataTableColumnHeader } from "@/components/data-table"
-import { format } from "date-fns"
 import {
   VisibilityState,
   flexRender,
@@ -22,8 +21,6 @@ import {
 } from "@repo/ui/components/table"
 import { DataTablePagination } from "@/components/data-table"
 import { ComponentPropsWithoutRef, FC, useEffect, useMemo, useState } from "react"
-import { faker } from "@faker-js/faker"
-import { Input } from "@repo/ui/components/input"
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -36,7 +33,7 @@ import { Button } from "@repo/ui/components/button"
 import { Icons } from "@/components/icons"
 import { BusinessMemberWithRoleNameAndAccount } from "@repo/sdk"
 import { useAction } from "next-safe-action/hooks"
-import { useBusinessContext } from "../../components/business-context"
+import { useBusiness } from "@/components/providers/business-provider"
 import { createParser, parseAsInteger, useQueryState, useQueryStates } from "nuqs"
 import { object } from "yup"
 import { Skeleton } from "@repo/ui/components/skeleton"
@@ -96,9 +93,9 @@ interface MemberTableProps extends ComponentPropsWithoutRef<typeof Table> {
 export const MemberTable: FC<MemberTableProps> = ({ className }) => {
   const [data, setData] = useState<BusinessMemberWithRoleNameAndAccount[]>([])
 
-  const { currentBusiness } = useBusinessContext();
+  const { selectedBusiness } = useBusiness();
 
-  if (!currentBusiness) {
+  if (!selectedBusiness) {
     throw new Error("MemberTable must be used inside a BusinessContextProvider.")
   }
 
@@ -153,11 +150,11 @@ export const MemberTable: FC<MemberTableProps> = ({ className }) => {
 
   useEffect(() => {
     execute({
-      businessId: currentBusiness.id,
+      businessId: selectedBusiness.id,
       // convert into nuqs state
       pagination,
     })
-  }, [pagination, currentBusiness.id, execute])
+  }, [pagination, selectedBusiness.id, execute])
 
   const columnsMemo = useMemo(
     () =>

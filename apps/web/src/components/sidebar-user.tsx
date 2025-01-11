@@ -3,6 +3,7 @@
 import {
   Avatar,
   AvatarFallback,
+  AvatarImage,
 } from "@repo/ui/components/avatar"
 import {
   DropdownMenu,
@@ -19,19 +20,25 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@repo/ui/components/sidebar"
-import { ComponentPropsWithoutRef, FC } from "react"
-import { Icons } from "@/components/icons"
+import { ComponentPropsWithoutRef } from "react"
 import Link from "next/link"
 import { redirects } from "@/lib/config/redirects"
+import { BadgeCheck, Bell, ChevronsUpDown, CreditCard, LogOut, Sparkles } from "lucide-react";
+import { ModeToggle } from "@/components/mode-toggle";
+import { useAuth } from "./providers/auth-provider";
 
-export interface SidebarUserProps extends ComponentPropsWithoutRef<typeof SidebarMenu> {
-  firstName: string
-  lastName: string
-  email?: string
-};
-
-export const SidebarUser: FC<SidebarUserProps> = ({ firstName, lastName, email, ...props }) => {
+export function SidebarUser({ ...props }: ComponentPropsWithoutRef<typeof SidebarMenu>) {
   const { isMobile } = useSidebar()
+  const { user, account } = useAuth()
+
+  if (!user || !account) {
+    throw new Error("SidebarUser must be used within an AuthProvider with a user and account")
+  }
+
+  const firstName = account.firstName
+  const lastName = account.lastName
+  const avatar = user.user_metadata.avatar
+  const email = user.email
 
   return (
     <SidebarMenu {...props}>
@@ -54,7 +61,7 @@ export const SidebarUser: FC<SidebarUserProps> = ({ firstName, lastName, email, 
                 </span>
                 <span className="truncate text-xs">{email}</span>
               </div>
-              <Icons.chevronUpDown className="ml-auto size-4" />
+              <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
@@ -66,6 +73,7 @@ export const SidebarUser: FC<SidebarUserProps> = ({ firstName, lastName, email, 
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
+                  {avatar && <AvatarImage src={avatar} />}
                   <AvatarFallback className="rounded-lg">
                     {firstName[0]}
                     {lastName[0]}
@@ -82,32 +90,34 @@ export const SidebarUser: FC<SidebarUserProps> = ({ firstName, lastName, email, 
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
-                <Icons.sparkles />
+                <Sparkles />
                 Upgrade to Pro
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
-                <Icons.badgeCheck />
+                <BadgeCheck />
                 Account
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <Icons.billing />
+                <CreditCard />
                 Billing
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <Icons.bell />
+                <Bell />
                 Notifications
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
               <Link href={redirects.auth.logout} className="w-full flex items-center justify-start gap-2">
-                <Icons.logout />
+                <LogOut className="size-4" />
                 Log out
               </Link>
             </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <ModeToggle />
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>

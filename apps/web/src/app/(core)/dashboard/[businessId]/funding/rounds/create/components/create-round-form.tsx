@@ -21,7 +21,7 @@ import { Popover, PopoverTrigger, PopoverContent } from "@repo/ui/components/pop
 import { format } from "date-fns";
 import { Calendar } from "@repo/ui/components/calendar";
 import { redirects } from "@/lib/config/redirects";
-import { useBusinessContext } from "../../../../components/business-context";
+import { useBusiness } from "@/components/providers/business-provider";
 import { zCreateRoundParams } from "@repo/sdk/zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
@@ -30,7 +30,7 @@ export interface CreateRoundFormProps extends ComponentPropsWithoutRef<"form"> {
 
 export const CreateRoundForm = ({ className, ...props }: CreateRoundFormProps) => {
   const router = useRouter()
-  const { currentBusiness } = useBusinessContext()
+  const { selectedBusiness } = useBusiness()
 
   const { form, action: { isExecuting }, handleSubmitWithAction } =
     useHookFormAction(createRound, zodResolver(zCreateRoundParams), {
@@ -50,7 +50,7 @@ export const CreateRoundForm = ({ className, ...props }: CreateRoundFormProps) =
       },
       formProps: {
         defaultValues: {
-          businessId: currentBusiness.id,
+          businessId: selectedBusiness.id,
           beginsAt: format(new Date(Date.now() + 1000 * 60 * 60 * 24), "yyyy-MM-dd"),
           endsAt: format(new Date(Date.now() + 1000 * 60 * 60 * 24 * 30), "yyyy-MM-dd"),
           percentageSelling: 0,

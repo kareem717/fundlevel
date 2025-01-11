@@ -3,7 +3,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { cn } from "@repo/ui/lib/utils"
 import { Business } from "@repo/sdk"
 import { useAction } from "next-safe-action/hooks"
-import { getAccountBusinesses } from "@/actions/busineses"
+import { getBusinessesAction } from "@/actions/busineses"
 import { toast } from "sonner"
 
 interface BusinessSelectProps extends ComponentPropsWithoutRef<typeof Select> {
@@ -14,7 +14,7 @@ interface BusinessSelectProps extends ComponentPropsWithoutRef<typeof Select> {
 export const BusinessSelect: FC<BusinessSelectProps> = ({ triggerProps, ...props }) => {
   const [businesses, setBusinesses] = useState<Business[]>([])
 
-  const { execute, isExecuting } = useAction(getAccountBusinesses, {
+  const { execute, isExecuting } = useAction(getBusinessesAction, {
     onSuccess: ({ data }) => {
       setBusinesses(data?.businesses || [])
     },

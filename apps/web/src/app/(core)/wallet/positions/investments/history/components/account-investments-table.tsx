@@ -85,7 +85,7 @@ export const columns: ColumnDef<Investment>[] = [
     enableSorting: false,
     enableHiding: false,
   },
-  
+
   {
     id: "status",
     header: ({ column }) => (
