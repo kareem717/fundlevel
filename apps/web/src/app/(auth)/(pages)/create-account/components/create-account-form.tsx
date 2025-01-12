@@ -23,13 +23,11 @@ import { zCreateAccountParams } from "@repo/sdk/zod";
 import Link from "next/link";
 
 export interface CreateAccountFormProps extends ComponentPropsWithoutRef<"div"> {
-  defaultEmail?: string
   defaultFirstName?: string
   defaultLastName?: string
 }
 
 export function CreateAccountForm({
-  defaultEmail = "",
   defaultFirstName = "",
   defaultLastName = "",
   className,
@@ -44,12 +42,12 @@ export function CreateAccountForm({
   const { form, handleSubmitWithAction } =
     useHookFormAction(createAccountAction, zodResolver(zCreateAccountParams), {
       actionProps: {
-        onExecute: () => {
-          setIsExecuting(true)
-        },
-        onSuccess: () => {
-          toast.success("Account created", {
-            description: "Account created successfully. We are redirecting you to the app.",
+        onExecute: () => setIsExecuting(true),
+        onSuccess: ({ data }) => {
+          const message = `Welcome${data?.firstName ? ` ${data.firstName}` : ""}!`
+
+          toast.success(message, {
+            description: "Your account has been created successfully. We are redirecting you to the app.",
           })
 
           form.reset()
@@ -93,7 +91,6 @@ export function CreateAccountForm({
                         <Input
                           type="text"
                           placeholder="Foo"
-                          autoComplete="first_name"
                           {...field}
                         />
                       </FormControl>
@@ -111,7 +108,6 @@ export function CreateAccountForm({
                         <Input
                           type="text"
                           placeholder="Bar"
-                          autoComplete="last_name"
                           {...field}
                         />
                       </FormControl>
@@ -129,8 +125,8 @@ export function CreateAccountForm({
         </CardContent>
       </Card>
       <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:text-primary  ">
-        By clicking continue, you agree to our <Link href="#">Terms of Service</Link>{" "}
-        and <Link href="#">Privacy Policy</Link>.
+        By clicking continue, you agree to our <Link href={redirects.legal.terms}>Terms of Service</Link>{" "}
+        and <Link href={redirects.legal.privacy}>Privacy Policy</Link>.
       </div>
     </div>
   );

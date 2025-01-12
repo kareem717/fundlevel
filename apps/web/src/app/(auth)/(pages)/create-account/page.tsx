@@ -12,19 +12,17 @@ export default async function CreateAccountPage() {
 
   const result = await getAccountAction()
 
-  if (!!result?.data) {
+  if (result?.data) {
     return redirect(redirects.app.root)
   }
 
-  const user = userResult.data
-  const userFullName = user.user_metadata.full_name
+  const userFullName = userResult.data.user_metadata.full_name ?? ""
+  const [firstName = "", lastName = ""] = userFullName.split(" ")
 
-  let firstName = ""
-  let lastName = ""
-
-  if (userFullName) {
-    [firstName, lastName] = userFullName.split(" ")
-  }
-
-  return <CreateAccountForm defaultEmail={user.email} defaultFirstName={firstName} defaultLastName={lastName} />
+  return (
+    <CreateAccountForm 
+      defaultFirstName={firstName.toString()} 
+      defaultLastName={lastName.toString()} 
+    />
+  )
 }

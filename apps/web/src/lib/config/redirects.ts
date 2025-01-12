@@ -12,8 +12,10 @@ const businessPath = (businessId: number) => ({
 });
 
 export const redirects = {
-	privacy: "/privacy-policy",
-	terms: "/terms-of-service",
+	legal: {
+		privacy: "/privacy",
+		terms: "/terms",
+	},
 	auth: {
 		callback: "/auth/callback",
 		login: "/login",
