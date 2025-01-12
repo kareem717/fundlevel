@@ -1,7 +1,6 @@
 import { Icons } from "@/components/icons";
 import { LucideIcon } from "lucide-react";
 import { redirects } from "./redirects";
-import BusinessDashboard from "@/app/(core)/dashboard/business/[businessId]/page";
 
 export type NavigationItem =
 	| {
@@ -31,44 +30,41 @@ export type NavigationMenu = {
 const businessDashboard = (businessId: number): NavigationMenu[] => [
 	{
 		name: "Business",
-		path: redirects.dashboard.index,
+		path: redirects.app.root,
 		items: [
 			{
 				title: "Overview",
-				url: redirects.dashboard.index,
+				url: redirects.app.root,
 				icon: Icons.layoutGrid,
 			},
 			{
 				title: "Members",
-				url: redirects.dashboard.businessDashboard(businessId).members,
+				url: redirects.app.businessDashboard(businessId).members,
 				icon: Icons.users,
 			},
 			{
 				title: "Settings",
-				root: redirects.dashboard.businessDashboard(businessId).settings.root,
+				root: redirects.app.businessDashboard(businessId).settings.root,
 				icon: Icons.settings,
 				items: [
 					{
 						title: "Profile",
-						url: redirects.dashboard.businessDashboard(businessId).settings
-							.stripe,
+						url: redirects.app.businessDashboard(businessId).settings.stripe,
 					},
 				],
 			},
 			{
 				title: "Stripe",
-				root: redirects.dashboard.businessDashboard(businessId).stripe.root,
+				root: redirects.app.businessDashboard(businessId).stripe.root,
 				icon: Icons.settings,
 				items: [
 					{
 						title: "Dashboard",
-						url: redirects.dashboard.businessDashboard(businessId).stripe
-							.dashboard,
+						url: redirects.app.businessDashboard(businessId).stripe.dashboard,
 					},
 					{
 						title: "Settings",
-						url: redirects.dashboard.businessDashboard(businessId).stripe
-							.settings,
+						url: redirects.app.businessDashboard(businessId).stripe.settings,
 					},
 				],
 			},
@@ -76,40 +72,39 @@ const businessDashboard = (businessId: number): NavigationMenu[] => [
 	},
 	{
 		name: "Funding",
-		path: redirects.dashboard.businessDashboard(businessId).funding.index,
+		path: redirects.app.businessDashboard(businessId).funding.index,
 		items: [
 			{
 				title: "Overview",
-				url: redirects.dashboard.businessDashboard(businessId).funding.index,
+				url: redirects.app.businessDashboard(businessId).funding.index,
 				icon: Icons.chart,
 			},
 			{
 				title: "Investments",
-				url: redirects.dashboard.businessDashboard(businessId).funding
-					.investments.index,
+				url: redirects.app.businessDashboard(businessId).funding.investments
+					.index,
 				icon: Icons.handCoins,
 			},
 			{
 				title: "Investors",
-				url: redirects.dashboard.businessDashboard(businessId).funding.investors
+				url: redirects.app.businessDashboard(businessId).funding.investors
 					.index,
 				icon: Icons.users,
 			},
 			{
 				title: "Rounds",
-				root: redirects.dashboard.businessDashboard(businessId).funding.rounds
-					.root,
+				root: redirects.app.businessDashboard(businessId).funding.rounds.root,
 				icon: Icons.handCoins,
 				items: [
 					{
 						title: "Overview",
-						url: redirects.dashboard.businessDashboard(businessId).funding
-							.rounds.index,
+						url: redirects.app.businessDashboard(businessId).funding.rounds
+							.index,
 					},
 					{
 						title: "Create",
-						url: redirects.dashboard.businessDashboard(businessId).funding
-							.rounds.create,
+						url: redirects.app.businessDashboard(businessId).funding.rounds
+							.create,
 					},
 				],
 			},
@@ -123,16 +118,16 @@ const businessDashboard = (businessId: number): NavigationMenu[] => [
 const dashboard: NavigationMenu[] = [
 	{
 		name: "Businesses",
-		path: redirects.dashboard.index,
+		path: redirects.app.root,
 		items: [
 			{
 				title: "Overview",
-				url: redirects.dashboard.index,
+				url: redirects.app.root,
 				icon: Icons.layoutGrid,
 			},
 			{
 				title: "Create",
-				url: redirects.dashboard.createBusiness,
+				url: redirects.app.createBusiness,
 				icon: Icons.add,
 			},
 		],
@@ -145,31 +140,31 @@ const dashboard: NavigationMenu[] = [
 const wallet: NavigationMenu[] = [
 	{
 		name: "Wallet",
-		path: redirects.dashboard.wallet.index,
+		path: redirects.app.wallet.index,
 		items: [
 			{
 				title: "Overview",
-				url: redirects.dashboard.wallet.index,
+				url: redirects.app.wallet.index,
 				icon: Icons.layoutGrid,
 			},
 		],
 	},
 	{
 		name: "Positions",
-		path: redirects.dashboard.wallet.positions.root,
+		path: redirects.app.wallet.positions.root,
 		items: [
 			{
 				title: "Investments",
-				root: redirects.dashboard.wallet.positions.investments.root,
+				root: redirects.app.wallet.positions.investments.root,
 				icon: Icons.chart,
 				items: [
 					{
 						title: "History",
-						url: redirects.dashboard.wallet.positions.investments.history,
+						url: redirects.app.wallet.positions.investments.history,
 					},
 					{
 						title: "Payments",
-						url: redirects.dashboard.wallet.positions.investments.payments,
+						url: redirects.app.wallet.positions.investments.payments,
 					},
 				],
 			},

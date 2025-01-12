@@ -46,7 +46,7 @@ export const CreateBusinessForm = ({ className, ...props }: CreateBusinessFormPr
           toast.success("Done!", {
             description: "Your business has been created.",
           })
-          router.push(redirects.dashboard.index)
+          router.push(redirects.app.root)
         },
         onError: ({ error }) => {
           toast.error("Something went wrong", {

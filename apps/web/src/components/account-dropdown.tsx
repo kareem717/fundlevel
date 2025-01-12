@@ -54,14 +54,14 @@ export const AccountDropdown: FC<AccountDropdownProps> = ({
         <DropdownMenuGroup>
           <DropdownMenuLabel>Business</DropdownMenuLabel>
           <DropdownMenuItem>
-            <Link href={redirects.dashboard.index}>Dashboard</Link>
+            <Link href={redirects.app.root}>Dashboard</Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuLabel>Investor</DropdownMenuLabel>
           <DropdownMenuItem>
-            <Link href={redirects.dashboard.wallet.index}>Wallet</Link>
+            <Link href={redirects.app.wallet.index}>Wallet</Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>

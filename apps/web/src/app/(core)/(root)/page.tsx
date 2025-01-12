@@ -14,7 +14,7 @@ export default async function RootDashboardPage() {
       {businesses.length > 0 ? businesses.map((business) => (
         <Link
           key={business.id}
-          href={redirects.dashboard.businessDashboard(business.id).root} className="bg-secondary rounded-md aspect-square w-32 flex items-center justify-center"
+          href={redirects.app.businessDashboard(business.id).root} className="bg-secondary rounded-md aspect-square w-32 flex items-center justify-center"
         >
           {business.displayName}
         </Link>

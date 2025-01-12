@@ -8,7 +8,7 @@ interface LogoDivProps extends Omit<ComponentPropsWithoutRef<typeof Link>, "href
   href?: string
 }
 
-export const LogoDiv: FC<LogoDivProps> = ({ className, href = redirects.dashboard.index, ...props }) => {
+export const LogoDiv: FC<LogoDivProps> = ({ className, href = redirects.app.root, ...props }) => {
   return (
     <Link
       className={cn("flex flex-row items-center justify-center text-2xl font-bold hover:cursor-pointer w-40", className)}
@@ -20,7 +20,7 @@ export const LogoDiv: FC<LogoDivProps> = ({ className, href = redirects.dashboar
   );
 };
 
-export const SmallLogoDiv: FC<LogoDivProps> = ({ className, href = redirects.dashboard.index, ...props }) => {
+export const SmallLogoDiv: FC<LogoDivProps> = ({ className, href = redirects.app.root, ...props }) => {
   return (
     <Link
       className={cn("flex flex-row items-center justify-center text-2xl font-bold hover:cursor-pointer", className)}

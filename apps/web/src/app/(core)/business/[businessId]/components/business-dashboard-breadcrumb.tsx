@@ -24,7 +24,7 @@ export function BusinessDashboardBreadcrumb() {
     <Breadcrumb>
       <BreadcrumbList>
         <BreadcrumbItem className="hidden md:block">
-          <BreadcrumbLink href={redirects.dashboard.businessDashboard(selectedBusiness.id).root}>
+          <BreadcrumbLink href={redirects.app.businessDashboard(selectedBusiness.id).root}>
             Dashboard
           </BreadcrumbLink>
         </BreadcrumbItem>

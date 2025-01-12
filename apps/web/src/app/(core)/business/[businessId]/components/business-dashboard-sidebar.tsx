@@ -80,7 +80,7 @@ export function BusinessDashboardSidebar({ ...props }: ComponentPropsWithoutRef<
                     <Plus className="size-4" />
                   </div>
                   <Link
-                    href={redirects.dashboard.createBusiness}
+                    href={redirects.app.createBusiness}
                     className="font-medium text-muted-foreground"
                     prefetch={true}
                   >

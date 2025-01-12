@@ -13,7 +13,7 @@ export default async function CreateAccountPage() {
   const result = await getAccountAction()
 
   if (!!result?.data) {
-    return redirect(redirects.dashboard.index)
+    return redirect(redirects.app.root)
   }
 
   const user = userResult.data

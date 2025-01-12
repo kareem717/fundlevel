@@ -25,7 +25,7 @@ export default async function BusinessDashboardLayout({ children, params }: { ch
 
   //TODO: handle error
   if (!businessesData || businessesData?.length < 1) {
-    redirect(redirects.dashboard.createBusiness)
+    redirect(redirects.app.createBusiness)
   }
 
   const { businessId } = await params;

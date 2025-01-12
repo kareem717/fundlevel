@@ -1,5 +1,5 @@
-const dashboardRoot = "/dashboard";
-const businessDashboardRoot = dashboardRoot + "/business";
+const appRoot = "/";
+const businessDashboardRoot = "/business";
 
 // Helper function moved to top for clarity
 const businessPrefix = (businessId: number, path?: string) =>
@@ -19,12 +19,12 @@ export const redirects = {
 		login: "/login",
 		logout: "/logout",
 		afterLogout: "/login",
-		afterLogin: dashboardRoot,
+		afterLogin: appRoot,
 		otp: (email: string) => `/otp?email=${email}`,
 		createAccount: "/create-account",
 	},
-	dashboard: {
-		index: dashboardRoot,
+	app: {
+		root: appRoot,
 		wallet: {
 			index: "/wallet",
 			positions: {
@@ -36,7 +36,7 @@ export const redirects = {
 				},
 			},
 		},
-		createBusiness: dashboardRoot + "/create-business",
+		createBusiness: "/create-business",
 		businessDashboard: (businessId: number) => ({
 			root: businessPath(businessId).root(),
 			members: businessPath(businessId).path("members"),
