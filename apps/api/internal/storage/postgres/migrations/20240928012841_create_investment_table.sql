@@ -20,7 +20,7 @@ CREATE TABLE
         round_id INT NOT NULL REFERENCES rounds (id),
         investor_id INT NOT NULL REFERENCES accounts (id),
         status investment_status NOT NULL DEFAULT 'awaiting_term_acceptance',
-        amount_usd_cents BIGINT NOT NULL CHECK (amount_usd_cents>99),
+        share_quantity INT NOT NULL CHECK (share_quantity>0),
         requires_manual_approval BOOLEAN NOT NULL DEFAULT FALSE,
         approved_at timestamptz,
         terms_completed_at timestamptz,

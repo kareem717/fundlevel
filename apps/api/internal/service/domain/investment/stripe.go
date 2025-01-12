@@ -42,7 +42,7 @@ func (s *InvestmentService) CreateStripePaymentIntent(
 
 	var resp *stripe.PaymentIntent
 	err = s.repositories.RunInTx(ctx, func(ctx context.Context, tx storage.Transaction) error {
-		buyInCents := calculateBuyInCents(round.ValuationAmountUSDCents, round.PercentageSelling, round.InvestorCount)
+		buyInCents := investment.ShareQuantity * round.PricePerShareUSDCents
 
 		//TODO: how can we make this not hard coded?
 		feeCents := float64(buyInCents) * s.feePercentage

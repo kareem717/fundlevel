@@ -50,7 +50,7 @@ type HealthService interface {
 type RoundService interface {
 	Create(ctx context.Context, params round.CreateRoundParams) (round.Round, error)
 	Delete(ctx context.Context, id int) error
-	GetById(ctx context.Context, id int) (round.RoundWithBusiness, error)
+	GetById(ctx context.Context, id int) (round.Round, error)
 	GetByCursor(ctx context.Context, limit int, cursor int) ([]round.Round, error)
 	GetByPage(ctx context.Context, pageSize int, page int) ([]round.Round, int, error)
 
@@ -95,7 +95,7 @@ type InvestmentService interface {
 
 	// Create creates an investment record and returns the investment record.
 	// If round is not provided, it will fetch it from the database.
-	Create(ctx context.Context, investorId int, round *round.Round) (investment.Investment, error)
+	Create(ctx context.Context, investorId int, params investment.CreateInvestmentParams) (investment.Investment, error)
 	GetById(ctx context.Context, id int) (investment.Investment, error)
 	// Update(ctx context.Context, id int, params investment.UpdateInvestmentParams) (investment.Investment, error)
 

@@ -26,8 +26,8 @@ import (
 // Config holds database connection configuration
 type Config struct {
 	URL                   string
-	MaxConnections        int32
-	MinConnections        int32
+	MaxConnections        int
+	MinConnections        int
 	MaxConnectionIdleTime time.Duration
 	MaxConnectionLifetime time.Duration
 }
@@ -52,13 +52,13 @@ func NewConfig(url string, options ...ConfigOption) Config {
 // Config option functions
 type ConfigOption func(*Config)
 
-func WithMaxConnections(maxConnections int32) ConfigOption {
+func WithMaxConnections(maxConnections int) ConfigOption {
 	return func(c *Config) {
 		c.MaxConnections = maxConnections
 	}
 }
 
-func WithMinConnections(minConnections int32) ConfigOption {
+func WithMinConnections(minConnections int) ConfigOption {
 	return func(c *Config) {
 		c.MinConnections = minConnections
 	}
@@ -110,8 +110,8 @@ func NewRepository(ctx context.Context, config Config, logger *zap.Logger) stora
 		logger.Fatal("Error creating pool config", zap.Error(err))
 	}
 
-	poolConfig.MaxConns = config.MaxConnections
-	poolConfig.MinConns = config.MinConnections
+	poolConfig.MaxConns = int32(config.MaxConnections)
+	poolConfig.MinConns = int32(config.MinConnections)
 	poolConfig.MaxConnIdleTime = config.MaxConnectionIdleTime
 	poolConfig.MaxConnLifetime = config.MaxConnectionLifetime
 

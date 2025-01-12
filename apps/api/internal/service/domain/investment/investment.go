@@ -2,9 +2,7 @@ package investment
 
 import (
 	"context"
-	"errors"
 	"fundlevel/internal/entities/investment"
-	"fundlevel/internal/entities/round"
 	"fundlevel/internal/storage"
 )
 
@@ -39,46 +37,7 @@ func (s *InvestmentService) Update(ctx context.Context, id int, params investmen
 func (s *InvestmentService) Create(
 	ctx context.Context,
 	investorID int,
-	round *round.Round,
+	params investment.CreateInvestmentParams,
 ) (investment.Investment, error) {
-	if round == nil {
-		return investment.Investment{}, errors.New("round is required")
-	}
-
-	params := investment.CreateInvestmentParams{
-		RoundID:    round.ID,
-		InvestorID: investorID,
-		AmountUSDCents: calculateBuyInCents(
-			round.ValuationAmountUSDCents,
-			round.PercentageSelling,
-			round.InvestorCount,
-		),
-		Status:                 investment.InvestmentStatusTerms,
-		RequiresManualApproval: round.InvestmentsRequireApproval,
-	}
-
-	return s.repositories.Investment().Create(ctx, params)
+	return s.repositories.Investment().Create(ctx, investorID, params)
 }
-
-func calculateBuyInCents(
-	valuationAmountUSDCents int,
-	percentageSelling float64,
-	investorCount int,
-) int {
-	percentagePerInvestor := percentageSelling / float64(investorCount)
-	buyInCents := int(float64(valuationAmountUSDCents) / percentagePerInvestor)
-	return buyInCents
-}
-
-// TODO: account for cancelling
-// func (s *InvestmentService) WithdrawInvestment(ctx context.Context, investmentId int) error {
-// 	updateParams := investment.UpdateInvestmentParams{}
-// 	updateParams.Status = investment.InvestmentStatusWithdrawn
-
-// 	_, err := s.repositories.Investment().Update(ctx, investmentId, updateParams)
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	return nil
-// }

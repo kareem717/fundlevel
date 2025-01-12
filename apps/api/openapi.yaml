@@ -304,6 +304,40 @@ components:
       required:
         - business
       type: object
+    CreateInvestmentParams:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/CreateInvestmentParams.json
+          format: uri
+          readOnly: true
+          type: string
+        requiresManualApproval:
+          type: boolean
+        roundId:
+          format: int64
+          type: integer
+        shareQuantity:
+          format: int64
+          type: integer
+        status:
+          enum:
+            - awaiting_term_acceptance
+            - awaiting_payment
+            - investor_tasks_completed
+            - failed_to_accept_terms
+            - failed_to_make_payment
+            - investor_withdrew
+            - business_rejected
+            - round_closed_before_investor_tasks_completed
+          type: string
+      required:
+        - roundId
+        - status
+        - shareQuantity
+        - requiresManualApproval
+      type: object
     CreateRoundParams:
       additionalProperties: false
       properties:
@@ -313,9 +347,6 @@ components:
           format: uri
           readOnly: true
           type: string
-        beginsAt:
-          format: date-time
-          type: string
         businessId:
           format: int64
           minimum: 1
@@ -324,36 +355,24 @@ components:
           maxLength: 3000
           minLength: 10
           type: string
-        endsAt:
-          format: date-time
-          type: string
-        investmentsRequireApproval:
-          default: false
-          type: boolean
-        investorCount:
+        pricePerShareUSDCents:
           format: int64
-          minimum: 1
+          minimum: 23
           type: integer
-        percentageSelling:
-          example: 10
-          format: double
-          maximum: 100
-          minimum: 0
-          type: number
-        valuationAmountUSDCents:
-          example: 1000000
+        totalBusinessShares:
           format: int64
-          minimum: 1
+          minimum: 100000
+          type: integer
+        totalSharesForSale:
+          format: int64
+          minimum: 1000
           type: integer
       required:
         - businessId
-        - beginsAt
-        - endsAt
-        - percentageSelling
-        - valuationAmountUSDCents
-        - investorCount
+        - pricePerShareUSDCents
+        - totalSharesForSale
+        - totalBusinessShares
         - description
-        - investmentsRequireApproval
       type: object
     ErrorDetail:
       additionalProperties: false
@@ -794,6 +813,9 @@ components:
         roundId:
           format: int64
           type: integer
+        shareQuantity:
+          format: int64
+          type: integer
         status:
           enum:
             - awaiting_term_acceptance
@@ -813,9 +835,10 @@ components:
           nullable: true
           type: string
       required:
+        - investorId
+        - shareQuantity
         - id
         - roundId
-        - investorId
         - status
         - requiresManualApproval
         - createdAt
@@ -924,8 +947,10 @@ components:
           readOnly: true
           type: string
         refreshURL:
+          default: https://fundlevel.app
           type: string
         returnURL:
+          default: https://fundlevel.app
           type: string
       required:
         - returnURL
@@ -950,8 +975,11 @@ components:
     Round:
       additionalProperties: false
       properties:
-        beginsAt:
-          format: date-time
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/Round.json
+          format: uri
+          readOnly: true
           type: string
         businessId:
           format: int64
@@ -968,51 +996,39 @@ components:
           maxLength: 3000
           minLength: 10
           type: string
-        endsAt:
-          format: date-time
-          type: string
         id:
           format: int64
           minimum: 1
           type: integer
-        investmentsRequireApproval:
-          default: false
-          type: boolean
-        investorCount:
+        pricePerShareUSDCents:
           format: int64
           minimum: 1
           type: integer
-        percentageSelling:
-          example: 10
-          format: double
-          maximum: 100
-          minimum: 0
-          type: number
         status:
           enum:
             - active
             - successful
             - failed
           type: string
+        totalBusinessShares:
+          format: int64
+          minimum: 1
+          type: integer
+        totalSharesForSale:
+          format: int64
+          minimum: 1
+          type: integer
         updatedAt:
           format: date-time
           nullable: true
           type: string
-        valuationAmountUSDCents:
-          example: 1000000
-          format: int64
-          minimum: 1
-          type: integer
       required:
         - businessId
-        - beginsAt
-        - endsAt
-        - percentageSelling
-        - valuationAmountUSDCents
+        - pricePerShareUSDCents
+        - totalSharesForSale
+        - totalBusinessShares
         - status
-        - investorCount
         - description
-        - investmentsRequireApproval
         - id
         - createdAt
         - updatedAt
@@ -1031,80 +1047,6 @@ components:
         - hasActiveStatus
         - legalSection
         - stripeAccount
-      type: object
-    RoundWithBusiness:
-      additionalProperties: false
-      properties:
-        beginsAt:
-          format: date-time
-          type: string
-        business:
-          $ref: "#/components/schemas/Business"
-        businessId:
-          format: int64
-          minimum: 1
-          type: integer
-        createdAt:
-          format: date-time
-          type: string
-        deletedAt:
-          format: date-time
-          nullable: true
-          type: string
-        description:
-          maxLength: 3000
-          minLength: 10
-          type: string
-        endsAt:
-          format: date-time
-          type: string
-        id:
-          format: int64
-          minimum: 1
-          type: integer
-        investmentsRequireApproval:
-          default: false
-          type: boolean
-        investorCount:
-          format: int64
-          minimum: 1
-          type: integer
-        percentageSelling:
-          example: 10
-          format: double
-          maximum: 100
-          minimum: 0
-          type: number
-        status:
-          enum:
-            - active
-            - successful
-            - failed
-          type: string
-        updatedAt:
-          format: date-time
-          nullable: true
-          type: string
-        valuationAmountUSDCents:
-          example: 1000000
-          format: int64
-          minimum: 1
-          type: integer
-      required:
-        - business
-        - businessId
-        - beginsAt
-        - endsAt
-        - percentageSelling
-        - valuationAmountUSDCents
-        - status
-        - investorCount
-        - description
-        - investmentsRequireApproval
-        - id
-        - createdAt
-        - updatedAt
-        - deletedAt
       type: object
     SafeAccount:
       additionalProperties: false
@@ -1185,40 +1127,6 @@ components:
           type: string
       required:
         - investment
-        - message
-      type: object
-    SingleRoundResponseBody:
-      additionalProperties: false
-      properties:
-        $schema:
-          description: A URL to the JSON Schema for this object.
-          example: https://example.com/schemas/SingleRoundResponseBody.json
-          format: uri
-          readOnly: true
-          type: string
-        message:
-          type: string
-        round:
-          $ref: "#/components/schemas/Round"
-      required:
-        - round
-        - message
-      type: object
-    SingleRoundWithBusinessResponseBody:
-      additionalProperties: false
-      properties:
-        $schema:
-          description: A URL to the JSON Schema for this object.
-          example: https://example.com/schemas/SingleRoundWithBusinessResponseBody.json
-          format: uri
-          readOnly: true
-          type: string
-        message:
-          type: string
-        round:
-          $ref: "#/components/schemas/RoundWithBusiness"
-      required:
-        - round
         - message
       type: object
     URLOutputBody:
@@ -2462,18 +2370,16 @@ paths:
       summary: Get all industries
       tags:
         - Industries
-  /investments/round/{id}:
+  /investments:
     post:
       description: Create a round investment.
       operationId: create-round-investment
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            format: int64
-            minimum: 1
-            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateInvestmentParams"
+        required: true
       responses:
         "200":
           content:
@@ -2661,7 +2567,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SingleRoundResponseBody"
+                $ref: "#/components/schemas/Round"
           description: OK
         default:
           content:
@@ -2757,7 +2663,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SingleRoundWithBusinessResponseBody"
+                $ref: "#/components/schemas/Round"
           description: OK
         default:
           content:

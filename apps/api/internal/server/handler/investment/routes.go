@@ -62,7 +62,7 @@ func RegisterHumaRoutes(
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "create-round-investment",
 		Method:      http.MethodPost,
-		Path:        "/investments/round/{id}",
+		Path:        "/investments",
 		Summary:     "Create a round investment",
 		Description: "Create a round investment.",
 		Tags:        []string{"Investments"},

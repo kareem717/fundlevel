@@ -23,12 +23,13 @@ func NewInvestmentRepository(db bun.IDB, ctx context.Context) *InvestmentReposit
 	}
 }
 
-func (r *InvestmentRepository) Create(ctx context.Context, params investment.CreateInvestmentParams) (investment.Investment, error) {
+func (r *InvestmentRepository) Create(ctx context.Context, investorId int, params investment.CreateInvestmentParams) (investment.Investment, error) {
 	resp := investment.Investment{}
 
 	err := r.db.NewInsert().
 		Model(&params).
 		ModelTableExpr("investments").
+		Value("investor_id", "?", investorId).
 		Returning("*").
 		Scan(ctx, &resp)
 
@@ -87,8 +88,8 @@ func (r *InvestmentRepository) GetByPage(ctx context.Context, paginationParams p
 	query := r.db.
 		NewSelect().
 		Model(&resp).
-			// Relation("Round").
-			// Relation("Investor").
+		// Relation("Round").
+		// Relation("Investor").
 		Offset(offset).
 		Limit(paginationParams.PageSize + 1)
 

@@ -76,20 +76,6 @@ type FundingOutput struct {
 	}
 }
 
-type SingleRoundWithBusinessResponse struct {
-	Body struct {
-		MessageResponse
-		Round *round.RoundWithBusiness `json:"round"`
-	}
-}
-
-type SingleRoundResponse struct {
-	Body struct {
-		MessageResponse
-		Round *round.Round `json:"round"`
-	}
-}
-
 type PathUserIDParam struct {
 	UserID uuid.UUID `path:"userId"`
 }

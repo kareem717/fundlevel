@@ -22,15 +22,13 @@ func NewRoundRepository(db bun.IDB, ctx context.Context) *RoundRepository {
 	}
 }
 
-func (r *RoundRepository) GetById(ctx context.Context, id int) (round.RoundWithBusiness, error) {
-	resp := round.RoundWithBusiness{}
+func (r *RoundRepository) GetById(ctx context.Context, id int) (round.Round, error) {
+	resp := round.Round{}
 
 	err := r.db.
 		NewSelect().
 		Model(&resp).
-		Relation("Business").
-		Relation("Business.Industries").
-		Where("round_with_business.id = ?", id).
+		Where("id = ?", id).
 		Scan(ctx)
 
 	return resp, err

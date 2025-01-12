@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"errors"
 	"fundlevel/internal/entities/investment"
-	"fundlevel/internal/entities/round"
 	"fundlevel/internal/server/handler/shared"
 	"fundlevel/internal/server/utils"
 	"fundlevel/internal/service"
@@ -152,25 +151,17 @@ func newHTTPHandler(service *service.Service, logger *zap.Logger) *httpHandler {
 // 	return resp, nil
 // }.
 
-func (h *httpHandler) create(ctx context.Context, input *shared.PathIDParam) (*shared.SingleInvestmentResponse, error) {
+type CreateInvestmentRequest struct {
+	Body investment.CreateInvestmentParams
+}
+
+func (h *httpHandler) create(ctx context.Context, input *CreateInvestmentRequest) (*shared.SingleInvestmentResponse, error) {
 	account := utils.GetAuthenticatedAccount(ctx)
 	if account == nil {
 		return nil, huma.Error401Unauthorized("You must be logged in to create an investment")
 	}
 
-	// todo: add ABAC checks
-	roundRecord, err := h.service.RoundService.GetById(ctx, input.ID)
-	if err != nil {
-		h.logger.Error("failed to get round", zap.Error(err))
-		return nil, huma.Error500InternalServerError("Failed to get round")
-	}
-
-	if roundRecord.Status != round.RoundStatusActive {
-		h.logger.Error("round is not active", zap.Int("round id", input.ID))
-		return nil, huma.Error400BadRequest("Round is not active")
-	}
-
-	investment, err := h.service.InvestmentService.Create(ctx, account.ID, &roundRecord.Round)
+	investment, err := h.service.InvestmentService.Create(ctx, account.ID, input.Body)
 	if err != nil {
 		h.logger.Error("failed to create investment", zap.Error(err))
 		return nil, huma.Error500InternalServerError("An error occurred while creating the investment")

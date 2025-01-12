@@ -330,8 +330,8 @@ func (h *httpHandler) getTotalFunding(ctx context.Context, input *shared.PathIDP
 type OnboardStripeConnectedAccountInput struct {
 	shared.PathIDParam
 	Body struct {
-		ReturnURL  string `json:"returnURL"`
-		RefreshURL string `json:"refreshURL"`
+		ReturnURL  string `json:"returnURL" default:"https://fundlevel.app"`
+		RefreshURL string `json:"refreshURL" default:"https://fundlevel.app"`
 	} `json:"body"`
 }
 

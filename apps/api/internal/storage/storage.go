@@ -22,7 +22,7 @@ type IndustryRepository interface {
 type RoundRepository interface {
 	Create(ctx context.Context, params round.CreateRoundParams) (round.Round, error)
 	Delete(ctx context.Context, id int) error
-	GetById(ctx context.Context, id int) (round.RoundWithBusiness, error)
+	GetById(ctx context.Context, id int) (round.Round, error)
 	GetByCursor(ctx context.Context, paginationParams shared.CursorPagination) ([]round.Round, error)
 	GetByPage(ctx context.Context, paginationParams shared.OffsetPagination) ([]round.Round, int, error)
 	Update(ctx context.Context, id int, params round.UpdateRoundParams) (round.Round, error)
@@ -33,7 +33,7 @@ type RoundRepository interface {
 	GetInvestmentsByPage(ctx context.Context, roundId int, paginationParams shared.OffsetPagination, filter investment.InvestmentFilter) ([]investment.Investment, int, error)
 }
 type InvestmentRepository interface {
-	Create(ctx context.Context, params investment.CreateInvestmentParams) (investment.Investment, error)
+	Create(ctx context.Context, investorId int, params investment.CreateInvestmentParams) (investment.Investment, error)
 	Delete(ctx context.Context, id int) error
 	Update(ctx context.Context, id int, params investment.UpdateInvestmentParams) (investment.Investment, error)
 	GetById(ctx context.Context, id int) (investment.Investment, error)

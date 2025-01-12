@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"time"
 
 	"fundlevel/internal/entities/round"
 	"fundlevel/internal/server/handler/shared"
@@ -40,27 +39,17 @@ type CreateRoundInput struct {
 }
 
 func (i *CreateRoundInput) Resolve(ctx huma.Context) []error {
-
-	if i.Body.BeginsAt.Before(time.Now()) {
+	if i.Body.TotalBusinessShares <= i.Body.TotalSharesForSale {
 		return []error{&huma.ErrorDetail{
-			Message:  "begins at must be in the future",
-			Location: "round.beginsAt",
-			Value:    i.Body.BeginsAt,
+			Message:  "total business shares must be greater than total shares for sale",
+			Location: "totalBusinessShares",
+			Value:    i.Body.TotalBusinessShares,
 		}}
 	}
-
-	if i.Body.EndsAt.Before(i.Body.BeginsAt) {
-		return []error{&huma.ErrorDetail{
-			Message:  "ends at must be after begins at",
-			Location: "round.endsAt",
-			Value:    i.Body.EndsAt,
-		}}
-	}
-
 	return nil
 }
 
-func (h *httpHandler) create(ctx context.Context, input *CreateRoundInput) (*shared.SingleRoundResponse, error) {
+func (h *httpHandler) create(ctx context.Context, input *CreateRoundInput) (*RoundResponse, error) {
 	business, err := h.service.BusinessService.GetById(ctx, input.Body.BusinessID)
 	if err != nil {
 		switch {
@@ -106,9 +95,8 @@ func (h *httpHandler) create(ctx context.Context, input *CreateRoundInput) (*sha
 		return nil, huma.Error500InternalServerError("An error occurred while creating the round")
 	}
 
-	resp := &shared.SingleRoundResponse{}
-	resp.Body.Message = "Round created successfully"
-	resp.Body.Round = &round
+	resp := &RoundResponse{}
+	resp.Body = round
 
 	return resp, nil
 }
@@ -130,7 +118,7 @@ func (h *httpHandler) delete(ctx context.Context, input *shared.PathIDParam) (*s
 		return nil, huma.Error401Unauthorized("You must be logged in to delete a round")
 	}
 
-	authorized, err := h.service.PermissionService.CanDeleteRound(ctx, account.ID, round.Business.ID)
+	authorized, err := h.service.PermissionService.CanDeleteRound(ctx, account.ID, round.BusinessID)
 	if err != nil {
 		h.logger.Error("failed to check if account can delete round", zap.Error(err), zap.Int("round_id", input.ID), zap.Int("account_id", account.ID))
 		return nil, huma.Error500InternalServerError("An error occurred while checking if the account can delete the round")
@@ -215,7 +203,11 @@ func (h *httpHandler) getByPage(ctx context.Context, input *GetByPageInput) (*sh
 	return resp, nil
 }
 
-func (h *httpHandler) getById(ctx context.Context, input *shared.PathIDParam) (*shared.SingleRoundWithBusinessResponse, error) {
+type RoundResponse struct {
+	Body round.Round
+}
+
+func (h *httpHandler) getById(ctx context.Context, input *shared.PathIDParam) (*RoundResponse, error) {
 	round, err := h.service.RoundService.GetById(ctx, input.ID)
 	if err != nil {
 		switch {
@@ -227,9 +219,8 @@ func (h *httpHandler) getById(ctx context.Context, input *shared.PathIDParam) (*
 		}
 	}
 
-	resp := &shared.SingleRoundWithBusinessResponse{}
-	resp.Body.Message = "Round fetched successfully"
-	resp.Body.Round = &round
+	resp := &RoundResponse{}
+	resp.Body = round
 
 	return resp, nil
 }
