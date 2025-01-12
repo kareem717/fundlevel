@@ -40,7 +40,7 @@ export const CreateRoundForm = ({ className, ...props }: CreateRoundFormProps) =
           toast.success("Done!", {
             description: "Your business has been created.",
           })
-          router.push(redirects.app.index)
+          router.push(redirects.dashboard.index)
         },
         onError: ({ error }) => {
           toast.error("Something went wrong", {

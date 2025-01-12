@@ -53,7 +53,7 @@ export function CreateAccountForm({
           })
 
           form.reset()
-          router.push(redirects.app.index)
+          router.push(redirects.dashboard.index)
         },
         onError: ({ error }) => {
           toast.error("Error", {

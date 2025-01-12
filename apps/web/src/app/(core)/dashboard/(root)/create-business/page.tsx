@@ -1,13 +1,12 @@
 import { Card, CardTitle, CardHeader, CardContent } from "@repo/ui/components/card";
 import { CreateBusinessForm } from "./components/create-business-form";
-import { FormPageLayout } from "@/components/layouts/form-page-layout";
 
 export const dynamic = "force-dynamic";
 
 export default function CreateBusiness() {
   return (
-    <FormPageLayout >
-      <Card>
+    <div className="flex flex-col gap-4 h-full justify-center items-center">
+      <Card className="self-center">
         <CardHeader>
           <CardTitle>Create Business</CardTitle>
         </CardHeader>
@@ -15,6 +14,6 @@ export default function CreateBusiness() {
           <CreateBusinessForm className="w-full" />
         </CardContent>
       </Card>
-    </FormPageLayout>
+    </div>
   );
 }

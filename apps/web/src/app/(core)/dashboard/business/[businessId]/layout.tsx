@@ -1,0 +1,60 @@
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@repo/ui/components/sidebar"
+import { Metadata } from "next"
+import { notFound, redirect } from "next/navigation";
+import { getBusinessesAction } from "@/actions/busineses"
+import { Separator } from "@repo/ui/components/separator";
+import { BusinessDashboardSidebar } from "./components/business-dashboard-sidebar";
+import { BusinessDashboardBreadcrumb } from "./components/business-dashboard-breadcrumb";
+import { BusinessProvider } from "@/components/providers/business-provider";
+import { redirects } from "@/lib/config/redirects";
+
+export const metadata: Metadata = {
+  title: {
+    default: "Dashboard",
+    template: "%s | Dashboard",
+  },
+}
+
+export default async function BusinessDashboardLayout({ children, params }: { children: React.ReactNode, params: Promise<{ businessId: string }> }) {
+  const businesses = await getBusinessesAction()
+  const businessesData = businesses?.data?.businesses
+
+  //TODO: handle error
+  if (!businessesData || businessesData?.length < 1) {
+    redirect(redirects.dashboard.createBusiness)
+  }
+
+  const { businessId } = await params;
+  const parsedBusinessId = parseInt(businessId);
+
+  //TODO: can be improved when have large amount of projects
+  const business = businessesData?.find(business => business.id === parsedBusinessId);
+
+  if (!business) {
+    return notFound();
+  }
+
+  return (
+    <BusinessProvider businesses={businessesData} defaultBusiness={business}>
+      <SidebarProvider>
+        <BusinessDashboardSidebar />
+        <SidebarInset>
+          <header className="flex h-16 shrink-0 items-center gap-2">
+            <div className="flex items-center gap-2 px-4">
+              <SidebarTrigger className="-ml-1" />
+              <Separator orientation="vertical" className="mr-2 h-4" />
+              <BusinessDashboardBreadcrumb />
+            </div>
+          </header>
+          <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+            {children}
+          </div>
+        </SidebarInset>
+      </SidebarProvider >
+    </BusinessProvider>
+  );
+}

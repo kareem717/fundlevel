@@ -1,8 +1,9 @@
 const dashboardRoot = "/dashboard";
+const businessDashboardRoot = dashboardRoot + "/business";
 
 // Helper function moved to top for clarity
 const businessPrefix = (businessId: number, path?: string) =>
-	`${dashboardRoot}/${businessId}${path ? `/${path}` : ""}`;
+	`${businessDashboardRoot}/${businessId}${path ? `/${path}` : ""}`;
 
 // Helper to reduce repetition in business dashboard paths
 const businessPath = (businessId: number) => ({
@@ -22,7 +23,7 @@ export const redirects = {
 		otp: (email: string) => `/otp?email=${email}`,
 		createAccount: "/create-account",
 	},
-	app: {
+	dashboard: {
 		index: dashboardRoot,
 		wallet: {
 			index: "/wallet",
@@ -35,7 +36,7 @@ export const redirects = {
 				},
 			},
 		},
-		createBusiness: "/create-business",
+		createBusiness: dashboardRoot + "/create-business",
 		businessDashboard: (businessId: number) => ({
 			root: businessPath(businessId).root(),
 			members: businessPath(businessId).path("members"),

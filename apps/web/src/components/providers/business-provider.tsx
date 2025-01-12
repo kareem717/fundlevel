@@ -21,12 +21,12 @@ export const useBusiness = () => {
   return context;
 }
 
-export function BusinessProvider({ children, businesses }: { children: ReactNode, businesses: Business[] }) {
+export function BusinessProvider({ children, businesses, defaultBusiness }: { children: ReactNode, businesses: Business[], defaultBusiness: Business }) {
   if (businesses.length === 0) {
     throw new Error("BusinessProvider must be used with at least one business");
   }
 
-  const [selectedBusiness, setSelectedBusiness] = useState<Business>(businesses[0]!);
+  const [selectedBusiness, setSelectedBusiness] = useState<Business>(defaultBusiness);
 
   return (
     <BusinessContext.Provider value={{ selectedBusiness, businesses, setSelectedBusiness }}>

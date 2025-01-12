@@ -31,7 +31,7 @@ export default function Error({
           Try again
         </Button>
         <Link
-          href={redirects.app.index}
+          href={redirects.dashboard.index}
           className={cn(buttonVariants({ variant: "secondary" }), "w-full")}
         >
           Return to Dashboard

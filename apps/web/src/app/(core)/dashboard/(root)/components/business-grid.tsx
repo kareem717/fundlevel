@@ -1,6 +1,6 @@
 "use client"
 
-import { useBusiness } from "../../../../components/providers/business-provider";
+import { useBusiness } from "../../../../../components/providers/business-provider";
 import { redirects } from "@/lib/config/redirects";
 import Link from "next/link";
 
@@ -12,7 +12,7 @@ export function BusinessGrid() {
     <div>
       {businesses.map((business) => {
 
-        const businessDashboardUrl = redirects.app.businessDashboard(business.id).root
+        const businessDashboardUrl = redirects.dashboard.businessDashboard(business.id).root
 
         console.log(businessDashboardUrl)
         return (
@@ -21,7 +21,7 @@ export function BusinessGrid() {
             // TODO: Prefetch might be a bit too much
             prefetch={true}
             className="p-4 bg-foreground/10 rounded-md"
-        >
+          >
             {business.displayName}
           </Link>
         )

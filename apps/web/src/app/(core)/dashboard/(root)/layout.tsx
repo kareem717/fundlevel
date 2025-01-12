@@ -1,11 +1,11 @@
-import { BusinessGrid } from "./components/business-grid";
+import { ReactNode } from "react";
 import { SidebarInset, SidebarProvider } from "@repo/ui/components/sidebar";
 import { SidebarTrigger } from "@repo/ui/components/sidebar";
 import { Separator } from "@repo/ui/components/separator";
 import { DashboardSidebar } from "./components/dashboard-sidebar";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList } from "@repo/ui/components/breadcrumb";
 
-export default function DashboardPage() {
+export default async function RootDashboardLayout({ children }: { children: ReactNode }) {
   return (
     <SidebarProvider>
       <DashboardSidebar />
@@ -24,9 +24,9 @@ export default function DashboardPage() {
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <BusinessGrid />
+          {children}
         </div>
       </SidebarInset>
     </SidebarProvider >
-  )
+  );
 }

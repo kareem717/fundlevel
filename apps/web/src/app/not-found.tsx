@@ -17,7 +17,7 @@ export default function NotFound() {
         We couldn&#39;t find what you were looking for
       </p>
       <Link
-        href={redirects.app.index}
+        href={redirects.dashboard.index}
         className={cn(buttonVariants(), "px-8")}
       >
         Return to Dashboard
