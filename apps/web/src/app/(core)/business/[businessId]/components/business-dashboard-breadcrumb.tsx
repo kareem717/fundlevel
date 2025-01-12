@@ -16,9 +16,16 @@ import {
 import { ChevronDownIcon } from "lucide-react"
 import { redirects } from "@/lib/config/redirects";
 import { useBusiness } from "@/components/providers/business-provider";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 export function BusinessDashboardBreadcrumb() {
   const { selectedBusiness, businesses } = useBusiness();
+  const pathname = usePathname();
+
+  const generatePath = (businessId: number): string => {
+    return pathname.replace(/\/business\/\d+/, `/business/${businessId}`);
+  }
 
   return (
     <Breadcrumb>
@@ -37,8 +44,10 @@ export function BusinessDashboardBreadcrumb() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start">
               {businesses.map((business) => (
-                <DropdownMenuItem key={business.id}>
-                  {business.displayName}
+                <DropdownMenuItem key={business.id} asChild>
+                  <Link href={generatePath(business.id)}>
+                    {business.displayName}
+                  </Link>
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>
