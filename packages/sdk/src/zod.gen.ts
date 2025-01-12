@@ -3,71 +3,71 @@
 import { z } from "zod";
 
 export const zAccount = z.object({
-  createdAt: z.string().datetime(),
-  deletedAt: z.union([z.string().datetime(), z.null()]),
-  firstName: z
+  created_at: z.string().datetime(),
+  deleted_at: z.union([z.string().datetime(), z.null()]),
+  first_name: z
     .string()
     .min(3)
     .max(30)
     .regex(/^[a-zA-Z]+$/),
   id: z.number().gte(1),
-  lastName: z
+  last_name: z
     .string()
     .min(3)
     .max(30)
     .regex(/^[a-zA-Z]+$/),
-  updatedAt: z.union([z.string().datetime(), z.null()]),
-  userId: z.string(),
+  updated_at: z.union([z.string().datetime(), z.null()]),
+  user_id: z.string(),
 });
 
 export const zBusiness = z.object({
   $schema: z.string().url().readonly().optional(),
-  businessColour: z.string(),
-  businessLegalSection: z.object({
-    businessNumber: z.string(),
-    createdAt: z.string().datetime(),
+  business_colour: z.string(),
+  business_legal_section: z.object({
+    business_number: z.string(),
+    created_at: z.string().datetime(),
     id: z.number().gte(1),
-    updatedAt: z.union([z.string().datetime(), z.null()]),
+    updated_at: z.union([z.string().datetime(), z.null()]),
   }),
-  businessLegalSectionId: z.union([z.number().gte(1), z.null()]).optional(),
-  createdAt: z.string().datetime(),
-  deletedAt: z.union([z.string().datetime(), z.null()]),
-  displayName: z.string().min(1),
-  employeeCount: z
+  business_legal_section_id: z.union([z.number().gte(1), z.null()]).optional(),
+  created_at: z.string().datetime(),
+  deleted_at: z.union([z.string().datetime(), z.null()]),
+  display_name: z.string().min(1),
+  employee_count: z
     .enum(["1", "2-10", "11-50", "51-200", "201-500", "501-1000", "1000+"])
     .optional(),
-  foundingDate: z.string().datetime(),
+  founding_date: z.string().datetime(),
   id: z.number().gte(1),
   industries: z.union([
     z.array(
       z.object({
-        createdAt: z.string().datetime(),
-        deletedAt: z.union([z.string().datetime(), z.null()]),
+        created_at: z.string().datetime(),
+        deleted_at: z.union([z.string().datetime(), z.null()]),
         id: z.number().gte(1),
         label: z.string().min(3).max(30),
-        updatedAt: z.union([z.string().datetime(), z.null()]),
+        updated_at: z.union([z.string().datetime(), z.null()]),
       }),
     ),
     z.null(),
   ]),
-  stripeAccount: z.object({
-    businessId: z.number().gte(1),
-    createdAt: z.string().datetime(),
-    deletedAt: z.union([z.string().datetime(), z.null()]),
-    stripeConnectedAccountId: z.string(),
-    stripeDisabledReason: z.union([z.string(), z.null()]),
-    stripePayoutsEnabled: z.boolean(),
-    stripeTransfersEnabled: z.boolean(),
-    updatedAt: z.union([z.string().datetime(), z.null()]),
+  stripe_account: z.object({
+    business_id: z.number().gte(1),
+    created_at: z.string().datetime(),
+    deleted_at: z.union([z.string().datetime(), z.null()]),
+    stripe_connected_account_id: z.string(),
+    stripe_disabled_reason: z.union([z.string(), z.null()]),
+    stripe_payouts_enabled: z.boolean(),
+    stripe_transfers_enabled: z.boolean(),
+    updated_at: z.union([z.string().datetime(), z.null()]),
   }),
-  updatedAt: z.union([z.string().datetime(), z.null()]),
+  updated_at: z.union([z.string().datetime(), z.null()]),
 });
 
 export const zBusinessLegalSection = z.object({
-  businessNumber: z.string(),
-  createdAt: z.string().datetime(),
+  business_number: z.string(),
+  created_at: z.string().datetime(),
   id: z.number().gte(1),
-  updatedAt: z.union([z.string().datetime(), z.null()]),
+  updated_at: z.union([z.string().datetime(), z.null()]),
 });
 
 export const zBusinessMemberRole = z.object({
@@ -88,26 +88,26 @@ export const zBusinessMemberRole = z.object({
 
 export const zBusinessMemberWithRoleNameAndAccount = z.object({
   account: z.object({
-    createdAt: z.string().datetime(),
-    deletedAt: z.union([z.string().datetime(), z.null()]),
-    firstName: z.string(),
+    created_at: z.string().datetime(),
+    deleted_at: z.union([z.string().datetime(), z.null()]),
+    first_name: z.string(),
     id: z.number().gte(1),
-    lastName: z.string(),
-    updatedAt: z.union([z.string().datetime(), z.null()]),
+    last_name: z.string(),
+    updated_at: z.union([z.string().datetime(), z.null()]),
   }),
-  accountId: z.number(),
-  businessId: z.number(),
-  createdAt: z.string().datetime(),
-  deletedAt: z.union([z.string().datetime(), z.null()]),
+  account_id: z.number(),
+  business_id: z.number(),
+  created_at: z.string().datetime(),
+  deleted_at: z.union([z.string().datetime(), z.null()]),
   role: z.string(),
-  roleId: z.number(),
-  updatedAt: z.union([z.string().datetime(), z.null()]),
+  role_id: z.number(),
+  updated_at: z.union([z.string().datetime(), z.null()]),
 });
 
 export const zBusinessParams = z.object({
-  businessColour: z.union([z.string().length(7), z.null()]).optional(),
-  displayName: z.string().min(1),
-  employeeCount: z.enum([
+  business_colour: z.union([z.string().length(7), z.null()]).optional(),
+  display_name: z.string().min(1),
+  employee_count: z.enum([
     "1",
     "2-10",
     "11-50",
@@ -116,28 +116,28 @@ export const zBusinessParams = z.object({
     "501-1000",
     "1000+",
   ]),
-  foundingDate: z.string().datetime(),
+  founding_date: z.string().datetime(),
 });
 
 export const zBusinessStripeAccount = z.object({
-  businessId: z.number().gte(1),
-  createdAt: z.string().datetime(),
-  deletedAt: z.union([z.string().datetime(), z.null()]),
-  stripeConnectedAccountId: z.string(),
-  stripeDisabledReason: z.union([z.string(), z.null()]),
-  stripePayoutsEnabled: z.boolean(),
-  stripeTransfersEnabled: z.boolean(),
-  updatedAt: z.union([z.string().datetime(), z.null()]),
+  business_id: z.number().gte(1),
+  created_at: z.string().datetime(),
+  deleted_at: z.union([z.string().datetime(), z.null()]),
+  stripe_connected_account_id: z.string(),
+  stripe_disabled_reason: z.union([z.string(), z.null()]),
+  stripe_payouts_enabled: z.boolean(),
+  stripe_transfers_enabled: z.boolean(),
+  updated_at: z.union([z.string().datetime(), z.null()]),
 });
 
 export const zCreateAccountParams = z.object({
   $schema: z.string().url().readonly().optional(),
-  firstName: z
+  first_name: z
     .string()
     .min(3)
     .max(30)
     .regex(/^[a-zA-Z]+$/),
-  lastName: z
+  last_name: z
     .string()
     .min(3)
     .max(30)
@@ -147,19 +147,33 @@ export const zCreateAccountParams = z.object({
 export const zCreateBusinessParams = z.object({
   $schema: z.string().url().readonly().optional(),
   business: zBusinessParams,
-  industryIds: z.union([z.array(z.number()).min(1), z.null()]).optional(),
+  industry_ids: z.union([z.array(z.number()).min(1), z.null()]).optional(),
+});
+
+export const zCreateInvestmentParams = z.object({
+  $schema: z.string().url().readonly().optional(),
+  requires_manual_approval: z.boolean(),
+  round_id: z.number(),
+  share_quantity: z.number(),
+  status: z.enum([
+    "awaiting_term_acceptance",
+    "awaiting_payment",
+    "investor_tasks_completed",
+    "failed_to_accept_terms",
+    "failed_to_make_payment",
+    "investor_withdrew",
+    "business_rejected",
+    "round_closed_before_investor_tasks_completed",
+  ]),
 });
 
 export const zCreateRoundParams = z.object({
   $schema: z.string().url().readonly().optional(),
-  beginsAt: z.string().datetime(),
-  businessId: z.number().gte(1),
+  business_id: z.number().gte(1),
   description: z.string().min(10).max(3000),
-  endsAt: z.string().datetime(),
-  investmentsRequireApproval: z.boolean().default(false),
-  investorCount: z.number().gte(1),
-  percentageSelling: z.number().gte(0).lte(100),
-  valuationAmountUSDCents: z.number().gte(1),
+  price_per_share_usd_cents: z.number().gte(23),
+  total_business_shares: z.number().gte(100000),
+  total_shares_for_sale: z.number().gte(1000),
 });
 
 export const zErrorDetail = z.object({
@@ -189,11 +203,11 @@ export const zGetAllIndustriesResponseBody = z.object({
   industries: z.union([
     z.array(
       z.object({
-        createdAt: z.string().datetime(),
-        deletedAt: z.union([z.string().datetime(), z.null()]),
+        created_at: z.string().datetime(),
+        deleted_at: z.union([z.string().datetime(), z.null()]),
         id: z.number().gte(1),
         label: z.string().min(3).max(30),
-        updatedAt: z.union([z.string().datetime(), z.null()]),
+        updated_at: z.union([z.string().datetime(), z.null()]),
       }),
     ),
     z.null(),
@@ -219,21 +233,21 @@ export const zGetCursorPaginatedInvestmentsOutputBody = z.object({
   investments: z.union([
     z.array(
       z.object({
-        approvedAt: z.string().datetime().optional(),
-        completedAt: z.string().datetime().optional(),
-        createdAt: z.string().datetime(),
-        deletedAt: z.union([z.string().datetime(), z.null()]),
+        approved_at: z.string().datetime().optional(),
+        completed_at: z.string().datetime().optional(),
+        created_at: z.string().datetime(),
+        deleted_at: z.union([z.string().datetime(), z.null()]),
         id: z.number().gte(1),
-        investorId: z.number(),
-        paymentCompletedAt: z.string().datetime().optional(),
+        investor_id: z.number(),
+        payment_completed_at: z.string().datetime().optional(),
         payments: z
           .union([
             z.array(
               z.object({
-                createdAt: z.string().datetime(),
-                deletedAt: z.union([z.string().datetime(), z.null()]),
+                created_at: z.string().datetime(),
+                deleted_at: z.union([z.string().datetime(), z.null()]),
                 id: z.number(),
-                investmentId: z.number(),
+                investment_id: z.number(),
                 status: z.enum([
                   "cancelled",
                   "processing",
@@ -243,16 +257,17 @@ export const zGetCursorPaginatedInvestmentsOutputBody = z.object({
                   "requires_payment_method",
                   "succeeded",
                 ]),
-                stripePaymentIntentClientSecret: z.string(),
-                stripePaymentIntentId: z.string(),
-                updatedAt: z.union([z.string().datetime(), z.null()]),
+                stripe_payment_intent_client_secret: z.string(),
+                stripe_payment_intent_id: z.string(),
+                updated_at: z.union([z.string().datetime(), z.null()]),
               }),
             ),
             z.null(),
           ])
           .optional(),
-        requiresManualApproval: z.boolean(),
-        roundId: z.number(),
+        requires_manual_approval: z.boolean(),
+        round_id: z.number(),
+        share_quantity: z.number(),
         status: z.enum([
           "awaiting_term_acceptance",
           "awaiting_payment",
@@ -263,8 +278,8 @@ export const zGetCursorPaginatedInvestmentsOutputBody = z.object({
           "business_rejected",
           "round_closed_before_investor_tasks_completed",
         ]),
-        termsCompletedAt: z.string().datetime().optional(),
-        updatedAt: z.union([z.string().datetime(), z.null()]),
+        terms_completed_at: z.string().datetime().optional(),
+        updated_at: z.union([z.string().datetime(), z.null()]),
       }),
     ),
     z.null(),
@@ -281,19 +296,17 @@ export const zGetCursorPaginatedRoundsOutputBody = z.object({
   rounds: z.union([
     z.array(
       z.object({
-        beginsAt: z.string().datetime(),
-        businessId: z.number().gte(1),
-        createdAt: z.string().datetime(),
-        deletedAt: z.union([z.string().datetime(), z.null()]),
+        $schema: z.string().url().readonly().optional(),
+        business_id: z.number().gte(1),
+        created_at: z.string().datetime(),
+        deleted_at: z.union([z.string().datetime(), z.null()]),
         description: z.string().min(10).max(3000),
-        endsAt: z.string().datetime(),
         id: z.number().gte(1),
-        investmentsRequireApproval: z.boolean().default(false),
-        investorCount: z.number().gte(1),
-        percentageSelling: z.number().gte(0).lte(100),
+        price_per_share_usd_cents: z.number().gte(1),
         status: z.enum(["active", "successful", "failed"]),
-        updatedAt: z.union([z.string().datetime(), z.null()]),
-        valuationAmountUSDCents: z.number().gte(1),
+        total_business_shares: z.number().gte(1),
+        total_shares_for_sale: z.number().gte(1),
+        updated_at: z.union([z.string().datetime(), z.null()]),
       }),
     ),
     z.null(),
@@ -303,10 +316,10 @@ export const zGetCursorPaginatedRoundsOutputBody = z.object({
 export const zGetInvestmentActivePaymentOutputBody = z.object({
   $schema: z.string().url().readonly().optional(),
   investmentPayment: z.object({
-    createdAt: z.string().datetime(),
-    deletedAt: z.union([z.string().datetime(), z.null()]),
+    created_at: z.string().datetime(),
+    deleted_at: z.union([z.string().datetime(), z.null()]),
     id: z.number(),
-    investmentId: z.number(),
+    investment_id: z.number(),
     status: z.enum([
       "cancelled",
       "processing",
@@ -316,9 +329,9 @@ export const zGetInvestmentActivePaymentOutputBody = z.object({
       "requires_payment_method",
       "succeeded",
     ]),
-    stripePaymentIntentClientSecret: z.string(),
-    stripePaymentIntentId: z.string(),
-    updatedAt: z.union([z.string().datetime(), z.null()]),
+    stripe_payment_intent_client_secret: z.string(),
+    stripe_payment_intent_id: z.string(),
+    updated_at: z.union([z.string().datetime(), z.null()]),
   }),
   message: z.string(),
 });
@@ -328,10 +341,10 @@ export const zGetInvestmentPaymentsOutputBody = z.object({
   investmentPayments: z.union([
     z.array(
       z.object({
-        createdAt: z.string().datetime(),
-        deletedAt: z.union([z.string().datetime(), z.null()]),
+        created_at: z.string().datetime(),
+        deleted_at: z.union([z.string().datetime(), z.null()]),
         id: z.number(),
-        investmentId: z.number(),
+        investment_id: z.number(),
         status: z.enum([
           "cancelled",
           "processing",
@@ -341,9 +354,9 @@ export const zGetInvestmentPaymentsOutputBody = z.object({
           "requires_payment_method",
           "succeeded",
         ]),
-        stripePaymentIntentClientSecret: z.string(),
-        stripePaymentIntentId: z.string(),
-        updatedAt: z.union([z.string().datetime(), z.null()]),
+        stripe_payment_intent_client_secret: z.string(),
+        stripe_payment_intent_id: z.string(),
+        updated_at: z.union([z.string().datetime(), z.null()]),
       }),
     ),
     z.null(),
@@ -371,21 +384,21 @@ export const zGetOffsetPaginatedInvestmentsOutputBody = z.object({
   investments: z.union([
     z.array(
       z.object({
-        approvedAt: z.string().datetime().optional(),
-        completedAt: z.string().datetime().optional(),
-        createdAt: z.string().datetime(),
-        deletedAt: z.union([z.string().datetime(), z.null()]),
+        approved_at: z.string().datetime().optional(),
+        completed_at: z.string().datetime().optional(),
+        created_at: z.string().datetime(),
+        deleted_at: z.union([z.string().datetime(), z.null()]),
         id: z.number().gte(1),
-        investorId: z.number(),
-        paymentCompletedAt: z.string().datetime().optional(),
+        investor_id: z.number(),
+        payment_completed_at: z.string().datetime().optional(),
         payments: z
           .union([
             z.array(
               z.object({
-                createdAt: z.string().datetime(),
-                deletedAt: z.union([z.string().datetime(), z.null()]),
+                created_at: z.string().datetime(),
+                deleted_at: z.union([z.string().datetime(), z.null()]),
                 id: z.number(),
-                investmentId: z.number(),
+                investment_id: z.number(),
                 status: z.enum([
                   "cancelled",
                   "processing",
@@ -395,16 +408,17 @@ export const zGetOffsetPaginatedInvestmentsOutputBody = z.object({
                   "requires_payment_method",
                   "succeeded",
                 ]),
-                stripePaymentIntentClientSecret: z.string(),
-                stripePaymentIntentId: z.string(),
-                updatedAt: z.union([z.string().datetime(), z.null()]),
+                stripe_payment_intent_client_secret: z.string(),
+                stripe_payment_intent_id: z.string(),
+                updated_at: z.union([z.string().datetime(), z.null()]),
               }),
             ),
             z.null(),
           ])
           .optional(),
-        requiresManualApproval: z.boolean(),
-        roundId: z.number(),
+        requires_manual_approval: z.boolean(),
+        round_id: z.number(),
+        share_quantity: z.number(),
         status: z.enum([
           "awaiting_term_acceptance",
           "awaiting_payment",
@@ -415,8 +429,8 @@ export const zGetOffsetPaginatedInvestmentsOutputBody = z.object({
           "business_rejected",
           "round_closed_before_investor_tasks_completed",
         ]),
-        termsCompletedAt: z.string().datetime().optional(),
-        updatedAt: z.union([z.string().datetime(), z.null()]),
+        terms_completed_at: z.string().datetime().optional(),
+        updated_at: z.union([z.string().datetime(), z.null()]),
       }),
     ),
     z.null(),
@@ -432,19 +446,17 @@ export const zGetOffsetPaginatedRoundsOutputBody = z.object({
   rounds: z.union([
     z.array(
       z.object({
-        beginsAt: z.string().datetime(),
-        businessId: z.number().gte(1),
-        createdAt: z.string().datetime(),
-        deletedAt: z.union([z.string().datetime(), z.null()]),
+        $schema: z.string().url().readonly().optional(),
+        business_id: z.number().gte(1),
+        created_at: z.string().datetime(),
+        deleted_at: z.union([z.string().datetime(), z.null()]),
         description: z.string().min(10).max(3000),
-        endsAt: z.string().datetime(),
         id: z.number().gte(1),
-        investmentsRequireApproval: z.boolean().default(false),
-        investorCount: z.number().gte(1),
-        percentageSelling: z.number().gte(0).lte(100),
+        price_per_share_usd_cents: z.number().gte(1),
         status: z.enum(["active", "successful", "failed"]),
-        updatedAt: z.union([z.string().datetime(), z.null()]),
-        valuationAmountUSDCents: z.number().gte(1),
+        total_business_shares: z.number().gte(1),
+        total_shares_for_sale: z.number().gte(1),
+        updated_at: z.union([z.string().datetime(), z.null()]),
       }),
     ),
     z.null(),
@@ -456,9 +468,9 @@ export const zGetRoundCreateRequirementsOutputBody = z.object({
   $schema: z.string().url().readonly().optional(),
   message: z.string(),
   requirements: z.object({
-    hasActiveStatus: z.boolean(),
-    legalSection: z.boolean(),
-    stripeAccount: z.boolean(),
+    has_active_status: z.boolean(),
+    legal_section: z.boolean(),
+    stripe_account: z.boolean(),
   }),
 });
 
@@ -475,29 +487,29 @@ export const zImpressionCountOutputBody = z.object({
 });
 
 export const zIndustry = z.object({
-  createdAt: z.string().datetime(),
-  deletedAt: z.union([z.string().datetime(), z.null()]),
+  created_at: z.string().datetime(),
+  deleted_at: z.union([z.string().datetime(), z.null()]),
   id: z.number().gte(1),
   label: z.string().min(3).max(30),
-  updatedAt: z.union([z.string().datetime(), z.null()]),
+  updated_at: z.union([z.string().datetime(), z.null()]),
 });
 
 export const zInvestment = z.object({
-  approvedAt: z.string().datetime().optional(),
-  completedAt: z.string().datetime().optional(),
-  createdAt: z.string().datetime(),
-  deletedAt: z.union([z.string().datetime(), z.null()]),
+  approved_at: z.string().datetime().optional(),
+  completed_at: z.string().datetime().optional(),
+  created_at: z.string().datetime(),
+  deleted_at: z.union([z.string().datetime(), z.null()]),
   id: z.number().gte(1),
-  investorId: z.number(),
-  paymentCompletedAt: z.string().datetime().optional(),
+  investor_id: z.number(),
+  payment_completed_at: z.string().datetime().optional(),
   payments: z
     .union([
       z.array(
         z.object({
-          createdAt: z.string().datetime(),
-          deletedAt: z.union([z.string().datetime(), z.null()]),
+          created_at: z.string().datetime(),
+          deleted_at: z.union([z.string().datetime(), z.null()]),
           id: z.number(),
-          investmentId: z.number(),
+          investment_id: z.number(),
           status: z.enum([
             "cancelled",
             "processing",
@@ -507,16 +519,17 @@ export const zInvestment = z.object({
             "requires_payment_method",
             "succeeded",
           ]),
-          stripePaymentIntentClientSecret: z.string(),
-          stripePaymentIntentId: z.string(),
-          updatedAt: z.union([z.string().datetime(), z.null()]),
+          stripe_payment_intent_client_secret: z.string(),
+          stripe_payment_intent_id: z.string(),
+          updated_at: z.union([z.string().datetime(), z.null()]),
         }),
       ),
       z.null(),
     ])
     .optional(),
-  requiresManualApproval: z.boolean(),
-  roundId: z.number(),
+  requires_manual_approval: z.boolean(),
+  round_id: z.number(),
+  share_quantity: z.number(),
   status: z.enum([
     "awaiting_term_acceptance",
     "awaiting_payment",
@@ -527,15 +540,15 @@ export const zInvestment = z.object({
     "business_rejected",
     "round_closed_before_investor_tasks_completed",
   ]),
-  termsCompletedAt: z.string().datetime().optional(),
-  updatedAt: z.union([z.string().datetime(), z.null()]),
+  terms_completed_at: z.string().datetime().optional(),
+  updated_at: z.union([z.string().datetime(), z.null()]),
 });
 
 export const zInvestmentPayment = z.object({
-  createdAt: z.string().datetime(),
-  deletedAt: z.union([z.string().datetime(), z.null()]),
+  created_at: z.string().datetime(),
+  deleted_at: z.union([z.string().datetime(), z.null()]),
   id: z.number(),
-  investmentId: z.number(),
+  investment_id: z.number(),
   status: z.enum([
     "cancelled",
     "processing",
@@ -545,9 +558,9 @@ export const zInvestmentPayment = z.object({
     "requires_payment_method",
     "succeeded",
   ]),
-  stripePaymentIntentClientSecret: z.string(),
-  stripePaymentIntentId: z.string(),
-  updatedAt: z.union([z.string().datetime(), z.null()]),
+  stripe_payment_intent_client_secret: z.string(),
+  stripe_payment_intent_id: z.string(),
+  updated_at: z.union([z.string().datetime(), z.null()]),
 });
 
 export const zInvestmentPaymentIntentClientSecretOutputBody = z.object({
@@ -569,8 +582,8 @@ export const zMessageResponse = z.object({
 
 export const zOnboardStripeConnectedAccountInputBody = z.object({
   $schema: z.string().url().readonly().optional(),
-  refreshURL: z.string(),
-  returnURL: z.string(),
+  refreshURL: z.string().default("https://fundlevel.app"),
+  returnURL: z.string().default("https://fundlevel.app"),
 });
 
 export const zRolePermission = z.object({
@@ -580,51 +593,32 @@ export const zRolePermission = z.object({
 });
 
 export const zRound = z.object({
-  beginsAt: z.string().datetime(),
-  businessId: z.number().gte(1),
-  createdAt: z.string().datetime(),
-  deletedAt: z.union([z.string().datetime(), z.null()]),
+  $schema: z.string().url().readonly().optional(),
+  business_id: z.number().gte(1),
+  created_at: z.string().datetime(),
+  deleted_at: z.union([z.string().datetime(), z.null()]),
   description: z.string().min(10).max(3000),
-  endsAt: z.string().datetime(),
   id: z.number().gte(1),
-  investmentsRequireApproval: z.boolean().default(false),
-  investorCount: z.number().gte(1),
-  percentageSelling: z.number().gte(0).lte(100),
+  price_per_share_usd_cents: z.number().gte(1),
   status: z.enum(["active", "successful", "failed"]),
-  updatedAt: z.union([z.string().datetime(), z.null()]),
-  valuationAmountUSDCents: z.number().gte(1),
+  total_business_shares: z.number().gte(1),
+  total_shares_for_sale: z.number().gte(1),
+  updated_at: z.union([z.string().datetime(), z.null()]),
 });
 
 export const zRoundCreateRequirements = z.object({
-  hasActiveStatus: z.boolean(),
-  legalSection: z.boolean(),
-  stripeAccount: z.boolean(),
-});
-
-export const zRoundWithBusiness = z.object({
-  beginsAt: z.string().datetime(),
-  business: zBusiness,
-  businessId: z.number().gte(1),
-  createdAt: z.string().datetime(),
-  deletedAt: z.union([z.string().datetime(), z.null()]),
-  description: z.string().min(10).max(3000),
-  endsAt: z.string().datetime(),
-  id: z.number().gte(1),
-  investmentsRequireApproval: z.boolean().default(false),
-  investorCount: z.number().gte(1),
-  percentageSelling: z.number().gte(0).lte(100),
-  status: z.enum(["active", "successful", "failed"]),
-  updatedAt: z.union([z.string().datetime(), z.null()]),
-  valuationAmountUSDCents: z.number().gte(1),
+  has_active_status: z.boolean(),
+  legal_section: z.boolean(),
+  stripe_account: z.boolean(),
 });
 
 export const zSafeAccount = z.object({
-  createdAt: z.string().datetime(),
-  deletedAt: z.union([z.string().datetime(), z.null()]),
-  firstName: z.string(),
+  created_at: z.string().datetime(),
+  deleted_at: z.union([z.string().datetime(), z.null()]),
+  first_name: z.string(),
   id: z.number().gte(1),
-  lastName: z.string(),
-  updatedAt: z.union([z.string().datetime(), z.null()]),
+  last_name: z.string(),
+  updated_at: z.union([z.string().datetime(), z.null()]),
 });
 
 export const zSingleAccountResponseBody = z.object({
@@ -645,18 +639,6 @@ export const zSingleInvestmentResponseBody = z.object({
   message: z.string(),
 });
 
-export const zSingleRoundResponseBody = z.object({
-  $schema: z.string().url().readonly().optional(),
-  message: z.string(),
-  round: zRound,
-});
-
-export const zSingleRoundWithBusinessResponseBody = z.object({
-  $schema: z.string().url().readonly().optional(),
-  message: z.string(),
-  round: zRoundWithBusiness,
-});
-
 export const zUrlOutputBody = z.object({
   $schema: z.string().url().readonly().optional(),
   message: z.string(),
@@ -665,12 +647,12 @@ export const zUrlOutputBody = z.object({
 
 export const zUpdateAccountParams = z.object({
   $schema: z.string().url().readonly().optional(),
-  firstName: z
+  first_name: z
     .string()
     .min(3)
     .max(30)
     .regex(/^[a-zA-Z]+$/),
-  lastName: z
+  last_name: z
     .string()
     .min(3)
     .max(30)
@@ -679,7 +661,7 @@ export const zUpdateAccountParams = z.object({
 
 export const zUpsertBusinessLegalSectionParams = z.object({
   $schema: z.string().url().readonly().optional(),
-  businessNumber: z.string().min(1).max(10),
+  business_number: z.string().min(1).max(10),
 });
 
 export const zGetAccountResponse = zSingleAccountResponseBody;
@@ -774,10 +756,10 @@ export const zGetInvestmentPaymentsResponse = zGetInvestmentPaymentsOutputBody;
 
 export const zGetRoundByCursorResponse = zGetCursorPaginatedRoundsOutputBody;
 
-export const zCreateRoundResponse = zSingleRoundResponseBody;
+export const zCreateRoundResponse = zRound;
 
 export const zGetRoundsByPageResponse = zGetOffsetPaginatedRoundsOutputBody;
 
 export const zDeleteRoundResponse = z.void();
 
-export const zGetRoundByIdResponse = zSingleRoundWithBusinessResponseBody;
+export const zGetRoundByIdResponse = zRound;

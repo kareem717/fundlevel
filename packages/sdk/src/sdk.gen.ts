@@ -810,7 +810,11 @@ export const createRoundInvestment = <ThrowOnError extends boolean = false>(
     ThrowOnError
   >({
     ...options,
-    url: "/investments/round/{id}",
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+    url: "/investments",
   });
 };
 
