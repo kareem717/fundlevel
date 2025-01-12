@@ -29,9 +29,8 @@ components:
           nullable: true
           type: string
         userId:
-          format: int64
           minimum: 1
-          type: integer
+          type: string
       required:
         - userId
         - id
@@ -44,6 +43,12 @@ components:
     Business:
       additionalProperties: false
       properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/Business.json
+          format: uri
+          readOnly: true
+          type: string
         businessColour:
           type: string
         businessLegalSection:
@@ -1904,7 +1909,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MessageResponse"
+                $ref: "#/components/schemas/Business"
           description: OK
         default:
           content:

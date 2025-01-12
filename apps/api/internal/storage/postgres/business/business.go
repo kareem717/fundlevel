@@ -3,7 +3,6 @@ package business
 import (
 	"context"
 	"errors"
-	"fmt"
 	"fundlevel/internal/entities/business"
 
 	"github.com/uptrace/bun"
@@ -19,9 +18,9 @@ func NewBusinessRepository(db bun.IDB, ctx context.Context) *BusinessRepository 
 }
 
 // TODO: this logic should be in a service, not in the repository
-func (r *BusinessRepository) Create(ctx context.Context, params business.CreateBusinessParams, initialOwnerId int) error {
+func (r *BusinessRepository) Create(ctx context.Context, params business.CreateBusinessParams, initialOwnerId int) (business.Business, error) {
+	var businessRecord business.Business
 	err := r.db.RunInTx(ctx, nil, func(ctx context.Context, tx bun.Tx) error {
-		var businessRecord business.Business
 		err := tx.NewInsert().
 			Model(&params.Business).
 			ModelTableExpr("businesses").
@@ -35,20 +34,6 @@ func (r *BusinessRepository) Create(ctx context.Context, params business.CreateB
 			BusinessId: businessRecord.ID,
 			AccountId:  initialOwnerId,
 		}
-
-		fmt.Println(tx.NewInsert().
-			Model(&businessMember).
-			Column("business_id").
-			Column("account_id").
-			Column("role_id").
-			Value("role_id", "(?)",
-				tx.NewSelect().
-					Model(&business.BusinessMemberRole{}).
-					Where("name = ?", business.BusinessMemberRoleNameOwner).
-					ColumnExpr("id"),
-			).
-			ModelTableExpr("business_members").
-			String())
 
 		_, err = tx.NewInsert().
 			Model(&businessMember).
@@ -94,7 +79,7 @@ func (r *BusinessRepository) Create(ctx context.Context, params business.CreateB
 		return nil
 	})
 
-	return err
+	return businessRecord, err
 }
 
 func (r *BusinessRepository) GetById(ctx context.Context, id int) (business.Business, error) {

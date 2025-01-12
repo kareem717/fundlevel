@@ -58,7 +58,11 @@ type CreateBusinessRequest struct {
 	Body business.CreateBusinessParams `json:"business"`
 }
 
-func (h *httpHandler) create(ctx context.Context, input *CreateBusinessRequest) (*shared.MessageOutput, error) {
+type BusinessResponse struct {
+	Body business.Business
+}
+
+func (h *httpHandler) create(ctx context.Context, input *CreateBusinessRequest) (*BusinessResponse, error) {
 	account := utils.GetAuthenticatedAccount(ctx)
 	if account == nil {
 		return nil, huma.Error401Unauthorized("You must be logged in to create a business")
@@ -77,15 +81,14 @@ func (h *httpHandler) create(ctx context.Context, input *CreateBusinessRequest) 
 		return nil, huma.Error403Forbidden("Account is not authorized to create business")
 	}
 
-	err = h.service.BusinessService.Create(ctx, input.Body, account.ID)
+	business, err := h.service.BusinessService.Create(ctx, input.Body, account.ID)
 	if err != nil {
 		h.logger.Error("failed to create business", zap.Error(err))
 		return nil, huma.Error500InternalServerError("An error occurred while creating the business")
 	}
 
-	resp := &shared.MessageOutput{}
-	resp.Body.Message = "Business created successfully"
-
+	resp := &BusinessResponse{}
+	resp.Body = business
 	return resp, nil
 }
 
