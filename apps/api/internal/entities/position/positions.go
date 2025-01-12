@@ -10,12 +10,12 @@ type Position struct {
 	bun.BaseModel `bun:"table:positions"`
 
 	shared.IntegerID
-	InvestmentID int
+	InvestmentID int `json:"investment_id"`
 	shared.Timestamps
 }
 
 type CreatePositionParams struct {
 	bun.BaseModel `bun:"table:positions,alias:position"`
 
-	InvestmentID int
+	InvestmentID int `json:"investment_id"`
 }

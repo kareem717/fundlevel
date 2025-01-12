@@ -27,34 +27,34 @@ type Investment struct {
 	bun.BaseModel `bun:"table:investments"`
 	shared.IntegerID
 	CreateInvestmentParams
-	InvestorID         int                 `json:"investorId"`
-	TermsCompletedAt   *time.Time          `json:"termsCompletedAt,omitempty"`
-	PaymentCompletedAt *time.Time          `json:"paymentCompletedAt,omitempty"`
-	CompletedAt        *time.Time          `json:"completedAt,omitempty"`
-	ShareQuantity      int                 `json:"shareQuantity" min:"1"`
-	ApprovedAt         *time.Time          `json:"approvedAt,omitempty"`
+	InvestorID         int                 `json:"investor_id"`
+	TermsCompletedAt   *time.Time          `json:"terms_completed_at,omitempty"`
+	PaymentCompletedAt *time.Time          `json:"payment_completed_at,omitempty"`
+	CompletedAt        *time.Time          `json:"completed_at,omitempty"`
+	ShareQuantity      int                 `json:"share_quantity" min:"1"`
+	ApprovedAt         *time.Time          `json:"approved_at,omitempty"`
 	Payments           []InvestmentPayment `json:"payments" bun:"rel:has-many,join:id=investment_id" required:"false"`
 	shared.Timestamps
 }
 
 type CreateInvestmentParams struct {
-	RoundID                int              `json:"roundId"`
+	RoundID                int              `json:"round_id"`
 	Status                 InvestmentStatus `json:"status" enum:"awaiting_term_acceptance,awaiting_payment,investor_tasks_completed,failed_to_accept_terms,failed_to_make_payment,investor_withdrew,business_rejected,round_closed_before_investor_tasks_completed"`
-	ShareQuantity          int              `json:"shareQuantity" min:"1"`
-	RequiresManualApproval bool             `json:"requiresManualApproval"`
+	ShareQuantity          int              `json:"share_quantity" min:"1"`
+	RequiresManualApproval bool             `json:"requires_manual_approval"`
 }
 
 type UpdateInvestmentParams struct {
 	Status             InvestmentStatus `json:"status" hidden:"true" required:"false" enum:"awaiting_term_acceptance,awaiting_payment,investor_tasks_completed,failed_to_accept_terms,failed_to_make_payment,investor_withdrew,business_rejected,round_closed_before_investor_tasks_completed"`
-	TermsCompletedAt   *time.Time       `json:"termsCompletedAt,omitempty" hidden:"true" required:"false"`
-	PaymentCompletedAt *time.Time       `json:"paymentCompletedAt,omitempty" hidden:"true" required:"false"`
-	CompletedAt        *time.Time       `json:"completedAt,omitempty" hidden:"true" required:"false"`
-	ApprovedAt         *time.Time       `json:"approvedAt,omitempty" hidden:"true" required:"false"`
+	TermsCompletedAt   *time.Time       `json:"terms_completed_at,omitempty" hidden:"true" required:"false"`
+	PaymentCompletedAt *time.Time       `json:"payment_completed_at,omitempty" hidden:"true" required:"false"`
+	CompletedAt        *time.Time       `json:"completed_at,omitempty" hidden:"true" required:"false"`
+	ApprovedAt         *time.Time       `json:"approved_at,omitempty" hidden:"true" required:"false"`
 }
 
 type InvestmentFilter struct {
 	Status []string `query:"status" required:"false" enum:"awaiting_term_acceptance,awaiting_payment,investor_tasks_completed,failed_to_accept_terms,failed_to_make_payment,investor_withdrew,business_rejected,round_closed_before_investor_tasks_completed"`
 
-	SortBy    string `query:"sortBy" required:"false" enum:"created_at"`
-	SortOrder string `query:"sortOrder" required:"false" enum:"asc,desc" default:"desc"`
+	SortBy    string `query:"sort_by" required:"false" enum:"created_at"`
+	SortOrder string `query:"sort_order" required:"false" enum:"asc,desc" default:"desc"`
 }

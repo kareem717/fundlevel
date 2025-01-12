@@ -3,14 +3,14 @@ components:
     Account:
       additionalProperties: false
       properties:
-        createdAt:
+        created_at:
           format: date-time
           type: string
-        deletedAt:
+        deleted_at:
           format: date-time
           nullable: true
           type: string
-        firstName:
+        first_name:
           maxLength: 30
           minLength: 3
           pattern: ^[a-zA-Z]+$
@@ -19,26 +19,26 @@ components:
           format: int64
           minimum: 1
           type: integer
-        lastName:
+        last_name:
           maxLength: 30
           minLength: 3
           pattern: ^[a-zA-Z]+$
           type: string
-        updatedAt:
+        updated_at:
           format: date-time
           nullable: true
           type: string
-        userId:
+        user_id:
           minimum: 1
           type: string
       required:
-        - userId
+        - user_id
         - id
-        - firstName
-        - lastName
-        - createdAt
-        - updatedAt
-        - deletedAt
+        - first_name
+        - last_name
+        - created_at
+        - updated_at
+        - deleted_at
       type: object
     Business:
       additionalProperties: false
@@ -49,26 +49,26 @@ components:
           format: uri
           readOnly: true
           type: string
-        businessColour:
+        business_colour:
           type: string
-        businessLegalSection:
+        business_legal_section:
           $ref: "#/components/schemas/BusinessLegalSection"
-        businessLegalSectionId:
+        business_legal_section_id:
           format: int64
           minimum: 1
           nullable: true
           type: integer
-        createdAt:
+        created_at:
           format: date-time
           type: string
-        deletedAt:
+        deleted_at:
           format: date-time
           nullable: true
           type: string
-        displayName:
+        display_name:
           minLength: 1
           type: string
-        employeeCount:
+        employee_count:
           enum:
             - "1"
             - 2-10
@@ -78,7 +78,7 @@ components:
             - 501-1000
             - 1000+
           type: string
-        foundingDate:
+        founding_date:
           format: date-time
           type: string
         id:
@@ -90,45 +90,45 @@ components:
             $ref: "#/components/schemas/Industry"
           nullable: true
           type: array
-        stripeAccount:
+        stripe_account:
           $ref: "#/components/schemas/BusinessStripeAccount"
-        updatedAt:
+        updated_at:
           format: date-time
           nullable: true
           type: string
       required:
-        - stripeAccount
-        - businessLegalSection
-        - businessColour
-        - displayName
-        - foundingDate
+        - stripe_account
+        - business_legal_section
+        - business_colour
+        - display_name
+        - founding_date
         - industries
         - id
-        - createdAt
-        - updatedAt
-        - deletedAt
+        - created_at
+        - updated_at
+        - deleted_at
       type: object
     BusinessLegalSection:
       additionalProperties: false
       properties:
-        businessNumber:
+        business_number:
           type: string
-        createdAt:
+        created_at:
           format: date-time
           type: string
         id:
           format: int64
           minimum: 1
           type: integer
-        updatedAt:
+        updated_at:
           format: date-time
           nullable: true
           type: string
       required:
-        - businessNumber
+        - business_number
         - id
-        - createdAt
-        - updatedAt
+        - created_at
+        - updated_at
       type: object
     BusinessMemberRole:
       additionalProperties: false
@@ -157,52 +157,52 @@ components:
       properties:
         account:
           $ref: "#/components/schemas/SafeAccount"
-        accountId:
+        account_id:
           format: int64
           type: integer
-        businessId:
+        business_id:
           format: int64
           type: integer
-        createdAt:
+        created_at:
           format: date-time
           type: string
-        deletedAt:
+        deleted_at:
           format: date-time
           nullable: true
           type: string
         role:
           type: string
-        roleId:
+        role_id:
           format: int64
           type: integer
-        updatedAt:
+        updated_at:
           format: date-time
           nullable: true
           type: string
       required:
         - role
         - account
-        - businessId
-        - accountId
-        - roleId
-        - createdAt
-        - updatedAt
-        - deletedAt
+        - business_id
+        - account_id
+        - role_id
+        - created_at
+        - updated_at
+        - deleted_at
       type: object
     BusinessParams:
       additionalProperties: false
       properties:
-        businessColour:
+        business_colour:
           example: "#E9743E"
           maxLength: 7
           minLength: 7
           nullable: true
           type: string
-        displayName:
+        display_name:
           example: Acme Inc.
           minLength: 1
           type: string
-        employeeCount:
+        employee_count:
           enum:
             - "1"
             - 2-10
@@ -212,50 +212,50 @@ components:
             - 501-1000
             - 1000+
           type: string
-        foundingDate:
+        founding_date:
           format: date-time
           type: string
       required:
-        - displayName
-        - foundingDate
-        - employeeCount
+        - display_name
+        - founding_date
+        - employee_count
       type: object
     BusinessStripeAccount:
       additionalProperties: false
       properties:
-        businessId:
+        business_id:
           format: int64
           minimum: 1
           type: integer
-        createdAt:
+        created_at:
           format: date-time
           type: string
-        deletedAt:
+        deleted_at:
           format: date-time
           nullable: true
           type: string
-        stripeConnectedAccountId:
+        stripe_connected_account_id:
           type: string
-        stripeDisabledReason:
+        stripe_disabled_reason:
           nullable: true
           type: string
-        stripePayoutsEnabled:
+        stripe_payouts_enabled:
           type: boolean
-        stripeTransfersEnabled:
+        stripe_transfers_enabled:
           type: boolean
-        updatedAt:
+        updated_at:
           format: date-time
           nullable: true
           type: string
       required:
-        - businessId
-        - stripeConnectedAccountId
-        - stripeDisabledReason
-        - stripeTransfersEnabled
-        - stripePayoutsEnabled
-        - createdAt
-        - updatedAt
-        - deletedAt
+        - business_id
+        - stripe_connected_account_id
+        - stripe_disabled_reason
+        - stripe_transfers_enabled
+        - stripe_payouts_enabled
+        - created_at
+        - updated_at
+        - deleted_at
       type: object
     CreateAccountParams:
       additionalProperties: false
@@ -266,19 +266,19 @@ components:
           format: uri
           readOnly: true
           type: string
-        firstName:
+        first_name:
           maxLength: 30
           minLength: 3
           pattern: ^[a-zA-Z]+$
           type: string
-        lastName:
+        last_name:
           maxLength: 30
           minLength: 3
           pattern: ^[a-zA-Z]+$
           type: string
       required:
-        - firstName
-        - lastName
+        - first_name
+        - last_name
       type: object
     CreateBusinessParams:
       additionalProperties: false
@@ -291,7 +291,7 @@ components:
           type: string
         business:
           $ref: "#/components/schemas/BusinessParams"
-        industryIds:
+        industry_ids:
           example:
             - 1
           items:
@@ -313,12 +313,12 @@ components:
           format: uri
           readOnly: true
           type: string
-        requiresManualApproval:
+        requires_manual_approval:
           type: boolean
-        roundId:
+        round_id:
           format: int64
           type: integer
-        shareQuantity:
+        share_quantity:
           format: int64
           type: integer
         status:
@@ -333,10 +333,10 @@ components:
             - round_closed_before_investor_tasks_completed
           type: string
       required:
-        - roundId
+        - round_id
         - status
-        - shareQuantity
-        - requiresManualApproval
+        - share_quantity
+        - requires_manual_approval
       type: object
     CreateRoundParams:
       additionalProperties: false
@@ -347,7 +347,7 @@ components:
           format: uri
           readOnly: true
           type: string
-        businessId:
+        business_id:
           format: int64
           minimum: 1
           type: integer
@@ -355,23 +355,23 @@ components:
           maxLength: 3000
           minLength: 10
           type: string
-        pricePerShareUSDCents:
+        price_per_share_usd_cents:
           format: int64
           minimum: 23
           type: integer
-        totalBusinessShares:
+        total_business_shares:
           format: int64
           minimum: 100000
           type: integer
-        totalSharesForSale:
+        total_shares_for_sale:
           format: int64
           minimum: 1000
           type: integer
       required:
-        - businessId
-        - pricePerShareUSDCents
-        - totalSharesForSale
-        - totalBusinessShares
+        - business_id
+        - price_per_share_usd_cents
+        - total_shares_for_sale
+        - total_business_shares
         - description
       type: object
     ErrorDetail:
@@ -751,10 +751,10 @@ components:
     Industry:
       additionalProperties: false
       properties:
-        createdAt:
+        created_at:
           format: date-time
           type: string
-        deletedAt:
+        deleted_at:
           format: date-time
           nullable: true
           type: string
@@ -766,30 +766,30 @@ components:
           maxLength: 30
           minLength: 3
           type: string
-        updatedAt:
+        updated_at:
           format: date-time
           nullable: true
           type: string
       required:
         - id
         - label
-        - createdAt
-        - updatedAt
-        - deletedAt
+        - created_at
+        - updated_at
+        - deleted_at
       type: object
     Investment:
       additionalProperties: false
       properties:
-        approvedAt:
+        approved_at:
           format: date-time
           type: string
-        completedAt:
+        completed_at:
           format: date-time
           type: string
-        createdAt:
+        created_at:
           format: date-time
           type: string
-        deletedAt:
+        deleted_at:
           format: date-time
           nullable: true
           type: string
@@ -797,10 +797,10 @@ components:
           format: int64
           minimum: 1
           type: integer
-        investorId:
+        investor_id:
           format: int64
           type: integer
-        paymentCompletedAt:
+        payment_completed_at:
           format: date-time
           type: string
         payments:
@@ -808,12 +808,12 @@ components:
             $ref: "#/components/schemas/InvestmentPayment"
           nullable: true
           type: array
-        requiresManualApproval:
+        requires_manual_approval:
           type: boolean
-        roundId:
+        round_id:
           format: int64
           type: integer
-        shareQuantity:
+        share_quantity:
           format: int64
           type: integer
         status:
@@ -827,38 +827,38 @@ components:
             - business_rejected
             - round_closed_before_investor_tasks_completed
           type: string
-        termsCompletedAt:
+        terms_completed_at:
           format: date-time
           type: string
-        updatedAt:
+        updated_at:
           format: date-time
           nullable: true
           type: string
       required:
-        - investorId
-        - shareQuantity
+        - investor_id
+        - share_quantity
         - id
-        - roundId
+        - round_id
         - status
-        - requiresManualApproval
-        - createdAt
-        - updatedAt
-        - deletedAt
+        - requires_manual_approval
+        - created_at
+        - updated_at
+        - deleted_at
       type: object
     InvestmentPayment:
       additionalProperties: false
       properties:
-        createdAt:
+        created_at:
           format: date-time
           type: string
-        deletedAt:
+        deleted_at:
           format: date-time
           nullable: true
           type: string
         id:
           format: int64
           type: integer
-        investmentId:
+        investment_id:
           format: int64
           type: integer
         status:
@@ -871,23 +871,23 @@ components:
             - requires_payment_method
             - succeeded
           type: string
-        stripePaymentIntentClientSecret:
+        stripe_payment_intent_client_secret:
           type: string
-        stripePaymentIntentId:
+        stripe_payment_intent_id:
           type: string
-        updatedAt:
+        updated_at:
           format: date-time
           nullable: true
           type: string
       required:
         - id
-        - investmentId
+        - investment_id
         - status
-        - stripePaymentIntentId
-        - stripePaymentIntentClientSecret
-        - createdAt
-        - updatedAt
-        - deletedAt
+        - stripe_payment_intent_id
+        - stripe_payment_intent_client_secret
+        - created_at
+        - updated_at
+        - deleted_at
       type: object
     InvestmentPaymentIntentClientSecretOutputBody:
       additionalProperties: false
@@ -981,14 +981,14 @@ components:
           format: uri
           readOnly: true
           type: string
-        businessId:
+        business_id:
           format: int64
           minimum: 1
           type: integer
-        createdAt:
+        created_at:
           format: date-time
           type: string
-        deletedAt:
+        deleted_at:
           format: date-time
           nullable: true
           type: string
@@ -1000,7 +1000,7 @@ components:
           format: int64
           minimum: 1
           type: integer
-        pricePerShareUSDCents:
+        price_per_share_usd_cents:
           format: int64
           minimum: 1
           type: integer
@@ -1010,73 +1010,73 @@ components:
             - successful
             - failed
           type: string
-        totalBusinessShares:
+        total_business_shares:
           format: int64
           minimum: 1
           type: integer
-        totalSharesForSale:
+        total_shares_for_sale:
           format: int64
           minimum: 1
           type: integer
-        updatedAt:
+        updated_at:
           format: date-time
           nullable: true
           type: string
       required:
-        - businessId
-        - pricePerShareUSDCents
-        - totalSharesForSale
-        - totalBusinessShares
+        - business_id
+        - price_per_share_usd_cents
+        - total_shares_for_sale
+        - total_business_shares
         - status
         - description
         - id
-        - createdAt
-        - updatedAt
-        - deletedAt
+        - created_at
+        - updated_at
+        - deleted_at
       type: object
     RoundCreateRequirements:
       additionalProperties: false
       properties:
-        hasActiveStatus:
+        has_active_status:
           type: boolean
-        legalSection:
+        legal_section:
           type: boolean
-        stripeAccount:
+        stripe_account:
           type: boolean
       required:
-        - hasActiveStatus
-        - legalSection
-        - stripeAccount
+        - has_active_status
+        - legal_section
+        - stripe_account
       type: object
     SafeAccount:
       additionalProperties: false
       properties:
-        createdAt:
+        created_at:
           format: date-time
           type: string
-        deletedAt:
+        deleted_at:
           format: date-time
           nullable: true
           type: string
-        firstName:
+        first_name:
           type: string
         id:
           format: int64
           minimum: 1
           type: integer
-        lastName:
+        last_name:
           type: string
-        updatedAt:
+        updated_at:
           format: date-time
           nullable: true
           type: string
       required:
-        - firstName
-        - lastName
+        - first_name
+        - last_name
         - id
-        - createdAt
-        - updatedAt
-        - deletedAt
+        - created_at
+        - updated_at
+        - deleted_at
       type: object
     SingleAccountResponseBody:
       additionalProperties: false
@@ -1155,19 +1155,19 @@ components:
           format: uri
           readOnly: true
           type: string
-        firstName:
+        first_name:
           maxLength: 30
           minLength: 3
           pattern: ^[a-zA-Z]+$
           type: string
-        lastName:
+        last_name:
           maxLength: 30
           minLength: 3
           pattern: ^[a-zA-Z]+$
           type: string
       required:
-        - firstName
-        - lastName
+        - first_name
+        - last_name
       type: object
     UpsertBusinessLegalSectionParams:
       additionalProperties: false
@@ -1178,12 +1178,12 @@ components:
           format: uri
           readOnly: true
           type: string
-        businessNumber:
+        business_number:
           maxLength: 10
           minLength: 1
           type: string
       required:
-        - businessNumber
+        - business_number
       type: object
   securitySchemes:
     bearerAuth:
@@ -1343,14 +1343,14 @@ paths:
             type: array
         - explode: false
           in: query
-          name: sortBy
+          name: sort_by
           schema:
             enum:
               - created_at
             type: string
         - explode: false
           in: query
-          name: sortOrder
+          name: sort_order
           schema:
             default: desc
             enum:
@@ -1416,14 +1416,14 @@ paths:
             type: array
         - explode: false
           in: query
-          name: sortBy
+          name: sort_by
           schema:
             enum:
               - created_at
             type: string
         - explode: false
           in: query
-          name: sortOrder
+          name: sort_order
           schema:
             default: desc
             enum:

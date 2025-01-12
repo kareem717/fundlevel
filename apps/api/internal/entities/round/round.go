@@ -19,10 +19,10 @@ type Round struct {
 	bun.BaseModel `bun:"table:rounds"`
 
 	shared.IntegerID
-	BusinessID            int         `json:"businessId" minimum:"1"`
-	PricePerShareUSDCents int         `json:"pricePerShareUSDCents" minimum:"1"`
-	TotalSharesForSale    int         `json:"totalSharesForSale" minimum:"1"`
-	TotalBusinessShares   int         `json:"totalBusinessShares" minimum:"1"`
+	BusinessID            int         `json:"business_id" minimum:"1"`
+	PricePerShareUSDCents int         `json:"price_per_share_usd_cents" minimum:"1"`
+	TotalSharesForSale    int         `json:"total_shares_for_sale" minimum:"1"`
+	TotalBusinessShares   int         `json:"total_business_shares" minimum:"1"`
 	Status                RoundStatus `json:"status" enum:"active,successful,failed"`
 	Description           string      `json:"description" minLength:"10" maxLength:"3000"`
 
@@ -32,10 +32,10 @@ type Round struct {
 type CreateRoundParams struct {
 	bun.BaseModel `bun:"table:rounds,alias:round"`
 
-	BusinessID            int         `json:"businessId" minimum:"1"`
-	PricePerShareUSDCents int         `json:"pricePerShareUSDCents" minimum:"23"`
-	TotalSharesForSale    int         `json:"totalSharesForSale" minimum:"1000"`
-	TotalBusinessShares   int         `json:"totalBusinessShares" minimum:"100000"`
+	BusinessID            int         `json:"business_id" minimum:"1"`
+	PricePerShareUSDCents int         `json:"price_per_share_usd_cents" minimum:"23"`
+	TotalSharesForSale    int         `json:"total_shares_for_sale" minimum:"1000"`
+	TotalBusinessShares   int         `json:"total_business_shares" minimum:"100000"`
 	Status                RoundStatus `json:"status" hidden:"true" required:"false"`
 	Description           string      `json:"description" minLength:"10" maxLength:"3000"`
 }

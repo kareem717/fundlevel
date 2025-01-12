@@ -13,15 +13,15 @@ type Account struct {
 
 	shared.IntegerID
 	CreateAccountParams
-	UserId uuid.UUID `json:"userId" minimum:"1"`
+	UserId uuid.UUID `json:"user_id" minimum:"1"`
 	shared.Timestamps
 }
 
 type SafeAccount struct {
 	bun.BaseModel `bun:"table:accounts,alias:account"`
 	shared.IntegerID
-	FirstName string `json:"firstName"`
-	LastName  string `json:"lastName"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
 	shared.Timestamps
 }
 
@@ -32,6 +32,6 @@ type CreateAccountParams struct {
 
 // UpdateAccountParams contains the parameters for updating a account.
 type UpdateAccountParams struct {
-	FirstName string `json:"firstName" minLength:"3" maxLength:"30" pattern:"^[a-zA-Z]+$"`
-	LastName  string `json:"lastName" minLength:"3" maxLength:"30" pattern:"^[a-zA-Z]+$"`
+	FirstName string `json:"first_name" minLength:"3" maxLength:"30" pattern:"^[a-zA-Z]+$"`
+	LastName  string `json:"last_name" minLength:"3" maxLength:"30" pattern:"^[a-zA-Z]+$"`
 }

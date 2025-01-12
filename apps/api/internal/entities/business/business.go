@@ -32,36 +32,36 @@ type Business struct {
 	bun.BaseModel `bun:"table:businesses"`
 	shared.IntegerID
 
-	StripeAccount *BusinessStripeAccount `json:"stripeAccount" bun:"rel:has-one,join:id=business_id"`
-	Legal         *BusinessLegalSection  `json:"businessLegalSection" bun:"rel:has-one,join:business_legal_section_id=id"`
+	StripeAccount *BusinessStripeAccount `json:"stripe_account" bun:"rel:has-one,join:id=business_id"`
+	Legal         *BusinessLegalSection  `json:"business_legal_section" bun:"rel:has-one,join:business_legal_section_id=id"`
 
-	BusinessLegalSectionID *int                `json:"businessLegalSectionId" minimum:"1" required:"false"`
-	BusinessColour         string              `json:"businessColour"`
-	DisplayName            string              `json:"displayName" minLength:"1"`
-	FoundingDate           time.Time           `json:"foundingDate" format:"date-time"`
+	BusinessLegalSectionID *int                `json:"business_legal_section_id" minimum:"1" required:"false"`
+	BusinessColour         string              `json:"business_colour"`
+	DisplayName            string              `json:"display_name" minLength:"1"`
+	FoundingDate           time.Time           `json:"founding_date" format:"date-time"`
 	Status                 BusinessStatus      `json:"status" hidden:"true" required:"false"`
-	EmployeeCount          EmployeeCountRange  `json:"employeeCount" enum:"1,2-10,11-50,51-200,201-500,501-1000,1000+" required:"false"`
+	EmployeeCount          EmployeeCountRange  `json:"employee_count" enum:"1,2-10,11-50,51-200,201-500,501-1000,1000+" required:"false"`
 	Industries             []industry.Industry `json:"industries" bun:"m2m:business_industries,join:Business=Industry"`
 	shared.Timestamps
 }
 
 type BusinessParams struct {
-	BusinessColour *string            `json:"businessColour" minLength:"7" maxLength:"7" regex:"^#[0-9A-F]{6}$" required:"false" example:"#E9743E"`
-	DisplayName    string             `json:"displayName" minLength:"1" example:"Acme Inc."`
-	FoundingDate   time.Time          `json:"foundingDate" format:"date-time"`
+	BusinessColour *string            `json:"business_colour" minLength:"7" maxLength:"7" regex:"^#[0-9A-F]{6}$" required:"false" example:"#E9743E"`
+	DisplayName    string             `json:"display_name" minLength:"1" example:"Acme Inc."`
+	FoundingDate   time.Time          `json:"founding_date" format:"date-time"`
 	Status         BusinessStatus     `json:"status" hidden:"true" required:"false"`
-	EmployeeCount  EmployeeCountRange `json:"employeeCount" enum:"1,2-10,11-50,51-200,201-500,501-1000,1000+"`
+	EmployeeCount  EmployeeCountRange `json:"employee_count" enum:"1,2-10,11-50,51-200,201-500,501-1000,1000+"`
 }
 
 type CreateBusinessParams struct {
 	Business       BusinessParams                    `json:"business"`
-	StripeAccount  CreateBusinessStripeAccountParams `json:"stripeAccount" required:"false" hidden:"true"`
-	IndustryIDs    []int                             `json:"industryIds" required:"false" minItems:"1" type:"array" uniqueItems:"true" example:"[1]"`
+	StripeAccount  CreateBusinessStripeAccountParams `json:"stripe_account" required:"false" hidden:"true"`
+	IndustryIDs    []int                             `json:"industry_ids" required:"false" minItems:"1" type:"array" uniqueItems:"true" example:"[1]"`
 }
 
 type UpdateBusinessParams struct {
-	DisplayName    *string             `json:"displayName" minLength:"1" required:"false"`
+	DisplayName    *string             `json:"display_name" minLength:"1" required:"false"`
 	Status         *BusinessStatus     `json:"status" hidden:"true" required:"false"`
-	EmployeeCount  *EmployeeCountRange `json:"employeeCount" enum:"1,2-10,11-50,51-200,201-500,501-1000,1000+" required:"false"`
-	BusinessColour *string             `json:"businessColour" minLength:"6" maxLength:"6" regex:"^#[0-9A-F]{6}$" required:"false"`
+	EmployeeCount  *EmployeeCountRange `json:"employee_count" enum:"1,2-10,11-50,51-200,201-500,501-1000,1000+" required:"false"`
+	BusinessColour *string             `json:"business_colour" minLength:"6" maxLength:"6" regex:"^#[0-9A-F]{6}$" required:"false"`
 }

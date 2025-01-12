@@ -10,9 +10,9 @@ import (
 type RoundLike struct {
 	bun.BaseModel `bun:"table:round_likes"`
 
-	RoundID   int `json:"roundId" minimum:"1"`
-	AccountID int `json:"accountId" minimum:"1"`
+	RoundID   int `json:"round_id" minimum:"1"`
+	AccountID int `json:"account_id" minimum:"1"`
 
 	// CreatedAt is the timestamp of the creation.
-	CreatedAt time.Time `json:"createdAt" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" format:"date-time"`
 }

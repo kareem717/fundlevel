@@ -1,7 +1,7 @@
 package business
 
 type RoundCreateRequirements struct {
-	HasActiveStatus bool `json:"hasActiveStatus"`
-	LegalSection    bool `json:"legalSection"`
-	StripeAccount   bool `json:"stripeAccount"`
+	HasActiveStatus bool `json:"has_active_status"`
+	LegalSection    bool `json:"legal_section"`
+	StripeAccount   bool `json:"stripe_account"`
 }

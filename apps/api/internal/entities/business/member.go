@@ -40,17 +40,17 @@ type BusinessMemberRole struct {
 
 type BusinessMemberRolePermissionAssignment struct {
 	bun.BaseModel `bun:"business_member_role_permission_assignments"`
-	RoleID        int                 `json:"roleId" minimum:"1" bun:",pk"`
+	RoleID        int                 `json:"role_id" minimum:"1" bun:",pk"`
 	Role          *BusinessMemberRole `json:"role" bun:"rel:belongs-to,join:role_id=id"`
-	PermissionID  int                 `json:"permissionId" minimum:"1" bun:",pk"`
+	PermissionID  int                 `json:"permission_id" minimum:"1" bun:",pk"`
 	Permission    *RolePermission     `json:"permission" bun:"rel:belongs-to,join:permission_id=id"`
 }
 
 type BusinessMember struct {
 	bun.BaseModel `json:"-" bun:"business_members"`
-	BusinessId    int `json:"businessId" bun:",pk"`
-	AccountId     int `json:"accountId" bun:",pk"`
-	RoleId        int `json:"roleId"`
+	BusinessId    int `json:"business_id" bun:",pk"`
+	AccountId     int `json:"account_id" bun:",pk"`
+	RoleId        int `json:"role_id"`
 
 	// Define the belongs-to relationships
 	Role    *BusinessMemberRole  `json:"role" bun:"rel:belongs-to,join:role_id=id"`
@@ -72,7 +72,7 @@ type BusinessMemberWithRoleNameAndAccount struct {
 }
 
 type CreateBusinessMemberParams struct {
-	BusinessId int `json:"businessId" minimum:"1"`
-	AccountId  int `json:"accountId" minimum:"1"`
-	RoleId     int `json:"roleId" minimum:"1"`
+	BusinessId int `json:"business_id" minimum:"1"`
+	AccountId  int `json:"account_id" minimum:"1"`
+	RoleId     int `json:"role_id" minimum:"1"`
 }

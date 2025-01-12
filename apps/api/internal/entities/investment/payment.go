@@ -11,17 +11,17 @@ import (
 type InvestmentPayment struct {
 	bun.BaseModel                   `bun:"table:investment_payments"`
 	ID                              int                        `bun:",pk,autoincrement" json:"id"`
-	InvestmentID                    int                        `json:"investmentId"`
+	InvestmentID                    int                        `json:"investment_id"`
 	Status                          stripe.PaymentIntentStatus `json:"status" enum:"cancelled,processing,requires_action,requires_capture,requires_confirmation,requires_payment_method,succeeded"`
-	StripePaymentIntentID           string                     `json:"stripePaymentIntentId"`
-	StripePaymentIntentClientSecret string                     `json:"stripePaymentIntentClientSecret"`
+	StripePaymentIntentID           string                     `json:"stripe_payment_intent_id"`
+	StripePaymentIntentClientSecret string                     `json:"stripe_payment_intent_client_secret"`
 	shared.Timestamps
 }
 
 type CreateInvestmentPaymentParams struct {
-	InvestmentID                    int                        `json:"investmentId"`
-	StripePaymentIntentID           string                     `json:"stripePaymentIntentId"`
-	StripePaymentIntentClientSecret string                     `json:"stripePaymentIntentClientSecret"`
+	InvestmentID                    int                        `json:"investment_id"`
+	StripePaymentIntentID           string                     `json:"stripe_payment_intent_id"`
+	StripePaymentIntentClientSecret string                     `json:"stripe_payment_intent_client_secret"`
 	Status                          stripe.PaymentIntentStatus `json:"status" enum:"cancelled,processing,requires_action,requires_capture,requires_confirmation,requires_payment_method,succeeded"`
 }
 
