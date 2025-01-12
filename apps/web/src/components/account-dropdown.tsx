@@ -26,7 +26,7 @@ export const AccountDropdown: FC<AccountDropdownProps> = ({
   className,
   ...props
 }) => {
-  const intials = account.firstName.charAt(0) + account.lastName.charAt(0);
+  const intials = account.first_name.charAt(0) + account.last_name.charAt(0);
 
   return (
     <DropdownMenu>

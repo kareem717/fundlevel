@@ -47,11 +47,11 @@ export const StripeDashboardRedirector: FC<StripeDashboardRedirectorProps> = ({ 
 
   useEffect(() => {
     getStripeAccount(selectedBusiness.id);
-  }, [selectedBusiness.id]);
+  }, [selectedBusiness.id, getStripeAccount]);
 
   return (
     <div className={className} {...props}>
-      {stripeAccount?.stripeDisabledReason == null ?
+      {stripeAccount?.stripe_disabled_reason == null ?
         (
           <Button
             onClick={() => execute(selectedBusiness.id)}

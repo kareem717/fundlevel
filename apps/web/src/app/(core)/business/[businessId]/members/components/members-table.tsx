@@ -47,7 +47,7 @@ export const columns: ColumnDef<BusinessMemberWithRoleNameAndAccount>[] = [
     ),
     cell: ({ row }) => {
       const { account } = row.original
-      return <div className="text-left font-medium">{account.firstName} {account.lastName}</div>
+      return <div className="text-left font-medium">{account.first_name} {account.last_name}</div>
     },
   },
   {
@@ -75,7 +75,7 @@ export const columns: ColumnDef<BusinessMemberWithRoleNameAndAccount>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(investor.account.firstName + " " + investor.account.lastName)}
+              onClick={() => navigator.clipboard.writeText(investor.account.first_name + " " + investor.account.last_name)}
             >
               Copy account name
             </DropdownMenuItem>

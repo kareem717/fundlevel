@@ -12,23 +12,18 @@ import {
   FormMessage,
 } from "@repo/ui/components/form"
 import { Input } from "@repo/ui/components/input"
-import { Icons } from "@/components/icons";
 import { Button } from "@repo/ui/components/button";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { createRound } from "@/actions/rounds";
-import { Popover, PopoverTrigger, PopoverContent } from "@repo/ui/components/popover";
-import { format } from "date-fns";
-import { Calendar } from "@repo/ui/components/calendar";
+import { Textarea } from "@repo/ui/components/textarea";
 import { redirects } from "@/lib/config/redirects";
 import { useBusiness } from "@/components/providers/business-provider";
 import { zCreateRoundParams } from "@repo/sdk/zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
 
-export interface CreateRoundFormProps extends ComponentPropsWithoutRef<"form"> { }
-
-export const CreateRoundForm = ({ className, ...props }: CreateRoundFormProps) => {
+export function CreateRoundForm({ className, ...props }: ComponentPropsWithoutRef<"form">) {
   const router = useRouter()
   const { selectedBusiness } = useBusiness()
 
@@ -50,14 +45,11 @@ export const CreateRoundForm = ({ className, ...props }: CreateRoundFormProps) =
       },
       formProps: {
         defaultValues: {
-          businessId: selectedBusiness.id,
-          beginsAt: format(new Date(Date.now() + 1000 * 60 * 60 * 24), "yyyy-MM-dd"),
-          endsAt: format(new Date(Date.now() + 1000 * 60 * 60 * 24 * 30), "yyyy-MM-dd"),
-          percentageSelling: 0,
-          valuationAmountUSDCents: 0,
-          // causes uncontrolled component warning
-          description: undefined,
-          investorCount: 1,
+          business_id: selectedBusiness.id,
+          description: "",
+          price_per_share_usd_cents: undefined,
+          total_business_shares: undefined,
+          total_shares_for_sale: undefined,
         }
       },
     });
@@ -67,141 +59,55 @@ export const CreateRoundForm = ({ className, ...props }: CreateRoundFormProps) =
       <form onSubmit={handleSubmitWithAction} className={cn("space-y-8 w-full max-w-md", className)} {...props}>
         <FormField
           control={form.control}
-          name="beginsAt"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>Start Date</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant={"outline"}
-                      className={cn(
-                        "w-[240px] pl-3 text-left font-normal",
-                        !field.value && "text-muted-foreground"
-                      )}
-                    >
-                      {field.value ? (
-                        format(field.value, "PPP")
-                      ) : (
-                        <span>Pick a date</span>
-                      )}
-                      <Icons.calendar className="ml-auto h-4 w-4 opacity-50" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={new Date(field.value)}
-                    onSelect={field.onChange}
-                    disabled={(date) => date < new Date()}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
-              <FormDescription>
-                When should this funding round start?
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="endsAt"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>End Date</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant={"outline"}
-                      className={cn(
-                        "w-[240px] pl-3 text-left font-normal",
-                        !field.value && "text-muted-foreground"
-                      )}
-                    >
-                      {field.value ? (
-                        format(field.value, "PPP")
-                      ) : (
-                        <span>Pick a date</span>
-                      )}
-                      <Icons.calendar className="ml-auto h-4 w-4 opacity-50" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={new Date(field.value)}
-                    onSelect={field.onChange}
-                    disabled={(date) => date < new Date(form.getValues().beginsAt)}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
-              <FormDescription>
-                When should this funding round end?
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="percentageSelling"
+          name="price_per_share_usd_cents"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Percentage Offered</FormLabel>
+              <FormLabel>Price per Share (USD)</FormLabel>
               <FormControl>
-                <Input type="number" min={0} max={100} {...field} />
+                <Input type="number" min={0} step="0.01" {...field} onChange={(e) => {
+                  const value = Number(parseFloat(e.target.value).toFixed(2));
+                  field.onChange(value * 100);
+                }} />
               </FormControl>
               <FormDescription>
-                What percentage of equity are you offering?
+                What is the price per share in USD?
               </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
-
         <FormField
           control={form.control}
-          name="valuationAmountUSDCents"
+          name="total_business_shares"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Valuation (USD)</FormLabel>
+              <FormLabel>Total Business Shares</FormLabel>
               <FormControl>
-                <Input type="number" min={0} {...field} onChange={(e) => field.onChange(Number(e.target.value) * 100)} />
+                <Input type="number" min={0} step="1" {...field} />
               </FormControl>
               <FormDescription>
-                What is the USD valuation of the company?
+                How many shares does the entire company have?
               </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
-
         <FormField
           control={form.control}
-          name="investorCount"
+          name="total_shares_for_sale"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Maximum Investors</FormLabel>
+              <FormLabel>Total Shares for Sale</FormLabel>
               <FormControl>
-                <Input type="number" min={1} {...field} />
+                <Input type="number" min={1} step="1" {...field} />
               </FormControl>
               <FormDescription>
-                How many investors can participate?
+                How many shares are you selling?
               </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
-
         <FormField
           control={form.control}
           name="description"
@@ -209,7 +115,7 @@ export const CreateRoundForm = ({ className, ...props }: CreateRoundFormProps) =
             <FormItem>
               <FormLabel>Description</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Textarea {...field} />
               </FormControl>
               <FormDescription>
                 Describe this funding round
@@ -218,8 +124,7 @@ export const CreateRoundForm = ({ className, ...props }: CreateRoundFormProps) =
             </FormItem>
           )}
         />
-
-        <Button type="submit">Create Funding Round</Button>
+        <Button>Create Funding Round</Button>
       </form>
     </Form>
   )

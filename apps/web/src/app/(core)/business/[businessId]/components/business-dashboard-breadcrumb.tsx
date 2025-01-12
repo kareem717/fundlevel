@@ -39,14 +39,14 @@ export function BusinessDashboardBreadcrumb() {
         <BreadcrumbItem>
           <DropdownMenu>
             <DropdownMenuTrigger className="flex items-center gap-1">
-              {selectedBusiness.displayName}
+              {selectedBusiness.display_name}
               <ChevronDownIcon className="size-4" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start">
               {businesses.map((business) => (
                 <DropdownMenuItem key={business.id} asChild>
                   <Link href={generatePath(business.id)}>
-                    {business.displayName}
+                    {business.display_name}
                   </Link>
                 </DropdownMenuItem>
               ))}

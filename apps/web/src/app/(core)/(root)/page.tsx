@@ -16,7 +16,7 @@ export default async function RootDashboardPage() {
           key={business.id}
           href={redirects.app.businessDashboard(business.id).root} className="bg-secondary rounded-md aspect-square w-32 flex items-center justify-center"
         >
-          {business.displayName}
+          {business.display_name}
         </Link>
       )) : <div className="flex-1">No businesses found</div>}
     </div>

@@ -60,8 +60,8 @@ export function CreateAccountForm({
       },
       formProps: {
         defaultValues: {
-          firstName: defaultFirstName,
-          lastName: defaultLastName,
+          first_name: defaultFirstName,
+          last_name: defaultLastName,
         },
       },
     });
@@ -81,7 +81,7 @@ export function CreateAccountForm({
               <div className="grid md:grid-cols-2 gap-6">
                 <FormField
                   control={form.control}
-                  name="firstName"
+                  name="first_name"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>First Name</FormLabel>
@@ -98,7 +98,7 @@ export function CreateAccountForm({
                 />
                 <FormField
                   control={form.control}
-                  name="lastName"
+                  name="last_name"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Last Name</FormLabel>

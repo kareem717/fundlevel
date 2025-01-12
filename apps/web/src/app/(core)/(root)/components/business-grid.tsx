@@ -22,7 +22,7 @@ export function BusinessGrid() {
             prefetch={true}
             className="p-4 bg-foreground/10 rounded-md"
           >
-            {business.displayName}
+            {business.display_name}
           </Link>
         )
       })}

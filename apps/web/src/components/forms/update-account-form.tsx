@@ -24,7 +24,7 @@ export interface UpdateAccountFormProps extends ComponentPropsWithoutRef<"form">
   onSuccess?: () => void;
 }
 
-export const UpdateAccountForm: FC<UpdateAccountFormProps> = ({ className, onSuccess, ...props }) => {
+export function UpdateAccountForm({ className, onSuccess, ...props }: UpdateAccountFormProps) {
   const { account } = useAuth()
 
   const { form, action: { isExecuting }, handleSubmitWithAction } =
@@ -43,8 +43,8 @@ export const UpdateAccountForm: FC<UpdateAccountFormProps> = ({ className, onSuc
       },
       formProps: {
         defaultValues: {
-          firstName: account?.firstName || "",
-          lastName: account?.lastName || "",
+          first_name: account?.first_name || "",
+          last_name: account?.last_name || "",
         },
       },
     });
@@ -54,7 +54,7 @@ export const UpdateAccountForm: FC<UpdateAccountFormProps> = ({ className, onSuc
       <form onSubmit={handleSubmitWithAction} className={cn("space-y-4", className)} {...props}>
         <FormField
           control={form.control}
-          name="firstName"
+          name="first_name"
           render={({ field }) => (
             <FormItem>
               <FormLabel>First Name</FormLabel>
@@ -67,7 +67,7 @@ export const UpdateAccountForm: FC<UpdateAccountFormProps> = ({ className, onSuc
         />
         <FormField
           control={form.control}
-          name="lastName"
+          name="last_name"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Last Name</FormLabel>

@@ -22,15 +22,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
 import { zUpsertBusinessLegalSectionParams } from "@repo/sdk/zod";
 
-export interface UpdateLegalSectionFormProps extends ComponentPropsWithoutRef<"form"> { }
-
-export const UpdateLegalSectionForm = ({ className, ...props }: UpdateLegalSectionFormProps) => {
+export function UpdateLegalSectionForm({ className, ...props }: ComponentPropsWithoutRef<"form">) {
   const { selectedBusiness } = useBusiness()
 
   const { executeAsync: getBusinessByIdAsync, isExecuting: getBusinessByIdIsExecuting } = useAction(getBusinessByIdAction, {
     onSuccess: ({ data }) => {
       if (data?.business) {
-        form.setValue("businessNumber", data?.business?.businessLegalSection?.businessNumber || "")
+        form.setValue("business_number", data?.business?.business_legal_section?.business_number || "")
       } else {
         toast.error("Something went wrong", {
           description: "An unknown error occurred",
@@ -60,7 +58,7 @@ export const UpdateLegalSectionForm = ({ className, ...props }: UpdateLegalSecti
       },
       formProps: {
         defaultValues: {
-          businessNumber: ""
+          business_number: ""
         }
       },
     });
@@ -80,7 +78,7 @@ export const UpdateLegalSectionForm = ({ className, ...props }: UpdateLegalSecti
           <form onSubmit={handleSubmitWithAction} className={cn("space-y-8 w-full max-w-md", className)} {...props}>
             <FormField
               control={form.control}
-              name="businessNumber"
+              name="business_number"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Business Number</FormLabel>
@@ -94,7 +92,6 @@ export const UpdateLegalSectionForm = ({ className, ...props }: UpdateLegalSecti
                 </FormItem>
               )}
             />
-
             <Button type="submit" disabled={isExecuting}>
               {isExecuting && <Icons.spinner className="w-4 h-4 animate-spin" />}
               Update Business

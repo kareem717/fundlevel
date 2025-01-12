@@ -35,8 +35,8 @@ export function SidebarUser({ ...props }: ComponentPropsWithoutRef<typeof Sideba
     throw new Error("SidebarUser must be used within an AuthProvider with a user and account")
   }
 
-  const firstName = account.firstName
-  const lastName = account.lastName
+  const firstName = account.first_name
+  const lastName = account.last_name
   const avatar = user.user_metadata.avatar
   const email = user.email
 

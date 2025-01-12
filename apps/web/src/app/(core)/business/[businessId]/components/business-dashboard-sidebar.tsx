@@ -40,12 +40,12 @@ export function BusinessDashboardSidebar({ ...props }: ComponentPropsWithoutRef<
                 >
                   <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                     <span className="text-lg uppercase">
-                      {selectedBusiness.displayName[0]}
+                      {selectedBusiness.display_name[0]}
                     </span>
                   </div>
                   <div className="grid flex-1 text-left text-sm leading-tight">
                     <span className="truncate font-semibold">
-                      {selectedBusiness.displayName}
+                      {selectedBusiness.display_name}
                     </span>
                     {/* <span className="truncate text-xs">{business.plan}</span> */}
                   </div>
@@ -68,9 +68,9 @@ export function BusinessDashboardSidebar({ ...props }: ComponentPropsWithoutRef<
                     className="gap-2 p-2"
                   >
                     <div className="flex size-6 items-center justify-center rounded-sm border">
-                      {business.displayName[0]}
+                      {business.display_name[0]}
                     </div>
-                    {business.displayName}
+                    {business.display_name}
                     {/* <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut> */}
                   </DropdownMenuItem>
                 ))}

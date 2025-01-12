@@ -29,24 +29,14 @@ import { cache } from "react";
  */
 export const createBusinessAction = actionClientWithAccount
 	.schema(zCreateBusinessParams)
-	.action(
-		async ({
-			parsedInput: { business, industryIds },
-			ctx: { axiosClient },
-		}) => {
-			const { data } = await createBusiness({
-				client: axiosClient,
-				body: {
-					business: {
-						...business,
-					},
-					industryIds,
-				},
-			});
+	.action(async ({ parsedInput, ctx: { axiosClient } }) => {
+		const { data } = await createBusiness({
+			client: axiosClient,
+			body: parsedInput,
+		});
 
-			return data;
-		}
-	);
+		return data;
+	});
 
 /**
  * Get all businesses for the current account

@@ -60,11 +60,11 @@ export function CreateBusinessForm({ className, ...props }: ComponentPropsWithou
       formProps: {
         defaultValues: {
           business: {
-            displayName: "",
-            foundingDate: new Date().toISOString(),
-            employeeCount: "1",
+            display_name: "",
+            founding_date: new Date().toISOString(),
+            employee_count: "1",
           },
-          industryIds: [],
+          industry_ids: [],
         }
       },
     });
@@ -74,7 +74,7 @@ export function CreateBusinessForm({ className, ...props }: ComponentPropsWithou
       <form onSubmit={handleSubmitWithAction} className={cn("space-y-8 w-full max-w-md", className)} {...props}>
         <FormField
           control={form.control}
-          name="business.displayName"
+          name="business.display_name"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Display Name</FormLabel>
@@ -91,7 +91,7 @@ export function CreateBusinessForm({ className, ...props }: ComponentPropsWithou
 
         <FormField
           control={form.control}
-          name="business.employeeCount"
+          name="business.employee_count"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Employee Count</FormLabel>
@@ -117,7 +117,7 @@ export function CreateBusinessForm({ className, ...props }: ComponentPropsWithou
 
         <FormField
           control={form.control}
-          name="industryIds"
+          name="industry_ids"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Industries</FormLabel>
@@ -134,7 +134,7 @@ export function CreateBusinessForm({ className, ...props }: ComponentPropsWithou
 
         <FormField
           control={form.control}
-          name="business.foundingDate"
+          name="business.founding_date"
           render={({ field }) => (
             <FormItem className="flex flex-col">
               <FormLabel>Founding Date</FormLabel>
