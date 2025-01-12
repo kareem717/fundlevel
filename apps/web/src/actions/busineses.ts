@@ -2,7 +2,7 @@
 
 import { actionClient, actionClientWithAccount } from "@/lib/safe-action";
 import {
-	createBusiness as createBusinessApi,
+	createBusiness,
 	getBusinessById as getBusinessByIdApi,
 	getAccountBusinesses as getAccountBusinessesApi,
 	getBusinessRoundsByPage as getBusinessRoundsByPageApi,
@@ -27,20 +27,15 @@ import { cache } from "react";
 /**
  * Create a venture
  */
-export const createBusiness = actionClientWithAccount
+export const createBusinessAction = actionClientWithAccount
 	.schema(zCreateBusinessParams)
 	.action(
 		async ({
 			parsedInput: { business, industryIds },
-			ctx: { axiosClient, account },
+			ctx: { axiosClient },
 		}) => {
-			if (!account) {
-				throw new Error("User not found");
-			}
-
-			await createBusinessApi({
+			const { data } = await createBusiness({
 				client: axiosClient,
-				throwOnError: true,
 				body: {
 					business: {
 						...business,
@@ -48,6 +43,8 @@ export const createBusiness = actionClientWithAccount
 					industryIds,
 				},
 			});
+
+			return data;
 		}
 	);
 

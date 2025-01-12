@@ -13,14 +13,12 @@ import { cache } from "react";
 export const createAccountAction = actionClientWithUser
 	.schema(zCreateAccountParams)
 	.action(async ({ ctx: { axiosClient }, parsedInput }) => {
-		const { data } = await createAccount({
+		await createAccount({
 			client: axiosClient,
 			body: {
 				...parsedInput,
 			},
 		});
-
-		return data;
 	});
 
 export const getAccountAction = cache(

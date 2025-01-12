@@ -16,7 +16,6 @@ import { Icons } from "@/components/icons";
 import { Button } from "@repo/ui/components/button";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { createBusiness } from "@/actions/busineses";
 import { Popover, PopoverTrigger, PopoverContent } from "@repo/ui/components/popover";
 import { format } from "date-fns";
 import { Calendar } from "@repo/ui/components/calendar";
@@ -32,21 +31,25 @@ import { redirects } from "@/lib/config/redirects";
 import { zCreateBusinessParams } from "@repo/sdk/zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
+import { createBusinessAction } from "@/actions/busineses";
 
-export interface CreateBusinessFormProps extends ComponentPropsWithoutRef<"form"> { }
-
-export const CreateBusinessForm = ({ className, ...props }: CreateBusinessFormProps) => {
+export function CreateBusinessForm({ className, ...props }: ComponentPropsWithoutRef<"form">) {
   const router = useRouter()
 
   const { form, action: { isExecuting }, handleSubmitWithAction } =
-    useHookFormAction(createBusiness, zodResolver(zCreateBusinessParams), {
+    useHookFormAction(createBusinessAction, zodResolver(zCreateBusinessParams), {
       actionProps: {
-        onSuccess: () => {
+        onSuccess: ({ data }) => {
           form.reset()
           toast.success("Done!", {
             description: "Your business has been created.",
           })
-          router.push(redirects.app.root)
+
+          if (data) {
+            router.push(redirects.app.businessDashboard(data.id).root)
+          } else {
+            router.push(redirects.app.root)
+          }
         },
         onError: ({ error }) => {
           toast.error("Something went wrong", {

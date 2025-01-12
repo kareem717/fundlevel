@@ -43,10 +43,8 @@ export function CreateAccountForm({
     useHookFormAction(createAccountAction, zodResolver(zCreateAccountParams), {
       actionProps: {
         onExecute: () => setIsExecuting(true),
-        onSuccess: ({ data }) => {
-          const message = `Welcome${data?.firstName ? ` ${data.firstName}` : ""}!`
-
-          toast.success(message, {
+        onSuccess: () => {
+          toast.success("Done!", {
             description: "Your account has been created successfully. We are redirecting you to the app.",
           })
 
