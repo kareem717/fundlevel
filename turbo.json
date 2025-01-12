@@ -41,10 +41,16 @@
         "^install"
       ]
     },
-    "db:sync": {
+    "db:seed:sync": {
       "cache": false,
       "dependsOn": [
-        "^db:sync"
+        "^db:seed:sync"
+      ]
+    },
+    "db:seed:init": {
+      "cache": false,
+      "dependsOn": [
+        "^db:seed:init"
       ]
     },
     "db:seed": {
