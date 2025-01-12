@@ -17,10 +17,11 @@ export const zAccount = z.object({
     .max(30)
     .regex(/^[a-zA-Z]+$/),
   updatedAt: z.union([z.string().datetime(), z.null()]),
-  userId: z.number().gte(1),
+  userId: z.string(),
 });
 
 export const zBusiness = z.object({
+  $schema: z.string().url().readonly().optional(),
   businessColour: z.string(),
   businessLegalSection: z.object({
     businessNumber: z.string(),
@@ -719,7 +720,7 @@ export const zGetRoundFavouriteCountResponse = zGetLikeCountOutputBody;
 
 export const zGetRoundImpressionCountResponse = zImpressionCountOutputBody;
 
-export const zCreateBusinessResponse = zMessageResponse;
+export const zCreateBusinessResponse = zBusiness;
 
 export const zGetBusinessStripeAccountResponse = zGetStripeAccountOutputBody;
 

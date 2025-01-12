@@ -7,10 +7,14 @@ export type Account = {
   id: number;
   lastName: string;
   updatedAt: string | null;
-  userId: number;
+  userId: string;
 };
 
 export type Business = {
+  /**
+   * A URL to the JSON Schema for this object.
+   */
+  readonly $schema?: string;
   businessColour: string;
   businessLegalSection: BusinessLegalSection;
   businessLegalSectionId?: number | null;
@@ -1092,7 +1096,7 @@ export type CreateBusinessResponses = {
   /**
    * OK
    */
-  200: MessageResponse;
+  200: Business;
 };
 
 export type CreateBusinessResponse =
