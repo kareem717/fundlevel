@@ -210,33 +210,6 @@
     "description": "This column contains the display names of businesses registered on the platform. The display names are intended to serve as user-friendly identifiers for each business, making it easier for users to recognize and interact with them within the platform's various functionalities, such as tracking, communication, and investment operations."
   },
   {
-    "input": "public businesses business_colour",
-    "examples": [
-      "#FF5733",
-      "blue",
-      "#4CAF50",
-      "yellow",
-      "orange",
-      "red",
-      "#0000FF",
-      "purple",
-      "#FFA500",
-      "#FFD700",
-      "cyan",
-      "magenta",
-      "lightgreen",
-      "#8A2BE2",
-      "brown",
-      "black",
-      "white",
-      "#FF1493",
-      "#20B2AA",
-      "#2E8B57",
-      "#F0E68C"
-    ],
-    "description": "This column contains information regarding the color representation associated with each business. The 'business_colour' column likely stores color values (such as hex codes or color names) that visually distinguish businesses within the platform, aiding in user interface customization or branding identity. This feature may enhance user experience by providing an immediate visual reference for different businesses in the context of their operations and analytics."
-  },
-  {
     "input": "public industries label",
     "examples": [
       "Technology",

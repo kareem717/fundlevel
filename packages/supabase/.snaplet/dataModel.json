@@ -1678,20 +1678,6 @@
           "maxLength": null
         },
         {
-          "id": "public.businesses.business_colour",
-          "name": "business_colour",
-          "columnName": "business_colour",
-          "type": "varchar",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": 7
-        },
-        {
           "id": "public.businesses.created_at",
           "name": "created_at",
           "columnName": "created_at",
