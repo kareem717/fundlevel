@@ -2,8 +2,6 @@ package business
 
 import (
 	"context"
-	"fmt"
-	"math/rand/v2"
 
 	"fundlevel/internal/entities/business"
 	"fundlevel/internal/storage"
@@ -70,11 +68,6 @@ func (s *BusinessService) Create(ctx context.Context, params business.CreateBusi
 			params.StripeAccount.StripeDisabledReason = &stripeConnectedAccount.Requirements.DisabledReason
 		}
 
-		if params.Business.BusinessColour == nil {
-			// Generate a random hex colour
-			colour := fmt.Sprintf("#%06X", rand.Int64N(0xFFFFFF))
-			params.Business.BusinessColour = &colour
-		}
 		// TODO: We need to delete the stripe connected account if the business creation fails
 		insertedBusiness, err = tx.Business().Create(ctx, params, initialOwnerId)
 		if err != nil {

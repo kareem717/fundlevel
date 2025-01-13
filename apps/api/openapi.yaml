@@ -49,8 +49,6 @@ components:
           format: uri
           readOnly: true
           type: string
-        business_colour:
-          type: string
         business_legal_section:
           $ref: "#/components/schemas/BusinessLegalSection"
         business_legal_section_id:
@@ -99,7 +97,6 @@ components:
       required:
         - stripe_account
         - business_legal_section
-        - business_colour
         - display_name
         - founding_date
         - industries
@@ -192,12 +189,6 @@ components:
     BusinessParams:
       additionalProperties: false
       properties:
-        business_colour:
-          example: "#E9743E"
-          maxLength: 7
-          minLength: 7
-          nullable: true
-          type: string
         display_name:
           example: Acme Inc.
           minLength: 1
