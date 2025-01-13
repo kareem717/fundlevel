@@ -169,9 +169,9 @@ export const zCreateRoundParams = z.object({
   $schema: z.string().url().readonly().optional(),
   business_id: z.number().gte(1),
   description: z.string().min(10).max(3000),
-  price_per_share_usd_cents: z.number().gte(23),
-  total_business_shares: z.number().gte(100000),
-  total_shares_for_sale: z.number().gte(1000),
+  price_per_share_usd_cents: z.number().gte(1),
+  total_business_shares: z.number().gte(1),
+  total_shares_for_sale: z.number().gte(1),
 });
 
 export const zErrorDetail = z.object({

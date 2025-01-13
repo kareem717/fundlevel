@@ -347,16 +347,19 @@ components:
           minLength: 10
           type: string
         price_per_share_usd_cents:
+          example: 23
           format: int64
-          minimum: 23
+          minimum: 1
           type: integer
         total_business_shares:
+          example: 100000
           format: int64
-          minimum: 100000
+          minimum: 1
           type: integer
         total_shares_for_sale:
+          example: 1000
           format: int64
-          minimum: 1000
+          minimum: 1
           type: integer
       required:
         - business_id
