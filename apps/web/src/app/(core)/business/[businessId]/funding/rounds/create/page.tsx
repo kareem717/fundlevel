@@ -37,7 +37,7 @@ export default async function CreateRoundPage({ params }: { params: { businessId
           <CardTitle>Create Funding Round</CardTitle>
         </CardHeader>
         <CardContent>
-          <CreateRoundForm className="w-full max-w-md md:max-w-3xl" />
+          <CreateRoundForm className="w-full max-w-md" />
         </CardContent>
       </Card>
     </div>

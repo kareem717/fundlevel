@@ -31,7 +31,8 @@ import { Separator } from "@repo/ui/components/separator";
 export function CreateRoundForm({ className, ...props }: ComponentPropsWithoutRef<"form">) {
   const router = useRouter()
   const { selectedBusiness } = useBusiness()
-  const [valuation, setValuation] = useState<number>(0)
+  const [valuation, setValuation] = useState<number>(1000000)
+  const [forSale, setForSale] = useState<number>(10)
 
   const { form, action: { isExecuting, executeAsync } } =
     useHookFormAction(createRound, zodResolver(zCreateRoundParams), {
@@ -53,9 +54,9 @@ export function CreateRoundForm({ className, ...props }: ComponentPropsWithoutRe
         defaultValues: {
           business_id: selectedBusiness.id,
           description: "",
-          price_per_share_usd_cents: 0,
-          total_business_shares: 2,
-          total_shares_for_sale: 1,
+          price_per_share_usd_cents: 10,
+          total_business_shares: 100000,
+          total_shares_for_sale: 10000,
         }
       },
     });
@@ -69,6 +70,7 @@ export function CreateRoundForm({ className, ...props }: ComponentPropsWithoutRe
 
   const pricePerShare = form.watch('price_per_share_usd_cents')
   const totalShares = form.watch('total_business_shares')
+  const sharesForSale = form.watch('total_shares_for_sale')
 
   useEffect(() => {
     if (isNaN(pricePerShare) || isNaN(totalShares)) {
@@ -77,6 +79,14 @@ export function CreateRoundForm({ className, ...props }: ComponentPropsWithoutRe
       setValuation(pricePerShare * totalShares)
     }
   }, [pricePerShare, totalShares])
+
+  useEffect(() => {
+    if (isNaN(sharesForSale) || isNaN(totalShares)) {
+      setForSale(0)
+    } else {
+      setForSale(((sharesForSale / totalShares) * 100))
+    }
+  }, [sharesForSale, totalShares])
 
   return (
     <Form {...form}>
@@ -99,42 +109,66 @@ export function CreateRoundForm({ className, ...props }: ComponentPropsWithoutRe
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="total_business_shares"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Total Business Shares</FormLabel>
-              <FormControl>
-                <Input type="number" min={0} step="1" {...field} onChange={e => {
-                  field.onChange(e.target.valueAsNumber)
-                }} />
-              </FormControl>
-              <FormDescription>
-                How many shares does the entire company have?
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="total_shares_for_sale"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Total Shares for Sale</FormLabel>
-              <FormControl>
-                <Input type="number" min={1} step="1" {...field} onChange={e => {
-                  field.onChange(e.target.valueAsNumber)
-                }} />
-              </FormControl>
-              <FormDescription>
-                How many shares are you selling?
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-4">
+          <FormField
+            control={form.control}
+            name="total_business_shares"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Total Business Shares</FormLabel>
+                <FormControl>
+                  <Input type="number" min={0} step="1" {...field} onChange={e => {
+                    field.onChange(e.target.valueAsNumber)
+                  }} />
+                </FormControl>
+                <FormDescription>
+                  How many shares does the entire company have?
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="total_shares_for_sale"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Total Shares for Sale</FormLabel>
+                <FormControl>
+                  <Input type="number" min={1} step="1" {...field} onChange={e => {
+                    field.onChange(e.target.valueAsNumber)
+                  }} />
+                </FormControl>
+                <FormDescription>
+                  How many shares are you selling?
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <Separator />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-4">
+          <div className="flex flex-col gap-2">
+            <Label>Valuation</Label>
+            <p className="mt-2 text-2xl font-bold">
+              {formatCurrency(valuation, "USD", "en-US")}
+            </p>
+            <p className="mt-2 text-sm text-muted-foreground">
+              The valuation of your business is the total value of your business.
+            </p>
+          </div>
+          <div className="flex flex-col gap-2">
+            <Label>For Sale</Label>
+            <p className="mt-2 text-2xl font-bold">
+              {forSale === Number(forSale.toFixed(2)) ? forSale.toFixed(2) : `~ ${forSale.toFixed(2)}`}%
+            </p>
+            <p className="mt-2 text-sm text-muted-foreground">
+              The rounded percentage of your business that is for sale.
+            </p>
+          </div>
+        </div>
+        <Separator />
         <FormField
           control={form.control}
           name="description"
@@ -151,16 +185,6 @@ export function CreateRoundForm({ className, ...props }: ComponentPropsWithoutRe
             </FormItem>
           )}
         />
-        <Separator />
-        <div className="flex flex-col gap-2">
-          <Label>Valuation</Label>
-          <p className="mt-2 text-2xl font-bold">
-            {formatCurrency(valuation, "USD", "en-US")}
-          </p>
-          <p className="mt-2 text-sm text-muted-foreground">
-            The valuation of your business is the total value of your business. This is calculated by multiplying the price per share by the total number of shares.
-          </p>
-        </div>
         <Button type="submit" disabled={isExecuting} className="w-full">
           {isExecuting && <Loader2 className="w-4 h-4 animate-spin" />}
           Create Funding Round
