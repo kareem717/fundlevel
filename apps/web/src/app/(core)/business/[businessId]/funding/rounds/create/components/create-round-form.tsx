@@ -22,12 +22,14 @@ import { useBusiness } from "@/components/providers/business-provider";
 import { zCreateRoundParams } from "@repo/sdk/zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
+import { Loader2 } from "lucide-react";
+import { z } from "zod";
 
 export function CreateRoundForm({ className, ...props }: ComponentPropsWithoutRef<"form">) {
   const router = useRouter()
   const { selectedBusiness } = useBusiness()
 
-  const { form, action: { isExecuting }, handleSubmitWithAction } =
+  const { form, action: { isExecuting, executeAsync } } =
     useHookFormAction(createRound, zodResolver(zCreateRoundParams), {
       actionProps: {
         onSuccess: () => {
@@ -47,16 +49,23 @@ export function CreateRoundForm({ className, ...props }: ComponentPropsWithoutRe
         defaultValues: {
           business_id: selectedBusiness.id,
           description: "",
-          price_per_share_usd_cents: undefined,
-          total_business_shares: undefined,
-          total_shares_for_sale: undefined,
+          price_per_share_usd_cents: 100,
+          total_business_shares: 1000,
+          total_shares_for_sale: 100,
         }
       },
     });
 
+  const handleSubmit = async (values: z.infer<typeof zCreateRoundParams>) => {
+    await executeAsync({
+      ...values,
+      price_per_share_usd_cents: values.price_per_share_usd_cents * 100,
+    })
+  }
+
   return (
     <Form {...form}>
-      <form onSubmit={handleSubmitWithAction} className={cn("space-y-8 w-full max-w-md", className)} {...props}>
+      <form onSubmit={form.handleSubmit(handleSubmit)} className={cn("space-y-8 w-full max-w-md", className)} {...props}>
         <FormField
           control={form.control}
           name="price_per_share_usd_cents"
@@ -64,10 +73,7 @@ export function CreateRoundForm({ className, ...props }: ComponentPropsWithoutRe
             <FormItem>
               <FormLabel>Price per Share (USD)</FormLabel>
               <FormControl>
-                <Input type="number" min={0} step="0.01" {...field} onChange={(e) => {
-                  const value = Number(parseFloat(e.target.value).toFixed(2));
-                  field.onChange(value * 100);
-                }} />
+                <Input type="number" min={0} step="0.01" {...field} onChange={e => field.onChange(e.target.valueAsNumber)} />
               </FormControl>
               <FormDescription>
                 What is the price per share in USD?
@@ -83,7 +89,7 @@ export function CreateRoundForm({ className, ...props }: ComponentPropsWithoutRe
             <FormItem>
               <FormLabel>Total Business Shares</FormLabel>
               <FormControl>
-                <Input type="number" min={0} step="1" {...field} />
+                <Input type="number" min={0} step="1" {...field} onChange={e => field.onChange(e.target.valueAsNumber)} />
               </FormControl>
               <FormDescription>
                 How many shares does the entire company have?
@@ -99,7 +105,7 @@ export function CreateRoundForm({ className, ...props }: ComponentPropsWithoutRe
             <FormItem>
               <FormLabel>Total Shares for Sale</FormLabel>
               <FormControl>
-                <Input type="number" min={1} step="1" {...field} />
+                <Input type="number" min={1} step="1" {...field} onChange={e => field.onChange(e.target.valueAsNumber)} />
               </FormControl>
               <FormDescription>
                 How many shares are you selling?
@@ -124,7 +130,10 @@ export function CreateRoundForm({ className, ...props }: ComponentPropsWithoutRe
             </FormItem>
           )}
         />
-        <Button>Create Funding Round</Button>
+        <Button type="submit" disabled={isExecuting} className="w-full">
+          {isExecuting && <Loader2 className="w-4 h-4 animate-spin" />}
+          Create Funding Round
+        </Button>
       </form>
     </Form>
   )

@@ -1,39 +1,45 @@
-"use client";
-
 import { getBusinessCreateRoundrequirements } from "@/actions/busineses";
-import { useBusiness } from "@/components/providers/business-provider";
 import { CreateRoundForm } from "./components/create-round-form";
-import { useAction } from "next-safe-action/hooks";
-import { RoundCreateRequirements } from "@repo/sdk";
-import { useState, useEffect } from "react";
+import { Card, CardContent, CardTitle, CardHeader } from "@repo/ui/components/card";
+import { notFound } from "next/navigation";
 
-export default function CreateRoundPage() {
-  const [reqs, setReqs] = useState<RoundCreateRequirements | undefined>()
-  const { selectedBusiness } = useBusiness()
-  const { execute, isExecuting } = useAction(getBusinessCreateRoundrequirements, {
-    onSuccess: ({ data }) => {
-      console.log(data)
-      if (data?.requirements && Object.values(data.requirements).some(req => req === false)) {
-        setReqs(data.requirements)
-      }
-    },
-    onError: (error) => {
-      console.error(error)
-    }
-  })
+export default async function CreateRoundPage({ params }: { params: { businessId: string } }) {
+  const { businessId } = await params;
+  const parsedBusinessId = parseInt(businessId);
 
-  useEffect(() => {
-    execute(selectedBusiness.id)
-  }, [selectedBusiness.id])
+  // Tbh this is not needed, but just in case
+  if (isNaN(parsedBusinessId)) {
+    return notFound()
+  }
+
+  const reqs = await getBusinessCreateRoundrequirements(parsedBusinessId)
+  const reqsData = reqs?.data?.requirements || {}
+
+  const isReady = Object.values(reqsData).every(req => req === true)
+
+  if (!isReady) {
+    return (
+      <div className="flex flex-col gap-4 h-full justify-center items-center">
+        <p>You need to complete the following requirements before you can create a funding round:</p>
+        <ul>
+          {Object.entries(reqsData).map(([key, value]) => (
+            <li key={key}>{key}: {value ? "True" : "False"}</li>
+          ))}
+        </ul>
+      </div>
+    )
+  }
 
   return (
-    <div>
-      {isExecuting ?
-        <div>Loading...</div>
-        : reqs ?
-          <div>{JSON.stringify(reqs, null, 2)}</div>
-          : <CreateRoundForm />
-      }
+    <div className="flex flex-col gap-4 h-full justify-center items-center">
+      <Card className="self-center">
+        <CardHeader>
+          <CardTitle>Create Funding Round</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <CreateRoundForm className="w-full" />
+        </CardContent>
+      </Card>
     </div>
   )
 }

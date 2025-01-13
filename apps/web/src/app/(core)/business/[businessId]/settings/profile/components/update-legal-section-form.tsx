@@ -21,6 +21,7 @@ import { useBusiness } from "@/components/providers/business-provider";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
 import { zUpsertBusinessLegalSectionParams } from "@repo/sdk/zod";
+import { pathIdSchema } from "@/actions/validations";
 
 export function UpdateLegalSectionForm({ className, ...props }: ComponentPropsWithoutRef<"form">) {
   const { selectedBusiness } = useBusiness()
@@ -43,7 +44,9 @@ export function UpdateLegalSectionForm({ className, ...props }: ComponentPropsWi
   })
 
   const { form, action: { isExecuting }, handleSubmitWithAction } =
-    useHookFormAction(upsertBusinessLegalSection, zodResolver(zUpsertBusinessLegalSectionParams), {
+    useHookFormAction(upsertBusinessLegalSection, zodResolver(zUpsertBusinessLegalSectionParams.extend({
+      id: pathIdSchema,
+    })), {
       actionProps: {
         onSuccess: () => {
           toast.success("Done!", {
@@ -58,16 +61,15 @@ export function UpdateLegalSectionForm({ className, ...props }: ComponentPropsWi
       },
       formProps: {
         defaultValues: {
-          business_number: ""
+          business_number: "",
+          id: selectedBusiness.id,
         }
       },
     });
 
   useEffect(() => {
-    if (selectedBusiness?.id) {
-      getBusinessByIdAsync(selectedBusiness?.id)
-    }
-  }, [selectedBusiness?.id])
+    getBusinessByIdAsync(selectedBusiness.id)
+  }, [selectedBusiness.id, getBusinessByIdAsync])
 
   return (
     <Form {...form}>

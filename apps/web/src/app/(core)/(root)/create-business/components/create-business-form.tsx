@@ -144,7 +144,7 @@ export function CreateBusinessForm({ className, ...props }: ComponentPropsWithou
                     <Button
                       variant={"outline"}
                       className={cn(
-                        "w-[240px] pl-3 text-left font-normal",
+                        "pl-3 text-left font-normal",
                         !field.value && "text-muted-foreground"
                       )}
                     >
@@ -179,7 +179,7 @@ export function CreateBusinessForm({ className, ...props }: ComponentPropsWithou
           )}
         />
 
-        <Button type="submit" disabled={isExecuting}>
+        <Button type="submit" disabled={isExecuting} className="w-full">
           {isExecuting && <Icons.spinner className="w-4 h-4 animate-spin" />}
           Create Business
         </Button>

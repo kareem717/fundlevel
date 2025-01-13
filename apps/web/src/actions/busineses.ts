@@ -239,7 +239,6 @@ export const upsertBusinessLegalSection = actionClientWithAccount
 	.action(async ({ parsedInput: { id, ...params }, ctx: { axiosClient } }) => {
 		await upsertBusinessLegalSectionApi({
 			client: axiosClient,
-			throwOnError: true,
 			path: { id },
 			body: params,
 		});
