@@ -15,7 +15,6 @@ export type Business = {
    * A URL to the JSON Schema for this object.
    */
   readonly $schema?: string;
-  business_colour: string;
   business_legal_section: BusinessLegalSection;
   business_legal_section_id?: number | null;
   created_at: string;
@@ -62,7 +61,6 @@ export type BusinessMemberWithRoleNameAndAccount = {
 };
 
 export type BusinessParams = {
-  business_colour?: string | null;
   display_name: string;
   employee_count:
     | "1"

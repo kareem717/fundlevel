@@ -22,7 +22,6 @@ export const zAccount = z.object({
 
 export const zBusiness = z.object({
   $schema: z.string().url().readonly().optional(),
-  business_colour: z.string(),
   business_legal_section: z.object({
     business_number: z.string(),
     created_at: z.string().datetime(),
@@ -105,7 +104,6 @@ export const zBusinessMemberWithRoleNameAndAccount = z.object({
 });
 
 export const zBusinessParams = z.object({
-  business_colour: z.union([z.string().length(7), z.null()]).optional(),
   display_name: z.string().min(1),
   employee_count: z.enum([
     "1",
