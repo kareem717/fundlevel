@@ -39,9 +39,9 @@ type Investment struct {
 
 type CreateInvestmentParams struct {
 	RoundID                int              `json:"round_id"`
-	Status                 InvestmentStatus `json:"status" enum:"awaiting_term_acceptance,awaiting_payment,investor_tasks_completed,failed_to_accept_terms,failed_to_make_payment,investor_withdrew,business_rejected,round_closed_before_investor_tasks_completed"`
 	ShareQuantity          int              `json:"share_quantity" min:"1"`
-	RequiresManualApproval bool             `json:"requires_manual_approval"`
+	Status                 InvestmentStatus `json:"status" hidden:"true" required:"false" enum:"awaiting_term_acceptance,awaiting_payment,investor_tasks_completed,failed_to_accept_terms,failed_to_make_payment,investor_withdrew,business_rejected,round_closed_before_investor_tasks_completed"`
+	RequiresManualApproval bool             `json:"requires_manual_approval" hidden:"true" required:"false"`
 }
 
 type UpdateInvestmentParams struct {

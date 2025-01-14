@@ -155,7 +155,11 @@ type CreateInvestmentRequest struct {
 	Body investment.CreateInvestmentParams
 }
 
-func (h *httpHandler) create(ctx context.Context, input *CreateInvestmentRequest) (*shared.SingleInvestmentResponse, error) {
+type SingleInvestmentResponse struct {
+	Body investment.Investment
+}
+
+func (h *httpHandler) create(ctx context.Context, input *CreateInvestmentRequest) (*SingleInvestmentResponse, error) {
 	account := utils.GetAuthenticatedAccount(ctx)
 	if account == nil {
 		return nil, huma.Error401Unauthorized("You must be logged in to create an investment")
@@ -167,9 +171,8 @@ func (h *httpHandler) create(ctx context.Context, input *CreateInvestmentRequest
 		return nil, huma.Error500InternalServerError("An error occurred while creating the investment")
 	}
 
-	resp := &shared.SingleInvestmentResponse{}
-	resp.Body.Message = "Investment created successfully"
-	resp.Body.Investment = &investment
+	resp := &SingleInvestmentResponse{}
+	resp.Body = investment
 
 	return resp, nil
 }

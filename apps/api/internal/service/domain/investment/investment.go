@@ -39,5 +39,9 @@ func (s *InvestmentService) Create(
 	investorID int,
 	params investment.CreateInvestmentParams,
 ) (investment.Investment, error) {
+	params.Status = investment.InvestmentStatusTerms
+
+	//TODO: add logic to check if the investment requires manual approval
+	params.RequiresManualApproval = false
 	return s.repositories.Investment().Create(ctx, investorID, params)
 }

@@ -150,19 +150,8 @@ export const zCreateBusinessParams = z.object({
 
 export const zCreateInvestmentParams = z.object({
   $schema: z.string().url().readonly().optional(),
-  requires_manual_approval: z.boolean(),
   round_id: z.number(),
   share_quantity: z.number(),
-  status: z.enum([
-    "awaiting_term_acceptance",
-    "awaiting_payment",
-    "investor_tasks_completed",
-    "failed_to_accept_terms",
-    "failed_to_make_payment",
-    "investor_withdrew",
-    "business_rejected",
-    "round_closed_before_investor_tasks_completed",
-  ]),
 });
 
 export const zCreateRoundParams = z.object({
@@ -231,6 +220,7 @@ export const zGetCursorPaginatedInvestmentsOutputBody = z.object({
   investments: z.union([
     z.array(
       z.object({
+        $schema: z.string().url().readonly().optional(),
         approved_at: z.string().datetime().optional(),
         completed_at: z.string().datetime().optional(),
         created_at: z.string().datetime(),
@@ -263,19 +253,8 @@ export const zGetCursorPaginatedInvestmentsOutputBody = z.object({
             z.null(),
           ])
           .optional(),
-        requires_manual_approval: z.boolean(),
         round_id: z.number(),
         share_quantity: z.number(),
-        status: z.enum([
-          "awaiting_term_acceptance",
-          "awaiting_payment",
-          "investor_tasks_completed",
-          "failed_to_accept_terms",
-          "failed_to_make_payment",
-          "investor_withdrew",
-          "business_rejected",
-          "round_closed_before_investor_tasks_completed",
-        ]),
         terms_completed_at: z.string().datetime().optional(),
         updated_at: z.union([z.string().datetime(), z.null()]),
       }),
@@ -382,6 +361,7 @@ export const zGetOffsetPaginatedInvestmentsOutputBody = z.object({
   investments: z.union([
     z.array(
       z.object({
+        $schema: z.string().url().readonly().optional(),
         approved_at: z.string().datetime().optional(),
         completed_at: z.string().datetime().optional(),
         created_at: z.string().datetime(),
@@ -414,19 +394,8 @@ export const zGetOffsetPaginatedInvestmentsOutputBody = z.object({
             z.null(),
           ])
           .optional(),
-        requires_manual_approval: z.boolean(),
         round_id: z.number(),
         share_quantity: z.number(),
-        status: z.enum([
-          "awaiting_term_acceptance",
-          "awaiting_payment",
-          "investor_tasks_completed",
-          "failed_to_accept_terms",
-          "failed_to_make_payment",
-          "investor_withdrew",
-          "business_rejected",
-          "round_closed_before_investor_tasks_completed",
-        ]),
         terms_completed_at: z.string().datetime().optional(),
         updated_at: z.union([z.string().datetime(), z.null()]),
       }),
@@ -493,6 +462,7 @@ export const zIndustry = z.object({
 });
 
 export const zInvestment = z.object({
+  $schema: z.string().url().readonly().optional(),
   approved_at: z.string().datetime().optional(),
   completed_at: z.string().datetime().optional(),
   created_at: z.string().datetime(),
@@ -525,19 +495,8 @@ export const zInvestment = z.object({
       z.null(),
     ])
     .optional(),
-  requires_manual_approval: z.boolean(),
   round_id: z.number(),
   share_quantity: z.number(),
-  status: z.enum([
-    "awaiting_term_acceptance",
-    "awaiting_payment",
-    "investor_tasks_completed",
-    "failed_to_accept_terms",
-    "failed_to_make_payment",
-    "investor_withdrew",
-    "business_rejected",
-    "round_closed_before_investor_tasks_completed",
-  ]),
   terms_completed_at: z.string().datetime().optional(),
   updated_at: z.union([z.string().datetime(), z.null()]),
 });
@@ -740,7 +699,7 @@ export const zHealthCheckResponse = zMessageResponse;
 
 export const zGetAllIndustriesResponse = zGetAllIndustriesResponseBody;
 
-export const zCreateRoundInvestmentResponse = zSingleInvestmentResponseBody;
+export const zCreateRoundInvestmentResponse = zInvestment;
 
 export const zGetInvestmentByIdResponse = zSingleInvestmentResponseBody;
 

@@ -107,18 +107,8 @@ export type CreateInvestmentParams = {
    * A URL to the JSON Schema for this object.
    */
   readonly $schema?: string;
-  requires_manual_approval: boolean;
   round_id: number;
   share_quantity: number;
-  status:
-    | "awaiting_term_acceptance"
-    | "awaiting_payment"
-    | "investor_tasks_completed"
-    | "failed_to_accept_terms"
-    | "failed_to_make_payment"
-    | "investor_withdrew"
-    | "business_rejected"
-    | "round_closed_before_investor_tasks_completed";
 };
 
 export type CreateRoundParams = {
@@ -333,6 +323,10 @@ export type Industry = {
 };
 
 export type Investment = {
+  /**
+   * A URL to the JSON Schema for this object.
+   */
+  readonly $schema?: string;
   approved_at?: string;
   completed_at?: string;
   created_at: string;
@@ -341,18 +335,8 @@ export type Investment = {
   investor_id: number;
   payment_completed_at?: string;
   payments?: Array<InvestmentPayment> | null;
-  requires_manual_approval: boolean;
   round_id: number;
   share_quantity: number;
-  status:
-    | "awaiting_term_acceptance"
-    | "awaiting_payment"
-    | "investor_tasks_completed"
-    | "failed_to_accept_terms"
-    | "failed_to_make_payment"
-    | "investor_withdrew"
-    | "business_rejected"
-    | "round_closed_before_investor_tasks_completed";
   terms_completed_at?: string;
   updated_at: string | null;
 };
@@ -1576,7 +1560,7 @@ export type CreateRoundInvestmentResponses = {
   /**
    * OK
    */
-  200: SingleInvestmentResponseBody;
+  200: Investment;
 };
 
 export type CreateRoundInvestmentResponse =

@@ -304,30 +304,15 @@ components:
           format: uri
           readOnly: true
           type: string
-        requires_manual_approval:
-          type: boolean
         round_id:
           format: int64
           type: integer
         share_quantity:
           format: int64
           type: integer
-        status:
-          enum:
-            - awaiting_term_acceptance
-            - awaiting_payment
-            - investor_tasks_completed
-            - failed_to_accept_terms
-            - failed_to_make_payment
-            - investor_withdrew
-            - business_rejected
-            - round_closed_before_investor_tasks_completed
-          type: string
       required:
         - round_id
-        - status
         - share_quantity
-        - requires_manual_approval
       type: object
     CreateRoundParams:
       additionalProperties: false
@@ -774,6 +759,12 @@ components:
     Investment:
       additionalProperties: false
       properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/Investment.json
+          format: uri
+          readOnly: true
+          type: string
         approved_at:
           format: date-time
           type: string
@@ -802,25 +793,12 @@ components:
             $ref: "#/components/schemas/InvestmentPayment"
           nullable: true
           type: array
-        requires_manual_approval:
-          type: boolean
         round_id:
           format: int64
           type: integer
         share_quantity:
           format: int64
           type: integer
-        status:
-          enum:
-            - awaiting_term_acceptance
-            - awaiting_payment
-            - investor_tasks_completed
-            - failed_to_accept_terms
-            - failed_to_make_payment
-            - investor_withdrew
-            - business_rejected
-            - round_closed_before_investor_tasks_completed
-          type: string
         terms_completed_at:
           format: date-time
           type: string
@@ -833,8 +811,6 @@ components:
         - share_quantity
         - id
         - round_id
-        - status
-        - requires_manual_approval
         - created_at
         - updated_at
         - deleted_at
@@ -2379,7 +2355,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SingleInvestmentResponseBody"
+                $ref: "#/components/schemas/Investment"
           description: OK
         default:
           content:
