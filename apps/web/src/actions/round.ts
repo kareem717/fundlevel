@@ -2,7 +2,7 @@
 
 import { actionClient, actionClientWithAccount } from "@/lib/safe-action";
 import {
-	getRoundById as getRoundByIdApi,
+	getRoundById,
 	createRound as createRoundApi,
 	getRoundByCursor,
 	getRoundsByPage as getRoundsByPageApi,
@@ -32,13 +32,13 @@ export const createRound = actionClientWithAccount
 	});
 
 /**
- * Create a venture
+ * Get round by ID
  */
-export const getRoundById = cache(
+export const getRoundAction = cache(
 	actionClient
 		.schema(pathIdSchema)
 		.action(async ({ parsedInput, ctx: { axiosClient } }) => {
-			const response = await getRoundByIdApi({
+			const response = await getRoundById({
 				client: axiosClient,
 				throwOnError: true,
 				path: {

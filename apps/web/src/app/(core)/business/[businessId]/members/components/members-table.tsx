@@ -37,7 +37,7 @@ import { useBusiness } from "@/components/providers/business-provider"
 import { createParser, parseAsInteger, useQueryState, useQueryStates } from "nuqs"
 import { object } from "yup"
 import { Skeleton } from "@repo/ui/components/skeleton"
-import { getBusinessMembersByPage } from "@/actions/busineses"
+import { getBusinessMembersByPage } from "@/actions/business"
 
 export const columns: ColumnDef<BusinessMemberWithRoleNameAndAccount>[] = [
   {

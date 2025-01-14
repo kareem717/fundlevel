@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google"
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { ThemeProvider } from "@/app/components/theme-provider";
+import { Toaster } from "@repo/ui/components/toaster"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -69,6 +70,7 @@ export default async function RootLayout({
         >
           <NuqsAdapter>
             {children}
+            <Toaster />
           </NuqsAdapter>
         </ThemeProvider>
       </body>

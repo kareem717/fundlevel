@@ -6,7 +6,7 @@ import { cn } from "@repo/ui/lib/utils"
 import { Industry } from "@repo/sdk"
 import { useAction } from "next-safe-action/hooks"
 import { getAllIndustries } from "@/actions/industries"
-import { toast } from "sonner"
+import { useToast } from "@repo/ui/hooks/use-toast"
 import { Icons } from "./icons"
 
 export interface IndustrySelectProps extends Omit<ComponentPropsWithoutRef<typeof Select>, "onValueChange"> {
@@ -16,8 +16,9 @@ export interface IndustrySelectProps extends Omit<ComponentPropsWithoutRef<typeo
 
 
 //TODO: make multi select
-export const IndustrySelect: FC<IndustrySelectProps> = ({ triggerProps, onValueChange, ...props }) => {
+export function IndustrySelect({ triggerProps, onValueChange, ...props }: IndustrySelectProps) {
   const [industries, setIndustries] = useState<Industry[]>([])
+  const { toast } = useToast();
 
   const { execute, isExecuting } = useAction(getAllIndustries, {
     onSuccess: ({ data }) => {
@@ -25,7 +26,11 @@ export const IndustrySelect: FC<IndustrySelectProps> = ({ triggerProps, onValueC
     },
     onError: (error) => {
       console.error(error)
-      toast.error(error.error.serverError?.message ?? "Failed to fetch industries")
+      toast({
+        title: "Failed to fetch industries",
+        description: error.error.serverError?.message ?? "An unknown error occurred",
+        variant: "destructive",
+      })
     }
   })
 

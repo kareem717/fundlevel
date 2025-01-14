@@ -3,7 +3,7 @@
 import { actionClient, actionClientWithAccount } from "@/lib/safe-action";
 import {
 	createBusiness,
-	getBusinessById as getBusinessByIdApi,
+	getBusinessById,
 	getAccountBusinesses as getAccountBusinessesApi,
 	getBusinessRoundsByPage as getBusinessRoundsByPageApi,
 	getBusinessTotalFunding,
@@ -52,11 +52,14 @@ export const getBusinessesAction = cache(
 	})
 );
 
-export const getBusinessByIdAction = cache(
+/**
+ * Get a business by id
+ */
+export const getBusinessAction = cache(
 	actionClientWithAccount
 		.schema(pathIdSchema)
 		.action(async ({ parsedInput: id, ctx: { axiosClient } }) => {
-			const res = await getBusinessByIdApi({
+			const res = await getBusinessById({
 				client: axiosClient,
 				throwOnError: true,
 				path: { id },

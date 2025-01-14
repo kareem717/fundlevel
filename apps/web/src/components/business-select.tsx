@@ -3,24 +3,27 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { cn } from "@repo/ui/lib/utils"
 import { Business } from "@repo/sdk"
 import { useAction } from "next-safe-action/hooks"
-import { getBusinessesAction } from "@/actions/busineses"
-import { toast } from "sonner"
+import { getBusinessesAction } from "@/actions/business"
+import { useToast } from "@repo/ui/hooks/use-toast"
 
 interface BusinessSelectProps extends ComponentPropsWithoutRef<typeof Select> {
   triggerProps?: ComponentPropsWithoutRef<typeof SelectTrigger>
   businesses?: Business[]
 }
 
-export const BusinessSelect: FC<BusinessSelectProps> = ({ triggerProps, ...props }) => {
+export function BusinessSelect({ triggerProps, ...props }: BusinessSelectProps) {
   const [businesses, setBusinesses] = useState<Business[]>([])
+  const { toast } = useToast();
 
   const { execute, isExecuting } = useAction(getBusinessesAction, {
     onSuccess: ({ data }) => {
       setBusinesses(data?.businesses || [])
     },
     onError: ({ error }) => {
-      toast.error("Failed to load businesses", {
+      toast({
+        title: "Failed to load businesses",
         description: error.serverError?.message || "An unknown error occurred",
+        variant: "destructive",
       })
     }
   })

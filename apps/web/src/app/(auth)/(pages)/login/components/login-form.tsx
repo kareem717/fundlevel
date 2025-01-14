@@ -27,7 +27,7 @@ import {
 import { Loader2 } from "lucide-react"
 import { OAuthButtons } from "./oauth-buttons"
 import { useRouter } from "next/navigation"
-import { toast } from "sonner"
+import { toast } from "@repo/ui/hooks/use-toast"
 import Link from "next/link"
 
 const formSchema = z.object({
@@ -47,7 +47,7 @@ export function LoginForm({
 }: ComponentPropsWithoutRef<"div">) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
-
+  const { toast } = useToast();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -69,12 +69,15 @@ export function LoginForm({
 
     if (error) {
       console.error(error);
-      toast.error("Uh oh!", {
+      toast({
+        title: "Uh oh!",
         description: "Something went wrong. Please try again.",
+        variant: "destructive",
       });
       setIsLoading(false);
     } else {
-      toast.success("Check your email", {
+      toast({
+        title: "Check your email",
         description: "We've sent you a OTP to login.",
       });
       router.push(redirects.auth.otp(values.email));

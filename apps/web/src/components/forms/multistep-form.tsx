@@ -11,10 +11,13 @@ import {
 import { Form } from "@repo/ui/components/form";
 import { FieldValues, Path, UseFormReturn } from "react-hook-form";
 import Link from "next/link";
+import { useToast } from "@repo/ui/hooks/use-toast";
 
 export type Step<T extends FieldValues> = {
   content: React.ReactNode;
   fields: Path<T>[];
+  stepAction?: () => void | string | Promise<void | string>;
+  nextButtonText?: string;
 }
 
 export interface MultiStepFormProps<T extends FieldValues> extends ComponentPropsWithoutRef<"form"> {
@@ -43,7 +46,8 @@ export const MultiStepForm = <T extends FieldValues>({
   const [step, setStep] = useState(defaultStep);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hasSubmitted, setHasSubmitted] = useState(false);
-
+  const [isExecuting, setIsExecuting] = useState(false);
+  const { toast } = useToast();
   const isLastStep = step >= steps.length - 1
   const hasNext = step < steps.length
   const hasPrevious = step > 0
@@ -51,12 +55,28 @@ export const MultiStepForm = <T extends FieldValues>({
   const next = async () => {
     if (!hasNext) return;
 
-    console.log("Form values on next 1", formProps.getValues());
-
     const currentFields = steps[step]?.fields;
     const isValid = await formProps.trigger(currentFields);
 
     if (!isValid) return;
+
+    if (steps[step]?.stepAction) {
+      setIsExecuting(true);
+      const errorText = await steps[step].stepAction();
+      setIsExecuting(false);
+
+
+      if (errorText) {
+        toast({
+          title: "Uh oh!",
+          description: errorText,
+          variant: "destructive",
+        });
+        return;
+      }
+
+
+    }
 
     if (isLastStep) {
       setIsSubmitting(true);
@@ -96,8 +116,8 @@ export const MultiStepForm = <T extends FieldValues>({
             <Progress value={((step + 1) / steps.length) * 100} />
             <div className="flex justify-between">
               <Button variant="secondary" disabled={!hasPrevious || hasSubmitted} onClick={previous}>Back</Button>
-              <Button disabled={!hasNext || isSubmitting || hasSubmitted} onClick={next} type="button">
-                {isSubmitting ? <Icons.spinner className="animate-spin size-4" /> : isLastStep ? "Submit" : "Next"}
+              <Button disabled={!hasNext || isSubmitting || hasSubmitted || isExecuting} onClick={next} type="button">
+                {isSubmitting ? <Icons.spinner className="animate-spin size-4" /> : steps[step]?.nextButtonText ? steps[step].nextButtonText : isLastStep ? "Submit" : "Next"}
               </Button>
             </div>
           </div>

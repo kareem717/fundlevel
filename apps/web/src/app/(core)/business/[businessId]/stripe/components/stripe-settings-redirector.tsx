@@ -1,10 +1,10 @@
 "use client";
 
-import { getStripeAccountSettingsLink } from '@/actions/busineses';
+import { getStripeAccountSettingsLink } from '@/actions/business';
 import { useAction } from 'next-safe-action/hooks';
 import { useRouter } from 'next/navigation';
 import { FC, ComponentPropsWithoutRef } from 'react';
-import { toast } from 'sonner';
+import { useToast } from '@repo/ui/hooks/use-toast';
 import { useBusiness } from '@/components/providers/business-provider';
 import { Button } from '@repo/ui/components/button';
 import { Icons } from '@/components/icons';
@@ -16,17 +16,24 @@ export interface StripeSettingsRedirectorProps extends ComponentPropsWithoutRef<
 export const StripeSettingsRedirector: FC<StripeSettingsRedirectorProps> = ({ className, text, ...props }) => {
   const router = useRouter();
   const { selectedBusiness } = useBusiness();
-
+  const { toast } = useToast();
   const { execute, hasErrored, isExecuting } = useAction(getStripeAccountSettingsLink, {
     onSuccess: ({ data }) => {
       if (data?.url) {
         router.push(data.url);
       } else {
-        toast.error("Failed to get Stripe account settings link");
+        toast({
+          title: "Failed to get Stripe account settings link",
+          variant: "destructive",
+        });
       }
     },
     onError: () => {
-      toast.error("Failed to get Stripe account settings link");
+      toast({
+        title: "Failed to get Stripe account settings link",
+        description: "An unknown error occurred",
+        variant: "destructive",
+      });
     }
   })
 

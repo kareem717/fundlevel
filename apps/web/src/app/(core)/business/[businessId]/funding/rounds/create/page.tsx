@@ -1,4 +1,4 @@
-import { getBusinessCreateRoundrequirements } from "@/actions/busineses";
+import { getBusinessCreateRoundrequirements } from "@/actions/business";
 import { CreateRoundForm } from "./components/create-round-form";
 import { Card, CardContent, CardTitle, CardHeader } from "@repo/ui/components/card";
 import { notFound } from "next/navigation";

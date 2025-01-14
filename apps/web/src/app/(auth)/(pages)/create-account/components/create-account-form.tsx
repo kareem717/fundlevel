@@ -3,7 +3,6 @@
 import { Button } from "@repo/ui/components/button";
 import { cn } from "@repo/ui/lib/utils";
 import { ComponentPropsWithoutRef, useState } from "react";
-import { toast } from "sonner";
 import { createAccountAction } from "@/actions/auth";
 import { useRouter } from "next/navigation";
 import { redirects } from "@/lib/config/redirects";
@@ -21,6 +20,7 @@ import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hoo
 import { zodResolver } from "@hookform/resolvers/zod";
 import { zCreateAccountParams } from "@repo/sdk/zod";
 import Link from "next/link";
+import { useToast } from "@repo/ui/hooks/use-toast";
 
 export interface CreateAccountFormProps extends ComponentPropsWithoutRef<"div"> {
   defaultFirstName?: string
@@ -34,6 +34,7 @@ export function CreateAccountForm({
   ...props
 }: CreateAccountFormProps) {
   const router = useRouter()
+  const { toast } = useToast();
 
   // We want to keep the loading state through redirect on success
   // thus we can't use the isExecuting state from the action
@@ -44,7 +45,8 @@ export function CreateAccountForm({
       actionProps: {
         onExecute: () => setIsExecuting(true),
         onSuccess: () => {
-          toast.success("Done!", {
+          toast({
+            title: "Done!",
             description: "Your account has been created successfully. We are redirecting you to the app.",
           })
 
@@ -52,8 +54,10 @@ export function CreateAccountForm({
           router.push(redirects.app.root)
         },
         onError: ({ error }) => {
-          toast.error("Error", {
+          toast({
+            title: "Error",
             description: error.serverError?.message ?? "An error occurred",
+            variant: "destructive",
           })
           setIsExecuting(false)
         }

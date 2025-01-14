@@ -8,8 +8,8 @@ import { create } from 'zustand';
 import { useTheme } from 'next-themes';
 import { env } from '@/env';
 import { useAction } from 'next-safe-action/hooks';
-import { createInvestmentPaymentIntent } from '@/actions/investments';
-import { toast } from 'sonner';
+import { createInvestmentPaymentIntent } from '@/actions/investment';
+import { useToast } from '@repo/ui/hooks/use-toast';
 import { Skeleton } from '@repo/ui/components/skeleton';
 import { Button } from '@repo/ui/components/button';
 import { useRouter } from 'next/navigation';
@@ -44,7 +44,6 @@ export const FormContent = ({ confirmParams, redirect }: { confirmParams: Confir
     setStripeLoaded,
     setError,
   } = useCheckoutFormStore();
-
   useEffect(() => {
     setStripeLoaded(!!stripe && !!elements);
   }, [stripe, elements, setStripeLoaded]);
@@ -149,17 +148,21 @@ export const CheckoutConfirmation: FC<CheckoutConfirmationProps> = ({ prefetchUr
   const [isExecuting, setIsExecuting] = useState(false);
   const { triggerSubmit, error } = useCheckoutFormStore();
   const router = useRouter();
+  const { toast } = useToast();
 
   const onSubmit = useCallback(async () => {
     setIsExecuting(true);
     router.prefetch(prefetchUrl);
     await triggerSubmit();
     if (error) {
-      toast.error("An error occurred while processing your payment.");
-      console.error('error', error.message);
+      toast({
+        title: "An error occurred while processing your payment.",
+        description: error.message,
+        variant: "destructive",
+      });
     }
     setIsExecuting(false);
-  }, [triggerSubmit, error, router, prefetchUrl]);
+  }, [triggerSubmit, error, router, prefetchUrl, toast]);
 
   return (
     <div className={cn("flex flex-col gap-4", className)} {...props}>

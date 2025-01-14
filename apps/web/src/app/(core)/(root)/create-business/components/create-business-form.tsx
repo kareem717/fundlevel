@@ -14,7 +14,7 @@ import {
 import { Input } from "@repo/ui/components/input"
 import { Icons } from "@/components/icons";
 import { Button } from "@repo/ui/components/button";
-import { toast } from "sonner";
+import { useToast } from "@repo/ui/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { Popover, PopoverTrigger, PopoverContent } from "@repo/ui/components/popover";
 import { format } from "date-fns";
@@ -31,17 +31,19 @@ import { redirects } from "@/lib/config/redirects";
 import { zCreateBusinessParams } from "@repo/sdk/zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
-import { createBusinessAction } from "@/actions/busineses";
+import { createBusinessAction } from "@/actions/business";
 
 export function CreateBusinessForm({ className, ...props }: ComponentPropsWithoutRef<"form">) {
   const router = useRouter()
+  const { toast } = useToast();
 
   const { form, action: { isExecuting }, handleSubmitWithAction } =
     useHookFormAction(createBusinessAction, zodResolver(zCreateBusinessParams), {
       actionProps: {
         onSuccess: ({ data }) => {
           form.reset()
-          toast.success("Done!", {
+          toast({
+            title: "Done!",
             description: "Your business has been created.",
           })
 
@@ -52,8 +54,10 @@ export function CreateBusinessForm({ className, ...props }: ComponentPropsWithou
           }
         },
         onError: ({ error }) => {
-          toast.error("Something went wrong", {
+          toast({
+            title: "Something went wrong",
             description: error.serverError?.message || "An unknown error occurred",
+            variant: "destructive",
           })
         }
       },

@@ -5,8 +5,8 @@ import { Icons } from "@/components/icons"
 import { cn } from "@repo/ui/lib/utils"
 import { Skeleton } from "@repo/ui/components/skeleton";
 import { useAction } from "next-safe-action/hooks";
-import { getBusinessFunding } from "@/actions/busineses";
-import { toast } from "sonner";
+import { getBusinessFunding } from "@/actions/business";
+import { useToast } from "@repo/ui/hooks/use-toast";
 
 export interface BusinessOverviewProps extends ComponentPropsWithoutRef<"div"> {
   overview: string;
@@ -14,8 +14,9 @@ export interface BusinessOverviewProps extends ComponentPropsWithoutRef<"div"> {
   businessId: number;
 };
 
-export const BusinessOverview: FC<BusinessOverviewProps> = ({ className, overview, teamSize, businessId, ...props }) => {
+export function BusinessOverview({ className, overview, teamSize, businessId, ...props }: BusinessOverviewProps) {
   const [previousFunding, setPreviousFunding] = useState<number | undefined>(undefined);
+  const { toast } = useToast();
 
   const { execute } = useAction(getBusinessFunding, {
     onSuccess: () => {
@@ -23,7 +24,11 @@ export const BusinessOverview: FC<BusinessOverviewProps> = ({ className, overvie
     },
     onError: (error) => {
       console.log(error);
-      toast.error("Failed to fetch previous funding");
+      toast({
+        title: "Failed to fetch previous funding",
+        description: "An unknown error occurred",
+        variant: "destructive",
+      });
       setPreviousFunding(0);
     }
   })

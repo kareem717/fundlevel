@@ -10,7 +10,7 @@ import {
   FormMessage,
 } from "@repo/ui/components/form";
 import { Input } from "@repo/ui/components/input";
-import { toast } from "sonner"
+import { useToast } from "@repo/ui/hooks/use-toast";
 import { updateAccountAction } from "@/actions/auth";
 import { ComponentPropsWithoutRef, FC } from "react";
 import { Icons } from "@/components/icons";
@@ -26,18 +26,22 @@ export interface UpdateAccountFormProps extends ComponentPropsWithoutRef<"form">
 
 export function UpdateAccountForm({ className, onSuccess, ...props }: UpdateAccountFormProps) {
   const { account } = useAuth()
-
+  const { toast } = useToast();
   const { form, action: { isExecuting }, handleSubmitWithAction } =
     useHookFormAction(updateAccountAction, zodResolver(zUpdateAccountParams), {
       actionProps: {
         onSuccess: () => {
-          toast.success("Account updated successfully!");
+          toast({
+            title: "Account updated successfully!",
+          })
           onSuccess?.()
         },
         onError: ({ error }) => {
           console.log(error);
-          toast.error("Something went wrong", {
+          toast({
+            title: "Something went wrong",
             description: error.serverError?.message || "An unknown error occurred",
+            variant: "destructive",
           })
         },
       },

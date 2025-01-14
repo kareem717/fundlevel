@@ -8,21 +8,24 @@ import { useRouter } from "next/navigation";
 import { ComponentPropsWithoutRef, useState } from "react";
 import { Card, CardTitle, CardDescription, CardHeader, CardContent } from "@repo/ui/components/card";
 import { redirects } from "@/lib/config/redirects";
-import { toast } from "sonner";
+import { useToast } from "@repo/ui/hooks/use-toast";
 
 export function LogoutButtons({ className, ...props }: ComponentPropsWithoutRef<"div">) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
-
+  const { toast } = useToast();
   async function handleLogout() {
+
     setIsLoading(true);
 
     const sb = createClient();
     const { error } = await sb.auth.signOut();
 
     if (error) {
-      toast.error("Uh oh!", {
+      toast({
+        title: "Uh oh!",
         description: "Something went wrong. Please try again.",
+        variant: "destructive",
       });
       return setIsLoading(false);
     } else {

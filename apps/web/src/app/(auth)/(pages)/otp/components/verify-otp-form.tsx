@@ -15,7 +15,7 @@ import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { createClient } from "@/lib/utils/supabase/client"
 import { redirects } from "@/lib/config/redirects"
-import { toast } from "sonner"
+import { useToast } from "@repo/ui/hooks/use-toast"
 import {
   Form,
   FormControl,
@@ -53,7 +53,7 @@ export function VerifyOTPForm({
   const [isResending, setIsResending] = useState<boolean>(false);
   const [cooldown, setCooldown] = useState<number>(0);
   const router = useRouter();
-
+  const { toast } = useToast();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -122,13 +122,16 @@ export function VerifyOTPForm({
 
     if (error) {
       console.error(error);
-      toast.error("Uh oh!", {
+      toast({
+        title: "Uh oh!",
         description: "Failed to resend OTP. Please try again.",
+        variant: "destructive",
       });
     } else {
       localStorage.setItem('lastResendTime', Date.now().toString());
       setCooldown(30);
-      toast.success("OTP Resent", {
+      toast({
+        title: "OTP Resent",
         description: "We've sent you a new OTP code.",
       });
     }

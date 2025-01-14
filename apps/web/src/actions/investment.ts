@@ -5,9 +5,11 @@ import {
 	createInvestmentPaymentIntent as createInvestmentPaymentIntentApi,
 	getAccountInvestmentsByPage as getAccountInvestmentsByPageApi,
 	getInvestmentById as getInvestmentByIdApi,
+	createRoundInvestment,
 } from "@repo/sdk";
 import { cache } from "react";
 import { offsetPaginationSchema, pathIdSchema } from "./validations";
+import { zCreateInvestmentParams } from "@repo/sdk/zod";
 
 export const getAccountInvestmentsByPage = actionClientWithAccount
 	.schema(offsetPaginationSchema)
@@ -83,6 +85,23 @@ export const createInvestmentPaymentIntent = actionClientWithAccount
 		});
 
 		return resp.data;
+	});
+
+/**
+ * Create an investment for a round
+ */
+export const createInvestmentAction = actionClientWithAccount
+	.schema(zCreateInvestmentParams)
+	.action(async ({ parsedInput, ctx: { axiosClient } }) => {
+		const resp = await createRoundInvestment({
+			client: axiosClient,
+			body: parsedInput,
+			throwOnError: true,
+		});
+
+		return {
+			id: resp.data.id,
+		};
 	});
 
 // export const processInvestment = actionClientWithAccount

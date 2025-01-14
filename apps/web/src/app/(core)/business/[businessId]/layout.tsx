@@ -5,7 +5,7 @@ import {
 } from "@repo/ui/components/sidebar"
 import { Metadata } from "next"
 import { notFound, redirect } from "next/navigation";
-import { getBusinessesAction } from "@/actions/busineses"
+import { getBusinessesAction } from "@/actions/business"
 import { Separator } from "@repo/ui/components/separator";
 import { BusinessDashboardSidebar } from "./components/business-dashboard-sidebar";
 import { BusinessDashboardBreadcrumb } from "./components/business-dashboard-breadcrumb";

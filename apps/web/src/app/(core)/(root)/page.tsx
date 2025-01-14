@@ -1,4 +1,4 @@
-import { getBusinessesAction } from "@/actions/busineses";
+import { getBusinessesAction } from "@/actions/business";
 import Link from "next/link";
 import { redirects } from "@/lib/config/redirects";
 

@@ -14,9 +14,9 @@ import {
 import { Input } from "@repo/ui/components/input"
 import { Icons } from "@/components/icons";
 import { Button } from "@repo/ui/components/button";
-import { toast } from "sonner";
+import { useToast } from "@repo/ui/hooks/use-toast";
 import { useAction } from "next-safe-action/hooks";
-import { getBusinessByIdAction, upsertBusinessLegalSection } from "@/actions/busineses";
+import { getBusinessAction, upsertBusinessLegalSection } from "@/actions/business";
 import { useBusiness } from "@/components/providers/business-provider";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
@@ -25,20 +25,24 @@ import { pathIdSchema } from "@/actions/validations";
 
 export function UpdateLegalSectionForm({ className, ...props }: ComponentPropsWithoutRef<"form">) {
   const { selectedBusiness } = useBusiness()
-
-  const { executeAsync: getBusinessByIdAsync, isExecuting: getBusinessByIdIsExecuting } = useAction(getBusinessByIdAction, {
+  const { toast } = useToast();
+  const { executeAsync: getBusinessByIdAsync, isExecuting: getBusinessByIdIsExecuting } = useAction(getBusinessAction, {
     onSuccess: ({ data }) => {
       if (data?.business) {
         form.setValue("business_number", data?.business?.business_legal_section?.business_number || "")
       } else {
-        toast.error("Something went wrong", {
+        toast({
+          title: "Something went wrong",
           description: "An unknown error occurred",
+          variant: "destructive",
         })
       }
     },
     onError: ({ error }) => {
-      toast.error("Something went wrong", {
+      toast({
+        title: "Something went wrong",
         description: error.serverError?.message || "An unknown error occurred",
+        variant: "destructive",
       })
     }
   })
@@ -49,13 +53,16 @@ export function UpdateLegalSectionForm({ className, ...props }: ComponentPropsWi
     })), {
       actionProps: {
         onSuccess: () => {
-          toast.success("Done!", {
+          toast({
+            title: "Done!",
             description: "Your business has been updated.",
           })
         },
         onError: ({ error }) => {
-          toast.error("Something went wrong", {
+          toast({
+            title: "Something went wrong",
             description: error.serverError?.message || "An unknown error occurred",
+            variant: "destructive",
           })
         }
       },

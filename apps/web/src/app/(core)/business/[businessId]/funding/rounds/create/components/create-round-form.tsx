@@ -13,9 +13,9 @@ import {
 } from "@repo/ui/components/form"
 import { Input } from "@repo/ui/components/input"
 import { Button } from "@repo/ui/components/button";
-import { toast } from "sonner";
+import { useToast } from "@repo/ui/hooks/use-toast";
 import { useRouter } from "next/navigation";
-import { createRound } from "@/actions/rounds";
+import { createRound } from "@/actions/round";
 import { Textarea } from "@repo/ui/components/textarea";
 import { redirects } from "@/lib/config/redirects";
 import { useBusiness } from "@/components/providers/business-provider";
@@ -33,20 +33,24 @@ export function CreateRoundForm({ className, ...props }: ComponentPropsWithoutRe
   const { selectedBusiness } = useBusiness()
   const [valuation, setValuation] = useState<number>(1000000)
   const [forSale, setForSale] = useState<number>(10)
+  const { toast } = useToast();
 
   const { form, action: { isExecuting, executeAsync } } =
     useHookFormAction(createRound, zodResolver(zCreateRoundParams), {
       actionProps: {
         onSuccess: () => {
           form.reset()
-          toast.success("Done!", {
+          toast({
+            title: "Done!",
             description: "Your business has been created.",
           })
           router.push(redirects.app.root)
         },
         onError: ({ error }) => {
-          toast.error("Something went wrong", {
+          toast({
+            title: "Something went wrong",
             description: error.serverError?.message || "An unknown error occurred",
+            variant: "destructive",
           })
         }
       },
