@@ -100,6 +100,37 @@ export const toFixedRound = (rawPercentage: number, toFixed: number) =>
  * @arg {string} locale Locale used to format the currency.
  * @return {string} Formatted currency.
  */
-export const formatCurrency = (value: number, currency: string, locale: string = 'en-CA') => {
-	return Intl.NumberFormat(locale, { style: 'currency', currency: currency.toLocaleUpperCase(locale) }).format(value);
+export const formatCurrency = (
+	value: number,
+	currency: string,
+	locale: string = "en-CA"
+) => {
+	return Intl.NumberFormat(locale, {
+		style: "currency",
+		currency: currency.toLocaleUpperCase(locale),
+	}).format(value);
+};
+
+/**
+ * Format number.
+ * @description Formats a number as a string with up to specified decimal places.
+ * @arg {number} value Number to format.
+ * @arg {number} minimumSignificantDigits Minimum number of significant digits to display.
+ * @arg {number} maximumSignificantDigits Maximum number of significant digits to display.
+ * @arg {boolean} addTilda Whether to add a tilda to the number if it is rounded.
+ * @arg {string} locale Locale used to format the number.
+ * @return {string} Formatted number.
+ */
+export const formatNumber = (
+	value: number,
+	minimumSignificantDigits: number = 1,
+	maximumSignificantDigits: number = 2,
+	addTilda: boolean = true,
+	locale: string = "en-US"
+) => {
+	const formatted = value.toLocaleString(locale, {
+		maximumSignificantDigits,
+		minimumSignificantDigits,
+	});
+	return `${formatted !== value.toString() ? (addTilda ? "~ " : "") : ""}${formatted}`;
 };

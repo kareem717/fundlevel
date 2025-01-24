@@ -2,20 +2,23 @@
 
 import { MultiStepForm, Step } from "@/components/forms/multistep-form";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@repo/ui/components/card";
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@repo/ui/components/form";
+import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@repo/ui/components/form";
 import { Input } from "@repo/ui/components/input";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Business, Round } from "@repo/sdk";
 import { ComponentPropsWithoutRef } from "react";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency, formatNumber } from "@/lib/utils";
 import { Label } from "@repo/ui/components/label";
 import Link from "next/link";
 import { redirects } from "@/lib/config/redirects";
 import { useAction } from "next-safe-action/hooks";
 import { zCreateInvestmentParams } from "@repo/sdk/zod";
 import { getSignatureAction } from "@/actions/terms";
+import { TooltipContent, TooltipTrigger, Tooltip } from "@repo/ui/components/tooltip";
+import { TooltipProvider } from "@repo/ui/components/tooltip";
+import { Info } from "lucide-react";
 
 type InvestFormValues = z.infer<typeof zCreateInvestmentParams>;
 
@@ -25,12 +28,19 @@ export interface InvestFormProps extends ComponentPropsWithoutRef<typeof Card> {
 }
 
 export function InvestForm({ round, business, className, ...props }: InvestFormProps) {
+  const totalSharesForSale = round.total_shares_for_sale;
+  const formattedSharePrice = formatCurrency(round.price_per_share_usd_cents / 100, "USD", "en-US");
+
   const form = useForm<InvestFormValues>({
-    resolver: zodResolver(zCreateInvestmentParams),
+    resolver: zodResolver(zCreateInvestmentParams.extend({
+      investment: z.object({
+        share_quantity: z.number().min(1).max(totalSharesForSale),
+      }),
+    })),
     defaultValues: {
       investment: {
         round_id: round.id,
-        share_quantity: 0,
+        share_quantity: 1,
       },
       terms_acceptance: {
         accepted_at: "",
@@ -56,6 +66,7 @@ export function InvestForm({ round, business, className, ...props }: InvestFormP
     className: cn("w-full", className),
     ...props,
   }
+
 
   const steps: Step<InvestFormValues>[] = [
     {
@@ -125,18 +136,23 @@ export function InvestForm({ round, business, className, ...props }: InvestFormP
             <CardTitle>Investment Details</CardTitle>
             <CardDescription>Enter your investment amount</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-6">
             <FormField
               control={form.control}
               name="investment.share_quantity"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Shares</FormLabel>
+                  <FormDescription>
+                    The amount of shares you would like to purchase
+                  </FormDescription>
                   <FormControl>
                     <Input
                       type="number"
                       placeholder="Enter amount"
                       {...field}
+                      min={1}
+                      max={totalSharesForSale}
                       onChange={(e) => {
                         field.onChange(e.target.valueAsNumber);
                       }}
@@ -146,6 +162,143 @@ export function InvestForm({ round, business, className, ...props }: InvestFormP
                 </FormItem>
               )}
             />
+            {form.watch("investment.share_quantity") > 0 && (
+              <div className="flex flex-col gap-4">
+                <TooltipProvider>
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Round Breakdown</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2 text-sm">
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground flex items-center gap-2">
+                          Price per Share
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <Info className="size-3.5 text-foreground" />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>The cost to purchase one share of the business</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </span>
+                        <span className="font-medium">
+                          {formatCurrency(round.price_per_share_usd_cents / 100, "USD", "en-US")}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground flex items-center gap-2">
+                          Business Shares Outstanding
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <Info className="size-3.5 text-foreground" />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Total number of shares issued by the business</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </span>
+                        {round.total_business_shares.toLocaleString()}
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground flex items-center gap-2">
+                          Shares for Sale
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <Info className="size-3.5 text-foreground" />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Number of shares available for purchase in this round</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </span>
+                        {round.total_shares_for_sale.toLocaleString()}
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground flex items-center gap-2">
+                          Business Percentage For Sale
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <Info className="size-3.5 text-foreground" />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>The percentage of the business that is being sold in this round, based on the number of shares you&apos;re purchasing. If a &quot;~&quot; is shown, it means the percentage is rounded to 5 significant digits.</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </span>
+                        {formatNumber((round.total_shares_for_sale / round.total_business_shares) * 100, 1, 5, true, "en-US")}%
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground flex items-center gap-2">
+                          Post-Money Business Valuation
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <Info className="size-3.5 text-foreground" />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>The total value of the business after this investment round</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </span>
+                        {formatCurrency(round.total_business_shares * round.price_per_share_usd_cents / 100, "USD", "en-US")}
+                      </div>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Investment Breakdown</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2 text-sm">
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground flex items-center gap-2">
+                          Total Cost
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <Info className="size-3.5 text-foreground" />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>The total amount you&apos;ll pay for your shares</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </span>
+                        <span className="font-medium">
+                          {formatCurrency((round.price_per_share_usd_cents * form.watch("investment.share_quantity")) / 100, "USD", "en-US")}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground flex items-center gap-2">
+                          Post-Money Ownership
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <Info className="size-3.5 text-foreground" />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Your percentage ownership of the business after this investment, based on the number of shares you&apos;re purchasing. If a &quot;~&quot; is shown, it means the percentage is rounded to 5 significant digits.</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </span>
+                        {formatNumber(form.watch("investment.share_quantity") / round.total_business_shares, 1, 5, true, "en-US")}%
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground flex items-center gap-2">
+                          Shares of Round
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <Info className="size-3.5 text-foreground" />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Your percentage of the total shares available in this round, based on the number of shares you&apos;re purchasing. If a &quot;~&quot; is shown, it means the percentage is rounded to 5 significant digits.</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </span>
+                        {formatNumber(form.watch("investment.share_quantity") / round.total_shares_for_sale, 1, 5, true, "en-US")}%
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TooltipProvider>
+
+              </div>
+            )}
           </CardContent>
         </Card>
       ),
