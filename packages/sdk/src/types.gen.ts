@@ -107,6 +107,11 @@ export type CreateInvestmentParams = {
    * A URL to the JSON Schema for this object.
    */
   readonly $schema?: string;
+  investment: CreateInvestmentParamsInvestmentStruct;
+  terms_acceptance: CreateRoundTermsAcceptanceParams;
+};
+
+export type CreateInvestmentParamsInvestmentStruct = {
   round_id: number;
   share_quantity: number;
 };
@@ -116,11 +121,27 @@ export type CreateRoundParams = {
    * A URL to the JSON Schema for this object.
    */
   readonly $schema?: string;
+  round: CreateRoundParamsRoundStruct;
+  terms: CreateRoundTermParams;
+};
+
+export type CreateRoundParamsRoundStruct = {
   business_id: number;
   description: string;
   price_per_share_usd_cents: number;
   total_business_shares: number;
   total_shares_for_sale: number;
+};
+
+export type CreateRoundTermParams = {
+  content: string;
+};
+
+export type CreateRoundTermsAcceptanceParams = {
+  accepted_at: string;
+  ip_address: string;
+  terms_id: number;
+  user_agent: string;
 };
 
 export type ErrorDetail = {
@@ -169,15 +190,6 @@ export type ErrorModel = {
   type?: string;
 };
 
-export type FundingOutputBody = {
-  /**
-   * A URL to the JSON Schema for this object.
-   */
-  readonly $schema?: string;
-  message: string;
-  totalFunding: number;
-};
-
 export type GetAllIndustriesResponseBody = {
   /**
    * A URL to the JSON Schema for this object.
@@ -203,17 +215,6 @@ export type GetBusinessesOutputBody = {
   readonly $schema?: string;
   businesses: Array<Business> | null;
   message: string;
-};
-
-export type GetCursorPaginatedInvestmentsOutputBody = {
-  /**
-   * A URL to the JSON Schema for this object.
-   */
-  readonly $schema?: string;
-  hasMore: boolean;
-  investments: Array<Investment> | null;
-  message: string;
-  nextCursor: number | null;
 };
 
 export type GetCursorPaginatedRoundsOutputBody = {
@@ -261,17 +262,6 @@ export type GetOffsetPaginatedBusinessMembersOutputBody = {
   readonly $schema?: string;
   hasMore: boolean;
   members: Array<BusinessMemberWithRoleNameAndAccount> | null;
-  message: string;
-  total: number;
-};
-
-export type GetOffsetPaginatedInvestmentsOutputBody = {
-  /**
-   * A URL to the JSON Schema for this object.
-   */
-  readonly $schema?: string;
-  hasMore: boolean;
-  investments: Array<Investment> | null;
   message: string;
   total: number;
 };
@@ -327,17 +317,14 @@ export type Investment = {
    * A URL to the JSON Schema for this object.
    */
   readonly $schema?: string;
-  approved_at?: string;
-  completed_at?: string;
   created_at: string;
   deleted_at: string | null;
   id: number;
   investor_id: number;
-  payment_completed_at?: string;
   payments?: Array<InvestmentPayment> | null;
   round_id: number;
   share_quantity: number;
-  terms_completed_at?: string;
+  terms_acceptance_id: number;
   updated_at: string | null;
 };
 
@@ -412,6 +399,7 @@ export type Round = {
   id: number;
   price_per_share_usd_cents: number;
   status: "active" | "successful" | "failed";
+  terms_id: number;
   total_business_shares: number;
   total_shares_for_sale: number;
   updated_at: string | null;
@@ -611,90 +599,6 @@ export type GetAccountBusinessesResponses = {
 
 export type GetAccountBusinessesResponse =
   GetAccountBusinessesResponses[keyof GetAccountBusinessesResponses];
-
-export type GetAccountInvestmentsByCursorData = {
-  body?: never;
-  path?: never;
-  query?: {
-    cursor?: number;
-    limit?: number;
-    status?: Array<
-      | "awaiting_term_acceptance"
-      | "awaiting_payment"
-      | "investor_tasks_completed"
-      | "failed_to_accept_terms"
-      | "failed_to_make_payment"
-      | "investor_withdrew"
-      | "business_rejected"
-      | "round_closed_before_investor_tasks_completed"
-    > | null;
-    sort_by?: "created_at";
-    sort_order?: "asc" | "desc";
-  };
-  url: "/account/{id}/investments";
-};
-
-export type GetAccountInvestmentsByCursorErrors = {
-  /**
-   * Error
-   */
-  default: ErrorModel;
-};
-
-export type GetAccountInvestmentsByCursorError =
-  GetAccountInvestmentsByCursorErrors[keyof GetAccountInvestmentsByCursorErrors];
-
-export type GetAccountInvestmentsByCursorResponses = {
-  /**
-   * OK
-   */
-  200: GetCursorPaginatedInvestmentsOutputBody;
-};
-
-export type GetAccountInvestmentsByCursorResponse =
-  GetAccountInvestmentsByCursorResponses[keyof GetAccountInvestmentsByCursorResponses];
-
-export type GetAccountInvestmentsByPageData = {
-  body?: never;
-  path?: never;
-  query?: {
-    page?: number;
-    pageSize?: number;
-    status?: Array<
-      | "awaiting_term_acceptance"
-      | "awaiting_payment"
-      | "investor_tasks_completed"
-      | "failed_to_accept_terms"
-      | "failed_to_make_payment"
-      | "investor_withdrew"
-      | "business_rejected"
-      | "round_closed_before_investor_tasks_completed"
-    > | null;
-    sort_by?: "created_at";
-    sort_order?: "asc" | "desc";
-  };
-  url: "/account/{id}/investments/page";
-};
-
-export type GetAccountInvestmentsByPageErrors = {
-  /**
-   * Error
-   */
-  default: ErrorModel;
-};
-
-export type GetAccountInvestmentsByPageError =
-  GetAccountInvestmentsByPageErrors[keyof GetAccountInvestmentsByPageErrors];
-
-export type GetAccountInvestmentsByPageResponses = {
-  /**
-   * OK
-   */
-  200: GetOffsetPaginatedInvestmentsOutputBody;
-};
-
-export type GetAccountInvestmentsByPageResponse =
-  GetAccountInvestmentsByPageResponses[keyof GetAccountInvestmentsByPageResponses];
 
 export type CreateBusinessImpressionData = {
   body?: never;
@@ -1153,99 +1057,6 @@ export type GetBusinessByIdResponses = {
 
 export type GetBusinessByIdResponse =
   GetBusinessByIdResponses[keyof GetBusinessByIdResponses];
-
-export type GetBusinessTotalFundingData = {
-  body?: never;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: "/business/{id}/funding";
-};
-
-export type GetBusinessTotalFundingErrors = {
-  /**
-   * Error
-   */
-  default: ErrorModel;
-};
-
-export type GetBusinessTotalFundingError =
-  GetBusinessTotalFundingErrors[keyof GetBusinessTotalFundingErrors];
-
-export type GetBusinessTotalFundingResponses = {
-  /**
-   * OK
-   */
-  200: FundingOutputBody;
-};
-
-export type GetBusinessTotalFundingResponse =
-  GetBusinessTotalFundingResponses[keyof GetBusinessTotalFundingResponses];
-
-export type GetBusinessInvestmentsByCursorData = {
-  body?: never;
-  path: {
-    id: number;
-  };
-  query?: {
-    cursor?: number;
-    limit?: number;
-  };
-  url: "/business/{id}/investments";
-};
-
-export type GetBusinessInvestmentsByCursorErrors = {
-  /**
-   * Error
-   */
-  default: ErrorModel;
-};
-
-export type GetBusinessInvestmentsByCursorError =
-  GetBusinessInvestmentsByCursorErrors[keyof GetBusinessInvestmentsByCursorErrors];
-
-export type GetBusinessInvestmentsByCursorResponses = {
-  /**
-   * OK
-   */
-  200: GetCursorPaginatedInvestmentsOutputBody;
-};
-
-export type GetBusinessInvestmentsByCursorResponse =
-  GetBusinessInvestmentsByCursorResponses[keyof GetBusinessInvestmentsByCursorResponses];
-
-export type GetBusinessInvestmentsByPageData = {
-  body?: never;
-  path: {
-    id: number;
-  };
-  query?: {
-    page?: number;
-    pageSize?: number;
-  };
-  url: "/business/{id}/investments/page";
-};
-
-export type GetBusinessInvestmentsByPageErrors = {
-  /**
-   * Error
-   */
-  default: ErrorModel;
-};
-
-export type GetBusinessInvestmentsByPageError =
-  GetBusinessInvestmentsByPageErrors[keyof GetBusinessInvestmentsByPageErrors];
-
-export type GetBusinessInvestmentsByPageResponses = {
-  /**
-   * OK
-   */
-  200: GetOffsetPaginatedInvestmentsOutputBody;
-};
-
-export type GetBusinessInvestmentsByPageResponse =
-  GetBusinessInvestmentsByPageResponses[keyof GetBusinessInvestmentsByPageResponses];
 
 export type GetBusinessMembersByPageData = {
   body?: never;

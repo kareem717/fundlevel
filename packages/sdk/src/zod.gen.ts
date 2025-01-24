@@ -150,17 +150,54 @@ export const zCreateBusinessParams = z.object({
 
 export const zCreateInvestmentParams = z.object({
   $schema: z.string().url().readonly().optional(),
-  round_id: z.number(),
-  share_quantity: z.number(),
+  investment: z.object({
+    round_id: z.number().gte(1),
+    share_quantity: z.number().gte(1),
+  }),
+  terms_acceptance: z.object({
+    accepted_at: z.string().datetime(),
+    ip_address: z.string().ip().min(1).max(45),
+    terms_id: z.number().gte(1),
+    user_agent: z.string().min(1).max(500),
+  }),
+});
+
+export const zCreateInvestmentParamsInvestmentStruct = z.object({
+  round_id: z.number().gte(1),
+  share_quantity: z.number().gte(1),
 });
 
 export const zCreateRoundParams = z.object({
   $schema: z.string().url().readonly().optional(),
+  round: z.object({
+    business_id: z.number().gte(1),
+    description: z.string().min(10).max(3000),
+    price_per_share_usd_cents: z.number().gte(1),
+    total_business_shares: z.number().gte(1),
+    total_shares_for_sale: z.number().gte(1),
+  }),
+  terms: z.object({
+    content: z.string().min(10).max(3000),
+  }),
+});
+
+export const zCreateRoundParamsRoundStruct = z.object({
   business_id: z.number().gte(1),
   description: z.string().min(10).max(3000),
   price_per_share_usd_cents: z.number().gte(1),
   total_business_shares: z.number().gte(1),
   total_shares_for_sale: z.number().gte(1),
+});
+
+export const zCreateRoundTermParams = z.object({
+  content: z.string().min(10).max(3000),
+});
+
+export const zCreateRoundTermsAcceptanceParams = z.object({
+  accepted_at: z.string().datetime(),
+  ip_address: z.string().ip().min(1).max(45),
+  terms_id: z.number().gte(1),
+  user_agent: z.string().min(1).max(500),
 });
 
 export const zErrorDetail = z.object({
@@ -177,12 +214,6 @@ export const zErrorModel = z.object({
   status: z.number().optional(),
   title: z.string().optional(),
   type: z.string().url().optional().default("about:blank"),
-});
-
-export const zFundingOutputBody = z.object({
-  $schema: z.string().url().readonly().optional(),
-  message: z.string(),
-  totalFunding: z.number(),
 });
 
 export const zGetAllIndustriesResponseBody = z.object({
@@ -214,57 +245,6 @@ export const zGetBusinessesOutputBody = z.object({
   message: z.string(),
 });
 
-export const zGetCursorPaginatedInvestmentsOutputBody = z.object({
-  $schema: z.string().url().readonly().optional(),
-  hasMore: z.boolean(),
-  investments: z.union([
-    z.array(
-      z.object({
-        $schema: z.string().url().readonly().optional(),
-        approved_at: z.string().datetime().optional(),
-        completed_at: z.string().datetime().optional(),
-        created_at: z.string().datetime(),
-        deleted_at: z.union([z.string().datetime(), z.null()]),
-        id: z.number().gte(1),
-        investor_id: z.number(),
-        payment_completed_at: z.string().datetime().optional(),
-        payments: z
-          .union([
-            z.array(
-              z.object({
-                created_at: z.string().datetime(),
-                deleted_at: z.union([z.string().datetime(), z.null()]),
-                id: z.number(),
-                investment_id: z.number(),
-                status: z.enum([
-                  "cancelled",
-                  "processing",
-                  "requires_action",
-                  "requires_capture",
-                  "requires_confirmation",
-                  "requires_payment_method",
-                  "succeeded",
-                ]),
-                stripe_payment_intent_client_secret: z.string(),
-                stripe_payment_intent_id: z.string(),
-                updated_at: z.union([z.string().datetime(), z.null()]),
-              }),
-            ),
-            z.null(),
-          ])
-          .optional(),
-        round_id: z.number(),
-        share_quantity: z.number(),
-        terms_completed_at: z.string().datetime().optional(),
-        updated_at: z.union([z.string().datetime(), z.null()]),
-      }),
-    ),
-    z.null(),
-  ]),
-  message: z.string(),
-  nextCursor: z.union([z.number(), z.null()]),
-});
-
 export const zGetCursorPaginatedRoundsOutputBody = z.object({
   $schema: z.string().url().readonly().optional(),
   hasMore: z.boolean(),
@@ -281,6 +261,7 @@ export const zGetCursorPaginatedRoundsOutputBody = z.object({
         id: z.number().gte(1),
         price_per_share_usd_cents: z.number().gte(1),
         status: z.enum(["active", "successful", "failed"]),
+        terms_id: z.number().gte(1),
         total_business_shares: z.number().gte(1),
         total_shares_for_sale: z.number().gte(1),
         updated_at: z.union([z.string().datetime(), z.null()]),
@@ -355,57 +336,6 @@ export const zGetOffsetPaginatedBusinessMembersOutputBody = z.object({
   total: z.number(),
 });
 
-export const zGetOffsetPaginatedInvestmentsOutputBody = z.object({
-  $schema: z.string().url().readonly().optional(),
-  hasMore: z.boolean(),
-  investments: z.union([
-    z.array(
-      z.object({
-        $schema: z.string().url().readonly().optional(),
-        approved_at: z.string().datetime().optional(),
-        completed_at: z.string().datetime().optional(),
-        created_at: z.string().datetime(),
-        deleted_at: z.union([z.string().datetime(), z.null()]),
-        id: z.number().gte(1),
-        investor_id: z.number(),
-        payment_completed_at: z.string().datetime().optional(),
-        payments: z
-          .union([
-            z.array(
-              z.object({
-                created_at: z.string().datetime(),
-                deleted_at: z.union([z.string().datetime(), z.null()]),
-                id: z.number(),
-                investment_id: z.number(),
-                status: z.enum([
-                  "cancelled",
-                  "processing",
-                  "requires_action",
-                  "requires_capture",
-                  "requires_confirmation",
-                  "requires_payment_method",
-                  "succeeded",
-                ]),
-                stripe_payment_intent_client_secret: z.string(),
-                stripe_payment_intent_id: z.string(),
-                updated_at: z.union([z.string().datetime(), z.null()]),
-              }),
-            ),
-            z.null(),
-          ])
-          .optional(),
-        round_id: z.number(),
-        share_quantity: z.number(),
-        terms_completed_at: z.string().datetime().optional(),
-        updated_at: z.union([z.string().datetime(), z.null()]),
-      }),
-    ),
-    z.null(),
-  ]),
-  message: z.string(),
-  total: z.number(),
-});
-
 export const zGetOffsetPaginatedRoundsOutputBody = z.object({
   $schema: z.string().url().readonly().optional(),
   hasMore: z.boolean(),
@@ -421,6 +351,7 @@ export const zGetOffsetPaginatedRoundsOutputBody = z.object({
         id: z.number().gte(1),
         price_per_share_usd_cents: z.number().gte(1),
         status: z.enum(["active", "successful", "failed"]),
+        terms_id: z.number().gte(1),
         total_business_shares: z.number().gte(1),
         total_shares_for_sale: z.number().gte(1),
         updated_at: z.union([z.string().datetime(), z.null()]),
@@ -463,13 +394,10 @@ export const zIndustry = z.object({
 
 export const zInvestment = z.object({
   $schema: z.string().url().readonly().optional(),
-  approved_at: z.string().datetime().optional(),
-  completed_at: z.string().datetime().optional(),
   created_at: z.string().datetime(),
   deleted_at: z.union([z.string().datetime(), z.null()]),
   id: z.number().gte(1),
   investor_id: z.number(),
-  payment_completed_at: z.string().datetime().optional(),
   payments: z
     .union([
       z.array(
@@ -495,9 +423,9 @@ export const zInvestment = z.object({
       z.null(),
     ])
     .optional(),
-  round_id: z.number(),
-  share_quantity: z.number(),
-  terms_completed_at: z.string().datetime().optional(),
+  round_id: z.number().gte(1),
+  share_quantity: z.number().gte(1),
+  terms_acceptance_id: z.number().gte(1),
   updated_at: z.union([z.string().datetime(), z.null()]),
 });
 
@@ -558,6 +486,7 @@ export const zRound = z.object({
   id: z.number().gte(1),
   price_per_share_usd_cents: z.number().gte(1),
   status: z.enum(["active", "successful", "failed"]),
+  terms_id: z.number().gte(1),
   total_business_shares: z.number().gte(1),
   total_shares_for_sale: z.number().gte(1),
   updated_at: z.union([z.string().datetime(), z.null()]),
@@ -629,12 +558,6 @@ export const zUpdateAccountResponse = z.void();
 
 export const zGetAccountBusinessesResponse = zGetBusinessesOutputBody;
 
-export const zGetAccountInvestmentsByCursorResponse =
-  zGetCursorPaginatedInvestmentsOutputBody;
-
-export const zGetAccountInvestmentsByPageResponse =
-  zGetOffsetPaginatedInvestmentsOutputBody;
-
 export const zCreateBusinessImpressionResponse = zMessageResponse;
 
 export const zDeleteBusinessFavouriteResponse = zMessageResponse;
@@ -666,14 +589,6 @@ export const zGetBusinessStripeAccountResponse = zGetStripeAccountOutputBody;
 export const zDeleteBusinessResponse = zMessageResponse;
 
 export const zGetBusinessByIdResponse = zSingleBusinessResponseBody;
-
-export const zGetBusinessTotalFundingResponse = zFundingOutputBody;
-
-export const zGetBusinessInvestmentsByCursorResponse =
-  zGetCursorPaginatedInvestmentsOutputBody;
-
-export const zGetBusinessInvestmentsByPageResponse =
-  zGetOffsetPaginatedInvestmentsOutputBody;
 
 export const zGetBusinessMembersByPageResponse =
   zGetOffsetPaginatedBusinessMembersOutputBody;

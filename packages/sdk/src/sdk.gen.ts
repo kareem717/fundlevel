@@ -20,12 +20,6 @@ import type {
   GetAccountBusinessesData,
   GetAccountBusinessesError,
   GetAccountBusinessesResponse,
-  GetAccountInvestmentsByCursorData,
-  GetAccountInvestmentsByCursorError,
-  GetAccountInvestmentsByCursorResponse,
-  GetAccountInvestmentsByPageData,
-  GetAccountInvestmentsByPageError,
-  GetAccountInvestmentsByPageResponse,
   CreateBusinessImpressionData,
   CreateBusinessImpressionError,
   CreateBusinessImpressionResponse,
@@ -74,15 +68,6 @@ import type {
   GetBusinessByIdData,
   GetBusinessByIdError,
   GetBusinessByIdResponse,
-  GetBusinessTotalFundingData,
-  GetBusinessTotalFundingError,
-  GetBusinessTotalFundingResponse,
-  GetBusinessInvestmentsByCursorData,
-  GetBusinessInvestmentsByCursorError,
-  GetBusinessInvestmentsByCursorResponse,
-  GetBusinessInvestmentsByPageData,
-  GetBusinessInvestmentsByPageError,
-  GetBusinessInvestmentsByPageResponse,
   GetBusinessMembersByPageData,
   GetBusinessMembersByPageError,
   GetBusinessMembersByPageResponse,
@@ -237,44 +222,6 @@ export const getAccountBusinesses = <ThrowOnError extends boolean = false>(
   >({
     ...options,
     url: "/account/{id}/businesses",
-  });
-};
-
-/**
- * Get round investments
- * Get round investments.
- */
-export const getAccountInvestmentsByCursor = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<GetAccountInvestmentsByCursorData, ThrowOnError>,
-) => {
-  return (options?.client ?? client).get<
-    GetAccountInvestmentsByCursorResponse,
-    GetAccountInvestmentsByCursorError,
-    ThrowOnError
-  >({
-    ...options,
-    url: "/account/{id}/investments",
-  });
-};
-
-/**
- * Get round investments
- * Get round investments.
- */
-export const getAccountInvestmentsByPage = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<GetAccountInvestmentsByPageData, ThrowOnError>,
-) => {
-  return (options?.client ?? client).get<
-    GetAccountInvestmentsByPageResponse,
-    GetAccountInvestmentsByPageError,
-    ThrowOnError
-  >({
-    ...options,
-    url: "/account/{id}/investments/page",
   });
 };
 
@@ -555,61 +502,6 @@ export const getBusinessById = <ThrowOnError extends boolean = false>(
   >({
     ...options,
     url: "/business/{id}",
-  });
-};
-
-/**
- * Get total funding
- * Get total funding.
- */
-export const getBusinessTotalFunding = <ThrowOnError extends boolean = false>(
-  options: Options<GetBusinessTotalFundingData, ThrowOnError>,
-) => {
-  return (options?.client ?? client).get<
-    GetBusinessTotalFundingResponse,
-    GetBusinessTotalFundingError,
-    ThrowOnError
-  >({
-    ...options,
-    url: "/business/{id}/funding",
-  });
-};
-
-/**
- * Get recieved round investments
- * Get recieved round investments.
- */
-export const getBusinessInvestmentsByCursor = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<GetBusinessInvestmentsByCursorData, ThrowOnError>,
-) => {
-  return (options?.client ?? client).get<
-    GetBusinessInvestmentsByCursorResponse,
-    GetBusinessInvestmentsByCursorError,
-    ThrowOnError
-  >({
-    ...options,
-    url: "/business/{id}/investments",
-  });
-};
-
-/**
- * Get recieved round investments
- * Get recieved round investments.
- */
-export const getBusinessInvestmentsByPage = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<GetBusinessInvestmentsByPageData, ThrowOnError>,
-) => {
-  return (options?.client ?? client).get<
-    GetBusinessInvestmentsByPageResponse,
-    GetBusinessInvestmentsByPageError,
-    ThrowOnError
-  >({
-    ...options,
-    url: "/business/{id}/investments/page",
   });
 };
 
