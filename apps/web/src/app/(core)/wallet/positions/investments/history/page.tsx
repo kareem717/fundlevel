@@ -1,5 +1,4 @@
 import { Metadata } from "next";
-import { AccountInvestmentsTable } from "./components/account-investments-table";
 import { InvestmentStatusBreakdownChart } from "./components/investment-status-breakdown-chart";
 import { ChartWrapper } from "@/components/chart-wrapper";
 import { LastInvestmentCard, TotalInvestmentsCard } from "./components/investment-statistic-cards";
@@ -28,7 +27,6 @@ export default async function InvestmentsHistoryPage() {
           <InvestmentStatusBreakdownChart />
         </ChartWrapper>
       </div>
-      <AccountInvestmentsTable className="max-h-[1000px]" />
     </div>
   )
 }

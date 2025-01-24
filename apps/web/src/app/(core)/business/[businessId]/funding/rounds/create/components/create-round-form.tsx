@@ -56,11 +56,16 @@ export function CreateRoundForm({ className, ...props }: ComponentPropsWithoutRe
       },
       formProps: {
         defaultValues: {
-          business_id: selectedBusiness.id,
-          description: "",
-          price_per_share_usd_cents: 10,
-          total_business_shares: 100000,
-          total_shares_for_sale: 10000,
+          round: {
+            business_id: selectedBusiness.id,
+            description: "",
+            price_per_share_usd_cents: 10,
+            total_business_shares: 100000,
+            total_shares_for_sale: 10000,
+          },
+          terms: {
+            content: "",
+          }
         }
       },
     });
@@ -68,13 +73,16 @@ export function CreateRoundForm({ className, ...props }: ComponentPropsWithoutRe
   const handleSubmit = async (values: z.infer<typeof zCreateRoundParams>) => {
     await executeAsync({
       ...values,
-      price_per_share_usd_cents: values.price_per_share_usd_cents * 100,
+      round: {
+        ...values.round,
+        price_per_share_usd_cents: values.round.price_per_share_usd_cents * 100,
+      }
     })
   }
 
-  const pricePerShare = form.watch('price_per_share_usd_cents')
-  const totalShares = form.watch('total_business_shares')
-  const sharesForSale = form.watch('total_shares_for_sale')
+  const pricePerShare = form.watch('round.price_per_share_usd_cents')
+  const totalShares = form.watch('round.total_business_shares')
+  const sharesForSale = form.watch('round.total_shares_for_sale')
 
   useEffect(() => {
     if (isNaN(pricePerShare) || isNaN(totalShares)) {
@@ -97,7 +105,7 @@ export function CreateRoundForm({ className, ...props }: ComponentPropsWithoutRe
       <form onSubmit={form.handleSubmit(handleSubmit)} className={cn("space-y-8 w-full", className)} {...props}>
         <FormField
           control={form.control}
-          name="price_per_share_usd_cents"
+          name="round.price_per_share_usd_cents"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Price per Share (USD)</FormLabel>
@@ -116,7 +124,7 @@ export function CreateRoundForm({ className, ...props }: ComponentPropsWithoutRe
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-4">
           <FormField
             control={form.control}
-            name="total_business_shares"
+            name="round.total_business_shares"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Total Business Shares</FormLabel>
@@ -134,7 +142,7 @@ export function CreateRoundForm({ className, ...props }: ComponentPropsWithoutRe
           />
           <FormField
             control={form.control}
-            name="total_shares_for_sale"
+            name="round.total_shares_for_sale"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Total Shares for Sale</FormLabel>
@@ -175,7 +183,7 @@ export function CreateRoundForm({ className, ...props }: ComponentPropsWithoutRe
         <Separator />
         <FormField
           control={form.control}
-          name="description"
+          name="round.description"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Description</FormLabel>
@@ -184,6 +192,22 @@ export function CreateRoundForm({ className, ...props }: ComponentPropsWithoutRe
               </FormControl>
               <FormDescription>
                 Describe this funding round
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="terms.content"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Terms & Conditions</FormLabel>
+              <FormControl>
+                <Textarea {...field} />
+              </FormControl>
+              <FormDescription>
+                Enter the investor terms and conditions for this funding round
               </FormDescription>
               <FormMessage />
             </FormItem>

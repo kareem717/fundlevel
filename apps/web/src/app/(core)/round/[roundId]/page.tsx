@@ -4,9 +4,10 @@ import { InvestForm } from "./(component)/invest-form";
 import { getRoundAction } from "@/actions/round";
 import { notFound } from "next/navigation";
 import { getBusinessAction } from "@/actions/business";
+import { headers } from "next/headers";
 
 export default async function RoundPage({ params }: { params: { roundId: string } }) {
-  const { roundId } = params
+  const { roundId } = await params
   const parsedRoundId = parseInt(roundId)
 
   if (isNaN(parsedRoundId)) {

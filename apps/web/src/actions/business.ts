@@ -6,8 +6,6 @@ import {
 	getBusinessById,
 	getAccountBusinesses as getAccountBusinessesApi,
 	getBusinessRoundsByPage as getBusinessRoundsByPageApi,
-	getBusinessTotalFunding,
-	getBusinessInvestmentsByPage as getBusinessInvestmentsByPageApi,
 	getBusinessMembersByPage as getBusinessMembersByPageApi,
 	getBusinessMemberRoles as getBusinessMemberRolesApi,
 	getBusinessRoundCreateRequirements as getBusinessCreateRoundrequirementsApi,
@@ -89,45 +87,6 @@ export const getBusinessRoundsByPage = actionClientWithAccount
 				},
 				path: {
 					id: businessId,
-				},
-			});
-
-			return res.data;
-		}
-	);
-
-export const getBusinessFunding = actionClient
-	.schema(pathIdSchema)
-	.action(async ({ parsedInput, ctx: { axiosClient } }) => {
-		const res = await getBusinessTotalFunding({
-			client: axiosClient,
-			throwOnError: true,
-			path: { id: parsedInput },
-		});
-
-		return res.data;
-	});
-
-export const getBusinessInvestmentsByPage = actionClientWithAccount
-	.schema(
-		z.object({
-			businessId: pathIdSchema,
-			pagination: offsetPaginationSchema,
-		})
-	)
-	.action(
-		async ({
-			parsedInput: { businessId, pagination },
-			ctx: { axiosClient },
-		}) => {
-			const res = await getBusinessInvestmentsByPageApi({
-				client: axiosClient,
-				throwOnError: true,
-				path: {
-					id: businessId,
-				},
-				query: {
-					...pagination,
 				},
 			});
 

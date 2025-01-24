@@ -98,11 +98,14 @@ export function VerifyOTPForm({
     if (error) {
       console.error(error);
       setIsLoading(false);
-      toast.error("Uh oh!", {
-        description: error.message
+      toast({
+        title: "Uh oh!",
+        description: error.message,
+        variant: "destructive",
       })
     } else {
-      toast.success("Done!", {
+      toast({
+        title: "Done!",
         description: "You've been logged in.",
       });
 

@@ -3,58 +3,12 @@
 import { actionClientWithAccount } from "@/lib/safe-action";
 import {
 	createInvestmentPaymentIntent as createInvestmentPaymentIntentApi,
-	getAccountInvestmentsByPage as getAccountInvestmentsByPageApi,
 	getInvestmentById as getInvestmentByIdApi,
 	createRoundInvestment,
 } from "@repo/sdk";
 import { cache } from "react";
-import { offsetPaginationSchema, pathIdSchema } from "./validations";
+import { pathIdSchema } from "./validations";
 import { zCreateInvestmentParams } from "@repo/sdk/zod";
-
-export const getAccountInvestmentsByPage = actionClientWithAccount
-	.schema(offsetPaginationSchema)
-	.action(async ({ parsedInput, ctx: { axiosClient, account } }) => {
-		if (!account) {
-			throw new Error("Account not found");
-		}
-
-		const resp = await getAccountInvestmentsByPageApi({
-			client: axiosClient,
-			query: parsedInput,
-		});
-
-		return resp.data;
-	});
-
-// export const withdrawInvestment = actionClientWithAccount
-// 	.schema(intIdSchema.required())
-// 	.action(async ({ parsedInput, ctx: { axiosClient } }) => {
-// 		await withdrawInvestmentApi({
-// 			client: axiosClient,
-// 			path: {
-// 				id: parsedInput,
-// 			},
-// 			throwOnError: true,
-// 		});
-// 	});
-
-// export const getInvestmentPaymentIntentClientSecret = actionClientWithAccount
-// 	.schema(intIdSchema.required())
-// 	.action(async ({ parsedInput, ctx: { axiosClient, account } }) => {
-// 		if (!account) {
-// 			throw new Error("Account not found");
-// 		}
-
-// 		const resp = await getInvestmentPaymentIntentClientSecretApi({
-// 			client: axiosClient,
-// 			path: {
-// 				id: parsedInput,
-// 			},
-// 			throwOnError: true,
-// 		});
-
-// 		return resp.data;
-// 	});
 
 export const getInvestmentById = actionClientWithAccount
 	.schema(pathIdSchema)
@@ -103,15 +57,3 @@ export const createInvestmentAction = actionClientWithAccount
 			id: resp.data.id,
 		};
 	});
-
-// export const processInvestment = actionClientWithAccount
-// 	.schema(intIdSchema.required())
-// 	.action(async ({ parsedInput, ctx: { axiosClient } }) => {
-// 		await processInvestmentApi({
-// 			client: axiosClient,
-// 			path: {
-// 				id: parsedInput,
-// 			},
-// 			throwOnError: true,
-// 		});
-// 	});

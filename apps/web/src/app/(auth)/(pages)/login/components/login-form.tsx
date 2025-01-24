@@ -27,7 +27,7 @@ import {
 import { Loader2 } from "lucide-react"
 import { OAuthButtons } from "./oauth-buttons"
 import { useRouter } from "next/navigation"
-import { toast } from "@repo/ui/hooks/use-toast"
+import { useToast } from "@repo/ui/hooks/use-toast"
 import Link from "next/link"
 
 const formSchema = z.object({

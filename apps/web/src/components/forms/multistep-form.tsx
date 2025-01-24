@@ -16,7 +16,8 @@ import { useToast } from "@repo/ui/hooks/use-toast";
 export type Step<T extends FieldValues> = {
   content: React.ReactNode;
   fields: Path<T>[];
-  stepAction?: () => void | string | Promise<void | string>;
+  onNext?: () => void | string | Promise<void | string>;
+  onBack?: () => void | string | Promise<void | string>;
   nextButtonText?: string;
 }
 
@@ -60,9 +61,9 @@ export const MultiStepForm = <T extends FieldValues>({
 
     if (!isValid) return;
 
-    if (steps[step]?.stepAction) {
+    if (steps[step]?.onNext) {
       setIsExecuting(true);
-      const errorText = await steps[step].stepAction();
+      const errorText = await steps[step].onNext();
       setIsExecuting(false);
 
 
@@ -97,8 +98,23 @@ export const MultiStepForm = <T extends FieldValues>({
     }
   };
 
-  const previous = () => {
+  const previous = async () => {
     if (!hasPrevious) return;
+
+    if (steps[step]?.onBack) {
+      setIsExecuting(true);
+      const errorText = await steps[step].onBack();
+      setIsExecuting(false);
+
+      if (errorText) {
+        toast({
+          title: "Uh oh!",
+          description: errorText,
+          variant: "destructive",
+        });
+        return;
+      }
+    }
 
     setStep(step - 1);
   };

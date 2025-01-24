@@ -14,13 +14,10 @@ import { Label } from "@repo/ui/components/label";
 import Link from "next/link";
 import { redirects } from "@/lib/config/redirects";
 import { useAction } from "next-safe-action/hooks";
-import { createInvestmentAction } from "@/actions/investment";
+import { zCreateInvestmentParams } from "@repo/sdk/zod";
+import { getSignatureAction } from "@/actions/terms";
 
-const investFormSchema = z.object({
-  amount: z.string(),
-});
-
-type InvestFormValues = z.infer<typeof investFormSchema>;
+type InvestFormValues = z.infer<typeof zCreateInvestmentParams>;
 
 export interface InvestFormProps extends ComponentPropsWithoutRef<typeof Card> {
   round: Round;
@@ -29,14 +26,27 @@ export interface InvestFormProps extends ComponentPropsWithoutRef<typeof Card> {
 
 export function InvestForm({ round, business, className, ...props }: InvestFormProps) {
   const form = useForm<InvestFormValues>({
-    resolver: zodResolver(investFormSchema),
+    resolver: zodResolver(zCreateInvestmentParams),
     defaultValues: {
-      amount: "",
+      investment: {
+        round_id: round.id,
+        share_quantity: 0,
+      },
+      terms_acceptance: {
+        accepted_at: "",
+        ip_address: "",
+        user_agent: "",
+        terms_id: round.terms_id,
+      },
     },
   });
 
-  const { executeAsync: createInvestment, isExecuting: createInvestmentIsExecuting } = useAction(createInvestmentAction);
-
+  const { executeAsync: getSignature, isExecuting: getSignatureIsExecuting } = useAction(getSignatureAction, {
+    onSuccess: (data) => {
+      form.setValue("terms_acceptance.ip_address", data.data?.ipAddress ?? "");
+      form.setValue("terms_acceptance.user_agent", data.data?.userAgent ?? "");
+    },
+  });
   const handleSubmit = async (data: InvestFormValues) => {
     // Handle form submission
     console.log(data);
@@ -73,37 +83,42 @@ export function InvestForm({ round, business, className, ...props }: InvestFormP
       nextButtonText: "Invest",
     },
     {
-      fields: ["amount"],
+      fields: [],
       content: (
         <Card {...cardProps}>
           <CardHeader>
-            <CardTitle>Investment Details</CardTitle>
-            <CardDescription>Enter your investment amount</CardDescription>
+            <CardTitle>Accept Terms</CardTitle>
+            <CardDescription>
+              Review the round terms and conditions before proceeding with your investment
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            <FormField
-              control={form.control}
-              name="amount"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Amount</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="Enter amount"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <p>TODO: fetch terms and conditions from round</p>
           </CardContent>
-        </Card>
+          <CardFooter>
+            <p className="text-xs text-muted-foreground">
+              By proceeding, you agree to the <Link href={redirects.legal.terms} className="underline text-foreground">Terms of Service</Link> {" "}
+              and <Link href={redirects.legal.privacy} className="underline text-foreground">Privacy Policy</Link>.
+            </p>
+          </CardFooter>
+        </Card >
       ),
+      nextButtonText: "Invest",
+      onNext: async () => {
+        const resp = await getSignature();
+        if (resp?.data) {
+          form.setValue("terms_acceptance.ip_address", resp.data.ipAddress);
+          form.setValue("terms_acceptance.user_agent", resp.data.userAgent);
+          form.setValue("terms_acceptance.accepted_at", new Date().toISOString());
+        } else {
+          return "Failed to get signature data";
+        }
+
+        console.log(form.getValues());
+      },
     },
     {
-      fields: ["amount"],
+      fields: ["investment.share_quantity"],
       content: (
         <Card {...cardProps}>
           <CardHeader>
@@ -113,15 +128,18 @@ export function InvestForm({ round, business, className, ...props }: InvestFormP
           <CardContent>
             <FormField
               control={form.control}
-              name="amount"
+              name="investment.share_quantity"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Amount</FormLabel>
+                  <FormLabel>Shares</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
                       placeholder="Enter amount"
                       {...field}
+                      onChange={(e) => {
+                        field.onChange(e.target.valueAsNumber);
+                      }}
                     />
                   </FormControl>
                   <FormMessage />
@@ -131,6 +149,11 @@ export function InvestForm({ round, business, className, ...props }: InvestFormP
           </CardContent>
         </Card>
       ),
+      onBack: () => {
+        form.setValue("terms_acceptance.accepted_at", "");
+        form.setValue("terms_acceptance.ip_address", "");
+        form.setValue("terms_acceptance.user_agent", "");
+      },
     },
   ];
 

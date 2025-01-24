@@ -43,11 +43,18 @@ export function StripeDashboardRedirector({ className, ...props }: ComponentProp
       if (data?.stripeAccount) {
         setStripeAccount(data.stripeAccount);
       } else {
-        toast.error("Failed to get Stripe account settings link");
+        toast({
+          title: "Failed to get Stripe account settings link",
+          variant: "destructive",
+        });
       }
     },
     onError: () => {
-      toast.error("Failed to get Stripe account settings link");
+      toast({
+        title: "Failed to get Stripe account settings link",
+        description: "An unknown error occurred",
+        variant: "destructive",
+      });
     }
   });
 
