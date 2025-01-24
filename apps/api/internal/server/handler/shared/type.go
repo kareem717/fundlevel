@@ -61,12 +61,10 @@ type GetRoundsByParentAndPageInput struct {
 
 type GetInvestmentsByCursorInput struct {
 	CursorPaginationRequest
-	investment.InvestmentFilter
 }
 
 type GetInvestmentsByPageInput struct {
 	OffsetPaginationRequest
-	investment.InvestmentFilter
 }
 
 type FundingOutput struct {

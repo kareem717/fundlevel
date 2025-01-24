@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"fundlevel/internal/entities/investment"
-	"fundlevel/internal/storage/postgres/helper"
+	"fundlevel/internal/entities/round"
 	postgres "fundlevel/internal/storage/shared"
 
 	"github.com/uptrace/bun"
@@ -26,12 +26,29 @@ func NewInvestmentRepository(db bun.IDB, ctx context.Context) *InvestmentReposit
 func (r *InvestmentRepository) Create(ctx context.Context, investorId int, params investment.CreateInvestmentParams) (investment.Investment, error) {
 	resp := investment.Investment{}
 
-	err := r.db.NewInsert().
-		Model(&params).
-		ModelTableExpr("investments").
-		Value("investor_id", "?", investorId).
-		Returning("*").
-		Scan(ctx, &resp)
+	err := r.db.RunInTx(ctx, nil, func(ctx context.Context, tx bun.Tx) error {
+		terms := round.RoundTerm{}
+
+		err := tx.NewInsert().
+			Model(&params.TermsAcceptance).
+			Scan(ctx, &terms)
+
+		if err != nil {
+			return err
+		}
+
+		err = tx.NewInsert().
+			Model(&params.Investment).
+			Value("terms_acceptance_id", "?", terms.ID).
+			Returning("*").
+			Scan(ctx, &resp)
+
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
 
 	return resp, err
 }
@@ -59,57 +76,33 @@ func (r *InvestmentRepository) GetById(ctx context.Context, id int) (investment.
 	return resp, err
 }
 
-func (r *InvestmentRepository) GetByCursor(ctx context.Context, paginationParams postgres.CursorPagination, filter investment.InvestmentFilter) ([]investment.Investment, error) {
+func (r *InvestmentRepository) GetByCursor(ctx context.Context, paginationParams postgres.CursorPagination) ([]investment.Investment, error) {
 	resp := []investment.Investment{}
 
-	query := r.db.
+	err := r.db.
 		NewSelect().
 		Model(&resp).
-		// Relation("Round").
-		// Relation("Investor").
-		Limit(paginationParams.Limit)
-
-	query = helper.ApplyInvestmentFilter(query, filter)
-
-	cursorCondition := "investment.id >= ?"
-	if filter.SortOrder != "asc" && paginationParams.Cursor > 0 {
-		cursorCondition = "investment.id <= ?"
-	}
-
-	err := query.Where(cursorCondition, paginationParams.Cursor).Scan(ctx, &resp)
+		Limit(paginationParams.Limit).
+		Where("investment.id >= ?", paginationParams.Cursor).
+		Scan(ctx, &resp)
 
 	return resp, err
 }
 
-func (r *InvestmentRepository) GetByPage(ctx context.Context, paginationParams postgres.OffsetPagination, filter investment.InvestmentFilter) ([]investment.Investment, int, error) {
+func (r *InvestmentRepository) GetByPage(ctx context.Context, paginationParams postgres.OffsetPagination) ([]investment.Investment, int, error) {
 	resp := []investment.Investment{}
 	offset := (paginationParams.Page - 1) * paginationParams.PageSize
 
-	query := r.db.
+	count, err := r.db.
 		NewSelect().
 		Model(&resp).
 		// Relation("Round").
 		// Relation("Investor").
 		Offset(offset).
-		Limit(paginationParams.PageSize + 1)
-
-	count, err := helper.ApplyInvestmentFilter(query, filter).ScanAndCount(ctx, &resp)
+		Limit(paginationParams.PageSize+1).
+		ScanAndCount(ctx, &resp)
 
 	return resp, count, err
-}
-
-func (r *InvestmentRepository) Update(ctx context.Context, id int, params investment.UpdateInvestmentParams) (investment.Investment, error) {
-	resp := investment.Investment{}
-
-	err := r.db.NewUpdate().
-		Model(&params).
-		ModelTableExpr("investments").
-		Where("investments.id = ?", id).
-		Returning("*").
-		OmitZero().
-		Scan(ctx, &resp)
-
-	return resp, err
 }
 
 func (r *InvestmentRepository) GetByRoundIdAndAccountId(ctx context.Context, roundId int, accountId int) (investment.Investment, error) {
@@ -124,16 +117,4 @@ func (r *InvestmentRepository) GetByRoundIdAndAccountId(ctx context.Context, rou
 		Scan(ctx)
 
 	return resp, err
-}
-
-func (r *InvestmentRepository) UpdateProcessingAndPendingInvestmentsByRoundId(ctx context.Context, roundId int, status investment.InvestmentStatus) error {
-	_, err := r.db.NewUpdate().
-		Model(&investment.Investment{}).
-		Where("investment.round_id = ?", roundId).
-		//TODO: This is logic doesn't work anymore
-		Where("investment.status IN (?)", bun.In([]investment.InvestmentStatus{investment.InvestmentStatusTerms, investment.InvestmentStatusPayment})).
-		Set("status = ?", status).
-		Exec(ctx)
-
-	return err
 }

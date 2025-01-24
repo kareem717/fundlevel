@@ -31,11 +31,6 @@ type AccountService interface {
 	GetById(ctx context.Context, id int) (account.Account, error)
 	GetByUserId(ctx context.Context, userId uuid.UUID) (account.Account, error)
 
-	GetInvestmentsByCursor(ctx context.Context, accountId int, limit int, cursor int, filter investment.InvestmentFilter) ([]investment.Investment, error)
-	GetInvestmentsByPage(ctx context.Context, accountId int, pageSize int, page int, filter investment.InvestmentFilter) ([]investment.Investment, int, error)
-	GetInvestmentById(ctx context.Context, accountId int, investmentId int) (investment.Investment, error)
-	IsInvestedInRound(ctx context.Context, accountId int, roundId int) (bool, error)
-
 	GetAllBusinesses(ctx context.Context, accountId int) ([]business.Business, error)
 }
 
@@ -53,9 +48,6 @@ type RoundService interface {
 	GetById(ctx context.Context, id int) (round.Round, error)
 	GetByCursor(ctx context.Context, limit int, cursor int) ([]round.Round, error)
 	GetByPage(ctx context.Context, pageSize int, page int) ([]round.Round, int, error)
-
-	GetInvestmentsByCursor(ctx context.Context, roundId int, limit int, cursor int, filter investment.InvestmentFilter) ([]investment.Investment, error)
-	GetInvestmentsByPage(ctx context.Context, roundId int, pageSize int, page int, filter investment.InvestmentFilter) ([]investment.Investment, int, error)
 }
 
 type BusinessService interface {
@@ -75,13 +67,6 @@ type BusinessService interface {
 
 	GetRoundsByPage(ctx context.Context, businessId int, pageSize int, page int) ([]round.Round, int, error)
 	GetRoundsByCursor(ctx context.Context, businessId int, limit int, cursor int) ([]round.Round, error)
-
-	// GetInvestmentsByCursor gets all of the investments received on the rounds related to the business using cursor pagination
-	GetInvestmentsByCursor(ctx context.Context, businessId int, limit int, cursor int, filter investment.InvestmentFilter) ([]investment.Investment, error)
-	GetInvestmentsByPage(ctx context.Context, businessId int, pageSize int, page int, filter investment.InvestmentFilter) ([]investment.Investment, int, error)
-
-	// GetTotalFunding gets the amount the business has successfully raised through rounds
-	GetTotalFunding(ctx context.Context, businessId int) (int, error)
 
 	GetMembersByPage(ctx context.Context, businessId int, pageSize int, page int) ([]business.BusinessMemberWithRoleNameAndAccount, int, error)
 	GetAllMemberRoles(ctx context.Context) ([]business.BusinessMemberRole, error)

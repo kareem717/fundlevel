@@ -193,7 +193,7 @@ func (h *httpHandler) createStripePaymentIntent(ctx context.Context, input *GetI
 	//todo: add ABAC checks
 
 	// just checking if the investment exists, arguably costly
-	investmentRecord, err := h.service.InvestmentService.GetById(ctx, input.ID)
+	_, err := h.service.InvestmentService.GetById(ctx, input.ID)
 	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
@@ -203,28 +203,6 @@ func (h *httpHandler) createStripePaymentIntent(ctx context.Context, input *GetI
 			h.logger.Error("failed to fetch investment", zap.Error(err))
 			return nil, huma.Error500InternalServerError("An error occurred while fetching the investment")
 		}
-	}
-
-	if investmentRecord.PaymentCompletedAt != nil {
-		h.logger.Error("investment payment is already completed", zap.Int("investment id", input.ID))
-		return nil, huma.Error400BadRequest("Investment payment is already completed")
-	}
-
-	if investmentRecord.TermsCompletedAt == nil {
-		h.logger.Error("investment terms are not completed", zap.Int("investment id", input.ID))
-		return nil, huma.Error400BadRequest("Investment terms are not completed")
-	}
-
-	if investmentRecord.ApprovedAt == nil {
-		h.logger.Error("investment requires manual approval but is not approved", zap.Int("investment id", input.ID))
-		return nil, huma.Error400BadRequest("Investment has not been approved")
-	}
-
-	if investmentRecord.Status != investment.InvestmentStatusAwaitingApproval {
-		h.logger.Error("investment status is not awaiting approval",
-			zap.Int("investment id", input.ID),
-			zap.String("status", string(investmentRecord.Status)))
-		return nil, huma.Error400BadRequest("Investment is not in the correct state to create a payment intent")
 	}
 
 	payment, err := h.service.InvestmentService.CreateStripePaymentIntent(ctx, input.ID)

@@ -69,46 +69,6 @@ func RegisterHumaRoutes(
 	}, handler.delete)
 
 	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-business-investments-by-cursor",
-		Method:      http.MethodGet,
-		Path:        "/business/{id}/investments",
-		Summary:     "Get recieved round investments",
-		Description: "Get recieved round investments.",
-		Tags:        []string{"Businesses", "Investments"},
-		Security: []map[string][]string{
-			{"bearerAuth": {}},
-		},
-		Middlewares: huma.Middlewares{
-			func(ctx huma.Context, next func(huma.Context)) {
-				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
-			},
-			func(ctx huma.Context, next func(huma.Context)) {
-				middleware.WithAccount(humaApi)(ctx, next, logger, service)
-			},
-		},
-	}, handler.getInvestmentsByCursor)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-business-investments-by-page",
-		Method:      http.MethodGet,
-		Path:        "/business/{id}/investments/page",
-		Summary:     "Get recieved round investments",
-		Description: "Get recieved round investments.",
-		Tags:        []string{"Businesses", "Investments"},
-		Security: []map[string][]string{
-			{"bearerAuth": {}},
-		},
-		Middlewares: huma.Middlewares{
-			func(ctx huma.Context, next func(huma.Context)) {
-				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
-			},
-			func(ctx huma.Context, next func(huma.Context)) {
-				middleware.WithAccount(humaApi)(ctx, next, logger, service)
-			},
-		},
-	}, handler.getInvestmentsByPage)
-
-	huma.Register(humaApi, huma.Operation{
 		OperationID: "get-business-rounds-by-cursor",
 		Method:      http.MethodGet,
 		Path:        "/business/{id}/rounds",
@@ -125,15 +85,6 @@ func RegisterHumaRoutes(
 		Description: "Get rounds.",
 		Tags:        []string{"Businesses", "Rounds"},
 	}, handler.getRoundsByPage)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-business-total-funding",
-		Method:      http.MethodGet,
-		Path:        "/business/{id}/funding",
-		Summary:     "Get total funding",
-		Description: "Get total funding.",
-		Tags:        []string{"Businesses", "Funding"},
-	}, handler.getTotalFunding)
 
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "onboard-stripe-connected-account",

@@ -93,18 +93,29 @@ func (r *RoundRepository) Delete(ctx context.Context, id int) error {
 	return err
 }
 
-func (r *RoundRepository) Create(
-	ctx context.Context,
-	params round.CreateRoundParams,
-) (round.Round, error) {
+func (r *RoundRepository) Create(ctx context.Context, params round.CreateRoundParams) (round.Round, error) {
 	resp := round.Round{}
 
-	err := r.db.
-		NewInsert().
-		Model(&params).
-		ModelTableExpr("rounds").
-		Returning("*").
-		Scan(ctx, &resp)
+	err := r.db.RunInTx(ctx, nil, func(ctx context.Context, tx bun.Tx) error {
+		err := tx.NewInsert().
+			Model(&params.Round).
+			Returning("*").
+			Scan(ctx, &resp)
+
+		if err != nil {
+			return err
+		}
+
+		_, err = tx.NewInsert().
+			Model(&params.Terms).
+			Exec(ctx)
+
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
 
 	return resp, err
 }

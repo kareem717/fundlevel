@@ -98,46 +98,6 @@ func RegisterHumaRoutes(
 	}, handler.delete)
 
 	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-account-investments-by-cursor",
-		Method:      http.MethodGet,
-		Path:        "/account/{id}/investments",
-		Summary:     "Get round investments",
-		Description: "Get round investments.",
-		Tags:        []string{"Accounts", "Investments"},
-		Security: []map[string][]string{
-			{"bearerAuth": {}},
-		},
-		Middlewares: huma.Middlewares{
-			func(ctx huma.Context, next func(huma.Context)) {
-				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
-			},
-			func(ctx huma.Context, next func(huma.Context)) {
-				middleware.WithAccount(humaApi)(ctx, next, logger, service)
-			},
-		},
-	}, handler.getInvestmentsByCursor)
-
-	huma.Register(humaApi, huma.Operation{
-		OperationID: "get-account-investments-by-page",
-		Method:      http.MethodGet,
-		Path:        "/account/{id}/investments/page",
-		Summary:     "Get round investments",
-		Description: "Get round investments.",
-		Tags:        []string{"Accounts", "Investments"},
-		Security: []map[string][]string{
-			{"bearerAuth": {}},
-		},
-		Middlewares: huma.Middlewares{
-			func(ctx huma.Context, next func(huma.Context)) {
-				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
-			},
-			func(ctx huma.Context, next func(huma.Context)) {
-				middleware.WithAccount(humaApi)(ctx, next, logger, service)
-			},
-		},
-	}, handler.getInvestmentsByPage)
-
-	huma.Register(humaApi, huma.Operation{
 		OperationID: "get-account-businesses",
 		Method:      http.MethodGet,
 		Path:        "/account/{id}/businesses",

@@ -113,69 +113,6 @@ func (h *httpHandler) delete(ctx context.Context, input *struct{}) (*struct{}, e
 	return &struct{}{}, nil
 }
 
-func (h *httpHandler) getInvestmentsByCursor(ctx context.Context, input *shared.GetInvestmentsByCursorInput) (*shared.GetCursorPaginatedInvestmentsOutput, error) {
-	account := utils.GetAuthenticatedAccount(ctx)
-	if account == nil {
-		return nil, huma.Error401Unauthorized("Unauthorized")
-	}
-
-	limit := input.Limit + 1
-
-	investments, err := h.service.AccountService.GetInvestmentsByCursor(ctx, account.ID, limit, input.Cursor, input.InvestmentFilter)
-
-	if err != nil {
-		switch {
-		case errors.Is(err, sql.ErrNoRows):
-			return nil, huma.Error404NotFound("investments not found")
-		default:
-			h.logger.Error("failed to fetch investments", zap.Error(err))
-			return nil, huma.Error500InternalServerError("An error occurred while fetching the investments")
-		}
-	}
-
-	resp := &shared.GetCursorPaginatedInvestmentsOutput{}
-	resp.Body.Message = "Investments fetched successfully"
-	resp.Body.Investments = investments
-
-	if len(investments) == limit {
-		resp.Body.NextCursor = &investments[len(investments)-1].ID
-		resp.Body.HasMore = true
-		resp.Body.Investments = resp.Body.Investments[:len(resp.Body.Investments)-1]
-	}
-
-	return resp, nil
-}
-
-func (h *httpHandler) getInvestmentsByPage(ctx context.Context, input *shared.GetInvestmentsByPageInput) (*shared.GetOffsetPaginatedInvestmentsOutput, error) {
-	account := utils.GetAuthenticatedAccount(ctx)
-	if account == nil {
-		return nil, huma.Error401Unauthorized("Unauthorized")
-	}
-
-	investments, total, err := h.service.AccountService.GetInvestmentsByPage(ctx, account.ID, input.PageSize, input.Page, input.InvestmentFilter)
-
-	if err != nil {
-		switch {
-		case errors.Is(err, sql.ErrNoRows):
-			return nil, huma.Error404NotFound("investments not found")
-		default:
-			h.logger.Error("failed to fetch investments", zap.Error(err))
-			return nil, huma.Error500InternalServerError("An error occurred while fetching the investments")
-		}
-	}
-
-	resp := &shared.GetOffsetPaginatedInvestmentsOutput{}
-	resp.Body.Message = "Investments fetched successfully"
-	resp.Body.Investments = investments
-	resp.Body.Total = total
-	if len(investments) > input.PageSize {
-		resp.Body.HasMore = true
-		resp.Body.Investments = resp.Body.Investments[:len(resp.Body.Investments)-1]
-	}
-
-	return resp, nil
-}
-
 type GetBusinessesOutput struct {
 	Body struct {
 		shared.MessageResponse

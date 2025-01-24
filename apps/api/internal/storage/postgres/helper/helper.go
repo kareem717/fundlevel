@@ -2,7 +2,6 @@ package helper
 
 import (
 	"fmt"
-	"fundlevel/internal/entities/investment"
 	"time"
 
 	"github.com/uptrace/bun"
@@ -44,66 +43,4 @@ func ApplyInArrayFilter[T any](query *bun.SelectQuery, field string, values []T)
 	if len(values) > 0 {
 		query.Where(fmt.Sprintf("%s IN (?)", field), bun.In(values))
 	}
-}
-
-// func ApplyRoundFilter(query *bun.SelectQuery, filter round.RoundFilter) *bun.SelectQuery {
-// 	ApplyTimeRangeFilter(
-// 		query, "round.begins_at",
-// 		filter.MinimumBeginsAt, filter.MaximumBeginsAt,
-// 	)
-
-// 	ApplyTimeRangeFilter(
-// 		query, "round.ends_at",
-// 		filter.MinimumEndsAt, filter.MaximumEndsAt,
-// 	)
-
-// 	ApplyFloatRangeFilter(
-// 		query, "round.percentage_offered",
-// 		filter.MinimumPercentageOffered, filter.MaximumPercentageOffered,
-// 	)
-
-// 	ApplyIntRangeFilter(
-// 		query, "round.percentage_value",
-// 		filter.MinimumPercentageValue, filter.MaximumPercentageValue,
-// 	)
-
-// 	ApplyIntRangeFilter(
-// 		query, "round.investor_count",
-// 		filter.MinimumInvestorCount, filter.MaximumInvestorCount,
-// 	)
-
-// 	ApplyFloatRangeFilter(
-// 		query, "round.buy_in",
-// 		filter.MinimumBuyIn, filter.MaximumBuyIn,
-// 	)
-
-// 	if len(filter.Status) > 0 {
-// 		query.Where("round.status IN (?)", bun.In(filter.Status))
-// 	}
-
-// 	if filter.ValueCurrencies != "" {
-// 		query.Where("round.value_currency = ?", filter.ValueCurrencies)
-// 	}
-
-// 	if filter.SortBy != "" {
-// 		query.OrderExpr(fmt.Sprintf("%s, round.id %s", filter.SortBy, filter.SortOrder))
-// 	} else {
-// 		query.Order(fmt.Sprintf("round.id %s", filter.SortOrder))
-// 	}
-
-// 	return query
-// }
-
-func ApplyInvestmentFilter(query *bun.SelectQuery, filter investment.InvestmentFilter) *bun.SelectQuery {
-	if len(filter.Status) > 0 {
-		query.Where("investment.status IN (?)", bun.In(filter.Status))
-	}
-
-	if filter.SortBy != "" {
-		query.OrderExpr(fmt.Sprintf("%s, investment.id %s", filter.SortBy, filter.SortOrder))
-	} else {
-		query.Order(fmt.Sprintf("investment.id %s", filter.SortOrder))
-	}
-
-	return query
 }

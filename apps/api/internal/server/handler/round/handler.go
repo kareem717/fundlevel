@@ -39,24 +39,24 @@ type CreateRoundInput struct {
 }
 
 func (i *CreateRoundInput) Resolve(ctx huma.Context) []error {
-	if i.Body.TotalBusinessShares <= i.Body.TotalSharesForSale {
+	if i.Body.Round.TotalBusinessShares <= i.Body.Round.TotalSharesForSale {
 		return []error{&huma.ErrorDetail{
 			Message:  "total business shares must be greater than total shares for sale",
 			Location: "totalBusinessShares",
-			Value:    i.Body.TotalBusinessShares,
+			Value:    i.Body.Round.TotalBusinessShares,
 		}}
 	}
 	return nil
 }
 
 func (h *httpHandler) create(ctx context.Context, input *CreateRoundInput) (*RoundResponse, error) {
-	business, err := h.service.BusinessService.GetById(ctx, input.Body.BusinessID)
+	business, err := h.service.BusinessService.GetById(ctx, input.Body.Round.BusinessID)
 	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
 			return nil, huma.Error404NotFound("Business not found")
 		default:
-			h.logger.Error("failed to fetch business", zap.Error(err), zap.Int("business_id", input.Body.BusinessID))
+			h.logger.Error("failed to fetch business", zap.Error(err), zap.Int("business_id", input.Body.Round.BusinessID))
 			return nil, huma.Error500InternalServerError("An error occurred while fetching the business")
 		}
 	}
@@ -66,26 +66,26 @@ func (h *httpHandler) create(ctx context.Context, input *CreateRoundInput) (*Rou
 		return nil, huma.Error401Unauthorized("You must be logged in to create a round")
 	}
 
-	authorized, err := h.service.PermissionService.CanAccountCreateRound(ctx, account.ID, input.Body.BusinessID)
+	authorized, err := h.service.PermissionService.CanAccountCreateRound(ctx, account.ID, input.Body.Round.BusinessID)
 	if err != nil {
-		h.logger.Error("failed to check if account can create round", zap.Error(err), zap.Int("business_id", input.Body.BusinessID), zap.Int("account_id", account.ID))
+		h.logger.Error("failed to check if account can create round", zap.Error(err), zap.Int("business_id", input.Body.Round.BusinessID), zap.Int("account_id", account.ID))
 		return nil, huma.Error500InternalServerError("An error occurred while checking if the account can create the round")
 	}
 
 	if !authorized {
-		h.logger.Error("account does not have permission to create round", zap.Int("business_id", input.Body.BusinessID), zap.Int("account_id", account.ID))
+		h.logger.Error("account does not have permission to create round", zap.Int("business_id", input.Body.Round.BusinessID), zap.Int("account_id", account.ID))
 
 		return nil, huma.Error403Forbidden("Account does not have permission to create round")
 	}
 
 	authorized, err = h.service.PermissionService.CanBusinessCreateRound(ctx, &business)
 	if err != nil {
-		h.logger.Error("failed to check if business can create round", zap.Error(err), zap.Int("business_id", input.Body.BusinessID))
+		h.logger.Error("failed to check if business can create round", zap.Error(err), zap.Int("business_id", input.Body.Round.BusinessID))
 		return nil, huma.Error500InternalServerError("An error occurred while checking if the business can create the round")
 	}
 
 	if !authorized {
-		h.logger.Error("business does not have permission to create round", zap.Int("business_id", input.Body.BusinessID))
+		h.logger.Error("business does not have permission to create round", zap.Int("business_id", input.Body.Round.BusinessID))
 		return nil, huma.Error403Forbidden("Business does not have permission to create round")
 	}
 

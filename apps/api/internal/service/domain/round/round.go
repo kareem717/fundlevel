@@ -22,7 +22,7 @@ func NewRoundService(repositories storage.Repository) *RoundService {
 }
 
 func (s *RoundService) Create(ctx context.Context, params round.CreateRoundParams) (round.Round, error) {
-	businessRecord, err := s.repositories.Business().GetById(ctx, params.BusinessID)
+	businessRecord, err := s.repositories.Business().GetById(ctx, params.Round.BusinessID)
 	if err != nil {
 		return round.Round{}, err
 	}
@@ -31,7 +31,7 @@ func (s *RoundService) Create(ctx context.Context, params round.CreateRoundParam
 		return round.Round{}, errors.New("business is not active")
 	}
 
-	params.Status = round.RoundStatusActive
+	params.Round.Status = round.RoundStatusActive
 
 	return s.repositories.Round().Create(ctx, params)
 }

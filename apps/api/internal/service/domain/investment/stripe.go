@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"slices"
 	"strconv"
-	"time"
 
 	"fundlevel/internal/entities/investment"
 	"fundlevel/internal/entities/position"
@@ -106,40 +105,12 @@ func (s *InvestmentService) HandleStripePaymentIntentCreated(ctx context.Context
 		return fmt.Errorf("failed to convert investment ID to int: %w", err)
 	}
 
-	investmentRecord, err := s.repositories.Investment().GetById(ctx, parsedInvestmentId)
-	if err != nil {
-		return fmt.Errorf("failed to get investment: %w", err)
-	}
-
-	if investmentRecord.PaymentCompletedAt != nil {
-		return fmt.Errorf("investment payment is already completed")
-	}
-
-	if investmentRecord.TermsCompletedAt == nil {
-		return fmt.Errorf("investment terms are not completed")
-	}
-
-	if investmentRecord.ApprovedAt == nil {
-		return fmt.Errorf("investment requires manual approval but is not approved")
-	}
-
-	if investmentRecord.Status != investment.InvestmentStatusAwaitingApproval {
-		return fmt.Errorf("investment is not in the correct state to create a payment intent")
-	}
-
 	err = s.repositories.RunInTx(ctx, func(ctx context.Context, tx storage.Transaction) error {
 		paymentRecord, err := tx.Investment().CreatePayment(ctx, investment.CreateInvestmentPaymentParams{
 			InvestmentID:                    parsedInvestmentId,
 			StripePaymentIntentID:           intent.ID,
 			StripePaymentIntentClientSecret: intent.ClientSecret,
 			Status:                          intent.Status,
-		})
-		if err != nil {
-			return err
-		}
-
-		_, err = tx.Investment().Update(ctx, parsedInvestmentId, investment.UpdateInvestmentParams{
-			Status: investment.InvestmentStatusPayment,
 		})
 		if err != nil {
 			return err
@@ -204,13 +175,6 @@ func (s *InvestmentService) HandleStripePaymentIntentFailed(ctx context.Context,
 		stripe.PaymentIntentCancellationReasonVoidInvoice,
 		stripe.PaymentIntentCancellationReasonAutomatic,
 	}, intent.CancellationReason) {
-		_, err := s.repositories.Investment().Update(ctx, parsedInvestmentId, investment.UpdateInvestmentParams{
-			Status: investment.InvestmentStatusFailedPayment,
-		})
-		if err != nil {
-			return err
-		}
-
 		return nil
 	}
 
@@ -224,7 +188,6 @@ func (s *InvestmentService) HandleStripePaymentIntentFailed(ctx context.Context,
 }
 
 func (s *InvestmentService) HandleStripePaymentIntentSucceeded(ctx context.Context, intentID string) error {
-	now := time.Now()
 	stripe.Key = s.stripeAPIKey
 
 	intent, err := paymentintent.Get(intentID, nil)
@@ -242,25 +205,7 @@ func (s *InvestmentService) HandleStripePaymentIntentSucceeded(ctx context.Conte
 		return fmt.Errorf("failed to convert investment ID to int: %w", err)
 	}
 
-	investmentRecord, err := s.repositories.Investment().GetById(ctx, parsedInvestmentId)
-	if err != nil {
-		return fmt.Errorf("failed to get investment: %w", err)
-	}
-
-	if investmentRecord.Status != investment.InvestmentStatusPayment {
-		return fmt.Errorf("investment status is not payment")
-	}
-
 	err = s.repositories.RunInTx(ctx, func(ctx context.Context, tx storage.Transaction) error {
-		_, err = tx.Investment().Update(ctx, parsedInvestmentId, investment.UpdateInvestmentParams{
-			Status:             investment.InvestmentStatusCompleted,
-			PaymentCompletedAt: &now,
-			CompletedAt:        &now,
-		})
-		if err != nil {
-			return err
-		}
-
 		_, err = tx.Investment().UpdatePayment(ctx, parsedInvestmentId, investment.UpdateInvestmentPaymentParams{
 			Status: intent.Status,
 		})
