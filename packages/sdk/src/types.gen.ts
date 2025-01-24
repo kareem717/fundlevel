@@ -372,15 +372,6 @@ export type MessageResponse = {
   message: string;
 };
 
-export type OnboardStripeConnectedAccountInputBody = {
-  /**
-   * A URL to the JSON Schema for this object.
-   */
-  readonly $schema?: string;
-  refreshURL: string;
-  returnURL: string;
-};
-
 export type RolePermission = {
   description: string;
   id: number;
@@ -520,6 +511,35 @@ export type CreateAccountResponses = {
    */
   201: unknown;
 };
+
+export type GetStripeIdentityVerificationSessionUrlData = {
+  body?: never;
+  path?: never;
+  query?: {
+    returnURL?: string;
+  };
+  url: "/account/stripe-identity";
+};
+
+export type GetStripeIdentityVerificationSessionUrlErrors = {
+  /**
+   * Error
+   */
+  default: ErrorModel;
+};
+
+export type GetStripeIdentityVerificationSessionUrlError =
+  GetStripeIdentityVerificationSessionUrlErrors[keyof GetStripeIdentityVerificationSessionUrlErrors];
+
+export type GetStripeIdentityVerificationSessionUrlResponses = {
+  /**
+   * OK
+   */
+  200: UrlOutputBody;
+};
+
+export type GetStripeIdentityVerificationSessionUrlResponse =
+  GetStripeIdentityVerificationSessionUrlResponses[keyof GetStripeIdentityVerificationSessionUrlResponses];
 
 export type DeleteAccountData = {
   body?: never;
@@ -1269,11 +1289,14 @@ export type GetStripeDashboardUrlResponse =
   GetStripeDashboardUrlResponses[keyof GetStripeDashboardUrlResponses];
 
 export type OnboardStripeConnectedAccountData = {
-  body: OnboardStripeConnectedAccountInputBody;
+  body?: never;
   path: {
     id: number;
   };
-  query?: never;
+  query?: {
+    returnURL?: string;
+    refreshURL?: string;
+  };
   url: "/business/{id}/stripe-onboard";
 };
 

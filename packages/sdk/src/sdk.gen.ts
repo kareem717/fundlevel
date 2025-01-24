@@ -11,6 +11,9 @@ import type {
   GetAccountResponse,
   CreateAccountData,
   CreateAccountError,
+  GetStripeIdentityVerificationSessionUrlData,
+  GetStripeIdentityVerificationSessionUrlError,
+  GetStripeIdentityVerificationSessionUrlResponse,
   DeleteAccountData,
   DeleteAccountError,
   DeleteAccountResponse,
@@ -167,6 +170,25 @@ export const createAccount = <ThrowOnError extends boolean = false>(
       ...options?.headers,
     },
     url: "/account",
+  });
+};
+
+/**
+ * Get stripe identity verification session url
+ * Get stripe identity verification session url for the currently authenticated account.
+ */
+export const getStripeIdentityVerificationSessionUrl = <
+  ThrowOnError extends boolean = false,
+>(
+  options?: Options<GetStripeIdentityVerificationSessionUrlData, ThrowOnError>,
+) => {
+  return (options?.client ?? client).get<
+    GetStripeIdentityVerificationSessionUrlResponse,
+    GetStripeIdentityVerificationSessionUrlError,
+    ThrowOnError
+  >({
+    ...options,
+    url: "/account/stripe-identity",
   });
 };
 
@@ -641,16 +663,12 @@ export const onboardStripeConnectedAccount = <
 >(
   options: Options<OnboardStripeConnectedAccountData, ThrowOnError>,
 ) => {
-  return (options?.client ?? client).post<
+  return (options?.client ?? client).get<
     OnboardStripeConnectedAccountResponse,
     OnboardStripeConnectedAccountError,
     ThrowOnError
   >({
     ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
     url: "/business/{id}/stripe-onboard",
   });
 };

@@ -465,12 +465,6 @@ export const zMessageResponse = z.object({
   message: z.string(),
 });
 
-export const zOnboardStripeConnectedAccountInputBody = z.object({
-  $schema: z.string().url().readonly().optional(),
-  refreshURL: z.string().default("https://fundlevel.app"),
-  returnURL: z.string().default("https://fundlevel.app"),
-});
-
 export const zRolePermission = z.object({
   description: z.string(),
   id: z.number().gte(1),
@@ -551,6 +545,8 @@ export const zUpsertBusinessLegalSectionParams = z.object({
 });
 
 export const zGetAccountResponse = zSingleAccountResponseBody;
+
+export const zGetStripeIdentityVerificationSessionUrlResponse = zUrlOutputBody;
 
 export const zDeleteAccountResponse = z.void();
 
