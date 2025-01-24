@@ -10,8 +10,8 @@ import (
 	"fundlevel/internal/entities/position"
 	"fundlevel/internal/storage"
 
-	"github.com/stripe/stripe-go/v80"
-	"github.com/stripe/stripe-go/v80/paymentintent"
+	"github.com/stripe/stripe-go/v81"
+	"github.com/stripe/stripe-go/v81/paymentintent"
 )
 
 const (

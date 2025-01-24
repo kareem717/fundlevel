@@ -51,6 +51,10 @@ type AccountRepository interface {
 	GetByUserId(ctx context.Context, userId uuid.UUID) (account.Account, error)
 
 	GetAllBusinesses(ctx context.Context, accountId int) ([]business.Business, error)
+
+	GetStripeIdentity(ctx context.Context, accountId int) (account.StripeIdentity, error)
+	DeleteStripeIdentity(ctx context.Context, accountId int) error
+	CreateStripeIdentity(ctx context.Context, accountId int, params account.CreateStripeIdentityParams) (account.StripeIdentity, error)
 }
 
 type BusinessRepository interface {

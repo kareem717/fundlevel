@@ -11,12 +11,14 @@ import (
 
 type AccountService struct {
 	repositories storage.Repository
+	stripeAPIKey string
 }
 
-// NewTestService returns a new instance of test service.
-func NewAccountService(repositories storage.Repository) *AccountService {
+// NewAccountService returns a new instance of account service.
+func NewAccountService(repositories storage.Repository, stripeAPIKey string) *AccountService {
 	return &AccountService{
 		repositories: repositories,
+		stripeAPIKey: stripeAPIKey,
 	}
 }
 

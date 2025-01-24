@@ -48,8 +48,8 @@ github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UV
 github.com/stretchr/testify v1.7.0/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
 github.com/stretchr/testify v1.9.0 h1:HtqpIVDClZ4nwg75+f6Lvsy/wHu+3BoSGCbBAcpTsTg=
 github.com/stretchr/testify v1.9.0/go.mod h1:r2ic/lqez/lEtzL7wO/rwa5dbSLXVDPFyf8C91i36aY=
-github.com/stripe/stripe-go/v80 v80.2.0 h1:rCl1PyIAG+gi7tj9prOuWt6XNjKK0BjMoZSvtdiQwUc=
-github.com/stripe/stripe-go/v80 v80.2.0/go.mod h1:n7tsDvdltYlzOLGXlseMSJM6ik5uv3guptqtae/VSak=
+github.com/stripe/stripe-go/v81 v81.2.0 h1:AduJoFed6xif3uG7rXRa2LxY+AJiialVA1hXDak1aUk=
+github.com/stripe/stripe-go/v81 v81.2.0/go.mod h1:C/F4jlmnGNacvYtBp/LUHCvVUJEZffFQCobkzwY1WOo=
 github.com/supabase-community/functions-go v0.0.0-20220927045802-22373e6cb51d h1:LOrsumaZy615ai37h9RjUIygpSubX+F+6rDct1LIag0=
 github.com/supabase-community/functions-go v0.0.0-20220927045802-22373e6cb51d/go.mod h1:nnIju6x3+OZSojtGQCQzu0h3kv4HdIZk+UWCnNxtSak=
 github.com/supabase-community/gotrue-go v1.2.1 h1:8FvrCyx++6evFtOu1aOpbsfEy6s24HGCbBfPMmQW7qI=

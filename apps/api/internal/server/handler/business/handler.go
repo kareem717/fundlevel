@@ -193,10 +193,8 @@ func (h *httpHandler) getRoundsByPage(ctx context.Context, input *shared.GetRoun
 
 type OnboardStripeConnectedAccountInput struct {
 	shared.PathIDParam
-	Body struct {
-		ReturnURL  string `json:"returnURL" default:"https://fundlevel.app"`
-		RefreshURL string `json:"refreshURL" default:"https://fundlevel.app"`
-	} `json:"body"`
+	ReturnURL  string `query:"returnURL" default:"https://fundlevel.app"`
+	RefreshURL string `query:"refreshURL" default:"https://fundlevel.app"`
 }
 
 func (h *httpHandler) onboardStripeConnectedAccount(ctx context.Context, input *OnboardStripeConnectedAccountInput) (*shared.URLOutput, error) {
@@ -229,7 +227,7 @@ func (h *httpHandler) onboardStripeConnectedAccount(ctx context.Context, input *
 		return nil, huma.Error403Forbidden("Account is not authorized to onboard stripe connected account")
 	}
 
-	link, err := h.service.BusinessService.CreateStripeAccountLink(ctx, business.StripeAccount.StripeConnectedAccountID, input.Body.ReturnURL, input.Body.RefreshURL)
+	link, err := h.service.BusinessService.CreateStripeAccountLink(ctx, business.StripeAccount.StripeConnectedAccountID, input.ReturnURL, input.RefreshURL)
 	if err != nil {
 		return nil, huma.Error500InternalServerError("An error occurred while creating the account link")
 	}

@@ -6,8 +6,8 @@ import (
 	"fundlevel/internal/entities/business"
 	"fundlevel/internal/storage"
 
-	"github.com/stripe/stripe-go/v80"
-	"github.com/stripe/stripe-go/v80/account"
+	"github.com/stripe/stripe-go/v81"
+	"github.com/stripe/stripe-go/v81/account"
 )
 
 type BusinessService struct {

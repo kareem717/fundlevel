@@ -144,3 +144,26 @@ func (h *httpHandler) getAllBusinesses(ctx context.Context, input *struct{}) (*G
 
 	return resp, nil
 }
+
+type GetStripeIdentityVerificationSessionURLInput struct {
+	ReturnURL string `query:"returnURL" default:"https://fundlevel.app"`
+}
+
+func (h *httpHandler) getStripeIdentityVerificationSessionURL(ctx context.Context, input *GetStripeIdentityVerificationSessionURLInput) (*shared.URLOutput, error) {
+	account := utils.GetAuthenticatedAccount(ctx)
+	if account == nil {
+		return nil, huma.Error401Unauthorized("Unauthorized")
+	}
+
+	url, err := h.service.AccountService.GetStripeIdentityVerificationSessionURL(ctx, account.ID, input.ReturnURL)
+	if err != nil {
+		h.logger.Error("failed to get stripe identity verification session url", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while getting the stripe identity verification session url")
+	}
+
+	resp := &shared.URLOutput{}
+	resp.Body.Message = "Stripe identity verification session url fetched successfully"
+	resp.Body.URL = url
+
+	return resp, nil
+}

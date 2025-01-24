@@ -21,7 +21,7 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/stripe/stripe-go/v80"
+	"github.com/stripe/stripe-go/v81"
 )
 
 type AccountService interface {
@@ -32,6 +32,11 @@ type AccountService interface {
 	GetByUserId(ctx context.Context, userId uuid.UUID) (account.Account, error)
 
 	GetAllBusinesses(ctx context.Context, accountId int) ([]business.Business, error)
+
+	GetStripeIdentityVerificationSessionURL(ctx context.Context, accountID int, returnURL string) (string, error)
+	CreateStripeIdentity(ctx context.Context, accountID int, params account.CreateStripeIdentityParams) (account.StripeIdentity, error)
+	DeleteStripeIdentity(ctx context.Context, accountID int) error
+	GetStripeIdentity(ctx context.Context, accountID int) (account.StripeIdentity, error)
 }
 
 type IndustryService interface {
@@ -166,7 +171,7 @@ func NewService(
 		IndustryService:   industryService.NewIndustryService(repositories),
 		HealthService:     healthService.NewHealthService(repositories),
 		AnalyticService:   analyticService.NewAnalyticService(repositories),
-		AccountService:    accountService.NewAccountService(repositories),
+		AccountService:    accountService.NewAccountService(repositories, stripeAPIKey),
 		RoundService:      roundService.NewRoundService(repositories),
 		InvestmentService: investmentService.NewInvestmentService(repositories, stripeAPIKey, feePercentage),
 		BusinessService:   businessService.NewBusinessService(repositories, stripeAPIKey),

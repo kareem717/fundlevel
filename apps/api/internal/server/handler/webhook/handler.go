@@ -5,14 +5,16 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fundlevel/internal/entities/account"
 	"fundlevel/internal/entities/business"
 	"fundlevel/internal/server/handler/shared"
 	"fundlevel/internal/service"
 	"io"
+	"strconv"
 
 	"github.com/danielgtaylor/huma/v2"
-	"github.com/stripe/stripe-go/v80"
-	"github.com/stripe/stripe-go/v80/webhook"
+	"github.com/stripe/stripe-go/v81"
+	"github.com/stripe/stripe-go/v81/webhook"
 	"go.uber.org/zap"
 )
 
@@ -135,18 +137,34 @@ func (h *httpHandler) handleStripeWebhook(ctx context.Context, input *shared.Han
 			h.logger.Error("failed to handle stripe payment intent success", zap.Error(err))
 			return nil, huma.Error500InternalServerError("Failed to handle stripe payment intent success")
 		}
-	// case stripe.EventTypePaymentIntentCanceled:
-	// 	eventBody, err := shared.ParseStripeWebhook[stripe.PaymentIntent](event)
-	// 	if err != nil {
-	// 		h.logger.Error("failed to parse webhook json", zap.Error(err), zap.String("eventType", string(event.Type)))
-	// 		return nil, huma.Error500InternalServerError("Failed to parse webhook json")
-	// 	}
 
-	// 	err = h.service.BillingService.HandleInvestmentPaymentIntentCancelled(ctx, eventBody.ID)
-	// 	if err != nil {
-	// 		h.logger.Error("failed to handle stripe checkout success", zap.Error(err))
-	// 		return nil, huma.Error500InternalServerError("Failed to handle stripe checkout success")
-	// 	}
+	case stripe.EventTypeIdentityVerificationSessionVerified:
+		eventBody, err := shared.ParseStripeWebhook[stripe.IdentityVerificationSession](event)
+		if err != nil {
+			h.logger.Error("failed to parse webhook json", zap.Error(err), zap.String("eventType", string(event.Type)))
+			return nil, huma.Error500InternalServerError("Failed to parse webhook json")
+		}
+
+		parsedClientReferenceID, err := strconv.Atoi(eventBody.ClientReferenceID)
+		if err != nil {
+			h.logger.Error("failed to parse client reference id", zap.Error(err))
+			return nil, huma.Error500InternalServerError("Failed to parse client reference id")
+		}
+
+		status := account.StripeIdentityStatus(eventBody.Status)
+		if status != account.StripeIdentityStatusVerified {
+			h.logger.Error("identity verification session not verified", zap.String("clientReferenceID", eventBody.ClientReferenceID), zap.String("status", string(status)))
+			return nil, huma.Error500InternalServerError("Identity verification session not verified")
+		}
+
+		_, err = h.service.AccountService.CreateStripeIdentity(ctx, parsedClientReferenceID, account.CreateStripeIdentityParams{
+			Status:   status,
+			RemoteID: eventBody.ID,
+		})
+		if err != nil {
+			h.logger.Error("failed to create stripe identity", zap.Error(err))
+			return nil, huma.Error500InternalServerError("Failed to create stripe identity")
+		}
 
 	default:
 		h.logger.Error("unhandled event type", zap.String("eventType", string(event.Type)))

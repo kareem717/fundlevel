@@ -5,7 +5,7 @@ import (
 
 	"fundlevel/internal/entities/investment"
 
-	"github.com/stripe/stripe-go/v80"
+	"github.com/stripe/stripe-go/v81"
 )
 
 func (r *InvestmentRepository) CreatePayment(ctx context.Context, params investment.CreateInvestmentPaymentParams) (investment.InvestmentPayment, error) {

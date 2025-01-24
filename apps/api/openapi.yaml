@@ -888,25 +888,6 @@ components:
       required:
         - message
       type: object
-    OnboardStripeConnectedAccountInputBody:
-      additionalProperties: false
-      properties:
-        $schema:
-          description: A URL to the JSON Schema for this object.
-          example: https://example.com/schemas/OnboardStripeConnectedAccountInputBody.json
-          format: uri
-          readOnly: true
-          type: string
-        refreshURL:
-          default: https://fundlevel.app
-          type: string
-        returnURL:
-          default: https://fundlevel.app
-          type: string
-      required:
-        - returnURL
-        - refreshURL
-      type: object
     RolePermission:
       additionalProperties: false
       properties:
@@ -1172,7 +1153,7 @@ paths:
         - bearerAuth: []
       summary: Get account by user id
       tags:
-        - Account
+        - Accounts
     post:
       description: Create a account.
       operationId: create-account
@@ -1196,6 +1177,36 @@ paths:
       summary: Create a account
       tags:
         - Accounts
+  /account/stripe-identity:
+    get:
+      description: Get stripe identity verification session url for the currently authenticated account.
+      operationId: get-stripe-identity-verification-session-url
+      parameters:
+        - explode: false
+          in: query
+          name: returnURL
+          schema:
+            default: https://fundlevel.app
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/URLOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Get stripe identity verification session url
+      tags:
+        - Accounts
+        - Stripe
   /account/{id}:
     delete:
       description: Delete a account.
@@ -1984,7 +1995,7 @@ paths:
       tags:
         - Businesses
   /business/{id}/stripe-onboard:
-    post:
+    get:
       description: Onboard Stripe connected account.
       operationId: onboard-stripe-connected-account
       parameters:
@@ -1995,12 +2006,18 @@ paths:
             format: int64
             minimum: 1
             type: integer
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/OnboardStripeConnectedAccountInputBody"
-        required: true
+        - explode: false
+          in: query
+          name: returnURL
+          schema:
+            default: https://fundlevel.app
+            type: string
+        - explode: false
+          in: query
+          name: refreshURL
+          schema:
+            default: https://fundlevel.app
+            type: string
       responses:
         "200":
           content:

@@ -88,7 +88,7 @@ func RegisterHumaRoutes(
 
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "onboard-stripe-connected-account",
-		Method:      http.MethodPost,
+		Method:      http.MethodGet,
 		Path:        "/business/{id}/stripe-onboard",
 		Summary:     "Onboard Stripe connected account",
 		Description: "Onboard Stripe connected account.",

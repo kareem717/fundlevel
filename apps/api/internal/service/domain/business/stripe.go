@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"fundlevel/internal/entities/business"
 
-	"github.com/stripe/stripe-go/v80"
-	"github.com/stripe/stripe-go/v80/account"
-	"github.com/stripe/stripe-go/v80/accountlink"
-	"github.com/stripe/stripe-go/v80/loginlink"
+	"github.com/stripe/stripe-go/v81"
+	"github.com/stripe/stripe-go/v81/account"
+	"github.com/stripe/stripe-go/v81/accountlink"
+	"github.com/stripe/stripe-go/v81/loginlink"
 )
 
 // CreateAccountLink creates a new on boarding session for a Stripe Connect connected account
