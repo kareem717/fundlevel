@@ -100,6 +100,10 @@ const main = async () => {
 				x(
 					{ min: 1, max: 10 },
 					{
+						round_terms: {
+							content: "Just pretend this is a real terms of service",
+							...generateTimestamp(),
+						},
 						...generateBusinessRound(),
 						...generateTimestamp(),
 					}
