@@ -165,6 +165,19 @@ func (h *httpHandler) create(ctx context.Context, input *CreateInvestmentRequest
 		return nil, huma.Error401Unauthorized("You must be logged in to create an investment")
 	}
 
+	// TODO: switch to authorization service
+	_, err := h.service.AccountService.GetStripeIdentity(ctx, account.ID)
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			h.logger.Error("must have a stripe identity to create an investment", zap.Int("account id", account.ID))
+			return nil, huma.Error403Forbidden("Must have a stripe identity to create an investment")
+		default:
+			h.logger.Error("failed to fetch stripe identity", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the stripe identity")
+		}
+	}
+
 	investment, err := h.service.InvestmentService.Create(ctx, account.ID, input.Body)
 	if err != nil {
 		h.logger.Error("failed to create investment", zap.Error(err))

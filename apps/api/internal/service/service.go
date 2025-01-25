@@ -146,6 +146,8 @@ type PermissionService interface {
 	CanManageBusinessLegalSection(ctx context.Context, accountId int, businessId int) (bool, error)
 
 	CanCreateBusiness(ctx context.Context, account account.Account) (bool, error)
+
+	CanInvestInRound(ctx context.Context, identity account.StripeIdentity) (bool, error)
 }
 
 type Service struct {
