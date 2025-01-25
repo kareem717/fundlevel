@@ -146,7 +146,9 @@ func (h *httpHandler) getAllBusinesses(ctx context.Context, input *struct{}) (*G
 }
 
 type GetStripeIdentityVerificationSessionURLInput struct {
-	ReturnURL string `query:"returnURL" default:"https://fundlevel.app"`
+	Body struct {
+		ReturnURL string `json:"return_url" default:"https://fundlevel.app"`
+	}
 }
 
 func (h *httpHandler) getStripeIdentityVerificationSessionURL(ctx context.Context, input *GetStripeIdentityVerificationSessionURLInput) (*shared.URLOutput, error) {
@@ -155,7 +157,7 @@ func (h *httpHandler) getStripeIdentityVerificationSessionURL(ctx context.Contex
 		return nil, huma.Error401Unauthorized("Unauthorized")
 	}
 
-	url, err := h.service.AccountService.GetStripeIdentityVerificationSessionURL(ctx, account.ID, input.ReturnURL)
+	url, err := h.service.AccountService.GetStripeIdentityVerificationSessionURL(ctx, account.ID, input.Body.ReturnURL)
 	if err != nil {
 		h.logger.Error("failed to get stripe identity verification session url", zap.Error(err))
 		return nil, huma.Error500InternalServerError("An error occurred while getting the stripe identity verification session url")
@@ -164,6 +166,28 @@ func (h *httpHandler) getStripeIdentityVerificationSessionURL(ctx context.Contex
 	resp := &shared.URLOutput{}
 	resp.Body.Message = "Stripe identity verification session url fetched successfully"
 	resp.Body.URL = url
+
+	return resp, nil
+}
+
+type GetStripeIdentityOutput struct {
+	Body account.StripeIdentity
+}
+
+func (h *httpHandler) getStripeIdentity(ctx context.Context, input *struct{}) (*GetStripeIdentityOutput, error) {
+	account := utils.GetAuthenticatedAccount(ctx)
+	if account == nil {
+		return nil, huma.Error401Unauthorized("Unauthorized")
+	}
+
+	stripeIdentity, err := h.service.AccountService.GetStripeIdentity(ctx, account.ID)
+	if err != nil {
+		h.logger.Error("failed to get stripe identity", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while getting the stripe identity")
+	}
+
+	resp := &GetStripeIdentityOutput{}
+	resp.Body = stripeIdentity
 
 	return resp, nil
 }

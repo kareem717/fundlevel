@@ -119,7 +119,7 @@ func RegisterHumaRoutes(
 
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "get-stripe-identity-verification-session-url",
-		Method:      http.MethodGet,
+		Method:      http.MethodPost,
 		Path:        "/account/stripe-identity",
 		Summary:     "Get stripe identity verification session url",
 		Description: "Get stripe identity verification session url for the currently authenticated account.",
@@ -136,4 +136,24 @@ func RegisterHumaRoutes(
 			},
 		},
 	}, handler.getStripeIdentityVerificationSessionURL)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-stripe-identity",
+		Method:      http.MethodGet,
+		Path:        "/account/stripe-identity",
+		Summary:     "Get stripe identity",
+		Description: "Get stripe identity for the currently authenticated account.",
+		Tags:        []string{"Accounts", "Stripe"},
+		Security: []map[string][]string{
+			{"bearerAuth": {}},
+		},
+		Middlewares: huma.Middlewares{
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
+			},
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithAccount(humaApi)(ctx, next, logger, service)
+			},
+		},
+	}, handler.getStripeIdentity)
 }

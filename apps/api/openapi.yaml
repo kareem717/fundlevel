@@ -695,6 +695,21 @@ components:
         - stripeAccount
         - message
       type: object
+    GetStripeIdentityVerificationSessionURLInputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/GetStripeIdentityVerificationSessionURLInputBody.json
+          format: uri
+          readOnly: true
+          type: string
+        return_url:
+          default: https://fundlevel.app
+          type: string
+      required:
+        - return_url
+      type: object
     ImpressionCountOutputBody:
       additionalProperties: false
       properties:
@@ -1066,6 +1081,41 @@ components:
         - investment
         - message
       type: object
+    StripeIdentity:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/StripeIdentity.json
+          format: uri
+          readOnly: true
+          type: string
+        account_id:
+          format: int64
+          minimum: 1
+          type: integer
+        created_at:
+          format: date-time
+          type: string
+        remote_id:
+          minimum: 1
+          type: string
+        status:
+          enum:
+            - verified
+            - canceled
+          type: string
+        updated_at:
+          format: date-time
+          nullable: true
+          type: string
+      required:
+        - account_id
+        - status
+        - remote_id
+        - created_at
+        - updated_at
+      type: object
     URLOutputBody:
       additionalProperties: false
       properties:
@@ -1179,15 +1229,36 @@ paths:
         - Accounts
   /account/stripe-identity:
     get:
+      description: Get stripe identity for the currently authenticated account.
+      operationId: get-stripe-identity
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StripeIdentity"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Get stripe identity
+      tags:
+        - Accounts
+        - Stripe
+    post:
       description: Get stripe identity verification session url for the currently authenticated account.
       operationId: get-stripe-identity-verification-session-url
-      parameters:
-        - explode: false
-          in: query
-          name: returnURL
-          schema:
-            default: https://fundlevel.app
-            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GetStripeIdentityVerificationSessionURLInputBody"
+        required: true
       responses:
         "200":
           content:
