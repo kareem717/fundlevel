@@ -16,8 +16,8 @@ import { useToast } from "@repo/ui/hooks/use-toast";
 export type Step<T extends FieldValues> = {
   content: React.ReactNode;
   fields: Path<T>[];
-  onNext?: () => void | string | Promise<void | string>;
-  onBack?: () => void | string | Promise<void | string>;
+  onNext?: () => void | boolean | Promise<void | boolean>;
+  onBack?: () => void | boolean | Promise<void | boolean>;
   nextButtonText?: string;
 }
 
@@ -63,16 +63,11 @@ export const MultiStepForm = <T extends FieldValues>({
 
     if (steps[step]?.onNext) {
       setIsExecuting(true);
-      const errorText = await steps[step].onNext();
+      const canContinue = await steps[step].onNext();
       setIsExecuting(false);
 
 
-      if (errorText) {
-        toast({
-          title: "Uh oh!",
-          description: errorText,
-          variant: "destructive",
-        });
+      if (canContinue === false) {
         return;
       }
 
@@ -103,15 +98,10 @@ export const MultiStepForm = <T extends FieldValues>({
 
     if (steps[step]?.onBack) {
       setIsExecuting(true);
-      const errorText = await steps[step].onBack();
+      const canContinue = await steps[step].onBack();
       setIsExecuting(false);
 
-      if (errorText) {
-        toast({
-          title: "Uh oh!",
-          description: errorText,
-          variant: "destructive",
-        });
+      if (canContinue === false) {
         return;
       }
     }

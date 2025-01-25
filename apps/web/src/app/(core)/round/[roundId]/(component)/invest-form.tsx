@@ -7,7 +7,7 @@ import { Input } from "@repo/ui/components/input";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Business, Round } from "@repo/sdk";
+import { Business, getAccount, getStripeIdentity, Round } from "@repo/sdk";
 import { ComponentPropsWithoutRef } from "react";
 import { cn, formatCurrency, formatNumber } from "@/lib/utils";
 import { Label } from "@repo/ui/components/label";
@@ -19,6 +19,9 @@ import { getSignatureAction } from "@/actions/terms";
 import { TooltipContent, TooltipTrigger, Tooltip } from "@repo/ui/components/tooltip";
 import { TooltipProvider } from "@repo/ui/components/tooltip";
 import { Info } from "lucide-react";
+import { useToast } from "@repo/ui/hooks/use-toast";
+import { ToastAction } from "@repo/ui/components/toast";
+import { useRouter } from "next/navigation";
 
 type InvestFormValues = z.infer<typeof zCreateInvestmentParams>;
 
@@ -28,9 +31,10 @@ export interface InvestFormProps extends ComponentPropsWithoutRef<typeof Card> {
 }
 
 export function InvestForm({ round, business, className, ...props }: InvestFormProps) {
-  const totalSharesForSale = round.total_shares_for_sale;
-  const formattedSharePrice = formatCurrency(round.price_per_share_usd_cents / 100, "USD", "en-US");
+  const { toast } = useToast()
+  const router = useRouter()
 
+  const totalSharesForSale = round.total_shares_for_sale;
   const form = useForm<InvestFormValues>({
     resolver: zodResolver(zCreateInvestmentParams.extend({
       investment: z.object({
@@ -51,7 +55,7 @@ export function InvestForm({ round, business, className, ...props }: InvestFormP
     },
   });
 
-  const { executeAsync: getSignature, isExecuting: getSignatureIsExecuting } = useAction(getSignatureAction, {
+  const { executeAsync: getSignature } = useAction(getSignatureAction, {
     onSuccess: (data) => {
       form.setValue("terms_acceptance.ip_address", data.data?.ipAddress ?? "");
       form.setValue("terms_acceptance.user_agent", data.data?.userAgent ?? "");
@@ -122,10 +126,22 @@ export function InvestForm({ round, business, className, ...props }: InvestFormP
           form.setValue("terms_acceptance.user_agent", resp.data.userAgent);
           form.setValue("terms_acceptance.accepted_at", new Date().toISOString());
         } else {
-          return "Failed to get signature data";
+          toast({
+            title: "Uh oh!",
+            description: "Failed to get signature data",
+            variant: "destructive",
+            action: (
+              <ToastAction
+                altText="Retry"
+                onClick={() => getSignature()}
+              >
+                Retry
+              </ToastAction>
+            )
+          });
+          return false
         }
 
-        console.log(form.getValues());
       },
     },
     {
@@ -302,6 +318,45 @@ export function InvestForm({ round, business, className, ...props }: InvestFormP
           </CardContent>
         </Card>
       ),
+      onNext: async () => {
+        const resp = await getAccount();
+        if (!resp?.data) {
+          toast({
+            title: "Hold on!",
+            description: "We need you to log in and verify your identity before you can invest.",
+            variant: "destructive",
+            action: (
+              <ToastAction
+                altText="Create Account"
+                onClick={() => router.push(redirects.auth.createAccount)}
+              >
+                Create Account
+              </ToastAction>
+            )
+          })
+
+          return false
+        }
+
+        const identity = await getStripeIdentity();
+        if (!identity?.data) {
+          toast({
+            title: "Hold on!",
+            description: "We need you to log in and verify your identity before you can invest.",
+            variant: "destructive",
+            action: (
+              <ToastAction
+                altText="Verify Identity"
+                onClick={() => router.push(redirects.app.settings.account)}
+              >
+                Verify Identity
+              </ToastAction>
+            )
+          })
+
+          return false
+        }
+      },
       onBack: () => {
         form.setValue("terms_acceptance.accepted_at", "");
         form.setValue("terms_acceptance.ip_address", "");
