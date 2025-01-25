@@ -27,11 +27,12 @@ func (r *InvestmentRepository) Create(ctx context.Context, investorId int, param
 	resp := investment.Investment{}
 
 	err := r.db.RunInTx(ctx, nil, func(ctx context.Context, tx bun.Tx) error {
-		terms := round.RoundTerm{}
+		acceptance := round.RoundTermsAcceptance{}
 
 		err := tx.NewInsert().
 			Model(&params.TermsAcceptance).
-			Scan(ctx, &terms)
+			Returning("*").
+			Scan(ctx, &acceptance)
 
 		if err != nil {
 			return err
@@ -39,7 +40,8 @@ func (r *InvestmentRepository) Create(ctx context.Context, investorId int, param
 
 		err = tx.NewInsert().
 			Model(&params.Investment).
-			Value("terms_acceptance_id", "?", terms.ID).
+			Value("investor_id", "?", investorId).
+			Value("terms_acceptance_id", "?", acceptance.ID).
 			Returning("*").
 			Scan(ctx, &resp)
 

@@ -2,7 +2,6 @@ package round
 
 import (
 	"fundlevel/internal/entities/shared"
-	"net"
 	"time"
 
 	"github.com/uptrace/bun"
@@ -27,15 +26,17 @@ type RoundTermsAcceptance struct {
 	shared.IntegerID
 	TermsID    int       `json:"terms_id" minimum:"1"`
 	AcceptedAt time.Time `json:"accepted_at"`
-	IPAddress  net.IP    `json:"ip_address" minLength:"1" maxLength:"45"`
+	IPAddress  string    `json:"ip_address" minLength:"1" maxLength:"45"`
 	UserAgent  string    `json:"user_agent" minLength:"1" maxLength:"500"`
 
 	shared.Timestamps
 }
 
 type CreateRoundTermsAcceptanceParams struct {
+	bun.BaseModel `bun:"table:round_terms_acceptances"`
+
 	TermsID    int       `json:"terms_id" minimum:"1"`
 	AcceptedAt time.Time `json:"accepted_at"`
-	IPAddress  net.IP    `json:"ip_address" minLength:"1" maxLength:"45"`
+	IPAddress  string    `json:"ip_address" minLength:"1" maxLength:"45"`
 	UserAgent  string    `json:"user_agent" minLength:"1" maxLength:"500"`
 }

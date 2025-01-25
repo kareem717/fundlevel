@@ -22,8 +22,10 @@ type Investment struct {
 
 type CreateInvestmentParams struct {
 	Investment struct {
-		RoundID           int `json:"round_id" minimum:"1"`
-		ShareQuantity     int `json:"share_quantity" minimum:"1"`
+		bun.BaseModel `bun:"table:investments"`
+
+		RoundID       int `json:"round_id" minimum:"1"`
+		ShareQuantity int `json:"share_quantity" minimum:"1"`
 	} `json:"investment"`
 	TermsAcceptance round.CreateRoundTermsAcceptanceParams `json:"terms_acceptance"`
 }

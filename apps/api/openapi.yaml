@@ -394,7 +394,6 @@ components:
           format: date-time
           type: string
         ip_address:
-          format: ipv4
           maxLength: 45
           minLength: 1
           type: string
