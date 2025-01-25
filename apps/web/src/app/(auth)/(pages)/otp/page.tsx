@@ -1,4 +1,4 @@
-import { VerifyOTPForm } from "./components/verify-otp-form";
+import { VerifyOTPForm } from "@/components/auth/verify-otp-form";
 import { getSessionAction } from "@/actions/auth";
 import { redirect } from "next/navigation";
 import { redirects } from "@/lib/config/redirects";
