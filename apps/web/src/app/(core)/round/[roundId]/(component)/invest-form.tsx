@@ -24,6 +24,7 @@ import { ToastAction } from "@repo/ui/components/toast";
 import { useRouter } from "next/navigation";
 import { getAccountAction, getStripeIdentityAction } from "@/actions/auth";
 import { createInvestmentAction } from "@/actions/investment";
+import { RichTextDisplay } from "@/components/rich-text-display";
 
 type InvestFormValues = z.infer<typeof zCreateInvestmentParams>;
 
@@ -105,7 +106,7 @@ export function InvestForm({ round, business, className, ...props }: InvestFormP
           </CardHeader>
           <CardContent>
             <Label className="text-sm font-medium mb-4 text-muted-foreground">Round Description</Label>
-            <p>{round.description}</p>
+            <RichTextDisplay content={round.description} />
           </CardContent>
           <CardFooter>
             <p className="text-xs text-muted-foreground">

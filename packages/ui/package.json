@@ -52,6 +52,7 @@
   "devDependencies": {
     "@repo/eslint-config": "*",
     "@repo/typescript-config": "*",
+    "@tailwindcss/typography": "^0.5.16",
     "@turbo/gen": "^2.2.3",
     "@types/node": "^20",
     "@types/react": "^19",
