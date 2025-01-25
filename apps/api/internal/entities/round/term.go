@@ -17,6 +17,7 @@ type RoundTerm struct {
 }
 
 type CreateRoundTermParams struct {
+	bun.BaseModel `bun:"table:round_terms"`
 	Content string `json:"content" minLength:"10" maxLength:"3000"`
 }
 
