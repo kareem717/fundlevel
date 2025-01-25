@@ -17,7 +17,8 @@ export const redirects = {
 		terms: "/terms",
 	},
 	auth: {
-		callback: "/auth/callback",
+		callback: (redirect?: string) =>
+			redirect ? `/auth/callback?redirect=${redirect}` : `/auth/callback`,
 		login: "/login",
 		logout: "/logout",
 		afterLogout: "/login",
@@ -66,6 +67,7 @@ export const redirects = {
 				},
 			},
 		}),
+		round: (roundId: number) => `/round/${roundId}`,
 		settings: {
 			account: "/account",
 		},

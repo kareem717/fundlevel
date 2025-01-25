@@ -32,9 +32,9 @@ export const createRound = actionClientWithAccount
 	});
 
 /**
- * Get round by ID
+ * Gets public round information by id
  */
-export const getRoundAction = cache(
+export const getPublicRoundAction = cache(
 	actionClient
 		.schema(pathIdSchema)
 		.action(async ({ parsedInput, ctx: { axiosClient } }) => {

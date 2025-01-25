@@ -25,11 +25,15 @@ import { useToast } from "@repo/ui/hooks/use-toast";
 export interface CreateAccountFormProps extends ComponentPropsWithoutRef<"div"> {
   defaultFirstName?: string
   defaultLastName?: string
+  redirect?: string
+  onSuccess?: () => void
 }
 
 export function CreateAccountForm({
   defaultFirstName = "",
   defaultLastName = "",
+  redirect = redirects.app.root,
+  onSuccess,
   className,
   ...props
 }: CreateAccountFormProps) {
@@ -47,11 +51,17 @@ export function CreateAccountForm({
         onSuccess: () => {
           toast({
             title: "Done!",
-            description: "Your account has been created successfully. We are redirecting you to the app.",
+            description: `Your account has been created successfully.${redirect ? ` We are redirecting you now.` : ""}`,
           })
 
           form.reset()
-          router.push(redirects.app.root)
+
+          onSuccess?.()
+
+          if (redirect) {
+            router.push(redirect)
+          }
+
         },
         onError: ({ error }) => {
           toast({

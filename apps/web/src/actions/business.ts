@@ -1,6 +1,6 @@
 "use server";
 
-import { actionClientWithAccount } from "@/lib/safe-action";
+import { actionClient, actionClientWithAccount } from "@/lib/safe-action";
 import {
 	createBusiness,
 	getBusinessById,
@@ -55,6 +55,23 @@ export const getBusinessesAction = cache(
  */
 export const getBusinessAction = cache(
 	actionClientWithAccount
+		.schema(pathIdSchema)
+		.action(async ({ parsedInput: id, ctx: { axiosClient } }) => {
+			const res = await getBusinessById({
+				client: axiosClient,
+				throwOnError: true,
+				path: { id },
+			});
+
+			return res.data;
+		})
+);
+
+/**
+ * Gets public business information by id
+ */
+export const getPublicBusinessAction = cache(
+	actionClient
 		.schema(pathIdSchema)
 		.action(async ({ parsedInput: id, ctx: { axiosClient } }) => {
 			const res = await getBusinessById({

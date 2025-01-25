@@ -1,9 +1,9 @@
 import { FormPageLayout } from "@/components/layouts/form-page-layout";
 import { LogoDiv } from "@/components/logo-div";
 import { InvestForm } from "./components/invest-form";
-import { getRoundAction } from "@/actions/round";
+import { getPublicRoundAction } from "@/actions/round";
 import { notFound } from "next/navigation";
-import { getBusinessAction } from "@/actions/business";
+import { getPublicBusinessAction } from "@/actions/business";
 import Link from "next/link";
 import { redirects } from "@/lib/config/redirects";
 import { buttonVariants } from "@repo/ui/components/button";
@@ -17,7 +17,7 @@ export default async function RoundPage({ params }: { params: { roundId: string 
   }
 
   //TODO: handle error
-  const roundResponse = await getRoundAction(parsedRoundId)
+  const roundResponse = await getPublicRoundAction(parsedRoundId)
   const round = roundResponse?.data
 
   if (!round) {
@@ -26,7 +26,7 @@ export default async function RoundPage({ params }: { params: { roundId: string 
   }
 
   // TODO: handle error
-  const businessResponse = await getBusinessAction(round.business_id)
+  const businessResponse = await getPublicBusinessAction(round.business_id)
   const business = businessResponse?.data?.business
 
   if (!business) {
@@ -41,7 +41,7 @@ export default async function RoundPage({ params }: { params: { roundId: string 
         <InvestForm round={round} business={business} />
         {/* TODO: just for testing */}
         <div className="grid grid-cols-2 gap-4 max-w-md self-center">
-          <Link href={redirects.auth.login} className={buttonVariants()}>
+          <Link href={`${redirects.auth.login}?redirect=${redirects.app.round(parsedRoundId)}`} className={buttonVariants()}>
             Login
           </Link>
           <Link href={redirects.auth.createAccount} className={buttonVariants()}  >

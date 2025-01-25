@@ -30,6 +30,7 @@ import {
   InputOTPSlot,
 } from "@repo/ui/components/input-otp"
 import { useRouter } from "next/navigation"
+import { createParser, useQueryState } from "nuqs"
 
 const formSchema = z.object({
   otp: z.string().length(6, {
@@ -40,13 +41,24 @@ const formSchema = z.object({
   }),
 })
 
+const parseAsEmail = createParser({
+  parse(queryValue) {
+    const isValid = z.string().email().safeParse(queryValue).success
+    if (!isValid) return null
+    return queryValue
+  },
+  serialize(value) {
+    return value
+  }
+})
+
 export interface VerifyOTPFormProps extends ComponentPropsWithoutRef<"div"> {
-  email: string;
+  redirectTo?: string;
 }
 
 export function VerifyOTPForm({
   className,
-  email,
+  redirectTo = redirects.auth.afterLogin,
   ...props
 }: VerifyOTPFormProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -54,6 +66,12 @@ export function VerifyOTPForm({
   const [cooldown, setCooldown] = useState<number>(0);
   const router = useRouter();
   const { toast } = useToast();
+  const [email] = useQueryState("email", parseAsEmail)
+
+  if (!email) {
+    throw new Error("Invalid email")
+  }
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -109,7 +127,7 @@ export function VerifyOTPForm({
         description: "You've been logged in.",
       });
 
-      router.push(redirects.auth.afterLogin);
+      router.push(redirectTo);
     }
   }
 
@@ -120,7 +138,7 @@ export function VerifyOTPForm({
     const sb = createClient();
 
     const { error } = await sb.auth.signInWithOtp({
-      email,
+      email: email as string,
     });
 
     if (error) {

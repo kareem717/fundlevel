@@ -10,6 +10,8 @@ export async function GET(request: Request) {
 	const requestUrl = new URL(request.url);
 	const code = requestUrl.searchParams.get("code");
 	const error = requestUrl.searchParams.get("error");
+	const redirect =
+		requestUrl.searchParams.get("redirect") ?? redirects.auth.afterLogin;
 
 	if (error) {
 		const errMsg =
@@ -31,7 +33,5 @@ export async function GET(request: Request) {
 	}
 
 	// URL to redirect to after sign up process completes
-	return NextResponse.redirect(
-		`${env.NEXT_PUBLIC_APP_URL}${redirects.auth.afterLogin}`
-	);
+	return NextResponse.redirect(`${env.NEXT_PUBLIC_APP_URL}${redirect}`);
 }

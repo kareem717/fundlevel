@@ -1,6 +1,6 @@
 "use client"
 
-import { useBusiness } from "../../../../components/providers/business-provider";
+import { useBusiness } from "../../../../../components/providers/business-provider";
 import { redirects } from "@/lib/config/redirects";
 import Link from "next/link";
 

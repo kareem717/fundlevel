@@ -33,9 +33,10 @@ export function OAuthButton({ icon, provider, isLoading, handleLogin, disabled, 
 export interface OAuthButtonsProps extends ComponentPropsWithoutRef<"div"> {
   providers: { provider: OAuthProvider, icon: keyof typeof Icons }[];
   disabled?: boolean;
+  redirectTo?: string;
 }
 
-export function OAuthButtons({ providers, disabled, className, ...props }: OAuthButtonsProps) {
+export function OAuthButtons({ providers, disabled, className, redirectTo, ...props }: OAuthButtonsProps) {
   const [isLoading, setIsLoading] = useState<string | null>(null);
   const router = useRouter();
 
@@ -46,7 +47,7 @@ export function OAuthButtons({ providers, disabled, className, ...props }: OAuth
     const { data, error } = await sb.auth.signInWithOAuth({
       provider: provider,
       options: {
-        redirectTo: `${env.NEXT_PUBLIC_APP_URL}${redirects.auth.callback}`
+        redirectTo: `${env.NEXT_PUBLIC_APP_URL}${redirects.auth.callback(redirectTo)}`
       }
     });
 

@@ -41,10 +41,15 @@ const formSchema = z.object({
   }),
 })
 
+export interface LoginFormProps extends ComponentPropsWithoutRef<"div"> {
+  afterOAuthRedirect?: string;
+}
+
 export function LoginForm({
   className,
+  afterOAuthRedirect,
   ...props
-}: ComponentPropsWithoutRef<"div">) {
+}: LoginFormProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
   const { toast } = useToast();
@@ -80,6 +85,7 @@ export function LoginForm({
         title: "Check your email",
         description: "We've sent you a OTP to login.",
       });
+
       router.push(redirects.auth.otp(values.email));
     }
   }
@@ -126,7 +132,7 @@ export function LoginForm({
                 Or continue with
               </span>
             </div>
-            <OAuthButtons providers={[{ provider: "google", icon: "google" }, { provider: "github", icon: "github" }]} disabled={isLoading} />
+            <OAuthButtons providers={[{ provider: "google", icon: "google" }, { provider: "github", icon: "github" }]} disabled={isLoading} redirectTo={afterOAuthRedirect} />
           </div>
         </CardContent>
       </Card>

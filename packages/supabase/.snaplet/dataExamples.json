@@ -392,6 +392,11 @@
     "description": "This column provides detailed information about each investment round associated with the platform, including the stage of the funding round, the amount raised, the investors involved, and any relevant milestones or achievements of the businesses participating in the round. It may also include descriptions of the business model and market potential of the startups seeking investment."
   },
   {
+    "input": "public stripe_identities remote_id",
+    "examples": [],
+    "description": ""
+  },
+  {
     "input": "auth users aud",
     "examples": [
       "web_app_1",
