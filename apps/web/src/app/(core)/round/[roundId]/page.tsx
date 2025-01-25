@@ -1,10 +1,12 @@
 import { FormPageLayout } from "@/components/layouts/form-page-layout";
 import { LogoDiv } from "@/components/logo-div";
-import { InvestForm } from "./(component)/invest-form";
+import { InvestForm } from "./components/invest-form";
 import { getRoundAction } from "@/actions/round";
 import { notFound } from "next/navigation";
 import { getBusinessAction } from "@/actions/business";
-import { headers } from "next/headers";
+import Link from "next/link";
+import { redirects } from "@/lib/config/redirects";
+import { buttonVariants } from "@repo/ui/components/button";
 
 export default async function RoundPage({ params }: { params: { roundId: string } }) {
   const { roundId } = await params
@@ -37,6 +39,15 @@ export default async function RoundPage({ params }: { params: { roundId: string 
       <div className="flex w-full max-w-2xl flex-col gap-6">
         <LogoDiv className="self-center w-40" />
         <InvestForm round={round} business={business} />
+        {/* TODO: just for testing */}
+        <div className="grid grid-cols-2 gap-4 max-w-md self-center">
+          <Link href={redirects.auth.login} className={buttonVariants()}>
+            Login
+          </Link>
+          <Link href={redirects.auth.createAccount} className={buttonVariants()}  >
+            Create Account
+          </Link>
+        </div>
       </div>
     </FormPageLayout>
   )

@@ -26,7 +26,7 @@ const searchParamsCache = createSearchParamsCache({
 export default async function OTPPage({ searchParams }: { searchParams: Promise<{ email: string }> }) {
   const session = await getSessionAction()
 
-  if (!!session?.data) {
+  if (session?.data) {
     return redirect(redirects.auth.logout)
   }
 
