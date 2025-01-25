@@ -7,7 +7,7 @@ import { Input } from "@repo/ui/components/input";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Business, getAccount, getStripeIdentity, Round } from "@repo/sdk";
+import { Business, Round } from "@repo/sdk";
 import { ComponentPropsWithoutRef } from "react";
 import { cn, formatCurrency, formatNumber } from "@/lib/utils";
 import { Label } from "@repo/ui/components/label";
@@ -22,6 +22,8 @@ import { Info } from "lucide-react";
 import { useToast } from "@repo/ui/hooks/use-toast";
 import { ToastAction } from "@repo/ui/components/toast";
 import { useRouter } from "next/navigation";
+import { getAccountAction, getStripeIdentityAction } from "@/actions/auth";
+import { createInvestmentAction } from "@/actions/investment";
 
 type InvestFormValues = z.infer<typeof zCreateInvestmentParams>;
 
@@ -61,16 +63,34 @@ export function InvestForm({ round, business, className, ...props }: InvestFormP
       form.setValue("terms_acceptance.user_agent", data.data?.userAgent ?? "");
     },
   });
+
+
+  const { executeAsync: createInvestment } = useAction(createInvestmentAction, {
+    onError: () => {
+      toast({
+        title: "Uh oh!",
+        description: "Failed to create investment",
+        variant: "destructive",
+      });
+    },
+    onSuccess: ({ data }) => {
+      toast({
+        title: "Done!",
+        description: `Your investment has been submitted! ID: ${data?.id}`,
+      });
+
+      router.push(redirects.app.root);
+    },
+  });
+
   const handleSubmit = async (data: InvestFormValues) => {
-    // Handle form submission
-    console.log(data);
+    await createInvestment(data);
   };
 
   const cardProps = {
     className: cn("w-full", className),
     ...props,
   }
-
 
   const steps: Step<InvestFormValues>[] = [
     {
@@ -307,7 +327,7 @@ export function InvestForm({ round, business, className, ...props }: InvestFormP
                             </TooltipContent>
                           </Tooltip>
                         </span>
-                        {formatNumber(form.watch("investment.share_quantity") / round.total_shares_for_sale, 1, 5, true, "en-US")}%
+                        {formatNumber((form.watch("investment.share_quantity") / round.total_shares_for_sale) * 100, 1, 5, true, "en-US")}%
                       </div>
                     </CardContent>
                   </Card>
@@ -319,7 +339,7 @@ export function InvestForm({ round, business, className, ...props }: InvestFormP
         </Card>
       ),
       onNext: async () => {
-        const resp = await getAccount();
+        const resp = await getAccountAction();
         if (!resp?.data) {
           toast({
             title: "Hold on!",
@@ -338,7 +358,7 @@ export function InvestForm({ round, business, className, ...props }: InvestFormP
           return false
         }
 
-        const identity = await getStripeIdentity();
+        const identity = await getStripeIdentityAction();
         if (!identity?.data) {
           toast({
             title: "Hold on!",
@@ -370,8 +390,6 @@ export function InvestForm({ round, business, className, ...props }: InvestFormP
       form={form}
       steps={steps}
       handleSubmit={handleSubmit}
-      successAction={() => "/"}
-      successPageText="Your investment has been submitted!"
       className="gap-6"
     />
   );
