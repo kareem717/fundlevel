@@ -156,7 +156,7 @@ export const zCreateInvestmentParams = z.object({
   }),
   terms_acceptance: z.object({
     accepted_at: z.string().datetime(),
-    ip_address: z.string().ip().min(1).max(45),
+    ip_address: z.string().min(1).max(45),
     terms_id: z.number().gte(1),
     user_agent: z.string().min(1).max(500),
   }),
@@ -195,7 +195,7 @@ export const zCreateRoundTermParams = z.object({
 
 export const zCreateRoundTermsAcceptanceParams = z.object({
   accepted_at: z.string().datetime(),
-  ip_address: z.string().ip().min(1).max(45),
+  ip_address: z.string().min(1).max(45),
   terms_id: z.number().gte(1),
   user_agent: z.string().min(1).max(500),
 });
