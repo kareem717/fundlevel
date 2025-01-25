@@ -23,7 +23,7 @@ import {
 import { ComponentPropsWithoutRef } from "react"
 import Link from "next/link"
 import { redirects } from "@/lib/config/redirects"
-import { BadgeCheck, Bell, ChevronsUpDown, CreditCard, LogOut, Sparkles } from "lucide-react";
+import { ChevronsUpDown, LogOut, User } from "lucide-react";
 import { ModeToggle } from "@/components/mode-toggle";
 import { useAuth } from "./providers/auth-provider";
 
@@ -89,24 +89,11 @@ export function SidebarUser({ ...props }: ComponentPropsWithoutRef<typeof Sideba
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Sparkles />
-                Upgrade to Pro
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
-                Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard />
-                Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell />
-                Notifications
+              <DropdownMenuItem asChild>
+                <Link href={redirects.app.settings.account} >
+                  <User />
+                  Account
+                </Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />

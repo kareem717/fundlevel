@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 export default function CreateBusiness() {
   return (
     <div className="flex flex-col gap-4 h-full justify-center items-center">
-      <Card className="self-center">
+      <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>Create Business</CardTitle>
         </CardHeader>

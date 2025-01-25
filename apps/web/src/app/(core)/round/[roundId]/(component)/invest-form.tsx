@@ -1,6 +1,6 @@
 "use client";
 
-import { MultiStepForm, Step } from "@/components/forms/multistep-form";
+import { MultiStepForm, Step } from "@/components/multistep-form";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@repo/ui/components/card";
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@repo/ui/components/form";
 import { Input } from "@repo/ui/components/input";

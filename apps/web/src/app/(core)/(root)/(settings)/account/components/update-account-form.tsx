@@ -83,7 +83,8 @@ export function UpdateAccountForm({ className, onSuccess, ...props }: UpdateAcco
           )}
         />
         <Button type="submit" className="w-full flex justify-center items-center">
-          {isExecuting && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />}  Update account
+          {isExecuting && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />}
+          Update
         </Button>
       </form>
     </Form>

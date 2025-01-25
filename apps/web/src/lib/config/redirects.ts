@@ -66,5 +66,8 @@ export const redirects = {
 				},
 			},
 		}),
+		settings: {
+			account: "/account",
+		},
 	},
 };

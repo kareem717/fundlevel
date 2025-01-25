@@ -132,6 +132,17 @@ const dashboard: NavigationMenu[] = [
 			},
 		],
 	},
+	{
+		name: "Settings",
+		path: redirects.app.root,
+		items: [
+			{
+				title: "Account",
+				url: redirects.app.settings.account,
+				icon: Icons.user,
+			},
+		],
+	},
 ];
 
 /**

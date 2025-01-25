@@ -1,6 +1,6 @@
 "use server";
 
-import { actionClient, actionClientWithAccount } from "@/lib/safe-action";
+import { actionClientWithAccount } from "@/lib/safe-action";
 import {
 	createBusiness,
 	getBusinessById,
@@ -156,7 +156,7 @@ export const getStripeAccountSettingsLink = actionClientWithAccount
 			const res = await onboardStripeConnectedAccountApi({
 				client: axiosClient,
 				throwOnError: true,
-				body: {
+				query: {
 					refreshURL,
 					returnURL,
 				},

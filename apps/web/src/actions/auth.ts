@@ -6,9 +6,15 @@ import {
 	actionClientWithUser,
 } from "@/lib/safe-action";
 import { createClient } from "@/lib/utils/supabase/server";
-import { createAccount, updateAccount } from "@repo/sdk";
+import {
+	createAccount,
+	updateAccount,
+	getStripeIdentityVerificationSessionUrl,
+	getStripeIdentity,
+} from "@repo/sdk";
 import { zCreateAccountParams, zUpdateAccountParams } from "@repo/sdk/zod";
 import { cache } from "react";
+import { z } from "zod";
 
 export const createAccountAction = actionClientWithUser
 	.schema(zCreateAccountParams)
@@ -68,3 +74,26 @@ export const updateAccountAction = actionClientWithAccount
 			throwOnError: true,
 		});
 	});
+
+export const getStripeIdentityUrlAction = actionClientWithAccount
+	.schema(z.string().url())
+	.action(async ({ parsedInput, ctx: { axiosClient } }) => {
+		const { data } = await getStripeIdentityVerificationSessionUrl({
+			client: axiosClient,
+			body: {
+				return_url: parsedInput,
+			},
+		});
+
+		return data?.url;
+	});
+
+export const getStripeIdentityAction = cache(
+	actionClientWithAccount.action(async ({ ctx: { axiosClient } }) => {
+		const { data } = await getStripeIdentity({
+			client: axiosClient,
+		});
+
+		return data;
+	})
+);

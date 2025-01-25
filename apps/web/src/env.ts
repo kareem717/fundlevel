@@ -8,10 +8,10 @@ export const env = createEnv({
 			.default("development"),
 	},
 	client: {
-		NEXT_PUBLIC_APP_URL: z.string().url().min(1),
+		NEXT_PUBLIC_APP_URL: z.string().url().min(1).default("http://localhost:3000"),
 		NEXT_PUBLIC_SUPABASE_URL: z.string().url().min(1),
 		NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1),
-		NEXT_PUBLIC_BACKEND_API_URL: z.string().url().min(1),
+		NEXT_PUBLIC_BACKEND_API_URL: z.string().url().min(1).default("http://localhost:8080"),
 		NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN: z.string().min(1),
 		NEXT_PUBLIC_FEE_PERCENTAGE: z.coerce.number().min(0).max(1),
 		NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string().min(1),
