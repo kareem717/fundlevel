@@ -1,5 +1,7 @@
 import { getAccountAction, getUserAction } from "@/actions/auth";
 import { CreateAccountForm } from "@/components/auth/create-account-form";
+import { LegalContainer } from "@/components/legal-container";
+import { Card, CardTitle, CardDescription, CardHeader, CardContent } from "@repo/ui/components/card";
 import { redirects } from "@/lib/config/redirects";
 import { redirect } from "next/navigation";
 
@@ -20,9 +22,21 @@ export default async function CreateAccountPage() {
   const [firstName = "", lastName = ""] = userFullName.split(" ")
 
   return (
-    <CreateAccountForm 
-      defaultFirstName={firstName.toString()} 
-      defaultLastName={lastName.toString()} 
-    />
+    <LegalContainer>
+      <Card>
+        <CardHeader className="text-center">
+          <CardTitle className="text-xl">Create Account</CardTitle>
+          <CardDescription>
+            Create an account to get started
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <CreateAccountForm
+            defaultFirstName={firstName.toString()}
+            defaultLastName={lastName.toString()}
+          />
+        </CardContent>
+      </Card>
+    </LegalContainer>
   )
 }

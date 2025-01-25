@@ -3,31 +3,25 @@
 import { LoginForm } from "@/components/auth/login-form"
 import { Dialog, DialogTitle, DialogDescription, DialogHeader, DialogContent } from "@repo/ui/components/dialog"
 import { useRouter, useSearchParams } from "next/navigation"
-import { useState } from "react"
 
 export default function LoginModal() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const [open, setOpen] = useState(true)
 
   const redirect = searchParams.get('redirect')
 
-  const handleOpenChange = (open: boolean) => {
-    if (!open) {
-      router.back()
-    }
-
-    setOpen(open)
-  }
-
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent>
+    <Dialog open={true} onOpenChange={() => !open && router.back()}>
+      <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>Confirm OTP</DialogTitle>
-          <DialogDescription>Please enter the OTP sent to your email to continue with your investment.</DialogDescription>
+          <DialogTitle>Login</DialogTitle>
+          <DialogDescription>
+            Please login to continue with your investment.
+          </DialogDescription>
         </DialogHeader>
-        <LoginForm afterOAuthRedirect={redirect ?? undefined} />
+        <div className="px-4 pt-4">
+          <LoginForm afterOAuthRedirect={redirect ?? undefined} />
+        </div>
       </DialogContent>
     </Dialog>
   )

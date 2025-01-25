@@ -8,20 +8,18 @@ import { useRouter } from "next/navigation"
 export default function LoginModal() {
   const router = useRouter()
 
-  const handleOpenChange = (open: boolean) => {
-    if (!open) {
-      router.back()
-    }
-  }
-
   return (
-    <Dialog open={true} onOpenChange={handleOpenChange}>
-      <DialogContent>
+    <Dialog open={true} onOpenChange={() => !open && router.back()}>
+      <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>Confirm OTP</DialogTitle>
-          <DialogDescription>Please enter the OTP sent to your email to continue with your investment.</DialogDescription>
+          <DialogDescription>
+            Please enter the OTP sent to your email to continue with your investment.
+          </DialogDescription>
         </DialogHeader>
-        <VerifyOTPForm redirectTo={redirects.auth.createAccount} />
+        <div className="px-4 pt-4">
+          <VerifyOTPForm redirectTo={redirects.auth.createAccount} />
+        </div>
       </DialogContent>
     </Dialog>
   )
