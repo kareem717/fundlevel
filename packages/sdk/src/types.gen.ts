@@ -295,6 +295,14 @@ export type GetStripeAccountOutputBody = {
   stripeAccount: BusinessStripeAccount;
 };
 
+export type GetStripeIdentityVerificationSessionUrlInputBody = {
+  /**
+   * A URL to the JSON Schema for this object.
+   */
+  readonly $schema?: string;
+  return_url: string;
+};
+
 export type ImpressionCountOutputBody = {
   /**
    * A URL to the JSON Schema for this object.
@@ -438,6 +446,18 @@ export type SingleInvestmentResponseBody = {
   message: string;
 };
 
+export type StripeIdentity = {
+  /**
+   * A URL to the JSON Schema for this object.
+   */
+  readonly $schema?: string;
+  account_id: number;
+  created_at: string;
+  remote_id: string;
+  status: "verified" | "canceled";
+  updated_at: string | null;
+};
+
 export type UrlOutputBody = {
   /**
    * A URL to the JSON Schema for this object.
@@ -512,12 +532,37 @@ export type CreateAccountResponses = {
   201: unknown;
 };
 
-export type GetStripeIdentityVerificationSessionUrlData = {
+export type GetStripeIdentityData = {
   body?: never;
   path?: never;
-  query?: {
-    returnURL?: string;
-  };
+  query?: never;
+  url: "/account/stripe-identity";
+};
+
+export type GetStripeIdentityErrors = {
+  /**
+   * Error
+   */
+  default: ErrorModel;
+};
+
+export type GetStripeIdentityError =
+  GetStripeIdentityErrors[keyof GetStripeIdentityErrors];
+
+export type GetStripeIdentityResponses = {
+  /**
+   * OK
+   */
+  200: StripeIdentity;
+};
+
+export type GetStripeIdentityResponse =
+  GetStripeIdentityResponses[keyof GetStripeIdentityResponses];
+
+export type GetStripeIdentityVerificationSessionUrlData = {
+  body: GetStripeIdentityVerificationSessionUrlInputBody;
+  path?: never;
+  query?: never;
   url: "/account/stripe-identity";
 };
 

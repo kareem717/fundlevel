@@ -378,6 +378,11 @@ export const zGetStripeAccountOutputBody = z.object({
   stripeAccount: zBusinessStripeAccount,
 });
 
+export const zGetStripeIdentityVerificationSessionUrlInputBody = z.object({
+  $schema: z.string().url().readonly().optional(),
+  return_url: z.string().default("https://fundlevel.app"),
+});
+
 export const zImpressionCountOutputBody = z.object({
   $schema: z.string().url().readonly().optional(),
   count: z.number(),
@@ -519,6 +524,15 @@ export const zSingleInvestmentResponseBody = z.object({
   message: z.string(),
 });
 
+export const zStripeIdentity = z.object({
+  $schema: z.string().url().readonly().optional(),
+  account_id: z.number().gte(1),
+  created_at: z.string().datetime(),
+  remote_id: z.string(),
+  status: z.enum(["verified", "canceled"]),
+  updated_at: z.union([z.string().datetime(), z.null()]),
+});
+
 export const zUrlOutputBody = z.object({
   $schema: z.string().url().readonly().optional(),
   message: z.string(),
@@ -545,6 +559,8 @@ export const zUpsertBusinessLegalSectionParams = z.object({
 });
 
 export const zGetAccountResponse = zSingleAccountResponseBody;
+
+export const zGetStripeIdentityResponse = zStripeIdentity;
 
 export const zGetStripeIdentityVerificationSessionUrlResponse = zUrlOutputBody;
 

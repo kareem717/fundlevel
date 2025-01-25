@@ -11,6 +11,9 @@ import type {
   GetAccountResponse,
   CreateAccountData,
   CreateAccountError,
+  GetStripeIdentityData,
+  GetStripeIdentityError,
+  GetStripeIdentityResponse,
   GetStripeIdentityVerificationSessionUrlData,
   GetStripeIdentityVerificationSessionUrlError,
   GetStripeIdentityVerificationSessionUrlResponse,
@@ -174,20 +177,41 @@ export const createAccount = <ThrowOnError extends boolean = false>(
 };
 
 /**
+ * Get stripe identity
+ * Get stripe identity for the currently authenticated account.
+ */
+export const getStripeIdentity = <ThrowOnError extends boolean = false>(
+  options?: Options<GetStripeIdentityData, ThrowOnError>,
+) => {
+  return (options?.client ?? client).get<
+    GetStripeIdentityResponse,
+    GetStripeIdentityError,
+    ThrowOnError
+  >({
+    ...options,
+    url: "/account/stripe-identity",
+  });
+};
+
+/**
  * Get stripe identity verification session url
  * Get stripe identity verification session url for the currently authenticated account.
  */
 export const getStripeIdentityVerificationSessionUrl = <
   ThrowOnError extends boolean = false,
 >(
-  options?: Options<GetStripeIdentityVerificationSessionUrlData, ThrowOnError>,
+  options: Options<GetStripeIdentityVerificationSessionUrlData, ThrowOnError>,
 ) => {
-  return (options?.client ?? client).get<
+  return (options?.client ?? client).post<
     GetStripeIdentityVerificationSessionUrlResponse,
     GetStripeIdentityVerificationSessionUrlError,
     ThrowOnError
   >({
     ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
     url: "/account/stripe-identity",
   });
 };
