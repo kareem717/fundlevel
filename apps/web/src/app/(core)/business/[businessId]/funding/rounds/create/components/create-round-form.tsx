@@ -27,6 +27,7 @@ import { z } from "zod";
 import { Label } from "@repo/ui/components/label";
 import { formatCurrency } from "@/lib/utils";
 import { Separator } from "@repo/ui/components/separator";
+import { RichTextEditor } from "@/components/rich-text-editor";
 
 export function CreateRoundForm({ className, ...props }: ComponentPropsWithoutRef<"form">) {
   const router = useRouter()
@@ -188,7 +189,7 @@ export function CreateRoundForm({ className, ...props }: ComponentPropsWithoutRe
             <FormItem>
               <FormLabel>Description</FormLabel>
               <FormControl>
-                <Textarea {...field} />
+                <RichTextEditor onChange={field.onChange} initialContent={field.value} />
               </FormControl>
               <FormDescription>
                 Describe this funding round
