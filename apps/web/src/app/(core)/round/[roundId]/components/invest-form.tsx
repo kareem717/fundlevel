@@ -21,10 +21,11 @@ import { TooltipProvider } from "@repo/ui/components/tooltip";
 import { Info } from "lucide-react";
 import { useToast } from "@repo/ui/hooks/use-toast";
 import { ToastAction } from "@repo/ui/components/toast";
-import { useRouter } from "next/navigation";
-import { getAccountAction, getStripeIdentityAction } from "@/actions/auth";
+import { redirect, usePathname, useRouter } from "next/navigation";
+import { getAccountAction, getSessionAction, getStripeIdentityAction } from "@/actions/auth";
 import { createInvestmentAction } from "@/actions/investment";
 import { RichTextDisplay } from "@/components/rich-text-display";
+import { VerifyIdentityModalButton } from "@/components/stipe/verify-identity-modal-button";
 
 type InvestFormValues = z.infer<typeof zCreateInvestmentParams>;
 
@@ -36,8 +37,10 @@ export interface InvestFormProps extends ComponentPropsWithoutRef<typeof Card> {
 export function InvestForm({ round, business, className, ...props }: InvestFormProps) {
   const { toast } = useToast()
   const router = useRouter()
+  const currentPath = usePathname()
 
   const totalSharesForSale = round.total_shares_for_sale;
+
   const form = useForm<InvestFormValues>({
     resolver: zodResolver(zCreateInvestmentParams.extend({
       investment: z.object({
@@ -64,7 +67,6 @@ export function InvestForm({ round, business, className, ...props }: InvestFormP
       form.setValue("terms_acceptance.user_agent", data.data?.userAgent ?? "");
     },
   });
-
 
   const { executeAsync: createInvestment } = useAction(createInvestmentAction, {
     onError: () => {
@@ -340,23 +342,14 @@ export function InvestForm({ round, business, className, ...props }: InvestFormP
         </Card>
       ),
       onNext: async () => {
+        const session = await getSessionAction();
+        if (!session?.data) {
+          redirect(redirects.auth.login + `?redirect=${currentPath}`);
+        }
+
         const resp = await getAccountAction();
         if (!resp?.data) {
-          toast({
-            title: "Hold on!",
-            description: "We need you to log in and verify your identity before you can invest.",
-            variant: "destructive",
-            action: (
-              <ToastAction
-                altText="Create Account"
-                onClick={() => router.push(redirects.auth.createAccount)}
-              >
-                Create Account
-              </ToastAction>
-            )
-          })
-
-          return false
+          redirect(redirects.auth.createAccount);
         }
 
         const identity = await getStripeIdentityAction();
@@ -364,14 +357,9 @@ export function InvestForm({ round, business, className, ...props }: InvestFormP
           toast({
             title: "Hold on!",
             description: "We need you to log in and verify your identity before you can invest.",
-            variant: "destructive",
+            duration: 10000,
             action: (
-              <ToastAction
-                altText="Verify Identity"
-                onClick={() => router.push(redirects.app.settings.account)}
-              >
-                Verify Identity
-              </ToastAction>
+              <VerifyIdentityModalButton variant="secondary" size="sm"/>
             )
           })
 

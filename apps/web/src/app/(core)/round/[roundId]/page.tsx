@@ -39,16 +39,6 @@ export default async function RoundPage({ params }: { params: { roundId: string 
       <div className="flex w-full max-w-2xl flex-col gap-6">
         <LogoDiv className="self-center w-40" />
         <InvestForm round={round} business={business} />
-        {/* TODO: just for testing */}
-        <div className="grid grid-cols-2 gap-4 max-w-md self-center">
-          <Link href={`${redirects.auth.login}?redirect=${redirects.app.round(parsedRoundId)}`} className={buttonVariants()}>
-            Login
-          </Link>
-          <Link href={redirects.auth.createAccount} className={buttonVariants()}  >
-            Create Account
-          </Link>
-          <VerifyIdentityModalButton />
-        </div>
       </div>
     </FormPageLayout>
   )
