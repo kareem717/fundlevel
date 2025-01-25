@@ -458,6 +458,15 @@ export type StripeIdentity = {
   updated_at: string | null;
 };
 
+export type StripeSessionOutput = {
+  /**
+   * A URL to the JSON Schema for this object.
+   */
+  readonly $schema?: string;
+  client_secret: string;
+  url: string;
+};
+
 export type UrlOutputBody = {
   /**
    * A URL to the JSON Schema for this object.
@@ -580,7 +589,7 @@ export type GetStripeIdentityVerificationSessionUrlResponses = {
   /**
    * OK
    */
-  200: UrlOutputBody;
+  200: StripeSessionOutput;
 };
 
 export type GetStripeIdentityVerificationSessionUrlResponse =

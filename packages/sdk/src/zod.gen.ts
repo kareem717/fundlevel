@@ -533,6 +533,12 @@ export const zStripeIdentity = z.object({
   updated_at: z.union([z.string().datetime(), z.null()]),
 });
 
+export const zStripeSessionOutput = z.object({
+  $schema: z.string().url().readonly().optional(),
+  client_secret: z.string(),
+  url: z.string(),
+});
+
 export const zUrlOutputBody = z.object({
   $schema: z.string().url().readonly().optional(),
   message: z.string(),
@@ -562,7 +568,8 @@ export const zGetAccountResponse = zSingleAccountResponseBody;
 
 export const zGetStripeIdentityResponse = zStripeIdentity;
 
-export const zGetStripeIdentityVerificationSessionUrlResponse = zUrlOutputBody;
+export const zGetStripeIdentityVerificationSessionUrlResponse =
+  zStripeSessionOutput;
 
 export const zDeleteAccountResponse = z.void();
 

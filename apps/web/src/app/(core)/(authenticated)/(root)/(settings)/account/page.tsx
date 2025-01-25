@@ -1,6 +1,5 @@
 import { Card, CardContent, CardTitle, CardHeader } from "@repo/ui/components/card";
 import { UpdateAccountForm } from "./components/update-account-form";
-import { IdentityCard } from "./components/identity-card";
 import {
   Accordion,
   AccordionContent,
@@ -8,6 +7,7 @@ import {
   AccordionTrigger,
 } from "@repo/ui/components/accordion"
 import { getStripeIdentityAction } from "@/actions/auth";
+import { VerifyIdentityModalButton } from "@/components/stipe/verify-identity-modal-button";
 
 export default async function AccountSettingsPage() {
   //TODO: consider moving to client
@@ -30,7 +30,16 @@ export default async function AccountSettingsPage() {
             <AccordionItem value="identity">
               <AccordionTrigger>Identity</AccordionTrigger>
               <AccordionContent>
-                <IdentityCard identity={identity?.data || null} />
+                <div className="flex flex-col gap-2">
+                  {identity ? (
+                    <div>
+                      <p>Identity: {identity.data?.remote_id}</p>
+                      <p>Status: {identity.data?.status}</p>
+                    </div>
+                  ) : (
+                    <VerifyIdentityModalButton />
+                  )}
+                </div>
               </AccordionContent>
             </AccordionItem>
           </Accordion>

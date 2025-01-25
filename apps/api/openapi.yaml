@@ -1115,6 +1115,23 @@ components:
         - created_at
         - updated_at
       type: object
+    StripeSessionOutput:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/StripeSessionOutput.json
+          format: uri
+          readOnly: true
+          type: string
+        client_secret:
+          type: string
+        url:
+          type: string
+      required:
+        - url
+        - client_secret
+      type: object
     URLOutputBody:
       additionalProperties: false
       properties:
@@ -1263,7 +1280,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/URLOutputBody"
+                $ref: "#/components/schemas/StripeSessionOutput"
           description: OK
         default:
           content:

@@ -75,7 +75,7 @@ export const updateAccountAction = actionClientWithAccount
 		});
 	});
 
-export const getStripeIdentityUrlAction = actionClientWithAccount
+export const getStripeIdentitySessionAction = actionClientWithAccount
 	.schema(z.string().url())
 	.action(async ({ parsedInput, ctx: { axiosClient } }) => {
 		const { data } = await getStripeIdentityVerificationSessionUrl({
@@ -83,9 +83,10 @@ export const getStripeIdentityUrlAction = actionClientWithAccount
 			body: {
 				return_url: parsedInput,
 			},
+			throwOnError: true,
 		});
 
-		return data?.url;
+		return data;
 	});
 
 export const getStripeIdentityAction = cache(

@@ -17,6 +17,7 @@ import (
 	investmentService "fundlevel/internal/service/domain/investment"
 	"fundlevel/internal/service/domain/permission"
 	roundService "fundlevel/internal/service/domain/round"
+	"fundlevel/internal/service/types"
 	"fundlevel/internal/storage"
 
 	"github.com/google/uuid"
@@ -33,7 +34,7 @@ type AccountService interface {
 
 	GetAllBusinesses(ctx context.Context, accountId int) ([]business.Business, error)
 
-	GetStripeIdentityVerificationSessionURL(ctx context.Context, accountID int, returnURL string) (string, error)
+	GetStripeIdentityVerificationSessionURL(ctx context.Context, accountID int, returnURL string) (types.StripeSessionOutput, error)
 	CreateStripeIdentity(ctx context.Context, accountID int, params account.CreateStripeIdentityParams) (account.StripeIdentity, error)
 	DeleteStripeIdentity(ctx context.Context, accountID int) error
 	GetStripeIdentity(ctx context.Context, accountID int) (account.StripeIdentity, error)

@@ -10,6 +10,7 @@ import (
 	"fundlevel/internal/server/handler/shared"
 	"fundlevel/internal/server/utils"
 	"fundlevel/internal/service"
+	"fundlevel/internal/service/types"
 
 	"github.com/danielgtaylor/huma/v2"
 	"go.uber.org/zap"
@@ -151,21 +152,25 @@ type GetStripeIdentityVerificationSessionURLInput struct {
 	}
 }
 
-func (h *httpHandler) getStripeIdentityVerificationSessionURL(ctx context.Context, input *GetStripeIdentityVerificationSessionURLInput) (*shared.URLOutput, error) {
+type GetStripeIdentityVerificationSessionURLOutput struct {
+	Body types.StripeSessionOutput
+}
+
+func (h *httpHandler) getStripeIdentityVerificationSessionURL(ctx context.Context, input *GetStripeIdentityVerificationSessionURLInput) (*GetStripeIdentityVerificationSessionURLOutput, error) {
 	account := utils.GetAuthenticatedAccount(ctx)
 	if account == nil {
 		return nil, huma.Error401Unauthorized("Unauthorized")
 	}
 
-	url, err := h.service.AccountService.GetStripeIdentityVerificationSessionURL(ctx, account.ID, input.Body.ReturnURL)
+	result, err := h.service.AccountService.GetStripeIdentityVerificationSessionURL(ctx, account.ID, input.Body.ReturnURL)
 	if err != nil {
 		h.logger.Error("failed to get stripe identity verification session url", zap.Error(err))
 		return nil, huma.Error500InternalServerError("An error occurred while getting the stripe identity verification session url")
 	}
 
-	resp := &shared.URLOutput{}
-	resp.Body.Message = "Stripe identity verification session url fetched successfully"
-	resp.Body.URL = url
+	resp := &GetStripeIdentityVerificationSessionURLOutput{}
+	resp.Body.URL = result.URL
+	resp.Body.ClientSecret = result.ClientSecret
 
 	return resp, nil
 }

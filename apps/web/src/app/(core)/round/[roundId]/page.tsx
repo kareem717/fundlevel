@@ -7,7 +7,7 @@ import { getPublicBusinessAction } from "@/actions/business";
 import Link from "next/link";
 import { redirects } from "@/lib/config/redirects";
 import { buttonVariants } from "@repo/ui/components/button";
-
+import { VerifyIdentityModalButton } from "@/components/stipe/verify-identity-modal-button";
 export default async function RoundPage({ params }: { params: { roundId: string } }) {
   const { roundId } = await params
   const parsedRoundId = parseInt(roundId)
@@ -47,6 +47,7 @@ export default async function RoundPage({ params }: { params: { roundId: string 
           <Link href={redirects.auth.createAccount} className={buttonVariants()}  >
             Create Account
           </Link>
+          <VerifyIdentityModalButton />
         </div>
       </div>
     </FormPageLayout>
