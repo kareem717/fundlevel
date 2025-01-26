@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { redirects } from "@/lib/config/redirects";
 import { getAccountAction, getUserAction } from "@/actions/auth";
 import { AuthProvider } from "@/components/providers/auth-provider";
+import { NotificationProvider } from "@/components/providers/notification-provider";
 
 export default async function CoreLayout({ children }: { children: React.ReactNode }) {
   let user
@@ -32,7 +33,9 @@ export default async function CoreLayout({ children }: { children: React.ReactNo
 
   return (
     <AuthProvider user={user} account={account}>
-      {children}
+      <NotificationProvider>
+        {children}
+      </NotificationProvider>
     </AuthProvider>
   );
 }
