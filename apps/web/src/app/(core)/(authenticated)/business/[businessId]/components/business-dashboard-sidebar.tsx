@@ -17,15 +17,19 @@ import { DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "@rep
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@repo/ui/components/dropdown-menu"
 import { useBusiness } from "@/components/providers/business-provider";
 import { useIsMobile } from "@/hooks/use-mobile"
-import { SidebarUser } from "@/components/sidebar-user"
+import { SidebarUser } from "@/components/sidebar/sidebar-user"
 import Link from "next/link"
-import { SidebarMenu } from "@/components/sidebar-menu"
+import { SidebarMenu } from "@/components/sidebar/sidebar-menu"
+import { SidebarNotification } from "@/components/sidebar/sidebar-notification"
+import { useNotification } from "@/components/providers/notification-provider"
 
 export function BusinessDashboardSidebar({ ...props }: ComponentPropsWithoutRef<typeof Sidebar>) {
   const { selectedBusiness, businesses, setSelectedBusiness } = useBusiness();
   const isMobile = useIsMobile();
+  const { getNotification } = useNotification();
 
   const sidebarConfig = sidebar.businessDashboard(selectedBusiness.id)
+  const notification = getNotification("identity-not-verified");
 
   return (
     <Sidebar variant="inset" {...props}>
@@ -98,6 +102,7 @@ export function BusinessDashboardSidebar({ ...props }: ComponentPropsWithoutRef<
         ))}
       </SidebarContent>
       <SidebarFooter>
+        {notification && <SidebarNotification notification={notification} />}
         <SidebarUser />
       </SidebarFooter>
     </Sidebar>

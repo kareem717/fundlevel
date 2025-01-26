@@ -7,14 +7,19 @@ import {
   SidebarHeader,
   SidebarMenuButton,
 } from "@repo/ui/components/sidebar"
-import { SidebarMenu } from "@/components/sidebar-menu"
+import { SidebarMenu } from "@/components/sidebar/sidebar-menu"
 import { ComponentPropsWithoutRef } from "react"
-import { SidebarUser } from "@/components/sidebar-user"
+import { SidebarUser } from "@/components/sidebar/sidebar-user"
 import { Command } from "lucide-react"
 import { sidebar } from "@/lib/config/sidebar"
+import { useNotification } from "@/components/providers/notification-provider"
+import { SidebarNotification } from "@/components/sidebar/sidebar-notification"
 
 export function DashboardSidebar({ ...props }: ComponentPropsWithoutRef<typeof Sidebar>) {
   const { dashboard } = sidebar;
+  const { getNotification } = useNotification();
+
+  const notification = getNotification("identity-not-verified");
 
   return (
     <Sidebar variant="inset" {...props}>
@@ -36,6 +41,7 @@ export function DashboardSidebar({ ...props }: ComponentPropsWithoutRef<typeof S
         ))}
       </SidebarContent>
       <SidebarFooter>
+        {notification && <SidebarNotification notification={notification} />}
         <SidebarUser />
       </SidebarFooter>
     </Sidebar>

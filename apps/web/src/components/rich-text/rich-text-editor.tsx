@@ -1,7 +1,7 @@
 
 "use client"
 
-import { useEditor, EditorContent, type Editor } from "@tiptap/react"
+import { useEditor, EditorContent } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
 import Underline from "@tiptap/extension-underline"
 import { Bold, Italic, UnderlineIcon, Heading1, Heading2 } from "lucide-react"

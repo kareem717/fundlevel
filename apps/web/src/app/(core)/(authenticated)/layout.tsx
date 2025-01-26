@@ -1,8 +1,9 @@
 import { redirect } from "next/navigation";
 import { redirects } from "@/lib/config/redirects";
-import { getAccountAction, getUserAction } from "@/actions/auth";
+import { getAccountAction, getStripeIdentityAction, getUserAction } from "@/actions/auth";
 import { AuthProvider } from "@/components/providers/auth-provider";
-import { NotificationProvider } from "@/components/providers/notification-provider";
+import { NotificationProvider, Notification } from "@/components/providers/notification-provider";
+import { VerifyIdentityModalButton } from "@/components/stipe/verify-identity-modal-button";
 
 export default async function CoreLayout({ children }: { children: React.ReactNode }) {
   let user
@@ -30,10 +31,22 @@ export default async function CoreLayout({ children }: { children: React.ReactNo
     redirect(redirects.auth.createAccount);
   }
 
+  const identity = await getStripeIdentityAction();
+
+  const notifications: Notification[] = [];
+
+  if (!identity?.data) {
+    notifications.push({
+      id: "identity-not-verified",
+      title: "Verify your identity",
+      description: "Please verify your identity to continue",
+      action: <VerifyIdentityModalButton />
+    });
+  }
 
   return (
     <AuthProvider user={user} account={account}>
-      <NotificationProvider>
+      <NotificationProvider notifications={notifications}>
         {children}
       </NotificationProvider>
     </AuthProvider>

@@ -24,7 +24,7 @@ import { ToastAction } from "@repo/ui/components/toast";
 import { redirect, usePathname, useRouter } from "next/navigation";
 import { getAccountAction, getSessionAction, getStripeIdentityAction } from "@/actions/auth";
 import { createInvestmentAction } from "@/actions/investment";
-import { RichTextDisplay } from "@/components/rich-text-display";
+import { RichTextDisplay } from "@/components/rich-text/rich-text-display";
 import { VerifyIdentityModalButton } from "@/components/stipe/verify-identity-modal-button";
 
 type InvestFormValues = z.infer<typeof zCreateInvestmentParams>;
@@ -359,7 +359,7 @@ export function InvestForm({ round, business, className, ...props }: InvestFormP
             description: "We need you to log in and verify your identity before you can invest.",
             duration: 10000,
             action: (
-              <VerifyIdentityModalButton variant="secondary" size="sm"/>
+              <VerifyIdentityModalButton variant="secondary" size="sm" />
             )
           })
 

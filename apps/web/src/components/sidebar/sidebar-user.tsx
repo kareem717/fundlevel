@@ -25,7 +25,7 @@ import Link from "next/link"
 import { redirects } from "@/lib/config/redirects"
 import { ChevronsUpDown, LogOut, User } from "lucide-react";
 import { ModeToggle } from "@/components/mode-toggle";
-import { useAuth } from "./providers/auth-provider";
+import { useAuth } from "../providers/auth-provider";
 
 export function SidebarUser({ ...props }: ComponentPropsWithoutRef<typeof SidebarMenu>) {
   const { isMobile } = useSidebar()
