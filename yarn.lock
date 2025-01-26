@@ -1961,6 +1961,11 @@
   resolved "https://registry.yarnpkg.com/@tiptap/extension-strike/-/extension-strike-2.11.3.tgz#2c8f16b4900c5bc7468e5318d72b4c2489695170"
   integrity sha512-Ei4rGEqytwXSj4Th1CN8EZFHnYmM5lAp8YUj1V3wWGX7EtRtnq1YG3+b7q68NKmdPSMFOjEz6pHtBzO+p+0aWw==
 
+"@tiptap/extension-text-align@^2.11.3":
+  version "2.11.3"
+  resolved "https://registry.yarnpkg.com/@tiptap/extension-text-align/-/extension-text-align-2.11.3.tgz#5490fc2559885ea58c1eb6c9853e79d86163a5ab"
+  integrity sha512-q3kTy3WBuqx2bo6BH+odKH2Xhj9POj6kR2uPH/dHOQZCCJ8ZRRqunUuJU8yOd0V2bLh7umQ6ORkV4YhfYDyjTQ==
+
 "@tiptap/extension-text-style@^2.11.3":
   version "2.11.3"
   resolved "https://registry.yarnpkg.com/@tiptap/extension-text-style/-/extension-text-style-2.11.3.tgz#0738851245535cf24c2a7e399602a193b66c64b6"

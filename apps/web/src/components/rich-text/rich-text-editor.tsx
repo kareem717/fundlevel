@@ -1,13 +1,23 @@
-
 "use client"
 
 import { useEditor, EditorContent } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
 import Underline from "@tiptap/extension-underline"
-import { Bold, Italic, UnderlineIcon, Heading1, Heading2 } from "lucide-react"
-import { ComponentPropsWithoutRef } from "react"
+import {
+  Bold,
+  Italic,
+  UnderlineIcon,
+  Heading1,
+  Heading2,
+  AlignLeft,
+  AlignJustify,
+  AlignRight,
+  AlignCenter,
+} from "lucide-react"
+import { ComponentPropsWithoutRef, useState } from "react"
 import { cn } from "@/lib/utils"
 import { Toggle } from "@repo/ui/components/toggle"
+import TextAlign from '@tiptap/extension-text-align'
 
 export interface RichTextEditorProps extends Omit<ComponentPropsWithoutRef<"div">, "onChange"> {
   onChange: (content: string) => void
@@ -15,8 +25,16 @@ export interface RichTextEditorProps extends Omit<ComponentPropsWithoutRef<"div"
 }
 
 export function RichTextEditor({ onChange, initialContent = "<p>Start typing here..</p>", className, ...props }: RichTextEditorProps) {
+  const [textAlign, setTextAlign] = useState<"left" | "center" | "right" | "justify">("justify")
+
   const editor = useEditor({
-    extensions: [StarterKit, Underline],
+    extensions: [
+      StarterKit,
+      Underline,
+      TextAlign.configure({
+        types: ['heading', 'paragraph'],
+      }),
+    ],
     content: initialContent,
     editorProps: {
       attributes: {
@@ -30,6 +48,16 @@ export function RichTextEditor({ onChange, initialContent = "<p>Start typing her
 
   if (!editor) {
     return null
+  }
+
+  const handleTextAlign = () => {
+    const nextAlign = textAlign === "left" ? "center"
+      : textAlign === "center" ? "right"
+        : textAlign === "right" ? "justify"
+          : "left";
+
+    setTextAlign(nextAlign);
+    editor.chain().focus().setTextAlign(nextAlign).run();
   }
 
   return (
@@ -55,6 +83,14 @@ export function RichTextEditor({ onChange, initialContent = "<p>Start typing her
           pressed={editor.isActive("underline")}
         >
           <UnderlineIcon className="size-4" />
+        </Toggle>
+        <Toggle
+          onClick={() => handleTextAlign()}
+        >
+          {textAlign === "left" ? <AlignLeft className="size-4" /> :
+            textAlign === "center" ? <AlignCenter className="size-4" /> :
+              textAlign === "right" ? <AlignRight className="size-4" /> :
+                <AlignJustify className="size-4" />}
         </Toggle>
         <Toggle
           onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
