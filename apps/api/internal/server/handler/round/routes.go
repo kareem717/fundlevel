@@ -86,4 +86,13 @@ func RegisterHumaRoutes(
 			},
 		},
 	}, handler.delete)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-round-terms",
+		Method:      http.MethodGet,
+		Path:        "/round/terms/{id}",
+		Summary:     "Get round terms",
+		Description: "Get round terms.",
+		Tags:        []string{"Round"},
+	}, handler.getTerms)
 }

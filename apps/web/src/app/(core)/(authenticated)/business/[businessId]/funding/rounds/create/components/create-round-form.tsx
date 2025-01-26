@@ -16,7 +16,6 @@ import { Button } from "@repo/ui/components/button";
 import { useToast } from "@repo/ui/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { createRound } from "@/actions/round";
-import { Textarea } from "@repo/ui/components/textarea";
 import { redirects } from "@/lib/config/redirects";
 import { useBusiness } from "@/components/providers/business-provider";
 import { zCreateRoundParams } from "@repo/sdk/zod";
@@ -205,7 +204,7 @@ export function CreateRoundForm({ className, ...props }: ComponentPropsWithoutRe
             <FormItem>
               <FormLabel>Terms & Conditions</FormLabel>
               <FormControl>
-                <Textarea {...field} />
+                <RichTextEditor onChange={field.onChange} initialContent={field.value} />
               </FormControl>
               <FormDescription>
                 Enter the investor terms and conditions for this funding round

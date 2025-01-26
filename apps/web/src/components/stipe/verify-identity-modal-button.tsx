@@ -19,7 +19,7 @@ export function VerifyIdentityModalButton({ ...props }: Omit<ComponentPropsWitho
   const [stripe, setStripe] = useState<Stripe | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
-  const { removeNotification } = useNotification();
+  const notificationContext = useNotification();
   const currentUrl = env.NEXT_PUBLIC_APP_URL + usePathname();
   const { executeAsync: getClientSecret } = useAction(getStripeIdentitySessionAction);
 
@@ -53,7 +53,7 @@ export function VerifyIdentityModalButton({ ...props }: Omit<ComponentPropsWitho
         ),
       });
     } finally {
-      removeNotification("identity-not-verified");
+      notificationContext?.removeNotification("identity-not-verified");
       setIsLoading(false);
     }
   }

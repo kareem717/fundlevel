@@ -999,6 +999,41 @@ components:
         - legal_section
         - stripe_account
       type: object
+    RoundTerm:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/RoundTerm.json
+          format: uri
+          readOnly: true
+          type: string
+        content:
+          maxLength: 3000
+          minLength: 10
+          type: string
+        created_at:
+          format: date-time
+          type: string
+        deleted_at:
+          format: date-time
+          nullable: true
+          type: string
+        id:
+          format: int64
+          minimum: 1
+          type: integer
+        updated_at:
+          format: date-time
+          nullable: true
+          type: string
+      required:
+        - content
+        - id
+        - created_at
+        - updated_at
+        - deleted_at
+      type: object
     SafeAccount:
       additionalProperties: false
       properties:
@@ -2408,6 +2443,34 @@ paths:
                 $ref: "#/components/schemas/ErrorModel"
           description: Error
       summary: Get rounds by page
+      tags:
+        - Round
+  /round/terms/{id}:
+    get:
+      description: Get round terms.
+      operationId: get-round-terms
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RoundTerm"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      summary: Get round terms
       tags:
         - Round
   /round/{id}:

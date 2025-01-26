@@ -17,7 +17,7 @@ export default function CreateAccountModal() {
           </DialogDescription>
         </DialogHeader>
         <div className="px-4 pt-4">
-          <CreateAccountForm redirect={undefined} onSuccess={() => setOpen(false)} />
+          <CreateAccountForm redirect={undefined} onSuccess={() => router.back()} />
         </div>
       </DialogContent>
     </Dialog>

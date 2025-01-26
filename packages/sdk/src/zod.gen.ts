@@ -497,6 +497,15 @@ export const zRoundCreateRequirements = z.object({
   stripe_account: z.boolean(),
 });
 
+export const zRoundTerm = z.object({
+  $schema: z.string().url().readonly().optional(),
+  content: z.string().min(10).max(3000),
+  created_at: z.string().datetime(),
+  deleted_at: z.union([z.string().datetime(), z.null()]),
+  id: z.number().gte(1),
+  updated_at: z.union([z.string().datetime(), z.null()]),
+});
+
 export const zSafeAccount = z.object({
   created_at: z.string().datetime(),
   deleted_at: z.union([z.string().datetime(), z.null()]),
@@ -650,6 +659,8 @@ export const zGetRoundByCursorResponse = zGetCursorPaginatedRoundsOutputBody;
 export const zCreateRoundResponse = zRound;
 
 export const zGetRoundsByPageResponse = zGetOffsetPaginatedRoundsOutputBody;
+
+export const zGetRoundTermsResponse = zRoundTerm;
 
 export const zDeleteRoundResponse = z.void();
 

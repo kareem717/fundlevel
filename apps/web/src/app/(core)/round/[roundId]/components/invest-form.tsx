@@ -7,7 +7,7 @@ import { Input } from "@repo/ui/components/input";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Business, Round } from "@repo/sdk";
+import { Business, Round, RoundTerm } from "@repo/sdk";
 import { ComponentPropsWithoutRef } from "react";
 import { cn, formatCurrency, formatNumber } from "@/lib/utils";
 import { Label } from "@repo/ui/components/label";
@@ -32,9 +32,10 @@ type InvestFormValues = z.infer<typeof zCreateInvestmentParams>;
 export interface InvestFormProps extends ComponentPropsWithoutRef<typeof Card> {
   round: Round;
   business: Business;
+  terms: RoundTerm;
 }
 
-export function InvestForm({ round, business, className, ...props }: InvestFormProps) {
+export function InvestForm({ round, business, terms, className, ...props }: InvestFormProps) {
   const { toast } = useToast()
   const router = useRouter()
   const currentPath = usePathname()
@@ -131,7 +132,7 @@ export function InvestForm({ round, business, className, ...props }: InvestFormP
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <p>TODO: fetch terms and conditions from round</p>
+            <RichTextDisplay content={terms.content} />
           </CardContent>
           <CardFooter>
             <p className="text-xs text-muted-foreground">
@@ -357,7 +358,6 @@ export function InvestForm({ round, business, className, ...props }: InvestFormP
           toast({
             title: "Hold on!",
             description: "We need you to log in and verify your identity before you can invest.",
-            duration: 10000,
             action: (
               <VerifyIdentityModalButton variant="secondary" size="sm" />
             )

@@ -17,9 +17,9 @@ import { SidebarNotification } from "@/components/sidebar/sidebar-notification"
 
 export function DashboardSidebar({ ...props }: ComponentPropsWithoutRef<typeof Sidebar>) {
   const { dashboard } = sidebar;
-  const { getNotification } = useNotification();
+  const notificationContext = useNotification();
 
-  const notification = getNotification("identity-not-verified");
+  const notification = notificationContext?.getNotification("identity-not-verified");
 
   return (
     <Sidebar variant="inset" {...props}>

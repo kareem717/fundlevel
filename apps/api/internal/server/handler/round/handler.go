@@ -225,7 +225,18 @@ func (h *httpHandler) getById(ctx context.Context, input *shared.PathIDParam) (*
 	return resp, nil
 }
 
-type RoundLikeInput struct {
-	shared.PathIDParam
-	AccountID int `path:"accountId"`
+type GetTermsResponse struct {
+	Body round.RoundTerm
+}
+
+func (h *httpHandler) getTerms(ctx context.Context, input *shared.PathIDParam) (*GetTermsResponse, error) {
+	terms, err := h.service.RoundService.GetTerms(ctx, input.ID)
+	if err != nil {
+		return nil, huma.Error500InternalServerError("An error occurred while fetching the terms")
+	}
+
+	resp := &GetTermsResponse{}
+	resp.Body = terms
+
+	return resp, nil
 }

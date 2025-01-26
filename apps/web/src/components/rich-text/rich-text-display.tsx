@@ -1,18 +1,19 @@
 
 "use client"
 
-import { useEditor, EditorContent, type Editor } from "@tiptap/react"
+import { useEditor, EditorContent } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
-import { ComponentPropsWithoutRef, Suspense } from "react"
+import Underline from "@tiptap/extension-underline"
+import { ComponentPropsWithoutRef } from "react"
 
 export interface RichTextDisplayProps extends ComponentPropsWithoutRef<"div"> {
   content: string
 }
 
 //TODO: fix flashes
-export function RichTextDisplay({ content, className, ...props }: RichTextDisplayProps) {
+export function RichTextDisplay({ content, ...props }: RichTextDisplayProps) {
   const editor = useEditor({
-    extensions: [StarterKit],
+    extensions: [StarterKit, Underline],
     content: content,
     editable: false,
     shouldRerenderOnTransaction: false,

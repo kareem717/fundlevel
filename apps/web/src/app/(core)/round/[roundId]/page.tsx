@@ -1,13 +1,10 @@
 import { FormPageLayout } from "@/components/layouts/form-page-layout";
 import { LogoDiv } from "@/components/logo-div";
 import { InvestForm } from "./components/invest-form";
-import { getPublicRoundAction } from "@/actions/round";
+import { getPublicRoundAction, getRoundTermsAction } from "@/actions/round";
 import { notFound } from "next/navigation";
 import { getPublicBusinessAction } from "@/actions/business";
-import Link from "next/link";
-import { redirects } from "@/lib/config/redirects";
-import { buttonVariants } from "@repo/ui/components/button";
-import { VerifyIdentityModalButton } from "@/components/stipe/verify-identity-modal-button";
+
 export default async function RoundPage({ params }: { params: { roundId: string } }) {
   const { roundId } = await params
   const parsedRoundId = parseInt(roundId)
@@ -17,20 +14,23 @@ export default async function RoundPage({ params }: { params: { roundId: string 
   }
 
   //TODO: handle error
-  const roundResponse = await getPublicRoundAction(parsedRoundId)
-  const round = roundResponse?.data
-
+  const round = (await getPublicRoundAction(parsedRoundId))?.data
   if (!round) {
-    console.error("Round not found", roundResponse)
+    console.error("Round not found", round)
     return notFound()
   }
 
   // TODO: handle error
-  const businessResponse = await getPublicBusinessAction(round.business_id)
-  const business = businessResponse?.data?.business
-
+  const business = (await getPublicBusinessAction(round.business_id))?.data?.business
   if (!business) {
-    console.error("Business not found", businessResponse)
+    console.error("Business not found", business)
+    return notFound()
+  }
+
+  const terms = (await getRoundTermsAction(parsedRoundId))?.data
+
+  if (!terms) {
+    console.error("Terms not found", terms)
     return notFound()
   }
 
@@ -38,7 +38,7 @@ export default async function RoundPage({ params }: { params: { roundId: string 
     <FormPageLayout>
       <div className="flex w-full max-w-2xl flex-col gap-6">
         <LogoDiv className="self-center w-40" />
-        <InvestForm round={round} business={business} />
+        <InvestForm round={round} business={business} terms={terms} />
       </div>
     </FormPageLayout>
   )

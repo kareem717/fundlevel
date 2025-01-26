@@ -54,6 +54,8 @@ type RoundService interface {
 	GetById(ctx context.Context, id int) (round.Round, error)
 	GetByCursor(ctx context.Context, limit int, cursor int) ([]round.Round, error)
 	GetByPage(ctx context.Context, pageSize int, page int) ([]round.Round, int, error)
+
+	GetTerms(ctx context.Context, id int) (round.RoundTerm, error)
 }
 
 type BusinessService interface {

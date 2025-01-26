@@ -128,6 +128,9 @@ import type {
   GetRoundsByPageData,
   GetRoundsByPageError,
   GetRoundsByPageResponse,
+  GetRoundTermsData,
+  GetRoundTermsError,
+  GetRoundTermsResponse,
   DeleteRoundData,
   DeleteRoundError,
   DeleteRoundResponse,
@@ -876,6 +879,23 @@ export const getRoundsByPage = <ThrowOnError extends boolean = false>(
   >({
     ...options,
     url: "/round/page",
+  });
+};
+
+/**
+ * Get round terms
+ * Get round terms.
+ */
+export const getRoundTerms = <ThrowOnError extends boolean = false>(
+  options: Options<GetRoundTermsData, ThrowOnError>,
+) => {
+  return (options?.client ?? client).get<
+    GetRoundTermsResponse,
+    GetRoundTermsError,
+    ThrowOnError
+  >({
+    ...options,
+    url: "/round/terms/{id}",
   });
 };
 

@@ -410,6 +410,18 @@ export type RoundCreateRequirements = {
   stripe_account: boolean;
 };
 
+export type RoundTerm = {
+  /**
+   * A URL to the JSON Schema for this object.
+   */
+  readonly $schema?: string;
+  content: string;
+  created_at: string;
+  deleted_at: string | null;
+  id: number;
+  updated_at: string | null;
+};
+
 export type SafeAccount = {
   created_at: string;
   deleted_at: string | null;
@@ -1655,6 +1667,34 @@ export type GetRoundsByPageResponses = {
 
 export type GetRoundsByPageResponse =
   GetRoundsByPageResponses[keyof GetRoundsByPageResponses];
+
+export type GetRoundTermsData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: "/round/terms/{id}";
+};
+
+export type GetRoundTermsErrors = {
+  /**
+   * Error
+   */
+  default: ErrorModel;
+};
+
+export type GetRoundTermsError = GetRoundTermsErrors[keyof GetRoundTermsErrors];
+
+export type GetRoundTermsResponses = {
+  /**
+   * OK
+   */
+  200: RoundTerm;
+};
+
+export type GetRoundTermsResponse =
+  GetRoundTermsResponses[keyof GetRoundTermsResponses];
 
 export type DeleteRoundData = {
   body?: never;

@@ -9,6 +9,7 @@ import {
 	createRoundFavourite,
 	getRoundFavouriteStatus,
 	deleteRoundFavourite,
+	getRoundTerms,
 } from "@repo/sdk";
 import { cache } from "react";
 import { zCreateRoundParams } from "@repo/sdk/zod";
@@ -133,3 +134,19 @@ export const unlikeRound = actionClientWithAccount
 			},
 		});
 	});
+
+export const getRoundTermsAction = cache(
+	actionClient
+		.schema(pathIdSchema)
+		.action(async ({ parsedInput, ctx: { axiosClient } }) => {
+			const response = await getRoundTerms({
+				client: axiosClient,
+				throwOnError: true,
+				path: {
+					id: parsedInput,
+				},
+			});
+
+			return response.data;
+		})
+);

@@ -26,12 +26,10 @@ import { useNotification } from "@/components/providers/notification-provider"
 export function BusinessDashboardSidebar({ ...props }: ComponentPropsWithoutRef<typeof Sidebar>) {
   const { selectedBusiness, businesses, setSelectedBusiness } = useBusiness();
   const isMobile = useIsMobile();
-  const { getNotification, notifications } = useNotification();
+  const notificationContext = useNotification();
 
   const sidebarConfig = sidebar.businessDashboard(selectedBusiness.id)
-  const notification = getNotification("identity-not-verified");
-
-  console.log(notifications)
+  const notification = notificationContext?.getNotification("identity-not-verified");
 
   return (
     <Sidebar variant="inset" {...props}>
