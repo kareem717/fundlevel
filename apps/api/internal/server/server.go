@@ -100,6 +100,8 @@ func NewServer(
 
 	humaApi := humachi.New(r, humaConfig)
 
+	logger = logger.Named("server")
+
 	server := Server{
 		services:                   services,
 		logger:                     logger,

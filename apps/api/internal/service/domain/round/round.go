@@ -6,18 +6,22 @@ import (
 	"fundlevel/internal/entities/business"
 	"fundlevel/internal/entities/round"
 	postgres "fundlevel/internal/storage/shared"
-
+	"go.uber.org/zap"
 	"fundlevel/internal/storage"
 )
 
 type RoundService struct {
 	repositories storage.Repository
+	logger       *zap.Logger
 }
 
 // NewTestService returns a new instance of test service.
-func NewRoundService(repositories storage.Repository) *RoundService {
+func NewRoundService(repositories storage.Repository, logger *zap.Logger) *RoundService {
+	logger = logger.With(zap.String("service", "round"))
+
 	return &RoundService{
 		repositories: repositories,
+		logger:       logger,
 	}
 }
 

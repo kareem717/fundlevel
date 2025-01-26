@@ -72,7 +72,11 @@ func main() {
 		logger := zap.New(
 			zapcore.NewCore(
 				zapcore.NewJSONEncoder(zap.NewProductionConfig().EncoderConfig),
-				zapcore.AddSync(os.Stdout), zap.InfoLevel))
+				zapcore.AddSync(os.Stdout),
+				//TODO: Change to zap.InfoLevel in production
+				zap.DebugLevel,
+			),
+		)
 
 		repositories := postgres.NewRepository(
 			ctx,
@@ -113,6 +117,8 @@ func main() {
 			server.WithAPIName(options.APIName),
 			server.WithAPIVersion(options.APIVersion),
 		)
+
+		logger = logger.Named("main")
 
 		hooks.OnStart(func() {
 			logger.Info("Starting server...", zap.Int("port", options.Port))

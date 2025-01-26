@@ -116,7 +116,7 @@ func NewRepository(ctx context.Context, config Config, logger *zap.Logger) stora
 	db := bun.NewDB(sqldb, pgdialect.New())
 
 	db.AddQueryHook(bunzap.NewQueryHook(bunzap.QueryHookOptions{
-		Logger:       logger,
+		Logger:       logger.Named("storage"),
 		SlowDuration: 200 * time.Millisecond,
 	}))
 

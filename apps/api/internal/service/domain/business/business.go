@@ -8,18 +8,23 @@ import (
 
 	"github.com/stripe/stripe-go/v81"
 	"github.com/stripe/stripe-go/v81/account"
+	"go.uber.org/zap"
 )
 
 type BusinessService struct {
 	repositories storage.Repository
 	stripeAPIKey string
+	logger       *zap.Logger
 }
 
 // NewBusinessService returns a new instance of business service.
-func NewBusinessService(repositories storage.Repository, stripeAPIKey string) *BusinessService {
+func NewBusinessService(repositories storage.Repository, stripeAPIKey string, logger *zap.Logger) *BusinessService {
+	logger = logger.With(zap.String("service", "business"))
+
 	return &BusinessService{
 		repositories: repositories,
 		stripeAPIKey: stripeAPIKey,
+		logger:       logger,
 	}
 }
 

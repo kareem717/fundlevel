@@ -19,6 +19,7 @@ import (
 	"fundlevel/internal/storage"
 
 	"github.com/google/uuid"
+	"go.uber.org/zap"
 
 	"github.com/stripe/stripe-go/v81"
 )
@@ -141,21 +142,45 @@ type Service struct {
 	PermissionService PermissionService
 }
 
+type ServiceConfig struct {
+	logger *zap.Logger
+}
+
+type ServiceConfigOption func(*ServiceConfig)
+
+func WithLogger(logger *zap.Logger) ServiceConfigOption {
+	return func(config *ServiceConfig) {
+		config.logger = logger
+	}
+}
+
 // NewService implementation for storage of all services.
 func NewService(
 	repositories storage.Repository,
 	stripeAPIKey string,
 	feePercentage float64,
+	options ...ServiceConfigOption,
 ) *Service {
+	config := &ServiceConfig{}
+	for _, option := range options {
+		option(config)
+	}
+
+	if config.logger == nil {
+		config.logger = zap.NewNop()
+	}
+
+	serviceLogger := config.logger.Named("service")
+
 	return &Service{
 		repositories:      repositories,
-		IndustryService:   industryService.NewIndustryService(repositories),
-		HealthService:     healthService.NewHealthService(repositories),
-		AccountService:    accountService.NewAccountService(repositories, stripeAPIKey),
-		RoundService:      roundService.NewRoundService(repositories),
-		InvestmentService: investmentService.NewInvestmentService(repositories, stripeAPIKey, feePercentage),
-		BusinessService:   businessService.NewBusinessService(repositories, stripeAPIKey),
-		PermissionService: permission.NewPermissionService(repositories),
+		IndustryService:   industryService.NewIndustryService(repositories, serviceLogger),
+		HealthService:     healthService.NewHealthService(repositories, serviceLogger),
+		AccountService:    accountService.NewAccountService(repositories, stripeAPIKey, serviceLogger),
+		RoundService:      roundService.NewRoundService(repositories, serviceLogger),
+		InvestmentService: investmentService.NewInvestmentService(repositories, stripeAPIKey, feePercentage, serviceLogger),
+		BusinessService:   businessService.NewBusinessService(repositories, stripeAPIKey, serviceLogger),
+		PermissionService: permission.NewPermissionService(repositories, serviceLogger),
 	}
 }
 

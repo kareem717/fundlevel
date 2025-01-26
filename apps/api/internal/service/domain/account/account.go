@@ -7,18 +7,23 @@ import (
 	"fundlevel/internal/storage"
 
 	"github.com/google/uuid"
+	"go.uber.org/zap"
 )
 
 type AccountService struct {
 	repositories storage.Repository
 	stripeAPIKey string
+	logger       *zap.Logger
 }
 
 // NewAccountService returns a new instance of account service.
-func NewAccountService(repositories storage.Repository, stripeAPIKey string) *AccountService {
+func NewAccountService(repositories storage.Repository, stripeAPIKey string, logger *zap.Logger) *AccountService {
+	logger = logger.With(zap.String("service", "account"))
+
 	return &AccountService{
 		repositories: repositories,
 		stripeAPIKey: stripeAPIKey,
+		logger:       logger,
 	}
 }
 
