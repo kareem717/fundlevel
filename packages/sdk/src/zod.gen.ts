@@ -603,8 +603,6 @@ export const zGetRoundImpressionCountResponse = zImpressionCountOutputBody;
 
 export const zCreateBusinessResponse = zBusiness;
 
-export const zGetBusinessStripeAccountResponse = zGetStripeAccountOutputBody;
-
 export const zDeleteBusinessResponse = zMessageResponse;
 
 export const zGetBusinessByIdResponse = zSingleBusinessResponseBody;
@@ -624,6 +622,8 @@ export const zGetBusinessRoundsByPageResponse =
   zGetOffsetPaginatedRoundsOutputBody;
 
 export const zUpsertBusinessLegalSectionResponse = zMessageResponse;
+
+export const zGetBusinessStripeAccountResponse = zGetStripeAccountOutputBody;
 
 export const zGetStripeDashboardUrlResponse = zUrlOutputBody;
 

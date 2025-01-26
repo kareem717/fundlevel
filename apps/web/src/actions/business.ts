@@ -201,7 +201,6 @@ export const getBusinessStripeAccountAction = actionClientWithAccount
 	.action(async ({ parsedInput: id, ctx: { axiosClient } }) => {
 		const res = await getBusinessStripeAccount({
 			client: axiosClient,
-			throwOnError: true,
 			path: { id },
 		});
 

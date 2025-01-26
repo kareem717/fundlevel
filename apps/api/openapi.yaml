@@ -1739,36 +1739,6 @@ paths:
       summary: Create a business
       tags:
         - Businesses
-  /business/{businessId}/stripe:
-    get:
-      description: Get business stripe account.
-      operationId: get-business-stripe-account
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            format: int64
-            minimum: 1
-            type: integer
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GetStripeAccountOutputBody"
-          description: OK
-        default:
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/ErrorModel"
-          description: Error
-      security:
-        - bearerAuth: []
-      summary: Get business stripe account
-      tags:
-        - Businesses
   /business/{id}:
     delete:
       description: Delete a business.
@@ -2051,6 +2021,36 @@ paths:
       tags:
         - Businesses
         - Legal Section
+  /business/{id}/stripe:
+    get:
+      description: Get business stripe account.
+      operationId: get-business-stripe-account
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetStripeAccountOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Get business stripe account
+      tags:
+        - Businesses
   /business/{id}/stripe-dashboard-url:
     get:
       description: Get Stripe dashboard url.

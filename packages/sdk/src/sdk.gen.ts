@@ -65,9 +65,6 @@ import type {
   CreateBusinessData,
   CreateBusinessError,
   CreateBusinessResponse,
-  GetBusinessStripeAccountData,
-  GetBusinessStripeAccountError,
-  GetBusinessStripeAccountResponse,
   DeleteBusinessData,
   DeleteBusinessError,
   DeleteBusinessResponse,
@@ -92,6 +89,9 @@ import type {
   UpsertBusinessLegalSectionData,
   UpsertBusinessLegalSectionError,
   UpsertBusinessLegalSectionResponse,
+  GetBusinessStripeAccountData,
+  GetBusinessStripeAccountError,
+  GetBusinessStripeAccountResponse,
   GetStripeDashboardUrlData,
   GetStripeDashboardUrlError,
   GetStripeDashboardUrlResponse,
@@ -501,23 +501,6 @@ export const createBusiness = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get business stripe account
- * Get business stripe account.
- */
-export const getBusinessStripeAccount = <ThrowOnError extends boolean = false>(
-  options: Options<GetBusinessStripeAccountData, ThrowOnError>,
-) => {
-  return (options?.client ?? client).get<
-    GetBusinessStripeAccountResponse,
-    GetBusinessStripeAccountError,
-    ThrowOnError
-  >({
-    ...options,
-    url: "/business/{businessId}/stripe",
-  });
-};
-
-/**
  * Delete a business
  * Delete a business.
  */
@@ -658,6 +641,23 @@ export const upsertBusinessLegalSection = <
       ...options?.headers,
     },
     url: "/business/{id}/sections/legal",
+  });
+};
+
+/**
+ * Get business stripe account
+ * Get business stripe account.
+ */
+export const getBusinessStripeAccount = <ThrowOnError extends boolean = false>(
+  options: Options<GetBusinessStripeAccountData, ThrowOnError>,
+) => {
+  return (options?.client ?? client).get<
+    GetBusinessStripeAccountResponse,
+    GetBusinessStripeAccountError,
+    ThrowOnError
+  >({
+    ...options,
+    url: "/business/{id}/stripe",
   });
 };
 

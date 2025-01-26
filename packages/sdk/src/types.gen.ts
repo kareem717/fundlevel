@@ -1045,35 +1045,6 @@ export type CreateBusinessResponses = {
 export type CreateBusinessResponse =
   CreateBusinessResponses[keyof CreateBusinessResponses];
 
-export type GetBusinessStripeAccountData = {
-  body?: never;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: "/business/{businessId}/stripe";
-};
-
-export type GetBusinessStripeAccountErrors = {
-  /**
-   * Error
-   */
-  default: ErrorModel;
-};
-
-export type GetBusinessStripeAccountError =
-  GetBusinessStripeAccountErrors[keyof GetBusinessStripeAccountErrors];
-
-export type GetBusinessStripeAccountResponses = {
-  /**
-   * OK
-   */
-  200: GetStripeAccountOutputBody;
-};
-
-export type GetBusinessStripeAccountResponse =
-  GetBusinessStripeAccountResponses[keyof GetBusinessStripeAccountResponses];
-
 export type DeleteBusinessData = {
   body?: never;
   path: {
@@ -1312,6 +1283,35 @@ export type UpsertBusinessLegalSectionResponses = {
 
 export type UpsertBusinessLegalSectionResponse =
   UpsertBusinessLegalSectionResponses[keyof UpsertBusinessLegalSectionResponses];
+
+export type GetBusinessStripeAccountData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: "/business/{id}/stripe";
+};
+
+export type GetBusinessStripeAccountErrors = {
+  /**
+   * Error
+   */
+  default: ErrorModel;
+};
+
+export type GetBusinessStripeAccountError =
+  GetBusinessStripeAccountErrors[keyof GetBusinessStripeAccountErrors];
+
+export type GetBusinessStripeAccountResponses = {
+  /**
+   * OK
+   */
+  200: GetStripeAccountOutputBody;
+};
+
+export type GetBusinessStripeAccountResponse =
+  GetBusinessStripeAccountResponses[keyof GetBusinessStripeAccountResponses];
 
 export type GetStripeDashboardUrlData = {
   body?: never;
