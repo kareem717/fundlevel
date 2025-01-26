@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Business, Round, RoundTerm } from "@repo/sdk";
-import { ComponentPropsWithoutRef } from "react";
+import { ComponentPropsWithoutRef, useRef, useState } from "react";
 import { cn, formatCurrency, formatNumber } from "@/lib/utils";
 import { Label } from "@repo/ui/components/label";
 import Link from "next/link";
@@ -26,6 +26,7 @@ import { getAccountAction, getSessionAction, getStripeIdentityAction } from "@/a
 import { createInvestmentAction } from "@/actions/investment";
 import { RichTextDisplay } from "@/components/rich-text/rich-text-display";
 import { VerifyIdentityModalButton } from "@/components/stipe/verify-identity-modal-button";
+import { EmbeddedCheckoutForm, EmbeddedCheckoutFormRef } from "@/components/stipe/embedded-checkout";
 
 type InvestFormValues = z.infer<typeof zCreateInvestmentParams>;
 
@@ -39,7 +40,7 @@ export function InvestForm({ round, business, terms, className, ...props }: Inve
   const { toast } = useToast()
   const router = useRouter()
   const currentPath = usePathname()
-
+  const embeddedCheckoutFormRef = useRef<EmbeddedCheckoutFormRef>(null);
   const totalSharesForSale = round.total_shares_for_sale;
 
   const form = useForm<InvestFormValues>({
@@ -96,6 +97,8 @@ export function InvestForm({ round, business, terms, className, ...props }: Inve
     ...props,
   }
 
+  const subTotalFormatted = formatCurrency((round.price_per_share_usd_cents * form.watch("investment.share_quantity")) / 100, "USD", "en-US")
+
   const steps: Step<InvestFormValues>[] = [
     {
       fields: [],
@@ -142,7 +145,7 @@ export function InvestForm({ round, business, terms, className, ...props }: Inve
           </CardFooter>
         </Card >
       ),
-      nextButtonText: "Invest",
+      nextButtonText: "Accept",
       onNext: async () => {
         const resp = await getSignature();
         if (resp?.data) {
@@ -169,6 +172,7 @@ export function InvestForm({ round, business, terms, className, ...props }: Inve
       },
     },
     {
+      nextButtonText: "Continue",
       fields: ["investment.share_quantity"],
       content: (
         <Card {...cardProps}>
@@ -297,12 +301,12 @@ export function InvestForm({ round, business, terms, className, ...props }: Inve
                               <Info className="size-3.5 text-foreground" />
                             </TooltipTrigger>
                             <TooltipContent>
-                              <p>The total amount you&apos;ll pay for your shares</p>
+                              <p>The total amount you&apos;ll pay for your shares.</p>
                             </TooltipContent>
                           </Tooltip>
                         </span>
                         <span className="font-medium">
-                          {formatCurrency((round.price_per_share_usd_cents * form.watch("investment.share_quantity")) / 100, "USD", "en-US")}
+                          {subTotalFormatted}
                         </span>
                       </div>
                       <div className="flex justify-between items-center">
@@ -336,7 +340,6 @@ export function InvestForm({ round, business, terms, className, ...props }: Inve
                     </CardContent>
                   </Card>
                 </TooltipProvider>
-
               </div>
             )}
           </CardContent>
@@ -372,6 +375,33 @@ export function InvestForm({ round, business, terms, className, ...props }: Inve
         form.setValue("terms_acceptance.user_agent", "");
       },
     },
+    {
+      nextButtonText: "Pay",
+      fields: [],
+      onNext: async () => {
+        const resp = await embeddedCheckoutFormRef.current?.submitCheckout();
+        if (!resp) {
+          return false;
+        }
+      },
+      content: (
+        <Card {...cardProps}>
+          <CardHeader>
+            <CardTitle>Payment Details</CardTitle>
+            <CardDescription>
+              Enter your payment details to complete your investment. You can exit now and come back later to pay.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <p className="text-sm text-muted-foreground">
+              You will be charged {subTotalFormatted} for your investment.
+            </p>
+            <EmbeddedCheckoutForm ref={embeddedCheckoutFormRef} investmentIntentId={"test"} />
+          </CardContent>
+        </Card>
+      ),
+    },
+
   ];
 
   return (
