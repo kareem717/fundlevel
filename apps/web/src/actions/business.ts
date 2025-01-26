@@ -11,7 +11,7 @@ import {
 	getBusinessRoundCreateRequirements as getBusinessCreateRoundrequirementsApi,
 	onboardStripeConnectedAccount as onboardStripeConnectedAccountApi,
 	getStripeDashboardUrl as getStripeDashboardUrlApi,
-	getBusinessStripeAccount as getBusinessStripeAccountApi,
+	getBusinessStripeAccount,
 	upsertBusinessLegalSection as upsertBusinessLegalSectionApi,
 } from "@repo/sdk";
 import {
@@ -196,10 +196,10 @@ export const getStripeDashboardUrl = actionClientWithAccount
 		return res.data;
 	});
 
-export const getBusinessStripeAccount = actionClientWithAccount
+export const getBusinessStripeAccountAction = actionClientWithAccount
 	.schema(pathIdSchema)
 	.action(async ({ parsedInput: id, ctx: { axiosClient } }) => {
-		const res = await getBusinessStripeAccountApi({
+		const res = await getBusinessStripeAccount({
 			client: axiosClient,
 			throwOnError: true,
 			path: { id },

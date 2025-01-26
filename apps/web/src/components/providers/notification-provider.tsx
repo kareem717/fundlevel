@@ -5,6 +5,7 @@ import { createContext, useContext } from "react";
 
 export const NOTIFICATION_ID_ENUM = {
   IDENTITY_NOT_VERIFIED: "identity-not-verified",
+  STRIPE_ACCOUNT_NOT_CONNECTED: "stripe-account-not-connected",
 } as const;
 
 export type NOTIFICATION_ID = typeof NOTIFICATION_ID_ENUM[keyof typeof NOTIFICATION_ID_ENUM];

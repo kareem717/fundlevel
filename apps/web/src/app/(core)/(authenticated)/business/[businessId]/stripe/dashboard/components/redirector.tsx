@@ -1,6 +1,6 @@
 "use client";
 
-import { getBusinessStripeAccount, getStripeDashboardUrl } from '@/actions/business';
+import { getBusinessStripeAccountAction, getStripeDashboardUrl } from '@/actions/business';
 import { useAction } from 'next-safe-action/hooks';
 import { useRouter } from 'next/navigation';
 import { FC, ComponentPropsWithoutRef, useState, useEffect } from 'react';
@@ -38,7 +38,7 @@ export function StripeDashboardRedirector({ className, ...props }: ComponentProp
     }
   });
 
-  const { execute: getStripeAccount } = useAction(getBusinessStripeAccount, {
+  const { execute: getStripeAccount } = useAction(getBusinessStripeAccountAction, {
     onSuccess: ({ data }) => {
       if (data?.stripeAccount) {
         setStripeAccount(data.stripeAccount);
