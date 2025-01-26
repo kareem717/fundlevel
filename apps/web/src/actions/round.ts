@@ -6,9 +6,6 @@ import {
 	createRound as createRoundApi,
 	getRoundByCursor,
 	getRoundsByPage as getRoundsByPageApi,
-	createRoundFavourite,
-	getRoundFavouriteStatus,
-	deleteRoundFavourite,
 	getRoundTerms,
 } from "@repo/sdk";
 import { cache } from "react";
@@ -83,56 +80,6 @@ export const getRoundsByPage = actionClient
 		});
 
 		return response.data.rounds;
-	});
-
-export const isRoundLiked = actionClientWithAccount
-	.schema(pathIdSchema)
-	.action(async ({ parsedInput, ctx: { axiosClient, account } }) => {
-		if (!account) {
-			throw new Error("User not found");
-		}
-
-		const response = await getRoundFavouriteStatus({
-			client: axiosClient,
-			throwOnError: true,
-			path: {
-				id: parsedInput,
-			},
-		});
-
-		return response.data;
-	});
-
-export const likeRound = actionClientWithAccount
-	.schema(pathIdSchema)
-	.action(async ({ parsedInput, ctx: { axiosClient, account } }) => {
-		if (!account) {
-			throw new Error("User not found");
-		}
-
-		await createRoundFavourite({
-			client: axiosClient,
-			throwOnError: true,
-			path: {
-				id: parsedInput,
-			},
-		});
-	});
-
-export const unlikeRound = actionClientWithAccount
-	.schema(pathIdSchema)
-	.action(async ({ parsedInput, ctx: { axiosClient, account } }) => {
-		if (!account) {
-			throw new Error("User not found");
-		}
-
-		await deleteRoundFavourite({
-			client: axiosClient,
-			throwOnError: true,
-			path: {
-				id: parsedInput,
-			},
-		});
 	});
 
 export const getRoundTermsAction = cache(

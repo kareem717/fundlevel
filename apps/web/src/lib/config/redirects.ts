@@ -47,19 +47,8 @@ export const redirects = {
 				root: businessPath(businessId).path("settings"),
 				stripe: businessPath(businessId).path("settings/profile"),
 			},
-			stripe: {
-				root: businessPath(businessId).path("stripe"),
-				dashboard: businessPath(businessId).path("stripe/dashboard"),
-				settings: businessPath(businessId).path("stripe/settings"),
-			},
 			funding: {
 				index: businessPath(businessId).path("funding"),
-				investments: {
-					index: businessPath(businessId).path("funding/investments"),
-				},
-				investors: {
-					index: businessPath(businessId).path("funding/investors"),
-				},
 				rounds: {
 					root: businessPath(businessId).path("funding/rounds"),
 					index: businessPath(businessId).path("funding/rounds"),
@@ -68,8 +57,6 @@ export const redirects = {
 			},
 		}),
 		rounds: (roundId: number) => `/rounds/${roundId}`,
-		settings: {
-			account: "/account",
-		},
+		settings: "/settings",
 	},
 };

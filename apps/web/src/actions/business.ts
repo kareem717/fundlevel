@@ -184,7 +184,7 @@ export const getStripeAccountSettingsLink = actionClientWithAccount
 		}
 	);
 
-export const getStripeDashboardUrl = actionClientWithAccount
+export const getStripeDashboardUrlAction = actionClientWithAccount
 	.schema(pathIdSchema)
 	.action(async ({ parsedInput: id, ctx: { axiosClient } }) => {
 		const res = await getStripeDashboardUrlApi({

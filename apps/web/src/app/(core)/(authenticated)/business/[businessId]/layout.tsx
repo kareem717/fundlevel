@@ -58,7 +58,7 @@ export default async function BusinessDashboardLayout({ children, params }: { ch
             Please finish setting up your Stripe account to fully use the platform.
           </AlertDescription>
         </div>
-        <Link href={redirects.app.businessDashboard(business.id).stripe.settings} className={cn(buttonVariants(), "w-min")}>
+        <Link href={redirects.app.businessDashboard(business.id).funding.index} className={cn(buttonVariants(), "w-min")}>
           Finish
         </Link>
       </Alert>

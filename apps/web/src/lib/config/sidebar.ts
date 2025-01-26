@@ -53,21 +53,6 @@ const businessDashboard = (businessId: number): NavigationMenu[] => [
 					},
 				],
 			},
-			{
-				title: "Stripe",
-				root: redirects.app.businessDashboard(businessId).stripe.root,
-				icon: Icons.settings,
-				items: [
-					{
-						title: "Dashboard",
-						url: redirects.app.businessDashboard(businessId).stripe.dashboard,
-					},
-					{
-						title: "Settings",
-						url: redirects.app.businessDashboard(businessId).stripe.settings,
-					},
-				],
-			},
 		],
 	},
 	{
@@ -78,18 +63,6 @@ const businessDashboard = (businessId: number): NavigationMenu[] => [
 				title: "Overview",
 				url: redirects.app.businessDashboard(businessId).funding.index,
 				icon: Icons.chart,
-			},
-			{
-				title: "Investments",
-				url: redirects.app.businessDashboard(businessId).funding.investments
-					.index,
-				icon: Icons.handCoins,
-			},
-			{
-				title: "Investors",
-				url: redirects.app.businessDashboard(businessId).funding.investors
-					.index,
-				icon: Icons.users,
 			},
 			{
 				title: "Rounds",
@@ -117,7 +90,7 @@ const businessDashboard = (businessId: number): NavigationMenu[] => [
  */
 const dashboard: NavigationMenu[] = [
 	{
-		name: "Businesses",
+		name: "Business",
 		path: redirects.app.root,
 		items: [
 			{
@@ -133,12 +106,23 @@ const dashboard: NavigationMenu[] = [
 		],
 	},
 	{
+		name: "Wallet",
+		path: redirects.app.wallet.index,
+		items: [
+			{
+				title: "Overview",
+				url: redirects.app.wallet.index,
+				icon: Icons.layoutGrid,
+			},
+		],
+	},
+	{
 		name: "Settings",
 		path: redirects.app.root,
 		items: [
 			{
 				title: "Account",
-				url: redirects.app.settings.account,
+				url: redirects.app.settings,
 				icon: Icons.user,
 			},
 		],

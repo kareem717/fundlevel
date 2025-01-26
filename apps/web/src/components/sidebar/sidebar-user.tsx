@@ -23,7 +23,7 @@ import {
 import { ComponentPropsWithoutRef } from "react"
 import Link from "next/link"
 import { redirects } from "@/lib/config/redirects"
-import { ChevronsUpDown, LogOut, User } from "lucide-react";
+import { ChevronsUpDown, LogOut, Settings } from "lucide-react";
 import { ModeToggle } from "@/components/mode-toggle";
 import { useAuth } from "../providers/auth-provider";
 
@@ -90,9 +90,9 @@ export function SidebarUser({ ...props }: ComponentPropsWithoutRef<typeof Sideba
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem asChild>
-                <Link href={redirects.app.settings.account} >
-                  <User />
-                  Account
+                <Link href={redirects.app.settings} >
+                  <Settings />
+                  Settings
                 </Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
