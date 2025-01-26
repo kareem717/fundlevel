@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"fundlevel/internal/entities/account"
-	"fundlevel/internal/entities/analytic"
 	"fundlevel/internal/entities/business"
 	"fundlevel/internal/entities/industry"
 	"fundlevel/internal/entities/investment"
@@ -81,26 +80,6 @@ type BusinessRepository interface {
 
 	GetAllMemberRoles(ctx context.Context) ([]business.BusinessMemberRole, error)
 }
-type AnalyticRepository interface {
-	GetDailyAggregatedBusinessAnalytics(ctx context.Context, businessId int, minDayOfYear int, maxDayOfYear int) ([]analytic.SimplifiedDailyAggregatedBusinessAnalytics, error)
-	GetDailyAggregatedRoundAnalytics(ctx context.Context, roundId int, minDayOfYear int, maxDayOfYear int) ([]analytic.SimplifiedDailyAggregatedRoundAnalytics, error)
-
-	CreateRoundImpression(ctx context.Context, roundId int, accountId int) error
-	CreateBusinessImpression(ctx context.Context, businessId int, accountId int) error
-
-	GetRoundImpressionCount(ctx context.Context, roundId int) (int, error)
-	GetBusinessImpressionCount(ctx context.Context, businessId int) (int, error)
-
-	CreateBusinessFavourite(ctx context.Context, businessId int, accountId int) error
-	DeleteBusinessFavourite(ctx context.Context, businessId int, accountId int) error
-	IsBusinessFavouritedByAccount(ctx context.Context, businessId int, accountId int) (bool, error)
-	GetBusinessFavouriteCount(ctx context.Context, businessId int) (int, error)
-
-	CreateRoundFavourite(ctx context.Context, roundId int, accountId int) error
-	DeleteRoundFavourite(ctx context.Context, roundId int, accountId int) error
-	IsRoundFavouritedByAccount(ctx context.Context, roundId int, accountId int) (bool, error)
-	GetRoundFavouriteCount(ctx context.Context, roundId int) (int, error)
-}
 
 type PositionRepository interface {
 	Create(ctx context.Context, params position.CreatePositionParams) (position.Position, error)
@@ -110,7 +89,6 @@ type RepositoryProvider interface {
 	Round() RoundRepository
 	Investment() InvestmentRepository
 	Business() BusinessRepository
-	Analytic() AnalyticRepository
 	Industry() IndustryRepository
 	Position() PositionRepository
 }

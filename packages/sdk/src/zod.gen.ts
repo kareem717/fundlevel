@@ -322,12 +322,6 @@ export const zGetInvestmentPaymentsOutputBody = z.object({
   message: z.string(),
 });
 
-export const zGetLikeCountOutputBody = z.object({
-  $schema: z.string().url().readonly().optional(),
-  count: z.number(),
-  message: z.string(),
-});
-
 export const zGetOffsetPaginatedBusinessMembersOutputBody = z.object({
   $schema: z.string().url().readonly().optional(),
   hasMore: z.boolean(),
@@ -381,12 +375,6 @@ export const zGetStripeAccountOutputBody = z.object({
 export const zGetStripeIdentityVerificationSessionUrlInputBody = z.object({
   $schema: z.string().url().readonly().optional(),
   return_url: z.string().default("https://fundlevel.app"),
-});
-
-export const zImpressionCountOutputBody = z.object({
-  $schema: z.string().url().readonly().optional(),
-  count: z.number(),
-  message: z.string(),
 });
 
 export const zIndustry = z.object({
@@ -456,12 +444,6 @@ export const zInvestmentPayment = z.object({
 export const zInvestmentPaymentIntentClientSecretOutputBody = z.object({
   $schema: z.string().url().readonly().optional(),
   clientSecret: z.string(),
-  message: z.string(),
-});
-
-export const zIsFavouritedOutputBody = z.object({
-  $schema: z.string().url().readonly().optional(),
-  favourited: z.boolean(),
   message: z.string(),
 });
 
@@ -585,30 +567,6 @@ export const zDeleteAccountResponse = z.void();
 export const zUpdateAccountResponse = z.void();
 
 export const zGetAccountBusinessesResponse = zGetBusinessesOutputBody;
-
-export const zCreateBusinessImpressionResponse = zMessageResponse;
-
-export const zDeleteBusinessFavouriteResponse = zMessageResponse;
-
-export const zGetBusinessFavouriteStatusResponse = zIsFavouritedOutputBody;
-
-export const zCreateBusinessFavouriteResponse = zMessageResponse;
-
-export const zGetBusinessFavouriteCountResponse = zGetLikeCountOutputBody;
-
-export const zGetBusinessImpressionCountResponse = zImpressionCountOutputBody;
-
-export const zCreateRoundFavouriteResponse = zMessageResponse;
-
-export const zCreateRoundImpressionResponse = zMessageResponse;
-
-export const zDeleteRoundFavouriteResponse = zMessageResponse;
-
-export const zGetRoundFavouriteStatusResponse = zIsFavouritedOutputBody;
-
-export const zGetRoundFavouriteCountResponse = zGetLikeCountOutputBody;
-
-export const zGetRoundImpressionCountResponse = zImpressionCountOutputBody;
 
 export const zCreateBusinessResponse = zBusiness;
 

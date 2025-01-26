@@ -17,14 +17,9 @@ require (
 	go.uber.org/zap v1.27.0
 )
 
-require (
-	github.com/jmespath/go-jmespath v0.4.0 // indirect
-	golang.org/x/net v0.28.0 // indirect
-	gopkg.in/yaml.v2 v2.4.0 // indirect
-)
+require golang.org/x/net v0.28.0 // indirect
 
 require (
-	github.com/aws/aws-sdk-go v1.55.5
 	github.com/go-chi/cors v1.2.1
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect

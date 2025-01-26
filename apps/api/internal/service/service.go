@@ -4,13 +4,11 @@ import (
 	"context"
 
 	"fundlevel/internal/entities/account"
-	"fundlevel/internal/entities/analytic"
 	"fundlevel/internal/entities/business"
 	"fundlevel/internal/entities/industry"
 	"fundlevel/internal/entities/investment"
 	"fundlevel/internal/entities/round"
 	accountService "fundlevel/internal/service/domain/account"
-	analyticService "fundlevel/internal/service/domain/analytic"
 	businessService "fundlevel/internal/service/domain/business"
 	healthService "fundlevel/internal/service/domain/health"
 	industryService "fundlevel/internal/service/domain/industry"
@@ -113,27 +111,6 @@ type InvestmentService interface {
 	// CapturePaymentIntent(ctx context.Context, intentID string) error
 }
 
-type AnalyticService interface {
-	CreateRoundImpression(ctx context.Context, roundId int, accountId int) error
-	GetRoundImpressionCount(ctx context.Context, roundId int) (int, error)
-
-	CreateRoundFavourite(ctx context.Context, roundId int, accountId int) error
-	DeleteRoundFavourite(ctx context.Context, roundId int, accountId int) error
-	IsRoundFavouritedByAccount(ctx context.Context, roundId int, accountId int) (bool, error)
-	GetRoundFavouriteCount(ctx context.Context, roundId int) (int, error)
-
-	CreateBusinessImpression(ctx context.Context, businessId int, accountId int) error
-	GetBusinessImpressionCount(ctx context.Context, businessId int) (int, error)
-
-	CreateBusinessFavourite(ctx context.Context, businessId int, accountId int) error
-	DeleteBusinessFavourite(ctx context.Context, businessId int, accountId int) error
-	IsBusinessFavouritedByAccount(ctx context.Context, businessId int, accountId int) (bool, error)
-	GetBusinessFavouriteCount(ctx context.Context, businessId int) (int, error)
-
-	GetDailyAggregatedBusinessAnalytics(ctx context.Context, businessId int, minDayOfYear int, maxDayOfYear int) ([]analytic.SimplifiedDailyAggregatedBusinessAnalytics, error)
-	GetDailyAggregatedRoundAnalytics(ctx context.Context, roundId int, minDayOfYear int, maxDayOfYear int) ([]analytic.SimplifiedDailyAggregatedRoundAnalytics, error)
-}
-
 type PermissionService interface {
 	CanAccessBusinessInvestments(ctx context.Context, accountId int, businessId int) (bool, error)
 	CanAccountDeleteBusiness(ctx context.Context, accountId int, businessId int) (bool, error)
@@ -159,7 +136,6 @@ type Service struct {
 	AccountService    AccountService
 	HealthService     HealthService
 	IndustryService   IndustryService
-	AnalyticService   AnalyticService
 	BusinessService   BusinessService
 	InvestmentService InvestmentService
 	PermissionService PermissionService
@@ -175,7 +151,6 @@ func NewService(
 		repositories:      repositories,
 		IndustryService:   industryService.NewIndustryService(repositories),
 		HealthService:     healthService.NewHealthService(repositories),
-		AnalyticService:   analyticService.NewAnalyticService(repositories),
 		AccountService:    accountService.NewAccountService(repositories, stripeAPIKey),
 		RoundService:      roundService.NewRoundService(repositories),
 		InvestmentService: investmentService.NewInvestmentService(repositories, stripeAPIKey, feePercentage),

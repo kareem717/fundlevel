@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"fundlevel/internal/server/handler/account"
-	"fundlevel/internal/server/handler/analytic"
 	"fundlevel/internal/server/handler/business"
 	"fundlevel/internal/server/handler/health"
 	"fundlevel/internal/server/handler/industry"
@@ -193,10 +192,4 @@ func (s *Server) registerRoutes() {
 		s.supabaseClient,
 	)
 
-	analytic.RegisterHumaRoutes(
-		s.services,
-		s.logger,
-		s.humaApi,
-		s.supabaseClient,
-	)
 }
