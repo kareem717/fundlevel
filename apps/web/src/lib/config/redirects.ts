@@ -67,7 +67,7 @@ export const redirects = {
 				},
 			},
 		}),
-		round: (roundId: number) => `/round/${roundId}`,
+		rounds: (roundId: number) => `/rounds/${roundId}`,
 		settings: {
 			account: "/account",
 		},
