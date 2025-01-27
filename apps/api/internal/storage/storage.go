@@ -7,7 +7,6 @@ import (
 	"fundlevel/internal/entities/business"
 	"fundlevel/internal/entities/industry"
 	"fundlevel/internal/entities/investment"
-	"fundlevel/internal/entities/position"
 	"fundlevel/internal/entities/round"
 	"fundlevel/internal/storage/shared"
 
@@ -29,19 +28,20 @@ type RoundRepository interface {
 	GetTerms(ctx context.Context, id int) (round.RoundTerm, error)
 }
 type InvestmentRepository interface {
-	Create(ctx context.Context, investorId int, params investment.CreateInvestmentParams) (investment.Investment, error)
+	Create(ctx context.Context, investorId int, usdCentValue int64, params investment.CreateInvestmentParams) (investment.Investment, error)
 	Delete(ctx context.Context, id int) error
 	GetById(ctx context.Context, id int) (investment.Investment, error)
 	GetByCursor(ctx context.Context, paginationParams shared.CursorPagination) ([]investment.Investment, error)
 	GetByPage(ctx context.Context, paginationParams shared.OffsetPagination) ([]investment.Investment, int, error)
 	GetByRoundIdAndAccountId(ctx context.Context, roundId int, accountId int) (investment.Investment, error)
+	Update(ctx context.Context, id int, params investment.UpdateInvestmentParams) (investment.Investment, error)
 
-	CreatePayment(ctx context.Context, params investment.CreateInvestmentPaymentParams) (investment.InvestmentPayment, error)
-	UpdatePayment(ctx context.Context, id int, params investment.UpdateInvestmentPaymentParams) (investment.InvestmentPayment, error)
-	GetPaymentById(ctx context.Context, id int) (investment.InvestmentPayment, error)
-	GetPaymentByIntentId(ctx context.Context, intentId string) (investment.InvestmentPayment, error)
-	GetPaymentsByInvestmentId(ctx context.Context, investmentId int) ([]investment.InvestmentPayment, error)
-	GetCurrentPayment(ctx context.Context, investmentId int) (investment.InvestmentPayment, error)
+	CreatePayment(ctx context.Context, investmentId int, params investment.CreatePaymentParams) (investment.Payment, error)
+	UpdatePayment(ctx context.Context, id int, params investment.UpdatePaymentParams) (investment.Payment, error)
+	GetPaymentById(ctx context.Context, id int) (investment.Payment, error)
+	GetPaymentByIntentId(ctx context.Context, intentId string) (investment.Payment, error)
+	GetPaymentsByInvestmentId(ctx context.Context, investmentId int) ([]investment.Payment, error)
+	GetCurrentPayment(ctx context.Context, investmentId int) (investment.Payment, error)
 	GetFailedPaymentCount(ctx context.Context, investmentId int) (int, error)
 }
 type AccountRepository interface {
@@ -80,17 +80,12 @@ type BusinessRepository interface {
 
 	GetAllMemberRoles(ctx context.Context) ([]business.BusinessMemberRole, error)
 }
-
-type PositionRepository interface {
-	Create(ctx context.Context, params position.CreatePositionParams) (position.Position, error)
-}
 type RepositoryProvider interface {
 	Account() AccountRepository
 	Round() RoundRepository
 	Investment() InvestmentRepository
 	Business() BusinessRepository
 	Industry() IndustryRepository
-	Position() PositionRepository
 }
 
 type Transaction interface {

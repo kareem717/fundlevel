@@ -2475,6 +2475,20 @@
           "maxLength": null
         },
         {
+          "id": "public.investment_payments.total_usd_cents",
+          "name": "total_usd_cents",
+          "columnName": "total_usd_cents",
+          "type": "int8",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
           "id": "public.investment_payments.created_at",
           "name": "created_at",
           "columnName": "created_at",
@@ -2646,6 +2660,34 @@
           "columnName": "terms_acceptance_id",
           "type": "int4",
           "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.investments.usd_cent_value",
+          "name": "usd_cent_value",
+          "columnName": "usd_cent_value",
+          "type": "int8",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.investments.completed_at",
+          "name": "completed_at",
+          "columnName": "completed_at",
+          "type": "timestamptz",
+          "isRequired": false,
           "kind": "scalar",
           "isList": false,
           "isGenerated": false,
@@ -4009,96 +4051,6 @@
         }
       ]
     },
-    "positions": {
-      "id": "public.positions",
-      "schemaName": "public",
-      "tableName": "positions",
-      "fields": [
-        {
-          "id": "public.positions.id",
-          "name": "id",
-          "columnName": "id",
-          "type": "int4",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": {
-            "identifier": "\"public\".\"positions_id_seq\"",
-            "increment": 1,
-            "start": 1
-          },
-          "hasDefaultValue": true,
-          "isId": true,
-          "maxLength": null
-        },
-        {
-          "id": "public.positions.investment_id",
-          "name": "investment_id",
-          "columnName": "investment_id",
-          "type": "int4",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "id": "public.positions.created_at",
-          "name": "created_at",
-          "columnName": "created_at",
-          "type": "timestamptz",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": true,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "id": "public.positions.updated_at",
-          "name": "updated_at",
-          "columnName": "updated_at",
-          "type": "timestamptz",
-          "isRequired": false,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "id": "public.positions.deleted_at",
-          "name": "deleted_at",
-          "columnName": "deleted_at",
-          "type": "timestamptz",
-          "isRequired": false,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        }
-      ],
-      "uniqueConstraints": [
-        {
-          "name": "positions_pkey",
-          "fields": [
-            "id"
-          ],
-          "nullNotDistinct": false
-        }
-      ]
-    },
     "refresh_tokens": {
       "id": "auth.refresh_tokens",
       "schemaName": "auth",
@@ -4593,7 +4545,7 @@
           "id": "public.rounds.price_per_share_usd_cents",
           "name": "price_per_share_usd_cents",
           "columnName": "price_per_share_usd_cents",
-          "type": "int4",
+          "type": "int8",
           "isRequired": true,
           "kind": "scalar",
           "isList": false,

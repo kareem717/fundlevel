@@ -273,11 +273,11 @@ export const zGetCursorPaginatedRoundsOutputBody = z.object({
 
 export const zGetInvestmentActivePaymentOutputBody = z.object({
   $schema: z.string().url().readonly().optional(),
-  investmentPayment: z.object({
+  investment_payment: z.object({
     created_at: z.string().datetime(),
     deleted_at: z.union([z.string().datetime(), z.null()]),
-    id: z.number(),
-    investment_id: z.number(),
+    id: z.number().gte(1),
+    investment_id: z.number().gte(1),
     status: z.enum([
       "cancelled",
       "processing",
@@ -289,6 +289,7 @@ export const zGetInvestmentActivePaymentOutputBody = z.object({
     ]),
     stripe_payment_intent_client_secret: z.string(),
     stripe_payment_intent_id: z.string(),
+    total_usd_cents: z.number().gte(1),
     updated_at: z.union([z.string().datetime(), z.null()]),
   }),
   message: z.string(),
@@ -296,13 +297,13 @@ export const zGetInvestmentActivePaymentOutputBody = z.object({
 
 export const zGetInvestmentPaymentsOutputBody = z.object({
   $schema: z.string().url().readonly().optional(),
-  investmentPayments: z.union([
+  investment_payments: z.union([
     z.array(
       z.object({
         created_at: z.string().datetime(),
         deleted_at: z.union([z.string().datetime(), z.null()]),
-        id: z.number(),
-        investment_id: z.number(),
+        id: z.number().gte(1),
+        investment_id: z.number().gte(1),
         status: z.enum([
           "cancelled",
           "processing",
@@ -314,6 +315,7 @@ export const zGetInvestmentPaymentsOutputBody = z.object({
         ]),
         stripe_payment_intent_client_secret: z.string(),
         stripe_payment_intent_id: z.string(),
+        total_usd_cents: z.number().gte(1),
         updated_at: z.union([z.string().datetime(), z.null()]),
       }),
     ),
@@ -387,46 +389,34 @@ export const zIndustry = z.object({
 
 export const zInvestment = z.object({
   $schema: z.string().url().readonly().optional(),
+  completed_at: z.union([z.string().datetime(), z.null()]),
   created_at: z.string().datetime(),
   deleted_at: z.union([z.string().datetime(), z.null()]),
   id: z.number().gte(1),
-  investor_id: z.number(),
-  payments: z
-    .union([
-      z.array(
-        z.object({
-          created_at: z.string().datetime(),
-          deleted_at: z.union([z.string().datetime(), z.null()]),
-          id: z.number(),
-          investment_id: z.number(),
-          status: z.enum([
-            "cancelled",
-            "processing",
-            "requires_action",
-            "requires_capture",
-            "requires_confirmation",
-            "requires_payment_method",
-            "succeeded",
-          ]),
-          stripe_payment_intent_client_secret: z.string(),
-          stripe_payment_intent_id: z.string(),
-          updated_at: z.union([z.string().datetime(), z.null()]),
-        }),
-      ),
-      z.null(),
-    ])
-    .optional(),
+  investor_id: z.number().gte(1),
   round_id: z.number().gte(1),
   share_quantity: z.number().gte(1),
   terms_acceptance_id: z.number().gte(1),
   updated_at: z.union([z.string().datetime(), z.null()]),
+  usd_cent_value: z.number().gte(1),
 });
 
-export const zInvestmentPayment = z.object({
+export const zInvestmentPaymentIntentClientSecretOutputBody = z.object({
+  $schema: z.string().url().readonly().optional(),
+  client_secret: z.string(),
+  message: z.string(),
+});
+
+export const zMessageResponse = z.object({
+  $schema: z.string().url().readonly().optional(),
+  message: z.string(),
+});
+
+export const zPayment = z.object({
   created_at: z.string().datetime(),
   deleted_at: z.union([z.string().datetime(), z.null()]),
-  id: z.number(),
-  investment_id: z.number(),
+  id: z.number().gte(1),
+  investment_id: z.number().gte(1),
   status: z.enum([
     "cancelled",
     "processing",
@@ -438,18 +428,8 @@ export const zInvestmentPayment = z.object({
   ]),
   stripe_payment_intent_client_secret: z.string(),
   stripe_payment_intent_id: z.string(),
+  total_usd_cents: z.number().gte(1),
   updated_at: z.union([z.string().datetime(), z.null()]),
-});
-
-export const zInvestmentPaymentIntentClientSecretOutputBody = z.object({
-  $schema: z.string().url().readonly().optional(),
-  clientSecret: z.string(),
-  message: z.string(),
-});
-
-export const zMessageResponse = z.object({
-  $schema: z.string().url().readonly().optional(),
-  message: z.string(),
 });
 
 export const zRolePermission = z.object({
@@ -532,7 +512,6 @@ export const zStripeSessionOutput = z.object({
 
 export const zUrlOutputBody = z.object({
   $schema: z.string().url().readonly().optional(),
-  message: z.string(),
   url: z.string(),
 });
 

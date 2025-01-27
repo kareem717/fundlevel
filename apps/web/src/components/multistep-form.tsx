@@ -10,7 +10,6 @@ import {
 } from "react";
 import { Form } from "@repo/ui/components/form";
 import { FieldValues, Path, UseFormReturn } from "react-hook-form";
-import { useRouter } from "next/navigation";
 
 export type Step<T extends FieldValues> = {
   content: React.ReactNode;
@@ -24,7 +23,7 @@ export interface MultiStepFormProps<T extends FieldValues> extends ComponentProp
   steps: Step<T>[];
   form: UseFormReturn<T>;
   defaultStep?: number;
-  handleSubmit: (data: T) => Error | void | Promise<Error | void>;
+  handleSubmit: (data: T) => boolean | void | Promise<boolean | void>;
 }
 
 export const MultiStepForm = <T extends FieldValues>({
@@ -68,8 +67,8 @@ export const MultiStepForm = <T extends FieldValues>({
     if (isLastStep) {
       setIsSubmitting(true);
 
-      await handleSubmit(formProps.getValues());
-      if (formProps.formState.isSubmitSuccessful) {
+      const hasErrored = await handleSubmit(formProps.getValues());
+      if (!hasErrored) {
         setHasSubmitted(true);
       }
 

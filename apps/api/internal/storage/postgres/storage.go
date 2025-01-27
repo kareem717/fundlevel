@@ -11,7 +11,6 @@ import (
 	"fundlevel/internal/storage/postgres/business"
 	"fundlevel/internal/storage/postgres/industry"
 	"fundlevel/internal/storage/postgres/investment"
-	"fundlevel/internal/storage/postgres/position"
 	"fundlevel/internal/storage/postgres/round"
 
 	"github.com/alexlast/bunzap"
@@ -84,7 +83,6 @@ type Repository struct {
 	business   *business.BusinessRepository
 	industry   *industry.IndustryRepository
 	investment *investment.InvestmentRepository
-	position   *position.PositionRepository
 	round      *round.RoundRepository
 }
 
@@ -96,7 +94,6 @@ type transaction struct {
 	business   *business.BusinessRepository
 	industry   *industry.IndustryRepository
 	investment *investment.InvestmentRepository
-	position   *position.PositionRepository
 	round      *round.RoundRepository
 }
 
@@ -131,7 +128,6 @@ func NewRepository(ctx context.Context, config Config, logger *zap.Logger) stora
 		business:   business.NewBusinessRepository(db, ctx),
 		industry:   industry.NewIndustryRepository(db, ctx),
 		investment: investment.NewInvestmentRepository(db, ctx),
-		position:   position.NewPositionRepository(db, ctx),
 		round:      round.NewRoundRepository(db, ctx),
 	}
 }
@@ -141,7 +137,6 @@ func (r *Repository) Account() storage.AccountRepository       { return r.accoun
 func (r *Repository) Business() storage.BusinessRepository     { return r.business }
 func (r *Repository) Industry() storage.IndustryRepository     { return r.industry }
 func (r *Repository) Investment() storage.InvestmentRepository { return r.investment }
-func (r *Repository) Position() storage.PositionRepository     { return r.position }
 func (r *Repository) Round() storage.RoundRepository           { return r.round }
 func (r *Repository) Shutdown(ctx context.Context) error       { r.db.Close(); return nil }
 
@@ -150,7 +145,6 @@ func (t *transaction) Account() storage.AccountRepository       { return t.accou
 func (t *transaction) Business() storage.BusinessRepository     { return t.business }
 func (t *transaction) Industry() storage.IndustryRepository     { return t.industry }
 func (t *transaction) Investment() storage.InvestmentRepository { return t.investment }
-func (t *transaction) Position() storage.PositionRepository     { return t.position }
 func (t *transaction) Round() storage.RoundRepository           { return t.round }
 func (t *transaction) Commit() error                            { return t.tx.Commit() }
 func (t *transaction) Rollback() error                          { return t.tx.Rollback() }
@@ -166,7 +160,6 @@ func (t *transaction) SubTransaction() (storage.Transaction, error) {
 		business:   business.NewBusinessRepository(tx, t.ctx),
 		industry:   industry.NewIndustryRepository(tx, t.ctx),
 		investment: investment.NewInvestmentRepository(tx, t.ctx),
-		position:   position.NewPositionRepository(tx, t.ctx),
 		round:      round.NewRoundRepository(tx, t.ctx),
 	}, nil
 }
@@ -185,7 +178,6 @@ func (r *Repository) NewTransaction() (storage.Transaction, error) {
 		business:   business.NewBusinessRepository(tx, r.ctx),
 		industry:   industry.NewIndustryRepository(tx, r.ctx),
 		investment: investment.NewInvestmentRepository(tx, r.ctx),
-		position:   position.NewPositionRepository(tx, r.ctx),
 		round:      round.NewRoundRepository(tx, r.ctx),
 	}, nil
 }

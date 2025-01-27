@@ -23,7 +23,7 @@ func NewInvestmentRepository(db bun.IDB, ctx context.Context) *InvestmentReposit
 	}
 }
 
-func (r *InvestmentRepository) Create(ctx context.Context, investorId int, params investment.CreateInvestmentParams) (investment.Investment, error) {
+func (r *InvestmentRepository) Create(ctx context.Context, investorId int, usdCentValue int64, params investment.CreateInvestmentParams) (investment.Investment, error) {
 	resp := investment.Investment{}
 
 	err := r.db.RunInTx(ctx, nil, func(ctx context.Context, tx bun.Tx) error {
@@ -33,7 +33,6 @@ func (r *InvestmentRepository) Create(ctx context.Context, investorId int, param
 			Model(&params.TermsAcceptance).
 			Returning("*").
 			Scan(ctx, &acceptance)
-
 		if err != nil {
 			return err
 		}
@@ -41,6 +40,7 @@ func (r *InvestmentRepository) Create(ctx context.Context, investorId int, param
 		err = tx.NewInsert().
 			Model(&params.Investment).
 			Value("investor_id", "?", investorId).
+			Value("usd_cent_value", "?", usdCentValue).
 			Value("terms_acceptance_id", "?", acceptance.ID).
 			Returning("*").
 			Scan(ctx, &resp)
@@ -69,9 +69,6 @@ func (r *InvestmentRepository) GetById(ctx context.Context, id int) (investment.
 
 	err := r.db.NewSelect().
 		Model(&resp).
-		// Relation("Round").
-		// Relation("Investor").
-		Relation("Payments").
 		Where("investment.id = ?", id).
 		Scan(ctx)
 
@@ -98,8 +95,6 @@ func (r *InvestmentRepository) GetByPage(ctx context.Context, paginationParams p
 	count, err := r.db.
 		NewSelect().
 		Model(&resp).
-		// Relation("Round").
-		// Relation("Investor").
 		Offset(offset).
 		Limit(paginationParams.PageSize+1).
 		ScanAndCount(ctx, &resp)
@@ -112,11 +107,21 @@ func (r *InvestmentRepository) GetByRoundIdAndAccountId(ctx context.Context, rou
 
 	err := r.db.NewSelect().
 		Model(&resp).
-		// Relation("Round").
-		// Relation("Investor").
 		Where("investment.round_id = ?", roundId).
 		Where("investment.investor_id = ?", accountId).
 		Scan(ctx)
+
+	return resp, err
+}
+
+func (r *InvestmentRepository) Update(ctx context.Context, id int, params investment.UpdateInvestmentParams) (investment.Investment, error) {
+	resp := investment.Investment{}
+
+	err := r.db.NewUpdate().
+		Model(&params).
+		Where("investment.id = ?", id).
+		Returning("*").
+		Scan(ctx, &resp)
 
 	return resp, err
 }

@@ -2,7 +2,7 @@
 
 import { actionClientWithAccount } from "@/lib/safe-action";
 import {
-	createInvestmentPaymentIntent as createInvestmentPaymentIntentApi,
+	createInvestmentPaymentIntent,
 	getInvestmentById as getInvestmentByIdApi,
 	createRoundInvestment,
 } from "@repo/sdk";
@@ -28,22 +28,19 @@ export const getInvestmentById = actionClientWithAccount
 
 export const getInvestmentByIdCached = cache(getInvestmentById);
 
-export const createInvestmentPaymentIntent = actionClientWithAccount
+export const createInvestmentPaymentIntentAction = actionClientWithAccount
 	.schema(pathIdSchema)
 	.action(async ({ parsedInput, ctx: { axiosClient } }) => {
-		const resp = await createInvestmentPaymentIntentApi({
+		const resp = await createInvestmentPaymentIntent({
 			client: axiosClient,
 			path: {
 				id: parsedInput,
 			},
 		});
 
-		return resp.data;
+		return resp.data?.client_secret;
 	});
 
-/**
- * Create an investment for a round
- */
 export const createInvestmentAction = actionClientWithAccount
 	.schema(zCreateInvestmentParams)
 	.action(async ({ parsedInput, ctx: { axiosClient } }) => {
@@ -53,7 +50,5 @@ export const createInvestmentAction = actionClientWithAccount
 			throwOnError: true,
 		});
 
-		return {
-			id: resp.data.id,
-		};
+		return resp.data;
 	});

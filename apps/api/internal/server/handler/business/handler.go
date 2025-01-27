@@ -233,8 +233,7 @@ func (h *httpHandler) onboardStripeConnectedAccount(ctx context.Context, input *
 	}
 
 	resp := &shared.URLOutput{}
-	resp.Body.Message = "Account link created successfully"
-	resp.Body.URL = link
+	resp.Body.URL = link.URL
 
 	return resp, nil
 }
@@ -325,8 +324,7 @@ func (h *httpHandler) getStripeDashboardURL(ctx context.Context, input *shared.P
 	}
 
 	resp := &shared.URLOutput{}
-	resp.Body.Message = "Stripe dashboard url fetched successfully"
-	resp.Body.URL = url
+	resp.Body.URL = url.URL
 
 	return resp, nil
 

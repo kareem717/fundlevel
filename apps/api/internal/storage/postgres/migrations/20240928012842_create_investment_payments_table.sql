@@ -13,10 +13,11 @@ CREATE TYPE stripe_payment_intent_status AS ENUM(
 CREATE TABLE
     investment_payments (
         id SERIAL PRIMARY KEY,
-        investment_id INT NOT NULL REFERENCES investments (id),
+        investment_id INT NOT NULL REFERENCES investments,
         stripe_payment_intent_id TEXT NOT NULL,
         stripe_payment_intent_client_secret TEXT NOT NULL,
         status stripe_payment_intent_status DEFAULT 'processing',
+        total_usd_cents BIGINT NOT NULL,
         created_at timestamptz DEFAULT CLOCK_TIMESTAMP(),
         updated_at timestamptz,
         deleted_at timestamptz

@@ -233,7 +233,7 @@ export type GetInvestmentActivePaymentOutputBody = {
    * A URL to the JSON Schema for this object.
    */
   readonly $schema?: string;
-  investmentPayment: InvestmentPayment;
+  investment_payment: Payment;
   message: string;
 };
 
@@ -242,7 +242,7 @@ export type GetInvestmentPaymentsOutputBody = {
    * A URL to the JSON Schema for this object.
    */
   readonly $schema?: string;
-  investmentPayments: Array<InvestmentPayment> | null;
+  investment_payments: Array<Payment> | null;
   message: string;
 };
 
@@ -307,18 +307,36 @@ export type Investment = {
    * A URL to the JSON Schema for this object.
    */
   readonly $schema?: string;
+  completed_at: string | null;
   created_at: string;
   deleted_at: string | null;
   id: number;
   investor_id: number;
-  payments?: Array<InvestmentPayment> | null;
   round_id: number;
   share_quantity: number;
   terms_acceptance_id: number;
   updated_at: string | null;
+  usd_cent_value: number;
 };
 
-export type InvestmentPayment = {
+export type InvestmentPaymentIntentClientSecretOutputBody = {
+  /**
+   * A URL to the JSON Schema for this object.
+   */
+  readonly $schema?: string;
+  client_secret: string;
+  message: string;
+};
+
+export type MessageResponse = {
+  /**
+   * A URL to the JSON Schema for this object.
+   */
+  readonly $schema?: string;
+  message: string;
+};
+
+export type Payment = {
   created_at: string;
   deleted_at: string | null;
   id: number;
@@ -333,24 +351,8 @@ export type InvestmentPayment = {
     | "succeeded";
   stripe_payment_intent_client_secret: string;
   stripe_payment_intent_id: string;
+  total_usd_cents: number;
   updated_at: string | null;
-};
-
-export type InvestmentPaymentIntentClientSecretOutputBody = {
-  /**
-   * A URL to the JSON Schema for this object.
-   */
-  readonly $schema?: string;
-  clientSecret: string;
-  message: string;
-};
-
-export type MessageResponse = {
-  /**
-   * A URL to the JSON Schema for this object.
-   */
-  readonly $schema?: string;
-  message: string;
 };
 
 export type RolePermission = {
@@ -457,7 +459,6 @@ export type UrlOutputBody = {
    * A URL to the JSON Schema for this object.
    */
   readonly $schema?: string;
-  message: string;
   url: string;
 };
 

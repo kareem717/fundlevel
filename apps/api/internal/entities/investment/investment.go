@@ -1,6 +1,8 @@
 package investment
 
 import (
+	"time"
+
 	"fundlevel/internal/entities/round"
 	"fundlevel/internal/entities/shared"
 
@@ -11,11 +13,12 @@ type Investment struct {
 	bun.BaseModel `bun:"table:investments"`
 	shared.IntegerID
 
-	RoundID           int                 `json:"round_id" minimum:"1"`
-	ShareQuantity     int                 `json:"share_quantity" minimum:"1"`
-	TermsAcceptanceID int                 `json:"terms_acceptance_id" minimum:"1"`
-	InvestorID        int                 `json:"investor_id"`
-	Payments          []InvestmentPayment `json:"payments" bun:"rel:has-many,join:id=investment_id" required:"false"`
+	RoundID            int        `json:"round_id" minimum:"1"`
+	ShareQuantity      int        `json:"share_quantity" minimum:"1"`
+	TermsAcceptanceID  int        `json:"terms_acceptance_id" minimum:"1"`
+	InvestorID         int        `json:"investor_id" minimum:"1"`
+	UsdCentValue       int64      `json:"usd_cent_value" minimum:"1"`
+	CompletedAt        *time.Time `json:"completed_at" format:"date-time"`
 
 	shared.Timestamps
 }
@@ -28,4 +31,8 @@ type CreateInvestmentParams struct {
 		ShareQuantity int `json:"share_quantity" minimum:"1"`
 	} `json:"investment"`
 	TermsAcceptance round.CreateRoundTermsAcceptanceParams `json:"terms_acceptance"`
+}
+
+type UpdateInvestmentParams struct {
+	CompletedAt *time.Time `json:"completed_at" format:"date-time"`
 }

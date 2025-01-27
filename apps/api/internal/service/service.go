@@ -20,8 +20,6 @@ import (
 
 	"github.com/google/uuid"
 	"go.uber.org/zap"
-
-	"github.com/stripe/stripe-go/v81"
 )
 
 type AccountService interface {
@@ -63,12 +61,12 @@ type BusinessService interface {
 	GetById(ctx context.Context, id int) (business.Business, error)
 	Update(ctx context.Context, id int, params business.UpdateBusinessParams) (business.Business, error)
 
-	GetStripeDashboardURL(ctx context.Context, businessId int) (string, error)
-	CreateStripeAccountLink(ctx context.Context, accountID string, returnURL string, refreshURL string) (string, error)
+	GetStripeDashboardURL(ctx context.Context, businessId int) (types.URLField, error)
+	CreateStripeAccountLink(ctx context.Context, accountID string, returnURL string, refreshURL string) (types.URLField, error)
 	GetStripeAccount(ctx context.Context, businessId int) (business.BusinessStripeAccount, error)
 	GetStripeAccountByAccountId(ctx context.Context, accountId string) (business.BusinessStripeAccount, error)
 	UpdateStripeAccount(ctx context.Context, businessId int, params business.UpdateBusinessStripeAccountParams) (business.BusinessStripeAccount, error)
-	GetStripeConnectedAccountDashboardURL(ctx context.Context, accountID string) (string, error)
+	GetStripeConnectedAccountDashboardURL(ctx context.Context, accountID string) (types.URLField, error)
 
 	UpsertBusinessLegalSection(ctx context.Context, businessId int, params business.UpsertBusinessLegalSectionParams) error
 
@@ -82,34 +80,16 @@ type BusinessService interface {
 }
 
 type InvestmentService interface {
-	// WithdrawInvestment(ctx context.Context, investmentId int) error
-	// DeleteInvestment(ctx context.Context, investmentId int) error
-
-	// Create creates an investment record and returns the investment record.
-	// If round is not provided, it will fetch it from the database.
-	Create(ctx context.Context, investorId int, params investment.CreateInvestmentParams) (investment.Investment, error)
+	Create(ctx context.Context, investorId int, pricePerShareUsdCents int64, params investment.CreateInvestmentParams) (investment.Investment, error)
 	GetById(ctx context.Context, id int) (investment.Investment, error)
-	// Update(ctx context.Context, id int, params investment.UpdateInvestmentParams) (investment.Investment, error)
 
-	// CreateStripePaymentIntent simply creates a Stripe payment intent for the given investment.
-	CreateStripePaymentIntent(ctx context.Context, investmentId int) (*stripe.PaymentIntent, error)
-
-	// HandleStripePaymentIntentCreated is a callback function that is called when a Stripe payment intent is created.
-	// It tries to create a `investment_payment` record in the database, cancelling the Stripe payment intent if it fails.
-	HandleStripePaymentIntentCreated(ctx context.Context, intentID string) error
-
-	// HandleStripePaymentIntentSuccess is a callback function that is called when a Stripe payment intent is successful.
 	HandleStripePaymentIntentSucceeded(ctx context.Context, intentID string) error
 	HandleStripePaymentIntentStatusUpdated(ctx context.Context, intentID string) error
 	HandleStripePaymentIntentFailed(ctx context.Context, intentID string) error
 
-	GetPayments(ctx context.Context, investmentId int) ([]investment.InvestmentPayment, error)
-	GetCurrentPayment(ctx context.Context, investmentId int) (investment.InvestmentPayment, error)
-	// HandleInvestmentPaymentIntentSuccess(ctx context.Context, intentID string) error
-	// HandleInvestmentPaymentIntentPaymentFailed(ctx context.Context, intentID string) error
-	// HandleInvestmentPaymentIntentProcessing(ctx context.Context, intentID string) error
-	// HandleInvestmentPaymentIntentCancelled(ctx context.Context, intentID string) error
-	// CapturePaymentIntent(ctx context.Context, intentID string) error
+	GetPayments(ctx context.Context, investmentId int) ([]investment.Payment, error)
+	GetCurrentPayment(ctx context.Context, investmentId int) (investment.Payment, error)
+	CreatePayment(ctx context.Context, investmentId int) (investment.Payment, error)
 }
 
 type PermissionService interface {

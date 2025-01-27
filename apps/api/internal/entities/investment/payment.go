@@ -7,24 +7,29 @@ import (
 	"github.com/uptrace/bun"
 )
 
-// InvestmentPayment represents a payment for an investment
-type InvestmentPayment struct {
-	bun.BaseModel                   `bun:"table:investment_payments"`
-	ID                              int                        `bun:",pk,autoincrement" json:"id"`
-	InvestmentID                    int                        `json:"investment_id"`
+// Payment represents a investment intent payment entity.
+type Payment struct {
+	bun.BaseModel `bun:"table:investment_payments"`
+	shared.IntegerID
+
+	InvestmentID                    int                        `json:"investment_id" minimum:"1"`
 	Status                          stripe.PaymentIntentStatus `json:"status" enum:"cancelled,processing,requires_action,requires_capture,requires_confirmation,requires_payment_method,succeeded"`
 	StripePaymentIntentID           string                     `json:"stripe_payment_intent_id"`
 	StripePaymentIntentClientSecret string                     `json:"stripe_payment_intent_client_secret"`
+	TotalUsdCents                   int64                        `json:"total_usd_cents" minimum:"1"`
+
 	shared.Timestamps
 }
 
-type CreateInvestmentPaymentParams struct {
-	InvestmentID                    int                        `json:"investment_id"`
+// CreatePaymentParams is the params for creating a payment entity.
+type CreatePaymentParams struct {
 	StripePaymentIntentID           string                     `json:"stripe_payment_intent_id"`
 	StripePaymentIntentClientSecret string                     `json:"stripe_payment_intent_client_secret"`
 	Status                          stripe.PaymentIntentStatus `json:"status" enum:"cancelled,processing,requires_action,requires_capture,requires_confirmation,requires_payment_method,succeeded"`
+	TotalUsdCents                   int64                       `json:"total_usd_cents" minimum:"1"`
 }
 
-type UpdateInvestmentPaymentParams struct {
-	Status stripe.PaymentIntentStatus `json:"status" enum:"cancelled,processing,requires_action,requires_capture,requires_confirmation,requires_payment_method,succeeded" hidden:"true" required:"false"`
+// UpdatePaymentParams is the params for updating a payment entity.
+type UpdatePaymentParams struct {
+	Status *stripe.PaymentIntentStatus `json:"status" enum:"cancelled,processing,requires_action,requires_capture,requires_confirmation,requires_payment_method,succeeded" hidden:"true" required:"false"`
 }

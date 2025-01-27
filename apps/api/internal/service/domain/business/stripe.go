@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"fundlevel/internal/entities/business"
+	"fundlevel/internal/service/types"
 
 	"github.com/stripe/stripe-go/v81"
 	"github.com/stripe/stripe-go/v81/account"
@@ -12,16 +13,17 @@ import (
 )
 
 // CreateAccountLink creates a new on boarding session for a Stripe Connect connected account
-func (s *BusinessService) CreateStripeAccountLink(ctx context.Context, accountID string, returnURL string, refreshURL string) (string, error) {
+func (s *BusinessService) CreateStripeAccountLink(ctx context.Context, accountID string, returnURL string, refreshURL string) (types.URLField, error) {
 	stripe.Key = s.stripeAPIKey
+	resp := types.URLField{}
 
 	account, err := account.GetByID(accountID, nil)
 	if err != nil {
-		return "", err
+		return resp, err
 	}
 
 	if account == nil {
-		return "", fmt.Errorf("account is not connected to Stripe Connect")
+		return resp, fmt.Errorf("account is not connected to Stripe Connect")
 	}
 
 	accountLink, err := accountlink.New(&stripe.AccountLinkParams{
@@ -31,18 +33,21 @@ func (s *BusinessService) CreateStripeAccountLink(ctx context.Context, accountID
 		Type:       stripe.String("account_onboarding"),
 	})
 	if err != nil {
-		return "", err
+		return resp, err
 	}
 
-	return accountLink.URL, nil
+	resp.URL = accountLink.URL
+
+	return resp, nil
 }
 
-func (s *BusinessService) GetStripeConnectedAccountDashboardURL(ctx context.Context, accountID string) (string, error) {
+func (s *BusinessService) GetStripeConnectedAccountDashboardURL(ctx context.Context, accountID string) (types.URLField, error) {
 	stripe.Key = s.stripeAPIKey
+	resp := types.URLField{}
 
 	account, err := account.GetByID(accountID, nil)
 	if err != nil {
-		return "", err
+		return resp, err
 	}
 
 	params := &stripe.LoginLinkParams{
@@ -50,10 +55,12 @@ func (s *BusinessService) GetStripeConnectedAccountDashboardURL(ctx context.Cont
 	}
 	result, err := loginlink.New(params)
 	if err != nil {
-		return "", err
+		return resp, err
 	}
 
-	return result.URL, nil
+	resp.URL = result.URL
+
+	return resp, nil
 }
 
 func (s *BusinessService) DeleteStripeConnectedAccount(ctx context.Context, accountID string) error {
@@ -75,13 +82,22 @@ func (s *BusinessService) UpdateStripeAccount(ctx context.Context, businessId in
 	return s.repositories.Business().UpdateStripeAccount(ctx, businessId, params)
 }
 
-func (s *BusinessService) GetStripeDashboardURL(ctx context.Context, businessId int) (string, error) {
+func (s *BusinessService) GetStripeDashboardURL(ctx context.Context, businessId int) (types.URLField, error) {
+	resp := types.URLField{}
+
 	business, err := s.repositories.Business().GetById(ctx, businessId)
 	if err != nil {
-		return "", err
+		return resp, err
 	}
 
-	return s.GetStripeConnectedAccountDashboardURL(ctx, business.StripeAccount.StripeConnectedAccountID)
+	dashboardURL, err := s.GetStripeConnectedAccountDashboardURL(ctx, business.StripeAccount.StripeConnectedAccountID)
+	if err != nil {
+		return resp, err
+	}
+
+	resp.URL = dashboardURL.URL
+
+	return resp, nil
 }
 
 func (s *BusinessService) GetStripeAccount(ctx context.Context, businessId int) (business.BusinessStripeAccount, error) {

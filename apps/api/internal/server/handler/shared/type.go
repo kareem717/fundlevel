@@ -6,6 +6,7 @@ import (
 	"fundlevel/internal/entities/business"
 	"fundlevel/internal/entities/investment"
 	"fundlevel/internal/entities/round"
+	"fundlevel/internal/service/types"
 	"time"
 
 	"github.com/google/uuid"
@@ -27,8 +28,7 @@ type PathIDParam struct {
 
 type URLOutput struct {
 	Body struct {
-		MessageResponse
-		URL string `json:"url"`
+		types.URLField
 	}
 }
 

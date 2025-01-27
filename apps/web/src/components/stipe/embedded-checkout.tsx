@@ -1,7 +1,7 @@
 'use client';
 
-import { loadStripe } from '@stripe/stripe-js';
-import { ComponentPropsWithoutRef, useEffect, useState, useImperativeHandle, forwardRef } from 'react';
+import { loadStripe, StripeError } from '@stripe/stripe-js';
+import { ComponentPropsWithoutRef, useState, useImperativeHandle, forwardRef, use } from 'react';
 import {
   PaymentElement,
   useStripe,
@@ -9,29 +9,23 @@ import {
   Elements
 } from "@stripe/react-stripe-js";
 import { env } from '@/env';
-import { cn } from '@repo/ui/lib/utils';
 import { useToast } from '@repo/ui/hooks/use-toast';
 import { useTheme } from 'next-themes';
+import { redirects } from '@/lib/config/redirects';
 
 const stripePromise = loadStripe(env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
 export interface EmbeddedCheckoutFormRef {
-  submitCheckout: () => Promise<boolean>;
+  submitCheckout: () => Promise<StripeError | null>;
   isLoading: boolean;
 }
 
 export interface EmbeddedCheckoutFormProps extends ComponentPropsWithoutRef<typeof PaymentElement> {
-  investmentIntentId: string;
+  clientSecret: string | null;
 }
 
-export const EmbeddedCheckoutForm = forwardRef<EmbeddedCheckoutFormRef, EmbeddedCheckoutFormProps>(({ ...props }, ref) => {
-  const [clientSecret, setClientSecret] = useState<string | null>(null);
+export const EmbeddedCheckoutForm = forwardRef<EmbeddedCheckoutFormRef, EmbeddedCheckoutFormProps>(({ clientSecret, ...props }, ref) => {
   const { resolvedTheme } = useTheme();
-
-  useEffect(() => {
-    //TODO: Implement actual fetchClientSecret
-    setClientSecret("pi_3QlcSCAR1zmISRQV2MuN5mSv_secret_9kQYRorJBt2wUUbk0vc5VpiVc")
-  }, []);
 
   if (!clientSecret) {
     return null;
@@ -46,34 +40,28 @@ export const EmbeddedCheckoutForm = forwardRef<EmbeddedCheckoutFormRef, Embedded
 
 EmbeddedCheckoutForm.displayName = "EmbeddedCheckoutForm";
 
-const CheckoutForm = forwardRef<EmbeddedCheckoutFormRef, EmbeddedCheckoutFormProps>(({ options, ...props }, ref) => {
+const CheckoutForm = forwardRef<EmbeddedCheckoutFormRef, Omit<EmbeddedCheckoutFormProps, "clientSecret">>(({ options, ...props }, ref) => {
   const [isLoading, setIsLoading] = useState(false);
   const stripe = useStripe();
   const elements = useElements();
   const { toast } = useToast();
 
-  async function submitCheckout(): Promise<boolean> {
+  const submitCheckout = async (): Promise<StripeError | null> => {
+    if (!stripe || !elements) return null;
     setIsLoading(true);
-
-    if (!stripe || !elements) {
-      // Stripe.js hasn't yet loaded.
-      // Make sure to disable form submission until Stripe.js has loaded.
-      setIsLoading(false);
-      return false;
-    }
 
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        // TODO: Make sure to change this to your payment completion page
-        return_url: "http://localhost:3000/complete",
+        return_url: process.env.NODE_ENV === "development" ? "https://fundlevel.app/wallet" : env.NEXT_PUBLIC_APP_URL + redirects.app.wallet
       },
+      redirect: "if_required"
     });
 
     if (error) {
       console.error(error);
       setIsLoading(false);
-      return false;
+      return error;
     }
 
     toast({
@@ -82,13 +70,17 @@ const CheckoutForm = forwardRef<EmbeddedCheckoutFormRef, EmbeddedCheckoutFormPro
     });
 
     setIsLoading(false);
-    return true;
-  }
+    return null;
+  };
 
   useImperativeHandle(ref, () => ({
     submitCheckout,
     isLoading
   }));
+
+  if (!stripe || !elements) {
+    return null;
+  }
 
   return (
     <PaymentElement id="payment-element" options={{ layout: "tabs", ...options }} {...props} />

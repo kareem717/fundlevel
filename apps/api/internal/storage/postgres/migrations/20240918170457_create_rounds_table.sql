@@ -36,7 +36,7 @@ CREATE TABLE
     rounds (
         id serial PRIMARY KEY,
         business_id INT NOT NULL REFERENCES businesses,
-        price_per_share_usd_cents INT NOT NULL,
+        price_per_share_usd_cents BIGINT NOT NULL,
         total_business_shares INT NOT NULL,
         total_shares_for_sale INT NOT NULL,
         terms_id INT NOT NULL REFERENCES round_terms,

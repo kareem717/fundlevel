@@ -30,11 +30,12 @@ func (s *InvestmentService) GetById(ctx context.Context, id int) (investment.Inv
 	return s.repositories.Investment().GetById(ctx, id)
 }
 
-
 func (s *InvestmentService) Create(
 	ctx context.Context,
 	investorID int,
+	pricePerShareUsdCents int64,
 	params investment.CreateInvestmentParams,
 ) (investment.Investment, error) {
-	return s.repositories.Investment().Create(ctx, investorID, params)
+	usdCentValue := pricePerShareUsdCents * int64(params.Investment.ShareQuantity)
+	return s.repositories.Investment().Create(ctx, investorID, usdCentValue, params)
 }

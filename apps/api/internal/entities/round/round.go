@@ -20,7 +20,7 @@ type Round struct {
 
 	shared.IntegerID
 	BusinessID            int         `json:"business_id" minimum:"1"`
-	PricePerShareUSDCents int         `json:"price_per_share_usd_cents" minimum:"1"`
+	PricePerShareUSDCents int64       `json:"price_per_share_usd_cents" minimum:"1"`
 	TotalSharesForSale    int         `json:"total_shares_for_sale" minimum:"1"`
 	TotalBusinessShares   int         `json:"total_business_shares" minimum:"1"`
 	TermsID               int         `json:"terms_id" minimum:"1"`
@@ -33,9 +33,9 @@ type Round struct {
 type CreateRoundParams struct {
 	Round struct {
 		bun.BaseModel `bun:"table:rounds,alias:round"`
-		
+
 		BusinessID            int         `json:"business_id" minimum:"1"`
-		PricePerShareUSDCents int         `json:"price_per_share_usd_cents" example:"23" minimum:"1"`
+		PricePerShareUSDCents int64       `json:"price_per_share_usd_cents" example:"23" minimum:"1"`
 		TotalSharesForSale    int         `json:"total_shares_for_sale" example:"1000" minimum:"1"`
 		TotalBusinessShares   int         `json:"total_business_shares" example:"100000" minimum:"1"`
 		Status                RoundStatus `json:"status" hidden:"true" required:"false"`

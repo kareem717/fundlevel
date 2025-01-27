@@ -23,7 +23,7 @@ import { useToast } from "@repo/ui/hooks/use-toast";
 import { ToastAction } from "@repo/ui/components/toast";
 import { redirect, usePathname, useRouter } from "next/navigation";
 import { getAccountAction, getSessionAction, getStripeIdentityAction } from "@/actions/auth";
-import { createInvestmentAction } from "@/actions/investment";
+import { createInvestmentAction, createInvestmentPaymentIntentAction } from "@/actions/investment";
 import { RichTextDisplay } from "@/components/rich-text/rich-text-display";
 import { VerifyIdentityModalButton } from "@/components/stipe/verify-identity-modal-button";
 import { EmbeddedCheckoutForm, EmbeddedCheckoutFormRef } from "@/components/stipe/embedded-checkout";
@@ -38,11 +38,10 @@ export interface InvestFormProps extends ComponentPropsWithoutRef<typeof Card> {
 
 export function InvestForm({ round, business, terms, className, ...props }: InvestFormProps) {
   const { toast } = useToast()
-  const router = useRouter()
   const currentPath = usePathname()
   const embeddedCheckoutFormRef = useRef<EmbeddedCheckoutFormRef>(null);
   const totalSharesForSale = round.total_shares_for_sale;
-
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
   const form = useForm<InvestFormValues>({
     resolver: zodResolver(zCreateInvestmentParams.extend({
       investment: z.object({
@@ -70,26 +69,39 @@ export function InvestForm({ round, business, terms, className, ...props }: Inve
     },
   });
 
-  const { executeAsync: createInvestment } = useAction(createInvestmentAction, {
-    onError: () => {
-      toast({
-        title: "Uh oh!",
-        description: "Failed to create investment",
-        variant: "destructive",
-      });
-    },
-    onSuccess: ({ data }) => {
-      toast({
-        title: "Done!",
-        description: `Your investment has been submitted! ID: ${data?.id}`,
-      });
+  const handleSubmit = async () => {
+    const error = await embeddedCheckoutFormRef.current?.submitCheckout();
 
-      router.push(redirects.app.root);
-    },
-  });
+    if (error) {
+      toast({
+        title: "Payment Failed",
+        //TODO: idk if we should show this
+        description: error.message,
+        action: (
+          <ToastAction
+            altText="Retry"
+            onClick={() => handleSubmit()}
+          >
+            Retry
+          </ToastAction>
+        )
+      });
+      return false
+    }
+    toast({
+      title: "Investment Successful",
+      description: "You have successfully invested in the round.",
+      action: (
+        <ToastAction
+          altText="Wallet"
+          onClick={() => redirect(redirects.app.wallet.index)}
+        >
+          Wallet
+        </ToastAction>
+      )
+    });
 
-  const handleSubmit = async (data: InvestFormValues) => {
-    await createInvestment(data);
+    return true
   };
 
   const cardProps = {
@@ -368,6 +380,28 @@ export function InvestForm({ round, business, terms, className, ...props }: Inve
 
           return false
         }
+
+        const investment = (await createInvestmentAction(form.getValues()))?.data;
+        if (!investment) {
+          toast({
+            title: "Uh oh!",
+            description: "Failed to create investment, please try again.",
+            variant: "destructive",
+          });
+          return false
+        }
+
+        const clientSecret = (await createInvestmentPaymentIntentAction(investment.id))?.data;
+        if (!clientSecret) {
+          toast({
+            title: "Uh oh!",
+            description: "Failed to create payment intent, please try again.",
+            variant: "destructive",
+          });
+          return false
+        }
+
+        setClientSecret(clientSecret);
       },
       onBack: () => {
         form.setValue("terms_acceptance.accepted_at", "");
@@ -378,12 +412,6 @@ export function InvestForm({ round, business, terms, className, ...props }: Inve
     {
       nextButtonText: "Pay",
       fields: [],
-      onNext: async () => {
-        const resp = await embeddedCheckoutFormRef.current?.submitCheckout();
-        if (!resp) {
-          return false;
-        }
-      },
       content: (
         <Card {...cardProps}>
           <CardHeader>
@@ -396,7 +424,7 @@ export function InvestForm({ round, business, terms, className, ...props }: Inve
             <p className="text-sm text-muted-foreground">
               You will be charged {subTotalFormatted} for your investment.
             </p>
-            <EmbeddedCheckoutForm ref={embeddedCheckoutFormRef} investmentIntentId={"test"} />
+            <EmbeddedCheckoutForm ref={embeddedCheckoutFormRef} clientSecret={clientSecret} />
           </CardContent>
         </Card>
       ),

@@ -8,20 +8,21 @@ import (
 	"github.com/stripe/stripe-go/v81"
 )
 
-func (r *InvestmentRepository) CreatePayment(ctx context.Context, params investment.CreateInvestmentPaymentParams) (investment.InvestmentPayment, error) {
-	resp := investment.InvestmentPayment{}
+func (r *InvestmentRepository) CreatePayment(ctx context.Context, investmentId int, params investment.CreatePaymentParams) (investment.Payment, error) {
+	resp := investment.Payment{}
 
 	err := r.db.NewInsert().
 		Model(&params).
 		ModelTableExpr("investment_payments").
+		Value("investment_id", "?", investmentId).
 		Returning("*").
 		Scan(ctx, &resp)
 
 	return resp, err
 }
 
-func (r *InvestmentRepository) UpdatePayment(ctx context.Context, id int, params investment.UpdateInvestmentPaymentParams) (investment.InvestmentPayment, error) {
-	resp := investment.InvestmentPayment{}
+func (r *InvestmentRepository) UpdatePayment(ctx context.Context, id int, params investment.UpdatePaymentParams) (investment.Payment, error) {
+	resp := investment.Payment{}
 
 	err := r.db.NewUpdate().
 		Model(&params).
@@ -34,8 +35,8 @@ func (r *InvestmentRepository) UpdatePayment(ctx context.Context, id int, params
 	return resp, err
 }
 
-func (r *InvestmentRepository) GetPaymentById(ctx context.Context, id int) (investment.InvestmentPayment, error) {
-	resp := investment.InvestmentPayment{}
+func (r *InvestmentRepository) GetPaymentById(ctx context.Context, id int) (investment.Payment, error) {
+	resp := investment.Payment{}
 
 	err := r.db.NewSelect().
 		Model(&resp).
@@ -45,8 +46,8 @@ func (r *InvestmentRepository) GetPaymentById(ctx context.Context, id int) (inve
 	return resp, err
 }
 
-func (r *InvestmentRepository) GetPaymentByIntentId(ctx context.Context, intentId string) (investment.InvestmentPayment, error) {
-	resp := investment.InvestmentPayment{}
+func (r *InvestmentRepository) GetPaymentByIntentId(ctx context.Context, intentId string) (investment.Payment, error) {
+	resp := investment.Payment{}
 
 	err := r.db.NewSelect().
 		Model(&resp).
@@ -56,8 +57,8 @@ func (r *InvestmentRepository) GetPaymentByIntentId(ctx context.Context, intentI
 	return resp, err
 }
 
-func (r *InvestmentRepository) GetPaymentsByInvestmentId(ctx context.Context, investmentId int) ([]investment.InvestmentPayment, error) {
-	resp := []investment.InvestmentPayment{}
+func (r *InvestmentRepository) GetPaymentsByInvestmentId(ctx context.Context, investmentId int) ([]investment.Payment, error) {
+	resp := []investment.Payment{}
 
 	err := r.db.NewSelect().
 		Model(&resp).
@@ -67,8 +68,8 @@ func (r *InvestmentRepository) GetPaymentsByInvestmentId(ctx context.Context, in
 	return resp, err
 }
 
-func (r *InvestmentRepository) GetCurrentPayment(ctx context.Context, investmentId int) (investment.InvestmentPayment, error) {
-	resp := investment.InvestmentPayment{}
+func (r *InvestmentRepository) GetCurrentPayment(ctx context.Context, investmentId int) (investment.Payment, error) {
+	resp := investment.Payment{}
 
 	err := r.db.NewSelect().
 		Model(&resp).
@@ -81,7 +82,7 @@ func (r *InvestmentRepository) GetCurrentPayment(ctx context.Context, investment
 
 func (r *InvestmentRepository) GetFailedPaymentCount(ctx context.Context, investmentId int) (int, error) {
 	return r.db.NewSelect().
-		Model(&investment.InvestmentPayment{}).
+		Model((*investment.Payment)(nil)).
 		Where("investment_payment.investment_id = ?", investmentId).
 		Where("investment_payment.status = ?", stripe.PaymentIntentStatusCanceled).
 		Count(ctx)

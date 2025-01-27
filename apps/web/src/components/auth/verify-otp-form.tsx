@@ -52,7 +52,7 @@ const parseAsEmail = createParser({
   }
 })
 
-export interface VerifyOTPFormProps extends ComponentPropsWithoutRef<"div"> {
+export interface VerifyOTPFormProps extends Omit<ComponentPropsWithoutRef<"form">, "onSubmit"> {
   redirectTo?: string;
 }
 
@@ -160,62 +160,50 @@ export function VerifyOTPForm({
   }
 
   return (
-    <Card className={cn("flex flex-col gap-6", className)} {...props}>
-      <CardHeader className="text-center">
-        <CardTitle className="text-xl">Log In</CardTitle>
-        <CardDescription>
-          Enter the OTP sent to your email
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="grid gap-6">
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-6" >
-              <FormField
-                control={form.control}
-                name="otp"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col items-center">
-                    <FormControl>
-                      <InputOTP maxLength={6} {...field}>
-                        <InputOTPGroup>
-                          <InputOTPSlot index={0} />
-                          <InputOTPSlot index={1} />
-                          <InputOTPSlot index={2} />
-                          <InputOTPSlot index={3} />
-                          <InputOTPSlot index={4} />
-                          <InputOTPSlot index={5} />
-                        </InputOTPGroup>
-                      </InputOTP>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <div className="flex flex-col gap-3 mt-6">
-                <Button type="submit" disabled={isLoading}>
-                  {isLoading && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
-                  Verify
-                </Button>
-                <Button
-                  type="button"
-                  variant="secondary"
-                  disabled={isResending || cooldown > 0}
-                  onClick={handleResend}
-                >
-                  {isResending && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
-                  Resend OTP
-                  {cooldown > 0 && (
-                    <span className="text-sm text-muted-foreground">
-                      ({cooldown}s)
-                    </span>
-                  )}
-                </Button>
-              </div>
-            </form>
-          </Form>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className={cn("grid gap-6", className)} {...props} >
+        <FormField
+          control={form.control}
+          name="otp"
+          render={({ field }) => (
+            <FormItem className="flex flex-col items-center">
+              <FormControl>
+                <InputOTP maxLength={6} {...field}>
+                  <InputOTPGroup>
+                    <InputOTPSlot index={0} />
+                    <InputOTPSlot index={1} />
+                    <InputOTPSlot index={2} />
+                    <InputOTPSlot index={3} />
+                    <InputOTPSlot index={4} />
+                    <InputOTPSlot index={5} />
+                  </InputOTPGroup>
+                </InputOTP>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <div className="flex flex-col gap-3 mt-6">
+          <Button type="submit" disabled={isLoading}>
+            {isLoading && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
+            Verify
+          </Button>
+          <Button
+            type="button"
+            variant="secondary"
+            disabled={isResending || cooldown > 0}
+            onClick={handleResend}
+          >
+            {isResending && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
+            Resend OTP
+            {cooldown > 0 && (
+              <span className="text-sm text-muted-foreground">
+                ({cooldown}s)
+              </span>
+            )}
+          </Button>
         </div>
-      </CardContent>
-    </Card>
+      </form>
+    </Form>
   )
 }

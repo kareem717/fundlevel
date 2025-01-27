@@ -33,124 +33,6 @@ func newHTTPHandler(service *service.Service, logger *zap.Logger) *httpHandler {
 	}
 }
 
-// func (h *httpHandler) processInvestment(ctx context.Context, input *shared.PathIDParam) (*shared.MessageResponse, error) {
-// 	investmentResult, err := h.service.InvestmentService.GetById(ctx, input.ID)
-// 	if err != nil {
-// 		switch {
-// 		case errors.Is(err, sql.ErrNoRows):
-// 			h.logger.Error("investment not found", zap.Int("investment id", input.ID))
-// 			return nil, huma.Error404NotFound("investment not found")
-// 		default:
-// 			h.logger.Error("failed to fetch investment", zap.Error(err))
-// 			return nil, huma.Error500InternalServerError("An error occurred while fetching the investment")
-// 		}
-// 	}
-
-// 	if investmentResult.Status != investment.InvestmentStatusPending {
-// 		h.logger.Error("investment is not pending", zap.Int("investment id", input.ID))
-// 		return nil, huma.Error400BadRequest("Investment is not pending")
-// 	}
-
-// 	round, err := h.service.RoundService.GetById(ctx, investmentResult.RoundID)
-// 	if err != nil {
-// 		switch {
-// 		case errors.Is(err, sql.ErrNoRows):
-// 			h.logger.Error("round not found", zap.Int("round id", investmentResult.RoundID))
-// 			return nil, huma.Error404NotFound("round not found")
-// 		default:
-// 			h.logger.Error("failed to fetch round", zap.Error(err))
-// 			return nil, huma.Error500InternalServerError("An error occurred while fetching the round")
-// 		}
-// 	}
-
-// 	if account := shared.GetAuthenticatedAccount(ctx); account.ID != round.Venture.Business.OwnerAccountID {
-// 		h.logger.Error("business owner account id does not match authenticated account id",
-// 			zap.Any("business owner account id", round.Venture.Business.OwnerAccountID),
-// 			zap.Any("authenticated account id", account.ID))
-
-// 		return nil, huma.Error403Forbidden("Cannot accept investment for a round for a business you do not own")
-// 	}
-
-// 	err = h.service.InvestmentService.ProcessInvestment(ctx, input.ID)
-// 	if err != nil {
-// 		h.logger.Error("failed to process investment", zap.Error(err))
-// 		return nil, huma.Error500InternalServerError("An error occurred while processing the investment")
-// 	}
-
-// 	resp := &shared.MessageResponse{}
-// 	resp.Message = "Investment accepted successfully"
-
-// 	return resp, nil
-// }
-
-// func (h *httpHandler) withdrawInvestment(ctx context.Context, input *shared.PathIDParam) (*shared.MessageResponse, error) {
-// 	investmentResult, err := h.service.InvestmentService.GetById(ctx, input.ID)
-// 	if err != nil {
-// 		switch {
-// 		case errors.Is(err, sql.ErrNoRows):
-// 			return nil, huma.Error404NotFound("investment not found")
-// 		default:
-// 			h.logger.Error("failed to fetch investment", zap.Error(err))
-// 			return nil, huma.Error500InternalServerError("An error occurred while fetching the investment")
-// 		}
-// 	}
-
-// 	if account := shared.GetAuthenticatedAccount(ctx); account.ID != investmentResult.InvestorID {
-// 		h.logger.Error("input account id does not match authenticated account id",
-// 			zap.Any("input account id", input.ID),
-// 			zap.Any("authenticated account id", account.ID))
-
-// 		return nil, huma.Error403Forbidden("Cannot withdraw investment for another account")
-// 	}
-
-// 	if investmentResult.Status != investment.InvestmentStatusPending {
-// 		return nil, huma.Error400BadRequest("Cannot withdraw investment that is not pending")
-// 	}
-
-// 	err = h.service.InvestmentService.WithdrawInvestment(ctx, input.ID)
-// 	if err != nil {
-// 		h.logger.Error("failed to withdraw investment", zap.Error(err))
-// 		return nil, huma.Error500InternalServerError("An error occurred while withdrawing the investment")
-// 	}
-
-// 	resp := &shared.MessageResponse{}
-// 	resp.Message = "Investment withdrawn successfully"
-
-// 	return resp, nil
-// }
-
-// func (h *httpHandler) deleteInvestment(ctx context.Context, input *shared.PathIDParam) (*shared.MessageResponse, error) {
-// 	investment, err := h.service.InvestmentService.GetById(ctx, input.ID)
-// 	if err != nil {
-// 		switch {
-// 		case errors.Is(err, sql.ErrNoRows):
-// 			return nil, huma.Error404NotFound("investment not found")
-// 		default:
-// 			h.logger.Error("failed to fetch investment", zap.Error(err))
-// 			return nil, huma.Error500InternalServerError("An error occurred while fetching the investment")
-// 		}
-// 	}
-
-// 	if account := shared.GetAuthenticatedAccount(ctx); account.ID != investment.InvestorID {
-// 		h.logger.Error("input account id does not match authenticated account id",
-// 			zap.Any("input account id", input.ID),
-// 			zap.Any("authenticated account id", account.ID))
-
-// 		return nil, huma.Error403Forbidden("Cannot delete investment for another account")
-// 	}
-
-// 	err = h.service.InvestmentService.DeleteInvestment(ctx, input.ID)
-// 	if err != nil {
-// 		h.logger.Error("failed to delete investment", zap.Error(err))
-// 		return nil, huma.Error500InternalServerError("An error occurred while deleting the investment")
-// 	}
-
-// 	resp := &shared.MessageResponse{}
-// 	resp.Message = "Investment deleted successfully"
-
-// 	return resp, nil
-// }.
-
 type CreateInvestmentRequest struct {
 	Body investment.CreateInvestmentParams
 }
@@ -178,7 +60,19 @@ func (h *httpHandler) create(ctx context.Context, input *CreateInvestmentRequest
 		}
 	}
 
-	investment, err := h.service.InvestmentService.Create(ctx, account.ID, input.Body)
+	round, err := h.service.RoundService.GetById(ctx, input.Body.Investment.RoundID)
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			h.logger.Error("round not found", zap.Int("round id", input.Body.Investment.RoundID))
+			return nil, huma.Error404NotFound("Round not found")
+		default:
+			h.logger.Error("failed to fetch round", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the round")
+		}
+	}
+
+	investment, err := h.service.InvestmentService.Create(ctx, account.ID, round.PricePerShareUSDCents, input.Body)
 	if err != nil {
 		h.logger.Error("failed to create investment", zap.Error(err))
 		return nil, huma.Error500InternalServerError("An error occurred while creating the investment")
@@ -197,7 +91,7 @@ type GetInvestmentPaymentIntentClientSecretInput struct {
 type InvestmentPaymentIntentClientSecretOutput struct {
 	Body struct {
 		shared.MessageResponse
-		ClientSecret string `json:"clientSecret"`
+		ClientSecret string `json:"client_secret"`
 	}
 }
 
@@ -218,7 +112,7 @@ func (h *httpHandler) createStripePaymentIntent(ctx context.Context, input *GetI
 		}
 	}
 
-	payment, err := h.service.InvestmentService.CreateStripePaymentIntent(ctx, input.ID)
+	payment, err := h.service.InvestmentService.CreatePayment(ctx, input.ID)
 	if err != nil {
 		h.logger.Error("failed to create investment payment intent", zap.Error(err))
 		return nil, huma.Error500InternalServerError("Failed to create investment payment intent")
@@ -226,7 +120,7 @@ func (h *httpHandler) createStripePaymentIntent(ctx context.Context, input *GetI
 
 	resp := &InvestmentPaymentIntentClientSecretOutput{}
 	resp.Body.Message = "Stripe payment intent created successfully"
-	resp.Body.ClientSecret = payment.ClientSecret
+	resp.Body.ClientSecret = payment.StripePaymentIntentClientSecret
 
 	return resp, nil
 }
@@ -267,7 +161,7 @@ func (h *httpHandler) getInvestmentById(ctx context.Context, input *shared.PathI
 type GetInvestmentPaymentsOutput struct {
 	Body struct {
 		shared.MessageResponse
-		InvestmentPayments []investment.InvestmentPayment `json:"investmentPayments"`
+		InvestmentPayments []investment.Payment `json:"investment_payments"`
 	}
 }
 
@@ -290,7 +184,7 @@ func (h *httpHandler) getInvestmentPayments(ctx context.Context, input *shared.P
 type GetInvestmentActivePaymentOutput struct {
 	Body struct {
 		shared.MessageResponse
-		InvestmentPayment investment.InvestmentPayment `json:"investmentPayment"`
+		InvestmentPayment investment.Payment `json:"investment_payment"`
 	}
 }
 
