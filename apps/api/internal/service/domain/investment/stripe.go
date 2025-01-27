@@ -59,9 +59,16 @@ func (s *InvestmentService) HandleStripePaymentIntentFailed(ctx context.Context,
 		return err
 	}
 
+	roundRecord, err := s.repositories.Round().GetById(ctx, investmentRecord.RoundID)
+	if err != nil {
+		return err
+	}
+
 	// Otherwise, we lets let them try paying again
 	err = s.repositories.RunInTx(ctx, func(ctx context.Context, tx storage.Transaction) error {
-		intent, err = s.createStripePaymentIntent(parsedInvestmentId, investmentRecord.UsdCentValue)
+		investmentCentValue := roundRecord.PricePerShareUSDCents * int64(roundRecord.TotalSharesForSale)
+
+		intent, err = s.createStripePaymentIntent(parsedInvestmentId, investmentCentValue)
 		if err != nil {
 			return err
 		}
@@ -70,7 +77,6 @@ func (s *InvestmentService) HandleStripePaymentIntentFailed(ctx context.Context,
 			StripePaymentIntentID:           intent.ID,
 			StripePaymentIntentClientSecret: intent.ClientSecret,
 			Status:                          intent.Status,
-			TotalUsdCents:                   intent.Amount,
 		})
 
 		return err
@@ -171,7 +177,7 @@ func (s *InvestmentService) createStripePaymentIntent(investmentId int, subTotal
 	paymentIntentParams := &stripe.PaymentIntentParams{
 		Amount: stripe.Int64(int64(totalAmount)),
 		// TODO: make this dynamic
-		Currency:             stripe.String(string(stripe.CurrencyUSD)),
+		Currency: stripe.String(string(stripe.CurrencyUSD)),
 		PaymentMethodTypes: []*string{
 			stripe.String(string(stripe.PaymentMethodTypeCard)),
 			stripe.String(string(stripe.PaymentMethodTypeACSSDebit)),

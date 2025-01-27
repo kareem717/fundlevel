@@ -16,7 +16,6 @@ type Payment struct {
 	Status                          stripe.PaymentIntentStatus `json:"status" enum:"cancelled,processing,requires_action,requires_capture,requires_confirmation,requires_payment_method,succeeded"`
 	StripePaymentIntentID           string                     `json:"stripe_payment_intent_id"`
 	StripePaymentIntentClientSecret string                     `json:"stripe_payment_intent_client_secret"`
-	TotalUsdCents                   int64                        `json:"total_usd_cents" minimum:"1"`
 
 	shared.Timestamps
 }
@@ -26,7 +25,6 @@ type CreatePaymentParams struct {
 	StripePaymentIntentID           string                     `json:"stripe_payment_intent_id"`
 	StripePaymentIntentClientSecret string                     `json:"stripe_payment_intent_client_secret"`
 	Status                          stripe.PaymentIntentStatus `json:"status" enum:"cancelled,processing,requires_action,requires_capture,requires_confirmation,requires_payment_method,succeeded"`
-	TotalUsdCents                   int64                       `json:"total_usd_cents" minimum:"1"`
 }
 
 // UpdatePaymentParams is the params for updating a payment entity.

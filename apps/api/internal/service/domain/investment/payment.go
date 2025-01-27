@@ -22,8 +22,14 @@ func (s *InvestmentService) CreatePayment(ctx context.Context, investmentId int)
 		return resp, err
 	}
 
+	roundRecord, err := s.repositories.Round().GetById(ctx, investmentRecord.RoundID)
+	if err != nil {
+		return resp, err
+	}
+
 	err = s.repositories.RunInTx(ctx, func(ctx context.Context, tx storage.Transaction) error {
-		intent, err := s.createStripePaymentIntent(investmentId, investmentRecord.UsdCentValue)
+		roundCentValue := roundRecord.PricePerShareUSDCents * int64(roundRecord.TotalSharesForSale)
+		intent, err := s.createStripePaymentIntent(investmentId, roundCentValue)
 		if err != nil {
 			return err
 		}
@@ -32,7 +38,6 @@ func (s *InvestmentService) CreatePayment(ctx context.Context, investmentId int)
 			StripePaymentIntentID:           intent.ID,
 			StripePaymentIntentClientSecret: intent.ClientSecret,
 			Status:                          intent.Status,
-			TotalUsdCents:                   intent.Amount,
 		})
 		if err != nil {
 			return err

@@ -17,7 +17,6 @@ type Investment struct {
 	ShareQuantity      int        `json:"share_quantity" minimum:"1"`
 	TermsAcceptanceID  int        `json:"terms_acceptance_id" minimum:"1"`
 	InvestorID         int        `json:"investor_id" minimum:"1"`
-	UsdCentValue       int64      `json:"usd_cent_value" minimum:"1"`
 	CompletedAt        *time.Time `json:"completed_at" format:"date-time"`
 
 	shared.Timestamps
