@@ -12,10 +12,7 @@ import { sidebar } from "@/lib/config/sidebar"
 import { SidebarUser } from "@/components/sidebar/sidebar-user"
 import { useAuth } from "@/components/providers/auth-provider"
 
-export interface PortfolioSidebarProps extends ComponentPropsWithoutRef<typeof Sidebar> {
-}
-
-export const PortfolioSidebar: React.FC<PortfolioSidebarProps> = ({ ...props }: PortfolioSidebarProps) => {
+export function WalletSidebar({ ...props }: ComponentPropsWithoutRef<typeof Sidebar>) {
   const { wallet } = sidebar
   const { user, account } = useAuth()
 
@@ -24,7 +21,7 @@ export const PortfolioSidebar: React.FC<PortfolioSidebarProps> = ({ ...props }: 
   }
 
   return (
-    <Sidebar collapsible="icon" {...props}>
+    <Sidebar variant="inset" {...props}>
       <SidebarContent>
         {wallet.map((menu) => (
           <SidebarMenu key={menu.name} config={menu} />
