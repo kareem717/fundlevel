@@ -8,6 +8,7 @@ import (
 	"fundlevel/internal/server/handler/shared"
 	"fundlevel/internal/server/utils"
 	"fundlevel/internal/service"
+	"fundlevel/internal/service/types"
 
 	"github.com/danielgtaylor/huma/v2"
 	"go.uber.org/zap"
@@ -86,16 +87,17 @@ func (h *httpHandler) create(ctx context.Context, input *CreateInvestmentRequest
 
 type GetInvestmentPaymentIntentClientSecretInput struct {
 	shared.PathIDParam
-}
-
-type InvestmentPaymentIntentClientSecretOutput struct {
 	Body struct {
-		shared.MessageResponse
-		ClientSecret string `json:"client_secret"`
+		ConfirmationToken string `json:"confirmation_token"`
+		ReturnURL         string `json:"return_url"`
 	}
 }
 
-func (h *httpHandler) createStripePaymentIntent(ctx context.Context, input *GetInvestmentPaymentIntentClientSecretInput) (*InvestmentPaymentIntentClientSecretOutput, error) {
+type InvestmentPaymentIntentClientSecretOutput struct {
+	Body types.StripePaymentIntentOutput
+}
+
+func (h *httpHandler) confirmPaymentIntent(ctx context.Context, input *GetInvestmentPaymentIntentClientSecretInput) (*InvestmentPaymentIntentClientSecretOutput, error) {
 	// account := shared.GetAuthenticatedAccount(ctx)
 	//todo: add ABAC checks
 
@@ -112,15 +114,14 @@ func (h *httpHandler) createStripePaymentIntent(ctx context.Context, input *GetI
 		}
 	}
 
-	payment, err := h.service.InvestmentService.CreatePayment(ctx, input.ID)
+	payment, err := h.service.InvestmentService.ConfirmPaymentIntent(ctx, input.ID, input.Body.ConfirmationToken, input.Body.ReturnURL)
 	if err != nil {
-		h.logger.Error("failed to create investment payment intent", zap.Error(err))
-		return nil, huma.Error500InternalServerError("Failed to create investment payment intent")
+		h.logger.Error("failed to confirm payment intent", zap.Error(err))
+		return nil, huma.Error500InternalServerError("Failed to confirm payment intent")
 	}
 
 	resp := &InvestmentPaymentIntentClientSecretOutput{}
-	resp.Body.Message = "Stripe payment intent created successfully"
-	resp.Body.ClientSecret = payment.StripePaymentIntentClientSecret
+	resp.Body = payment
 
 	return resp, nil
 }
@@ -189,6 +190,24 @@ type GetInvestmentActivePaymentOutput struct {
 }
 
 func (h *httpHandler) getInvestmentActivePayment(ctx context.Context, input *shared.PathIDParam) (*GetInvestmentActivePaymentOutput, error) {
+	//todo: check if shares still available
+	investment, err := h.service.InvestmentService.GetById(ctx, input.ID)
+	if err != nil {
+		h.logger.Error("failed to fetch investment", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while fetching the investment")
+	}
+
+	sharesAvailable, err := h.service.RoundService.GetAvailableShares(ctx, investment.RoundID)
+	if err != nil {
+		h.logger.Error("failed to fetch round", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while fetching the round")
+	}
+
+	if sharesAvailable <= investment.ShareQuantity {
+		h.logger.Error("not enough shares available", zap.Int("shares available", sharesAvailable), zap.Int("shares ordered", investment.ShareQuantity))
+		return nil, huma.Error400BadRequest("Not enough shares available")
+	}
+
 	payment, err := h.service.InvestmentService.GetCurrentPayment(ctx, input.ID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {

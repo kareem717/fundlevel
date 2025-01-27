@@ -21,9 +21,9 @@ import { TooltipProvider } from "@repo/ui/components/tooltip";
 import { Info } from "lucide-react";
 import { useToast } from "@repo/ui/hooks/use-toast";
 import { ToastAction } from "@repo/ui/components/toast";
-import { redirect, usePathname, useRouter } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
 import { getAccountAction, getSessionAction, getStripeIdentityAction } from "@/actions/auth";
-import { createInvestmentAction, createInvestmentPaymentIntentAction } from "@/actions/investment";
+import { createInvestmentAction } from "@/actions/investment";
 import { RichTextDisplay } from "@/components/rich-text/rich-text-display";
 import { VerifyIdentityModalButton } from "@/components/stipe/verify-identity-modal-button";
 import { EmbeddedCheckoutForm, EmbeddedCheckoutFormRef } from "@/components/stipe/embedded-checkout";
@@ -40,8 +40,9 @@ export function InvestForm({ round, business, terms, className, ...props }: Inve
   const { toast } = useToast()
   const currentPath = usePathname()
   const embeddedCheckoutFormRef = useRef<EmbeddedCheckoutFormRef>(null);
+  const [investmentId, setInvestmentId] = useState<number>(0);
   const totalSharesForSale = round.total_shares_for_sale;
-  const [clientSecret, setClientSecret] = useState<string | null>(null);
+
   const form = useForm<InvestFormValues>({
     resolver: zodResolver(zCreateInvestmentParams.extend({
       investment: z.object({
@@ -70,38 +71,7 @@ export function InvestForm({ round, business, terms, className, ...props }: Inve
   });
 
   const handleSubmit = async () => {
-    const error = await embeddedCheckoutFormRef.current?.submitCheckout();
-
-    if (error) {
-      toast({
-        title: "Payment Failed",
-        //TODO: idk if we should show this
-        description: error.message,
-        action: (
-          <ToastAction
-            altText="Retry"
-            onClick={() => handleSubmit()}
-          >
-            Retry
-          </ToastAction>
-        )
-      });
-      return false
-    }
-    toast({
-      title: "Investment Successful",
-      description: "You have successfully invested in the round.",
-      action: (
-        <ToastAction
-          altText="Wallet"
-          onClick={() => redirect(redirects.app.wallet.index)}
-        >
-          Wallet
-        </ToastAction>
-      )
-    });
-
-    return true
+    return await embeddedCheckoutFormRef.current?.submitCheckout();
   };
 
   const cardProps = {
@@ -391,17 +361,19 @@ export function InvestForm({ round, business, terms, className, ...props }: Inve
           return false
         }
 
-        const clientSecret = (await createInvestmentPaymentIntentAction(investment.id))?.data;
-        if (!clientSecret) {
-          toast({
-            title: "Uh oh!",
-            description: "Failed to create payment intent, please try again.",
-            variant: "destructive",
-          });
-          return false
-        }
+        setInvestmentId(investment.id);
 
-        setClientSecret(clientSecret);
+        // const clientSecret = (await createInvestmentPaymentIntentAction(investment.id))?.data;
+        // if (!clientSecret) {
+        //   toast({
+        //     title: "Uh oh!",
+        //     description: "Failed to create payment intent, please try again.",
+        //     variant: "destructive",
+        //   });
+        //   return false
+        // }
+
+        // setClientSecret(clientSecret);
       },
       onBack: () => {
         form.setValue("terms_acceptance.accepted_at", "");
@@ -424,7 +396,24 @@ export function InvestForm({ round, business, terms, className, ...props }: Inve
             <p className="text-sm text-muted-foreground">
               You will be charged {subTotalFormatted} for your investment.
             </p>
-            <EmbeddedCheckoutForm ref={embeddedCheckoutFormRef} clientSecret={clientSecret} />
+            <EmbeddedCheckoutForm
+              ref={embeddedCheckoutFormRef}
+              amount={form.getValues("investment.share_quantity") * round.price_per_share_usd_cents}
+              //TODO: get from locale
+              currency="usd"
+              investmentId={investmentId}
+              onError={(error) => toast({
+                title: "Uh oh!",
+                description: error,
+                variant: "destructive",
+              })}
+              onSuccess={() => {
+                toast({
+                  title: "Investment Successful",
+                  description: "You have successfully invested in the round.",
+                });
+              }}
+            />
           </CardContent>
         </Card>
       ),

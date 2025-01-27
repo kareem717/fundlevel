@@ -2475,20 +2475,6 @@
           "maxLength": null
         },
         {
-          "id": "public.investment_payments.total_usd_cents",
-          "name": "total_usd_cents",
-          "columnName": "total_usd_cents",
-          "type": "int8",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
           "id": "public.investment_payments.created_at",
           "name": "created_at",
           "columnName": "created_at",
@@ -2669,30 +2655,16 @@
           "maxLength": null
         },
         {
-          "id": "public.investments.usd_cent_value",
-          "name": "usd_cent_value",
-          "columnName": "usd_cent_value",
-          "type": "int8",
+          "id": "public.investments.status",
+          "name": "status",
+          "columnName": "status",
+          "type": "investment_status",
           "isRequired": true,
           "kind": "scalar",
           "isList": false,
           "isGenerated": false,
           "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "id": "public.investments.completed_at",
-          "name": "completed_at",
-          "columnName": "completed_at",
-          "type": "timestamptz",
-          "isRequired": false,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
+          "hasDefaultValue": true,
           "isId": false,
           "maxLength": null
         },
@@ -6959,6 +6931,20 @@
         },
         {
           "name": "51-200"
+        }
+      ]
+    },
+    "investment_status": {
+      "schemaName": "public",
+      "values": [
+        {
+          "name": "awaiting_payment"
+        },
+        {
+          "name": "completed"
+        },
+        {
+          "name": "payment_completed"
         }
       ]
     },

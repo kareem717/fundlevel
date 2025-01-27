@@ -1,6 +1,6 @@
 'use client';
 
-import { loadStripe, StripeError } from '@stripe/stripe-js';
+import { loadStripe, StripeElementsOptions, StripeError } from '@stripe/stripe-js';
 import { ComponentPropsWithoutRef, useState, useImperativeHandle, forwardRef, use } from 'react';
 import {
   PaymentElement,
@@ -11,28 +11,38 @@ import {
 import { env } from '@/env';
 import { useToast } from '@repo/ui/hooks/use-toast';
 import { useTheme } from 'next-themes';
-import { redirects } from '@/lib/config/redirects';
+import { confirmInvestmentPaymentAction } from '@/actions/investment';
+import { usePathname } from 'next/navigation';
 
 const stripePromise = loadStripe(env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
 export interface EmbeddedCheckoutFormRef {
-  submitCheckout: () => Promise<StripeError | null>;
+  submitCheckout: () => Promise<boolean>;
   isLoading: boolean;
 }
 
 export interface EmbeddedCheckoutFormProps extends ComponentPropsWithoutRef<typeof PaymentElement> {
-  clientSecret: string | null;
+  amount: number;
+  currency: string;
+  investmentId: number;
+  onError: (msg: string) => void;
+  onSuccess: () => void | Promise<void>;
 }
 
-export const EmbeddedCheckoutForm = forwardRef<EmbeddedCheckoutFormRef, EmbeddedCheckoutFormProps>(({ clientSecret, ...props }, ref) => {
+export const EmbeddedCheckoutForm = forwardRef<EmbeddedCheckoutFormRef, EmbeddedCheckoutFormProps>(({ amount, currency, ...props }, ref) => {
   const { resolvedTheme } = useTheme();
 
-  if (!clientSecret) {
-    return null;
+  const options: StripeElementsOptions = {
+    appearance: { theme: resolvedTheme === "dark" ? "night" : "flat" },
+    loader: "auto",
+    paymentMethodCreation: 'manual',
+    mode: "payment" as const,
+    amount: amount,
+    currency: currency
   }
 
   return (
-    <Elements options={{ clientSecret, appearance: { theme: resolvedTheme === "dark" ? "night" : "flat" }, loader: "auto" }} stripe={stripePromise}>
+    <Elements options={options} stripe={stripePromise}>
       <CheckoutForm ref={ref} {...props} />
     </Elements>
   )
@@ -40,37 +50,75 @@ export const EmbeddedCheckoutForm = forwardRef<EmbeddedCheckoutFormRef, Embedded
 
 EmbeddedCheckoutForm.displayName = "EmbeddedCheckoutForm";
 
-const CheckoutForm = forwardRef<EmbeddedCheckoutFormRef, Omit<EmbeddedCheckoutFormProps, "clientSecret">>(({ options, ...props }, ref) => {
+interface CheckoutFormProps extends ComponentPropsWithoutRef<typeof PaymentElement> {
+  investmentId: number;
+  onError: (msg: string) => void;
+  onSuccess: () => void | Promise<void>;
+}
+
+const CheckoutForm = forwardRef<EmbeddedCheckoutFormRef, CheckoutFormProps>(({ investmentId, onError, onSuccess, ...props }, ref) => {
   const [isLoading, setIsLoading] = useState(false);
   const stripe = useStripe();
   const elements = useElements();
   const { toast } = useToast();
+  const returnURL = env.NEXT_PUBLIC_APP_URL + usePathname();
 
-  const submitCheckout = async (): Promise<StripeError | null> => {
-    if (!stripe || !elements) return null;
+  const submitCheckout = async (): Promise<boolean> => {
+    if (!stripe || !elements) return false;
+
     setIsLoading(true);
 
-    const { error } = await stripe.confirmPayment({
+    // Trigger form validation and wallet collection
+    const { error: submitError } = await elements.submit();
+    if (submitError) {
+      onError(submitError.message ?? "Failed to submit form");
+      return false;
+    }
+
+    // Create the ConfirmationToken using the details collected by the Payment Element
+    // and additional shipping information
+    const { error, confirmationToken } = await stripe.createConfirmationToken({
       elements,
-      confirmParams: {
-        return_url: process.env.NODE_ENV === "development" ? "https://fundlevel.app/wallet" : env.NEXT_PUBLIC_APP_URL + redirects.app.wallet
-      },
-      redirect: "if_required"
     });
 
     if (error) {
-      console.error(error);
-      setIsLoading(false);
-      return error;
+      onError(error.message ?? "Failed to create confirmation token");
+      return false;
     }
 
+    const confirmation = (await confirmInvestmentPaymentAction({
+      id: investmentId,
+      confirmationToken: confirmationToken.id,
+      returnURL,
+    }))?.data
+
+    if (!confirmation) {
+      onError("Failed to confirm payment");
+      return false;
+    }
+
+    if (confirmation.status === "requires_action") {
+      const {
+        error,
+      } = await stripe.handleNextAction({
+        clientSecret: confirmation.client_secret
+      });
+
+      if (error) {
+        onError(error.message ?? "Failed to handle next action");
+        return false;
+      }
+    }
+
+    //TODO: confirm intent
     toast({
       title: "Payment successful",
       description: "Your payment has been processed successfully.",
     });
 
+    await onSuccess();
     setIsLoading(false);
-    return null;
+    return true;
   };
 
   useImperativeHandle(ref, () => ({
@@ -83,7 +131,7 @@ const CheckoutForm = forwardRef<EmbeddedCheckoutFormRef, Omit<EmbeddedCheckoutFo
   }
 
   return (
-    <PaymentElement id="payment-element" options={{ layout: "tabs", ...options }} {...props} />
+    <PaymentElement id="payment-element" options={{ layout: "tabs" }} {...props} />
   )
 });
 

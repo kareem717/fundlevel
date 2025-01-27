@@ -289,10 +289,15 @@ export const zGetInvestmentActivePaymentOutputBody = z.object({
     ]),
     stripe_payment_intent_client_secret: z.string(),
     stripe_payment_intent_id: z.string(),
-    total_usd_cents: z.number().gte(1),
     updated_at: z.union([z.string().datetime(), z.null()]),
   }),
   message: z.string(),
+});
+
+export const zGetInvestmentPaymentIntentClientSecretInputBody = z.object({
+  $schema: z.string().url().readonly().optional(),
+  confirmation_token: z.string(),
+  return_url: z.string(),
 });
 
 export const zGetInvestmentPaymentsOutputBody = z.object({
@@ -315,7 +320,6 @@ export const zGetInvestmentPaymentsOutputBody = z.object({
         ]),
         stripe_payment_intent_client_secret: z.string(),
         stripe_payment_intent_id: z.string(),
-        total_usd_cents: z.number().gte(1),
         updated_at: z.union([z.string().datetime(), z.null()]),
       }),
     ),
@@ -398,13 +402,6 @@ export const zInvestment = z.object({
   share_quantity: z.number().gte(1),
   terms_acceptance_id: z.number().gte(1),
   updated_at: z.union([z.string().datetime(), z.null()]),
-  usd_cent_value: z.number().gte(1),
-});
-
-export const zInvestmentPaymentIntentClientSecretOutputBody = z.object({
-  $schema: z.string().url().readonly().optional(),
-  client_secret: z.string(),
-  message: z.string(),
 });
 
 export const zMessageResponse = z.object({
@@ -428,7 +425,6 @@ export const zPayment = z.object({
   ]),
   stripe_payment_intent_client_secret: z.string(),
   stripe_payment_intent_id: z.string(),
-  total_usd_cents: z.number().gte(1),
   updated_at: z.union([z.string().datetime(), z.null()]),
 });
 
@@ -502,6 +498,20 @@ export const zStripeIdentity = z.object({
   remote_id: z.string(),
   status: z.enum(["verified", "canceled"]),
   updated_at: z.union([z.string().datetime(), z.null()]),
+});
+
+export const zStripePaymentIntentOutput = z.object({
+  $schema: z.string().url().readonly().optional(),
+  client_secret: z.string(),
+  status: z.enum([
+    "requires_payment_method",
+    "requires_confirmation",
+    "requires_action",
+    "processing",
+    "requires_capture",
+    "canceled",
+    "succeeded",
+  ]),
 });
 
 export const zStripeSessionOutput = z.object({
@@ -583,11 +593,10 @@ export const zCreateRoundInvestmentResponse = zInvestment;
 
 export const zGetInvestmentByIdResponse = zSingleInvestmentResponseBody;
 
+export const zConfirmInvestmentPaymentResponse = zStripePaymentIntentOutput;
+
 export const zGetInvestmentActivePaymentResponse =
   zGetInvestmentActivePaymentOutputBody;
-
-export const zCreateInvestmentPaymentIntentResponse =
-  zInvestmentPaymentIntentClientSecretOutputBody;
 
 export const zGetInvestmentPaymentsResponse = zGetInvestmentPaymentsOutputBody;
 

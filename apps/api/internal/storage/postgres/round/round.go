@@ -3,6 +3,7 @@ package round
 import (
 	"context"
 	"database/sql"
+	"fundlevel/internal/entities/investment"
 	"fundlevel/internal/entities/round"
 	postgres "fundlevel/internal/storage/shared"
 
@@ -103,7 +104,7 @@ func (r *RoundRepository) Create(ctx context.Context, params round.CreateRoundPa
 			Model(&params.Terms).
 			Returning("*").
 			Scan(ctx, &terms)
-			
+
 		if err != nil {
 			return err
 		}
@@ -135,4 +136,41 @@ func (r *RoundRepository) Update(ctx context.Context, id int, params round.Updat
 		Scan(ctx, &resp)
 
 	return resp, err
+}
+
+func (r *RoundRepository) GetAvailableShares(ctx context.Context, id int) (int, error) {
+	var totalSharesForSale int
+
+	err := r.db.NewSelect().
+		Model((*round.Round)(nil)).
+		Column("total_shares_for_sale").
+		Where("id = ?", id).
+		Scan(ctx, &totalSharesForSale)
+
+	if err != nil {
+		return 0, err
+	}
+
+	var sharesPurchased int
+	err = r.db.NewSelect().
+		TableExpr("(?) AS locked_investments",
+			r.db.NewSelect().
+				Model((*investment.Investment)(nil)).
+				Column("share_quantity").
+				Where("round_id = ?", id).
+				Where("status IN (?)",
+					bun.In([]investment.InvestmentStatus{
+						investment.InvestmentStatusPaymentCompleted,
+						investment.InvestmentStatusCompleted,
+					})).
+				// lock the rows for update, avoid race condition
+				For("UPDATE")).
+		ColumnExpr("SUM(locked_investments.share_quantity)").
+		Scan(ctx, &sharesPurchased)
+
+	if err != nil {
+		return 0, err
+	}
+
+	return totalSharesForSale - sharesPurchased, nil
 }

@@ -51,7 +51,7 @@ type RoundService interface {
 	GetById(ctx context.Context, id int) (round.Round, error)
 	GetByCursor(ctx context.Context, limit int, cursor int) ([]round.Round, error)
 	GetByPage(ctx context.Context, pageSize int, page int) ([]round.Round, int, error)
-
+	GetAvailableShares(ctx context.Context, id int) (int, error)
 	GetTerms(ctx context.Context, id int) (round.RoundTerm, error)
 }
 
@@ -83,13 +83,13 @@ type InvestmentService interface {
 	Create(ctx context.Context, investorId int, pricePerShareUsdCents int64, params investment.CreateInvestmentParams) (investment.Investment, error)
 	GetById(ctx context.Context, id int) (investment.Investment, error)
 
+	ConfirmPaymentIntent(ctx context.Context, investmentId int, confirmationToken string, returnURL string) (types.StripePaymentIntentOutput, error)
 	HandleStripePaymentIntentSucceeded(ctx context.Context, intentID string) error
 	HandleStripePaymentIntentStatusUpdated(ctx context.Context, intentID string) error
 	HandleStripePaymentIntentFailed(ctx context.Context, intentID string) error
 
 	GetPayments(ctx context.Context, investmentId int) ([]investment.Payment, error)
 	GetCurrentPayment(ctx context.Context, investmentId int) (investment.Payment, error)
-	CreatePayment(ctx context.Context, investmentId int) (investment.Payment, error)
 }
 
 type PermissionService interface {

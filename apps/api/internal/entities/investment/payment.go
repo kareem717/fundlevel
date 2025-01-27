@@ -22,6 +22,8 @@ type Payment struct {
 
 // CreatePaymentParams is the params for creating a payment entity.
 type CreatePaymentParams struct {
+	bun.BaseModel `bun:"table:investment_payments,alias:investment_payment"`
+
 	StripePaymentIntentID           string                     `json:"stripe_payment_intent_id"`
 	StripePaymentIntentClientSecret string                     `json:"stripe_payment_intent_client_secret"`
 	Status                          stripe.PaymentIntentStatus `json:"status" enum:"cancelled,processing,requires_action,requires_capture,requires_confirmation,requires_payment_method,succeeded"`
@@ -29,5 +31,7 @@ type CreatePaymentParams struct {
 
 // UpdatePaymentParams is the params for updating a payment entity.
 type UpdatePaymentParams struct {
+	bun.BaseModel `bun:"table:investment_payments,alias:investment_payment"`
+
 	Status *stripe.PaymentIntentStatus `json:"status" enum:"cancelled,processing,requires_action,requires_capture,requires_confirmation,requires_payment_method,succeeded" hidden:"true" required:"false"`
 }

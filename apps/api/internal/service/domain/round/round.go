@@ -65,3 +65,8 @@ func (s *RoundService) GetByCursor(ctx context.Context, limit int, cursor int) (
 func (s *RoundService) Delete(ctx context.Context, id int) error {
 	return s.repositories.Round().Delete(ctx, id)
 }
+
+func (s *RoundService) GetAvailableShares(ctx context.Context, id int) (int, error) {
+	return s.repositories.Round().GetAvailableShares(ctx, id)
+}
+

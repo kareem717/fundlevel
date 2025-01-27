@@ -568,6 +568,23 @@ components:
         - investment_payment
         - message
       type: object
+    GetInvestmentPaymentIntentClientSecretInputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/GetInvestmentPaymentIntentClientSecretInputBody.json
+          format: uri
+          readOnly: true
+          type: string
+        confirmation_token:
+          type: string
+        return_url:
+          type: string
+      required:
+        - confirmation_token
+        - return_url
+      type: object
     GetInvestmentPaymentsOutputBody:
       additionalProperties: false
       properties:
@@ -764,38 +781,16 @@ components:
           format: date-time
           nullable: true
           type: string
-        usd_cent_value:
-          format: int64
-          minimum: 1
-          type: integer
       required:
         - round_id
         - share_quantity
         - terms_acceptance_id
         - investor_id
-        - usd_cent_value
         - completed_at
         - id
         - created_at
         - updated_at
         - deleted_at
-      type: object
-    InvestmentPaymentIntentClientSecretOutputBody:
-      additionalProperties: false
-      properties:
-        $schema:
-          description: A URL to the JSON Schema for this object.
-          example: https://example.com/schemas/InvestmentPaymentIntentClientSecretOutputBody.json
-          format: uri
-          readOnly: true
-          type: string
-        client_secret:
-          type: string
-        message:
-          type: string
-      required:
-        - client_secret
-        - message
       type: object
     MessageResponse:
       additionalProperties: false
@@ -843,10 +838,6 @@ components:
           type: string
         stripe_payment_intent_id:
           type: string
-        total_usd_cents:
-          format: int64
-          minimum: 1
-          type: integer
         updated_at:
           format: date-time
           nullable: true
@@ -856,7 +847,6 @@ components:
         - status
         - stripe_payment_intent_id
         - stripe_payment_intent_client_secret
-        - total_usd_cents
         - id
         - created_at
         - updated_at
@@ -1109,6 +1099,31 @@ components:
         - remote_id
         - created_at
         - updated_at
+      type: object
+    StripePaymentIntentOutput:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/StripePaymentIntentOutput.json
+          format: uri
+          readOnly: true
+          type: string
+        client_secret:
+          type: string
+        status:
+          enum:
+            - requires_payment_method
+            - requires_confirmation
+            - requires_action
+            - processing
+            - requires_capture
+            - canceled
+            - succeeded
+          type: string
+      required:
+        - status
+        - client_secret
       type: object
     StripeSessionOutput:
       additionalProperties: false
@@ -1860,6 +1875,42 @@ paths:
       summary: Get a round investment
       tags:
         - Investments
+  /investments/{id}/confirm-payment:
+    post:
+      description: Confirm a stripe payment intent for an investment.
+      operationId: confirm-investment-payment
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GetInvestmentPaymentIntentClientSecretInputBody"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StripePaymentIntentOutput"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Confirm a stripe payment intent
+      tags:
+        - Investments
   /investments/{id}/pay:
     get:
       description: Get the payment for the current investment that is either processing or succeeded.
@@ -1888,35 +1939,6 @@ paths:
       security:
         - bearerAuth: []
       summary: Get the active payment for an investment
-      tags:
-        - Investments
-    post:
-      description: Create a stripe payment intent for an investment.
-      operationId: create-investment-payment-intent
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            format: int64
-            minimum: 1
-            type: integer
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/InvestmentPaymentIntentClientSecretOutputBody"
-          description: OK
-        default:
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/ErrorModel"
-          description: Error
-      security:
-        - bearerAuth: []
-      summary: Create a stripe payment intent
       tags:
         - Investments
   /investments/{id}/payments:

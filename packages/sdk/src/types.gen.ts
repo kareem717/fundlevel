@@ -237,6 +237,15 @@ export type GetInvestmentActivePaymentOutputBody = {
   message: string;
 };
 
+export type GetInvestmentPaymentIntentClientSecretInputBody = {
+  /**
+   * A URL to the JSON Schema for this object.
+   */
+  readonly $schema?: string;
+  confirmation_token: string;
+  return_url: string;
+};
+
 export type GetInvestmentPaymentsOutputBody = {
   /**
    * A URL to the JSON Schema for this object.
@@ -316,16 +325,6 @@ export type Investment = {
   share_quantity: number;
   terms_acceptance_id: number;
   updated_at: string | null;
-  usd_cent_value: number;
-};
-
-export type InvestmentPaymentIntentClientSecretOutputBody = {
-  /**
-   * A URL to the JSON Schema for this object.
-   */
-  readonly $schema?: string;
-  client_secret: string;
-  message: string;
 };
 
 export type MessageResponse = {
@@ -351,7 +350,6 @@ export type Payment = {
     | "succeeded";
   stripe_payment_intent_client_secret: string;
   stripe_payment_intent_id: string;
-  total_usd_cents: number;
   updated_at: string | null;
 };
 
@@ -443,6 +441,22 @@ export type StripeIdentity = {
   remote_id: string;
   status: "verified" | "canceled";
   updated_at: string | null;
+};
+
+export type StripePaymentIntentOutput = {
+  /**
+   * A URL to the JSON Schema for this object.
+   */
+  readonly $schema?: string;
+  client_secret: string;
+  status:
+    | "requires_payment_method"
+    | "requires_confirmation"
+    | "requires_action"
+    | "processing"
+    | "requires_capture"
+    | "canceled"
+    | "succeeded";
 };
 
 export type StripeSessionOutput = {
@@ -1125,6 +1139,35 @@ export type GetInvestmentByIdResponses = {
 export type GetInvestmentByIdResponse =
   GetInvestmentByIdResponses[keyof GetInvestmentByIdResponses];
 
+export type ConfirmInvestmentPaymentData = {
+  body: GetInvestmentPaymentIntentClientSecretInputBody;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: "/investments/{id}/confirm-payment";
+};
+
+export type ConfirmInvestmentPaymentErrors = {
+  /**
+   * Error
+   */
+  default: ErrorModel;
+};
+
+export type ConfirmInvestmentPaymentError =
+  ConfirmInvestmentPaymentErrors[keyof ConfirmInvestmentPaymentErrors];
+
+export type ConfirmInvestmentPaymentResponses = {
+  /**
+   * OK
+   */
+  200: StripePaymentIntentOutput;
+};
+
+export type ConfirmInvestmentPaymentResponse =
+  ConfirmInvestmentPaymentResponses[keyof ConfirmInvestmentPaymentResponses];
+
 export type GetInvestmentActivePaymentData = {
   body?: never;
   path: {
@@ -1153,35 +1196,6 @@ export type GetInvestmentActivePaymentResponses = {
 
 export type GetInvestmentActivePaymentResponse =
   GetInvestmentActivePaymentResponses[keyof GetInvestmentActivePaymentResponses];
-
-export type CreateInvestmentPaymentIntentData = {
-  body?: never;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: "/investments/{id}/pay";
-};
-
-export type CreateInvestmentPaymentIntentErrors = {
-  /**
-   * Error
-   */
-  default: ErrorModel;
-};
-
-export type CreateInvestmentPaymentIntentError =
-  CreateInvestmentPaymentIntentErrors[keyof CreateInvestmentPaymentIntentErrors];
-
-export type CreateInvestmentPaymentIntentResponses = {
-  /**
-   * OK
-   */
-  200: InvestmentPaymentIntentClientSecretOutputBody;
-};
-
-export type CreateInvestmentPaymentIntentResponse =
-  CreateInvestmentPaymentIntentResponses[keyof CreateInvestmentPaymentIntentResponses];
 
 export type GetInvestmentPaymentsData = {
   body?: never;

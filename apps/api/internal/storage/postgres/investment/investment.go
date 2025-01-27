@@ -40,8 +40,8 @@ func (r *InvestmentRepository) Create(ctx context.Context, investorId int, usdCe
 		err = tx.NewInsert().
 			Model(&params.Investment).
 			Value("investor_id", "?", investorId).
-			Value("usd_cent_value", "?", usdCentValue).
 			Value("terms_acceptance_id", "?", acceptance.ID).
+			Value("status", "?", investment.InvestmentStatusAwaitingPayment).
 			Returning("*").
 			Scan(ctx, &resp)
 
@@ -120,6 +120,7 @@ func (r *InvestmentRepository) Update(ctx context.Context, id int, params invest
 	err := r.db.NewUpdate().
 		Model(&params).
 		Where("investment.id = ?", id).
+		OmitZero().
 		Returning("*").
 		Scan(ctx, &resp)
 

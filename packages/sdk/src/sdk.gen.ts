@@ -74,12 +74,12 @@ import type {
   GetInvestmentByIdData,
   GetInvestmentByIdError,
   GetInvestmentByIdResponse,
+  ConfirmInvestmentPaymentData,
+  ConfirmInvestmentPaymentError,
+  ConfirmInvestmentPaymentResponse,
   GetInvestmentActivePaymentData,
   GetInvestmentActivePaymentError,
   GetInvestmentActivePaymentResponse,
-  CreateInvestmentPaymentIntentData,
-  CreateInvestmentPaymentIntentError,
-  CreateInvestmentPaymentIntentResponse,
   GetInvestmentPaymentsData,
   GetInvestmentPaymentsError,
   GetInvestmentPaymentsResponse,
@@ -529,6 +529,27 @@ export const getInvestmentById = <ThrowOnError extends boolean = false>(
 };
 
 /**
+ * Confirm a stripe payment intent
+ * Confirm a stripe payment intent for an investment.
+ */
+export const confirmInvestmentPayment = <ThrowOnError extends boolean = false>(
+  options: Options<ConfirmInvestmentPaymentData, ThrowOnError>,
+) => {
+  return (options?.client ?? client).post<
+    ConfirmInvestmentPaymentResponse,
+    ConfirmInvestmentPaymentError,
+    ThrowOnError
+  >({
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+    url: "/investments/{id}/confirm-payment",
+  });
+};
+
+/**
  * Get the active payment for an investment
  * Get the payment for the current investment that is either processing or succeeded.
  */
@@ -540,25 +561,6 @@ export const getInvestmentActivePayment = <
   return (options?.client ?? client).get<
     GetInvestmentActivePaymentResponse,
     GetInvestmentActivePaymentError,
-    ThrowOnError
-  >({
-    ...options,
-    url: "/investments/{id}/pay",
-  });
-};
-
-/**
- * Create a stripe payment intent
- * Create a stripe payment intent for an investment.
- */
-export const createInvestmentPaymentIntent = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<CreateInvestmentPaymentIntentData, ThrowOnError>,
-) => {
-  return (options?.client ?? client).post<
-    CreateInvestmentPaymentIntentResponse,
-    CreateInvestmentPaymentIntentError,
     ThrowOnError
   >({
     ...options,

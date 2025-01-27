@@ -2,13 +2,14 @@
 
 import { actionClientWithAccount } from "@/lib/safe-action";
 import {
-	createInvestmentPaymentIntent,
 	getInvestmentById as getInvestmentByIdApi,
 	createRoundInvestment,
+	confirmInvestmentPayment,
 } from "@repo/sdk";
 import { cache } from "react";
 import { pathIdSchema } from "./validations";
 import { zCreateInvestmentParams } from "@repo/sdk/zod";
+import { z } from "zod";
 
 export const getInvestmentById = actionClientWithAccount
 	.schema(pathIdSchema)
@@ -28,18 +29,33 @@ export const getInvestmentById = actionClientWithAccount
 
 export const getInvestmentByIdCached = cache(getInvestmentById);
 
-export const createInvestmentPaymentIntentAction = actionClientWithAccount
-	.schema(pathIdSchema)
-	.action(async ({ parsedInput, ctx: { axiosClient } }) => {
-		const resp = await createInvestmentPaymentIntent({
-			client: axiosClient,
-			path: {
-				id: parsedInput,
-			},
-		});
+export const confirmInvestmentPaymentAction = actionClientWithAccount
+	.schema(
+		z.object({
+			id: z.number().min(1),
+			confirmationToken: z.string().min(1),
+			returnURL: z.string().min(1),
+		})
+	)
+	.action(
+		async ({
+			parsedInput: { id, confirmationToken, returnURL },
+			ctx: { axiosClient },
+		}) => {
+			const resp = await confirmInvestmentPayment({
+				client: axiosClient,
+				path: {
+					id,
+				},
+				body: {
+					confirmation_token: confirmationToken,
+					return_url: returnURL,
+				},
+			});
 
-		return resp.data?.client_secret;
-	});
+			return resp.data;
+		}
+	);
 
 export const createInvestmentAction = actionClientWithAccount
 	.schema(zCreateInvestmentParams)

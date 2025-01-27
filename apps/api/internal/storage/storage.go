@@ -24,6 +24,7 @@ type RoundRepository interface {
 	GetByCursor(ctx context.Context, paginationParams shared.CursorPagination) ([]round.Round, error)
 	GetByPage(ctx context.Context, paginationParams shared.OffsetPagination) ([]round.Round, int, error)
 	Update(ctx context.Context, id int, params round.UpdateRoundParams) (round.Round, error)
+	GetAvailableShares(ctx context.Context, id int) (int, error)
 
 	GetTerms(ctx context.Context, id int) (round.RoundTerm, error)
 }

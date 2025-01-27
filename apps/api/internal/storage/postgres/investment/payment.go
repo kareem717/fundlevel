@@ -13,7 +13,6 @@ func (r *InvestmentRepository) CreatePayment(ctx context.Context, investmentId i
 
 	err := r.db.NewInsert().
 		Model(&params).
-		ModelTableExpr("investment_payments").
 		Value("investment_id", "?", investmentId).
 		Returning("*").
 		Scan(ctx, &resp)
@@ -26,8 +25,7 @@ func (r *InvestmentRepository) UpdatePayment(ctx context.Context, id int, params
 
 	err := r.db.NewUpdate().
 		Model(&params).
-		ModelTableExpr("investment_payments").
-		Where("investment_payments.id = ?", id).
+		Where("investment_payment.id = ?", id).
 		OmitZero().
 		Returning("*").
 		Scan(ctx, &resp)
