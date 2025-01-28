@@ -6938,6 +6938,9 @@
       "schemaName": "public",
       "values": [
         {
+          "name": "awaiting_confirmation"
+        },
+        {
           "name": "awaiting_payment"
         },
         {

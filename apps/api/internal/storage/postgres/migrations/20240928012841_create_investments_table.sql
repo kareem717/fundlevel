@@ -1,6 +1,7 @@
 -- +goose Up
 -- +goose StatementBegin
 CREATE TYPE investment_status AS ENUM(
+    'awaiting_confirmation',
     'awaiting_payment',
     'payment_completed',
     'completed'
@@ -13,7 +14,7 @@ CREATE TABLE
         investor_id INT NOT NULL REFERENCES accounts,
         share_quantity INT NOT NULL CHECK (share_quantity>0),
         terms_acceptance_id INT NOT NULL REFERENCES round_terms_acceptances,
-        status investment_status NOT NULL DEFAULT 'awaiting_payment',
+        status investment_status NOT NULL DEFAULT 'awaiting_confirmation',
         created_at timestamptz DEFAULT CLOCK_TIMESTAMP(),
         updated_at timestamptz,
         deleted_at timestamptz

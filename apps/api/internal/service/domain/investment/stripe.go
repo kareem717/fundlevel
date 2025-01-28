@@ -250,9 +250,9 @@ func (s *InvestmentService) ConfirmPaymentIntent(ctx context.Context, investment
 			return err
 		}
 
-		paymentCompletedStatus := investment.InvestmentStatusPaymentCompleted
+		status := investment.InvestmentStatusAwaitingPayment
 		_, err = s.repositories.Investment().Update(ctx, investmentId, investment.UpdateInvestmentParams{
-			Status: &paymentCompletedStatus,
+			Status: &status,
 		})
 		if err != nil {
 			s.logger.Error("failed to update investment status", zap.String("investment_id", strconv.Itoa(investmentId)), zap.Error(err))

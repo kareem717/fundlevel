@@ -41,7 +41,7 @@ func (r *InvestmentRepository) Create(ctx context.Context, investorId int, usdCe
 			Model(&params.Investment).
 			Value("investor_id", "?", investorId).
 			Value("terms_acceptance_id", "?", acceptance.ID).
-			Value("status", "?", investment.InvestmentStatusAwaitingPayment).
+			Value("status", "?", investment.InvestmentStatusAwaitingConfirmation).
 			Returning("*").
 			Scan(ctx, &resp)
 

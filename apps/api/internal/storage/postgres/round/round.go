@@ -160,6 +160,7 @@ func (r *RoundRepository) GetAvailableShares(ctx context.Context, id int) (int, 
 				Where("round_id = ?", id).
 				Where("status IN (?)",
 					bun.In([]investment.InvestmentStatus{
+						investment.InvestmentStatusAwaitingPayment,
 						investment.InvestmentStatusPaymentCompleted,
 						investment.InvestmentStatusCompleted,
 					})).
