@@ -362,18 +362,6 @@ export function InvestForm({ round, business, terms, className, ...props }: Inve
         }
 
         setInvestmentId(investment.id);
-
-        // const clientSecret = (await createInvestmentPaymentIntentAction(investment.id))?.data;
-        // if (!clientSecret) {
-        //   toast({
-        //     title: "Uh oh!",
-        //     description: "Failed to create payment intent, please try again.",
-        //     variant: "destructive",
-        //   });
-        //   return false
-        // }
-
-        // setClientSecret(clientSecret);
       },
       onBack: () => {
         form.setValue("terms_acceptance.accepted_at", "");

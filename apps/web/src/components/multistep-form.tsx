@@ -106,8 +106,19 @@ export const MultiStepForm = <T extends FieldValues>({
         <div className="flex flex-col gap-4 [&>*]:w-full mt-auto">
           <Progress value={((step + 1) / steps.length) * 100} />
           <div className="flex justify-between">
-            <Button variant="secondary" disabled={!hasPrevious || hasSubmitted} onClick={previous}>Back</Button>
-            <Button disabled={!hasNext || isSubmitting || hasSubmitted || isExecuting} onClick={next} type="button">
+            <Button
+              variant="secondary"
+              disabled={!hasPrevious || hasSubmitted}
+              onClick={previous}
+              type="button"
+            >
+              Back
+            </Button>
+            <Button
+              disabled={!hasNext || isSubmitting || hasSubmitted || isExecuting}
+              onClick={next}
+              type="button"
+            >
               {isSubmitting && <Icons.spinner className="animate-spin size-4" />}
               {steps[step]?.nextButtonText ? steps[step].nextButtonText : isLastStep ? "Submit" : "Next"}
             </Button>
