@@ -36,6 +36,27 @@ export interface InvestFormProps extends ComponentPropsWithoutRef<typeof Card> {
   terms: RoundTerm;
 }
 
+function BreakdownField({ label, value, tooltip }: { label: string, value: string, tooltip?: string }) {
+  return (
+    <div className="flex flex-col sm:flex-row justify-between sm:items-center">
+      <span className="text-muted-foreground flex sm:flex-row-reverse items-center gap-1">
+        <Tooltip>
+          <TooltipTrigger type="button">
+            <Info className="size-3.5 text-muted-foreground" />
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>{tooltip}</p>
+          </TooltipContent>
+        </Tooltip>
+        {label}
+      </span>
+      <span className="font-medium">
+        {value}
+      </span>
+    </div>
+  )
+}
+
 export function InvestForm({ round, business, terms, className, ...props }: InvestFormProps) {
   const { toast } = useToast()
   const currentPath = usePathname()
@@ -75,7 +96,7 @@ export function InvestForm({ round, business, terms, className, ...props }: Inve
   };
 
   const cardProps = {
-    className: cn("w-full", className),
+    className: cn("w-full max-h-[70vh] overflow-y-auto", className),
     ...props,
   }
 
@@ -92,7 +113,7 @@ export function InvestForm({ round, business, terms, className, ...props }: Inve
               Review the round details before proceeding with your investment
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-6">
             <Label className="text-sm font-medium mb-4 text-muted-foreground">Round Description</Label>
             <RichTextDisplay content={round.description} />
           </CardContent>
@@ -195,130 +216,54 @@ export function InvestForm({ round, business, terms, className, ...props }: Inve
                     <CardHeader>
                       <CardTitle>Round Breakdown</CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-2 text-sm">
-                      <div className="flex justify-between items-center">
-                        <span className="text-muted-foreground flex items-center gap-2">
-                          Price per Share
-                          <Tooltip>
-                            <TooltipTrigger>
-                              <Info className="size-3.5 text-foreground" />
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>The cost to purchase one share of the business</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </span>
-                        <span className="font-medium">
-                          {formatCurrency(round.price_per_share_usd_cents / 100, "USD", "en-US")}
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-muted-foreground flex items-center gap-2">
-                          Business Shares Outstanding
-                          <Tooltip>
-                            <TooltipTrigger>
-                              <Info className="size-3.5 text-foreground" />
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Total number of shares issued by the business</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </span>
-                        {round.total_business_shares.toLocaleString()}
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-muted-foreground flex items-center gap-2">
-                          Shares for Sale
-                          <Tooltip>
-                            <TooltipTrigger>
-                              <Info className="size-3.5 text-foreground" />
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Number of shares available for purchase in this round</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </span>
-                        {round.total_shares_for_sale.toLocaleString()}
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-muted-foreground flex items-center gap-2">
-                          Business Percentage For Sale
-                          <Tooltip>
-                            <TooltipTrigger>
-                              <Info className="size-3.5 text-foreground" />
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>The percentage of the business that is being sold in this round, based on the number of shares you&apos;re purchasing. If a &quot;~&quot; is shown, it means the percentage is rounded to 5 significant digits.</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </span>
-                        {formatNumber((round.total_shares_for_sale / round.total_business_shares) * 100, 1, 5, true, "en-US")}%
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-muted-foreground flex items-center gap-2">
-                          Post-Money Business Valuation
-                          <Tooltip>
-                            <TooltipTrigger>
-                              <Info className="size-3.5 text-foreground" />
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>The total value of the business after this investment round</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </span>
-                        {formatCurrency(round.total_business_shares * round.price_per_share_usd_cents / 100, "USD", "en-US")}
-                      </div>
+                    <CardContent className="space-y-3 sm:space-y-2 text-sm">
+                      <BreakdownField
+                        label="Price per Share"
+                        value={formatCurrency(round.price_per_share_usd_cents / 100, "USD", "en-US")}
+                        tooltip="The cost to purchase one share of the business"
+                      />
+                      <BreakdownField
+                        label="Business Shares Outstanding"
+                        value={round.total_business_shares.toLocaleString()}
+                        tooltip="Total number of shares issued by the business"
+                      />
+                      <BreakdownField
+                        label="Shares for Sale"
+                        value={round.total_shares_for_sale.toLocaleString()}
+                        tooltip="Number of shares available for purchase in this round"
+                      />
+                      <BreakdownField
+                        label="Post-Money Business Valuation"
+                        value={formatCurrency(round.total_business_shares * round.price_per_share_usd_cents / 100, "USD", "en-US")}
+                        tooltip="The total value of the business after this investment round"
+                      />
+                      <BreakdownField
+                        label="Business Percentage For Sale"
+                        value={formatNumber((round.total_shares_for_sale / round.total_business_shares) * 100, 1, 5, true, "en-US")}
+                        tooltip="The percentage of the business that is being sold in this round, based on the number of shares you&apos;re purchasing. If a &quot;~&quot; is shown, it means the percentage is rounded to 5 significant digits."
+                      />
                     </CardContent>
                   </Card>
                   <Card>
                     <CardHeader>
                       <CardTitle>Investment Breakdown</CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-2 text-sm">
-                      <div className="flex justify-between items-center">
-                        <span className="text-muted-foreground flex items-center gap-2">
-                          Total Cost
-                          <Tooltip>
-                            <TooltipTrigger>
-                              <Info className="size-3.5 text-foreground" />
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>The total amount you&apos;ll pay for your shares.</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </span>
-                        <span className="font-medium">
-                          {subTotalFormatted}
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-muted-foreground flex items-center gap-2">
-                          Post-Money Ownership
-                          <Tooltip>
-                            <TooltipTrigger>
-                              <Info className="size-3.5 text-foreground" />
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Your percentage ownership of the business after this investment, based on the number of shares you&apos;re purchasing. If a &quot;~&quot; is shown, it means the percentage is rounded to 5 significant digits.</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </span>
-                        {formatNumber(form.watch("investment.share_quantity") / round.total_business_shares, 1, 5, true, "en-US")}%
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-muted-foreground flex items-center gap-2">
-                          Shares of Round
-                          <Tooltip>
-                            <TooltipTrigger>
-                              <Info className="size-3.5 text-foreground" />
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Your percentage of the total shares available in this round, based on the number of shares you&apos;re purchasing. If a &quot;~&quot; is shown, it means the percentage is rounded to 5 significant digits.</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </span>
-                        {formatNumber((form.watch("investment.share_quantity") / round.total_shares_for_sale) * 100, 1, 5, true, "en-US")}%
-                      </div>
+                    <CardContent className="space-y-3 sm:space-y-2 text-sm">
+                      <BreakdownField
+                        label="Total Cost"
+                        value={subTotalFormatted}
+                        tooltip="The total amount you&apos;ll pay for your shares."
+                      />
+                      <BreakdownField
+                        label="Post-Money Ownership"
+                        value={`${formatNumber(form.watch("investment.share_quantity") / round.total_business_shares, 1, 5, true, "en-US")}%`}
+                        tooltip="Your percentage ownership of the business after this investment, based on the number of shares you&apos;re purchasing. If a &quot;~&quot; is shown, it means the percentage is rounded to 5 significant digits."
+                      />
+                      <BreakdownField
+                        label="Shares of Round"
+                        value={`${formatNumber((form.watch("investment.share_quantity") / round.total_shares_for_sale) * 100, 1, 5, true, "en-US")}%`}
+                        tooltip="Your percentage of the total shares available in this round, based on the number of shares you&apos;re purchasing. If a &quot;~&quot; is shown, it means the percentage is rounded to 5 significant digits."
+                      />
                     </CardContent>
                   </Card>
                 </TooltipProvider>

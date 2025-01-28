@@ -26,14 +26,14 @@ export interface MultiStepFormProps<T extends FieldValues> extends ComponentProp
   handleSubmit: (data: T) => boolean | void | Promise<boolean | void>;
 }
 
-export const MultiStepForm = <T extends FieldValues>({
+export function MultiStepForm<T extends FieldValues>({
   className,
   steps,
   defaultStep = 0,
   handleSubmit,
   form: formProps,
   ...props
-}: MultiStepFormProps<T> & ComponentPropsWithoutRef<"form">) => {
+}: MultiStepFormProps<T> & ComponentPropsWithoutRef<"form">) {
   const [step, setStep] = useState(defaultStep);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hasSubmitted, setHasSubmitted] = useState(false);
