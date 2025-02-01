@@ -44,14 +44,8 @@ const businessDashboard = (businessId: number): NavigationMenu[] => [
 			},
 			{
 				title: "Settings",
-				root: redirects.app.businessDashboard(businessId).settings.root,
+				url: redirects.app.businessDashboard(businessId).settings,
 				icon: Icons.settings,
-				items: [
-					{
-						title: "Profile",
-						url: redirects.app.businessDashboard(businessId).settings.stripe,
-					},
-				],
 			},
 		],
 	},

@@ -44,10 +44,10 @@ export default async function BusinessDashboardLayout({ children, params }: { ch
     return notFound();
   }
 
-  const stripeAccount = (await getBusinessStripeAccountAction(business.id))?.data
+  const stripeAccount = (await getBusinessStripeAccountAction(business.id))?.data?.stripeAccount
   let alertComponent: ReactNode | undefined = undefined
 
-  if (!stripeAccount) {
+  if (!stripeAccount || stripeAccount.stripe_disabled_reason) {
     //todo: fix css
     alertComponent = (
       <Alert className="max-w-lg flex items-center justify-center gap-2 self-center">

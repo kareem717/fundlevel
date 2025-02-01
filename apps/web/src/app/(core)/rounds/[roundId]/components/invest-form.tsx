@@ -113,8 +113,7 @@ export function InvestForm({ round, business, terms, className, ...props }: Inve
               Review the round details before proceeding with your investment
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-6">
-            <Label className="text-sm font-medium mb-4 text-muted-foreground">Round Description</Label>
+          <CardContent className="px-8">
             <RichTextDisplay content={round.description} />
           </CardContent>
           <CardFooter>
@@ -137,7 +136,7 @@ export function InvestForm({ round, business, terms, className, ...props }: Inve
               Review the round terms and conditions before proceeding with your investment
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="px-8">
             <RichTextDisplay content={terms.content} />
           </CardContent>
           <CardFooter>

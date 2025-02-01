@@ -43,10 +43,7 @@ export const redirects = {
 		businessDashboard: (businessId: number) => ({
 			root: businessPath(businessId).root(),
 			members: businessPath(businessId).path("members"),
-			settings: {
-				root: businessPath(businessId).path("settings"),
-				stripe: businessPath(businessId).path("settings/profile"),
-			},
+			settings: businessPath(businessId).path("settings"),
 			funding: {
 				index: businessPath(businessId).path("funding"),
 				rounds: {

@@ -16,10 +16,10 @@ export default async function FundingPage({ params }: { params: Promise<{ busine
 	return (
 		<div>
 			Funding
-			{stripeAccount && !!stripeAccount.stripe_disabled_reason ?
-				<StripeDashboardRedirector stripeAccount={stripeAccount} businessId={businessId} />
-				:
+			{!stripeAccount || stripeAccount.stripe_disabled_reason ?
 				<StripeOnboardRedirector businessId={businessId} />
+				:
+				<StripeDashboardRedirector stripeAccount={stripeAccount} businessId={businessId} />
 			}
 		</div>
 	);
