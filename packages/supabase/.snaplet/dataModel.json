@@ -6948,6 +6948,9 @@
         },
         {
           "name": "payment_completed"
+        },
+        {
+          "name": "round_closed"
         }
       ]
     },

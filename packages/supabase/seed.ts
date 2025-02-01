@@ -30,6 +30,42 @@ const generateTimestamp = () => {
 	};
 };
 
+const generateBusinessDescription = () => {
+	const descriptions = [
+		`<div style="text-align: center;"><b>Revolutionary Tech Startup</b></div>
+		<p>Our <i>innovative platform</i> leverages cutting-edge AI technology to transform the way businesses operate. With a proven track record of <u>300% YoY growth</u>, we're positioned to disrupt the $50B enterprise software market.</p>`,
+
+		`<div style="text-align: center;"><b>Sustainable Energy Solutions</b></div>
+		<p>Pioneering the future of <i>renewable energy storage</i>, our patented technology achieves <u>95% efficiency</u> in energy conversion. We're backed by leading climate tech investors and have secured partnerships with major utility providers.</p>`,
+
+		`<div style="text-align: center;"><b>Health Tech Innovation</b></div>
+		<p>Our <i>AI-powered diagnostic platform</i> has demonstrated <u>99% accuracy</u> in early disease detection. FDA approval expected in Q4, with letters of intent from 5 major hospital networks.</p>`,
+	];
+	return descriptions[randomInt(0, descriptions.length - 1)];
+};
+
+const generateTermsContent = () => {
+	return `<div style="text-align: center;"><b>INVESTMENT TERMS AND CONDITIONS</b></div>
+	<p><b>1. Investment Overview</b></p>
+	<p>This investment opportunity is offered in accordance with <i>Regulation CF</i> under the Securities Act of 1933.</p>
+	
+	<p><b>2. Risk Factors</b></p>
+	<p><u>Please carefully consider the following risks</u>:</p>
+	<ul>
+		<li>Limited operating history</li>
+		<li>Competitive market conditions</li>
+		<li>Regulatory uncertainties</li>
+	</ul>
+	
+	<p><b>3. Investor Rights</b></p>
+	<p>Investors will receive <i>Class A Common Shares</i> with the following rights:</p>
+	<ul>
+		<li>Pro-rata voting rights</li>
+		<li>Information rights</li>
+		<li>First right of refusal on future rounds</li>
+	</ul>`;
+};
+
 const main = async () => {
 	const seed = await createSeedClient();
 
@@ -101,9 +137,10 @@ const main = async () => {
 					{ min: 1, max: 10 },
 					{
 						round_terms: {
-							content: "Just pretend this is a real terms of service",
+							content: generateTermsContent(),
 							...generateTimestamp(),
 						},
+						description: generateBusinessDescription(),
 						...generateBusinessRound(),
 						...generateTimestamp(),
 					}
