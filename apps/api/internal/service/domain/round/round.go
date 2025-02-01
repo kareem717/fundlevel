@@ -3,25 +3,31 @@ package round
 import (
 	"context"
 	"errors"
+	"fmt"
 	"fundlevel/internal/entities/business"
 	"fundlevel/internal/entities/round"
 	"fundlevel/internal/storage"
 	postgres "fundlevel/internal/storage/shared"
 	"go.uber.org/zap"
+
+	"github.com/stripe/stripe-go/v81"
+	"github.com/stripe/stripe-go/v81/transfer"
 )
 
 type RoundService struct {
 	repositories storage.Repository
+	stripeAPIKey string
 	logger       *zap.Logger
 }
 
 // NewTestService returns a new instance of test service.
-func NewRoundService(repositories storage.Repository, logger *zap.Logger) *RoundService {
+func NewRoundService(repositories storage.Repository, logger *zap.Logger, stripeAPIKey string) *RoundService {
 	logger = logger.With(zap.String("service", "round"))
 
 	return &RoundService{
 		repositories: repositories,
 		logger:       logger,
+		stripeAPIKey: stripeAPIKey,
 	}
 }
 
@@ -73,7 +79,7 @@ func (s *RoundService) GetAvailableShares(ctx context.Context, id int) (int, err
 func (s *RoundService) CompleteRound(ctx context.Context, id int) error {
 	err := s.repositories.RunInTx(ctx, func(ctx context.Context, tx storage.Transaction) error {
 		status := round.RoundStatusSuccessful
-		_, err := s.repositories.Round().Update(ctx, id, round.UpdateRoundParams{
+		roundRecord, err := s.repositories.Round().Update(ctx, id, round.UpdateRoundParams{
 			Status: &status,
 		})
 
@@ -82,6 +88,27 @@ func (s *RoundService) CompleteRound(ctx context.Context, id int) error {
 		}
 
 		err = s.repositories.Investment().CloseIncompleteInvestments(ctx, id)
+		if err != nil {
+			return err
+		}
+
+		stripeAccount, err := s.repositories.Business().GetStripeAccount(ctx, roundRecord.BusinessID)
+		if err != nil {
+			return err
+		}
+
+		stripe.Key = s.stripeAPIKey
+
+		amountToTransfer := roundRecord.PricePerShareUSDCents * int64(roundRecord.TotalSharesForSale)
+
+		params := &stripe.TransferParams{
+			Amount:        stripe.Int64(amountToTransfer),
+			Currency:      stripe.String(string(stripe.CurrencyUSD)),
+			Destination:   stripe.String(stripeAccount.StripeConnectedAccountID),
+			TransferGroup: stripe.String(fmt.Sprintf("ROUND-%d", roundRecord.ID)),
+		}
+
+		_, err = transfer.New(params)
 		if err != nil {
 			return err
 		}

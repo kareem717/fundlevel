@@ -154,7 +154,7 @@ func NewService(
 
 	serviceLogger := config.logger.Named("service")
 
-	roundService := roundService.NewRoundService(repositories, serviceLogger)
+	roundService := roundService.NewRoundService(repositories, serviceLogger, stripeAPIKey)
 
 	return &Service{
 		repositories:      repositories,

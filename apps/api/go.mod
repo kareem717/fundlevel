@@ -9,7 +9,7 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/jackc/pgx/v5 v5.7.1
 	github.com/joho/godotenv v1.5.1
-	github.com/stripe/stripe-go/v81 v81.2.0
+	github.com/stripe/stripe-go/v81 v81.3.0
 	github.com/supabase-community/gotrue-go v1.2.1
 	github.com/supabase-community/supabase-go v0.0.4
 	github.com/uptrace/bun v1.2.3
