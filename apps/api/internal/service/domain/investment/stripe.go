@@ -161,6 +161,7 @@ func (s *InvestmentService) HandleStripePaymentIntentSucceeded(ctx context.Conte
 	}
 
 	if availableShares < 1 {
+		s.logger.Info("no available shares left, completing round", zap.String("round_id", strconv.Itoa(parsedRoundId)))
 		// We do this so that if it fails, the webhook will retry
 		err = s.roundService.CompleteRound(ctx, parsedRoundId)
 		if err != nil {

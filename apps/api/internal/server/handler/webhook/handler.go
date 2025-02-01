@@ -53,8 +53,23 @@ func (h *httpHandler) handleStripeWebhook(ctx context.Context, input *shared.Han
 
 	event, err := webhook.ConstructEvent(payload, input.Signature, h.stripeWebhookSecret)
 	if err != nil {
-		h.logger.Error("webhook signature verification failed", zap.Error(err))
-		return nil, huma.Error400BadRequest("Webhook signature verification failed")
+		switch {
+		case errors.Is(err, webhook.ErrNoValidSignature):
+			h.logger.Error("webhook signature verification failed", zap.Error(err))
+			return nil, huma.Error401Unauthorized("No valid signature provided")
+		case errors.Is(err, webhook.ErrNotSigned):
+			h.logger.Error("webhook signature verification failed", zap.Error(err))
+			return nil, huma.Error400BadRequest("No webhook secret provided")
+		case errors.Is(err, webhook.ErrTooOld):
+			h.logger.Error("webhook signature verification failed")
+			return nil, huma.Error400BadRequest("Webhook too old")
+		case errors.Is(err, webhook.ErrInvalidHeader):
+			h.logger.Error("webhook signature verification failed", zap.Error(err))
+			return nil, huma.Error400BadRequest("Invalid webhook header provided")
+		default:
+			h.logger.Error("webhook signature verification failed", zap.Error(err))
+			return nil, huma.Error500InternalServerError("Failed to parse webhook")
+		}
 	}
 
 	switch event.Type {
@@ -147,8 +162,23 @@ func (h *httpHandler) handleStripeConnectWebhook(ctx context.Context, input *sha
 
 	event, err := webhook.ConstructEvent(payload, input.Signature, h.stripeConnectWebhookSecret)
 	if err != nil {
-		h.logger.Error("webhook signature verification failed", zap.Error(err))
-		return nil, huma.Error400BadRequest("Webhook signature verification failed")
+		switch {
+		case errors.Is(err, webhook.ErrNoValidSignature):
+			h.logger.Error("webhook signature verification failed", zap.Error(err))
+			return nil, huma.Error401Unauthorized("No valid signature provided")
+		case errors.Is(err, webhook.ErrNotSigned):
+			h.logger.Error("webhook signature verification failed", zap.Error(err))
+			return nil, huma.Error400BadRequest("No webhook secret provided")
+		case errors.Is(err, webhook.ErrTooOld):
+			h.logger.Error("webhook signature verification failed")
+			return nil, huma.Error400BadRequest("Webhook too old")
+		case errors.Is(err, webhook.ErrInvalidHeader):
+			h.logger.Error("webhook signature verification failed", zap.Error(err))
+			return nil, huma.Error400BadRequest("Invalid webhook header provided")
+		default:
+			h.logger.Error("webhook signature verification failed", zap.Error(err))
+			return nil, huma.Error500InternalServerError("Failed to parse webhook")
+		}
 	}
 
 	switch event.Type {
