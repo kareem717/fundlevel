@@ -130,8 +130,8 @@ func (r *RoundRepository) Update(ctx context.Context, id int, params round.Updat
 
 	err := r.db.NewUpdate().
 		Model(&params).
-		ModelTableExpr("rounds").
-		Where("rounds.id = ?", id).
+		Where("round.id = ?", id).
+		OmitZero().
 		Returning("*").
 		Scan(ctx, &resp)
 

@@ -53,6 +53,8 @@ type RoundService interface {
 	GetByPage(ctx context.Context, pageSize int, page int) ([]round.Round, int, error)
 	GetAvailableShares(ctx context.Context, id int) (int, error)
 	GetTerms(ctx context.Context, id int) (round.RoundTerm, error)
+
+	CompleteRound(ctx context.Context, id int) error
 }
 
 type BusinessService interface {
@@ -152,13 +154,15 @@ func NewService(
 
 	serviceLogger := config.logger.Named("service")
 
+	roundService := roundService.NewRoundService(repositories, serviceLogger)
+
 	return &Service{
 		repositories:      repositories,
 		IndustryService:   industryService.NewIndustryService(repositories, serviceLogger),
 		HealthService:     healthService.NewHealthService(repositories, serviceLogger),
 		AccountService:    accountService.NewAccountService(repositories, stripeAPIKey, serviceLogger),
-		RoundService:      roundService.NewRoundService(repositories, serviceLogger),
-		InvestmentService: investmentService.NewInvestmentService(repositories, stripeAPIKey, feePercentage, serviceLogger),
+		RoundService:      roundService,
+		InvestmentService: investmentService.NewInvestmentService(repositories, stripeAPIKey, feePercentage, serviceLogger, roundService),
 		BusinessService:   businessService.NewBusinessService(repositories, stripeAPIKey, serviceLogger),
 		PermissionService: permission.NewPermissionService(repositories, serviceLogger),
 	}

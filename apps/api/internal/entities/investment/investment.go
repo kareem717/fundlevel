@@ -14,6 +14,7 @@ const (
 	InvestmentStatusAwaitingPayment      InvestmentStatus = "awaiting_payment"
 	InvestmentStatusPaymentCompleted     InvestmentStatus = "payment_completed"
 	InvestmentStatusCompleted            InvestmentStatus = "completed"
+	InvestmentStatusRoundClosed          InvestmentStatus = "round_closed"
 )
 
 type InvestmentStatusField struct {
@@ -27,7 +28,7 @@ type Investment struct {
 	ShareQuantity     int              `json:"share_quantity" minimum:"1"`
 	TermsAcceptanceID int              `json:"terms_acceptance_id" minimum:"1"`
 	InvestorID        int              `json:"investor_id" minimum:"1"`
-	Status            InvestmentStatus `json:"status" enum:"awaiting_confirmation,awaiting_payment,payment_completed,completed"`
+	Status            InvestmentStatus `json:"status" enum:"awaiting_confirmation,awaiting_payment,payment_completed,completed,round_closed"`
 	shared.Timestamps
 }
 
@@ -44,5 +45,5 @@ type CreateInvestmentParams struct {
 type UpdateInvestmentParams struct {
 	bun.BaseModel `bun:"table:investments,alias:investment"`
 
-	Status *InvestmentStatus `json:"status" enum:"awaiting_confirmation,awaiting_payment,payment_completed,completed"`
+	Status *InvestmentStatus `json:"status" enum:"awaiting_confirmation,awaiting_payment,payment_completed,completed,round_closed"`
 }

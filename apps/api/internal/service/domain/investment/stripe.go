@@ -2,10 +2,12 @@ package investment
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strconv"
 
 	"fundlevel/internal/entities/investment"
+	"fundlevel/internal/entities/round"
 	"fundlevel/internal/service/types"
 	"fundlevel/internal/storage"
 
@@ -18,6 +20,7 @@ import (
 const (
 	InvestmentIDMetadataKey        = "investment_id"
 	InvestmentPaymentIDMetadatakey = "investment_payment_id"
+	InvestmentRoundIDMetadataKey   = "investment_round_id"
 )
 
 func (s *InvestmentService) HandleStripePaymentIntentFailed(ctx context.Context, intentID string) error {
@@ -108,7 +111,17 @@ func (s *InvestmentService) HandleStripePaymentIntentSucceeded(ctx context.Conte
 		return fmt.Errorf("failed to convert investment payment ID to int: %w", err)
 	}
 
-	return s.repositories.RunInTx(ctx, func(ctx context.Context, tx storage.Transaction) error {
+	roundId, ok := intent.Metadata[InvestmentRoundIDMetadataKey]
+	if !ok {
+		return fmt.Errorf("investment round ID not found in session metadata")
+	}
+
+	parsedRoundId, err := strconv.Atoi(roundId)
+	if err != nil {
+		return fmt.Errorf("failed to convert investment round ID to int: %w", err)
+	}
+
+	err = s.repositories.RunInTx(ctx, func(ctx context.Context, tx storage.Transaction) error {
 		_, err := tx.Investment().UpdatePayment(ctx, parsedPaymentId, investment.UpdatePaymentParams{
 			Status: &intent.Status,
 		})
@@ -137,6 +150,26 @@ func (s *InvestmentService) HandleStripePaymentIntentSucceeded(ctx context.Conte
 
 		return nil
 	})
+
+	if err != nil {
+		return err
+	}
+
+	availableShares, err := s.repositories.Round().GetAvailableShares(ctx, parsedRoundId)
+	if err != nil {
+		return err
+	}
+
+	if availableShares < 1 {
+		// We do this so that if it fails, the webhook will retry
+		err = s.roundService.CompleteRound(ctx, parsedRoundId)
+		if err != nil {
+			s.logger.Error("failed to complete round", zap.String("round_id", strconv.Itoa(parsedRoundId)), zap.Error(err))
+			return err
+		}
+	}
+
+	return nil
 }
 
 func (s *InvestmentService) HandleStripePaymentIntentStatusUpdated(ctx context.Context, intentID string) error {
@@ -187,9 +220,19 @@ func (s *InvestmentService) ConfirmPaymentIntent(ctx context.Context, investment
 		return resp, err
 	}
 
+	if investmentRecord.Status == investment.InvestmentStatusRoundClosed {
+		s.logger.Info("attempting to confirm payment for a round that is closed", zap.String("investment_id", strconv.Itoa(investmentId)))
+		return resp, errors.New("this investment is unable to be completed as the round is closed")
+	}
+
 	roundRecord, err := s.repositories.Round().GetById(ctx, investmentRecord.RoundID)
 	if err != nil {
 		return resp, err
+	}
+
+	if roundRecord.Status == round.RoundStatusSuccessful {
+		s.logger.Info("attempting to confirm payment for a round that is successful", zap.String("round_id", strconv.Itoa(roundRecord.ID)))
+		return resp, errors.New("this investment is unable to be completed as the round is successful")
 	}
 
 	subtotal := roundRecord.PricePerShareUSDCents * int64(investmentRecord.ShareQuantity)
@@ -242,6 +285,7 @@ func (s *InvestmentService) ConfirmPaymentIntent(ctx context.Context, investment
 			Metadata: map[string]string{
 				InvestmentIDMetadataKey:        strconv.Itoa(investmentId),
 				InvestmentPaymentIDMetadatakey: strconv.Itoa(payment.ID),
+				InvestmentRoundIDMetadataKey:   strconv.Itoa(roundRecord.ID),
 			},
 		})
 

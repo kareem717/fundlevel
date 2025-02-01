@@ -3,7 +3,9 @@ package investment
 import (
 	"context"
 	"fundlevel/internal/entities/investment"
+	"fundlevel/internal/service/domain/round"
 	"fundlevel/internal/storage"
+
 	"go.uber.org/zap"
 )
 
@@ -12,16 +14,18 @@ type InvestmentService struct {
 	stripeAPIKey  string
 	feePercentage float64
 	logger        *zap.Logger
+	roundService  *round.RoundService
 }
 
 // NewInvestmentService returns a new instance of investment service.
-func NewInvestmentService(repositories storage.Repository, stripeAPIKey string, feePercentage float64, logger *zap.Logger) *InvestmentService {
+func NewInvestmentService(repositories storage.Repository, stripeAPIKey string, feePercentage float64, logger *zap.Logger, roundService *round.RoundService) *InvestmentService {
 	logger = logger.With(zap.String("service", "investment"))
 
 	return &InvestmentService{
 		repositories:  repositories,
 		stripeAPIKey:  stripeAPIKey,
 		feePercentage: feePercentage,
+		roundService:  roundService,
 		logger:        logger,
 	}
 }

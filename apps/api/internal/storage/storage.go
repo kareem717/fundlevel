@@ -36,6 +36,7 @@ type InvestmentRepository interface {
 	GetByPage(ctx context.Context, paginationParams shared.OffsetPagination) ([]investment.Investment, int, error)
 	GetByRoundIdAndAccountId(ctx context.Context, roundId int, accountId int) (investment.Investment, error)
 	Update(ctx context.Context, id int, params investment.UpdateInvestmentParams) (investment.Investment, error)
+	CloseIncompleteInvestments(ctx context.Context, roundId int) error
 
 	CreatePayment(ctx context.Context, investmentId int, params investment.CreatePaymentParams) (investment.Payment, error)
 	UpdatePayment(ctx context.Context, id int, params investment.UpdatePaymentParams) (investment.Payment, error)

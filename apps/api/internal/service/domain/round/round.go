@@ -5,9 +5,9 @@ import (
 	"errors"
 	"fundlevel/internal/entities/business"
 	"fundlevel/internal/entities/round"
+	"fundlevel/internal/storage"
 	postgres "fundlevel/internal/storage/shared"
 	"go.uber.org/zap"
-	"fundlevel/internal/storage"
 )
 
 type RoundService struct {
@@ -70,3 +70,24 @@ func (s *RoundService) GetAvailableShares(ctx context.Context, id int) (int, err
 	return s.repositories.Round().GetAvailableShares(ctx, id)
 }
 
+func (s *RoundService) CompleteRound(ctx context.Context, id int) error {
+	err := s.repositories.RunInTx(ctx, func(ctx context.Context, tx storage.Transaction) error {
+		status := round.RoundStatusSuccessful
+		_, err := s.repositories.Round().Update(ctx, id, round.UpdateRoundParams{
+			Status: &status,
+		})
+
+		if err != nil {
+			return err
+		}
+
+		err = s.repositories.Investment().CloseIncompleteInvestments(ctx, id)
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
+
+	return err
+}

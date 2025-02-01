@@ -47,6 +47,6 @@ type CreateRoundParams struct {
 type UpdateRoundParams struct {
 	bun.BaseModel `bun:"table:rounds,alias:round"`
 
-	Description string       `json:"description" minLength:"10" maxLength:"3000"`
+	Description *string      `json:"description" minLength:"10" maxLength:"3000"`
 	Status      *RoundStatus `json:"status" enum:"active,successful,failed" hidden:"true" required:"false"`
 }

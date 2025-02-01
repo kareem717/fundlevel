@@ -126,3 +126,18 @@ func (r *InvestmentRepository) Update(ctx context.Context, id int, params invest
 
 	return resp, err
 }
+
+func (r *InvestmentRepository) CloseIncompleteInvestments(ctx context.Context, roundId int) error {
+	_, err := r.db.NewUpdate().
+		Model(&investment.Investment{}).
+		Set("status = ?", investment.InvestmentStatusRoundClosed).
+		Where("investment.round_id = ?", roundId).
+		Where("investment.status NOT IN (?)",
+			bun.In([]investment.InvestmentStatus{
+				investment.InvestmentStatusCompleted,
+				investment.InvestmentStatusPaymentCompleted,
+			})).
+		Exec(ctx)
+
+	return err
+}

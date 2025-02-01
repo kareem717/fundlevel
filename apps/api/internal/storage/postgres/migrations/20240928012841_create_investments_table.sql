@@ -4,7 +4,8 @@ CREATE TYPE investment_status AS ENUM(
     'awaiting_confirmation',
     'awaiting_payment',
     'payment_completed',
-    'completed'
+    'completed',
+    'round_closed'
 );
 
 CREATE TABLE
