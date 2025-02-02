@@ -10,6 +10,11 @@ export type Account = {
   user_id: string;
 };
 
+export type Aggregate = {
+  date: string;
+  value_usd_cents: number;
+};
+
 export type Business = {
   /**
    * A URL to the JSON Schema for this object.
@@ -235,6 +240,14 @@ export type GetInvestmentActivePaymentOutputBody = {
   readonly $schema?: string;
   investment_payment: Payment;
   message: string;
+};
+
+export type GetInvestmentAggregateResponseBody = {
+  /**
+   * A URL to the JSON Schema for this object.
+   */
+  readonly $schema?: string;
+  investment_aggregate: Array<Aggregate> | null;
 };
 
 export type GetInvestmentPaymentIntentClientSecretInputBody = {
@@ -641,6 +654,33 @@ export type GetAccountActiveRoundInvestmentResponses = {
 
 export type GetAccountActiveRoundInvestmentResponse =
   GetAccountActiveRoundInvestmentResponses[keyof GetAccountActiveRoundInvestmentResponses];
+
+export type GetAccountInvestmentAggregateData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/account/portfolio";
+};
+
+export type GetAccountInvestmentAggregateErrors = {
+  /**
+   * Error
+   */
+  default: ErrorModel;
+};
+
+export type GetAccountInvestmentAggregateError =
+  GetAccountInvestmentAggregateErrors[keyof GetAccountInvestmentAggregateErrors];
+
+export type GetAccountInvestmentAggregateResponses = {
+  /**
+   * OK
+   */
+  200: GetInvestmentAggregateResponseBody;
+};
+
+export type GetAccountInvestmentAggregateResponse =
+  GetAccountInvestmentAggregateResponses[keyof GetAccountInvestmentAggregateResponses];
 
 export type GetStripeIdentityData = {
   body?: never;

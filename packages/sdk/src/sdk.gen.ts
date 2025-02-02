@@ -17,6 +17,9 @@ import type {
   GetAccountActiveRoundInvestmentData,
   GetAccountActiveRoundInvestmentError,
   GetAccountActiveRoundInvestmentResponse,
+  GetAccountInvestmentAggregateData,
+  GetAccountInvestmentAggregateError,
+  GetAccountInvestmentAggregateResponse,
   GetStripeIdentityData,
   GetStripeIdentityError,
   GetStripeIdentityResponse,
@@ -185,6 +188,25 @@ export const getAccountActiveRoundInvestment = <
   >({
     ...options,
     url: "/account/investments/round/{id}",
+  });
+};
+
+/**
+ * Get investment aggregate
+ * Get investment aggregate for the currently authenticated account.
+ */
+export const getAccountInvestmentAggregate = <
+  ThrowOnError extends boolean = false,
+>(
+  options?: Options<GetAccountInvestmentAggregateData, ThrowOnError>,
+) => {
+  return (options?.client ?? client).get<
+    GetAccountInvestmentAggregateResponse,
+    GetAccountInvestmentAggregateError,
+    ThrowOnError
+  >({
+    ...options,
+    url: "/account/portfolio",
   });
 };
 

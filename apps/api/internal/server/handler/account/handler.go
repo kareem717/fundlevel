@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-
 	"fundlevel/internal/entities/account"
 	"fundlevel/internal/entities/business"
 	"fundlevel/internal/entities/investment"
@@ -201,7 +200,7 @@ func (h *httpHandler) getStripeIdentity(ctx context.Context, input *struct{}) (*
 type getInvestmentsResponse struct {
 	Body struct {
 		Investments []investment.Investment `json:"investments"`
-		types.CursorPaginationOutput[int]
+		NextCursor *int                    `json:"next_cursor"`
 	}
 }
 
@@ -224,7 +223,7 @@ func (h *httpHandler) getInvestments(ctx context.Context, input *getInvestmentsR
 
 	resp := &getInvestmentsResponse{}
 	resp.Body.Investments = investments
-	resp.Body.NextCursor = cursorOutput.NextCursor
+	resp.Body.NextCursor = cursorOutput
 
 	return resp, nil
 }
@@ -254,6 +253,30 @@ func (h *httpHandler) getActiveRoundInvestment(ctx context.Context, input *share
 
 	resp := &getActiveInvestmentResponse{}
 	resp.Body.Investment = &investment
+
+	return resp, nil
+}
+
+type getInvestmentAggregateResponse struct {
+	Body struct {
+		InvestmentAggregate []investment.Aggregate `json:"investment_aggregate"`
+	}
+}
+
+func (h *httpHandler) getInvestmentAggregate(ctx context.Context, input *struct{}) (*getInvestmentAggregateResponse, error) {
+	account := utils.GetAuthenticatedAccount(ctx)
+	if account == nil {
+		return nil, huma.Error401Unauthorized("You must be logged in to fetch investments")
+	}
+
+	investmentAggregate, err := h.service.InvestmentService.AggregateByInvestorId(ctx, account.ID)
+	if err != nil {
+		h.logger.Error("failed to fetch investment aggregate", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while fetching the investment aggregate")
+	}
+
+	resp := &getInvestmentAggregateResponse{}
+	resp.Body.InvestmentAggregate = investmentAggregate
 
 	return resp, nil
 }

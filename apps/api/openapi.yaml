@@ -40,6 +40,20 @@ components:
         - updated_at
         - deleted_at
       type: object
+    Aggregate:
+      additionalProperties: false
+      properties:
+        date:
+          format: date-time
+          type: string
+        value_usd_cents:
+          format: int64
+          minimum: 0
+          type: integer
+      required:
+        - date
+        - value_usd_cents
+      type: object
     Business:
       additionalProperties: false
       properties:
@@ -561,6 +575,23 @@ components:
       required:
         - investment_payment
         - message
+      type: object
+    GetInvestmentAggregateResponseBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/GetInvestmentAggregateResponseBody.json
+          format: uri
+          readOnly: true
+          type: string
+        investment_aggregate:
+          items:
+            $ref: "#/components/schemas/Aggregate"
+          nullable: true
+          type: array
+      required:
+        - investment_aggregate
       type: object
     GetInvestmentPaymentIntentClientSecretInputBody:
       additionalProperties: false
@@ -1413,6 +1444,29 @@ paths:
       security:
         - bearerAuth: []
       summary: Get active round investment
+      tags:
+        - Accounts
+        - Investments
+  /account/portfolio:
+    get:
+      description: Get investment aggregate for the currently authenticated account.
+      operationId: get-account-investment-aggregate
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetInvestmentAggregateResponseBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Get investment aggregate
       tags:
         - Accounts
         - Investments

@@ -122,3 +122,37 @@ func (r *InvestmentRepository) CloseIncompleteInvestments(ctx context.Context, r
 
 	return err
 }
+
+func (r *InvestmentRepository) AggregateByInvestorId(ctx context.Context, investorId int) ([]investment.Aggregate, error) {
+	resp := make([]investment.Aggregate, 12)
+
+	monthsCTE := r.db.
+		NewSelect().
+		ColumnExpr(
+			`generate_series(
+				date_trunc('month', CURRENT_DATE - INTERVAL '11 months'),
+				date_trunc('month', CURRENT_DATE),
+				'1 month'
+			)::date AS month`,
+		)
+
+	err := r.db.NewSelect().
+		With("months", monthsCTE).
+		TableExpr("months m").
+		ColumnExpr("m.month AS date").
+		ColumnExpr("COALESCE(SUM(i.total_usd_cent_value), 0) AS value_usd_cents").
+		Join("LEFT JOIN investments i").
+		JoinOn("date_trunc('month', i.created_at) = m.month").
+		JoinOn("i.investor_id = ?", investorId).
+		JoinOn("i.status IN (?)",
+			bun.In([]investment.InvestmentStatus{
+				investment.InvestmentStatusPaymentCompleted,
+				investment.InvestmentStatusCompleted,
+			})).
+		GroupExpr("m.month").
+		OrderExpr("m.month ASC").
+		Limit(12).
+		Scan(ctx, &resp)
+
+	return resp, err
+}

@@ -8,6 +8,7 @@ import {
 	updateInvestment,
 	upsertRoundInvestment,
 	getAccountActiveRoundInvestment,
+	getAccountInvestmentAggregate,
 } from "@repo/sdk";
 import { cache } from "react";
 import { cursorPaginationSchema, pathIdSchema } from "./validations";
@@ -84,12 +85,14 @@ export const getAccountInvestmentsAction = actionClientWithAccount
 		})
 	)
 	.action(async ({ parsedInput, ctx: { axiosClient } }) => {
+		console.log("parsedInput", parsedInput);
 		const resp = await getAccountInvestments({
 			client: axiosClient,
 			query: parsedInput,
-			// throwOnError: true,
+			throwOnError: true,
 		});
 
+		console.log("resp", resp);
 		return resp.data;
 	});
 
@@ -128,3 +131,12 @@ export const getActiveRoundInvestmentAction = cache(
 			return resp.data;
 		})
 );
+
+export const getInvestmentAggregateAction = actionClientWithAccount
+	.action(async ({ ctx: { axiosClient } }) => {
+		const resp = await getAccountInvestmentAggregate({
+			client: axiosClient,
+		});
+
+		return resp.data;
+	});

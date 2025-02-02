@@ -52,3 +52,9 @@ type TermAcceptance struct {
 	TermsAcceptanceIPAddress string    `json:"terms_acceptance_ip_address"`
 	TermsAcceptanceUserAgent string    `json:"terms_acceptance_user_agent"`
 }
+
+// Aggregate represents a single aggregate of investments by date-time.
+type Aggregate struct {
+	Date          time.Time `json:"date"`
+	ValueUSDCents int64     `json:"value_usd_cents" minimum:"0"`
+}

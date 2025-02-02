@@ -20,6 +20,11 @@ export const zAccount = z.object({
   user_id: z.string(),
 });
 
+export const zAggregate = z.object({
+  date: z.string().datetime(),
+  value_usd_cents: z.number().gte(0),
+});
+
 export const zBusiness = z.object({
   $schema: z.string().url().readonly().optional(),
   business_legal_section: z.object({
@@ -303,6 +308,11 @@ export const zGetInvestmentActivePaymentOutputBody = z.object({
     updated_at: z.union([z.string().datetime(), z.null()]),
   }),
   message: z.string(),
+});
+
+export const zGetInvestmentAggregateResponseBody = z.object({
+  $schema: z.string().url().readonly().optional(),
+  investment_aggregate: z.union([z.array(zAggregate), z.null()]),
 });
 
 export const zGetInvestmentPaymentIntentClientSecretInputBody = z.object({
@@ -631,6 +641,9 @@ export const zGetAccountInvestmentsResponse = zGetInvestmentsResponseBody;
 
 export const zGetAccountActiveRoundInvestmentResponse =
   zGetActiveInvestmentResponseBody;
+
+export const zGetAccountInvestmentAggregateResponse =
+  zGetInvestmentAggregateResponseBody;
 
 export const zGetStripeIdentityResponse = zStripeIdentity;
 

@@ -37,7 +37,7 @@ type AccountService interface {
 	DeleteStripeIdentity(ctx context.Context, accountID int) error
 	GetStripeIdentity(ctx context.Context, accountID int) (account.StripeIdentity, error)
 
-	GetInvestments(ctx context.Context, accountId, cursor, limit int, filter investment.InvestmentFilter) ([]investment.Investment, types.CursorPaginationOutput[int], error)
+	GetInvestments(ctx context.Context, accountId, cursor, limit int, filter investment.InvestmentFilter) ([]investment.Investment, *int, error)
 }
 
 type IndustryService interface {
@@ -92,6 +92,8 @@ type InvestmentService interface {
 	HandleStripePaymentIntentSucceeded(ctx context.Context, intentID string) error
 	HandleStripePaymentIntentStatusUpdated(ctx context.Context, intentID string) error
 	HandleStripePaymentIntentFailed(ctx context.Context, intentID string) error
+
+	AggregateByInvestorId(ctx context.Context, investorId int) ([]investment.Aggregate, error)
 
 	GetPayments(ctx context.Context, investmentId int) ([]investment.Payment, error)
 	GetCurrentPayment(ctx context.Context, investmentId int) (investment.Payment, error)

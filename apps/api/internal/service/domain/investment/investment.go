@@ -92,3 +92,7 @@ func (s *InvestmentService) Update(ctx context.Context, id int, params investmen
 
 	return s.repositories.Investment().Update(ctx, id, params)
 }
+
+func (s *InvestmentService) AggregateByInvestorId(ctx context.Context, investorId int) ([]investment.Aggregate, error) {
+	return s.repositories.Investment().AggregateByInvestorId(ctx, investorId)
+}

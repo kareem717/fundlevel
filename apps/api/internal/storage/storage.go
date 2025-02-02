@@ -37,6 +37,8 @@ type InvestmentRepository interface {
 	Update(ctx context.Context, id int, params investment.UpdateInvestmentParams) (investment.Investment, error)
 	CloseIncompleteInvestments(ctx context.Context, roundId int) error
 
+	AggregateByInvestorId(ctx context.Context, investorId int) ([]investment.Aggregate, error)
+
 	CreatePayment(ctx context.Context, investmentId int, params investment.CreatePaymentParams) (investment.Payment, error)
 	UpdatePayment(ctx context.Context, id int, params investment.UpdatePaymentParams) (investment.Payment, error)
 	GetPaymentById(ctx context.Context, id int) (investment.Payment, error)

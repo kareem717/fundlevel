@@ -196,4 +196,24 @@ func RegisterHumaRoutes(
 			},
 		},
 	}, handler.getActiveRoundInvestment)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-account-investment-aggregate",
+		Method:      http.MethodGet,
+		Path:        "/account/portfolio",
+		Summary:     "Get investment aggregate",
+		Description: "Get investment aggregate for the currently authenticated account.",
+		Tags:        []string{"Accounts", "Investments"},
+		Security: []map[string][]string{
+			{"bearerAuth": {}},
+		},
+		Middlewares: huma.Middlewares{
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
+			},
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithAccount(humaApi)(ctx, next, logger, service)
+			},
+		},
+	}, handler.getInvestmentAggregate)
 }
