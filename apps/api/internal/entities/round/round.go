@@ -26,6 +26,7 @@ type Round struct {
 	TermsID               int         `json:"terms_id" minimum:"1"`
 	Status                RoundStatus `json:"status" enum:"active,successful,failed"`
 	Description           string      `json:"description" minLength:"10" maxLength:"3000"`
+	RemainingShares       int         `json:"remaining_shares" minimum:"0"`
 
 	shared.Timestamps
 }
@@ -47,6 +48,7 @@ type CreateRoundParams struct {
 type UpdateRoundParams struct {
 	bun.BaseModel `bun:"table:rounds,alias:round"`
 
-	Description *string      `json:"description" minLength:"10" maxLength:"3000"`
-	Status      *RoundStatus `json:"status" enum:"active,successful,failed" hidden:"true" required:"false"`
+	Description     *string      `json:"description" minLength:"10" maxLength:"3000"`
+	Status          *RoundStatus `json:"status" enum:"active,successful,failed" hidden:"true" required:"false"`
+	RemainingShares *int         `json:"remaining_shares" minimum:"0" hidden:"true" required:"false"`
 }

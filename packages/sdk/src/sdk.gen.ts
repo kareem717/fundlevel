@@ -14,6 +14,9 @@ import type {
   GetAccountInvestmentsData,
   GetAccountInvestmentsError,
   GetAccountInvestmentsResponse,
+  GetAccountActiveRoundInvestmentData,
+  GetAccountActiveRoundInvestmentError,
+  GetAccountActiveRoundInvestmentResponse,
   GetStripeIdentityData,
   GetStripeIdentityError,
   GetStripeIdentityResponse,
@@ -71,12 +74,15 @@ import type {
   GetAllIndustriesData,
   GetAllIndustriesError,
   GetAllIndustriesResponse,
-  CreateRoundInvestmentData,
-  CreateRoundInvestmentError,
-  CreateRoundInvestmentResponse,
+  UpsertRoundInvestmentData,
+  UpsertRoundInvestmentError,
+  UpsertRoundInvestmentResponse,
   GetInvestmentByIdData,
   GetInvestmentByIdError,
   GetInvestmentByIdResponse,
+  UpdateInvestmentData,
+  UpdateInvestmentError,
+  UpdateInvestmentResponse,
   ConfirmInvestmentPaymentData,
   ConfirmInvestmentPaymentError,
   ConfirmInvestmentPaymentResponse,
@@ -160,6 +166,25 @@ export const getAccountInvestments = <ThrowOnError extends boolean = false>(
   >({
     ...options,
     url: "/account/investments",
+  });
+};
+
+/**
+ * Get active round investment
+ * Get active round investment for the currently authenticated account.
+ */
+export const getAccountActiveRoundInvestment = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<GetAccountActiveRoundInvestmentData, ThrowOnError>,
+) => {
+  return (options?.client ?? client).get<
+    GetAccountActiveRoundInvestmentResponse,
+    GetAccountActiveRoundInvestmentError,
+    ThrowOnError
+  >({
+    ...options,
+    url: "/account/investments/round/{id}",
   });
 };
 
@@ -511,15 +536,15 @@ export const getAllIndustries = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Create a round investment
- * Create a round investment.
+ * Upsert a round investment
+ * Create a round investment. If a incomplete investment exists, it will be updated with the new values and used for the new investment.
  */
-export const createRoundInvestment = <ThrowOnError extends boolean = false>(
-  options: Options<CreateRoundInvestmentData, ThrowOnError>,
+export const upsertRoundInvestment = <ThrowOnError extends boolean = false>(
+  options: Options<UpsertRoundInvestmentData, ThrowOnError>,
 ) => {
-  return (options?.client ?? client).post<
-    CreateRoundInvestmentResponse,
-    CreateRoundInvestmentError,
+  return (options?.client ?? client).put<
+    UpsertRoundInvestmentResponse,
+    UpsertRoundInvestmentError,
     ThrowOnError
   >({
     ...options,
@@ -544,6 +569,27 @@ export const getInvestmentById = <ThrowOnError extends boolean = false>(
     ThrowOnError
   >({
     ...options,
+    url: "/investments/{id}",
+  });
+};
+
+/**
+ * Update a round investment
+ * Update a round investment.
+ */
+export const updateInvestment = <ThrowOnError extends boolean = false>(
+  options: Options<UpdateInvestmentData, ThrowOnError>,
+) => {
+  return (options?.client ?? client).put<
+    UpdateInvestmentResponse,
+    UpdateInvestmentError,
+    ThrowOnError
+  >({
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
     url: "/investments/{id}",
   });
 };

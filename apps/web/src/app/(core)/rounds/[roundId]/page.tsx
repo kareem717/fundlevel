@@ -4,6 +4,7 @@ import { InvestForm } from "./components/invest-form";
 import { getPublicRoundAction, getRoundTermsAction } from "@/actions/round";
 import { notFound } from "next/navigation";
 import { getPublicBusinessAction } from "@/actions/business";
+import { getActiveRoundInvestmentAction } from "@/actions/investment";
 
 export default async function RoundPage({ params }: { params: { roundId: string } }) {
   const { roundId } = await params
@@ -12,6 +13,8 @@ export default async function RoundPage({ params }: { params: { roundId: string 
   if (isNaN(parsedRoundId)) {
     return notFound()
   }
+
+  const activeInvestment = (await getActiveRoundInvestmentAction(parsedRoundId))?.data?.investment
 
   //TODO: handle error
   const round = (await getPublicRoundAction(parsedRoundId))?.data
@@ -34,11 +37,17 @@ export default async function RoundPage({ params }: { params: { roundId: string 
     return notFound()
   }
 
+
   return (
     <FormPageLayout>
       <div className="flex w-full max-w-2xl flex-col gap-6">
         <LogoDiv className="self-center w-40" />
-        <InvestForm round={round} business={business} terms={terms} />
+        <InvestForm
+          round={round}
+          business={business}
+          terms={terms}
+          defaultShareQuantity={activeInvestment?.share_quantity}
+        />
       </div>
     </FormPageLayout>
   )

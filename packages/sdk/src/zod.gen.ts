@@ -150,21 +150,12 @@ export const zCreateBusinessParams = z.object({
 
 export const zCreateInvestmentParams = z.object({
   $schema: z.string().url().readonly().optional(),
-  investment: z.object({
-    round_id: z.number().gte(1),
-    share_quantity: z.number().gte(1),
-  }),
-  terms_acceptance: z.object({
-    accepted_at: z.string().datetime(),
-    ip_address: z.string().min(1).max(45),
-    terms_id: z.number().gte(1),
-    user_agent: z.string().min(1).max(500),
-  }),
-});
-
-export const zCreateInvestmentParamsInvestmentStruct = z.object({
   round_id: z.number().gte(1),
   share_quantity: z.number().gte(1),
+  terms_acceptance_ip_address: z.string(),
+  terms_acceptance_user_agent: z.string(),
+  terms_accepted_at: z.string().datetime(),
+  terms_id: z.number().gte(1),
 });
 
 export const zCreateRoundParams = z.object({
@@ -193,13 +184,6 @@ export const zCreateRoundTermParams = z.object({
   content: z.string().min(10).max(3000),
 });
 
-export const zCreateRoundTermsAcceptanceParams = z.object({
-  accepted_at: z.string().datetime(),
-  ip_address: z.string().min(1).max(45),
-  terms_id: z.number().gte(1),
-  user_agent: z.string().min(1).max(500),
-});
-
 export const zErrorDetail = z.object({
   location: z.string().optional(),
   message: z.string().optional(),
@@ -214,6 +198,32 @@ export const zErrorModel = z.object({
   status: z.number().optional(),
   title: z.string().optional(),
   type: z.string().url().optional().default("about:blank"),
+});
+
+export const zGetActiveInvestmentResponseBody = z.object({
+  $schema: z.string().url().readonly().optional(),
+  investment: z.object({
+    $schema: z.string().url().readonly().optional(),
+    created_at: z.string().datetime(),
+    deleted_at: z.union([z.string().datetime(), z.null()]),
+    id: z.number().gte(1),
+    investor_id: z.number().gte(1),
+    round_id: z.number().gte(1),
+    share_quantity: z.number().gte(1),
+    status: z.enum([
+      "awaiting_confirmation",
+      "awaiting_payment",
+      "payment_completed",
+      "completed",
+      "round_closed",
+    ]),
+    terms_acceptance_ip_address: z.string(),
+    terms_acceptance_user_agent: z.string(),
+    terms_accepted_at: z.string().datetime(),
+    terms_id: z.number().gte(1),
+    total_usd_cent_value: z.number().gte(1),
+    updated_at: z.union([z.string().datetime(), z.null()]),
+  }),
 });
 
 export const zGetAllIndustriesResponseBody = z.object({
@@ -260,6 +270,7 @@ export const zGetCursorPaginatedRoundsOutputBody = z.object({
         description: z.string().min(10).max(3000),
         id: z.number().gte(1),
         price_per_share_usd_cents: z.number().gte(1),
+        remaining_shares: z.number().gte(0),
         status: z.enum(["active", "successful", "failed"]),
         terms_id: z.number().gte(1),
         total_business_shares: z.number().gte(1),
@@ -347,7 +358,11 @@ export const zGetInvestmentsResponseBody = z.object({
           "completed",
           "round_closed",
         ]),
-        terms_acceptance_id: z.number().gte(1),
+        terms_acceptance_ip_address: z.string(),
+        terms_acceptance_user_agent: z.string(),
+        terms_accepted_at: z.string().datetime(),
+        terms_id: z.number().gte(1),
+        total_usd_cent_value: z.number().gte(1),
         updated_at: z.union([z.string().datetime(), z.null()]),
       }),
     ),
@@ -378,6 +393,7 @@ export const zGetOffsetPaginatedRoundsOutputBody = z.object({
         description: z.string().min(10).max(3000),
         id: z.number().gte(1),
         price_per_share_usd_cents: z.number().gte(1),
+        remaining_shares: z.number().gte(0),
         status: z.enum(["active", "successful", "failed"]),
         terms_id: z.number().gte(1),
         total_business_shares: z.number().gte(1),
@@ -434,7 +450,11 @@ export const zInvestment = z.object({
     "completed",
     "round_closed",
   ]),
-  terms_acceptance_id: z.number().gte(1),
+  terms_acceptance_ip_address: z.string(),
+  terms_acceptance_user_agent: z.string(),
+  terms_accepted_at: z.string().datetime(),
+  terms_id: z.number().gte(1),
+  total_usd_cent_value: z.number().gte(1),
   updated_at: z.union([z.string().datetime(), z.null()]),
 });
 
@@ -493,6 +513,7 @@ export const zRound = z.object({
   description: z.string().min(10).max(3000),
   id: z.number().gte(1),
   price_per_share_usd_cents: z.number().gte(1),
+  remaining_shares: z.number().gte(0),
   status: z.enum(["active", "successful", "failed"]),
   terms_id: z.number().gte(1),
   total_business_shares: z.number().gte(1),
@@ -590,6 +611,15 @@ export const zUpdateAccountParams = z.object({
     .regex(/^[a-zA-Z]+$/),
 });
 
+export const zUpdateInvestmentParams = z.object({
+  $schema: z.string().url().readonly().optional(),
+  share_quantity: z.union([z.number().gte(1), z.null()]),
+  terms_acceptance_ip_address: z.string(),
+  terms_acceptance_user_agent: z.string(),
+  terms_accepted_at: z.string().datetime(),
+  terms_id: z.number().gte(1),
+});
+
 export const zUpsertBusinessLegalSectionParams = z.object({
   $schema: z.string().url().readonly().optional(),
   business_number: z.string().min(1).max(10),
@@ -598,6 +628,9 @@ export const zUpsertBusinessLegalSectionParams = z.object({
 export const zGetAccountResponse = zSingleAccountResponseBody;
 
 export const zGetAccountInvestmentsResponse = zGetInvestmentsResponseBody;
+
+export const zGetAccountActiveRoundInvestmentResponse =
+  zGetActiveInvestmentResponseBody;
 
 export const zGetStripeIdentityResponse = zStripeIdentity;
 
@@ -642,9 +675,11 @@ export const zHealthCheckResponse = zMessageResponse;
 
 export const zGetAllIndustriesResponse = zGetAllIndustriesResponseBody;
 
-export const zCreateRoundInvestmentResponse = zInvestment;
+export const zUpsertRoundInvestmentResponse = zInvestment;
 
 export const zGetInvestmentByIdResponse = zSingleInvestmentResponseBody;
+
+export const zUpdateInvestmentResponse = zInvestment;
 
 export const zConfirmInvestmentPaymentResponse = zStripePaymentIntentOutput;
 

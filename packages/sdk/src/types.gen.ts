@@ -107,13 +107,12 @@ export type CreateInvestmentParams = {
    * A URL to the JSON Schema for this object.
    */
   readonly $schema?: string;
-  investment: CreateInvestmentParamsInvestmentStruct;
-  terms_acceptance: CreateRoundTermsAcceptanceParams;
-};
-
-export type CreateInvestmentParamsInvestmentStruct = {
   round_id: number;
   share_quantity: number;
+  terms_acceptance_ip_address: string;
+  terms_acceptance_user_agent: string;
+  terms_accepted_at: string;
+  terms_id: number;
 };
 
 export type CreateRoundParams = {
@@ -135,13 +134,6 @@ export type CreateRoundParamsRoundStruct = {
 
 export type CreateRoundTermParams = {
   content: string;
-};
-
-export type CreateRoundTermsAcceptanceParams = {
-  accepted_at: string;
-  ip_address: string;
-  terms_id: number;
-  user_agent: string;
 };
 
 export type ErrorDetail = {
@@ -188,6 +180,14 @@ export type ErrorModel = {
    * A URI reference to human-readable documentation for the error.
    */
   type?: string;
+};
+
+export type GetActiveInvestmentResponseBody = {
+  /**
+   * A URL to the JSON Schema for this object.
+   */
+  readonly $schema?: string;
+  investment: Investment;
 };
 
 export type GetAllIndustriesResponseBody = {
@@ -337,7 +337,11 @@ export type Investment = {
     | "payment_completed"
     | "completed"
     | "round_closed";
-  terms_acceptance_id: number;
+  terms_acceptance_ip_address: string;
+  terms_acceptance_user_agent: string;
+  terms_accepted_at: string;
+  terms_id: number;
+  total_usd_cent_value: number;
   updated_at: string | null;
 };
 
@@ -394,6 +398,7 @@ export type Round = {
   description: string;
   id: number;
   price_per_share_usd_cents: number;
+  remaining_shares: number;
   status: "active" | "successful" | "failed";
   terms_id: number;
   total_business_shares: number;
@@ -509,6 +514,18 @@ export type UpdateAccountParams = {
   last_name: string;
 };
 
+export type UpdateInvestmentParams = {
+  /**
+   * A URL to the JSON Schema for this object.
+   */
+  readonly $schema?: string;
+  share_quantity: number | null;
+  terms_acceptance_ip_address: string;
+  terms_acceptance_user_agent: string;
+  terms_accepted_at: string;
+  terms_id: number;
+};
+
 export type UpsertBusinessLegalSectionParams = {
   /**
    * A URL to the JSON Schema for this object.
@@ -595,6 +612,35 @@ export type GetAccountInvestmentsResponses = {
 
 export type GetAccountInvestmentsResponse =
   GetAccountInvestmentsResponses[keyof GetAccountInvestmentsResponses];
+
+export type GetAccountActiveRoundInvestmentData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: "/account/investments/round/{id}";
+};
+
+export type GetAccountActiveRoundInvestmentErrors = {
+  /**
+   * Error
+   */
+  default: ErrorModel;
+};
+
+export type GetAccountActiveRoundInvestmentError =
+  GetAccountActiveRoundInvestmentErrors[keyof GetAccountActiveRoundInvestmentErrors];
+
+export type GetAccountActiveRoundInvestmentResponses = {
+  /**
+   * OK
+   */
+  200: GetActiveInvestmentResponseBody;
+};
+
+export type GetAccountActiveRoundInvestmentResponse =
+  GetAccountActiveRoundInvestmentResponses[keyof GetAccountActiveRoundInvestmentResponses];
 
 export type GetStripeIdentityData = {
   body?: never;
@@ -1138,32 +1184,32 @@ export type GetAllIndustriesResponses = {
 export type GetAllIndustriesResponse =
   GetAllIndustriesResponses[keyof GetAllIndustriesResponses];
 
-export type CreateRoundInvestmentData = {
+export type UpsertRoundInvestmentData = {
   body: CreateInvestmentParams;
   path?: never;
   query?: never;
   url: "/investments";
 };
 
-export type CreateRoundInvestmentErrors = {
+export type UpsertRoundInvestmentErrors = {
   /**
    * Error
    */
   default: ErrorModel;
 };
 
-export type CreateRoundInvestmentError =
-  CreateRoundInvestmentErrors[keyof CreateRoundInvestmentErrors];
+export type UpsertRoundInvestmentError =
+  UpsertRoundInvestmentErrors[keyof UpsertRoundInvestmentErrors];
 
-export type CreateRoundInvestmentResponses = {
+export type UpsertRoundInvestmentResponses = {
   /**
    * OK
    */
   200: Investment;
 };
 
-export type CreateRoundInvestmentResponse =
-  CreateRoundInvestmentResponses[keyof CreateRoundInvestmentResponses];
+export type UpsertRoundInvestmentResponse =
+  UpsertRoundInvestmentResponses[keyof UpsertRoundInvestmentResponses];
 
 export type GetInvestmentByIdData = {
   body?: never;
@@ -1193,6 +1239,35 @@ export type GetInvestmentByIdResponses = {
 
 export type GetInvestmentByIdResponse =
   GetInvestmentByIdResponses[keyof GetInvestmentByIdResponses];
+
+export type UpdateInvestmentData = {
+  body: UpdateInvestmentParams;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: "/investments/{id}";
+};
+
+export type UpdateInvestmentErrors = {
+  /**
+   * Error
+   */
+  default: ErrorModel;
+};
+
+export type UpdateInvestmentError =
+  UpdateInvestmentErrors[keyof UpdateInvestmentErrors];
+
+export type UpdateInvestmentResponses = {
+  /**
+   * OK
+   */
+  200: Investment;
+};
+
+export type UpdateInvestmentResponse =
+  UpdateInvestmentResponses[keyof UpdateInvestmentResponses];
 
 export type ConfirmInvestmentPaymentData = {
   body: GetInvestmentPaymentIntentClientSecretInputBody;

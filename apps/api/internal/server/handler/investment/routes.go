@@ -19,52 +19,12 @@ func RegisterHumaRoutes(
 ) {
 	handler := newHTTPHandler(service, logger)
 
-	// huma.Register(humaApi, huma.Operation{
-	// 	OperationID: "process-investment",
-	// 	Method:      http.MethodPut,
-	// 	Path:        "/investments/{id}/process",
-	// 	Summary:     "Process an investment",
-	// 	Description: "Process an investment.",
-	// 	Tags:        []string{"Investments"},
-	// 	Security: []map[string][]string{
-	// 		{"bearerAuth": {}},
-	// 	},
-	// 	Middlewares: huma.Middlewares{
-	// 		func(ctx huma.Context, next func(huma.Context)) {
-	// 			middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
-	// 		},
-	// 		func(ctx huma.Context, next func(huma.Context)) {
-	// 			middleware.WithAccount(humaApi)(ctx, next, logger, service)
-	// 		},
-	// 	},
-	// }, handler.processInvestment)
-
-	// huma.Register(humaApi, huma.Operation{
-	// 	OperationID: "withdraw-investment",
-	// 	Method:      http.MethodPost,
-	// 	Path:        "/investments/{id}/withdraw",
-	// 	Summary:     "Withdraw a investment",
-	// 	Description: "Withdraw a investment.",
-	// 	Tags:        []string{"Investments"},
-	// 	Security: []map[string][]string{
-	// 		{"bearerAuth": {}},
-	// 	},
-	// 	Middlewares: huma.Middlewares{
-	// 		func(ctx huma.Context, next func(huma.Context)) {
-	// 			middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
-	// 		},
-	// 		func(ctx huma.Context, next func(huma.Context)) {
-	// 			middleware.WithAccount(humaApi)(ctx, next, logger, service)
-	// 		},
-	// 	},
-	// }, handler.withdrawInvestment)
-
 	huma.Register(humaApi, huma.Operation{
-		OperationID: "create-round-investment",
-		Method:      http.MethodPost,
+		OperationID: "upsert-round-investment",
+		Method:      http.MethodPut,
 		Path:        "/investments",
-		Summary:     "Create a round investment",
-		Description: "Create a round investment.",
+		Summary:     "Upsert a round investment",
+		Description: "Create a round investment. If a incomplete investment exists, it will be updated with the new values and used for the new investment.",
 		Tags:        []string{"Investments"},
 		Security: []map[string][]string{
 			{"bearerAuth": {}},
@@ -77,27 +37,7 @@ func RegisterHumaRoutes(
 				middleware.WithAccount(humaApi)(ctx, next, logger, service)
 			},
 		},
-	}, handler.create)
-
-	// huma.Register(humaApi, huma.Operation{
-	// 	OperationID: "delete-round-investment",
-	// 	Method:      http.MethodDelete,
-	// 	Path:        "/investments/{id}",
-	// 	Summary:     "Delete a round investment",
-	// 	Description: "Delete a round investment.",
-	// 	Tags:        []string{"Investments"},
-	// 	Security: []map[string][]string{
-	// 		{"bearerAuth": {}},
-	// 	},
-	// 	Middlewares: huma.Middlewares{
-	// 		func(ctx huma.Context, next func(huma.Context)) {
-	// 			middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
-	// 		},
-	// 		func(ctx huma.Context, next func(huma.Context)) {
-	// 			middleware.WithAccount(humaApi)(ctx, next, logger, service)
-	// 		},
-	// 	},
-	// }, handler.deleteInvestment)
+	}, handler.upsert)
 
 	huma.Register(humaApi, huma.Operation{
 		OperationID: "get-investment-by-id",
@@ -179,5 +119,23 @@ func RegisterHumaRoutes(
 		},
 	}, handler.getInvestmentPayments)
 
-
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "update-investment",
+		Method:      http.MethodPut,
+		Path:        "/investments/{id}",
+		Summary:     "Update a round investment",
+		Description: "Update a round investment.",
+		Tags:        []string{"Investments"},
+		Security: []map[string][]string{
+			{"bearerAuth": {}},
+		},
+		Middlewares: huma.Middlewares{
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
+			},
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithAccount(humaApi)(ctx, next, logger, service)
+			},
+		},
+	}, handler.update)
 }

@@ -24,7 +24,6 @@ type RoundRepository interface {
 	GetByCursor(ctx context.Context, paginationParams shared.CursorPagination) ([]round.Round, error)
 	GetByPage(ctx context.Context, paginationParams shared.OffsetPagination) ([]round.Round, int, error)
 	Update(ctx context.Context, id int, params round.UpdateRoundParams) (round.Round, error)
-	GetAvailableShares(ctx context.Context, id int) (int, error)
 
 	GetTerms(ctx context.Context, id int) (round.RoundTerm, error)
 }
@@ -56,6 +55,7 @@ type AccountRepository interface {
 	GetAllBusinesses(ctx context.Context, accountId int) ([]business.Business, error)
 
 	GetInvestments(ctx context.Context, accountId, cursor, limit int, filter investment.InvestmentFilter) ([]investment.Investment, error)
+	GetActiveRoundInvestment(ctx context.Context, accountId int, roundId int) (investment.Investment, error)
 
 	GetStripeIdentity(ctx context.Context, accountId int) (account.StripeIdentity, error)
 	DeleteStripeIdentity(ctx context.Context, accountId int) error

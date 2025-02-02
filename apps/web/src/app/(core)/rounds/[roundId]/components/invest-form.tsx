@@ -7,10 +7,9 @@ import { Input } from "@repo/ui/components/input";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Business, Round, RoundTerm } from "@repo/sdk";
+import { Business, Investment, Round, RoundTerm } from "@repo/sdk";
 import { ComponentPropsWithoutRef, useRef, useState } from "react";
 import { cn, formatCurrency, formatNumber } from "@/lib/utils";
-import { Label } from "@repo/ui/components/label";
 import Link from "next/link";
 import { redirects } from "@/lib/config/redirects";
 import { useAction } from "next-safe-action/hooks";
@@ -23,17 +22,18 @@ import { useToast } from "@repo/ui/hooks/use-toast";
 import { ToastAction } from "@repo/ui/components/toast";
 import { redirect, usePathname } from "next/navigation";
 import { getAccountAction, getSessionAction, getStripeIdentityAction } from "@/actions/auth";
-import { createInvestmentAction } from "@/actions/investment";
+import { upsertInvestmentAction } from "@/actions/investment";
 import { RichTextDisplay } from "@/components/rich-text/rich-text-display";
 import { VerifyIdentityModalButton } from "@/components/stipe/verify-identity-modal-button";
 import { EmbeddedCheckoutForm, EmbeddedCheckoutFormRef } from "@/components/stipe/embedded-checkout";
-
+import { useRouter } from "next/navigation";
 type InvestFormValues = z.infer<typeof zCreateInvestmentParams>;
 
 export interface InvestFormProps extends ComponentPropsWithoutRef<typeof Card> {
   round: Round;
   business: Business;
   terms: RoundTerm;
+  defaultShareQuantity?: number;
 }
 
 function BreakdownField({ label, value, tooltip }: { label: string, value: string, tooltip?: string }) {
@@ -57,42 +57,51 @@ function BreakdownField({ label, value, tooltip }: { label: string, value: strin
   )
 }
 
-export function InvestForm({ round, business, terms, className, ...props }: InvestFormProps) {
+export function InvestForm({ round, business, terms, defaultShareQuantity, className, ...props }: InvestFormProps) {
   const { toast } = useToast()
   const currentPath = usePathname()
   const embeddedCheckoutFormRef = useRef<EmbeddedCheckoutFormRef>(null);
   const [investmentId, setInvestmentId] = useState<number>(0);
-  const totalSharesForSale = round.total_shares_for_sale;
-
+  const [totalCost, setTotalCost] = useState(1);
+  const router = useRouter()
   const form = useForm<InvestFormValues>({
-    resolver: zodResolver(zCreateInvestmentParams.extend({
-      investment: z.object({
-        share_quantity: z.number().min(1).max(totalSharesForSale),
-      }),
-    })),
+    resolver: zodResolver(zCreateInvestmentParams),
     defaultValues: {
-      investment: {
-        round_id: round.id,
-        share_quantity: 1,
-      },
-      terms_acceptance: {
-        accepted_at: "",
-        ip_address: "",
-        user_agent: "",
-        terms_id: round.terms_id,
-      },
+      share_quantity: defaultShareQuantity || 1,
+      round_id: round.id,
+      terms_accepted_at: "",
+      terms_acceptance_ip_address: "",
+      terms_acceptance_user_agent: "",
+      terms_id: round.terms_id,
     },
   });
 
   const { executeAsync: getSignature } = useAction(getSignatureAction, {
     onSuccess: (data) => {
-      form.setValue("terms_acceptance.ip_address", data.data?.ipAddress ?? "");
-      form.setValue("terms_acceptance.user_agent", data.data?.userAgent ?? "");
+      if (data?.data) {
+        form.setValue("terms_acceptance_ip_address", data.data.ipAddress);
+        form.setValue("terms_acceptance_user_agent", data.data.userAgent);
+        form.setValue("terms_accepted_at", new Date().toISOString());
+      } else {
+        toast({
+          title: "Uh oh!",
+          description: "Failed to get signature data",
+          variant: "destructive",
+          action: (
+            <ToastAction
+              altText="Retry"
+              onClick={() => getSignature()}
+            >
+              Retry
+            </ToastAction>
+          )
+        });
+      }
     },
   });
 
   const handleSubmit = async () => {
-    return await embeddedCheckoutFormRef.current?.submitCheckout();
+    await embeddedCheckoutFormRef.current?.submitCheckout();
   };
 
   const cardProps = {
@@ -100,7 +109,7 @@ export function InvestForm({ round, business, terms, className, ...props }: Inve
     ...props,
   }
 
-  const subTotalFormatted = formatCurrency((round.price_per_share_usd_cents * form.watch("investment.share_quantity")) / 100, "USD", "en-US")
+  const subTotalFormatted = formatCurrency((round.price_per_share_usd_cents * form.watch("share_quantity")) / 100, "USD", "en-US")
 
   const steps: Step<InvestFormValues>[] = [
     {
@@ -150,32 +159,14 @@ export function InvestForm({ round, business, terms, className, ...props }: Inve
       nextButtonText: "Accept",
       onNext: async () => {
         const resp = await getSignature();
-        if (resp?.data) {
-          form.setValue("terms_acceptance.ip_address", resp.data.ipAddress);
-          form.setValue("terms_acceptance.user_agent", resp.data.userAgent);
-          form.setValue("terms_acceptance.accepted_at", new Date().toISOString());
-        } else {
-          toast({
-            title: "Uh oh!",
-            description: "Failed to get signature data",
-            variant: "destructive",
-            action: (
-              <ToastAction
-                altText="Retry"
-                onClick={() => getSignature()}
-              >
-                Retry
-              </ToastAction>
-            )
-          });
+        if (!resp?.data) {
           return false
         }
-
       },
     },
     {
       nextButtonText: "Continue",
-      fields: ["investment.share_quantity"],
+      fields: ["share_quantity"],
       content: (
         <Card {...cardProps}>
           <CardHeader>
@@ -185,7 +176,7 @@ export function InvestForm({ round, business, terms, className, ...props }: Inve
           <CardContent className="space-y-6">
             <FormField
               control={form.control}
-              name="investment.share_quantity"
+              name="share_quantity"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Shares</FormLabel>
@@ -198,7 +189,7 @@ export function InvestForm({ round, business, terms, className, ...props }: Inve
                       placeholder="Enter amount"
                       {...field}
                       min={1}
-                      max={totalSharesForSale}
+                      max={round.total_shares_for_sale}
                       onChange={(e) => {
                         field.onChange(e.target.valueAsNumber);
                       }}
@@ -208,7 +199,7 @@ export function InvestForm({ round, business, terms, className, ...props }: Inve
                 </FormItem>
               )}
             />
-            {form.watch("investment.share_quantity") > 0 && (
+            {form.watch("share_quantity") > 0 && (
               <div className="flex flex-col gap-4">
                 <TooltipProvider>
                   <Card>
@@ -229,7 +220,12 @@ export function InvestForm({ round, business, terms, className, ...props }: Inve
                       <BreakdownField
                         label="Shares for Sale"
                         value={round.total_shares_for_sale.toLocaleString()}
-                        tooltip="Number of shares available for purchase in this round"
+                        tooltip="Number of initially available shares for purchase in this round"
+                      />
+                      <BreakdownField
+                        label="Remaining Shares"
+                        value={round.remaining_shares.toLocaleString()}
+                        tooltip="Number of shares remaining for purchase in this round"
                       />
                       <BreakdownField
                         label="Post-Money Business Valuation"
@@ -255,12 +251,12 @@ export function InvestForm({ round, business, terms, className, ...props }: Inve
                       />
                       <BreakdownField
                         label="Post-Money Ownership"
-                        value={`${formatNumber(form.watch("investment.share_quantity") / round.total_business_shares, 1, 5, true, "en-US")}%`}
+                        value={`${formatNumber(form.watch("share_quantity") / round.total_business_shares, 1, 5, true, "en-US")}%`}
                         tooltip="Your percentage ownership of the business after this investment, based on the number of shares you&apos;re purchasing. If a &quot;~&quot; is shown, it means the percentage is rounded to 5 significant digits."
                       />
                       <BreakdownField
                         label="Shares of Round"
-                        value={`${formatNumber((form.watch("investment.share_quantity") / round.total_shares_for_sale) * 100, 1, 5, true, "en-US")}%`}
+                        value={`${formatNumber((form.watch("share_quantity") / round.total_shares_for_sale) * 100, 1, 5, true, "en-US")}%`}
                         tooltip="Your percentage of the total shares available in this round, based on the number of shares you&apos;re purchasing. If a &quot;~&quot; is shown, it means the percentage is rounded to 5 significant digits."
                       />
                     </CardContent>
@@ -272,6 +268,7 @@ export function InvestForm({ round, business, terms, className, ...props }: Inve
         </Card>
       ),
       onNext: async () => {
+        // If the investment is not null and the share quantity is different, we can up
         const session = await getSessionAction();
         if (!session?.data) {
           redirect(redirects.auth.login + `?redirect=${currentPath}`);
@@ -295,8 +292,8 @@ export function InvestForm({ round, business, terms, className, ...props }: Inve
           return false
         }
 
-        const investment = (await createInvestmentAction(form.getValues()))?.data;
-        if (!investment) {
+        const newInvestment = (await upsertInvestmentAction(form.getValues()))?.data;
+        if (!newInvestment) {
           toast({
             title: "Uh oh!",
             description: "Failed to create investment, please try again.",
@@ -305,12 +302,13 @@ export function InvestForm({ round, business, terms, className, ...props }: Inve
           return false
         }
 
-        setInvestmentId(investment.id);
+        setInvestmentId(newInvestment.id);
+        setTotalCost(form.getValues("share_quantity") * round.price_per_share_usd_cents);
       },
       onBack: () => {
-        form.setValue("terms_acceptance.accepted_at", "");
-        form.setValue("terms_acceptance.ip_address", "");
-        form.setValue("terms_acceptance.user_agent", "");
+        form.setValue("terms_accepted_at", "");
+        form.setValue("terms_acceptance_ip_address", "");
+        form.setValue("terms_acceptance_user_agent", "");
       },
     },
     {
@@ -330,9 +328,10 @@ export function InvestForm({ round, business, terms, className, ...props }: Inve
             </p>
             <EmbeddedCheckoutForm
               ref={embeddedCheckoutFormRef}
-              amount={form.getValues("investment.share_quantity") * round.price_per_share_usd_cents}
+              amount={totalCost}
               //TODO: get from locale
               currency="usd"
+              //TODO: handle the id better
               investmentId={investmentId}
               onError={(error) => toast({
                 title: "Uh oh!",
@@ -344,6 +343,7 @@ export function InvestForm({ round, business, terms, className, ...props }: Inve
                   title: "Investment Successful",
                   description: "You have successfully invested in the round.",
                 });
+                router.push(redirects.app.portfolio);
               }}
             />
           </CardContent>

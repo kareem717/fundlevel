@@ -121,6 +121,12 @@ func (s *InvestmentService) HandleStripePaymentIntentSucceeded(ctx context.Conte
 		return fmt.Errorf("failed to convert investment round ID to int: %w", err)
 	}
 
+	roundRecord, err := s.repositories.Round().GetById(ctx, parsedRoundId)
+	if err != nil {
+		return err
+	}
+
+	var remainingShares int
 	err = s.repositories.RunInTx(ctx, func(ctx context.Context, tx storage.Transaction) error {
 		_, err := tx.Investment().UpdatePayment(ctx, parsedPaymentId, investment.UpdatePaymentParams{
 			Status: &intent.Status,
@@ -140,10 +146,18 @@ func (s *InvestmentService) HandleStripePaymentIntentSucceeded(ctx context.Conte
 		}
 
 		paymentCompletedStatus := investment.InvestmentStatusPaymentCompleted
-		_, err = tx.Investment().Update(ctx, parsedInvestmentId, investment.UpdateInvestmentParams{
+		investmentRecord, err := tx.Investment().Update(ctx, parsedInvestmentId, investment.UpdateInvestmentParams{
 			Status: &paymentCompletedStatus,
 		})
 
+		if err != nil {
+			return err
+		}
+
+		remainingShares = roundRecord.RemainingShares - investmentRecord.ShareQuantity
+		_, err = tx.Round().Update(ctx, parsedRoundId, round.UpdateRoundParams{
+			RemainingShares: &remainingShares,
+		})
 		if err != nil {
 			return err
 		}
@@ -155,12 +169,7 @@ func (s *InvestmentService) HandleStripePaymentIntentSucceeded(ctx context.Conte
 		return err
 	}
 
-	availableShares, err := s.repositories.Round().GetAvailableShares(ctx, parsedRoundId)
-	if err != nil {
-		return err
-	}
-
-	if availableShares < 1 {
+	if remainingShares < 1 {
 		s.logger.Info("no available shares left, completing round", zap.String("round_id", strconv.Itoa(parsedRoundId)))
 		// We do this so that if it fails, the webhook will retry
 		err = s.roundService.CompleteRound(ctx, parsedRoundId)
@@ -240,12 +249,7 @@ func (s *InvestmentService) ConfirmPaymentIntent(ctx context.Context, investment
 	totalUsdCentsWithFee := calculateAmountWithServiceFee(subtotal, s.feePercentage)
 
 	err = s.repositories.RunInTx(ctx, func(ctx context.Context, tx storage.Transaction) error {
-		availableShares, err := tx.Round().GetAvailableShares(ctx, roundRecord.ID)
-		if err != nil {
-			return err
-		}
-
-		if availableShares < investmentRecord.ShareQuantity {
+		if roundRecord.RemainingShares < investmentRecord.ShareQuantity {
 			return fmt.Errorf("not enough shares available")
 		}
 

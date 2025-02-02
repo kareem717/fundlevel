@@ -34,7 +34,7 @@ func newHTTPHandler(service *service.Service, logger *zap.Logger) *httpHandler {
 	}
 }
 
-type CreateInvestmentRequest struct {
+type UpsertInvestmentRequest struct {
 	Body investment.CreateInvestmentParams
 }
 
@@ -42,7 +42,7 @@ type SingleInvestmentResponse struct {
 	Body investment.Investment
 }
 
-func (h *httpHandler) create(ctx context.Context, input *CreateInvestmentRequest) (*SingleInvestmentResponse, error) {
+func (h *httpHandler) upsert(ctx context.Context, input *UpsertInvestmentRequest) (*SingleInvestmentResponse, error) {
 	account := utils.GetAuthenticatedAccount(ctx)
 	if account == nil {
 		return nil, huma.Error401Unauthorized("You must be logged in to create an investment")
@@ -61,22 +61,48 @@ func (h *httpHandler) create(ctx context.Context, input *CreateInvestmentRequest
 		}
 	}
 
-	round, err := h.service.RoundService.GetById(ctx, input.Body.Investment.RoundID)
+	investment, err := h.service.InvestmentService.Upsert(ctx, account.ID, input.Body)
 	if err != nil {
-		switch {
-		case errors.Is(err, sql.ErrNoRows):
-			h.logger.Error("round not found", zap.Int("round id", input.Body.Investment.RoundID))
-			return nil, huma.Error404NotFound("Round not found")
-		default:
-			h.logger.Error("failed to fetch round", zap.Error(err))
-			return nil, huma.Error500InternalServerError("An error occurred while fetching the round")
-		}
+		h.logger.Error("failed to upsert investment", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while upserting the investment")
 	}
 
-	investment, err := h.service.InvestmentService.Create(ctx, account.ID, round.PricePerShareUSDCents, input.Body)
+	resp := &SingleInvestmentResponse{}
+	resp.Body = investment
+
+	return resp, nil
+}
+
+type UpdateInvestmentRequest struct {
+	shared.PathIDParam
+	Body investment.UpdateInvestmentParams
+}
+
+func (h *httpHandler) update(ctx context.Context, input *UpdateInvestmentRequest) (*SingleInvestmentResponse, error) {
+	//todo: add ABAC checks
+	account := utils.GetAuthenticatedAccount(ctx)
+	if account == nil {
+		return nil, huma.Error401Unauthorized("You must be logged in to update an investment")
+	}
+
+	investment, err := h.service.InvestmentService.GetById(ctx, input.ID)
 	if err != nil {
-		h.logger.Error("failed to create investment", zap.Error(err))
-		return nil, huma.Error500InternalServerError("An error occurred while creating the investment")
+		h.logger.Error("failed to fetch investment", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while fetching the investment")
+	}
+
+	if investment.InvestorID != account.ID {
+		h.logger.Error("input account id does not match authenticated account id",
+			zap.Any("input account id", investment.InvestorID),
+			zap.Any("authenticated account id", account.ID))
+
+		return nil, huma.Error403Forbidden("Cannot update investment for another account")
+	}
+
+	investment, err = h.service.InvestmentService.Update(ctx, input.ID, input.Body)
+	if err != nil {
+		h.logger.Error("failed to update investment", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while updating the investment")
 	}
 
 	resp := &SingleInvestmentResponse{}
@@ -197,14 +223,14 @@ func (h *httpHandler) getInvestmentActivePayment(ctx context.Context, input *sha
 		return nil, huma.Error500InternalServerError("An error occurred while fetching the investment")
 	}
 
-	sharesAvailable, err := h.service.RoundService.GetAvailableShares(ctx, investment.RoundID)
+	roundRecord, err := h.service.RoundService.GetById(ctx, investment.RoundID)
 	if err != nil {
 		h.logger.Error("failed to fetch round", zap.Error(err))
 		return nil, huma.Error500InternalServerError("An error occurred while fetching the round")
 	}
 
-	if sharesAvailable <= investment.ShareQuantity {
-		h.logger.Error("not enough shares available", zap.Int("shares available", sharesAvailable), zap.Int("shares ordered", investment.ShareQuantity))
+	if roundRecord.RemainingShares <= investment.ShareQuantity {
+		h.logger.Error("not enough shares available", zap.Int("shares available", roundRecord.RemainingShares), zap.Int("shares ordered", investment.ShareQuantity))
 		return nil, huma.Error400BadRequest("Not enough shares available")
 	}
 

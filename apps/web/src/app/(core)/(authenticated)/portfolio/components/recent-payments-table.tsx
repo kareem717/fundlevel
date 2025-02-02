@@ -18,12 +18,9 @@ const recentPayments = Array.from({ length: 25 }, (_, id) => ({
 }));
 
 
-export interface RecentTransactionsListProps extends ComponentPropsWithoutRef<typeof ScrollArea> {
-
-};
-export const RecentTransactionsList: FC<RecentTransactionsListProps> = ({ className, ...props }) => {
+export function RecentTransactionsList({ className, ...props }: ComponentPropsWithoutRef<typeof ScrollArea>) {
   return (
-    <ScrollArea className={cn("space-y-4", className)} type="scroll"{...props} >
+    <ScrollArea className={cn("space-y-4", className)} type="scroll" {...props} >
       {recentPayments.map((payment) => (
         <div key={payment.id} className="flex items-center justify-between pb-4 border-b last:border-0">
           <div className="space-y-1">

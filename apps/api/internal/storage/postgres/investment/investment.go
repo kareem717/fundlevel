@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"fundlevel/internal/entities/investment"
-	"fundlevel/internal/entities/round"
 	postgres "fundlevel/internal/storage/shared"
 
 	"github.com/uptrace/bun"
@@ -26,31 +25,13 @@ func NewInvestmentRepository(db bun.IDB, ctx context.Context) *InvestmentReposit
 func (r *InvestmentRepository) Create(ctx context.Context, investorId int, usdCentValue int64, params investment.CreateInvestmentParams) (investment.Investment, error) {
 	resp := investment.Investment{}
 
-	err := r.db.RunInTx(ctx, nil, func(ctx context.Context, tx bun.Tx) error {
-		acceptance := round.RoundTermsAcceptance{}
-
-		err := tx.NewInsert().
-			Model(&params.TermsAcceptance).
-			Returning("*").
-			Scan(ctx, &acceptance)
-		if err != nil {
-			return err
-		}
-
-		err = tx.NewInsert().
-			Model(&params.Investment).
-			Value("investor_id", "?", investorId).
-			Value("terms_acceptance_id", "?", acceptance.ID).
-			Value("status", "?", investment.InvestmentStatusAwaitingConfirmation).
-			Returning("*").
-			Scan(ctx, &resp)
-
-		if err != nil {
-			return err
-		}
-
-		return nil
-	})
+	err := r.db.NewInsert().
+		Model(&params).
+		Value("investor_id", "?", investorId).
+		Value("total_usd_cent_value", "?", usdCentValue).
+		Value("status", "?", investment.InvestmentStatusAwaitingConfirmation).
+		Returning("*").
+		Scan(ctx, &resp)
 
 	return resp, err
 }
@@ -58,7 +39,7 @@ func (r *InvestmentRepository) Create(ctx context.Context, investorId int, usdCe
 func (r *InvestmentRepository) Delete(ctx context.Context, id int) error {
 	_, err := r.db.NewDelete().
 		Model(&investment.Investment{}).
-		Where("investment.id = ?", id).
+		Where("id = ?", id).
 		Exec(ctx)
 
 	return err
@@ -69,7 +50,7 @@ func (r *InvestmentRepository) GetById(ctx context.Context, id int) (investment.
 
 	err := r.db.NewSelect().
 		Model(&resp).
-		Where("investment.id = ?", id).
+		Where("id = ?", id).
 		Scan(ctx)
 
 	return resp, err
@@ -82,7 +63,7 @@ func (r *InvestmentRepository) GetByCursor(ctx context.Context, paginationParams
 		NewSelect().
 		Model(&resp).
 		Limit(paginationParams.Limit).
-		Where("investment.id >= ?", paginationParams.Cursor).
+		Where("id >= ?", paginationParams.Cursor).
 		Scan(ctx, &resp)
 
 	return resp, err
@@ -107,8 +88,8 @@ func (r *InvestmentRepository) GetByRoundIdAndAccountId(ctx context.Context, rou
 
 	err := r.db.NewSelect().
 		Model(&resp).
-		Where("investment.round_id = ?", roundId).
-		Where("investment.investor_id = ?", accountId).
+		Where("round_id = ?", roundId).
+		Where("investor_id = ?", accountId).
 		Scan(ctx)
 
 	return resp, err
@@ -119,7 +100,7 @@ func (r *InvestmentRepository) Update(ctx context.Context, id int, params invest
 
 	err := r.db.NewUpdate().
 		Model(&params).
-		Where("investment.id = ?", id).
+		Where("id = ?", id).
 		OmitZero().
 		Returning("*").
 		Scan(ctx, &resp)
@@ -131,8 +112,8 @@ func (r *InvestmentRepository) CloseIncompleteInvestments(ctx context.Context, r
 	_, err := r.db.NewUpdate().
 		Model(&investment.Investment{}).
 		Set("status = ?", investment.InvestmentStatusRoundClosed).
-		Where("investment.round_id = ?", roundId).
-		Where("investment.status NOT IN (?)",
+		Where("round_id = ?", roundId).
+		Where("status NOT IN (?)",
 			bun.In([]investment.InvestmentStatus{
 				investment.InvestmentStatusCompleted,
 				investment.InvestmentStatusPaymentCompleted,
@@ -141,4 +122,3 @@ func (r *InvestmentRepository) CloseIncompleteInvestments(ctx context.Context, r
 
 	return err
 }
-

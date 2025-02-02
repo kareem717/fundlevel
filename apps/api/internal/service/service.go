@@ -30,6 +30,7 @@ type AccountService interface {
 	GetByUserId(ctx context.Context, userId uuid.UUID) (account.Account, error)
 
 	GetAllBusinesses(ctx context.Context, accountId int) ([]business.Business, error)
+	GetActiveRoundInvestment(ctx context.Context, accountId int, roundId int) (investment.Investment, error)
 
 	GetStripeIdentityVerificationSessionURL(ctx context.Context, accountID int, returnURL string) (types.StripeSessionOutput, error)
 	CreateStripeIdentity(ctx context.Context, accountID int, params account.CreateStripeIdentityParams) (account.StripeIdentity, error)
@@ -53,7 +54,6 @@ type RoundService interface {
 	GetById(ctx context.Context, id int) (round.Round, error)
 	GetByCursor(ctx context.Context, limit int, cursor int) ([]round.Round, error)
 	GetByPage(ctx context.Context, pageSize int, page int) ([]round.Round, int, error)
-	GetAvailableShares(ctx context.Context, id int) (int, error)
 	GetTerms(ctx context.Context, id int) (round.RoundTerm, error)
 
 	CompleteRound(ctx context.Context, id int) error
@@ -84,8 +84,9 @@ type BusinessService interface {
 }
 
 type InvestmentService interface {
-	Create(ctx context.Context, investorId int, pricePerShareUsdCents int64, params investment.CreateInvestmentParams) (investment.Investment, error)
+	Upsert(ctx context.Context, investorId int, params investment.CreateInvestmentParams) (investment.Investment, error)
 	GetById(ctx context.Context, id int) (investment.Investment, error)
+	Update(ctx context.Context, id int, params investment.UpdateInvestmentParams) (investment.Investment, error)
 
 	ConfirmPaymentIntent(ctx context.Context, investmentId int, confirmationToken string, returnURL string) (types.StripePaymentIntentOutput, error)
 	HandleStripePaymentIntentSucceeded(ctx context.Context, intentID string) error

@@ -72,10 +72,6 @@ func (s *RoundService) Delete(ctx context.Context, id int) error {
 	return s.repositories.Round().Delete(ctx, id)
 }
 
-func (s *RoundService) GetAvailableShares(ctx context.Context, id int) (int, error) {
-	return s.repositories.Round().GetAvailableShares(ctx, id)
-}
-
 func (s *RoundService) CompleteRound(ctx context.Context, id int) error {
 	err := s.repositories.RunInTx(ctx, func(ctx context.Context, tx storage.Transaction) error {
 		status := round.RoundStatusSuccessful

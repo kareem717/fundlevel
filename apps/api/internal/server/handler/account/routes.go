@@ -176,4 +176,24 @@ func RegisterHumaRoutes(
 			},
 		},
 	}, handler.getInvestments)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-account-active-round-investment",
+		Method:      http.MethodGet,
+		Path:        "/account/investments/round/{id}",
+		Summary:     "Get active round investment",
+		Description: "Get active round investment for the currently authenticated account.",
+		Tags:        []string{"Accounts", "Investments"},
+		Security: []map[string][]string{
+			{"bearerAuth": {}},
+		},
+		Middlewares: huma.Middlewares{
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
+			},
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithAccount(humaApi)(ctx, next, logger, service)
+			},
+		},
+	}, handler.getActiveRoundInvestment)
 }

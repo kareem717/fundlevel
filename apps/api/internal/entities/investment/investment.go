@@ -1,8 +1,8 @@
 package investment
 
 import (
-	"fundlevel/internal/entities/round"
 	"fundlevel/internal/entities/shared"
+	"time"
 
 	"github.com/uptrace/bun"
 )
@@ -17,33 +17,38 @@ const (
 	InvestmentStatusRoundClosed          InvestmentStatus = "round_closed"
 )
 
-type InvestmentStatusField struct {
-}
-
 type Investment struct {
 	bun.BaseModel `bun:"table:investments"`
 	shared.IntegerID
 
 	RoundID           int              `json:"round_id" minimum:"1"`
 	ShareQuantity     int              `json:"share_quantity" minimum:"1"`
-	TermsAcceptanceID int              `json:"terms_acceptance_id" minimum:"1"`
 	InvestorID        int              `json:"investor_id" minimum:"1"`
 	Status            InvestmentStatus `json:"status" enum:"awaiting_confirmation,awaiting_payment,payment_completed,completed,round_closed"`
+	TotalUSDCentValue int              `json:"total_usd_cent_value" minimum:"1"`
+	TermAcceptance
 	shared.Timestamps
 }
 
 type CreateInvestmentParams struct {
-	Investment struct {
-		bun.BaseModel `bun:"table:investments"`
+	bun.BaseModel `bun:"table:investments"`
 
-		RoundID       int `json:"round_id" minimum:"1"`
-		ShareQuantity int `json:"share_quantity" minimum:"1"`
-	} `json:"investment"`
-	TermsAcceptance round.CreateRoundTermsAcceptanceParams `json:"terms_acceptance"`
+	RoundID       int `json:"round_id" minimum:"1"`
+	ShareQuantity int `json:"share_quantity" minimum:"1"`
+	TermAcceptance
 }
 
 type UpdateInvestmentParams struct {
 	bun.BaseModel `bun:"table:investments,alias:investment"`
 
-	Status *InvestmentStatus `json:"status" enum:"awaiting_confirmation,awaiting_payment,payment_completed,completed,round_closed"`
+	ShareQuantity *int `json:"share_quantity" minimum:"1"`
+	*TermAcceptance
+	Status *InvestmentStatus `json:"status" enum:"awaiting_confirmation,awaiting_payment,payment_completed,completed,round_closed" hidden:"true" required:"false"`
+}
+
+type TermAcceptance struct {
+	TermsID                  int       `json:"terms_id" minimum:"1"`
+	TermsAcceptedAt          time.Time `json:"terms_accepted_at"`
+	TermsAcceptanceIPAddress string    `json:"terms_acceptance_ip_address"`
+	TermsAcceptanceUserAgent string    `json:"terms_acceptance_user_agent"`
 }

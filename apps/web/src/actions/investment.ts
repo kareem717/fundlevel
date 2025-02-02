@@ -2,32 +2,39 @@
 
 import { actionClientWithAccount } from "@/lib/safe-action";
 import {
-	getInvestmentById as getInvestmentByIdApi,
-	createRoundInvestment,
+	getInvestmentById,
 	confirmInvestmentPayment,
+	getAccountInvestments,
+	updateInvestment,
+	upsertRoundInvestment,
+	getAccountActiveRoundInvestment,
 } from "@repo/sdk";
 import { cache } from "react";
-import { pathIdSchema } from "./validations";
-import { zCreateInvestmentParams } from "@repo/sdk/zod";
+import { cursorPaginationSchema, pathIdSchema } from "./validations";
+import {
+	zCreateInvestmentParams,
+	zInvestmentFilter,
+	zUpdateInvestmentParams,
+} from "@repo/sdk/zod";
 import { z } from "zod";
 
-export const getInvestmentById = actionClientWithAccount
-	.schema(pathIdSchema)
-	.action(async ({ parsedInput, ctx: { axiosClient } }) => {
-		console.log("getting investment", parsedInput);
+export const getInvestmentByIdAction = cache(
+	actionClientWithAccount
+		.schema(pathIdSchema)
+		.action(async ({ parsedInput, ctx: { axiosClient } }) => {
+			console.log("getting investment", parsedInput);
 
-		const resp = await getInvestmentByIdApi({
-			client: axiosClient,
-			path: {
-				id: parsedInput,
-			},
-			throwOnError: true,
-		});
+			const resp = await getInvestmentById({
+				client: axiosClient,
+				path: {
+					id: parsedInput,
+				},
+				throwOnError: true,
+			});
 
-		return resp.data;
-	});
-
-export const getInvestmentByIdCached = cache(getInvestmentById);
+			return resp.data;
+		})
+);
 
 export const confirmInvestmentPaymentAction = actionClientWithAccount
 	.schema(
@@ -57,10 +64,10 @@ export const confirmInvestmentPaymentAction = actionClientWithAccount
 		}
 	);
 
-export const createInvestmentAction = actionClientWithAccount
+export const upsertInvestmentAction = actionClientWithAccount
 	.schema(zCreateInvestmentParams)
 	.action(async ({ parsedInput, ctx: { axiosClient } }) => {
-		const resp = await createRoundInvestment({
+		const resp = await upsertRoundInvestment({
 			client: axiosClient,
 			body: parsedInput,
 			throwOnError: true,
@@ -68,3 +75,56 @@ export const createInvestmentAction = actionClientWithAccount
 
 		return resp.data;
 	});
+
+export const getAccountInvestmentsAction = actionClientWithAccount
+	.schema(
+		z.object({
+			...cursorPaginationSchema.shape,
+			filter: zInvestmentFilter.optional(),
+		})
+	)
+	.action(async ({ parsedInput, ctx: { axiosClient } }) => {
+		const resp = await getAccountInvestments({
+			client: axiosClient,
+			query: parsedInput,
+			// throwOnError: true,
+		});
+
+		return resp.data;
+	});
+
+export const updateInvestmentAction = actionClientWithAccount
+	.schema(
+		z.object({
+			id: pathIdSchema,
+			...zUpdateInvestmentParams.shape,
+		})
+	)
+	.action(async ({ parsedInput: { id, ...body }, ctx: { axiosClient } }) => {
+		const resp = await updateInvestment({
+			client: axiosClient,
+			path: {
+				id,
+			},
+			body,
+			throwOnError: true,
+		});
+
+		return resp.data;
+	});
+
+export const getActiveRoundInvestmentAction = cache(
+	actionClientWithAccount
+		.schema(pathIdSchema)
+		.action(async ({ parsedInput, ctx: { axiosClient } }) => {
+			const resp = await getAccountActiveRoundInvestment({
+				client: axiosClient,
+				path: {
+					id: parsedInput,
+				},
+				throwOnError: true,
+			});
+
+			return resp.data;
+		})
+);

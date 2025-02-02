@@ -1,5 +1,4 @@
 "use client"
-
 import {
   Sidebar,
   SidebarContent,
@@ -10,24 +9,21 @@ import { SidebarMenu } from "@/components/sidebar/sidebar-menu"
 import { ComponentPropsWithoutRef } from "react"
 import { sidebar } from "@/lib/config/sidebar"
 import { SidebarUser } from "@/components/sidebar/sidebar-user"
-import { useAuth } from "@/components/providers/auth-provider"
+import { SidebarNotification } from "@/components/sidebar/sidebar-notification"
 
-export function WalletSidebar({ ...props }: ComponentPropsWithoutRef<typeof Sidebar>) {
-  const { wallet } = sidebar
-  const { user, account } = useAuth()
-
-  if (!user || !account) {
-    throw new Error("Sidebar must be used within an AuthProvider with a user and account")
-  }
+//TODO: this doesn't have to be a client component
+export function PortfolioSidebar({ ...props }: ComponentPropsWithoutRef<typeof Sidebar>) {
+  const { portfolio } = sidebar
 
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarContent>
-        {wallet.map((menu) => (
+        {portfolio.map((menu) => (
           <SidebarMenu key={menu.name} config={menu} />
         ))}
       </SidebarContent>
       <SidebarFooter>
+        <SidebarNotification notificationId="identity-not-verified" />
         <SidebarUser />
       </SidebarFooter>
       <SidebarRail />

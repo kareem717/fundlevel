@@ -19,7 +19,7 @@ import { useBusiness } from "@/components/providers/business-provider";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 
-export function BusinessDashboardBreadcrumb() {
+export function BusinessBreadcrumb() {
   const { selectedBusiness, businesses } = useBusiness();
   const pathname = usePathname();
 

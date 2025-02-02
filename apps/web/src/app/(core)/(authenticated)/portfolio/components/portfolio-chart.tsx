@@ -1,6 +1,6 @@
 "use client"
 
-import { ComponentPropsWithoutRef, FC } from "react"
+import { ComponentPropsWithoutRef } from "react"
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
 import {
   ChartConfig,
@@ -30,11 +30,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export interface PositionSnapshotChartProps extends Omit<ComponentPropsWithoutRef<typeof ChartContainer>, "children" | "config"> {
-
-};
-
-export const PositionSnapshotChart: FC<PositionSnapshotChartProps> = ({ className, ...props }) => {
+export function PortfolioChart({ className, ...props }: Omit<ComponentPropsWithoutRef<typeof ChartContainer>, "children" | "config">) {
   return (
     <ChartContainer config={chartConfig} className={cn("h-[50dvh] md:h-[35dvh] w-full", className)} {...props}>
       <AreaChart

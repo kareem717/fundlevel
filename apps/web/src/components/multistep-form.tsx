@@ -60,8 +60,6 @@ export function MultiStepForm<T extends FieldValues>({
       if (canContinue === false) {
         return;
       }
-
-
     }
 
     if (isLastStep) {
@@ -119,7 +117,7 @@ export function MultiStepForm<T extends FieldValues>({
               onClick={next}
               type="button"
             >
-              {isSubmitting && <Icons.spinner className="animate-spin size-4" />}
+              {(isExecuting || isSubmitting) && <Icons.spinner className="animate-spin size-4" />}
               {steps[step]?.nextButtonText ? steps[step].nextButtonText : isLastStep ? "Submit" : "Next"}
             </Button>
           </div>

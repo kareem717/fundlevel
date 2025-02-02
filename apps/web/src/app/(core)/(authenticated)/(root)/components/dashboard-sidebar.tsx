@@ -1,5 +1,4 @@
 "use client"
-
 import {
   Sidebar,
   SidebarContent,
@@ -12,14 +11,11 @@ import { ComponentPropsWithoutRef } from "react"
 import { SidebarUser } from "@/components/sidebar/sidebar-user"
 import { Command } from "lucide-react"
 import { sidebar } from "@/lib/config/sidebar"
-import { useNotification } from "@/components/providers/notification-provider"
 import { SidebarNotification } from "@/components/sidebar/sidebar-notification"
 
+//TODO: this doesn't have to be a client component
 export function DashboardSidebar({ ...props }: ComponentPropsWithoutRef<typeof Sidebar>) {
   const { dashboard } = sidebar;
-  const notificationContext = useNotification();
-
-  const notification = notificationContext?.getNotification("identity-not-verified");
 
   return (
     <Sidebar variant="inset" {...props}>
@@ -41,7 +37,7 @@ export function DashboardSidebar({ ...props }: ComponentPropsWithoutRef<typeof S
         ))}
       </SidebarContent>
       <SidebarFooter>
-        {notification && <SidebarNotification notification={notification} />}
+        <SidebarNotification notificationId="identity-not-verified" />
         <SidebarUser />
       </SidebarFooter>
     </Sidebar>

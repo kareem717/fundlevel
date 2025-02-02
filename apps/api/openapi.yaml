@@ -304,17 +304,6 @@ components:
           format: uri
           readOnly: true
           type: string
-        investment:
-          $ref: "#/components/schemas/CreateInvestmentParamsInvestmentStruct"
-        terms_acceptance:
-          $ref: "#/components/schemas/CreateRoundTermsAcceptanceParams"
-      required:
-        - investment
-        - terms_acceptance
-      type: object
-    CreateInvestmentParamsInvestmentStruct:
-      additionalProperties: false
-      properties:
         round_id:
           format: int64
           minimum: 1
@@ -323,9 +312,24 @@ components:
           format: int64
           minimum: 1
           type: integer
+        terms_acceptance_ip_address:
+          type: string
+        terms_acceptance_user_agent:
+          type: string
+        terms_accepted_at:
+          format: date-time
+          type: string
+        terms_id:
+          format: int64
+          minimum: 1
+          type: integer
       required:
         - round_id
         - share_quantity
+        - terms_id
+        - terms_accepted_at
+        - terms_acceptance_ip_address
+        - terms_acceptance_user_agent
       type: object
     CreateRoundParams:
       additionalProperties: false
@@ -387,30 +391,6 @@ components:
       required:
         - content
       type: object
-    CreateRoundTermsAcceptanceParams:
-      additionalProperties: false
-      properties:
-        accepted_at:
-          format: date-time
-          type: string
-        ip_address:
-          maxLength: 45
-          minLength: 1
-          type: string
-        terms_id:
-          format: int64
-          minimum: 1
-          type: integer
-        user_agent:
-          maxLength: 500
-          minLength: 1
-          type: string
-      required:
-        - terms_id
-        - accepted_at
-        - ip_address
-        - user_agent
-      type: object
     ErrorDetail:
       additionalProperties: false
       properties:
@@ -462,6 +442,20 @@ components:
           example: https://example.com/errors/example
           format: uri
           type: string
+      type: object
+    GetActiveInvestmentResponseBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/GetActiveInvestmentResponseBody.json
+          format: uri
+          readOnly: true
+          type: string
+        investment:
+          $ref: "#/components/schemas/Investment"
+      required:
+        - investment
       type: object
     GetAllIndustriesResponseBody:
       additionalProperties: false
@@ -799,7 +793,18 @@ components:
             - completed
             - round_closed
           type: string
-        terms_acceptance_id:
+        terms_acceptance_ip_address:
+          type: string
+        terms_acceptance_user_agent:
+          type: string
+        terms_accepted_at:
+          format: date-time
+          type: string
+        terms_id:
+          format: int64
+          minimum: 1
+          type: integer
+        total_usd_cent_value:
           format: int64
           minimum: 1
           type: integer
@@ -810,10 +815,14 @@ components:
       required:
         - round_id
         - share_quantity
-        - terms_acceptance_id
         - investor_id
         - status
+        - total_usd_cent_value
         - id
+        - terms_id
+        - terms_accepted_at
+        - terms_acceptance_ip_address
+        - terms_acceptance_user_agent
         - created_at
         - updated_at
         - deleted_at
@@ -945,6 +954,10 @@ components:
           format: int64
           minimum: 1
           type: integer
+        remaining_shares:
+          format: int64
+          minimum: 0
+          type: integer
         status:
           enum:
             - active
@@ -975,6 +988,7 @@ components:
         - terms_id
         - status
         - description
+        - remaining_shares
         - id
         - created_at
         - updated_at
@@ -1224,6 +1238,38 @@ components:
         - first_name
         - last_name
       type: object
+    UpdateInvestmentParams:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/UpdateInvestmentParams.json
+          format: uri
+          readOnly: true
+          type: string
+        share_quantity:
+          format: int64
+          minimum: 1
+          nullable: true
+          type: integer
+        terms_acceptance_ip_address:
+          type: string
+        terms_acceptance_user_agent:
+          type: string
+        terms_accepted_at:
+          format: date-time
+          type: string
+        terms_id:
+          format: int64
+          minimum: 1
+          type: integer
+      required:
+        - share_quantity
+        - terms_id
+        - terms_accepted_at
+        - terms_acceptance_ip_address
+        - terms_acceptance_user_agent
+      type: object
     UpsertBusinessLegalSectionParams:
       additionalProperties: false
       properties:
@@ -1336,6 +1382,37 @@ paths:
       security:
         - bearerAuth: []
       summary: Get investments
+      tags:
+        - Accounts
+        - Investments
+  /account/investments/round/{id}:
+    get:
+      description: Get active round investment for the currently authenticated account.
+      operationId: get-account-active-round-investment
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetActiveInvestmentResponseBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Get active round investment
       tags:
         - Accounts
         - Investments
@@ -1907,9 +1984,9 @@ paths:
       tags:
         - Industries
   /investments:
-    post:
-      description: Create a round investment.
-      operationId: create-round-investment
+    put:
+      description: Create a round investment. If a incomplete investment exists, it will be updated with the new values and used for the new investment.
+      operationId: upsert-round-investment
       requestBody:
         content:
           application/json:
@@ -1931,7 +2008,7 @@ paths:
           description: Error
       security:
         - bearerAuth: []
-      summary: Create a round investment
+      summary: Upsert a round investment
       tags:
         - Investments
   /investments/{id}:
@@ -1962,6 +2039,41 @@ paths:
       security:
         - bearerAuth: []
       summary: Get a round investment
+      tags:
+        - Investments
+    put:
+      description: Update a round investment.
+      operationId: update-investment
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateInvestmentParams"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Investment"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Update a round investment
       tags:
         - Investments
   /investments/{id}/confirm-payment:

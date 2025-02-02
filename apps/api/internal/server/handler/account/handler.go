@@ -228,3 +228,32 @@ func (h *httpHandler) getInvestments(ctx context.Context, input *getInvestmentsR
 
 	return resp, nil
 }
+
+type getActiveInvestmentResponse struct {
+	Body struct {
+		Investment *investment.Investment `json:"investment"`
+	}
+}
+
+func (h *httpHandler) getActiveRoundInvestment(ctx context.Context, input *shared.PathIDParam) (*getActiveInvestmentResponse, error) {
+	account := utils.GetAuthenticatedAccount(ctx)
+	if account == nil {
+		return nil, huma.Error401Unauthorized("You must be logged in to fetch investments")
+	}
+
+	investment, err := h.service.AccountService.GetActiveRoundInvestment(ctx, account.ID, input.ID)
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, huma.Error404NotFound("Active investment not found")
+		default:
+			h.logger.Error("failed to fetch active investment", zap.Error(err))
+			return nil, huma.Error500InternalServerError("An error occurred while fetching the active investment")
+		}
+	}
+
+	resp := &getActiveInvestmentResponse{}
+	resp.Body.Investment = &investment
+
+	return resp, nil
+}

@@ -28,17 +28,7 @@ export const redirects = {
 	},
 	app: {
 		root: appRoot,
-		wallet: {
-			index: "/wallet",
-			positions: {
-				root: "/wallet/positions",
-				investments: {
-					root: "/wallet/positions/investments",
-					history: "/wallet/positions/investments/history",
-					payments: "/wallet/positions/investments/payments",
-				},
-			},
-		},
+		portfolio: "/portfolio",
 		createBusiness: "/create-business",
 		businessDashboard: (businessId: number) => ({
 			root: businessPath(businessId).root(),

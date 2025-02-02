@@ -24,3 +24,17 @@ func (r *AccountRepository) GetInvestments(ctx context.Context, accountId, curso
 
 	return resp, err
 }
+
+func (r *AccountRepository) GetActiveRoundInvestment(ctx context.Context, accountId int, roundId int) (investment.Investment, error) {
+	resp := investment.Investment{}
+
+	err := r.db.
+		NewSelect().
+		Model(&resp).
+		Where("investor_id = ?", accountId).
+		Where("round_id = ?", roundId).
+		Where("status = ?", investment.InvestmentStatusAwaitingConfirmation).
+		Scan(ctx)
+
+	return resp, err
+}
