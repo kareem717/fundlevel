@@ -328,6 +328,34 @@ export const zGetInvestmentPaymentsOutputBody = z.object({
   message: z.string(),
 });
 
+export const zGetInvestmentsResponseBody = z.object({
+  $schema: z.string().url().readonly().optional(),
+  investments: z.union([
+    z.array(
+      z.object({
+        $schema: z.string().url().readonly().optional(),
+        created_at: z.string().datetime(),
+        deleted_at: z.union([z.string().datetime(), z.null()]),
+        id: z.number().gte(1),
+        investor_id: z.number().gte(1),
+        round_id: z.number().gte(1),
+        share_quantity: z.number().gte(1),
+        status: z.enum([
+          "awaiting_confirmation",
+          "awaiting_payment",
+          "payment_completed",
+          "completed",
+          "round_closed",
+        ]),
+        terms_acceptance_id: z.number().gte(1),
+        updated_at: z.union([z.string().datetime(), z.null()]),
+      }),
+    ),
+    z.null(),
+  ]),
+  next_cursor: z.union([z.number(), z.null()]),
+});
+
 export const zGetOffsetPaginatedBusinessMembersOutputBody = z.object({
   $schema: z.string().url().readonly().optional(),
   hasMore: z.boolean(),
@@ -393,15 +421,38 @@ export const zIndustry = z.object({
 
 export const zInvestment = z.object({
   $schema: z.string().url().readonly().optional(),
-  completed_at: z.union([z.string().datetime(), z.null()]),
   created_at: z.string().datetime(),
   deleted_at: z.union([z.string().datetime(), z.null()]),
   id: z.number().gte(1),
   investor_id: z.number().gte(1),
   round_id: z.number().gte(1),
   share_quantity: z.number().gte(1),
+  status: z.enum([
+    "awaiting_confirmation",
+    "awaiting_payment",
+    "payment_completed",
+    "completed",
+    "round_closed",
+  ]),
   terms_acceptance_id: z.number().gte(1),
   updated_at: z.union([z.string().datetime(), z.null()]),
+});
+
+export const zInvestmentFilter = z.object({
+  statuses: z.union([
+    z
+      .array(
+        z.enum([
+          "awaiting_confirmation",
+          "awaiting_payment",
+          "payment_completed",
+          "completed",
+          "round_closed",
+        ]),
+      )
+      .min(1),
+    z.null(),
+  ]),
 });
 
 export const zMessageResponse = z.object({
@@ -545,6 +596,8 @@ export const zUpsertBusinessLegalSectionParams = z.object({
 });
 
 export const zGetAccountResponse = zSingleAccountResponseBody;
+
+export const zGetAccountInvestmentsResponse = zGetInvestmentsResponseBody;
 
 export const zGetStripeIdentityResponse = zStripeIdentity;
 

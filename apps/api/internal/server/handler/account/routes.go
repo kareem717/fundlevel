@@ -156,4 +156,24 @@ func RegisterHumaRoutes(
 			},
 		},
 	}, handler.getStripeIdentity)
+
+	huma.Register(humaApi, huma.Operation{
+		OperationID: "get-account-investments",
+		Method:      http.MethodGet,
+		Path:        "/account/investments",
+		Summary:     "Get investments",
+		Description: "Get investments for the currently authenticated account.",
+		Tags:        []string{"Accounts", "Investments"},
+		Security: []map[string][]string{
+			{"bearerAuth": {}},
+		},
+		Middlewares: huma.Middlewares{
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithUser(humaApi)(ctx, next, logger, supabaseClient)
+			},
+			func(ctx huma.Context, next func(huma.Context)) {
+				middleware.WithAccount(humaApi)(ctx, next, logger, service)
+			},
+		},
+	}, handler.getInvestments)
 }

@@ -7,6 +7,7 @@ import (
 
 	"fundlevel/internal/entities/account"
 	"fundlevel/internal/entities/business"
+	"fundlevel/internal/entities/investment"
 	"fundlevel/internal/server/handler/shared"
 	"fundlevel/internal/server/utils"
 	"fundlevel/internal/service"
@@ -193,6 +194,37 @@ func (h *httpHandler) getStripeIdentity(ctx context.Context, input *struct{}) (*
 
 	resp := &GetStripeIdentityOutput{}
 	resp.Body = stripeIdentity
+
+	return resp, nil
+}
+
+type getInvestmentsResponse struct {
+	Body struct {
+		Investments []investment.Investment `json:"investments"`
+		types.CursorPaginationOutput[int]
+	}
+}
+
+type getInvestmentsRequest struct {
+	shared.CursorPaginationRequest
+	Filter investment.InvestmentFilter `query:"filter" required:"false"`
+}
+
+func (h *httpHandler) getInvestments(ctx context.Context, input *getInvestmentsRequest) (*getInvestmentsResponse, error) {
+	account := utils.GetAuthenticatedAccount(ctx)
+	if account == nil {
+		return nil, huma.Error401Unauthorized("You must be logged in to fetch investments")
+	}
+
+	investments, cursorOutput, err := h.service.AccountService.GetInvestments(ctx, account.ID, input.Cursor, input.Limit, input.Filter)
+	if err != nil {
+		h.logger.Error("failed to fetch investments", zap.Error(err))
+		return nil, huma.Error500InternalServerError("An error occurred while fetching the investments")
+	}
+
+	resp := &getInvestmentsResponse{}
+	resp.Body.Investments = investments
+	resp.Body.NextCursor = cursorOutput.NextCursor
 
 	return resp, nil
 }

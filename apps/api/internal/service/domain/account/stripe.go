@@ -24,7 +24,7 @@ func (s *AccountService) GetStripeIdentity(ctx context.Context, accountID int) (
 
 func (s *AccountService) GetStripeIdentityVerificationSessionURL(ctx context.Context, accountID int, returnURL string) (types.StripeSessionOutput, error) {
 	stripe.Key = s.stripeAPIKey
-	
+
 	result := types.StripeSessionOutput{}
 
 	// Create the session

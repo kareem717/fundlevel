@@ -141,3 +141,4 @@ func (r *InvestmentRepository) CloseIncompleteInvestments(ctx context.Context, r
 
 	return err
 }
+

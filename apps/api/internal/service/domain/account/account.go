@@ -2,8 +2,11 @@ package account
 
 import (
 	"context"
+	"database/sql"
 
 	"fundlevel/internal/entities/account"
+	"fundlevel/internal/entities/investment"
+	"fundlevel/internal/service/types"
 	"fundlevel/internal/storage"
 
 	"github.com/google/uuid"
@@ -45,4 +48,28 @@ func (s *AccountService) Delete(ctx context.Context, id int) error {
 
 func (s *AccountService) Update(ctx context.Context, id int, params account.UpdateAccountParams) (account.Account, error) {
 	return s.repositories.Account().Update(ctx, id, params)
+}
+
+func (s *AccountService) GetInvestments(ctx context.Context, accountId, cursor, limit int, filter investment.InvestmentFilter) ([]investment.Investment, types.CursorPaginationOutput[int], error) {
+	// We need to fetch one more than the limit to determine if there is a next page
+	usedLimit := limit + 1	
+
+	investments, err := s.repositories.Account().GetInvestments(ctx, accountId, cursor, usedLimit, filter)
+	if err != nil {
+		switch err {
+		case sql.ErrNoRows:
+			return []investment.Investment{}, types.CursorPaginationOutput[int]{}, nil
+		default:
+			s.logger.Error("failed to get investments", zap.Error(err))
+			return []investment.Investment{}, types.CursorPaginationOutput[int]{}, err
+		}
+	}
+
+	cursorOutput := types.CursorPaginationOutput[int]{}
+	if len(investments) == usedLimit {
+		cursorOutput.NextCursor = &investments[len(investments)-1].ID
+	}
+
+	return investments[:len(investments)-1], cursorOutput, nil
+
 }

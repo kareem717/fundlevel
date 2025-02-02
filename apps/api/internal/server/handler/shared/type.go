@@ -22,6 +22,7 @@ type CursorPaginationRequest struct {
 	Limit  int `query:"limit" required:"false" minimum:"1" default:"10"`
 }
 
+
 type PathIDParam struct {
 	ID int `path:"id" minimum:"1"`
 }

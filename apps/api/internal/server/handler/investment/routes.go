@@ -178,4 +178,6 @@ func RegisterHumaRoutes(
 			},
 		},
 	}, handler.getInvestmentPayments)
+
+
 }

@@ -255,6 +255,15 @@ export type GetInvestmentPaymentsOutputBody = {
   message: string;
 };
 
+export type GetInvestmentsResponseBody = {
+  /**
+   * A URL to the JSON Schema for this object.
+   */
+  readonly $schema?: string;
+  investments: Array<Investment> | null;
+  next_cursor: number | null;
+};
+
 export type GetOffsetPaginatedBusinessMembersOutputBody = {
   /**
    * A URL to the JSON Schema for this object.
@@ -316,15 +325,30 @@ export type Investment = {
    * A URL to the JSON Schema for this object.
    */
   readonly $schema?: string;
-  completed_at: string | null;
   created_at: string;
   deleted_at: string | null;
   id: number;
   investor_id: number;
   round_id: number;
   share_quantity: number;
+  status:
+    | "awaiting_confirmation"
+    | "awaiting_payment"
+    | "payment_completed"
+    | "completed"
+    | "round_closed";
   terms_acceptance_id: number;
   updated_at: string | null;
+};
+
+export type InvestmentFilter = {
+  statuses: Array<
+    | "awaiting_confirmation"
+    | "awaiting_payment"
+    | "payment_completed"
+    | "completed"
+    | "round_closed"
+  > | null;
 };
 
 export type MessageResponse = {
@@ -540,6 +564,37 @@ export type CreateAccountResponses = {
    */
   201: unknown;
 };
+
+export type GetAccountInvestmentsData = {
+  body?: never;
+  path?: never;
+  query?: {
+    cursor?: number;
+    limit?: number;
+    filter?: InvestmentFilter;
+  };
+  url: "/account/investments";
+};
+
+export type GetAccountInvestmentsErrors = {
+  /**
+   * Error
+   */
+  default: ErrorModel;
+};
+
+export type GetAccountInvestmentsError =
+  GetAccountInvestmentsErrors[keyof GetAccountInvestmentsErrors];
+
+export type GetAccountInvestmentsResponses = {
+  /**
+   * OK
+   */
+  200: GetInvestmentsResponseBody;
+};
+
+export type GetAccountInvestmentsResponse =
+  GetAccountInvestmentsResponses[keyof GetAccountInvestmentsResponses];
 
 export type GetStripeIdentityData = {
   body?: never;

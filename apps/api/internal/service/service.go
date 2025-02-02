@@ -35,6 +35,8 @@ type AccountService interface {
 	CreateStripeIdentity(ctx context.Context, accountID int, params account.CreateStripeIdentityParams) (account.StripeIdentity, error)
 	DeleteStripeIdentity(ctx context.Context, accountID int) error
 	GetStripeIdentity(ctx context.Context, accountID int) (account.StripeIdentity, error)
+
+	GetInvestments(ctx context.Context, accountId, cursor, limit int, filter investment.InvestmentFilter) ([]investment.Investment, types.CursorPaginationOutput[int], error)
 }
 
 type IndustryService interface {

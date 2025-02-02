@@ -11,6 +11,9 @@ import type {
   GetAccountResponse,
   CreateAccountData,
   CreateAccountError,
+  GetAccountInvestmentsData,
+  GetAccountInvestmentsError,
+  GetAccountInvestmentsResponse,
   GetStripeIdentityData,
   GetStripeIdentityError,
   GetStripeIdentityResponse,
@@ -140,6 +143,23 @@ export const createAccount = <ThrowOnError extends boolean = false>(
       ...options?.headers,
     },
     url: "/account",
+  });
+};
+
+/**
+ * Get investments
+ * Get investments for the currently authenticated account.
+ */
+export const getAccountInvestments = <ThrowOnError extends boolean = false>(
+  options?: Options<GetAccountInvestmentsData, ThrowOnError>,
+) => {
+  return (options?.client ?? client).get<
+    GetAccountInvestmentsResponse,
+    GetAccountInvestmentsError,
+    ThrowOnError
+  >({
+    ...options,
+    url: "/account/investments",
   });
 };
 

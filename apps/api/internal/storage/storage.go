@@ -55,6 +55,8 @@ type AccountRepository interface {
 
 	GetAllBusinesses(ctx context.Context, accountId int) ([]business.Business, error)
 
+	GetInvestments(ctx context.Context, accountId, cursor, limit int, filter investment.InvestmentFilter) ([]investment.Investment, error)
+
 	GetStripeIdentity(ctx context.Context, accountId int) (account.StripeIdentity, error)
 	DeleteStripeIdentity(ctx context.Context, accountId int) error
 	CreateStripeIdentity(ctx context.Context, accountId int, params account.CreateStripeIdentityParams) (account.StripeIdentity, error)

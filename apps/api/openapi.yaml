@@ -605,6 +605,28 @@ components:
         - investment_payments
         - message
       type: object
+    GetInvestmentsResponseBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          example: https://example.com/schemas/GetInvestmentsResponseBody.json
+          format: uri
+          readOnly: true
+          type: string
+        investments:
+          items:
+            $ref: "#/components/schemas/Investment"
+          nullable: true
+          type: array
+        next_cursor:
+          format: int64
+          nullable: true
+          type: integer
+      required:
+        - investments
+        - next_cursor
+      type: object
     GetOffsetPaginatedBusinessMembersOutputBody:
       additionalProperties: false
       properties:
@@ -746,10 +768,6 @@ components:
           format: uri
           readOnly: true
           type: string
-        completed_at:
-          format: date-time
-          nullable: true
-          type: string
         created_at:
           format: date-time
           type: string
@@ -773,6 +791,14 @@ components:
           format: int64
           minimum: 1
           type: integer
+        status:
+          enum:
+            - awaiting_confirmation
+            - awaiting_payment
+            - payment_completed
+            - completed
+            - round_closed
+          type: string
         terms_acceptance_id:
           format: int64
           minimum: 1
@@ -786,11 +812,30 @@ components:
         - share_quantity
         - terms_acceptance_id
         - investor_id
-        - completed_at
+        - status
         - id
         - created_at
         - updated_at
         - deleted_at
+      type: object
+    InvestmentFilter:
+      additionalProperties: false
+      properties:
+        statuses:
+          items:
+            enum:
+              - awaiting_confirmation
+              - awaiting_payment
+              - payment_completed
+              - completed
+              - round_closed
+            type: string
+          minItems: 1
+          nullable: true
+          type: array
+          uniqueItems: true
+      required:
+        - statuses
       type: object
     MessageResponse:
       additionalProperties: false
@@ -1250,6 +1295,50 @@ paths:
       summary: Create a account
       tags:
         - Accounts
+  /account/investments:
+    get:
+      description: Get investments for the currently authenticated account.
+      operationId: get-account-investments
+      parameters:
+        - explode: false
+          in: query
+          name: cursor
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+        - explode: false
+          in: query
+          name: limit
+          schema:
+            default: 10
+            format: int64
+            minimum: 1
+            type: integer
+        - explode: false
+          in: query
+          name: filter
+          schema:
+            $ref: "#/components/schemas/InvestmentFilter"
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetInvestmentsResponseBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearerAuth: []
+      summary: Get investments
+      tags:
+        - Accounts
+        - Investments
   /account/stripe-identity:
     get:
       description: Get stripe identity for the currently authenticated account.
