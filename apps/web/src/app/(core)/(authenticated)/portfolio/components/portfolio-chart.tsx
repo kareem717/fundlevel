@@ -12,6 +12,7 @@ import { cn } from "@repo/ui/lib/utils"
 import { Aggregate } from "@repo/sdk"
 import { format } from "date-fns"
 import { formatCurrency } from "@/lib/utils"
+import { useIsMobile } from "@repo/ui/hooks/use-mobile"
 export const description = "A stacked area chart"
 
 const chartConfig = {
@@ -26,6 +27,8 @@ export interface PortfolioChartProps extends Omit<ComponentPropsWithoutRef<typeo
 }
 
 export function PortfolioChart({ className, data, ...props }: PortfolioChartProps) {
+  const isMobile = useIsMobile()
+
   return (
     <ChartContainer config={chartConfig} className={cn("h-[50dvh] md:h-[35dvh] w-full", className)} {...props}>
       <AreaChart
@@ -41,11 +44,13 @@ export function PortfolioChart({ className, data, ...props }: PortfolioChartProp
           dataKey="date"
           tickFormatter={(value) => format(value, "MM/yy")}
         />
-        <YAxis
-          tickMargin={8}
-          tickCount={5}
-          tickFormatter={(value) => formatCurrency(value as number / 100, "USD", "en-US")}
-        />
+        {!isMobile && (
+          <YAxis
+            tickMargin={8}
+            tickCount={5}
+            tickFormatter={(value) => formatCurrency(value as number / 100, "USD", "en-US")}
+          />
+        )}
         <ChartTooltip
           cursor={false}
           content={

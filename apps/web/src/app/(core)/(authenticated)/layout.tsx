@@ -3,7 +3,7 @@ import { redirects } from "@/lib/config/redirects";
 import { getAccountAction, getStripeIdentityAction, getUserAction } from "@/actions/auth";
 import { AuthProvider } from "@/components/providers/auth-provider";
 import { NotificationProvider, Notification } from "@/components/providers/notification-provider";
-import { VerifyIdentityModalButton } from "@/components/stipe/verify-identity-modal-button";
+import { VerifyIdentityModalButton } from "@/components/stripe/verify-identity-modal-button";
 
 export default async function CoreLayout({ children }: { children: React.ReactNode }) {
   let user

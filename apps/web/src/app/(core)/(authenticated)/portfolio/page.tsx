@@ -1,44 +1,115 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@repo/ui/components/card"
-import { RecentTransactionsList } from "./components/recent-payments-table"
 import { getAccountInvestmentsAction, getInvestmentAggregateAction } from "@/actions/investment";
 import { Suspense } from "react"
-import { ScrollArea } from "@repo/ui/components/scroll-area";
-import { Badge } from "@repo/ui/components/badge";
-import { format } from "date-fns";
 import { PortfolioChart } from "./components/portfolio-chart";
+import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@repo/ui/components/table";
+import { CheckoutModal } from "./components/checkout-modal";
+import { format } from "date-fns";
+import { formatCurrency } from "@/lib/utils";
+import { Badge } from "@repo/ui/components/badge";
+import { MoreHorizontal } from "lucide-react";
+import { Button } from "@repo/ui/components/button";
+import { buttonVariants } from "@repo/ui/components/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@repo/ui/components/dropdown-menu";
+import Link from "next/link";
+import { redirects } from "@/lib/config/redirects";
+import { cn } from "@repo/ui/lib/utils";
 
 async function InvestmentsAsync() {
-  console.log("InvestmentsAsync");
-  const investments = await getAccountInvestmentsAction({
+  const investmentData = (await getAccountInvestmentsAction({
     cursor: 1,
     limit: 10,
-  })
-  console.log("investments", investments);
+  }))?.data
+
   return (
-    <ScrollArea className="space-y-4" type="scroll" >
-      {(investments?.data?.investments ?? []).map((investment) => (
-        <div key={investment.id} className="flex items-center justify-between pb-4 border-b last:border-0">
-          <div className="space-y-1">
-            <p className="text-sm font-medium">{investment.round_id}</p>
-            <p className="text-xs text-muted-foreground">{format(investment.created_at, "MMM d, yyyy")}</p>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="font-medium">${(investment.total_usd_cent_value / 100).toLocaleString()}</span>
-            {(() => {
-              switch (investment.status) {
-                case "completed":
-                  return <Badge>Completed</Badge>;
-                case "awaiting_payment":
-                case "awaiting_confirmation":
-                  return <Badge variant="outline">Pending</Badge>;
-                default:
-                  return <Badge variant="destructive">Withdrawn</Badge>;
-              }
-            })()}
-          </div>
-        </div>
-      ))}
-    </ScrollArea>
+    <div>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="hidden md:table-cell">Date</TableHead>
+            <TableHead>Amount</TableHead>
+            <TableHead className="hidden md:table-cell">Shares</TableHead>
+            <TableHead className="hidden md:table-cell">Price per Share</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead>Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {investmentData?.investments?.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={6} className="h-24 text-center">No investments found</TableCell>
+            </TableRow>
+          ) : investmentData?.investments?.map((investment) => (
+            <TableRow key={investment.id}>
+              <TableCell className="hidden md:table-cell">
+                {format(investment.created_at, "MMM d, yyyy")}
+              </TableCell>
+              <TableCell>
+                ${(investment.total_usd_cent_value / 100).toLocaleString()} USD
+              </TableCell>
+              <TableCell className="hidden md:table-cell">
+                {investment.share_quantity}
+              </TableCell>
+              <TableCell className="hidden md:table-cell">
+                {formatCurrency(investment.total_usd_cent_value / investment.share_quantity / 100, "USD", "en-US")} USD
+              </TableCell>
+              <TableCell>
+                {investment.status === "awaiting_confirmation" ? (
+                  <Badge variant="outline">
+                    <span className="hidden md:block">Awaiting Payment</span>
+                    <span className="block md:hidden">Incomplete</span>
+                  </Badge>
+                ) : investment.status === "round_closed" ? (
+                  <Badge variant="destructive">
+                    <span className="hidden md:block">Round Closed</span>
+                    <span className="block md:hidden">Closed</span>
+                  </Badge>
+                ) : investment.status === "awaiting_payment" ? (
+                  <Badge variant="outline">Processing Payment</Badge>
+                ) : investment.status === "payment_completed" ? (
+                  <Badge variant="outline">Awaiting Round Completion</Badge>
+                ) : (
+                  <Badge variant="default">Completed</Badge>
+                )}
+              </TableCell>
+              <TableCell>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="h-8 w-8 p-0">
+                      <span className="sr-only">Open menu</span>
+                      <MoreHorizontal className="size-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    {investment.status === "awaiting_confirmation" && (
+                      <DropdownMenuItem>
+                        <CheckoutModal
+                          investmentId={investment.id}
+                          amount={investment.total_usd_cent_value}
+                          currency="usd"
+                          triggerText="Complete Payment"
+                        />
+                      </DropdownMenuItem>
+                    )}
+                    <DropdownMenuItem asChild>
+                      <Link href={redirects.app.rounds(investment.round_id)}>
+                        View Round
+                      </Link>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+      {investmentData?.next_cursor && (
+        // TODO: add pagination
+        <Link href={"#"} className={cn(buttonVariants(), "w-full mt-2")}>View All</Link>
+      )}
+    </div>
   );
 };
 
@@ -52,8 +123,7 @@ async function PortfolioChartAsync() {
 export default async function PortfolioPage() {
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-2xl font-semibold">Hey, Kareem!</h1>
-      <Card className="col-span-2 h-auto">
+      <Card>
         <CardHeader>
           <CardTitle>Portfolio Value</CardTitle>
           <CardDescription>A snapshot of your current portfolio over the last 12 months</CardDescription>
@@ -64,30 +134,17 @@ export default async function PortfolioPage() {
           </Suspense>
         </CardContent>
       </Card>
-      <div className="flex gap-4 [&>*]:w-full [&>*]:h-min flex-grow">
-        <Card >
-          <CardHeader>
-            <CardTitle>Recent Investments</CardTitle>
-            <CardDescription>A list of your recent investments</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Suspense fallback={<div>Loading...</div>}>
-              <InvestmentsAsync />
-            </Suspense>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Transactions</CardTitle>
-            <CardDescription>A list of your recent payments</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Suspense fallback={<div>Loading...</div>}>
-              <RecentTransactionsList className="h-72" />
-            </Suspense>
-          </CardContent>
-        </Card>
-      </div>
+      <Card >
+        <CardHeader>
+          <CardTitle>Recent Investments</CardTitle>
+          <CardDescription>A list of your recent investments</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Suspense fallback={<div>Loading...</div>}>
+            <InvestmentsAsync />
+          </Suspense>
+        </CardContent>
+      </Card>
     </div>
   )
 }

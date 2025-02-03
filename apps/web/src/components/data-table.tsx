@@ -35,6 +35,7 @@ import {
   DropdownMenuTrigger,
 } from "@repo/ui/components/dropdown-menu"
 import { Icons } from "./icons"
+import { Skeleton } from "@repo/ui/components/skeleton"
 
 interface DataTableViewOptionsProps<TData> {
   table: TableType<TData>
@@ -228,17 +229,33 @@ export const DataTablePagination = <TData,>({
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
+  isLoading?: boolean
 }
 
 export const DataTable = <TData, TValue>({
   columns,
   data,
+  isLoading = false,
 }: DataTableProps<TData, TValue>) => {
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
   })
+
+  const TableSkeleton = () => (
+    <TableBody>
+      {Array.from({ length: 5 }).map((_, i) => (
+        <TableRow key={i}>
+          {columns.map((_, cellIndex) => (
+            <TableCell key={cellIndex}>
+              <Skeleton className="h-6 w-[100px]" />
+            </TableCell>
+          ))}
+        </TableRow>
+      ))}
+    </TableBody>
+  )
 
   return (
     <div className="rounded-md border">
@@ -261,28 +278,32 @@ export const DataTable = <TData, TValue>({
             </TableRow>
           ))}
         </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
+        {isLoading ? (
+          <TableSkeleton />
+        ) : (
+          <TableBody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={columns.length} className="h-24 text-center">
+                  No results.
+                </TableCell>
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
+            )}
+          </TableBody>
+        )}
       </Table>
     </div>
   )

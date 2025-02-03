@@ -72,6 +72,7 @@ const CheckoutForm = forwardRef<EmbeddedCheckoutFormRef, CheckoutFormProps>(({ i
     const { error: submitError } = await elements.submit();
     if (submitError) {
       onError(submitError.message ?? "Failed to submit form");
+      setIsLoading(false);
       return false;
     }
 
@@ -83,6 +84,7 @@ const CheckoutForm = forwardRef<EmbeddedCheckoutFormRef, CheckoutFormProps>(({ i
 
     if (error) {
       onError(error.message ?? "Failed to create confirmation token");
+      setIsLoading(false);
       return false;
     }
 
@@ -94,6 +96,7 @@ const CheckoutForm = forwardRef<EmbeddedCheckoutFormRef, CheckoutFormProps>(({ i
 
     if (!confirmation) {
       onError("Failed to confirm payment");
+      setIsLoading(false);
       return false;
     }
 
@@ -106,6 +109,7 @@ const CheckoutForm = forwardRef<EmbeddedCheckoutFormRef, CheckoutFormProps>(({ i
 
       if (error) {
         onError(error.message ?? "Failed to handle next action");
+        setIsLoading(false);
         return false;
       }
     }

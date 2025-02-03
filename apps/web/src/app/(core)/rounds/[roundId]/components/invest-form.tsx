@@ -24,8 +24,8 @@ import { redirect, usePathname } from "next/navigation";
 import { getAccountAction, getSessionAction, getStripeIdentityAction } from "@/actions/auth";
 import { upsertInvestmentAction } from "@/actions/investment";
 import { RichTextDisplay } from "@/components/rich-text/rich-text-display";
-import { VerifyIdentityModalButton } from "@/components/stipe/verify-identity-modal-button";
-import { EmbeddedCheckoutForm, EmbeddedCheckoutFormRef } from "@/components/stipe/embedded-checkout";
+import { VerifyIdentityModalButton } from "@/components/stripe/verify-identity-modal-button";
+import { EmbeddedCheckoutForm, EmbeddedCheckoutFormRef } from "@/components/stripe/embedded-checkout";
 import { useRouter } from "next/navigation";
 type InvestFormValues = z.infer<typeof zCreateInvestmentParams>;
 

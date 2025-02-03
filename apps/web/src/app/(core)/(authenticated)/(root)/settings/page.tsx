@@ -7,7 +7,7 @@ import {
   AccordionTrigger,
 } from "@repo/ui/components/accordion"
 import { getStripeIdentityAction } from "@/actions/auth";
-import { VerifyIdentityModalButton } from "@/components/stipe/verify-identity-modal-button";
+import { VerifyIdentityModalButton } from "@/components/stripe/verify-identity-modal-button";
 
 export default async function AccountSettingsPage() {
   //TODO: consider moving to client
