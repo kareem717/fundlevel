@@ -47,17 +47,15 @@ export default async function BusinessDashboardLayout({ children, params }: { ch
   if (!stripeAccount || stripeAccount.stripe_disabled_reason) {
     //todo: fix css
     alertComponent = (
-      <Alert className="max-w-lg absolute bottom-2 left-1/2 -translate-x-1/2 sm:top-4 sm:bottom-auto w-[calc(100%-16px)]">
+      <Alert className="max-w-lg fixed bottom-2 left-1/2 -translate-x-1/2 sm:top-4 sm:bottom-auto w-[calc(100%-16px)]">
         <AlertTitle>Heads up!</AlertTitle>
         <AlertDescription className="flex gap-2 mt-2">
           Please finish setting up your Stripe account to fully use the platform.
-
           <StripeOnboardRedirector
             businessId={business.id}
             text="Finish"
           />
         </AlertDescription>
-
       </Alert>
     )
   }
