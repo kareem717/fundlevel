@@ -5,14 +5,21 @@ import {
 	actionClientWithAccount,
 	actionClientWithUser,
 } from "@/lib/safe-action";
+import {
+	ACCOUNT_HEADER_KEY,
+	USER_HEADER_KEY,
+} from "@/lib/utils/supabase/middleware";
 import { createClient } from "@/lib/utils/supabase/server";
 import {
 	createAccount,
 	updateAccount,
 	getStripeIdentityVerificationSessionUrl,
 	getStripeIdentity,
+	Account,
 } from "@repo/sdk";
 import { zCreateAccountParams, zUpdateAccountParams } from "@repo/sdk/zod";
+import { SupabaseClient, User } from "@supabase/supabase-js";
+import { headers } from "next/headers";
 import { cache } from "react";
 import { z } from "zod";
 
@@ -29,6 +36,7 @@ export const createAccountAction = actionClientWithUser
 
 export const getAccountAction = cache(
 	actionClientWithAccount.action(async ({ ctx: { account } }) => {
+		console.trace("getAccountAction");
 		if (!account) {
 			throw new Error("Account not found");
 		}
@@ -50,10 +58,11 @@ export const getSessionAction = cache(
 
 export const getUserAction = cache(
 	actionClient.action(async () => {
-		const sb = await createClient();
+		const client = await createClient();
 		const {
 			data: { user },
-		} = await sb.auth.getUser();
+		} = await client.auth.getUser();
+
 		return user;
 	})
 );
@@ -98,3 +107,30 @@ export const getStripeIdentityAction = cache(
 		return data;
 	})
 );
+
+export const getMiddlewareAuthAction = cache(async () => {
+	const headersList = await headers();
+	const user = headersList.get(USER_HEADER_KEY);
+	const account = headersList.get(ACCOUNT_HEADER_KEY);
+
+	let userData: User | null = null;
+	let accountData: Account | null = null;
+
+	if (user && user != "{}") {
+		try {
+			userData = JSON.parse(user);
+		} catch (error) {
+			console.error(error);
+		}
+	}
+
+	if (account && account != "{}") {
+		try {
+			accountData = JSON.parse(account);
+		} catch (error) {
+			console.error(error);
+		}
+	}
+
+	return { user: userData, account: accountData };
+});

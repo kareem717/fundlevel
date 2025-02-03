@@ -1,24 +1,16 @@
-import { getAccountAction, getUserAction } from "@/actions/auth";
+import { getUserAction } from "@/actions/auth";
 import { CreateAccountForm } from "@/components/auth/create-account-form";
 import { LegalContainer } from "@/components/legal-container";
 import { Card, CardTitle, CardDescription, CardHeader, CardContent } from "@repo/ui/components/card";
-import { redirects } from "@/lib/config/redirects";
-import { redirect } from "next/navigation";
 
 export default async function CreateAccountPage() {
-  const userResult = await getUserAction()
+  const user = (await getUserAction())?.data
 
-  if (!userResult?.data) {
-    return redirect(redirects.auth.login)
+  if (!user) {
+    throw new Error("User not found")
   }
 
-  const result = await getAccountAction()
-
-  if (result?.data) {
-    return redirect(redirects.app.root)
-  }
-
-  const userFullName = userResult.data.user_metadata.full_name ?? ""
+  const userFullName = user.user_metadata.full_name ?? ""
   const [firstName = "", lastName = ""] = userFullName.split(" ")
 
   return (

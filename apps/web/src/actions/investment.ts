@@ -85,14 +85,12 @@ export const getAccountInvestmentsAction = actionClientWithAccount
 		})
 	)
 	.action(async ({ parsedInput, ctx: { axiosClient } }) => {
-		console.log("parsedInput", parsedInput);
 		const resp = await getAccountInvestments({
 			client: axiosClient,
 			query: parsedInput,
 			throwOnError: true,
 		});
 
-		console.log("resp", resp);
 		return resp.data;
 	});
 

@@ -2,8 +2,6 @@ import { getBusinessesAction } from "@/actions/business";
 import Link from "next/link";
 import { redirects } from "@/lib/config/redirects";
 
-export const dynamic = "force-dynamic";
-
 export default async function RootDashboardPage() {
   const response = await getBusinessesAction()
 

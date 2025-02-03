@@ -1,18 +1,18 @@
 "use client";
 
 import { FC, ReactNode } from "react";
-import { User as SupabaseUser } from "@supabase/supabase-js";
+import { User } from "@supabase/supabase-js";
 import { createContext, useContext } from "react";
 import { Account } from "@repo/sdk";
 
 export interface AuthProviderProps {
-  user?: SupabaseUser | undefined;
-  account?: Account | undefined;
+  user?: User | null;
+  account?: Account | null;
 };
 
 const AuthContext = createContext<AuthProviderProps>({
-  user: undefined,
-  account: undefined,
+  user: null,
+  account: null,
 });
 
 export const useAuth = () => {

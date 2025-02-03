@@ -1,56 +1,65 @@
 import { redirects } from "@/lib/config/redirects";
-import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
-import { env } from "@/env";
+import { getAccountAction, getUserAction } from "@/actions/auth";
+
+export const USER_HEADER_KEY = "user";
+export const ACCOUNT_HEADER_KEY = "account";
 
 export const updateSession = async (request: NextRequest) => {
 	// This `try/catch` block is only here for the interactive tutorial.
 	// Feel free to remove once you have Supabase connected.
 	try {
-		// Create an unmodified response
-		let response = NextResponse.next({
-			request: {
-				headers: request.headers,
-			},
-		});
-
-		const supabase = createServerClient(
-			env.NEXT_PUBLIC_SUPABASE_URL,
-			env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-			{
-				cookies: {
-					getAll() {
-						return request.cookies.getAll();
-					},
-					setAll(cookiesToSet) {
-						cookiesToSet.forEach(({ name, value }) =>
-							request.cookies.set(name, value)
-						);
-						response = NextResponse.next({
-							request,
-						});
-						cookiesToSet.forEach(({ name, value, options }) =>
-							response.cookies.set(name, value, options)
-						);
-					},
-				},
-			}
-		);
-
 		// This will refresh session if expired - required for Server Components
 		// https://supabase.com/docs/guides/auth/server-side/nextjs
-		const user = await supabase.auth.getUser();
+		//TODO: handle error
+		const user = (await getUserAction())?.data;
+
+		if (!user) {
+			if (
+				request.nextUrl.pathname.includes(redirects.auth.createAccount) ||
+				request.nextUrl.pathname.includes(redirects.auth.logout) ||
+				request.nextUrl.pathname.includes(redirects.app.root)
+			) {
+				return NextResponse.redirect(
+					new URL(redirects.auth.login, request.url)
+				);
+			}
+		} else {
+			if (
+				request.nextUrl.pathname.includes(redirects.auth.login) ||
+				request.nextUrl.pathname.includes(redirects.auth.otp()) ||
+				request.nextUrl.pathname.includes(redirects.auth.callback())
+			) {
+				return NextResponse.redirect(
+					new URL(redirects.auth.logout, request.url)
+				);
+			}
+		}
+
+		const account = (await getAccountAction())?.data;
 
 		// protected routes
-		if (request.nextUrl.pathname.includes(redirects.app.root) && user.error) {
-			return NextResponse.redirect(new URL(redirects.auth.login, request.url));
+		if (account) {
+			if (request.nextUrl.pathname.includes(redirects.auth.createAccount)) {
+				return NextResponse.redirect(new URL(redirects.app.root, request.url));
+			}
+		} else {
+			if (request.nextUrl.pathname.includes(redirects.app.root)) {
+				return NextResponse.redirect(
+					new URL(redirects.auth.createAccount, request.url)
+				);
+			}
 		}
 
-		if (request.nextUrl.pathname === "/" && !user.error) {
-			return NextResponse.redirect(new URL(redirects.app.root, request.url));
-		}
+		const headers = new Headers(request.headers);
+		headers.set(USER_HEADER_KEY, user ? JSON.stringify(user) : "{}");
+		headers.set(ACCOUNT_HEADER_KEY, account ? JSON.stringify(account) : "{}");
 
-		return response;
+		return NextResponse.next({
+			request: {
+				headers,
+			},
+		});
 	} catch {
 		// If you are here, a Supabase client could not be created!
 		// This is likely because you have not set up environment variables.

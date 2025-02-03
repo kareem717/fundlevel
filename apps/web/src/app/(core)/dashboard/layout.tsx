@@ -1,38 +1,16 @@
-import { redirect } from "next/navigation";
-import { redirects } from "@/lib/config/redirects";
-import { getAccountAction, getStripeIdentityAction, getUserAction } from "@/actions/auth";
+import { getMiddlewareAuthAction, getStripeIdentityAction } from "@/actions/auth";
 import { AuthProvider } from "@/components/providers/auth-provider";
 import { NotificationProvider, Notification } from "@/components/providers/notification-provider";
 import { VerifyIdentityModalButton } from "@/components/stripe/verify-identity-modal-button";
 
-export default async function CoreLayout({ children }: { children: React.ReactNode }) {
-  let user
-  try {
-    const userResponse = await getUserAction();
-    user = userResponse?.data
-  } catch (error) {
-    console.error('Error fetching user data:', error);
-  }
+export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const { user, account } = await getMiddlewareAuthAction();
 
-  if (!user) {
-    redirect(redirects.auth.login);
-  }
-
-  let account
-  try {
-    const accountResponse = await getAccountAction();
-
-    account = accountResponse?.data
-  } catch (error) {
-    console.error('Error fetching account data:', error);
-  }
-
-  if (!account) {
-    redirect(redirects.auth.createAccount);
+  if (!user || !account) {
+    throw new Error("User or account not found");
   }
 
   const identity = await getStripeIdentityAction();
-
   const notifications: Notification[] = [];
 
   if (!identity?.data) {

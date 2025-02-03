@@ -1,16 +1,8 @@
-import { redirect } from "next/navigation";
-import { redirects } from "@/lib/config/redirects";
 import { LoginForm } from "@/components/auth/login-form";
-import { getSessionAction } from "@/actions/auth";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@repo/ui/components/card";
 import { LegalContainer } from "@/components/legal-container";
 
 export default async function LoginPage() {
-  const session = await getSessionAction()
-
-  if (session?.data) {
-    return redirect(redirects.auth.logout)
-  }
 
   return (
     <LegalContainer>

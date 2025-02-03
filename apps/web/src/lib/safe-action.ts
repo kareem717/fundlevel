@@ -21,7 +21,6 @@ export const actionClient = createSafeActionClient({
 			};
 		}
 
-
 		return {
 			message: parsedError.data.detail,
 			statusCode: parsedError.data.status,

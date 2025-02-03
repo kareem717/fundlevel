@@ -1,13 +1,14 @@
 "use client";
 
-import { Button } from "@repo/ui/components/button";
+import { Button, buttonVariants } from "@repo/ui/components/button";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/utils/supabase/client";
-import { Loader2 } from "lucide-react";
+import {  Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { ComponentPropsWithoutRef, useState } from "react";
 import { redirects } from "@/lib/config/redirects";
 import { useToast } from "@repo/ui/hooks/use-toast";
+import Link from "next/link";
 
 export function LogoutButtons({ className, ...props }: ComponentPropsWithoutRef<"div">) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -39,9 +40,9 @@ export function LogoutButtons({ className, ...props }: ComponentPropsWithoutRef<
         {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
         Logout
       </Button>
-      <Button className="w-full" variant="default" onClick={() => router.back()} disabled={isLoading}>
-        Go back
-      </Button>
+      <Link className={cn(buttonVariants(), "w-full")} href={redirects.app.root}>
+        Dashboard
+      </Link>
     </div>
   );
 };
