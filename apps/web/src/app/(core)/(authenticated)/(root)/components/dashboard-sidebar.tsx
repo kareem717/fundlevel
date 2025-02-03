@@ -4,14 +4,13 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-  SidebarMenuButton,
 } from "@repo/ui/components/sidebar"
 import { SidebarMenu } from "@/components/sidebar/sidebar-menu"
 import { ComponentPropsWithoutRef } from "react"
 import { SidebarUser } from "@/components/sidebar/sidebar-user"
-import { Command } from "lucide-react"
 import { sidebar } from "@/lib/config/sidebar"
 import { SidebarNotification } from "@/components/sidebar/sidebar-notification"
+import { SidebarLogo } from "@/components/sidebar/sidebar-logo"
 
 //TODO: this doesn't have to be a client component
 export function DashboardSidebar({ ...props }: ComponentPropsWithoutRef<typeof Sidebar>) {
@@ -20,16 +19,7 @@ export function DashboardSidebar({ ...props }: ComponentPropsWithoutRef<typeof S
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>
-        <SidebarMenuButton size="lg" asChild>
-          <a href="#">
-            <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-              <Command className="size-4" />
-            </div>
-            <div className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate font-semibold">Dashboard</span>
-            </div>
-          </a>
-        </SidebarMenuButton>
+        <SidebarLogo redirect={false} />
       </SidebarHeader>
       <SidebarContent>
         {dashboard.map((menu) => (
