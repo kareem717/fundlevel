@@ -27,6 +27,7 @@ import { VerifyIdentityModalButton } from "@/components/stripe/verify-identity-m
 import { EmbeddedCheckoutForm, EmbeddedCheckoutFormRef } from "@/components/stripe/embedded-checkout";
 import { useRouter } from "next/navigation";
 import { LexicalViewer } from "@/components/rich-text/viewer";
+
 type InvestFormValues = z.infer<typeof zCreateInvestmentParams>;
 
 export interface InvestFormProps extends ComponentPropsWithoutRef<typeof Card> {
@@ -109,7 +110,9 @@ export function InvestForm({ round, business, terms, defaultShareQuantity, class
     ...props,
   }
 
-  const subTotalFormatted = formatCurrency((round.price_per_share_usd_cents * form.watch("share_quantity")) / 100, "USD", "en-US")
+  const subTotalFormatted = formatCurrency(totalCost / 100, "USD", "en-US")
+  const feeFormatted = formatCurrency(totalCost * 0.02 / 100, "USD", "en-US")
+  const totalFormatted = formatCurrency(totalCost * 1.02 / 100, "USD", "en-US")
 
   const steps: Step<InvestFormValues>[] = [
     {
@@ -319,39 +322,83 @@ export function InvestForm({ round, business, terms, defaultShareQuantity, class
       nextButtonText: "Pay",
       fields: [],
       content: (
-        <Card {...cardProps}>
-          <CardHeader>
-            <CardTitle>Payment Details</CardTitle>
-            <CardDescription>
-              Enter your payment details to complete your investment. You can exit now and come back later to pay.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <p className="text-sm text-muted-foreground">
-              You will be charged {subTotalFormatted} for your investment.
-            </p>
-            <EmbeddedCheckoutForm
-              ref={embeddedCheckoutFormRef}
-              amount={totalCost}
-              //TODO: get from locale
-              currency="usd"
-              //TODO: handle the id better
-              investmentId={investmentId}
-              onError={(error) => toast({
-                title: "Uh oh!",
-                description: error,
-                variant: "destructive",
-              })}
-              onSuccess={() => {
-                toast({
-                  title: "Investment Successful",
-                  description: "You have successfully invested in the round.",
-                });
-                router.push(redirects.app.portfolio);
-              }}
-            />
-          </CardContent>
-        </Card>
+        <div className="flex flex-col gap-4 md:flex-row">
+          <Card {...cardProps}>
+            <CardHeader>
+              <CardTitle>Payment Details</CardTitle>
+              <CardDescription>
+                Enter your payment details to complete your investment. You can exit now and come back later to pay.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-6">
+              <EmbeddedCheckoutForm
+                ref={embeddedCheckoutFormRef}
+                amount={totalCost}
+                //TODO: get from locale
+                currency="usd"
+                //TODO: handle the id better
+                investmentId={investmentId}
+                onError={(error) => toast({
+                  title: "Uh oh!",
+                  description: error,
+                  variant: "destructive",
+                })}
+                onSuccess={() => {
+                  toast({
+                    title: "Investment Successful",
+                    description: "You have successfully invested in the round.",
+                  });
+                  router.push(redirects.app.portfolio);
+                }}
+              />
+            </CardContent>
+          </Card>
+          <Card className="md:max-w-60 w-full md:relative">
+            <CardHeader>
+              <CardTitle>Checkout Details</CardTitle>
+            </CardHeader>
+              <div className="px-6 mb-4">
+                <TooltipProvider>
+                  <p className="text-sm text-muted-foreground flex justify-between">
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <span className="underline cursor-pointer hover:text-foreground">
+                          Investment Amount
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        The total amount you are investing in shares
+                      </TooltipContent>
+                    </Tooltip>
+                    <span>
+                      {subTotalFormatted}
+                    </span>
+                  </p>
+                  <p className="text-sm text-muted-foreground flex justify-between">
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <span className="underline cursor-pointer hover:text-foreground">
+                          Platform Fee
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        A 2% fee charged by the platform
+                      </TooltipContent>
+                    </Tooltip>
+                    <span>
+                      {feeFormatted}
+                    </span>
+                  </p>
+                </TooltipProvider>
+              </div>
+              <div className="md:absolute pb-4 md:pb-0 bottom-4 font-bold text-sm border-t pt-4 px-6 w-full justify-between flex">
+                Total
+                <span>
+                  {totalFormatted}
+                </span>
+              </div>
+          </Card>
+        </div>
       ),
     },
 
