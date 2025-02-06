@@ -36,7 +36,6 @@ export const createAccountAction = actionClientWithUser
 
 export const getAccountAction = cache(
 	actionClientWithAccount.action(async ({ ctx: { account } }) => {
-		console.trace("getAccountAction");
 		if (!account) {
 			throw new Error("Account not found");
 		}

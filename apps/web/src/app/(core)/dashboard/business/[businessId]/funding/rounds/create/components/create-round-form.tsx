@@ -26,13 +26,15 @@ import { z } from "zod";
 import { Label } from "@repo/ui/components/label";
 import { formatCurrency } from "@/lib/utils";
 import { Separator } from "@repo/ui/components/separator";
-import { RichTextEditor } from "@/components/rich-text/rich-text-editor";
+import { LexicalEditor } from "@/components/rich-text/editor";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@repo/ui/components/tabs";
 
 export function CreateRoundForm({ className, ...props }: ComponentPropsWithoutRef<"form">) {
   const router = useRouter()
   const { selectedBusiness } = useBusiness()
   const [valuation, setValuation] = useState<number>(1000000)
   const [forSale, setForSale] = useState<number>(10)
+  const [activeTab, setActiveTab] = useState("description")
   const { toast } = useToast();
 
   const { form, action: { isExecuting, executeAsync } } =
@@ -99,6 +101,15 @@ export function CreateRoundForm({ className, ...props }: ComponentPropsWithoutRe
       setForSale(((sharesForSale / totalShares) * 100))
     }
   }, [sharesForSale, totalShares])
+
+  useEffect(() => {
+    const errors = form.formState.errors;
+    if (errors.round?.description) {
+      setActiveTab("description");
+    } else if (errors.terms?.content) {
+      setActiveTab("terms");
+    }
+  }, [form.formState.errors]);
 
   return (
     <Form {...form}>
@@ -181,38 +192,56 @@ export function CreateRoundForm({ className, ...props }: ComponentPropsWithoutRe
           </div>
         </div>
         <Separator />
-        <FormField
-          control={form.control}
-          name="round.description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Description</FormLabel>
-              <FormControl>
-                <RichTextEditor onChange={field.onChange} initialContent={field.value} />
-              </FormControl>
-              <FormDescription>
-                Describe this funding round
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="terms.content"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Terms & Conditions</FormLabel>
-              <FormControl>
-                <RichTextEditor onChange={field.onChange} initialContent={field.value} />
-              </FormControl>
-              <FormDescription>
-                Enter the investor terms and conditions for this funding round
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <Tabs value={activeTab} onValueChange={setActiveTab} defaultValue="description" className="w-full">
+          <TabsList className="w-full flex">
+            <TabsTrigger value="description" className="flex-1">Description</TabsTrigger>
+            <TabsTrigger value="terms" className="flex-1">Terms & Conditions</TabsTrigger>
+          </TabsList>
+          <TabsContent value="description">
+            <FormField
+              control={form.control}
+              name="round.description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <LexicalEditor
+                      onChange={(e) => {
+                        field.onChange(JSON.stringify(e.toJSON()))
+                      }}
+                      initialEditorState={field.value}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Describe this funding round
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </TabsContent>
+          <TabsContent value="terms">
+            <FormField
+              control={form.control}
+              name="terms.content"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <LexicalEditor
+                      onChange={(e) => {
+                        field.onChange(JSON.stringify(e.toJSON()))
+                      }}
+                      initialEditorState={field.value}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Enter the investor terms and conditions for this funding round
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </TabsContent>
+        </Tabs>
         <Button type="submit" disabled={isExecuting} className="w-full">
           {isExecuting && <Loader2 className="w-4 h-4 animate-spin" />}
           Create Funding Round
@@ -221,4 +250,3 @@ export function CreateRoundForm({ className, ...props }: ComponentPropsWithoutRe
     </Form>
   )
 }
-

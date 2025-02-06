@@ -7,7 +7,7 @@ import { Input } from "@repo/ui/components/input";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Business, Investment, Round, RoundTerm } from "@repo/sdk";
+import { Business, Round, RoundTerm } from "@repo/sdk";
 import { ComponentPropsWithoutRef, useRef, useState } from "react";
 import { cn, formatCurrency, formatNumber } from "@/lib/utils";
 import Link from "next/link";
@@ -23,10 +23,10 @@ import { ToastAction } from "@repo/ui/components/toast";
 import { redirect, usePathname } from "next/navigation";
 import { getAccountAction, getSessionAction, getStripeIdentityAction } from "@/actions/auth";
 import { upsertInvestmentAction } from "@/actions/investment";
-import { RichTextDisplay } from "@/components/rich-text/rich-text-display";
 import { VerifyIdentityModalButton } from "@/components/stripe/verify-identity-modal-button";
 import { EmbeddedCheckoutForm, EmbeddedCheckoutFormRef } from "@/components/stripe/embedded-checkout";
 import { useRouter } from "next/navigation";
+import { LexicalViewer } from "@/components/rich-text/viewer";
 type InvestFormValues = z.infer<typeof zCreateInvestmentParams>;
 
 export interface InvestFormProps extends ComponentPropsWithoutRef<typeof Card> {
@@ -123,7 +123,9 @@ export function InvestForm({ round, business, terms, defaultShareQuantity, class
             </CardDescription>
           </CardHeader>
           <CardContent className="px-8">
-            <RichTextDisplay content={round.description} />
+            <LexicalViewer
+              editorState={round.description}
+            />
           </CardContent>
           <CardFooter>
             <p className="text-xs text-muted-foreground">
@@ -146,7 +148,9 @@ export function InvestForm({ round, business, terms, defaultShareQuantity, class
             </CardDescription>
           </CardHeader>
           <CardContent className="px-8">
-            <RichTextDisplay content={terms.content} />
+            <LexicalViewer
+              editorState={terms.content}
+            />
           </CardContent>
           <CardFooter>
             <p className="text-xs text-muted-foreground">
