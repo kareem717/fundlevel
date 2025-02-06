@@ -209,6 +209,7 @@ export function CreateRoundForm({ className, ...props }: ComponentPropsWithoutRe
                         field.onChange(JSON.stringify(e.toJSON()))
                       }}
                       initialEditorState={field.value}
+                      contentClassName="min-h-72"
                     />
                   </FormControl>
                   <FormDescription>
@@ -230,6 +231,7 @@ export function CreateRoundForm({ className, ...props }: ComponentPropsWithoutRe
                       onChange={(e) => {
                         field.onChange(JSON.stringify(e.toJSON()))
                       }}
+                      contentClassName="min-h-72"
                       initialEditorState={field.value}
                     />
                   </FormControl>

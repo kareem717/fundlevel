@@ -91,10 +91,10 @@ import { TableHoverActionsPlugin } from '@/components/rich-text/plugins/table-ho
 import { ToolbarPlugin } from '@/components/rich-text/plugins/toolbar/toolbar-plugin'
 import { MARKDOWN_TRANSFORMERS } from '@/components/rich-text/transformers/markdown-transformers'
 import { ContentEditable } from '@/components/rich-text/editor-ui/content-editable'
-
+import { cn } from '@/lib/utils'
 const placeholder = 'Press / for commands...'
 
-export function Plugins({ maxLength = 500 }: { maxLength?: number }) {
+export function Plugins({ maxLength = 500, className }: { maxLength?: number, className?: string }) {
   const [floatingAnchorElem, setFloatingAnchorElem] =
     useState<HTMLDivElement | null>(null)
 
@@ -165,7 +165,7 @@ export function Plugins({ maxLength = 500 }: { maxLength?: number }) {
           contentEditable={
             <div className="">
               <div className="" ref={onRef}>
-                <ContentEditable placeholder={placeholder} className='ContentEditable__root relative block min-h-72 overflow-auto min-h-full px-8 py-4 focus:outline-none h-[830px]' />
+                <ContentEditable placeholder={placeholder} className={cn('ContentEditable__root relative block min-h-72 overflow-auto px-8 py-4 focus:outline-none', className)} />
               </div>
             </div>
           }

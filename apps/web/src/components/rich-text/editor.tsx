@@ -32,6 +32,7 @@ export interface LexicalEditorProps extends Omit<ComponentPropsWithoutRef<'div'>
   onChange?: (editorState: EditorState) => void
   onSerializedChange?: (editorSerializedState: SerializedEditorState) => void
   maxLength?: number
+  contentClassName?: string
 }
 
 export function LexicalEditor({
@@ -40,6 +41,7 @@ export function LexicalEditor({
   onSerializedChange,
   className,
   maxLength,
+  contentClassName,
   ...props
 }: LexicalEditorProps) {
   return (
@@ -53,7 +55,7 @@ export function LexicalEditor({
         <TooltipProvider>
           <SharedAutocompleteContext>
             <FloatingLinkContext>
-              <Plugins maxLength={maxLength} />
+              <Plugins maxLength={maxLength} className={contentClassName} />
               <OnChangePlugin
                 ignoreSelectionChange={true}
                 onChange={(editorState) => {
