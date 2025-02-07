@@ -11,7 +11,6 @@ import { ComponentPropsWithoutRef } from 'react'
 import { cn } from '@/lib/utils'
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin'
 import { ContentEditable } from '@lexical/react/LexicalContentEditable'
-import { ErrorBoundary } from 'react-error-boundary'
 import '@/components/rich-text/themes/editor-theme.css'
 import '@/components/rich-text/nodes/page-break-node.css'
 
@@ -27,15 +26,17 @@ const editorConfig: InitialConfigType = {
 
 export interface LexicalViewerProps extends ComponentPropsWithoutRef<'div'> {
   editorState: InitialEditorStateType
+  contentClassName?: string
 }
 
 export function LexicalViewer({
   className,
   editorState,
+  contentClassName,
   ...props
 }: LexicalViewerProps) {
   return (
-    <div className={cn("overflow-hidden rounded-lg border bg-background shadow", className)} {...props}>
+    <div className={cn("overflow-hidden bg-background", className)} {...props}>
       <LexicalComposer
         initialConfig={{
           ...editorConfig,
@@ -46,7 +47,7 @@ export function LexicalViewer({
           contentEditable={
             <ContentEditable
               placeholder=''
-              className="min-h-[50px] px-4 py-2 focus:outline-none cursor-default"
+              className={cn('ContentEditable__root relative block min-h-72 overflow-auto px-8 py-4 focus:outline-none', contentClassName)}
               aria-placeholder=''
             />
           }
