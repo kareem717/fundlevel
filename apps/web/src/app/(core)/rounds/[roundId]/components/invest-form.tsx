@@ -110,9 +110,11 @@ export function InvestForm({ round, business, terms, defaultShareQuantity, class
     ...props,
   }
 
-  const subTotalFormatted = formatCurrency(totalCost / 100, "USD", "en-US")
-  const feeFormatted = formatCurrency(totalCost * 0.02 / 100, "USD", "en-US")
-  const totalFormatted = formatCurrency(totalCost * 1.02 / 100, "USD", "en-US")
+  const dollarCost = form.watch("share_quantity") * round.price_per_share_usd_cents / 100
+
+  const subTotalFormatted = formatCurrency(dollarCost, "USD", "en-US")
+  const feeFormatted = formatCurrency(dollarCost * 0.02, "USD", "en-US")
+  const totalFormatted = formatCurrency(dollarCost * 1.02 , "USD", "en-US")
 
   const steps: Step<InvestFormValues>[] = [
     {
@@ -128,6 +130,7 @@ export function InvestForm({ round, business, terms, defaultShareQuantity, class
           <CardContent className="px-8">
             <LexicalViewer
               editorState={round.description}
+              contentClassName="h-40"
             />
           </CardContent>
           <CardFooter>
