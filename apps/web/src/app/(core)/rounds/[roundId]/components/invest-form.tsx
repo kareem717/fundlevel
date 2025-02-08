@@ -124,21 +124,16 @@ export function InvestForm({ round, business, terms, defaultShareQuantity, class
           <CardHeader>
             <CardTitle>Invest in {business.display_name}</CardTitle>
             <CardDescription>
-              Review the round details before proceeding with your investment
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="px-8">
-            <LexicalViewer
-              editorState={round.description}
-              contentClassName="h-40"
-            />
-          </CardContent>
-          <CardFooter>
-            <p className="text-xs text-muted-foreground">
+              Review the round details before proceeding with your investment.
               By proceeding, you agree to the <Link href={redirects.legal.terms} className="underline text-foreground">Terms of Service</Link> {" "}
               and <Link href={redirects.legal.privacy} className="underline text-foreground">Privacy Policy</Link>.
-            </p>
-          </CardFooter>
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="px-0">
+            <LexicalViewer
+              editorState={round.description}
+            />
+          </CardContent>
         </Card >
       ),
       nextButtonText: "Invest",
@@ -150,20 +145,16 @@ export function InvestForm({ round, business, terms, defaultShareQuantity, class
           <CardHeader>
             <CardTitle>Accept Terms</CardTitle>
             <CardDescription>
-              Review the round terms and conditions before proceeding with your investment
+              Review the round terms and conditions before proceeding with your investment.
+              By proceeding, you agree to the <Link href={redirects.legal.terms} className="underline text-foreground">Terms of Service</Link> {" "}
+              and <Link href={redirects.legal.privacy} className="underline text-foreground">Privacy Policy</Link>.
             </CardDescription>
           </CardHeader>
-          <CardContent className="px-8">
+          <CardContent className="px-0">
             <LexicalViewer
               editorState={terms.content}
             />
           </CardContent>
-          <CardFooter>
-            <p className="text-xs text-muted-foreground">
-              By proceeding, you agree to the <Link href={redirects.legal.terms} className="underline text-foreground">Terms of Service</Link> {" "}
-              and <Link href={redirects.legal.privacy} className="underline text-foreground">Privacy Policy</Link>.
-            </p>
-          </CardFooter>
         </Card >
       ),
       nextButtonText: "Accept",
