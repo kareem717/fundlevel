@@ -54,11 +54,13 @@ const parseAsEmail = createParser({
 
 export interface VerifyOTPFormProps extends Omit<ComponentPropsWithoutRef<"form">, "onSubmit"> {
   redirectTo?: string;
+  replacePath?: boolean
 }
 
 export function VerifyOTPForm({
   className,
   redirectTo = redirects.auth.afterLogin,
+  replacePath,
   ...props
 }: VerifyOTPFormProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -127,7 +129,11 @@ export function VerifyOTPForm({
         description: "You've been logged in.",
       });
 
-      router.push(redirectTo);
+      if (replacePath) {
+        router.replace(redirectTo);
+      } else {
+        router.push(redirectTo);
+      }
     }
   }
 

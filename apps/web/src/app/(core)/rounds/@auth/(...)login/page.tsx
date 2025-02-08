@@ -3,15 +3,22 @@
 import { LoginForm } from "@/components/auth/login-form"
 import { Dialog, DialogTitle, DialogDescription, DialogHeader, DialogContent } from "@repo/ui/components/dialog"
 import { useRouter, useSearchParams } from "next/navigation"
+import { useState } from "react"
 
 export default function LoginModal() {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const [open, setOpen] = useState<boolean>(true)
 
   const redirect = searchParams.get('redirect')
 
+  function closeDialog() {
+    setOpen(false)
+    router.back()
+  }
+
   return (
-    <Dialog open={true} onOpenChange={() => !open && router.back()}>
+    <Dialog open={open} onOpenChange={closeDialog}>
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>Login</DialogTitle>
@@ -20,7 +27,7 @@ export default function LoginModal() {
           </DialogDescription>
         </DialogHeader>
         <div className="px-4 pt-4">
-          <LoginForm afterOAuthRedirect={redirect ?? undefined} />
+          <LoginForm afterOAuthRedirect={redirect ?? undefined} replacePath />
         </div>
       </DialogContent>
     </Dialog>

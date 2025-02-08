@@ -35,11 +35,13 @@ const formSchema = z.object({
 
 export interface LoginFormProps extends ComponentPropsWithoutRef<"div"> {
   afterOAuthRedirect?: string;
+  replacePath?: boolean
 }
 
 export function LoginForm({
   className,
   afterOAuthRedirect,
+  replacePath,
   ...props
 }: LoginFormProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -78,7 +80,11 @@ export function LoginForm({
         description: "We've sent you a OTP to login.",
       });
 
-      router.push(redirects.auth.otp(values.email));
+      if (replacePath) {
+        router.replace(redirects.auth.otp(values.email));
+      } else {
+        router.push(redirects.auth.otp(values.email));
+      }
     }
   }
 

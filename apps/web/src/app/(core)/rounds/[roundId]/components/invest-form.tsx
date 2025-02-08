@@ -20,7 +20,7 @@ import { TooltipProvider } from "@repo/ui/components/tooltip";
 import { Info } from "lucide-react";
 import { useToast } from "@repo/ui/hooks/use-toast";
 import { ToastAction } from "@repo/ui/components/toast";
-import { redirect, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { getAccountAction, getSessionAction, getStripeIdentityAction } from "@/actions/auth";
 import { upsertInvestmentAction } from "@/actions/investment";
 import { VerifyIdentityModalButton } from "@/components/stripe/verify-identity-modal-button";
@@ -59,7 +59,7 @@ function BreakdownField({ label, value, tooltip }: { label: string, value: strin
 }
 
 export function InvestForm({ round, business, terms, defaultShareQuantity, className, ...props }: InvestFormProps) {
-  const { toast } = useToast()
+  const { toast, dismiss } = useToast()
   const currentPath = usePathname()
   const embeddedCheckoutFormRef = useRef<EmbeddedCheckoutFormRef>(null);
   const [investmentId, setInvestmentId] = useState<number>(0);
@@ -114,7 +114,7 @@ export function InvestForm({ round, business, terms, defaultShareQuantity, class
 
   const subTotalFormatted = formatCurrency(dollarCost, "USD", "en-US")
   const feeFormatted = formatCurrency(dollarCost * 0.02, "USD", "en-US")
-  const totalFormatted = formatCurrency(dollarCost * 1.02 , "USD", "en-US")
+  const totalFormatted = formatCurrency(dollarCost * 1.02, "USD", "en-US")
 
   const steps: Step<InvestFormValues>[] = [
     {
@@ -172,6 +172,8 @@ export function InvestForm({ round, business, terms, defaultShareQuantity, class
         if (!resp?.data) {
           return false
         }
+
+        return true
       },
     },
     {
@@ -281,21 +283,29 @@ export function InvestForm({ round, business, terms, defaultShareQuantity, class
         // If the investment is not null and the share quantity is different, we can up
         const session = await getSessionAction();
         if (!session?.data) {
-          redirect(redirects.auth.login + `?redirect=${currentPath}`);
+          router.push(redirects.auth.login + `?redirect=${currentPath}`);
+          return false
         }
 
         const resp = await getAccountAction();
         if (!resp?.data) {
-          redirect(redirects.auth.createAccount);
+          router.push(redirects.auth.createAccount);
+          return false
         }
 
         const identity = await getStripeIdentityAction();
         if (!identity?.data) {
+          const toastId = "verify-toast"
           toast({
+            itemID: toastId,
             title: "Hold on!",
             description: "We need you to log in and verify your identity before you can invest.",
             action: (
-              <VerifyIdentityModalButton variant="secondary" size="sm" />
+              <VerifyIdentityModalButton
+                variant="secondary"
+                size="sm"
+                onClick={() => dismiss(toastId)}
+              />
             )
           })
 
@@ -360,46 +370,46 @@ export function InvestForm({ round, business, terms, defaultShareQuantity, class
             <CardHeader>
               <CardTitle>Checkout Details</CardTitle>
             </CardHeader>
-              <div className="px-6 mb-4">
-                <TooltipProvider>
-                  <p className="text-sm text-muted-foreground flex justify-between">
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <span className="underline cursor-pointer hover:text-foreground">
-                          Investment Amount
-                        </span>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        The total amount you are investing in shares
-                      </TooltipContent>
-                    </Tooltip>
-                    <span>
-                      {subTotalFormatted}
-                    </span>
-                  </p>
-                  <p className="text-sm text-muted-foreground flex justify-between">
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <span className="underline cursor-pointer hover:text-foreground">
-                          Platform Fee
-                        </span>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        A 2% fee charged by the platform
-                      </TooltipContent>
-                    </Tooltip>
-                    <span>
-                      {feeFormatted}
-                    </span>
-                  </p>
-                </TooltipProvider>
-              </div>
-              <div className="md:absolute pb-4 md:pb-0 bottom-4 font-bold text-sm border-t pt-4 px-6 w-full justify-between flex">
-                Total
-                <span>
-                  {totalFormatted}
-                </span>
-              </div>
+            <div className="px-6 mb-4">
+              <TooltipProvider>
+                <p className="text-sm text-muted-foreground flex justify-between">
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span className="underline cursor-pointer hover:text-foreground">
+                        Investment Amount
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      The total amount you are investing in shares
+                    </TooltipContent>
+                  </Tooltip>
+                  <span>
+                    {subTotalFormatted}
+                  </span>
+                </p>
+                <p className="text-sm text-muted-foreground flex justify-between">
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span className="underline cursor-pointer hover:text-foreground">
+                        Platform Fee
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      A 2% fee charged by the platform
+                    </TooltipContent>
+                  </Tooltip>
+                  <span>
+                    {feeFormatted}
+                  </span>
+                </p>
+              </TooltipProvider>
+            </div>
+            <div className="md:absolute pb-4 md:pb-0 bottom-4 font-bold text-sm border-t pt-4 px-6 w-full justify-between flex">
+              Total
+              <span>
+                {totalFormatted}
+              </span>
+            </div>
           </Card>
         </div>
       ),

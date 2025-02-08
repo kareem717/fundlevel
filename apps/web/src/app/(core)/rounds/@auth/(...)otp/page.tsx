@@ -4,12 +4,19 @@ import { VerifyOTPForm } from "@/components/auth/verify-otp-form"
 import { redirects } from "@/lib/config/redirects"
 import { Dialog, DialogTitle, DialogDescription, DialogHeader, DialogContent } from "@repo/ui/components/dialog"
 import { useRouter } from "next/navigation"
+import { useState } from "react"
 
 export default function LoginModal() {
   const router = useRouter()
+  const [open, setOpen] = useState<boolean>(true)
+
+  function closeDialog() {
+    setOpen(false)
+    router.back()
+  }
 
   return (
-    <Dialog open={true} onOpenChange={() => !open && router.back()}>
+    <Dialog open={open} onOpenChange={closeDialog}>
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>Confirm OTP</DialogTitle>
@@ -18,7 +25,7 @@ export default function LoginModal() {
           </DialogDescription>
         </DialogHeader>
         <div className="px-4 pt-4">
-          <VerifyOTPForm redirectTo={redirects.auth.createAccount} />
+          <VerifyOTPForm redirectTo={redirects.auth.createAccount} replacePath />
         </div>
       </DialogContent>
     </Dialog>

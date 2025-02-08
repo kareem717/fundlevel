@@ -15,7 +15,7 @@ import { useNotification } from '../providers/notification-provider';
 
 const stripePromise = loadStripe(env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
-export function VerifyIdentityModalButton({ ...props }: Omit<ComponentPropsWithoutRef<typeof Button>, 'onClick' | 'role'>) {
+export function VerifyIdentityModalButton({ onClick, ...props }: Omit<ComponentPropsWithoutRef<typeof Button>, 'role'>) {
   const [stripe, setStripe] = useState<Stripe | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
@@ -28,7 +28,7 @@ export function VerifyIdentityModalButton({ ...props }: Omit<ComponentPropsWitho
     stripePromise.then(setStripe);
   }, []);
 
-  async function handleOnClick() {
+  async function handleOnClick(e: any) {
     if (!stripe) return;
 
     setIsLoading(true);
@@ -55,11 +55,12 @@ export function VerifyIdentityModalButton({ ...props }: Omit<ComponentPropsWitho
     } finally {
       notificationContext?.removeNotification("identity-not-verified");
       setIsLoading(false);
+      onClick?.(e)
     }
   }
 
   return (
-    <Button disabled={!stripe || props.disabled || isLoading} role="link" onClick={handleOnClick} {...props}>
+    <Button disabled={!stripe || props.disabled || isLoading} role="link" onClick={(e) => handleOnClick(e)} {...props}>
       {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
       Verify
     </Button>

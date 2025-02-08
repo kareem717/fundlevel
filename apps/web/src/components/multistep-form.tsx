@@ -56,7 +56,6 @@ export function MultiStepForm<T extends FieldValues>({
       const canContinue = await steps[step].onNext();
       setIsExecuting(false);
 
-
       if (canContinue === false) {
         return;
       }
