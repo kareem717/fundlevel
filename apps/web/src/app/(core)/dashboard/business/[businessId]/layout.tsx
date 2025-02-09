@@ -11,9 +11,9 @@ import { BusinessSidebar } from "./components/business-sidebar";
 import { BusinessProvider } from "@/components/providers/business-provider";
 import { redirects } from "@/lib/config/redirects";
 import { ReactNode } from "react";
-import { Alert, AlertDescription, AlertTitle } from "@repo/ui/components/alert"
 import { StripeOnboardRedirector } from "./funding/components/stripe-onboarding-redirector";
 import { BusinessBreadcrumb } from "./components/business-breadcrumb";
+import { DismissableAlert } from "@/components/dismissable-alert";
 
 export const metadata: Metadata = {
   title: {
@@ -47,16 +47,18 @@ export default async function BusinessDashboardLayout({ children, params }: { ch
   if (!stripeAccount || stripeAccount.stripe_disabled_reason) {
     //todo: fix css
     alertComponent = (
-      <Alert className="max-w-lg fixed bottom-2 left-1/2 -translate-x-1/2 sm:top-4 sm:bottom-auto w-[calc(100%-16px)]">
-        <AlertTitle>Heads up!</AlertTitle>
-        <AlertDescription className="flex gap-2 mt-2">
+      <DismissableAlert
+        title="Heads up!"
+        className="max-w-lg fixed bottom-2 left-1/2 -translate-x-1/2 sm:top-4 sm:bottom-auto w-[calc(100%-16px)]"
+      >
+        <div className="flex gap-2 mt-2">
           Please finish setting up your Stripe account to fully use the platform.
           <StripeOnboardRedirector
             businessId={business.id}
             text="Finish"
           />
-        </AlertDescription>
-      </Alert>
+        </div>
+      </DismissableAlert>
     )
   }
 
