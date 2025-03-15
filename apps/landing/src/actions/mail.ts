@@ -18,5 +18,4 @@ export const subscribeToNewsletter = actionClient
       console.error(error);
       throw new Error("Failed to subscribe to newsletter");
     }
-
   });

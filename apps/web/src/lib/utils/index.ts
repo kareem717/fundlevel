@@ -82,7 +82,7 @@ export const truncateText = (text: string, maxLength: number) => {
  */
 export const toFixedRound = (rawPercentage: number, toFixed: number) =>
   rawPercentage % 1 !== 0 &&
-    rawPercentage.toFixed(toFixed) !== rawPercentage.toString()
+  rawPercentage.toFixed(toFixed) !== rawPercentage.toString()
     ? rawPercentage.toFixed(toFixed)
     : rawPercentage.toString();
 

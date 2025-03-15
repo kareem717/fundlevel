@@ -2,7 +2,7 @@ import type { ComponentPropsWithoutRef } from "react";
 import { GeistSans } from "geist/font/sans";
 import { cn } from "@fundlevel/ui/lib/utils";
 
-export function GithubIcon(props: ComponentPropsWithoutRef<'svg'>) {
+export function GithubIcon(props: ComponentPropsWithoutRef<"svg">) {
   return (
     <svg viewBox="0 0 438.549 438.549" {...props}>
       <path
@@ -13,7 +13,7 @@ export function GithubIcon(props: ComponentPropsWithoutRef<'svg'>) {
   );
 }
 
-export function GoogleIcon(props: ComponentPropsWithoutRef<'svg'>) {
+export function GoogleIcon(props: ComponentPropsWithoutRef<"svg">) {
   return (
     <svg
       aria-hidden="true"
@@ -33,7 +33,7 @@ export function GoogleIcon(props: ComponentPropsWithoutRef<'svg'>) {
   );
 }
 
-export function SmallLogoIcon(props: ComponentPropsWithoutRef<'svg'>) {
+export function SmallLogoIcon(props: ComponentPropsWithoutRef<"svg">) {
   return (
     <svg
       id="Layer_1"
@@ -49,7 +49,7 @@ export function SmallLogoIcon(props: ComponentPropsWithoutRef<'svg'>) {
   );
 }
 
-export function LogoIcon(props: ComponentPropsWithoutRef<'svg'>) {
+export function LogoIcon(props: ComponentPropsWithoutRef<"svg">) {
   return (
     <svg
       id="Layer_1"

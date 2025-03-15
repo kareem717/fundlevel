@@ -3,7 +3,7 @@ import type { LinkedAccount } from "../../entities";
 export interface ILinkedAccountService {
   createLinkToken({
     accountId,
-    organizationName
+    organizationName,
   }: {
     accountId: number;
     organizationName: string;
@@ -11,9 +11,12 @@ export interface ILinkedAccountService {
 
   swapPublicToken({
     accountId,
-    publicToken
+    publicToken,
   }: {
     accountId: number;
     publicToken: string;
   }): Promise<LinkedAccount>;
+
+  getById(id: number): Promise<LinkedAccount>;
+  getByAccountId(accountId: number): Promise<LinkedAccount[]>;
 }

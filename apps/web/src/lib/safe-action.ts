@@ -1,6 +1,4 @@
-import {
-  createSafeActionClient,
-} from "next-safe-action";
+import { createSafeActionClient } from "next-safe-action";
 import { zodAdapter } from "next-safe-action/adapters/zod";
 import { env } from "@/env";
 import { createClient as createSupabaseServerClient } from "@/lib/utils/supabase/server";
@@ -12,7 +10,7 @@ export const actionClient = createSafeActionClient({
   handleServerError: async (error) => {
     return {
       message: error.message,
-    }
+    };
   },
 }).use(async ({ next }) =>
   next({
@@ -21,8 +19,8 @@ export const actionClient = createSafeActionClient({
         baseURL: env.NEXT_PUBLIC_BACKEND_API_URL,
       }),
       api: createClient({
-        url: env.NEXT_PUBLIC_BACKEND_API_URL
-      })
+        url: env.NEXT_PUBLIC_BACKEND_API_URL,
+      }),
     },
   }),
 );
@@ -64,7 +62,7 @@ export const actionClientWithUser = actionClient.use(async ({ next, ctx }) => {
   // Create typed API client with auth token
   const apiClient = createClient({
     bearer: session.access_token,
-    url: env.NEXT_PUBLIC_BACKEND_API_URL
+    url: env.NEXT_PUBLIC_BACKEND_API_URL,
   });
 
   return next({
@@ -82,12 +80,15 @@ export const actionClientWithAccount = actionClientWithUser.use(
     let account = null;
 
     if (ctx.user?.id) {
-      const response = await ctx.api.accounts.$get()
+      const response = await ctx.api.accounts.$get();
 
       if (response.status === 200) {
         account = await response.json();
       } else {
-        console.error("Error getting account by user id:", await response.json());
+        console.error(
+          "Error getting account by user id:",
+          await response.json(),
+        );
       }
     }
 

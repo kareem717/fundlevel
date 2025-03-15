@@ -5,7 +5,7 @@ import { Button } from "@fundlevel/ui/components/button";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 
-export interface NavBackProps extends ComponentPropsWithoutRef<typeof Button> { }
+export interface NavBackProps extends ComponentPropsWithoutRef<typeof Button> {}
 
 export const NavBack: FC<NavBackProps> = ({ children, ...props }) => {
   const router = useRouter();

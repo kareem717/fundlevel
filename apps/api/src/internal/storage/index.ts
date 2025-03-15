@@ -2,7 +2,10 @@
  * Storage layer exports
  */
 
-import type { IAccountRepository, ILinkedAccountRepository } from "./interfaces";
+import type {
+  IAccountRepository,
+  ILinkedAccountRepository,
+} from "./interfaces";
 import { AccountRepository } from "./implementaions/account";
 import type { Client } from "@fundlevel/supabase/types";
 import { createClient } from "@supabase/supabase-js";

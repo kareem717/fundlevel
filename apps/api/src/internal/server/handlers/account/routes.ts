@@ -1,6 +1,10 @@
 import { createRoute } from "@hono/zod-openapi";
 import { accountSchema, createAccountSchema } from "../../../entities/account";
-import { notFoundResponse, unauthorizedResponse, bearerAuthSchema } from "../shared/schemas";
+import {
+  notFoundResponse,
+  unauthorizedResponse,
+  bearerAuthSchema,
+} from "../shared/schemas";
 
 export const getAccountRoute = createRoute({
   summary: "Get account",
@@ -32,11 +36,11 @@ export const createAccountRoute = createRoute({
   request: {
     body: {
       content: {
-        'application/json': {
+        "application/json": {
           schema: createAccountSchema,
         },
       },
-    }
+    },
   },
   responses: {
     200: {

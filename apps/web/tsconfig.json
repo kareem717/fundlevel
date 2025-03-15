@@ -1,24 +1,24 @@
 {
-	"extends": "@fundlevel/typescript-config/nextjs.json",
-	"compilerOptions": {
-		"plugins": [
-			{
-				"name": "next"
-			}
-		],
-		"paths": {
-			"@/*": ["./src/*"],
-			"@fundlevel/ui/*": ["../../packages/ui/src/*"]
-		},
-		"strict": true
-	},
-	"include": [
-		"**/*.ts",
-		"**/*.tsx",
-		"next-env.d.ts",
-		"next.config.js",
-		".next/types/**/*.ts",
-		"src/middleware.ts"
-	],
-	"exclude": ["node_modules"]
+  "extends": "@fundlevel/typescript-config/nextjs.json",
+  "compilerOptions": {
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./src/*"],
+      "@fundlevel/ui/*": ["../../packages/ui/src/*"]
+    },
+    "strict": true
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "next-env.d.ts",
+    "next.config.js",
+    ".next/types/**/*.ts",
+    "src/middleware.ts"
+  ],
+  "exclude": ["node_modules"]
 }

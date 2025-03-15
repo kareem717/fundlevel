@@ -12,9 +12,7 @@ import {
   BreadcrumbList,
 } from "@fundlevel/ui/components/breadcrumb";
 import { AuthProvider } from "@/components/providers/auth-provider";
-import {
-  NotificationProvider,
-} from "@/components/providers/notification-provider";
+import { NotificationProvider } from "@/components/providers/notification-provider";
 import { getAccountAction, getUserAction } from "@/actions/auth";
 
 export default async function RootDashboardLayout({
@@ -42,7 +40,9 @@ export default async function RootDashboardLayout({
                 </Breadcrumb>
               </div>
             </header>
-            <div className="flex flex-1 flex-col gap-4 p-4 pt-0">{children}</div>
+            <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+              {children}
+            </div>
           </SidebarInset>
         </SidebarProvider>
       </NotificationProvider>

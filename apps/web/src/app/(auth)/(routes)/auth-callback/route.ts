@@ -18,7 +18,9 @@ export async function GET(request: Request) {
       requestUrl.searchParams.get("error_description") ||
       "An error occurred while authenticating";
     console.error(error, errMsg);
-    return NextResponse.redirect(env.NEXT_PUBLIC_APP_URL + redirects.auth.error(errMsg));
+    return NextResponse.redirect(
+      env.NEXT_PUBLIC_APP_URL + redirects.auth.error(errMsg),
+    );
   }
 
   if (code) {
@@ -26,7 +28,10 @@ export async function GET(request: Request) {
       const sb = await createClient();
       await sb.auth.exchangeCodeForSession(code);
     } catch {
-      return NextResponse.redirect(env.NEXT_PUBLIC_APP_URL + redirects.auth.error("An+error+occurred+while+authenticating"));
+      return NextResponse.redirect(
+        env.NEXT_PUBLIC_APP_URL +
+          redirects.auth.error("An+error+occurred+while+authenticating"),
+      );
     }
   }
 

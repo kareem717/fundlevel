@@ -8,17 +8,17 @@ import {
 import { createClient } from "@/lib/utils/supabase/server";
 import { cache } from "react";
 
-export const createAccountAction = actionClientWithUser
-  .action(async ({ ctx: { api, user } }) => {
+export const createAccountAction = actionClientWithUser.action(
+  async ({ ctx: { api, user } }) => {
     if (!user.email) {
       throw new Error("Email not found");
     }
 
     const req = await api.accounts.$post({
       json: {
-        email: user.email
-      }
-    })
+        email: user.email,
+      },
+    });
 
     switch (req.status) {
       case 200:
@@ -28,7 +28,8 @@ export const createAccountAction = actionClientWithUser
       default:
         throw new Error("An error occurred");
     }
-  });
+  },
+);
 
 export const getAccountAction = cache(
   actionClientWithAccount.action(async ({ ctx: { account } }) => {

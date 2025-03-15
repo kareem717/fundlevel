@@ -3,7 +3,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
 import { z } from "zod";
-import { createLinkTokenAction, swapPublicTokenAction } from "@/actions/linked-account";
+import {
+  createLinkTokenAction,
+  swapPublicTokenAction,
+} from "@/actions/linked-account";
 import { Button, buttonVariants } from "@fundlevel/ui/components/button";
 import {
   Form,
@@ -28,7 +31,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@fundlevel/ui/components/dialog"
+} from "@fundlevel/ui/components/dialog";
 
 // Define the schema for the form - matches the schema in createLinkTokenAction
 const linkAccountSchema = z.object({
@@ -37,7 +40,10 @@ const linkAccountSchema = z.object({
   }),
 });
 
-export function LinkAccountDialog({ className, ...props }: Omit<ComponentPropsWithoutRef<'form'>, "onSubmit">) {
+export function LinkAccountDialog({
+  className,
+  ...props
+}: Omit<ComponentPropsWithoutRef<"form">, "onSubmit">) {
   const [linkToken, setLinkToken] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
 
@@ -54,55 +60,57 @@ export function LinkAccountDialog({ className, ...props }: Omit<ComponentPropsWi
   });
 
   // Use the adapter hook to connect the form with the action
-  const { form, handleSubmitWithAction, action: { isExecuting: isGenerating } } = useHookFormAction(
-    createLinkTokenAction,
-    zodResolver(linkAccountSchema),
-    {
-      formProps: {
-        defaultValues: {
-          name: "",
-        },
+  const {
+    form,
+    handleSubmitWithAction,
+    action: { isExecuting: isGenerating },
+  } = useHookFormAction(createLinkTokenAction, zodResolver(linkAccountSchema), {
+    formProps: {
+      defaultValues: {
+        name: "",
       },
-      actionProps: {
-        onSuccess: (result) => {
-          if (!result?.data?.linkToken) {
-            return toast({
-              variant: "destructive",
-              title: "Uh oh!",
-              description: "An error occurred",
-            })
-          }
-          setLinkToken(result.data?.linkToken);
-          open();
-        },
-        onError: (errorResult) => {
+    },
+    actionProps: {
+      onSuccess: (result) => {
+        if (!result?.data?.linkToken) {
           return toast({
             variant: "destructive",
             title: "Uh oh!",
             description: "An error occurred",
-          })
-        },
+          });
+        }
+        setLinkToken(result.data?.linkToken);
+        open();
       },
-    }
-  );
+      onError: (errorResult) => {
+        return toast({
+          variant: "destructive",
+          title: "Uh oh!",
+          description: "An error occurred",
+        });
+      },
+    },
+  });
 
   const isLoading = isGenerating || isSwapping;
 
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-      <DialogTrigger className={buttonVariants()}>
-        Link Account
-      </DialogTrigger>
+      <DialogTrigger className={buttonVariants()}>Link Account</DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Link account</DialogTitle>
           <DialogDescription>
-            This action cannot be undone. This will permanently delete your account
-            and remove your data from our servers.
+            This action cannot be undone. This will permanently delete your
+            account and remove your data from our servers.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={handleSubmitWithAction} className={cn("space-y-4", className)} {...props}>
+          <form
+            onSubmit={handleSubmitWithAction}
+            className={cn("space-y-4", className)}
+            {...props}
+          >
             <FormField
               control={form.control}
               name="name"
@@ -110,7 +118,10 @@ export function LinkAccountDialog({ className, ...props }: Omit<ComponentPropsWi
                 <FormItem>
                   <FormLabel>Integration Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter a name for this connection" {...field} />
+                    <Input
+                      placeholder="Enter a name for this connection"
+                      {...field}
+                    />
                   </FormControl>
                   <FormDescription>
                     This name will help you identify this integration later.
@@ -124,7 +135,7 @@ export function LinkAccountDialog({ className, ...props }: Omit<ComponentPropsWi
               Link
             </Button>
           </form>
-        </Form >
+        </Form>
       </DialogContent>
     </Dialog>
   );

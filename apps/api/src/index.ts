@@ -1,3 +1,3 @@
 import { server } from "./core";
 
-export default server.app
+export default server.app;

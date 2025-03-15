@@ -1,24 +1,30 @@
 import type { Account, CreateAccount } from "../../entities";
 import type { IAccountRepository } from "..";
-import { SupabaseClient } from "@supabase/supabase-js";
-import type { Client, Database } from "@fundlevel/supabase/types";
+import type { Client } from "@fundlevel/supabase/types";
 
 export class AccountRepository implements IAccountRepository {
-  constructor(private readonly sb: Client) { }
+  constructor(private readonly sb: Client) {}
 
   async getByUserId(id: string): Promise<Account | undefined> {
-    const { data, error } = await this.sb.from("accounts").select("*").eq("user_id", id);
-    
+    const { data, error } = await this.sb
+      .from("accounts")
+      .select("*")
+      .eq("user_id", id);
+
     if (error) {
       console.error("Error fetching account by user ID:", error);
       throw new Error("Failed to fetch account by user ID");
     }
-    
+
     return data?.[0];
   }
 
   async create(params: CreateAccount): Promise<Account> {
-    const { data, error } = await this.sb.from("accounts").insert(params).select().single();
+    const { data, error } = await this.sb
+      .from("accounts")
+      .insert(params)
+      .select()
+      .single();
 
     if (error || !data) {
       console.error("Error creating account:", error);
@@ -29,13 +35,16 @@ export class AccountRepository implements IAccountRepository {
   }
 
   async getById(id: number): Promise<Account | undefined> {
-    const { data, error } = await this.sb.from("accounts").select("*").eq("id", id);
-    
+    const { data, error } = await this.sb
+      .from("accounts")
+      .select("*")
+      .eq("id", id);
+
     if (error) {
       console.error("Error fetching account by ID:", error);
       throw new Error("Failed to fetch account by ID");
     }
-    
+
     return data?.[0];
   }
 }

@@ -11,11 +11,7 @@ import { createSeedClient } from "@snaplet/seed";
 
   console.log("Truncating all tables in the database");
   // Truncate all tables in the database
-  await seed.$resetDatabase([
-    "!*",
-    "public.*",
-    "auth.users",
-  ]);
+  await seed.$resetDatabase(["!*", "public.*", "auth.users"]);
 
   console.log("Truncation completed!");
 

@@ -15,7 +15,9 @@ export const updateSession = async (request: NextRequest) => {
         pathname.includes(redirects.app.root) ||
         pathname.includes(redirects.auth.logout)
       ) {
-        return NextResponse.redirect(new URL(redirects.auth.login, request.url));
+        return NextResponse.redirect(
+          new URL(redirects.auth.login, request.url),
+        );
       }
 
       // Allow unauthenticated access to public routes including createAccount
@@ -47,7 +49,9 @@ export const updateSession = async (request: NextRequest) => {
         pathname.includes(redirects.app.root) &&
         !pathname.includes(redirects.auth.createAccount)
       ) {
-        return NextResponse.redirect(new URL(redirects.auth.createAccount, request.url));
+        return NextResponse.redirect(
+          new URL(redirects.auth.createAccount, request.url),
+        );
       }
     }
 

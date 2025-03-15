@@ -9,7 +9,9 @@ export async function GET() {
   if (!response?.data) {
     throw new Error("Error creating account");
   }
-  
+
   // URL to redirect to after sign up process completes
-  return NextResponse.redirect(env.NEXT_PUBLIC_APP_URL + redirects.auth.afterLogin);
+  return NextResponse.redirect(
+    env.NEXT_PUBLIC_APP_URL + redirects.auth.afterLogin,
+  );
 }

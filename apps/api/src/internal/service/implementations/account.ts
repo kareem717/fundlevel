@@ -3,7 +3,7 @@ import type { IAccountService } from "..";
 import type { IAccountRepository } from "../../storage";
 
 export class AccountService implements IAccountService {
-  constructor(private readonly accountRepo: IAccountRepository) { }
+  constructor(private readonly accountRepo: IAccountRepository) {}
 
   async getByUserId(id: string) {
     return await this.accountRepo.getByUserId(id);

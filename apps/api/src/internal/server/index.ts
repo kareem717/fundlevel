@@ -19,9 +19,10 @@ export class Server {
     port: number,
     service: Service,
     supabase: {
-      url: string
-      serviceKey: string
-    }) {
+      url: string;
+      serviceKey: string;
+    },
+  ) {
     this.port = port;
 
     const app = new OpenAPIHono({
@@ -79,6 +80,6 @@ export class Server {
 
     this.routes = app
       .route("/accounts", accountHandler(service.account))
-      .route("/linked-accounts", linkedAccountHandler(service.linkedAccount))
+      .route("/linked-accounts", linkedAccountHandler(service.linkedAccount));
   }
 }
