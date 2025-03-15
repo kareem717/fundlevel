@@ -1,22 +1,22 @@
-import { Home } from "lucide-react";
+import { Home, LayoutGrid, LogOut } from "lucide-react";
 import { redirects } from "./redirects";
 import type { ElementType } from "react";
 
 export type NavigationItem =
   | {
+    title: string;
+    url: string;
+    icon?: ElementType;
+  }
+  | {
+    title: string;
+    root: string;
+    icon?: ElementType;
+    items: {
       title: string;
       url: string;
-      icon?: ElementType;
-    }
-  | {
-      title: string;
-      root: string;
-      icon?: ElementType;
-      items: {
-        title: string;
-        url: string;
-      }[];
-    };
+    }[];
+  };
 
 export type NavigationMenu = {
   name: string;
@@ -29,13 +29,37 @@ export type NavigationMenu = {
  */
 const dashboard: NavigationMenu[] = [
   {
-    name: "Dashboard",
+    name: "Linked Accounts",
     path: redirects.app.root,
     items: [
       {
-        title: "Home",
+        title: "View All",
         url: redirects.app.root,
-        icon: Home,
+      },
+    ],
+  },
+  {
+    name: "Account",
+    path: redirects.app.root,
+    items: [
+      {
+        title: "Logout",
+        url: redirects.auth.logout,
+        icon: LogOut
+      },
+    ],
+  },
+];
+
+const linkedAccountDashboard = (id: number): NavigationMenu[] => [
+  {
+    name: "Linked Account",
+    path: redirects.app.linkedAccount(id).root,
+    items: [
+      {
+        title: "Overview",
+        url: redirects.app.linkedAccount(id).root,
+        icon: LayoutGrid,
       },
     ],
   },
@@ -46,4 +70,5 @@ const dashboard: NavigationMenu[] = [
  */
 export const sidebar = {
   dashboard,
+  linkedAccountDashboard
 };

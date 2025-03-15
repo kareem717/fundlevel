@@ -52,9 +52,6 @@ export const swapPublicTokenAction = actionClientWithAccount
 export const getLinkedAccountByIdAction = actionClientWithAccount
   .schema(z.number().int().positive())
   .action(async ({ ctx: { api }, parsedInput }) => {
-    // For path with pattern /{id}, we need to use the dynamic path pattern
-    // Create a fake key with the ID to access the endpoint
-    // @ts-ignore - This is a workaround for TypeScript dynamic path access
     const req = await api["linked-accounts"][":id"].$get({
       param: {
         id: parsedInput,

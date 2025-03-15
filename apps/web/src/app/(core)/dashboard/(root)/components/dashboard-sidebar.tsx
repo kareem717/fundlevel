@@ -20,17 +20,16 @@ export function DashboardSidebar({
 
   return (
     <Sidebar variant="inset" {...props}>
-      <SidebarHeader>
-        <SidebarLogo redirect={false} />
+      <SidebarHeader className="border-b px-4">
+        <h1 className="text-2xl">Dashboard</h1>
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="divide-y border-b-2">
         {dashboard.map((menu) => (
-          <SidebarMenu key={menu.name} config={menu} />
+          <SidebarMenu key={menu.name} config={menu}/>
         ))}
       </SidebarContent>
       <SidebarFooter>
         <SidebarNotification notificationId="identity-not-verified" />
-        <SidebarUser />
       </SidebarFooter>
     </Sidebar>
   );
