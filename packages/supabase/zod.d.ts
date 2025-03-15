@@ -16,3 +16,15 @@ export type PublicAccountsInsertSchema = z.infer<
 export type PublicAccountsUpdateSchema = z.infer<
   typeof generated.publicAccountsUpdateSchemaSchema
 >;
+export type PublicLinkedAccountsRowSchema = z.infer<
+  typeof generated.publicLinkedAccountsRowSchemaSchema
+>;
+export type PublicLinkedAccountsInsertSchema = z.infer<
+  typeof generated.publicLinkedAccountsInsertSchemaSchema
+>;
+export type PublicLinkedAccountsUpdateSchema = z.infer<
+  typeof generated.publicLinkedAccountsUpdateSchemaSchema
+>;
+export type PublicLinkedAccountsRelationshipsSchema = z.infer<
+  typeof generated.publicLinkedAccountsRelationshipsSchemaSchema
+>;

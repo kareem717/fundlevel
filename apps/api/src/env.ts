@@ -13,7 +13,10 @@ export const env = createEnv({
 
     SUPABASE_URL: z.string().url(),
     SUPABASE_SERVICE_KEY: z.string().min(1),
+
     DATABASE_URL: z.string().url(),
+
+    MERGE_API_KEY: z.string().min(1),
   },
 
   /**

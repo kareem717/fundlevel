@@ -21,6 +21,7 @@ export const jsonSchema: z.ZodSchema<Json> = z.lazy(() =>
 
 export const publicAccountsRowSchemaSchema = z.object({
   created_at: z.string(),
+  email: z.string(),
   id: z.number(),
   updated_at: z.string().nullable(),
   user_id: z.string(),
@@ -28,6 +29,7 @@ export const publicAccountsRowSchemaSchema = z.object({
 
 export const publicAccountsInsertSchemaSchema = z.object({
   created_at: z.string().optional(),
+  email: z.string(),
   id: z.number().optional(),
   updated_at: z.string().optional().nullable(),
   user_id: z.string(),
@@ -35,7 +37,45 @@ export const publicAccountsInsertSchemaSchema = z.object({
 
 export const publicAccountsUpdateSchemaSchema = z.object({
   created_at: z.string().optional(),
+  email: z.string().optional(),
   id: z.number().optional(),
   updated_at: z.string().optional().nullable(),
   user_id: z.string().optional(),
 });
+
+export const publicLinkedAccountsRowSchemaSchema = z.object({
+  created_at: z.string(),
+  id: z.number(),
+  merge_dev_account_token: z.string(),
+  name: z.string(),
+  owner_id: z.number(),
+  updated_at: z.string().nullable(),
+});
+
+export const publicLinkedAccountsInsertSchemaSchema = z.object({
+  created_at: z.string().optional(),
+  id: z.number().optional(),
+  merge_dev_account_token: z.string(),
+  name: z.string(),
+  owner_id: z.number(),
+  updated_at: z.string().optional().nullable(),
+});
+
+export const publicLinkedAccountsUpdateSchemaSchema = z.object({
+  created_at: z.string().optional(),
+  id: z.number().optional(),
+  merge_dev_account_token: z.string().optional(),
+  name: z.string().optional(),
+  owner_id: z.number().optional(),
+  updated_at: z.string().optional().nullable(),
+});
+
+export const publicLinkedAccountsRelationshipsSchemaSchema = z.tuple([
+  z.object({
+    foreignKeyName: z.literal("linked_accounts_owner_id_fkey"),
+    columns: z.tuple([z.literal("owner_id")]),
+    isOneToOne: z.literal(false),
+    referencedRelation: z.literal("accounts"),
+    referencedColumns: z.tuple([z.literal("id")]),
+  }),
+]);

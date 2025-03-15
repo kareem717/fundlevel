@@ -18,7 +18,6 @@ const accountHandler = (accountService: IAccountService) => {
 
     return c.json(account, 200);
   }).openapi(createAccountRoute, async (c) => {
-    console.log("here")
     const user = getUser(c);
 
     if (!user) {
@@ -30,8 +29,11 @@ const accountHandler = (accountService: IAccountService) => {
       );
     }
 
+    const params = c.req.valid("json")
+    
     const account = await accountService.create({
       user_id: user.id,
+      ...params
     });
 
     return c.json(account, 200);

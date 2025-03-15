@@ -1,6 +1,6 @@
-import { CreateAccount } from "../../entities";
-import { IAccountService } from "..";
-import { IAccountRepository } from "../../storage";
+import type { CreateAccount } from "../../entities";
+import type { IAccountService } from "..";
+import type { IAccountRepository } from "../../storage";
 
 export class AccountService implements IAccountService {
   constructor(private readonly accountRepo: IAccountRepository) { }

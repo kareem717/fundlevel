@@ -9,7 +9,7 @@ const supabaseConfig = {
 }
 const repositories = new Storage(supabaseConfig);
 
-const services = new Service(repositories);
+const services = new Service(repositories, env.MERGE_API_KEY);
 
 export const server = new Server(
   env.PORT,

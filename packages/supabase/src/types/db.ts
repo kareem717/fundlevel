@@ -37,23 +37,61 @@ export type Database = {
       accounts: {
         Row: {
           created_at: string
+          email: string
           id: number
           updated_at: string | null
           user_id: string
         }
         Insert: {
           created_at?: string
+          email: string
           id?: number
           updated_at?: string | null
           user_id: string
         }
         Update: {
           created_at?: string
+          email?: string
           id?: number
           updated_at?: string | null
           user_id?: string
         }
         Relationships: []
+      }
+      linked_accounts: {
+        Row: {
+          created_at: string
+          id: number
+          merge_dev_account_token: string
+          name: string
+          owner_id: number
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          merge_dev_account_token: string
+          name: string
+          owner_id: number
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          merge_dev_account_token?: string
+          name?: string
+          owner_id?: number
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "linked_accounts_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

@@ -1,1 +1,2 @@
-export type * from "./account";
+export * from "./account";
+export * from "./linked-account";

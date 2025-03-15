@@ -4,17 +4,21 @@
 
 import {
   AccountService,
+  LinkedAccountService
 } from "./implementations";
-import {
+import type {
+  ILinkedAccountService,
   IAccountService,
 } from "./interfaces";
-import { Storage } from "../storage";
+import type { Storage } from "../storage";
 
 export class Service {
   public readonly account: IAccountService;
+  public readonly linkedAccount: ILinkedAccountService;
 
-  constructor(storage: Storage) {
+  constructor(storage: Storage, mergeApiKey: string) {
     this.account = new AccountService(storage.account);
+    this.linkedAccount = new LinkedAccountService(mergeApiKey, storage.account, storage.linkedAccount);
   }
 }
 

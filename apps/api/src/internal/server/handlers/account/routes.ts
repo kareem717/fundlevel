@@ -1,5 +1,5 @@
 import { createRoute } from "@hono/zod-openapi";
-import { accountSchema } from "../../../entities/account";
+import { accountSchema, createAccountSchema } from "../../../entities/account";
 import { notFoundResponse, unauthorizedResponse, bearerAuthSchema } from "../shared/schemas";
 
 export const getAccountRoute = createRoute({
@@ -29,6 +29,15 @@ export const createAccountRoute = createRoute({
   security: [bearerAuthSchema],
   method: "post",
   path: "/",
+  request: {
+    body: {
+      content: {
+        'application/json': {
+          schema: createAccountSchema,
+        },
+      },
+    }
+  },
   responses: {
     200: {
       description: "Successful fetch",

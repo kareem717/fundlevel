@@ -8,6 +8,7 @@ import { OpenAPIHono } from "@hono/zod-openapi";
 import { swaggerUI } from "@hono/swagger-ui";
 import accountHandler from "./handlers/account";
 import type { Service } from "../service";
+import linkedAccountHandler from "./handlers/linked-account";
 
 export class Server {
   public readonly port: number;
@@ -78,5 +79,6 @@ export class Server {
 
     this.routes = app
       .route("/accounts", accountHandler(service.account))
+      .route("/linked-accounts", linkedAccountHandler(service.linkedAccount))
   }
 }
