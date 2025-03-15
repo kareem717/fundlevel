@@ -1,10 +1,10 @@
 "use client";
 
 import { ComponentPropsWithoutRef, FC } from "react";
-import { Input } from "@workspace/ui/components/input";
-import { Button } from "@workspace/ui/components/button";
+import { Input } from "@fundlevel/ui/components/input";
+import { Button } from "@fundlevel/ui/components/button";
 import { Icons } from "./icons";
-import { cn } from "@workspace/ui/lib/utils";
+import { cn } from "@fundlevel/ui/lib/utils";
 
 export interface QuickSearchProps extends ComponentPropsWithoutRef<"div"> {
   inputProps?: ComponentPropsWithoutRef<typeof Input>;

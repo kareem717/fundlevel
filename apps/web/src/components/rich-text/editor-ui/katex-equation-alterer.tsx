@@ -11,11 +11,11 @@ import { useCallback, useState, JSX } from "react";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { ErrorBoundary } from "react-error-boundary";
 
-import { Button } from "@workspace/ui/components/button";
-import { Checkbox } from "@workspace/ui/components/checkbox";
-import { Input } from "@workspace/ui/components/input";
-import { Label } from "@workspace/ui/components/label";
-import { Textarea } from "@workspace/ui/components/textarea";
+import { Button } from "@fundlevel/ui/components/button";
+import { Checkbox } from "@fundlevel/ui/components/checkbox";
+import { Input } from "@fundlevel/ui/components/input";
+import { Label } from "@fundlevel/ui/components/label";
+import { Textarea } from "@fundlevel/ui/components/textarea";
 
 import KatexRenderer from "@/components/rich-text/editor-ui/katex-renderer";
 

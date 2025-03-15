@@ -12,7 +12,7 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-} from "@workspace/ui/components/select";
+} from "@fundlevel/ui/components/select";
 
 import { useToolbarContext } from "@/components/rich-text/context/toolbar-context";
 import { useUpdateToolbarHandler } from "@/components/rich-text/editor-hooks/use-update-toolbar";

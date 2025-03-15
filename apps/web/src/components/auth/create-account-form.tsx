@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@workspace/ui/components/button";
+import { Button } from "@fundlevel/ui/components/button";
 import { ComponentPropsWithoutRef, useState } from "react";
 import { createAccountAction } from "@/actions/auth";
 import { useRouter } from "next/navigation";
@@ -13,13 +13,13 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@workspace/ui/components/form";
-import { Input } from "@workspace/ui/components/input";
+} from "@fundlevel/ui/components/form";
+import { Input } from "@fundlevel/ui/components/input";
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { zCreateAccountParams } from "@workspace/sdk/zod";
-import { useToast } from "@workspace/ui/hooks/use-toast";
-import { cn } from "@workspace/ui/lib/utils";
+import { zCreateAccountParams } from "@fundlevel/sdk/zod";
+import { useToast } from "@fundlevel/ui/hooks/use-toast";
+import { cn } from "@fundlevel/ui/lib/utils";
 
 export interface CreateAccountFormProps
   extends ComponentPropsWithoutRef<"form"> {

@@ -1,0 +1,7 @@
+CREATE TABLE
+    accounts (
+        id serial PRIMARY KEY NOT NULL,
+        user_id UUID NOT NULL REFERENCES auth.users,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
+        updated_at TIMESTAMP WITH TIME ZONE
+    );

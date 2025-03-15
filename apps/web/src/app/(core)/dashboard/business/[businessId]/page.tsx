@@ -9,7 +9,7 @@ import {
   CardTitle,
   CardDescription,
   CardContent,
-} from "@workspace/ui/components/card";
+} from "@fundlevel/ui/components/card";
 
 export default function BusinessDashboard() {
   return (

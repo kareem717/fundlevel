@@ -1,7 +1,7 @@
 import { TableIcon } from "lucide-react";
 
 import { useToolbarContext } from "@/components/rich-text/context/toolbar-context";
-import { SelectItem } from "@workspace/ui/components/select";
+import { SelectItem } from "@fundlevel/ui/components/select";
 
 import { InsertTableDialog } from "@/components/rich-text/plugins/table-plugin";
 

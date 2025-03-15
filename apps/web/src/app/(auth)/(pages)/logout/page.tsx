@@ -5,7 +5,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@workspace/ui/components/card";
+} from "@fundlevel/ui/components/card";
 
 export default async function LogoutPage() {
   return (

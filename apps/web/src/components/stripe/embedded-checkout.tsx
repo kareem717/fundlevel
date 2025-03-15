@@ -19,7 +19,7 @@ import {
   Elements,
 } from "@stripe/react-stripe-js";
 import { env } from "@/env";
-import { useToast } from "@workspace/ui/hooks/use-toast";
+import { useToast } from "@fundlevel/ui/hooks/use-toast";
 import { useTheme } from "next-themes";
 import { confirmInvestmentPaymentAction } from "@/actions/investment";
 import { usePathname } from "next/navigation";

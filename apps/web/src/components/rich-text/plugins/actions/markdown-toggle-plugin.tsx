@@ -11,7 +11,7 @@ import { $createTextNode } from "lexical";
 import { $getRoot } from "lexical";
 import { FileTextIcon } from "lucide-react";
 
-import { Button } from "@workspace/ui/components/button";
+import { Button } from "@fundlevel/ui/components/button";
 
 import { MARKDOWN_TRANSFORMERS } from "@/components/rich-text/transformers/markdown-transformers";
 

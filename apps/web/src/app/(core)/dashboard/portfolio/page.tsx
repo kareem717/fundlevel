@@ -4,7 +4,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@workspace/ui/components/card";
+} from "@fundlevel/ui/components/card";
 import {
   getAccountInvestmentsAction,
   getInvestmentAggregateAction,
@@ -19,14 +19,14 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@workspace/ui/components/table";
+} from "@fundlevel/ui/components/table";
 import { CheckoutModal } from "./components/checkout-modal";
 import { format } from "date-fns";
 import { formatCurrency } from "@/lib/utils";
-import { Badge } from "@workspace/ui/components/badge";
+import { Badge } from "@fundlevel/ui/components/badge";
 import { MoreHorizontal } from "lucide-react";
-import { Button } from "@workspace/ui/components/button";
-import { buttonVariants } from "@workspace/ui/components/button";
+import { Button } from "@fundlevel/ui/components/button";
+import { buttonVariants } from "@fundlevel/ui/components/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -34,10 +34,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@workspace/ui/components/dropdown-menu";
+} from "@fundlevel/ui/components/dropdown-menu";
 import Link from "next/link";
 import { redirects } from "@/lib/config/redirects";
-import { cn } from "@workspace/ui/lib/utils";
+import { cn } from "@fundlevel/ui/lib/utils";
 
 async function InvestmentsAsync() {
   const investmentData = (

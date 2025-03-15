@@ -3,17 +3,17 @@ import { copy } from "@/lib/config/copy";
 import { NumberedCard } from "../components/numbered-card";
 import { Mail, ChartLine, Megaphone, ChevronRight } from "lucide-react";
 import { NewsletterSubscribeForm } from "../components/newsletter-subscribe-form";
-import { cn } from "@workspace/ui/lib/utils";
+import { cn } from "@fundlevel/ui/lib/utils";
 import Image from "next/image";
 import Balancer from "react-wrap-balancer";
 import { BetaRequestLink } from "@/components/beta-request-link";
-import { Badge } from "@workspace/ui/components/badge";
+import { Badge } from "@fundlevel/ui/components/badge";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@workspace/ui/components/accordion";
+} from "@fundlevel/ui/components/accordion";
 import { contact } from "@/lib/config/company";
 import { env } from "@/env";
 import Link from "next/link";

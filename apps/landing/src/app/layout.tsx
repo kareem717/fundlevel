@@ -1,4 +1,4 @@
-import "@workspace/ui/globals.css";
+import "@fundlevel/ui/globals.css";
 
 import { Providers } from "@/components/providers";
 

@@ -4,10 +4,10 @@ import { getStripeAccountSettingsLink } from "@/actions/business";
 import { useAction } from "next-safe-action/hooks";
 import { usePathname, useRouter } from "next/navigation";
 import { ComponentPropsWithoutRef, useState } from "react";
-import { useToast } from "@workspace/ui/hooks/use-toast";
-import { Button } from "@workspace/ui/components/button";
+import { useToast } from "@fundlevel/ui/hooks/use-toast";
+import { Button } from "@fundlevel/ui/components/button";
 import { env } from "@/env";
-import { ToastAction } from "@workspace/ui/components/toast";
+import { ToastAction } from "@fundlevel/ui/components/toast";
 import { Loader2 } from "lucide-react";
 
 export interface StripeOnboardRedirectorProps

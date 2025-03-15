@@ -7,7 +7,7 @@ import {
   CardDescription,
   CardHeader,
   CardContent,
-} from "@workspace/ui/components/card";
+} from "@fundlevel/ui/components/card";
 
 export default async function CreateAccountPage() {
   const user = (await getUserAction())?.data;

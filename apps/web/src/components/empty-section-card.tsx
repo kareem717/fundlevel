@@ -6,9 +6,9 @@ import {
   CardTitle,
   CardDescription,
   CardFooter,
-} from "@workspace/ui/components/card";
-import { Button } from "@workspace/ui/components/button";
-import { cn } from "@workspace/ui/lib/utils";
+} from "@fundlevel/ui/components/card";
+import { Button } from "@fundlevel/ui/components/button";
+import { cn } from "@fundlevel/ui/lib/utils";
 import { Icons } from "./icons";
 import Image from "next/image";
 

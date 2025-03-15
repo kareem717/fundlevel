@@ -2,14 +2,14 @@ import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
-} from "@workspace/ui/components/sidebar";
+} from "@fundlevel/ui/components/sidebar";
 import { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import {
   getBusinessesAction,
   getBusinessStripeAccountAction,
 } from "@/actions/business";
-import { Separator } from "@workspace/ui/components/separator";
+import { Separator } from "@fundlevel/ui/components/separator";
 import { BusinessSidebar } from "./components/business-sidebar";
 import { BusinessProvider } from "@/components/providers/business-provider";
 import { redirects } from "@/lib/config/redirects";

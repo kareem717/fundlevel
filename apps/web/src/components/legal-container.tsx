@@ -1,5 +1,5 @@
 import { redirects } from "@/lib/config/redirects";
-import { cn } from "@workspace/ui/lib/utils";
+import { cn } from "@fundlevel/ui/lib/utils";
 import Link from "next/link";
 import { ComponentPropsWithoutRef } from "react";
 

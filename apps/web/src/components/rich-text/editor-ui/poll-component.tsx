@@ -24,8 +24,8 @@ import {
   NodeKey,
 } from "lexical";
 
-import { Button } from "@workspace/ui/components/button";
-import { Input } from "@workspace/ui/components/input";
+import { Button } from "@fundlevel/ui/components/button";
+import { Input } from "@fundlevel/ui/components/input";
 
 import type {
   Option,

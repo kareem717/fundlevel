@@ -28,12 +28,12 @@ import {
   Command,
   CommandItem,
   CommandList,
-} from "@workspace/ui/components/command";
+} from "@fundlevel/ui/components/command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@workspace/ui/components/popover";
+} from "@fundlevel/ui/components/popover";
 
 const LexicalContextMenuPlugin = dynamic(
   () => import("./default/lexical-context-menu-plugin"),

@@ -3,12 +3,12 @@ import { useState } from "react";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { LockIcon, UnlockIcon } from "lucide-react";
 
-import { Button } from "@workspace/ui/components/button";
+import { Button } from "@fundlevel/ui/components/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@workspace/ui/components/tooltip";
+} from "@fundlevel/ui/components/tooltip";
 
 export function EditModeTogglePlugin() {
   const [editor] = useLexicalComposerContext();

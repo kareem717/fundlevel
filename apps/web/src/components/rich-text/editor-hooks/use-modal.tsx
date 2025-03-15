@@ -13,7 +13,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@workspace/ui/components/dialog";
+} from "@fundlevel/ui/components/dialog";
 
 export function useEditorModal(): [
   JSX.Element | null,

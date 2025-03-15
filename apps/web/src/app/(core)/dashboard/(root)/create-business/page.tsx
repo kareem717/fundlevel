@@ -3,7 +3,7 @@ import {
   CardTitle,
   CardHeader,
   CardContent,
-} from "@workspace/ui/components/card";
+} from "@fundlevel/ui/components/card";
 import { CreateBusinessForm } from "./components/create-business-form";
 
 export default function CreateBusiness() {

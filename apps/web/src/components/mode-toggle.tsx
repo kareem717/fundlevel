@@ -6,8 +6,8 @@ import { Sun, Moon } from "lucide-react";
 import {
   ToggleGroup,
   ToggleGroupItem,
-} from "@workspace/ui/components/toggle-group";
-import { cn } from "@workspace/ui/lib/utils";
+} from "@fundlevel/ui/components/toggle-group";
+import { cn } from "@fundlevel/ui/lib/utils";
 
 export function ModeToggle({
   className,

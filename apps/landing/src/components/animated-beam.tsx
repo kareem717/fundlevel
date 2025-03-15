@@ -9,7 +9,7 @@ import {
   useState,
 } from "react";
 import { motion } from "framer-motion";
-import { cn } from "@workspace/ui/lib/utils";
+import { cn } from "@fundlevel/ui/lib/utils";
 
 export interface AnimatedBeamProps extends ComponentPropsWithoutRef<"svg"> {
   containerRef: RefObject<HTMLElement | null>; // Container ref

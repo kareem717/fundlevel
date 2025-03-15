@@ -5,7 +5,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@workspace/ui/components/card";
+} from "@fundlevel/ui/components/card";
 import { LegalContainer } from "@/components/legal-container";
 
 export default async function OTPPage() {

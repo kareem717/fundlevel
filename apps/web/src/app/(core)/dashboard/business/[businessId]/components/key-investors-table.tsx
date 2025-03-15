@@ -19,7 +19,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@workspace/ui/components/table";
+} from "@fundlevel/ui/components/table";
 import { DataTablePagination } from "@/components/data-table";
 import { ComponentPropsWithoutRef, FC, useEffect, useState } from "react";
 import { faker } from "@faker-js/faker";

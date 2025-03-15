@@ -7,7 +7,7 @@ import { SubscriptIcon, SuperscriptIcon } from "lucide-react";
 import {
   ToggleGroup,
   ToggleGroupItem,
-} from "@workspace/ui/components/toggle-group";
+} from "@fundlevel/ui/components/toggle-group";
 
 import { useToolbarContext } from "@/components/rich-text/context/toolbar-context";
 import { useUpdateToolbarHandler } from "@/components/rich-text/editor-hooks/use-update-toolbar";

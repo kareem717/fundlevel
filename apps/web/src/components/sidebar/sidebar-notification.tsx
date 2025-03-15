@@ -1,10 +1,10 @@
-import { Card } from "@workspace/ui/components/card";
+import { Card } from "@fundlevel/ui/components/card";
 import {
   CardHeader,
   CardTitle,
   CardDescription,
   CardContent,
-} from "@workspace/ui/components/card";
+} from "@fundlevel/ui/components/card";
 import { ComponentPropsWithoutRef } from "react";
 import { cn } from "@/lib/utils";
 import {

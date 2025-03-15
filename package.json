@@ -7,17 +7,18 @@
     "start": "turbo run start",
     "test": "turbo run test",
     "install": "turbo run install",
-    "db:reset": "turbo run db:reset",
-    "db:up": "turbo run db:up",
-    "db:up-one": "turbo run db:up-one",
-    "db:down": "turbo run db:down",
-    "db:start": "turbo run db:start",
-    "db:stop": "turbo run db:stop",
-    "db:status": "turbo run db:status",
-    "db:restart": "turbo run db:restart",
-    "db:seed": "turbo run db:seed",
-    "db:seed:init": "turbo run db:seed:init",
-    "db:seed:sync": "turbo run db:seed:sync",
+    "supabase:reset": "turbo run supabase:reset",
+    "supabase:up": "turbo run supabase:up",
+    "supabase:seed": "turbo run supabase:seed",
+    "supabase:seed:init": "turbo run supabase:seed:init",
+    "supabase:seed:sync": "turbo run supabase:seed:sync",
+    "supabase:start": "turbo run supabase:start",
+    "supabase:stop": "turbo run supabase:stop",
+    "supabase:status": "turbo run supabase:status",
+    "supabase:restart": "turbo run supabase:restart",
+    "supabase:diff": "turbo run supabase:diff",
+    "supabase:new": "turbo run supabase:new",
+    "supabase:typegen": "turbo run supabase:typegen",
     "openapi:gen": "turbo run openapi:gen",
     "sdk:gen": "turbo run sdk:gen",
     "sdk": "turbo run openapi:gen && turbo run sdk:gen",
@@ -27,10 +28,13 @@
     "node": ">=18"
   },
   "packageManager": "bun@1.1.38",
-  "workspaces": ["apps/*", "packages/*"],
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "dependencies": {
     "@biomejs/biome": "1.9.4",
-    "turbo": "2.3.3",
+    "turbo": "^2.4.4",
     "typescript": "^5.7.2"
   }
 }

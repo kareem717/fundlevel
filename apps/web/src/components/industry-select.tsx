@@ -7,12 +7,12 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@workspace/ui/components/select";
-import { cn } from "@workspace/ui/lib/utils";
-import { Industry } from "@workspace/sdk";
+} from "@fundlevel/ui/components/select";
+import { cn } from "@fundlevel/ui/lib/utils";
+import { Industry } from "@fundlevel/sdk";
 import { useAction } from "next-safe-action/hooks";
 import { getAllIndustries } from "@/actions/industries";
-import { useToast } from "@workspace/ui/hooks/use-toast";
+import { useToast } from "@fundlevel/ui/hooks/use-toast";
 import { Icons } from "./icons";
 
 export interface IndustrySelectProps

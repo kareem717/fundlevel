@@ -1,7 +1,7 @@
 import { Columns3Icon } from "lucide-react";
 
 import { useToolbarContext } from "@/components/rich-text/context/toolbar-context";
-import { SelectItem } from "@workspace/ui/components/select";
+import { SelectItem } from "@fundlevel/ui/components/select";
 
 import { InsertLayoutDialog } from "@/components/rich-text/plugins/layout-plugin";
 

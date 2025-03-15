@@ -1,6 +1,6 @@
 # A string used to distinguish different Supabase projects on the same host. Defaults to the
 # working directory name when running `supabase init`.
-project_id = "fundlevel"
+project_id = "fundlevel_v2"
 
 [api]
 enabled = true
@@ -113,17 +113,17 @@ content_path = "supabase/templates/otp.html"
 # `twitter`, `slack`, `spotify`, `workos`, `zoom`.
 [auth.external.github]
 enabled = true
-client_id = "env(SUPABASE_AUTH_EXTERNAL_GITHUB_CLIENT_ID)"
+client_id = "env(GITHUB_CLIENT_ID)"
 # DO NOT commit your OAuth provider secret to git. Use environment variable substitution instead:
-secret = "env(SUPABASE_AUTH_EXTERNAL_GITHUB_SECRET)"
+secret = "env(GITHUB_SECRET)"
 # Overrides the default auth redirectUrl.
 redirect_uri = "http://localhost:54321/auth/v1/callback"
 
 [auth.external.google]
 enabled = true
-client_id = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID)"
+client_id = "env(GOOGLE_CLIENT_ID)"
 # DO NOT commit your OAuth provider secret to git. Use environment variable substitution instead:
-secret = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET)"
+secret = "env(GOOGLE_SECRET)"
 # Overrides the default auth redirectUrl.
 redirect_uri = "http://localhost:54321/auth/v1/callback"
 

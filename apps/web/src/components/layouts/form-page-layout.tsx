@@ -1,4 +1,4 @@
-import { cn } from "@workspace/ui/lib/utils";
+import { cn } from "@fundlevel/ui/lib/utils";
 import { ComponentPropsWithoutRef } from "react";
 
 export function FormPageLayout({

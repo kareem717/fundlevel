@@ -4,7 +4,7 @@ import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from "@workspace/ui/components/avatar";
+} from "@fundlevel/ui/components/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,13 +13,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@workspace/ui/components/dropdown-menu";
+} from "@fundlevel/ui/components/dropdown-menu";
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@workspace/ui/components/sidebar";
+} from "@fundlevel/ui/components/sidebar";
 import { ComponentPropsWithoutRef } from "react";
 import Link from "next/link";
 import { redirects } from "@/lib/config/redirects";

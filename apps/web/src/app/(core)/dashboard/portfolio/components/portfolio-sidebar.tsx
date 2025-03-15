@@ -7,7 +7,7 @@ import {
   SidebarRail,
   SidebarMenu as SidebarMenuComponent,
   SidebarMenuButton,
-} from "@workspace/ui/components/sidebar";
+} from "@fundlevel/ui/components/sidebar";
 import { SidebarMenu } from "@/components/sidebar/sidebar-menu";
 import { ComponentPropsWithoutRef } from "react";
 import { sidebar } from "@/lib/config/sidebar";

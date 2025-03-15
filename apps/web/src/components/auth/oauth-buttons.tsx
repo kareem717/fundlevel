@@ -1,7 +1,7 @@
 "use client";
 
 import { Icons } from "@/components/icons";
-import { Button } from "@workspace/ui/components/button";
+import { Button } from "@fundlevel/ui/components/button";
 import { createClient } from "@/lib/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import { env } from "@/env";

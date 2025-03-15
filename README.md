@@ -103,7 +103,7 @@ The backend of the Fundlevel platform.
 
    ```sh
    cd ./fundlevel/supabase
-   source .env && supabase start
+   supabase start
    ```
 
 7. **Reconfigure the API to use the self-hosted Supabase instance:**
@@ -111,7 +111,7 @@ The backend of the Fundlevel platform.
    After a bit, you should see a screen that looks like this:
 
    ```sh
-   ❯ source .env && supabase start
+   ❯ supabase start
    Started supabase local development setup.
 
             API URL: http://127.0.0.1:54321

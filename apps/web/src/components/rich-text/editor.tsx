@@ -11,7 +11,7 @@ import { EditorState, SerializedEditorState } from "lexical";
 import { FloatingLinkContext } from "@/components/rich-text/context/floating-link-context";
 import { SharedAutocompleteContext } from "@/components/rich-text/context/shared-autocomplete-context";
 import { editorTheme } from "@/components/rich-text/themes/editor-theme";
-import { TooltipProvider } from "@workspace/ui/components/tooltip";
+import { TooltipProvider } from "@fundlevel/ui/components/tooltip";
 
 import { nodes } from "./nodes";
 import { Plugins } from "./plugins";

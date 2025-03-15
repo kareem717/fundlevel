@@ -9,14 +9,14 @@ import {
   upsertRoundInvestment,
   getAccountActiveRoundInvestment,
   getAccountInvestmentAggregate,
-} from "@workspace/sdk";
+} from "@fundlevel/sdk";
 import { cache } from "react";
 import { cursorPaginationSchema, pathIdSchema } from "./validations";
 import {
   zCreateInvestmentParams,
   zInvestmentFilter,
   zUpdateInvestmentParams,
-} from "@workspace/sdk/zod";
+} from "@fundlevel/sdk/zod";
 import { z } from "zod";
 
 export const getInvestmentByIdAction = cache(

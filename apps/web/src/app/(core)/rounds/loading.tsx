@@ -1,6 +1,6 @@
 import { FormPageLayout } from "@/components/layouts/form-page-layout";
 import { LogoDiv } from "@/components/logo-div";
-import { Skeleton } from "@workspace/ui/components/skeleton";
+import { Skeleton } from "@fundlevel/ui/components/skeleton";
 
 export default function LoadingRound() {
   return (

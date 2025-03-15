@@ -16,8 +16,8 @@ import {
   getStripeIdentityVerificationSessionUrl,
   getStripeIdentity,
   Account,
-} from "@workspace/sdk";
-import { zCreateAccountParams, zUpdateAccountParams } from "@workspace/sdk/zod";
+} from "@fundlevel/sdk";
+import { zCreateAccountParams, zUpdateAccountParams } from "@fundlevel/sdk/zod";
 import { SupabaseClient, User } from "@supabase/supabase-js";
 import { headers } from "next/headers";
 import { cache } from "react";

@@ -29,16 +29,16 @@ import {
   createCommand,
 } from "lexical";
 
-import { Button } from "@workspace/ui/components/button";
-import { DialogFooter } from "@workspace/ui/components/dialog";
-import { Input } from "@workspace/ui/components/input";
-import { Label } from "@workspace/ui/components/label";
+import { Button } from "@fundlevel/ui/components/button";
+import { DialogFooter } from "@fundlevel/ui/components/dialog";
+import { Input } from "@fundlevel/ui/components/input";
+import { Label } from "@fundlevel/ui/components/label";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "@workspace/ui/components/tabs";
+} from "@fundlevel/ui/components/tabs";
 
 import {
   $createImageNode,

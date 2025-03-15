@@ -5,7 +5,7 @@ import {
   CardContent,
   CardTitle,
   CardHeader,
-} from "@workspace/ui/components/card";
+} from "@fundlevel/ui/components/card";
 import { notFound } from "next/navigation";
 
 export default async function CreateRoundPage({

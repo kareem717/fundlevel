@@ -64,7 +64,7 @@ import {
   CommandGroup,
   CommandItem,
   CommandList,
-} from "@workspace/ui/components/command";
+} from "@fundlevel/ui/components/command";
 
 import { useEditorModal } from "@/components/rich-text/editor-hooks/use-modal";
 import { INSERT_COLLAPSIBLE_COMMAND } from "@/components/rich-text/plugins/collapsible-plugin";

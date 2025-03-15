@@ -6,13 +6,13 @@ import {
   BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbSeparator,
-} from "@workspace/ui/components/breadcrumb";
+} from "@fundlevel/ui/components/breadcrumb";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@workspace/ui/components/dropdown-menu";
+} from "@fundlevel/ui/components/dropdown-menu";
 import { ChevronDownIcon } from "lucide-react";
 import { redirects } from "@/lib/config/redirects";
 import { useBusiness } from "@/components/providers/business-provider";

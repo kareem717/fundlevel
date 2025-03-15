@@ -1,5 +1,5 @@
 import { ComponentPropsWithoutRef } from "react";
-import { cn } from "@workspace/ui/lib/utils";
+import { cn } from "@fundlevel/ui/lib/utils";
 import Link from "next/link";
 
 export type NavigationItem = {

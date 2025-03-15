@@ -1,10 +1,10 @@
 "use client";
 
 import { EmptySectionCard } from "@/components/empty-section-card";
-import { Label } from "@workspace/ui/components/label";
-import { Skeleton } from "@workspace/ui/components/skeleton";
-import { Round } from "@workspace/sdk";
-import { cn } from "@workspace/ui/lib/utils";
+import { Label } from "@fundlevel/ui/components/label";
+import { Skeleton } from "@fundlevel/ui/components/skeleton";
+import { Round } from "@fundlevel/sdk";
+import { cn } from "@fundlevel/ui/lib/utils";
 import { ComponentPropsWithoutRef, FC, useEffect, useState } from "react";
 
 export interface ActiveRoundsSectionProps

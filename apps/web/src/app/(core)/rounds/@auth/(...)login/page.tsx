@@ -7,7 +7,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogContent,
-} from "@workspace/ui/components/dialog";
+} from "@fundlevel/ui/components/dialog";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 

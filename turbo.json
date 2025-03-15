@@ -4,12 +4,24 @@
   "tasks": {
     "build": {
       "cache": false,
-      "dependsOn": ["^build"],
-      "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": ["dist/**/*", ".next/**", "!.next/cache/**", "bin/*"]
+      "dependsOn": [
+        "^build"
+      ],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        ".env*"
+      ],
+      "outputs": [
+        "dist/**/*",
+        ".next/**",
+        "!.next/cache/**",
+        "bin/*"
+      ]
     },
     "lint": {
-      "dependsOn": ["^lint"]
+      "dependsOn": [
+        "^lint"
+      ]
     },
     "dev": {
       "cache": false,
@@ -18,68 +30,109 @@
     "start": {
       "cache": false,
       "persistent": true,
-      "dependsOn": ["build", "^build"]
+      "dependsOn": [
+        "build",
+        "^build"
+      ]
     },
     "install": {
       "cache": false,
-      "dependsOn": ["^install"]
+      "dependsOn": [
+        "^install"
+      ]
     },
-    "db:seed:sync": {
+    "supabase:seed:sync": {
       "cache": false,
-      "dependsOn": ["^db:seed:sync"]
+      "dependsOn": [
+        "^supabase:seed:sync"
+      ]
     },
-    "db:seed:init": {
+    "supabase:seed:init": {
       "cache": false,
-      "dependsOn": ["^db:seed:init"]
+      "dependsOn": [
+        "^supabase:seed:init"
+      ]
     },
-    "db:seed": {
+    "supabase:seed": {
       "cache": false,
-      "dependsOn": ["^db:seed"]
+      "dependsOn": [
+        "^supabase:seed"
+      ]
     },
     "test": {
       "cache": false,
-      "dependsOn": ["^test"]
+      "dependsOn": [
+        "^test"
+      ]
     },
-    "db:start": {
+    "supabase:start": {
       "cache": false,
-      "dependsOn": ["^db:start"]
+      "dependsOn": [
+        "^supabase:start"
+      ]
     },
-    "db:stop": {
+    "supabase:stop": {
       "cache": false,
-      "dependsOn": ["^db:stop"]
+      "dependsOn": [
+        "^supabase:stop"
+      ]
     },
-    "db:status": {
+    "supabase:status": {
       "cache": false,
-      "dependsOn": ["^db:status"]
+      "dependsOn": [
+        "^supabase:status"
+      ]
     },
-    "db:restart": {
+    "supabase:restart": {
       "cache": false,
-      "dependsOn": ["^db:restart"]
+      "dependsOn": [
+        "^supabase:restart"
+      ]
     },
-    "db:up": {
+    "supabase:up": {
       "cache": false,
-      "dependsOn": ["^db:up"]
+      "dependsOn": [
+        "^supabase:up"
+      ]
     },
-    "db:up-one": {
+    "supabase:diff": {
       "cache": false,
-      "dependsOn": ["^db:up-one"]
+      "dependsOn": [
+        "^supabase:diff"
+      ]
     },
-    "db:down": {
+    "supabase:new": {
       "cache": false,
-      "dependsOn": ["^db:down"]
+      "dependsOn": [
+        "^supabase:new"
+      ]
     },
-    "db:reset": {
+    "supabase:reset": {
       "cache": false,
-      "dependsOn": ["^db:reset"]
+      "dependsOn": [
+        "^supabase:reset"
+      ]
+    },
+    "supabase:typegen": {
+      "cache": false,
+      "dependsOn": [
+        "^supabase:typegen"
+      ]
     },
     "openapi:gen": {
       "cache": false,
-      "dependsOn": ["^openapi:gen"],
-      "outputs": ["openapi.yaml"]
+      "dependsOn": [
+        "^openapi:gen"
+      ],
+      "outputs": [
+        "openapi.yaml"
+      ]
     },
     "sdk:gen": {
       "cache": false,
-      "dependsOn": ["^sdk:gen"]
+      "dependsOn": [
+        "^sdk:gen"
+      ]
     }
   }
 }

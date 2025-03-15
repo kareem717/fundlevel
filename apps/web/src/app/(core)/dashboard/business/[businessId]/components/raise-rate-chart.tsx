@@ -7,8 +7,8 @@ import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@workspace/ui/components/chart";
-import { cn } from "@workspace/ui/lib/utils";
+} from "@fundlevel/ui/components/chart";
+import { cn } from "@fundlevel/ui/lib/utils";
 
 export const description = "A donut chart with text";
 const chartData = [

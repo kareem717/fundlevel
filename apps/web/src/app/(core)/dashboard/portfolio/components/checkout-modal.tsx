@@ -2,8 +2,8 @@
 
 import { LegalContainer } from "@/components/legal-container";
 import { EmbeddedCheckoutForm } from "@/components/stripe/embedded-checkout";
-import { Button } from "@workspace/ui/components/button";
-import { useToast } from "@workspace/ui/hooks/use-toast";
+import { Button } from "@fundlevel/ui/components/button";
+import { useToast } from "@fundlevel/ui/hooks/use-toast";
 import {
   Dialog,
   DialogContent,
@@ -11,7 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@workspace/ui/components/dialog";
+} from "@fundlevel/ui/components/dialog";
 import { ComponentPropsWithoutRef, useRef, useState } from "react";
 import { formatCurrency } from "@/lib/utils";
 import { EmbeddedCheckoutFormRef } from "@/components/stripe/embedded-checkout";

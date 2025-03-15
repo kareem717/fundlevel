@@ -3,9 +3,9 @@ import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
-} from "@workspace/ui/components/sidebar";
+} from "@fundlevel/ui/components/sidebar";
 import { Metadata } from "next";
-import { Separator } from "@workspace/ui/components/separator";
+import { Separator } from "@fundlevel/ui/components/separator";
 import { Suspense } from "react";
 import {
   Breadcrumb,
@@ -13,7 +13,7 @@ import {
   BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbSeparator,
-} from "@workspace/ui/components/breadcrumb";
+} from "@fundlevel/ui/components/breadcrumb";
 import { redirects } from "@/lib/config/redirects";
 
 export const metadata: Metadata = {

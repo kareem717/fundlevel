@@ -8,8 +8,8 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@workspace/ui/components/card";
-import { cn } from "@workspace/ui/lib/utils";
+} from "@fundlevel/ui/components/card";
+import { cn } from "@fundlevel/ui/lib/utils";
 
 export interface ChartWrapperProps
   extends ComponentPropsWithoutRef<typeof Card> {

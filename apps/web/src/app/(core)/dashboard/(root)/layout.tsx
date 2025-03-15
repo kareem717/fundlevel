@@ -2,15 +2,15 @@ import { ReactNode } from "react";
 import {
   SidebarInset,
   SidebarProvider,
-} from "@workspace/ui/components/sidebar";
-import { SidebarTrigger } from "@workspace/ui/components/sidebar";
-import { Separator } from "@workspace/ui/components/separator";
+} from "@fundlevel/ui/components/sidebar";
+import { SidebarTrigger } from "@fundlevel/ui/components/sidebar";
+import { Separator } from "@fundlevel/ui/components/separator";
 import { DashboardSidebar } from "./components/dashboard-sidebar";
 import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbList,
-} from "@workspace/ui/components/breadcrumb";
+} from "@fundlevel/ui/components/breadcrumb";
 
 export default async function RootDashboardLayout({
   children,

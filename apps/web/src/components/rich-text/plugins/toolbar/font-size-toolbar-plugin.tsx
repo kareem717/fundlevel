@@ -7,8 +7,8 @@ import {
 import { $getSelection, $isRangeSelection, BaseSelection } from "lexical";
 import { Minus, Plus } from "lucide-react";
 
-import { Button } from "@workspace/ui/components/button";
-import { Input } from "@workspace/ui/components/input";
+import { Button } from "@fundlevel/ui/components/button";
+import { Input } from "@fundlevel/ui/components/input";
 
 import { useToolbarContext } from "@/components/rich-text/context/toolbar-context";
 import { useUpdateToolbarHandler } from "@/components/rich-text/editor-hooks/use-update-toolbar";

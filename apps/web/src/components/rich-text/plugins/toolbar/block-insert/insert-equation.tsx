@@ -1,7 +1,7 @@
 import { DiffIcon } from "lucide-react";
 
 import { useToolbarContext } from "@/components/rich-text/context/toolbar-context";
-import { SelectItem } from "@workspace/ui/components/select";
+import { SelectItem } from "@fundlevel/ui/components/select";
 
 import { InsertEquationDialog } from "@/components/rich-text/plugins/equations-plugin";
 

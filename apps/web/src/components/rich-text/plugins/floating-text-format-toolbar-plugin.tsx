@@ -37,11 +37,11 @@ import {
 } from "lucide-react";
 import { createPortal } from "react-dom";
 
-import { Separator } from "@workspace/ui/components/separator";
+import { Separator } from "@fundlevel/ui/components/separator";
 import {
   ToggleGroup,
   ToggleGroupItem,
-} from "@workspace/ui/components/toggle-group";
+} from "@fundlevel/ui/components/toggle-group";
 
 import { useFloatingLinkContext } from "@/components/rich-text/context/floating-link-context";
 import { getDOMRangeRect } from "@/components/rich-text/utils/get-dom-range-rect";

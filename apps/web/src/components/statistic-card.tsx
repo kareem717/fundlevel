@@ -1,16 +1,16 @@
 "use client";
 
-import { cn } from "@workspace/ui/lib/utils";
+import { cn } from "@fundlevel/ui/lib/utils";
 import { ComponentPropsWithoutRef, FC } from "react";
-import { Card } from "@workspace/ui/components/card";
+import { Card } from "@fundlevel/ui/components/card";
 import { Icons } from "./icons";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@workspace/ui/components/tooltip";
-import { Skeleton } from "@workspace/ui/components/skeleton";
+} from "@fundlevel/ui/components/tooltip";
+import { Skeleton } from "@fundlevel/ui/components/skeleton";
 
 export interface StatisticCardProps
   extends ComponentPropsWithoutRef<typeof Card> {

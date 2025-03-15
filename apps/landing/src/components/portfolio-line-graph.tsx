@@ -6,9 +6,9 @@ import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@workspace/ui/components/chart";
+} from "@fundlevel/ui/components/chart";
 import { ComponentPropsWithoutRef } from "react";
-import { cn } from "@workspace/ui/lib/utils";
+import { cn } from "@fundlevel/ui/lib/utils";
 
 const CHART_DATA = [
   {

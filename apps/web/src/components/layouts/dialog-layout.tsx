@@ -2,7 +2,7 @@
 
 import { ComponentPropsWithoutRef, FC, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Dialog, DialogContent } from "@workspace/ui/components/dialog";
+import { Dialog, DialogContent } from "@fundlevel/ui/components/dialog";
 
 export interface DialogLayoutProps
   extends ComponentPropsWithoutRef<typeof Dialog> {

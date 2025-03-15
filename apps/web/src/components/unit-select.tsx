@@ -5,8 +5,8 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@workspace/ui/components/select";
-import { cn } from "@workspace/ui/lib/utils";
+} from "@fundlevel/ui/components/select";
+import { cn } from "@fundlevel/ui/lib/utils";
 
 export type Unit = {
   value: string;

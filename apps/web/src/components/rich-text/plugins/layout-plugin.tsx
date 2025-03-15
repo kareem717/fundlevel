@@ -35,14 +35,14 @@ import {
   createCommand,
 } from "lexical";
 
-import { Button } from "@workspace/ui/components/button";
+import { Button } from "@fundlevel/ui/components/button";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@workspace/ui/components/select";
+} from "@fundlevel/ui/components/select";
 
 import {
   $createLayoutContainerNode,

@@ -1,9 +1,9 @@
 "use client";
 
 import { ComponentPropsWithoutRef, FC } from "react";
-import { cn } from "@workspace/ui/lib/utils";
+import { cn } from "@fundlevel/ui/lib/utils";
 import { Icons } from "./icons";
-import { Button } from "@workspace/ui/components/button";
+import { Button } from "@fundlevel/ui/components/button";
 import { useRouter } from "next/navigation";
 
 export interface NavBackProps extends ComponentPropsWithoutRef<typeof Button> {}

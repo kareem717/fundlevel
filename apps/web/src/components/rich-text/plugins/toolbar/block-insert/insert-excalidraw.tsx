@@ -1,7 +1,7 @@
 import { FrameIcon } from "lucide-react";
 
 import { useToolbarContext } from "@/components/rich-text/context/toolbar-context";
-import { SelectItem } from "@workspace/ui/components/select";
+import { SelectItem } from "@fundlevel/ui/components/select";
 
 import { INSERT_EXCALIDRAW_COMMAND } from "@/components/rich-text/plugins/excalidraw-plugin";
 

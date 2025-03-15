@@ -5,7 +5,7 @@ import {
   CardTitle,
   CardDescription,
   CardContent,
-} from "@workspace/ui/components/card";
+} from "@fundlevel/ui/components/card";
 import { LegalContainer } from "@/components/legal-container";
 
 export default async function LoginPage() {

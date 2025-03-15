@@ -1,8 +1,8 @@
 import React from "react";
 import { redirects } from "@/lib/config/redirects";
 import Link from "next/link";
-import { cn } from "@workspace/ui/lib/utils";
-import { buttonVariants } from "@workspace/ui/components/button";
+import { cn } from "@fundlevel/ui/lib/utils";
+import { buttonVariants } from "@fundlevel/ui/components/button";
 
 export default function NotFound() {
   return (

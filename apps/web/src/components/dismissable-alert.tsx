@@ -5,10 +5,10 @@ import {
   Alert,
   AlertDescription,
   AlertTitle,
-} from "@workspace/ui/components/alert";
-import { Button } from "@workspace/ui/components/button";
+} from "@fundlevel/ui/components/alert";
+import { Button } from "@fundlevel/ui/components/button";
 import { useState, type ReactNode, type ComponentPropsWithoutRef } from "react";
-import { cn } from "@workspace/ui/lib/utils";
+import { cn } from "@fundlevel/ui/lib/utils";
 
 export interface DismissableAlertProps
   extends ComponentPropsWithoutRef<typeof Alert> {

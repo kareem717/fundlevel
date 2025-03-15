@@ -1,6 +1,6 @@
 import { env } from "@/env";
-import { Button, buttonVariants } from "@workspace/ui/components/button";
-import { cn } from "@workspace/ui/lib/utils";
+import { Button, buttonVariants } from "@fundlevel/ui/components/button";
+import { cn } from "@fundlevel/ui/lib/utils";
 import Link from "next/link";
 import { ComponentPropsWithoutRef } from "react";
 

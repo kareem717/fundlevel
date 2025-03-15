@@ -5,12 +5,12 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@workspace/ui/components/select";
-import { cn } from "@workspace/ui/lib/utils";
-import { Business } from "@workspace/sdk";
+} from "@fundlevel/ui/components/select";
+import { cn } from "@fundlevel/ui/lib/utils";
+import { Business } from "@fundlevel/sdk";
 import { useAction } from "next-safe-action/hooks";
 import { getBusinessesAction } from "@/actions/business";
-import { useToast } from "@workspace/ui/hooks/use-toast";
+import { useToast } from "@fundlevel/ui/hooks/use-toast";
 
 interface BusinessSelectProps extends ComponentPropsWithoutRef<typeof Select> {
   triggerProps?: ComponentPropsWithoutRef<typeof SelectTrigger>;

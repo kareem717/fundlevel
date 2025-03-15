@@ -18,7 +18,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@workspace/ui/components/table";
+} from "@fundlevel/ui/components/table";
 import { DataTablePagination } from "@/components/data-table";
 import {
   ComponentPropsWithoutRef,
@@ -34,10 +34,10 @@ import {
   DropdownMenuCheckboxItem,
   DropdownMenuItem,
   DropdownMenuLabel,
-} from "@workspace/ui/components/dropdown-menu";
-import { Button } from "@workspace/ui/components/button";
+} from "@fundlevel/ui/components/dropdown-menu";
+import { Button } from "@fundlevel/ui/components/button";
 import { Icons } from "@/components/icons";
-import { BusinessMemberWithRoleNameAndAccount } from "@workspace/sdk";
+import { BusinessMemberWithRoleNameAndAccount } from "@fundlevel/sdk";
 import { useAction } from "next-safe-action/hooks";
 import { useBusiness } from "@/components/providers/business-provider";
 import {
@@ -47,7 +47,7 @@ import {
   useQueryStates,
 } from "nuqs";
 import { object } from "yup";
-import { Skeleton } from "@workspace/ui/components/skeleton";
+import { Skeleton } from "@fundlevel/ui/components/skeleton";
 import { getBusinessMembersByPage } from "@/actions/business";
 
 export const columns: ColumnDef<BusinessMemberWithRoleNameAndAccount>[] = [
