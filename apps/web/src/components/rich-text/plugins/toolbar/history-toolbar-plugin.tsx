@@ -12,7 +12,7 @@ import {
 } from 'lexical'
 import { RedoIcon, UndoIcon } from 'lucide-react'
 
-import { Button } from '@repo/ui/components/button'
+import { Button } from '@workspace/ui/components/button'
 
 import { useToolbarContext } from '@/components/rich-text/context/toolbar-context'
 

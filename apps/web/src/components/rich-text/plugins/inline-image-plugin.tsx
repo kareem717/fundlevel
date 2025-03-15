@@ -30,17 +30,17 @@ import {
   createCommand,
 } from 'lexical'
 
-import { Button } from '@repo/ui/components/button'
-import { Checkbox } from '@repo/ui/components/checkbox'
-import { Input } from '@repo/ui/components/input'
-import { Label } from '@repo/ui/components/label'
+import { Button } from '@workspace/ui/components/button'
+import { Checkbox } from '@workspace/ui/components/checkbox'
+import { Input } from '@workspace/ui/components/input'
+import { Label } from '@workspace/ui/components/label'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@repo/ui/components/select'
+} from '@workspace/ui/components/select'
 
 import type { Position } from '@/components/rich-text/nodes/inline-image-node'
 import {

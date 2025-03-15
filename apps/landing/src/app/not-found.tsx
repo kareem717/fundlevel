@@ -1,7 +1,7 @@
 import { redirects } from "@/lib/config";
 import Link from "next/link";
-import { cn } from "@repo/ui/lib/utils";
-import { buttonVariants } from "@repo/ui/components/button";
+import { cn } from "@workspace/ui/lib/utils";
+import { buttonVariants } from "@workspace/ui/components/button";
 import { meta } from "@/lib/config";
 
 export const metadata = meta.notFound;

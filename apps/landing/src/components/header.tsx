@@ -3,8 +3,8 @@
 import { ComponentPropsWithoutRef, useEffect, useState } from "react";
 import { LogoDiv } from "./logo-div";
 import { NavigationItem, NavMenu } from "./nav-menu";
-import { Button } from "@repo/ui/components/button";
-import { cn } from "@repo/ui/lib/utils";
+import { Button } from "@workspace/ui/components/button";
+import { cn } from "@workspace/ui/lib/utils";
 import { ModeToggle } from "./mode-toggle";
 import { Menu } from "lucide-react";
 import { BetaRequestLink } from "./beta-request-link";

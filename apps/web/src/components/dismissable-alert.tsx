@@ -1,10 +1,10 @@
 "use client";
 
 import { AlertCircle, X } from "lucide-react";
-import { Alert, AlertDescription, AlertTitle } from "@repo/ui/components/alert";
-import { Button } from "@repo/ui/components/button";
+import { Alert, AlertDescription, AlertTitle } from "@workspace/ui/components/alert";
+import { Button } from "@workspace/ui/components/button";
 import { useState, type ReactNode, type ComponentPropsWithoutRef } from "react";
-import { cn } from "@repo/ui/lib/utils";
+import { cn } from "@workspace/ui/lib/utils";
 
 export interface DismissableAlertProps extends ComponentPropsWithoutRef<typeof Alert> {
   title?: string;

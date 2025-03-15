@@ -1,7 +1,7 @@
 import { getUserAction } from "@/actions/auth";
 import { CreateAccountForm } from "@/components/auth/create-account-form";
 import { LegalContainer } from "@/components/legal-container";
-import { Card, CardTitle, CardDescription, CardHeader, CardContent } from "@repo/ui/components/card";
+import { Card, CardTitle, CardDescription, CardHeader, CardContent } from "@workspace/ui/components/card";
 
 export default async function CreateAccountPage() {
   const user = (await getUserAction())?.data

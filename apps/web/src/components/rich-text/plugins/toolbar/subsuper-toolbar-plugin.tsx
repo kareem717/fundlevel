@@ -4,7 +4,7 @@ import { $isTableSelection } from '@lexical/table'
 import { $isRangeSelection, BaseSelection, FORMAT_TEXT_COMMAND } from 'lexical'
 import { SubscriptIcon, SuperscriptIcon } from 'lucide-react'
 
-import { ToggleGroup, ToggleGroupItem } from '@repo/ui/components/toggle-group'
+import { ToggleGroup, ToggleGroupItem } from '@workspace/ui/components/toggle-group'
 
 import { useToolbarContext } from '@/components/rich-text/context/toolbar-context'
 import { useUpdateToolbarHandler } from '@/components/rich-text/editor-hooks/use-update-toolbar'

@@ -2,7 +2,7 @@ import { $setBlocksType } from '@lexical/selection'
 import { $createParagraphNode, $getSelection, $isRangeSelection } from 'lexical'
 
 import { useToolbarContext } from '@/components/rich-text/context/toolbar-context'
-import { SelectItem } from '@repo/ui/components/select'
+import { SelectItem } from '@workspace/ui/components/select'
 
 import { blockTypeToBlockName } from '@/components/rich-text/plugins/toolbar/block-format/block-format-data'
 

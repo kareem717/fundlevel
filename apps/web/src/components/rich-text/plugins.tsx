@@ -14,7 +14,7 @@ import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin'
 import { TabIndentationPlugin } from '@lexical/react/LexicalTabIndentationPlugin'
 import { TablePlugin } from '@lexical/react/LexicalTablePlugin'
 
-import { Separator } from '@repo/ui/components/separator'
+import { Separator } from '@workspace/ui/components/separator'
 
 import { BlockFormatDropDown } from '@/components/rich-text/plugins/toolbar/block-format-toolbar-plugin'
 import { FormatBulletedList } from '@/components/rich-text/plugins/toolbar/block-format/format-bulleted-list'

@@ -1,5 +1,5 @@
-import { Card } from "@repo/ui/components/card";
-import { CardHeader, CardTitle, CardDescription, CardContent } from "@repo/ui/components/card";
+import { Card } from "@workspace/ui/components/card";
+import { CardHeader, CardTitle, CardDescription, CardContent } from "@workspace/ui/components/card";
 import { ComponentPropsWithoutRef } from "react";
 import { cn } from "@/lib/utils";
 import { NOTIFICATION_ID, useNotification } from "../providers/notification-provider";

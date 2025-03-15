@@ -3,15 +3,15 @@ import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext
 import { TreeView } from '@lexical/react/LexicalTreeView'
 import { NotebookPenIcon } from 'lucide-react'
 
-import { Button } from '@repo/ui/components/button'
+import { Button } from '@workspace/ui/components/button'
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@repo/ui/components/dialog'
-import { ScrollArea, ScrollBar } from '@repo/ui/components/scroll-area'
+} from '@workspace/ui/components/dialog'
+import { ScrollArea, ScrollBar } from '@workspace/ui/components/scroll-area'
 
 export function TreeViewPlugin(): JSX.Element {
   const [editor] = useLexicalComposerContext()

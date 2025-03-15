@@ -1,4 +1,4 @@
-import { cn } from "@repo/ui/lib/utils";
+import { cn } from "@workspace/ui/lib/utils";
 
 export const files = [
   {

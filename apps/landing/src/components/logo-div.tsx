@@ -1,5 +1,5 @@
 import { ComponentPropsWithoutRef, FC } from "react";
-import { cn } from "@repo/ui/lib/utils";
+import { cn } from "@workspace/ui/lib/utils";
 import Link from "next/link";
 import { redirects } from "@/lib/config";
 import { LogoIcon, SmallLogoIcon } from "@/components/icons";

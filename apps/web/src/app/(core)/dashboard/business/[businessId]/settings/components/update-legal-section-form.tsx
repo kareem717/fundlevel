@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@repo/ui/lib/utils";
+import { cn } from "@workspace/ui/lib/utils";
 import { ComponentPropsWithoutRef, useEffect } from "react"
 import {
   Form,
@@ -10,17 +10,17 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@repo/ui/components/form"
-import { Input } from "@repo/ui/components/input"
+} from "@workspace/ui/components/form"
+import { Input } from "@workspace/ui/components/input"
 import { Icons } from "@/components/icons";
-import { Button } from "@repo/ui/components/button";
-import { useToast } from "@repo/ui/hooks/use-toast";
+import { Button } from "@workspace/ui/components/button";
+import { useToast } from "@workspace/ui/hooks/use-toast";
 import { useAction } from "next-safe-action/hooks";
 import { getBusinessAction, upsertBusinessLegalSection } from "@/actions/business";
 import { useBusiness } from "@/components/providers/business-provider";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
-import { zUpsertBusinessLegalSectionParams } from "@repo/sdk/zod";
+import { zUpsertBusinessLegalSectionParams } from "@workspace/sdk/zod";
 import { pathIdSchema } from "@/actions/validations";
 
 export function UpdateLegalSectionForm({ className, ...props }: ComponentPropsWithoutRef<"form">) {

@@ -7,9 +7,9 @@ import {
 	getRoundByCursor,
 	getRoundsByPage as getRoundsByPageApi,
 	getRoundTerms,
-} from "@repo/sdk";
+} from "@workspace/sdk";
 import { cache } from "react";
-import { zCreateRoundParams } from "@repo/sdk/zod";
+import { zCreateRoundParams } from "@workspace/sdk/zod";
 import {
 	cursorPaginationSchema,
 	offsetPaginationSchema,

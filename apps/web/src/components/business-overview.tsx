@@ -2,7 +2,7 @@
 
 import { ComponentPropsWithoutRef, FC, useEffect, useState } from "react"
 import { Icons } from "@/components/icons"
-import { cn } from "@repo/ui/lib/utils"
+import { cn } from "@workspace/ui/lib/utils"
 
 export interface BusinessOverviewProps extends ComponentPropsWithoutRef<"div"> {
   overview: string;

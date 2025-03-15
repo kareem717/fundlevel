@@ -4,7 +4,7 @@ import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
-} from "@repo/ui/components/sidebar"
+} from "@workspace/ui/components/sidebar"
 import { ComponentPropsWithoutRef } from "react"
 import { sidebar } from "@/lib/config/sidebar"
 import { SidebarUser } from "@/components/sidebar/sidebar-user"

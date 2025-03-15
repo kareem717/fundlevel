@@ -7,12 +7,12 @@ import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@repo/ui/components/chart"
-import { cn } from "@repo/ui/lib/utils"
-import { Aggregate } from "@repo/sdk"
+} from "@workspace/ui/components/chart"
+import { cn } from "@workspace/ui/lib/utils"
+import { Aggregate } from "@workspace/sdk"
 import { format } from "date-fns"
 import { formatCurrency } from "@/lib/utils"
-import { useIsMobile } from "@repo/ui/hooks/use-mobile"
+import { useIsMobile } from "@workspace/ui/hooks/use-mobile"
 export const description = "A stacked area chart"
 
 const chartConfig = {

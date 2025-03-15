@@ -32,18 +32,18 @@ import {
   SELECTION_CHANGE_COMMAND,
 } from 'lexical'
 
-import { Button } from '@repo/ui/components/button'
-import { Checkbox } from '@repo/ui/components/checkbox'
-import { DialogFooter } from '@repo/ui/components/dialog'
-import { Input } from '@repo/ui/components/input'
-import { Label } from '@repo/ui/components/label'
+import { Button } from '@workspace/ui/components/button'
+import { Checkbox } from '@workspace/ui/components/checkbox'
+import { DialogFooter } from '@workspace/ui/components/dialog'
+import { Input } from '@workspace/ui/components/input'
+import { Label } from '@workspace/ui/components/label'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@repo/ui/components/select'
+} from '@workspace/ui/components/select'
 
 import { useEditorModal } from '@/components/rich-text/editor-hooks/use-modal'
 import type { Position } from '@/components/rich-text/nodes/inline-image-node'

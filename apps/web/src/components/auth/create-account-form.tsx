@@ -1,18 +1,18 @@
 "use client";
 
-import { Button } from "@repo/ui/components/button";
+import { Button } from "@workspace/ui/components/button";
 import { ComponentPropsWithoutRef, useState } from "react";
 import { createAccountAction } from "@/actions/auth";
 import { useRouter } from "next/navigation";
 import { redirects } from "@/lib/config/redirects";
 import { Loader2 } from "lucide-react";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@repo/ui/components/form";
-import { Input } from "@repo/ui/components/input";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@workspace/ui/components/form";
+import { Input } from "@workspace/ui/components/input";
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { zCreateAccountParams } from "@repo/sdk/zod";
-import { useToast } from "@repo/ui/hooks/use-toast";
-import { cn } from "@repo/ui/lib/utils";
+import { zCreateAccountParams } from "@workspace/sdk/zod";
+import { useToast } from "@workspace/ui/hooks/use-toast";
+import { cn } from "@workspace/ui/lib/utils";
 
 export interface CreateAccountFormProps extends ComponentPropsWithoutRef<"form"> {
   defaultFirstName?: string

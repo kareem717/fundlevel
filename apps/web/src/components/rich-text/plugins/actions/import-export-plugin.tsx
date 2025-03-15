@@ -2,12 +2,12 @@ import { exportFile, importFile } from '@lexical/file'
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext'
 import { DownloadIcon, UploadIcon } from 'lucide-react'
 
-import { Button } from '@repo/ui/components/button'
+import { Button } from '@workspace/ui/components/button'
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from '@repo/ui/components/tooltip'
+} from '@workspace/ui/components/tooltip'
 
 export function ImportExportPlugin() {
   const [editor] = useLexicalComposerContext()

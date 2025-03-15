@@ -1,6 +1,6 @@
 import {
   SidebarMenuButton,
-} from "@repo/ui/components/sidebar"
+} from "@workspace/ui/components/sidebar"
 import { ComponentPropsWithoutRef } from "react"
 import { redirects } from "@/lib/config/redirects"
 import { Icons } from "@/components/icons"

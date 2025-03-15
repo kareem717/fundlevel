@@ -1,7 +1,7 @@
 import { ListChecksIcon } from 'lucide-react'
 
 import { useToolbarContext } from '@/components/rich-text/context/toolbar-context'
-import { SelectItem } from '@repo/ui/components/select'
+import { SelectItem } from '@workspace/ui/components/select'
 
 import { InsertPollDialog } from '@/components/rich-text/plugins/poll-plugin'
 

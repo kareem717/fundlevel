@@ -1,9 +1,9 @@
 import { ReactNode } from "react";
-import { SidebarInset, SidebarProvider } from "@repo/ui/components/sidebar";
-import { SidebarTrigger } from "@repo/ui/components/sidebar";
-import { Separator } from "@repo/ui/components/separator";
+import { SidebarInset, SidebarProvider } from "@workspace/ui/components/sidebar";
+import { SidebarTrigger } from "@workspace/ui/components/sidebar";
+import { Separator } from "@workspace/ui/components/separator";
 import { DashboardSidebar } from "./components/dashboard-sidebar";
-import { Breadcrumb, BreadcrumbItem, BreadcrumbList } from "@repo/ui/components/breadcrumb";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbList } from "@workspace/ui/components/breadcrumb";
 
 export default async function RootDashboardLayout({ children }: { children: ReactNode }) {
   return (

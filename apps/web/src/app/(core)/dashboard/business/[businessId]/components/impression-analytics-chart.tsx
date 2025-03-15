@@ -7,8 +7,8 @@ import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@repo/ui/components/chart"
-import { cn } from "@repo/ui/lib/utils"
+} from "@workspace/ui/components/chart"
+import { cn } from "@workspace/ui/lib/utils"
 export const description = "A stacked area chart"
 
 const chartData = [

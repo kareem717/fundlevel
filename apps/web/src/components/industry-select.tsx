@@ -1,12 +1,12 @@
 "use client"
 
 import { ComponentPropsWithoutRef, FC, useEffect, useState } from "react"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@repo/ui/components/select"
-import { cn } from "@repo/ui/lib/utils"
-import { Industry } from "@repo/sdk"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@workspace/ui/components/select"
+import { cn } from "@workspace/ui/lib/utils"
+import { Industry } from "@workspace/sdk"
 import { useAction } from "next-safe-action/hooks"
 import { getAllIndustries } from "@/actions/industries"
-import { useToast } from "@repo/ui/hooks/use-toast"
+import { useToast } from "@workspace/ui/hooks/use-toast"
 import { Icons } from "./icons"
 
 export interface IndustrySelectProps extends Omit<ComponentPropsWithoutRef<typeof Select>, "onValueChange"> {

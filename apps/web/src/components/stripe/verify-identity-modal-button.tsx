@@ -2,14 +2,14 @@
 
 import { getStripeIdentitySessionAction } from '@/actions/auth';
 import { env } from '@/env';
-import { Button } from '@repo/ui/components/button';
+import { Button } from '@workspace/ui/components/button';
 import { loadStripe, Stripe } from '@stripe/stripe-js';
 import { useAction } from 'next-safe-action/hooks';
 import { ComponentPropsWithoutRef, useEffect } from 'react';
 import { useState } from 'react';
 import { Loader2 } from 'lucide-react';
-import { useToast } from '@repo/ui/hooks/use-toast';
-import { ToastAction } from '@repo/ui/components/toast';
+import { useToast } from '@workspace/ui/hooks/use-toast';
+import { ToastAction } from '@workspace/ui/components/toast';
 import { usePathname } from 'next/navigation';
 import { useNotification } from '../providers/notification-provider';
 

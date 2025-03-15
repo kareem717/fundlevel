@@ -2,7 +2,7 @@ import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext
 import { CLEAR_EDITOR_COMMAND } from 'lexical'
 import { Trash2Icon } from 'lucide-react'
 
-import { Button } from '@repo/ui/components/button'
+import { Button } from '@workspace/ui/components/button'
 import {
   Dialog,
   DialogClose,
@@ -12,12 +12,12 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@repo/ui/components/dialog'
+} from '@workspace/ui/components/dialog'
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from '@repo/ui/components/tooltip'
+} from '@workspace/ui/components/tooltip'
 
 
 export function ClearEditorActionPlugin() {

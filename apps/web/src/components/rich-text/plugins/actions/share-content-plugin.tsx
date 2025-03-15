@@ -10,12 +10,12 @@ import { CLEAR_HISTORY_COMMAND } from 'lexical'
 import { ShareIcon } from 'lucide-react'
 import { toast } from 'sonner'
 
-import { Button } from '@repo/ui/components/button'
+import { Button } from '@workspace/ui/components/button'
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from '@repo/ui/components/tooltip'
+} from '@workspace/ui/components/tooltip'
 
 import { docFromHash, docToHash } from '@/components/rich-text/utils/doc-serialization'
 

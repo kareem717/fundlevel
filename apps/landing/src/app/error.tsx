@@ -1,9 +1,9 @@
 "use client";
 
 import { SmallLogoDiv } from "@/components/logo-div";
-import { Button, buttonVariants } from "@repo/ui/components/button";
+import { Button, buttonVariants } from "@workspace/ui/components/button";
 import { meta, redirects } from "@/lib/config";
-import { cn } from "@repo/ui/lib/utils";
+import { cn } from "@workspace/ui/lib/utils";
 import Link from "next/link";
 import { useEffect } from "react";
 

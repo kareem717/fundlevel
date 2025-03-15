@@ -7,12 +7,12 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@repo/ui/components/dropdown-menu";
-import { Account } from "@repo/sdk";
-import { buttonVariants } from "@repo/ui/components/button";
-import { Avatar, AvatarFallback } from "@repo/ui/components/avatar";
+} from "@workspace/ui/components/dropdown-menu";
+import { Account } from "@workspace/sdk";
+import { buttonVariants } from "@workspace/ui/components/button";
+import { Avatar, AvatarFallback } from "@workspace/ui/components/avatar";
 import { Icons } from "../icons";
-import { cn } from "@repo/ui/lib/utils";
+import { cn } from "@workspace/ui/lib/utils";
 import Link from "next/link";
 import { redirects } from "@/lib/config/redirects";
 

@@ -10,7 +10,7 @@ import {
   SelectContent,
   SelectGroup,
   SelectTrigger,
-} from '@repo/ui/components/select'
+} from '@workspace/ui/components/select'
 
 import { blockTypeToBlockName } from '@/components/rich-text/plugins/toolbar/block-format/block-format-data'
 

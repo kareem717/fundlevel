@@ -1,5 +1,5 @@
 import { LogoutButtons } from "./components/logout-buttons";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@repo/ui/components/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@workspace/ui/components/card";
 
 export default async function LogoutPage() {
   return (

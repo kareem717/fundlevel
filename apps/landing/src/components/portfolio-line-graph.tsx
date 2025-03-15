@@ -12,9 +12,9 @@ import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from '@repo/ui/components/chart'
+} from '@workspace/ui/components/chart'
 import { ComponentPropsWithoutRef } from 'react'
-import { cn } from '@repo/ui/lib/utils'
+import { cn } from '@workspace/ui/lib/utils'
 
 const CHART_DATA = [
   {

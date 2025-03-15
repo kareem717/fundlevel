@@ -1,5 +1,5 @@
 import { VerifyOTPForm } from "@/components/auth/verify-otp-form";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@repo/ui/components/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@workspace/ui/components/card";
 import { LegalContainer } from "@/components/legal-container";
 
 export default async function OTPPage() {

@@ -1,7 +1,7 @@
 "use client"
 
-import { Button } from "@repo/ui/components/button"
-import { Input } from "@repo/ui/components/input"
+import { Button } from "@workspace/ui/components/button"
+import { Input } from "@workspace/ui/components/input"
 import { ComponentPropsWithoutRef, useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -15,12 +15,12 @@ import {
   FormItem,
   FormLabel,
   FormMessage
-} from "@repo/ui/components/form"
+} from "@workspace/ui/components/form"
 import { Loader2 } from "lucide-react"
 import { OAuthButtons } from "./oauth-buttons"
 import { useRouter } from "next/navigation"
-import { useToast } from "@repo/ui/hooks/use-toast"
-import { cn } from "@repo/ui/lib/utils"
+import { useToast } from "@workspace/ui/hooks/use-toast"
+import { cn } from "@workspace/ui/lib/utils"
 
 const formSchema = z.object({
   email: z.string({

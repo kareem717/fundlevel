@@ -1,7 +1,7 @@
 import { ChevronRightIcon } from 'lucide-react'
 
 import { useToolbarContext } from '@/components/rich-text/context/toolbar-context'
-import { SelectItem } from '@repo/ui/components/select'
+import { SelectItem } from '@workspace/ui/components/select'
 
 import { INSERT_COLLAPSIBLE_COMMAND } from '@/components/rich-text/plugins/collapsible-plugin'
 

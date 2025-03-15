@@ -5,9 +5,9 @@ import {
 import { zodAdapter } from "next-safe-action/adapters/zod";
 import { env } from "@/env";
 import { createClient as createSupabaseServerClient } from "@/lib/utils/supabase/server";
-import { zErrorModel } from "@repo/sdk/zod";
+import { zErrorModel } from "@workspace/sdk/zod";
 import { createClient } from "@hey-api/client-axios";
-import { getAccount } from "@repo/sdk";
+import { getAccount } from "@workspace/sdk";
 
 export const actionClient = createSafeActionClient({
 	validationAdapter: zodAdapter(),

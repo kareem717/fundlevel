@@ -1,19 +1,19 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@repo/ui/components/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@workspace/ui/components/card"
 import { getAccountInvestmentsAction, getInvestmentAggregateAction } from "@/actions/investment";
 import { Suspense } from "react"
 import { PortfolioChart } from "./components/portfolio-chart";
-import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@repo/ui/components/table";
+import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@workspace/ui/components/table";
 import { CheckoutModal } from "./components/checkout-modal";
 import { format } from "date-fns";
 import { formatCurrency } from "@/lib/utils";
-import { Badge } from "@repo/ui/components/badge";
+import { Badge } from "@workspace/ui/components/badge";
 import { MoreHorizontal } from "lucide-react";
-import { Button } from "@repo/ui/components/button";
-import { buttonVariants } from "@repo/ui/components/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@repo/ui/components/dropdown-menu";
+import { Button } from "@workspace/ui/components/button";
+import { buttonVariants } from "@workspace/ui/components/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@workspace/ui/components/dropdown-menu";
 import Link from "next/link";
 import { redirects } from "@/lib/config/redirects";
-import { cn } from "@repo/ui/lib/utils";
+import { cn } from "@workspace/ui/lib/utils";
 
 async function InvestmentsAsync() {
   const investmentData = (await getAccountInvestmentsAction({

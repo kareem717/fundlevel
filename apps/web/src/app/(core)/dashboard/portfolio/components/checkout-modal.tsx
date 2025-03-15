@@ -2,8 +2,8 @@
 
 import { LegalContainer } from "@/components/legal-container";
 import { EmbeddedCheckoutForm } from "@/components/stripe/embedded-checkout";
-import { Button } from "@repo/ui/components/button";
-import { useToast } from "@repo/ui/hooks/use-toast";
+import { Button } from "@workspace/ui/components/button";
+import { useToast } from "@workspace/ui/hooks/use-toast";
 import {
   Dialog,
   DialogContent,
@@ -11,7 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@repo/ui/components/dialog"
+} from "@workspace/ui/components/dialog"
 import { ComponentPropsWithoutRef, useRef, useState } from "react";
 import { formatCurrency } from "@/lib/utils";
 import { EmbeddedCheckoutFormRef } from "@/components/stripe/embedded-checkout";
@@ -30,7 +30,7 @@ export function CheckoutModal({ investmentId, amount, currency, triggerText = "C
   const checkoutFormRef = useRef<EmbeddedCheckoutFormRef>(null);
   const [open, setOpen] = useState(false);
   const router = useRouter();
-  
+
   return (
     <Dialog open={open} onOpenChange={setOpen} {...props}>
       <DialogTrigger>

@@ -1,6 +1,6 @@
 import { getBusinessCreateRoundrequirements } from "@/actions/business";
 import { CreateRoundForm } from "./components/create-round-form";
-import { Card, CardContent, CardTitle, CardHeader } from "@repo/ui/components/card";
+import { Card, CardContent, CardTitle, CardHeader } from "@workspace/ui/components/card";
 import { notFound } from "next/navigation";
 
 export default async function CreateRoundPage({ params }: { params: { businessId: string } }) {

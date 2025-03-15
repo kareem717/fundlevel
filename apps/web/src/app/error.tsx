@@ -2,9 +2,9 @@
 
 import React from "react";
 import { SmallLogoDiv } from "@/components/logo-div";
-import { Button, buttonVariants } from "@repo/ui/components/button";
+import { Button, buttonVariants } from "@workspace/ui/components/button";
 import { redirects } from "@/lib/config/redirects";
-import { cn } from "@repo/ui/lib/utils";
+import { cn } from "@workspace/ui/lib/utils";
 import Link from "next/link";
 import { useEffect } from "react";
 

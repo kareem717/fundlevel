@@ -2,7 +2,7 @@ import { INSERT_HORIZONTAL_RULE_COMMAND } from '@lexical/react/LexicalHorizontal
 import { ScissorsIcon } from 'lucide-react'
 
 import { useToolbarContext } from '@/components/rich-text/context/toolbar-context'
-import { SelectItem } from '@repo/ui/components/select'
+import { SelectItem } from '@workspace/ui/components/select'
 
 export function InsertHorizontalRule() {
   const { activeEditor } = useToolbarContext()

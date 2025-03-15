@@ -1,7 +1,7 @@
 import { INSERT_EMBED_COMMAND } from '@lexical/react/LexicalAutoEmbedPlugin'
 
 import { useToolbarContext } from '@/components/rich-text/context/toolbar-context'
-import { SelectItem } from '@repo/ui/components/select'
+import { SelectItem } from '@workspace/ui/components/select'
 
 import { EmbedConfigs } from '@/components/rich-text/plugins/embeds/auto-embed-plugin'
 

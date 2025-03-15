@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@repo/ui/lib/utils";
+import { cn } from "@workspace/ui/lib/utils";
 import { ComponentPropsWithoutRef, useEffect, useState } from "react"
 import {
   Form,
@@ -10,24 +10,24 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@repo/ui/components/form"
-import { Input } from "@repo/ui/components/input"
-import { Button } from "@repo/ui/components/button";
-import { useToast } from "@repo/ui/hooks/use-toast";
+} from "@workspace/ui/components/form"
+import { Input } from "@workspace/ui/components/input"
+import { Button } from "@workspace/ui/components/button";
+import { useToast } from "@workspace/ui/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { createRound } from "@/actions/round";
 import { redirects } from "@/lib/config/redirects";
 import { useBusiness } from "@/components/providers/business-provider";
-import { zCreateRoundParams } from "@repo/sdk/zod";
+import { zCreateRoundParams } from "@workspace/sdk/zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
 import { Loader2 } from 'lucide-react';
 import { z } from "zod";
-import { Label } from "@repo/ui/components/label";
+import { Label } from "@workspace/ui/components/label";
 import { formatCurrency } from "@/lib/utils";
-import { Separator } from "@repo/ui/components/separator";
+import { Separator } from "@workspace/ui/components/separator";
 import { LexicalEditor } from "@/components/rich-text/editor";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@repo/ui/components/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@workspace/ui/components/tabs";
 
 export function CreateRoundForm({ className, ...props }: ComponentPropsWithoutRef<"form">) {
   const router = useRouter()

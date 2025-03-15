@@ -13,7 +13,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@repo/ui/components/table"
+} from "@workspace/ui/components/table"
 import { Table as TableType } from "@tanstack/react-table"
 import {
   Select,
@@ -21,10 +21,10 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@repo/ui/components/select"
+} from "@workspace/ui/components/select"
 import { Column } from "@tanstack/react-table"
-import { cn } from "@repo/ui/lib/utils"
-import { Button } from "@repo/ui/components/button"
+import { cn } from "@workspace/ui/lib/utils"
+import { Button } from "@workspace/ui/components/button"
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -33,9 +33,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@repo/ui/components/dropdown-menu"
+} from "@workspace/ui/components/dropdown-menu"
 import { Icons } from "./icons"
-import { Skeleton } from "@repo/ui/components/skeleton"
+import { Skeleton } from "@workspace/ui/components/skeleton"
 
 interface DataTableViewOptionsProps<TData> {
   table: TableType<TData>

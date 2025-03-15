@@ -1,7 +1,7 @@
 "use client"
 
 import { StatisticCard } from "@/components/statistic-card";
-import { cn } from "@repo/ui/lib/utils";
+import { cn } from "@workspace/ui/lib/utils";
 import { ComponentPropsWithoutRef, FC } from "react"
 
 export interface BusinessStatisticOverviewProps extends ComponentPropsWithoutRef<"div"> {

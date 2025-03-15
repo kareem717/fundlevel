@@ -1,7 +1,7 @@
 "use client"
 
 import { CreateAccountForm } from "@/components/auth/create-account-form"
-import { Dialog, DialogTitle, DialogDescription, DialogHeader, DialogContent } from "@repo/ui/components/dialog"
+import { Dialog, DialogTitle, DialogDescription, DialogHeader, DialogContent } from "@workspace/ui/components/dialog"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 

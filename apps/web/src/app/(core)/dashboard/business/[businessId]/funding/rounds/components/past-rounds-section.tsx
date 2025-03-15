@@ -1,9 +1,9 @@
 "use client";
 
-import { Label } from "@repo/ui/components/label";
-import { Skeleton } from "@repo/ui/components/skeleton";
-import { Round } from "@repo/sdk";
-import { cn } from "@repo/ui/lib/utils";
+import { Label } from "@workspace/ui/components/label";
+import { Skeleton } from "@workspace/ui/components/skeleton";
+import { Round } from "@workspace/sdk";
+import { cn } from "@workspace/ui/lib/utils";
 import { ComponentPropsWithoutRef, FC, useEffect, useState } from "react"
 
 export interface PastRoundsSectionProps extends ComponentPropsWithoutRef<"section"> {

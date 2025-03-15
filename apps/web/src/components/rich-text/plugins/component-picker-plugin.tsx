@@ -59,7 +59,7 @@ import {
   TextIcon,
 } from 'lucide-react'
 
-import { Command, CommandGroup, CommandItem, CommandList } from '@repo/ui/components/command'
+import { Command, CommandGroup, CommandItem, CommandList } from '@workspace/ui/components/command'
 
 import { useEditorModal } from '@/components/rich-text/editor-hooks/use-modal'
 import { INSERT_COLLAPSIBLE_COMMAND } from '@/components/rich-text/plugins/collapsible-plugin'

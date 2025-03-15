@@ -19,20 +19,20 @@ import { PopoverPortal } from '@radix-ui/react-popover'
 import type { LexicalEditor } from 'lexical'
 import { FigmaIcon, TwitterIcon, YoutubeIcon } from 'lucide-react'
 
-import { Button } from '@repo/ui/components/button'
+import { Button } from '@workspace/ui/components/button'
 import {
   Command,
   CommandGroup,
   CommandItem,
   CommandList,
-} from '@repo/ui/components/command'
-import { DialogFooter } from '@repo/ui/components/dialog'
-import { Input } from '@repo/ui/components/input'
+} from '@workspace/ui/components/command'
+import { DialogFooter } from '@workspace/ui/components/dialog'
+import { Input } from '@workspace/ui/components/input'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@repo/ui/components/popover'
+} from '@workspace/ui/components/popover'
 
 import { useEditorModal } from '@/components/rich-text/editor-hooks/use-modal'
 import { INSERT_FIGMA_COMMAND } from '@/components/rich-text/plugins/embeds/figma-plugin'

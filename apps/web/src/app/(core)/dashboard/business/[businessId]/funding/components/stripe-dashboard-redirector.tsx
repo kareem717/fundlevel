@@ -4,10 +4,10 @@ import { getStripeDashboardUrlAction } from '@/actions/business';
 import { useAction } from 'next-safe-action/hooks';
 import { useRouter } from 'next/navigation';
 import { ComponentPropsWithoutRef, useState } from 'react';
-import { Button } from '@repo/ui/components/button';
-import { BusinessStripeAccount } from '@repo/sdk';
-import { useToast } from '@repo/ui/hooks/use-toast'
-import { ToastAction } from '@repo/ui/components/toast';
+import { Button } from '@workspace/ui/components/button';
+import { BusinessStripeAccount } from '@workspace/sdk';
+import { useToast } from '@workspace/ui/hooks/use-toast'
+import { ToastAction } from '@workspace/ui/components/toast';
 import { Loader2 } from 'lucide-react';
 
 interface StripeDashboardRedirectorProps extends ComponentPropsWithoutRef<typeof Button> {

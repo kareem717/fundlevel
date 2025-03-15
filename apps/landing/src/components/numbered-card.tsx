@@ -1,4 +1,4 @@
-import { cn } from '@repo/ui/lib/utils'
+import { cn } from '@workspace/ui/lib/utils'
 import React, { ComponentPropsWithoutRef, FC } from 'react'
 import Balancer from 'react-wrap-balancer'
 

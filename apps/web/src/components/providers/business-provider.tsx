@@ -2,7 +2,7 @@
 
 import { ReactNode, useState } from "react";
 import { createContext, useContext } from "react";
-import { Business } from "@repo/sdk";
+import { Business } from "@workspace/sdk";
 
 export interface BusinessProviderProps {
   selectedBusiness: Business;

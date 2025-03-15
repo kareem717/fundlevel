@@ -19,12 +19,12 @@ import {
 } from 'lexical'
 import { MicIcon } from 'lucide-react'
 
-import { Button } from '@repo/ui/components/button'
+import { Button } from '@workspace/ui/components/button'
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from '@repo/ui/components/tooltip'
+} from '@workspace/ui/components/tooltip'
 
 import { useReport } from '@/components/rich-text/editor-hooks/use-report'
 import { CAN_USE_DOM } from '@/components/rich-text/shared/can-use-dom'

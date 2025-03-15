@@ -5,7 +5,7 @@ import {
   SelectContent,
   SelectGroup,
   SelectTrigger,
-} from '@repo/ui/components/select'
+} from '@workspace/ui/components/select'
 
 import { useEditorModal } from '@/components/rich-text/editor-hooks/use-modal'
 

@@ -25,13 +25,13 @@ import {
 } from '@excalidraw/excalidraw/types/types'
 import { DialogTrigger } from '@radix-ui/react-dialog'
 
-import { Button } from '@repo/ui/components/button'
+import { Button } from '@workspace/ui/components/button'
 import {
   Dialog,
   DialogClose,
   DialogContent,
   DialogFooter,
-} from '@repo/ui/components/dialog'
+} from '@workspace/ui/components/dialog'
 
 const Excalidraw = dynamic(() => import('@/components/rich-text/editor-ui/excalidraw'), { ssr: false })
 

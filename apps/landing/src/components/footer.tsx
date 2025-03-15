@@ -1,8 +1,8 @@
 import Link from 'next/link'
-import { cn } from '@repo/ui/lib/utils'
+import { cn } from '@workspace/ui/lib/utils'
 import { ComponentPropsWithoutRef, FC } from 'react'
 import { contact } from '@/lib/config'
-import { Separator } from '@repo/ui/components/separator'
+import { Separator } from '@workspace/ui/components/separator'
 import { LogoDiv } from '@/components/logo-div'
 
 export function Footer({

@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@repo/ui/components/button";
+import { Button } from "@workspace/ui/components/button";
 import {
   Form,
   FormControl,
@@ -8,17 +8,17 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@repo/ui/components/form";
-import { Input } from "@repo/ui/components/input";
-import { useToast } from "@repo/ui/hooks/use-toast";
+} from "@workspace/ui/components/form";
+import { Input } from "@workspace/ui/components/input";
+import { useToast } from "@workspace/ui/hooks/use-toast";
 import { updateAccountAction } from "@/actions/auth";
 import { ComponentPropsWithoutRef, FC } from "react";
 import { Icons } from "@/components/icons";
-import { cn } from "@repo/ui/lib/utils";
+import { cn } from "@workspace/ui/lib/utils";
 import { useAuth } from "@/components/providers/auth-provider";
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { zUpdateAccountParams } from "@repo/sdk/zod";
+import { zUpdateAccountParams } from "@workspace/sdk/zod";
 
 export interface UpdateAccountFormProps extends ComponentPropsWithoutRef<"form"> {
   onSuccess?: () => void;

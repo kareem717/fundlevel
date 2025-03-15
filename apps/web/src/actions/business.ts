@@ -13,11 +13,11 @@ import {
 	getStripeDashboardUrl as getStripeDashboardUrlApi,
 	getBusinessStripeAccount,
 	upsertBusinessLegalSection as upsertBusinessLegalSectionApi,
-} from "@repo/sdk";
+} from "@workspace/sdk";
 import {
 	zCreateBusinessParams,
 	zUpsertBusinessLegalSectionParams,
-} from "@repo/sdk/zod";
+} from "@workspace/sdk/zod";
 import { pathIdSchema, offsetPaginationSchema } from "./validations";
 import { z } from "zod";
 import { cache } from "react";

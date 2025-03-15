@@ -6,7 +6,7 @@ import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@repo/ui/components/collapsible"
+} from "@workspace/ui/components/collapsible"
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -16,7 +16,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-} from "@repo/ui/components/sidebar"
+} from "@workspace/ui/components/sidebar"
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 

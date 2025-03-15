@@ -5,15 +5,15 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { useAction } from "next-safe-action/hooks"
 import { subscribeToNewsletter } from "@/actions/mail"
-import { Button } from "@repo/ui/components/button"
+import { Button } from "@workspace/ui/components/button"
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormMessage,
-} from "@repo/ui/components/form"
-import { Input } from "@repo/ui/components/input"
+} from "@workspace/ui/components/form"
+import { Input } from "@workspace/ui/components/input"
 import { ComponentPropsWithoutRef, FC } from "react"
 import { toast } from "sonner"
 import { Loader2 } from "lucide-react"

@@ -6,7 +6,7 @@ import {
   useRef,
   FC,
 } from "react";
-import { cn } from "@repo/ui/lib/utils";
+import { cn } from "@workspace/ui/lib/utils";
 import { AnimatedBeam } from "./animated-beam";
 import {
   SmallLogoIcon,

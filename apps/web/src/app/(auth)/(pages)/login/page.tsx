@@ -1,5 +1,5 @@
 import { LoginForm } from "@/components/auth/login-form";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@repo/ui/components/card";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@workspace/ui/components/card";
 import { LegalContainer } from "@/components/legal-container";
 
 export default async function LoginPage() {

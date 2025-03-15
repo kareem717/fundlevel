@@ -24,8 +24,8 @@ import {
   NodeKey,
 } from 'lexical'
 
-import { Button } from '@repo/ui/components/button'
-import { Input } from '@repo/ui/components/input'
+import { Button } from '@workspace/ui/components/button'
+import { Input } from '@workspace/ui/components/input'
 
 import type { Option, Options, PollNode } from '@/components/rich-text/nodes/poll-node'
 import { $isPollNode, createPollOption } from '@/components/rich-text/nodes/poll-node'

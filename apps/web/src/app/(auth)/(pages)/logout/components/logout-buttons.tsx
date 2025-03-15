@@ -1,13 +1,13 @@
 "use client";
 
-import { Button, buttonVariants } from "@repo/ui/components/button";
+import { Button, buttonVariants } from "@workspace/ui/components/button";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/utils/supabase/client";
-import {  Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { ComponentPropsWithoutRef, useState } from "react";
 import { redirects } from "@/lib/config/redirects";
-import { useToast } from "@repo/ui/hooks/use-toast";
+import { useToast } from "@workspace/ui/hooks/use-toast";
 import Link from "next/link";
 
 export function LogoutButtons({ className, ...props }: ComponentPropsWithoutRef<"div">) {

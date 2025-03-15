@@ -1,7 +1,7 @@
 "use server";
 
 import { actionClient } from "@/lib/safe-action";
-import { getAllIndustries as getIndustriesApi } from "@repo/sdk";
+import { getAllIndustries as getIndustriesApi } from "@workspace/sdk";
 
 /**
  * Create a venture

@@ -2,7 +2,7 @@
 
 import { VerifyOTPForm } from "@/components/auth/verify-otp-form"
 import { redirects } from "@/lib/config/redirects"
-import { Dialog, DialogTitle, DialogDescription, DialogHeader, DialogContent } from "@repo/ui/components/dialog"
+import { Dialog, DialogTitle, DialogDescription, DialogHeader, DialogContent } from "@workspace/ui/components/dialog"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 

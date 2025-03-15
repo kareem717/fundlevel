@@ -4,13 +4,13 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "db:seed": "bunx tsx seed.ts",
-    "db:seed:sync": "bunx @snaplet/seed sync",
-    "db:seed:init": "bunx @snaplet/seed init",
+    "db:seed": "pnpm dlx tsx seed.ts",
+    "db:seed:sync": "pnpm dlx @snaplet/seed sync",
+    "db:seed:init": "pnpm dlx @snaplet/seed init",
     "db:start": "source .env && supabase start",
     "db:stop": "source .env && supabase stop",
     "db:status": "source .env && supabase status",
-    "db:restart": "bun run db:stop && bun run db:start"
+    "db:restart": "pnpm run db:stop && pnpm run db:start"
   },
   "keywords": [],
   "author": "",

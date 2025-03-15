@@ -5,12 +5,12 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenu as SidebarMenuComponent,
-} from "@repo/ui/components/sidebar"
+} from "@workspace/ui/components/sidebar"
 import { ComponentPropsWithoutRef } from "react"
 import { ChevronsUpDown, Plus } from "lucide-react"
 import { redirects } from "@/lib/config/redirects"
-import { DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "@repo/ui/components/dropdown-menu"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@repo/ui/components/dropdown-menu"
+import { DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "@workspace/ui/components/dropdown-menu"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@workspace/ui/components/dropdown-menu"
 import { useBusiness } from "@/components/providers/business-provider";
 import { useIsMobile } from "@/hooks/use-mobile"
 import Link from "next/link"

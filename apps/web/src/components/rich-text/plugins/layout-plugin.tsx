@@ -30,14 +30,14 @@ import {
   createCommand,
 } from 'lexical'
 
-import { Button } from '@repo/ui/components/button'
+import { Button } from '@workspace/ui/components/button'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@repo/ui/components/select'
+} from '@workspace/ui/components/select'
 
 import {
   $createLayoutContainerNode,

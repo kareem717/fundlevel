@@ -3,10 +3,10 @@
 import { useTheme } from "next-themes"
 import { ComponentPropsWithoutRef } from "react"
 import { Sun, Moon } from "lucide-react"
-import { ToggleGroup, ToggleGroupItem } from "@repo/ui/components/toggle-group"
-import { cn } from "@repo/ui/lib/utils"
+import { ToggleGroup, ToggleGroupItem } from "@workspace/ui/components/toggle-group"
+import { cn } from "@workspace/ui/lib/utils"
 
-export function ModeToggle({className, ...props }: Omit<ComponentPropsWithoutRef<typeof ToggleGroup>, "defaultValue" | "onValueChange" | "value" | "type">) {
+export function ModeToggle({ className, ...props }: Omit<ComponentPropsWithoutRef<typeof ToggleGroup>, "defaultValue" | "onValueChange" | "value" | "type">) {
   const { setTheme, resolvedTheme } = useTheme()
 
   return (

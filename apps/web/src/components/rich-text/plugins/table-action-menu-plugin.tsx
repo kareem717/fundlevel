@@ -50,12 +50,12 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-} from '@repo/ui/components/command'
+} from '@workspace/ui/components/command'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@repo/ui/components/popover'
+} from '@workspace/ui/components/popover'
 
 import { useEditorModal } from '@/components/rich-text/editor-hooks/use-modal'
 import ColorPicker from '@/components/rich-text/editor-ui/colorpicker'

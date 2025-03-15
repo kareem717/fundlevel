@@ -9,7 +9,7 @@ import {
 import { KEY_MODIFIER_COMMAND } from 'lexical'
 import { LinkIcon } from 'lucide-react'
 
-import { Toggle } from '@repo/ui/components/toggle'
+import { Toggle } from '@workspace/ui/components/toggle'
 
 import { useFloatingLinkContext } from '@/components/rich-text/context/floating-link-context'
 import { useToolbarContext } from '@/components/rich-text/context/toolbar-context'

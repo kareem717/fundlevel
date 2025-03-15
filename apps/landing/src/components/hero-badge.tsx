@@ -2,7 +2,7 @@
 
 import { motion, useAnimation, type Variants } from "framer-motion";
 import Link from "next/link";
-import { cn } from "@repo/ui/lib/utils";
+import { cn } from "@workspace/ui/lib/utils";
 
 const ease = [0.16, 1, 0.3, 1];
 

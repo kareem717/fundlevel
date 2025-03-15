@@ -2,7 +2,7 @@
 
 import { ComponentPropsWithoutRef, FC, RefObject, useEffect, useId, useState } from "react";
 import { motion } from "framer-motion";
-import { cn } from "@repo/ui/lib/utils";
+import { cn } from "@workspace/ui/lib/utils";
 
 export interface AnimatedBeamProps
   extends ComponentPropsWithoutRef<"svg"> {

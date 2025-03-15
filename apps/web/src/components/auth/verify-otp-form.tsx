@@ -1,34 +1,34 @@
 "use client"
 
 import { cn } from "@/lib/utils"
-import { Button } from "@repo/ui/components/button"
+import { Button } from "@workspace/ui/components/button"
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@repo/ui/components/card"
+} from "@workspace/ui/components/card"
 import { ComponentPropsWithoutRef, useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { createClient } from "@/lib/utils/supabase/client"
 import { redirects } from "@/lib/config/redirects"
-import { useToast } from "@repo/ui/hooks/use-toast"
+import { useToast } from "@workspace/ui/hooks/use-toast"
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormMessage
-} from "@repo/ui/components/form"
+} from "@workspace/ui/components/form"
 import { Loader2 } from "lucide-react"
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSlot,
-} from "@repo/ui/components/input-otp"
+} from "@workspace/ui/components/input-otp"
 import { useRouter } from "next/navigation"
 import { createParser, useQueryState } from "nuqs"
 

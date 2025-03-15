@@ -29,11 +29,11 @@ import {
   createCommand,
 } from 'lexical'
 
-import { Button } from '@repo/ui/components/button'
-import { DialogFooter } from '@repo/ui/components/dialog'
-import { Input } from '@repo/ui/components/input'
-import { Label } from '@repo/ui/components/label'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@repo/ui/components/tabs'
+import { Button } from '@workspace/ui/components/button'
+import { DialogFooter } from '@workspace/ui/components/dialog'
+import { Input } from '@workspace/ui/components/input'
+import { Label } from '@workspace/ui/components/label'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@workspace/ui/components/tabs'
 
 import {
   $createImageNode,

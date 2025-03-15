@@ -44,8 +44,8 @@ import {
 } from 'lucide-react'
 import { createPortal } from 'react-dom'
 
-import { Separator } from '@repo/ui/components/separator'
-import { ToggleGroup, ToggleGroupItem } from '@repo/ui/components/toggle-group'
+import { Separator } from '@workspace/ui/components/separator'
+import { ToggleGroup, ToggleGroupItem } from '@workspace/ui/components/toggle-group'
 
 import { useFloatingLinkContext } from '@/components/rich-text/context/floating-link-context'
 import { getDOMRangeRect } from '@/components/rich-text/utils/get-dom-range-rect'

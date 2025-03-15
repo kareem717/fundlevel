@@ -1,4 +1,4 @@
-import { cn } from "@repo/ui/lib/utils";
+import { cn } from "@workspace/ui/lib/utils";
 import { ComponentPropsWithoutRef } from "react";
 
 export function FormPageLayout({ children, className, title, ...props }: ComponentPropsWithoutRef<"div">) {
