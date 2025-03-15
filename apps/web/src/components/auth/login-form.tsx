@@ -2,7 +2,7 @@
 
 import { Button } from "@fundlevel/ui/components/button";
 import { Input } from "@fundlevel/ui/components/input";
-import { ComponentPropsWithoutRef, useState } from "react";
+import { type ComponentPropsWithoutRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -21,6 +21,7 @@ import { OAuthButtons } from "./oauth-buttons";
 import { useRouter } from "next/navigation";
 import { useToast } from "@fundlevel/ui/hooks/use-toast";
 import { cn } from "@fundlevel/ui/lib/utils";
+import { GithubIcon, GoogleIcon } from "../icons";
 
 const formSchema = z.object({
   email: z
@@ -126,8 +127,8 @@ export function LoginForm({
       </div>
       <OAuthButtons
         providers={[
-          { provider: "google", icon: "google" },
-          { provider: "github", icon: "github" },
+          { provider: "google", icon: GoogleIcon },
+          { provider: "github", icon: GithubIcon },
         ]}
         disabled={isLoading}
         redirectTo={afterOAuthRedirect}

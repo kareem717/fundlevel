@@ -1,4 +1,4 @@
-import { ComponentPropsWithoutRef, FC } from "react";
+import type { ComponentPropsWithoutRef, FC } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,13 +8,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@fundlevel/ui/components/dropdown-menu";
-import { Account } from "@fundlevel/sdk";
 import { buttonVariants } from "@fundlevel/ui/components/button";
 import { Avatar, AvatarFallback } from "@fundlevel/ui/components/avatar";
-import { Icons } from "../icons";
 import { cn } from "@fundlevel/ui/lib/utils";
 import Link from "next/link";
 import { redirects } from "@/lib/config/redirects";
+import { Menu } from "lucide-react";
+import type { Account } from "@fundlevel/api/types";
 
 export interface AccountDropdownProps
   extends ComponentPropsWithoutRef<typeof DropdownMenuTrigger> {
@@ -26,7 +26,7 @@ export const AccountDropdown: FC<AccountDropdownProps> = ({
   className,
   ...props
 }) => {
-  const intials = account.first_name.charAt(0) + account.last_name.charAt(0);
+  // const intials = account.first_name.charAt(0) + account.last_name.charAt(0);
 
   return (
     <DropdownMenu>
@@ -38,9 +38,9 @@ export const AccountDropdown: FC<AccountDropdownProps> = ({
         )}
         {...props}
       >
-        <Icons.menu className="size-5" />
+        <Menu className="size-5" />
         <Avatar className="size-7">
-          <AvatarFallback>{intials.toUpperCase()}</AvatarFallback>
+          <AvatarFallback />
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
@@ -52,16 +52,9 @@ export const AccountDropdown: FC<AccountDropdownProps> = ({
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuLabel>Business</DropdownMenuLabel>
+          {/* <DropdownMenuLabel>Dashboard</DropdownMenuLabel> */}
           <DropdownMenuItem>
             <Link href={redirects.app.root}>Dashboard</Link>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuLabel>Investor</DropdownMenuLabel>
-          <DropdownMenuItem>
-            <Link href={redirects.app.portfolio}>Portfolio</Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>

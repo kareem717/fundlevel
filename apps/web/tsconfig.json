@@ -8,8 +8,7 @@
 		],
 		"paths": {
 			"@/*": ["./src/*"],
-			"@fundlevel/ui/*": ["../../packages/ui/src/*"],
-			// "@fundlevel/supabase/*": ["../../packages/supabase/src/*"]
+			"@fundlevel/ui/*": ["../../packages/ui/src/*"]
 		},
 		"strict": true
 	},

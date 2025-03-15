@@ -14,7 +14,7 @@ import {
   FormMessage,
 } from "@fundlevel/ui/components/form";
 import { Input } from "@fundlevel/ui/components/input";
-import { ComponentPropsWithoutRef, FC } from "react";
+import type { ComponentPropsWithoutRef, FC } from "react";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 

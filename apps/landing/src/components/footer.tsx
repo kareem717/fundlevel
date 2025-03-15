@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { cn } from "@fundlevel/ui/lib/utils";
-import { ComponentPropsWithoutRef, FC } from "react";
+import type { ComponentPropsWithoutRef, FC } from "react";
 import { contact } from "@/lib/config";
 import { Separator } from "@fundlevel/ui/components/separator";
 import { LogoDiv } from "@/components/logo-div";

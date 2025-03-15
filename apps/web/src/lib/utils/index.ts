@@ -1,10 +1,4 @@
 import { env } from "../../env";
-import { type ClassValue, clsx } from "clsx";
-import { twMerge } from "tailwind-merge";
-
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
 
 /**
  * Register service.
@@ -74,7 +68,7 @@ export const formatTime = (then: Date) => {
  */
 export const truncateText = (text: string, maxLength: number) => {
   if (text.length > maxLength) {
-    return text.substring(0, maxLength) + "...";
+    return `${text.substring(0, maxLength)}...`;
   }
   return text;
 };
@@ -88,7 +82,7 @@ export const truncateText = (text: string, maxLength: number) => {
  */
 export const toFixedRound = (rawPercentage: number, toFixed: number) =>
   rawPercentage % 1 !== 0 &&
-  rawPercentage.toFixed(toFixed) !== rawPercentage.toString()
+    rawPercentage.toFixed(toFixed) !== rawPercentage.toString()
     ? rawPercentage.toFixed(toFixed)
     : rawPercentage.toString();
 
@@ -103,7 +97,7 @@ export const toFixedRound = (rawPercentage: number, toFixed: number) =>
 export const formatCurrency = (
   value: number,
   currency: string,
-  locale: string = "en-CA",
+  locale = "en-CA",
 ) => {
   return Intl.NumberFormat(locale, {
     style: "currency",
@@ -123,10 +117,10 @@ export const formatCurrency = (
  */
 export const formatNumber = (
   value: number,
-  minimumSignificantDigits: number = 1,
-  maximumSignificantDigits: number = 2,
-  addTilda: boolean = true,
-  locale: string = "en-US",
+  minimumSignificantDigits = 1,
+  maximumSignificantDigits = 2,
+  addTilda = true,
+  locale = "en-US",
 ) => {
   const formatted = value.toLocaleString(locale, {
     maximumSignificantDigits,

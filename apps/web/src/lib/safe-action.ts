@@ -1,31 +1,18 @@
 import {
   createSafeActionClient,
-  DEFAULT_SERVER_ERROR_MESSAGE,
 } from "next-safe-action";
 import { zodAdapter } from "next-safe-action/adapters/zod";
 import { env } from "@/env";
 import { createClient as createSupabaseServerClient } from "@/lib/utils/supabase/server";
-import { zErrorModel } from "@fundlevel/sdk/zod";
 import { createClient as deprecatedCreateClient } from "@hey-api/client-axios";
-import { createClient } from "@fundlevel/hono/client";
-import * as s from "@fundlevel/supabase/zod";
+import { createClient } from "@fundlevel/api/client";
 
 export const actionClient = createSafeActionClient({
   validationAdapter: zodAdapter(),
   handleServerError: async (error) => {
-    const parsedError = zErrorModel.safeParse(error);
-
-    if (!parsedError.success) {
-      return {
-        message: DEFAULT_SERVER_ERROR_MESSAGE,
-        statusCode: 500,
-      };
-    }
-
     return {
-      message: parsedError.data.detail,
-      statusCode: parsedError.data.status,
-    };
+      message: error.message,
+    }
   },
 }).use(async ({ next }) =>
   next({
@@ -56,7 +43,7 @@ export const actionClientWithUser = actionClient.use(async ({ next, ctx }) => {
     throw new Error("User session empty");
   }
 
-  console.debug("session access token", session.access_token);
+  // console.debug("session access token", session.access_token);
 
   ctx.axiosClient.setConfig({
     headers: {
@@ -92,7 +79,7 @@ export const actionClientWithUser = actionClient.use(async ({ next, ctx }) => {
 
 export const actionClientWithAccount = actionClientWithUser.use(
   async ({ next, ctx }) => {
-    let account;
+    let account = null;
 
     if (ctx.user?.id) {
       const response = await ctx.api.accounts.$get()

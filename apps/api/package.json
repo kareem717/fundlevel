@@ -1,19 +1,26 @@
 {
   "name": "@fundlevel/api",
-  "version": "0.0.0",
-  "type": "module",
-  "private": true,
   "scripts": {
-    "dev": "air -c .air.toml",
-    "build": "go build -o bin/main main.go",
-    "start": "./bin/main",
-    "test": "go test ./... -v",
-    "install": "go get ./... && go mod vendor && go mod tidy && go mod download",
-    "db:up": "source .env.local && GOOSE_DRIVER=$GOOSE_DRIVER GOOSE_DBSTRING=$DATABASE_URL goose -dir=$GOOSE_MIGRATIONS_PATH up",
-    "db:up-one": "source .env.local && GOOSE_DRIVER=$GOOSE_DRIVER GOOSE_DBSTRING=$DATABASE_URL goose -dir=$GOOSE_MIGRATIONS_PATH up-by-one",
-    "db:down": "source .env.local && GOOSE_DRIVER=$GOOSE_DRIVER GOOSE_DBSTRING=$DATABASE_URL goose -dir=$GOOSE_MIGRATIONS_PATH down",
-    "db:reset": "source .env.local && GOOSE_DRIVER=$GOOSE_DRIVER GOOSE_DBSTRING=$DATABASE_URL goose -dir=$GOOSE_MIGRATIONS_PATH reset",
-    "db:status": "source .env.local && GOOSE_DRIVER=$GOOSE_DRIVER GOOSE_DBSTRING=$DATABASE_URL goose -dir=$GOOSE_MIGRATIONS_PATH status",
-    "openapi:gen": "bun run build && ./bin/main -H openapi"
+    "dev": "bun run --hot src/index.ts",
+    "start": "bun src/index.ts",
+    "lint": "biome check .",
+    "format": "biome format --write .",
+    "check:types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@fundlevel/supabase": "workspace:*",
+    "@hono/swagger-ui": "^0.5.1",
+    "@hono/zod-openapi": "^0.19.2",
+    "@supabase/ssr": "^0.5.2",
+    "@supabase/supabase-js": "^2.49.1",
+    "@t3-oss/env-core": "^0.12.0",
+    "hono": "^4.7.4"
+  },
+  "exports": {
+    "./client": "./src/client.ts",
+    "./types": "./src/internal/entities/index.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
   }
 }

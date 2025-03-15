@@ -1,4 +1,4 @@
-import { ComponentPropsWithoutRef, FC } from "react";
+import type { ComponentPropsWithoutRef, FC } from "react";
 import { cn } from "@fundlevel/ui/lib/utils";
 import Link from "next/link";
 import { redirects } from "@/lib/config";

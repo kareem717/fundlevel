@@ -1,5 +1,5 @@
 import { cn } from "@fundlevel/ui/lib/utils";
-import { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithoutRef } from "react";
 
 export function FormPageLayout({
   children,

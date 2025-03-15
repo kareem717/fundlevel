@@ -1,6 +1,6 @@
 import { redirects } from "@/lib/config/redirects";
 import { env } from "@/env";
-import { MetadataRoute } from "next";
+import type { MetadataRoute } from "next";
 
 const BASE_URL = env.NEXT_PUBLIC_APP_URL;
 

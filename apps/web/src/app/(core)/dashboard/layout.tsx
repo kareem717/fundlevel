@@ -1,39 +1,50 @@
+import type { ReactNode } from "react";
 import {
-  getMiddlewareAuthAction,
-  getStripeIdentityAction,
-} from "@/actions/auth";
+  SidebarInset,
+  SidebarProvider,
+} from "@fundlevel/ui/components/sidebar";
+import { SidebarTrigger } from "@fundlevel/ui/components/sidebar";
+import { Separator } from "@fundlevel/ui/components/separator";
+import { DashboardSidebar } from "./components/dashboard-sidebar";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbList,
+} from "@fundlevel/ui/components/breadcrumb";
 import { AuthProvider } from "@/components/providers/auth-provider";
 import {
   NotificationProvider,
-  Notification,
 } from "@/components/providers/notification-provider";
-import { VerifyIdentityModalButton } from "@/components/stripe/verify-identity-modal-button";
+import { getAccountAction, getUserAction } from "@/actions/auth";
 
-export default async function DashboardLayout({
+export default async function RootDashboardLayout({
   children,
-}: { children: React.ReactNode }) {
-  const { user, account } = await getMiddlewareAuthAction();
-
-  if (!user || !account) {
-    throw new Error("User or account not found");
-  }
-
-  const identity = await getStripeIdentityAction();
-  const notifications: Notification[] = [];
-
-  if (!identity?.data) {
-    notifications.push({
-      id: "identity-not-verified",
-      title: "Verify your identity",
-      description: "Please verify your identity to continue",
-      action: <VerifyIdentityModalButton />,
-    });
-  }
+}: { children: ReactNode }) {
+  const user = (await getUserAction())?.data;
+  const account = (await getAccountAction())?.data;
 
   return (
     <AuthProvider user={user} account={account}>
-      <NotificationProvider notifications={notifications}>
-        {children}
+      <NotificationProvider notifications={[]}>
+        <SidebarProvider>
+          <DashboardSidebar />
+          <SidebarInset>
+            <header className="flex h-16 shrink-0 items-center gap-2">
+              <div className="flex items-center gap-2 px-4">
+                <SidebarTrigger className="-ml-1" />
+                <Separator orientation="vertical" className="mr-2 h-4" />
+                <Breadcrumb>
+                  <BreadcrumbList>
+                    <BreadcrumbItem className="hidden md:block">
+                      Dashboard
+                    </BreadcrumbItem>
+                  </BreadcrumbList>
+                </Breadcrumb>
+              </div>
+            </header>
+            <div className="flex flex-1 flex-col gap-4 p-4 pt-0">{children}</div>
+          </SidebarInset>
+        </SidebarProvider>
       </NotificationProvider>
     </AuthProvider>
   );

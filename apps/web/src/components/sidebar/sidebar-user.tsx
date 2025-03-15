@@ -8,7 +8,6 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -20,7 +19,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@fundlevel/ui/components/sidebar";
-import { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithoutRef } from "react";
 import Link from "next/link";
 import { redirects } from "@/lib/config/redirects";
 import { ChevronsUpDown, LogOut, Settings } from "lucide-react";
@@ -39,8 +38,8 @@ export function SidebarUser({
     );
   }
 
-  const firstName = account.first_name;
-  const lastName = account.last_name;
+  // const firstName = account.first_name;
+  // const lastName = account.last_name;
   const avatar = user.user_metadata.avatar;
   const email = user.email;
 
@@ -54,15 +53,15 @@ export function SidebarUser({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarFallback className="rounded-lg">
-                  {firstName[0]}
+                <AvatarFallback className="rounded-lg" />
+                {/* {firstName[0]}
                   {lastName[0]}
-                </AvatarFallback>
+                </AvatarFallback> */}
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">
+                {/* <span className="truncate font-semibold">
                   {firstName} {lastName}
-                </span>
+                </span> */}
                 <span className="truncate text-xs">{email}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
@@ -78,28 +77,19 @@ export function SidebarUser({
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
                   {avatar && <AvatarImage src={avatar} />}
-                  <AvatarFallback className="rounded-lg">
-                    {firstName[0]}
+                  <AvatarFallback className="rounded-lg" />
+                  {/* {firstName[0]}
                     {lastName[0]}
-                  </AvatarFallback>
+                  </AvatarFallback> */}
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">
+                  {/* <span className="truncate font-semibold">
                     {firstName} {lastName}
-                  </span>
+                  </span> */}
                   <span className="truncate text-xs">{email}</span>
                 </div>
               </div>
             </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem asChild>
-                <Link href={redirects.app.settings}>
-                  <Settings />
-                  Settings
-                </Link>
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
               <Link

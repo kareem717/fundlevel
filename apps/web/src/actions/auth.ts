@@ -5,32 +5,13 @@ import {
   actionClientWithAccount,
   actionClientWithUser,
 } from "@/lib/safe-action";
-import {
-  ACCOUNT_HEADER_KEY,
-  USER_HEADER_KEY,
-} from "@/lib/utils/supabase/middleware";
 import { createClient } from "@/lib/utils/supabase/server";
-import {
-  createAccount,
-  updateAccount,
-  getStripeIdentityVerificationSessionUrl,
-  getStripeIdentity,
-  Account,
-} from "@fundlevel/sdk";
-import { zCreateAccountParams, zUpdateAccountParams } from "@fundlevel/sdk/zod";
-import { SupabaseClient, User } from "@supabase/supabase-js";
-import { headers } from "next/headers";
 import { cache } from "react";
-import { z } from "zod";
 
 export const createAccountAction = actionClientWithUser
-  .action(async ({ ctx: { api }, parsedInput }) => {
-    console.log("here")
+  .action(async ({ ctx: { api } }) => {
     const req = await api.accounts.$post()
-    console.log("here2")
 
-    console.log(req.url)
-    console.log(req.status)
     switch (req.status) {
       case 200:
         return await req.json();
@@ -72,71 +53,3 @@ export const getUserAction = cache(
     return user;
   }),
 );
-
-/**
- * Update the currently authenticated account
- */
-export const updateAccountAction = actionClientWithAccount
-  .schema(zUpdateAccountParams)
-  .action(async ({ parsedInput, ctx: { axiosClient, account } }) => {
-    if (!account) {
-      throw new Error("Account not found");
-    }
-
-    await updateAccount({
-      client: axiosClient,
-      body: parsedInput,
-      throwOnError: true,
-    });
-  });
-
-export const getStripeIdentitySessionAction = actionClientWithAccount
-  .schema(z.string().url())
-  .action(async ({ parsedInput, ctx: { axiosClient } }) => {
-    const { data } = await getStripeIdentityVerificationSessionUrl({
-      client: axiosClient,
-      body: {
-        return_url: parsedInput,
-      },
-      throwOnError: true,
-    });
-
-    return data;
-  });
-
-export const getStripeIdentityAction = cache(
-  actionClientWithAccount.action(async ({ ctx: { axiosClient } }) => {
-    const { data } = await getStripeIdentity({
-      client: axiosClient,
-    });
-
-    return data;
-  }),
-);
-
-export const getMiddlewareAuthAction = cache(async () => {
-  const headersList = await headers();
-  const user = headersList.get(USER_HEADER_KEY);
-  const account = headersList.get(ACCOUNT_HEADER_KEY);
-
-  let userData: User | null = null;
-  let accountData: Account | null = null;
-
-  if (user && user != "{}") {
-    try {
-      userData = JSON.parse(user);
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  if (account && account != "{}") {
-    try {
-      accountData = JSON.parse(account);
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  return { user: userData, account: accountData };
-});

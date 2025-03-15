@@ -1,34 +1,31 @@
 "use client";
 
-import { Icons } from "@/components/icons";
 import { Button } from "@fundlevel/ui/components/button";
 import { createClient } from "@/lib/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import { env } from "@/env";
-import { ComponentPropsWithoutRef, useState } from "react";
+import { type ComponentPropsWithoutRef, type ElementType, useState } from "react";
 import { redirects } from "@/lib/config/redirects";
-import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
+import { cn } from "@fundlevel/ui/lib/utils";
 export type OAuthProvider = "google" | "github";
 
 export interface OAuthButtonProps
   extends ComponentPropsWithoutRef<typeof Button> {
   provider: OAuthProvider;
-  icon: keyof typeof Icons;
+  icon: ElementType;
   isLoading: string | null;
   handleLogin: (provider: OAuthProvider) => void;
 }
 
 export function OAuthButton({
-  icon,
+  icon: Icon,
   provider,
   isLoading,
   handleLogin,
   disabled,
   ...props
 }: OAuthButtonProps) {
-  const Icon = Icons[icon];
-
   return (
     <Button
       className="w-full"
@@ -47,7 +44,7 @@ export function OAuthButton({
 }
 
 export interface OAuthButtonsProps extends ComponentPropsWithoutRef<"div"> {
-  providers: { provider: OAuthProvider; icon: keyof typeof Icons }[];
+  providers: { provider: OAuthProvider; icon: ElementType }[];
   disabled?: boolean;
   redirectTo?: string;
 }
@@ -75,9 +72,9 @@ export function OAuthButtons({
 
     if (error) {
       throw error;
-    } else {
-      router.push(data.url);
     }
+
+    router.push(data.url);
     setIsLoading(null);
   };
 

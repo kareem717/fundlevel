@@ -5,12 +5,12 @@ import {
   CardDescription,
   CardContent,
 } from "@fundlevel/ui/components/card";
-import { ComponentPropsWithoutRef } from "react";
-import { cn } from "@/lib/utils";
+import type { ComponentPropsWithoutRef } from "react";
 import {
-  NOTIFICATION_ID,
+  type NOTIFICATION_ID,
   useNotification,
 } from "../providers/notification-provider";
+import { cn } from "@fundlevel/ui/lib/utils";
 
 export interface SidebarNotificationProps
   extends ComponentPropsWithoutRef<"div"> {

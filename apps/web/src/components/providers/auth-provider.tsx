@@ -1,9 +1,9 @@
 "use client";
 
-import { FC, ReactNode } from "react";
-import { User } from "@supabase/supabase-js";
-import { createContext, useContext } from "react";
-import { Account } from "@fundlevel/sdk";
+import { type ReactNode, createContext, useContext } from "react";
+
+import type { User } from "@supabase/supabase-js";
+import type { Account } from "@fundlevel/api/types";
 
 export interface AuthProviderProps {
   user?: User | null;
@@ -19,14 +19,18 @@ export const useAuth = () => {
   return useContext(AuthContext);
 };
 
-export const AuthProvider: FC<AuthProviderProps & { children: ReactNode }> = ({
+export interface AuthProviderComponentProps extends AuthProviderProps {
+  children: ReactNode;
+}
+
+export function AuthProvider({
   children,
   user,
   account,
-}) => {
+}: AuthProviderComponentProps) {
   return (
     <AuthContext.Provider value={{ user, account }}>
       {children}
     </AuthContext.Provider>
   );
-};
+}

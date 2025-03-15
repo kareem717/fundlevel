@@ -1,8 +1,8 @@
 import { SidebarMenuButton } from "@fundlevel/ui/components/sidebar";
-import { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithoutRef } from "react";
 import { redirects } from "@/lib/config/redirects";
-import { Icons } from "@/components/icons";
 import Link from "next/link";
+import { SmallLogoIcon } from "../icons";
 
 export interface SidebarLogoProps
   extends ComponentPropsWithoutRef<typeof SidebarMenuButton> {
@@ -18,7 +18,7 @@ export function SidebarLogo({
       {redirect && typeof redirect === "string" ? (
         <Link href={redirect}>
           <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-            <Icons.smallLogo className="size-6 fill-foreground" />
+            <SmallLogoIcon className="size-6 fill-foreground" />
           </div>
           <div className="grid flex-1 text-left text-2xl leading-tight">
             <span className="truncate font-bold">Fundlevel</span>
@@ -27,7 +27,7 @@ export function SidebarLogo({
       ) : (
         <div className="flex flex-row items-center">
           <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-            <Icons.smallLogo className="size-6 fill-foreground" />
+            <SmallLogoIcon className="size-6 fill-foreground" />
           </div>
           <div className="grid flex-1 text-left text-2xl leading-tight">
             <span className="truncate font-bold">Fundlevel</span>

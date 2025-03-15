@@ -1,14 +1,14 @@
 "use client";
 
 import { Button, buttonVariants } from "@fundlevel/ui/components/button";
-import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/utils/supabase/client";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { ComponentPropsWithoutRef, useState } from "react";
+import { type ComponentPropsWithoutRef, useState } from "react";
 import { redirects } from "@/lib/config/redirects";
 import { useToast } from "@fundlevel/ui/hooks/use-toast";
 import Link from "next/link";
+import { cn } from "@fundlevel/ui/lib/utils";
 
 export function LogoutButtons({
   className,
@@ -31,9 +31,9 @@ export function LogoutButtons({
         variant: "destructive",
       });
       return setIsLoading(false);
-    } else {
-      router.push(redirects.auth.login);
     }
+
+    router.push(redirects.auth.login);
   }
 
   return (

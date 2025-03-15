@@ -71,8 +71,8 @@
     "./lib/*": "./src/lib/*.ts",
     "./components/*": "./src/components/*.tsx",
     "./hooks/*": {
-      "types": "./src/hooks/*.tsx",
-      "default": "./src/hooks/*.tsx"
+      "types": "./src/hooks/*.{tsx,ts}",
+      "default": "./src/hooks/*.{tsx,ts}"
     },
     "./*": "./src/*.tsx"
   }

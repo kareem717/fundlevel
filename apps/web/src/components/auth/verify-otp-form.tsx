@@ -1,15 +1,7 @@
 "use client";
 
-import { cn } from "@/lib/utils";
 import { Button } from "@fundlevel/ui/components/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@fundlevel/ui/components/card";
-import { ComponentPropsWithoutRef, useState, useEffect } from "react";
+import { type ComponentPropsWithoutRef, useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -31,6 +23,7 @@ import {
 } from "@fundlevel/ui/components/input-otp";
 import { useRouter } from "next/navigation";
 import { createParser, useQueryState } from "nuqs";
+import { cn } from "@fundlevel/ui/lib/utils";
 
 const formSchema = z.object({
   otp: z.string().length(6, {
@@ -87,7 +80,7 @@ export function VerifyOTPForm({
     const lastResend = localStorage.getItem("lastResendTime");
     if (lastResend) {
       const timeLeft =
-        30 - Math.floor((Date.now() - parseInt(lastResend)) / 1000);
+        30 - Math.floor((Date.now() - Number.parseInt(lastResend)) / 1000);
       if (timeLeft > 0) {
         setCooldown(timeLeft);
       }
