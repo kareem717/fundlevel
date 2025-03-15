@@ -1,10 +1,9 @@
-import { Server } from "@/internal/server";
+import { Server } from "./internal/server";
 import { env } from "./env";
-import { Service } from "@/internal/service";
-import { Storage } from "@/internal/storage";
-import { hc } from "hono/client";
+import { Service } from "./internal/service";
+import { Storage } from "./internal/storage";
 
-const supabaseConfig= {
+const supabaseConfig = {
   url: env.SUPABASE_URL,
   serviceKey: env.SUPABASE_SERVICE_KEY
 }

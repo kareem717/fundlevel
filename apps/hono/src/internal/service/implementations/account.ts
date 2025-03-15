@@ -1,6 +1,6 @@
-import { CreateAccount } from "@/internal/entities";
-import { IAccountService } from "@/internal/service";
-import { IAccountRepository } from "@/internal/storage";
+import { CreateAccount } from "../../../internal/entities";
+import { IAccountService } from "../../../internal/service";
+import { IAccountRepository } from "../../../internal/storage";
 
 export class AccountService implements IAccountService {
   constructor(private readonly accountRepo: IAccountRepository) { }

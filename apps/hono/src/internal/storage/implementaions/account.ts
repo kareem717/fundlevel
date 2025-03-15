@@ -1,5 +1,5 @@
-import type { Account, CreateAccount } from "@/internal/entities";
-import { IAccountRepository } from "@/internal/storage";
+import type { Account, CreateAccount } from "../../../internal/entities";
+import { IAccountRepository } from "../../../internal/storage";
 import { UUID } from "crypto";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { Client, Database } from "@fundlevel/supabase/types";

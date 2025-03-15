@@ -6,8 +6,9 @@ import { zodAdapter } from "next-safe-action/adapters/zod";
 import { env } from "@/env";
 import { createClient as createSupabaseServerClient } from "@/lib/utils/supabase/server";
 import { zErrorModel } from "@fundlevel/sdk/zod";
-import { createClient } from "@hey-api/client-axios";
-import { getAccount } from "@fundlevel/sdk";
+import { createClient as deprecatedCreateClient } from "@hey-api/client-axios";
+import { createClient } from "@fundlevel/hono/client";
+import * as s from "@fundlevel/supabase/zod";
 
 export const actionClient = createSafeActionClient({
   validationAdapter: zodAdapter(),
@@ -29,9 +30,12 @@ export const actionClient = createSafeActionClient({
 }).use(async ({ next }) =>
   next({
     ctx: {
-      axiosClient: createClient({
+      axiosClient: deprecatedCreateClient({
         baseURL: env.NEXT_PUBLIC_BACKEND_API_URL,
       }),
+      api: createClient({
+        url: env.NEXT_PUBLIC_BACKEND_API_URL
+      })
     },
   }),
 );
@@ -70,10 +74,18 @@ export const actionClientWithUser = actionClient.use(async ({ next, ctx }) => {
     throw new Error("User data empty");
   }
 
+  // Create typed API client with auth token
+  const apiClient = createClient({
+    bearer: session.access_token,
+    url: env.NEXT_PUBLIC_BACKEND_API_URL
+  });
+
   return next({
     ctx: {
       ...ctx,
       user: data.user,
+      session: session,
+      api: apiClient,
     },
   });
 });
@@ -81,18 +93,15 @@ export const actionClientWithUser = actionClient.use(async ({ next, ctx }) => {
 export const actionClientWithAccount = actionClientWithUser.use(
   async ({ next, ctx }) => {
     let account;
+
     if (ctx.user?.id) {
-      const { data, error } = await getAccount({
-        client: ctx.axiosClient,
-      });
+      const response = await ctx.api.accounts.$get()
 
-      if (error) {
-        if (error.status !== 404) {
-          console.error("Error getting account by user id: ", error);
-        }
+      if (response.status === 200) {
+        account = await response.json();
+      } else {
+        console.error("Error getting account by user id:", await response.json());
       }
-
-      account = data?.account;
     }
 
     return next({

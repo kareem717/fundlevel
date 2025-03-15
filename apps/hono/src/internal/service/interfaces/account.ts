@@ -1,4 +1,4 @@
-import type { Account, CreateAccount } from "@/internal/entities";
+import type { Account, CreateAccount } from "../../../internal/entities";
 
 export interface IAccountService {
   getByUserId(id: string): Promise<Account | undefined>;

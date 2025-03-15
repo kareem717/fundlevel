@@ -1,16 +1,13 @@
 import "dotenv/config";
-import { authMiddleware } from "@/internal/server/middleware";
+import { authMiddleware } from "../../internal/server/middleware";
 import { logger } from "hono/logger";
 import { prettyJSON } from "hono/pretty-json";
 import { secureHeaders } from "hono/secure-headers";
 import { cors } from "hono/cors";
 import { OpenAPIHono } from "@hono/zod-openapi";
 import { swaggerUI } from "@hono/swagger-ui";
-import { writeFileSync } from "fs";
 import accountHandler from "./handlers/account";
 import { Service } from "../service";
-import { hc } from "hono/client";
-import { Hono } from "hono";
 
 export class Server {
   public readonly port: number;
@@ -26,19 +23,19 @@ export class Server {
     }) {
     this.port = port;
 
-    const app = new Hono({
-      // defaultHook: (result, c) => {
-      //   if (!result.success) {
-      //     return c.json(
-      //       {
-      //         ok: false,
-      //         errors: result.error.issues,
-      //         source: "custom_error_handler",
-      //       },
-      //       422,
-      //     );
-      //   }
-      // },
+    const app = new OpenAPIHono({
+      defaultHook: (result, c) => {
+        if (!result.success) {
+          return c.json(
+            {
+              ok: false,
+              errors: result.error.issues,
+              source: "custom_error_handler",
+            },
+            422,
+          );
+        }
+      },
     });
 
     app
@@ -57,41 +54,29 @@ export class Server {
       )
       .use("*", authMiddleware(service.account, supabase));
 
-    // app.openAPIRegistry.registerComponent("securitySchemes", "Bearer", {
-    //   type: "http",
-    //   scheme: "bearer",
-    //   bearerFormat: "JWT",
-    // });
+    app.openAPIRegistry.registerComponent("securitySchemes", "Bearer", {
+      type: "http",
+      scheme: "bearer",
+      bearerFormat: "JWT",
+    });
 
-    // app.doc("/doc", (c) => ({
-    //   openapi: "3.0.0",
-    //   info: {
-    //     version: "1.0.0",
-    //     title: "My API",
-    //   },
-    //   servers: [
-    //     {
-    //       url: new URL(c.req.url).origin,
-    //       description: "Current environment",
-    //     },
-    //   ],
-    // }));
+    app.doc("/doc", (c) => ({
+      openapi: "3.0.0",
+      info: {
+        version: "1.0.0",
+        title: "My API",
+      },
+      servers: [
+        {
+          url: new URL(c.req.url).origin,
+          description: "Current environment",
+        },
+      ],
+    }));
     app.get("/ui", swaggerUI({ url: "/doc" }));
     this.app = app;
 
     this.routes = app
       .route("/accounts", accountHandler(service.account))
-
-    // writeFileSync(
-    //   "openapi.json",
-    //   JSON.stringify(
-    //     app.getOpenAPI31Document({
-    //       openapi: "3.1.0",
-    //       info: { title: "API", version: "1" },
-    //     }),
-    //     null,
-    //     2,
-    //   ),
-    // );
   }
 }

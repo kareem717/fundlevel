@@ -8,13 +8,14 @@
 		],
 		"paths": {
 			"@/*": ["./src/*"],
-			"@fundlevel/ui/*": ["../../packages/ui/src/*"]
+			"@fundlevel/ui/*": ["../../packages/ui/src/*"],
+			// "@fundlevel/supabase/*": ["../../packages/supabase/src/*"]
 		},
 		"strict": true
 	},
 	"include": [
-		"src/**/*.ts",
-		"src/**/*.tsx",
+		"**/*.ts",
+		"**/*.tsx",
 		"next-env.d.ts",
 		"next.config.js",
 		".next/types/**/*.ts",

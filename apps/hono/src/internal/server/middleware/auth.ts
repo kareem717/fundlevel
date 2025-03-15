@@ -1,6 +1,6 @@
-import { Account } from "@/internal/entities";
-import { env } from "@/env";
-import { IAccountService } from "@/internal/service";
+import { Account } from "../../../internal/entities";
+import { env } from "../../../env";
+import { IAccountService } from "../../../internal/service";
 import { createServerClient, parseCookieHeader } from "@supabase/ssr";
 import { User } from "@supabase/supabase-js";
 import type { Context, MiddlewareHandler } from "hono";

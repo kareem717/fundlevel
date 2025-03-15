@@ -1,10 +1,11 @@
 {
   "compilerOptions": {
     "moduleResolution": "Bundler",
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"]
-    },
+    // I dont know why but this breaks the web imports
+    // "baseUrl": ".",
+    // "paths": {
+    //   "@/*": ["./src/*"]
+    // },
     "strict": true,
     "jsx": "react-jsx",
     "jsxImportSource": "hono/jsx",

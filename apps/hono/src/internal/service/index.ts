@@ -8,7 +8,7 @@ import {
 import {
   IAccountService,
 } from "./interfaces";
-import { Storage } from "@/internal/storage";
+import { Storage } from "../../internal/storage";
 
 export class Service {
   public readonly account: IAccountService;

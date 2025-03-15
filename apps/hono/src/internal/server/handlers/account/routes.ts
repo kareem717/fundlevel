@@ -1,5 +1,5 @@
 import { createRoute } from "@hono/zod-openapi";
-import { accountSchema } from "@/internal/entities/account";
+import { accountSchema } from "../../../../internal/entities/account";
 import { notFoundResponse, unauthorizedResponse, bearerAuthSchema } from "../shared/schemas";
 
 export const getAccountRoute = createRoute({

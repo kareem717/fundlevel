@@ -1,7 +1,7 @@
-import { getAccount, getUser } from "@/internal/server/middleware";
+import { getAccount, getUser } from "../../../../internal/server/middleware";
 import { OpenAPIHono } from "@hono/zod-openapi";
 import { createAccountRoute, getAccountRoute } from "./routes";
-import { IAccountService } from "@/internal/service";
+import { IAccountService } from "../../../../internal/service";
 
 const accountHandler = (accountService: IAccountService) => {
   const app = new OpenAPIHono().openapi(getAccountRoute, async (c) => {
@@ -18,6 +18,7 @@ const accountHandler = (accountService: IAccountService) => {
 
     return c.json(account, 200);
   }).openapi(createAccountRoute, async (c) => {
+    console.log("here")
     const user = getUser(c);
 
     if (!user) {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useToast } from "@fundlevel/ui/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast.js";
 import {
   Toast,
   ToastClose,

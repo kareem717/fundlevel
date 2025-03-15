@@ -24,14 +24,21 @@ import { cache } from "react";
 import { z } from "zod";
 
 export const createAccountAction = actionClientWithUser
-  .schema(zCreateAccountParams)
-  .action(async ({ ctx: { axiosClient }, parsedInput }) => {
-    await createAccount({
-      client: axiosClient,
-      body: {
-        ...parsedInput,
-      },
-    });
+  .action(async ({ ctx: { api }, parsedInput }) => {
+    console.log("here")
+    const req = await api.accounts.$post()
+    console.log("here2")
+
+    console.log(req.url)
+    console.log(req.status)
+    switch (req.status) {
+      case 200:
+        return await req.json();
+      case 401:
+        throw new Error((await req.json()).error);
+      default:
+        throw new Error("An error occurred");
+    }
   });
 
 export const getAccountAction = cache(
