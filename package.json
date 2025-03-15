@@ -26,7 +26,7 @@
   "engines": {
     "node": ">=18"
   },
-  "packageManager": "pnpm@10.4.1",
+  "packageManager": "bun@1.1.38",
   "workspaces": ["apps/*", "packages/*"],
   "dependencies": {
     "@biomejs/biome": "1.9.4",
