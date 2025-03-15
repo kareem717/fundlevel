@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { ColumnDef } from "@tanstack/react-table"
-import { DataTableColumnHeader } from "@/components/data-table"
-import { format } from "date-fns"
+import { ColumnDef } from "@tanstack/react-table";
+import { DataTableColumnHeader } from "@/components/data-table";
+import { format } from "date-fns";
 import {
   VisibilityState,
   flexRender,
@@ -11,7 +11,7 @@ import {
   getFilteredRowModel,
   getSortedRowModel,
   useReactTable,
-} from "@tanstack/react-table"
+} from "@tanstack/react-table";
 import {
   Table,
   TableBody,
@@ -19,18 +19,17 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@workspace/ui/components/table"
-import { DataTablePagination } from "@/components/data-table"
-import { ComponentPropsWithoutRef, FC, useEffect, useState } from "react"
-import { faker } from "@faker-js/faker"
+} from "@workspace/ui/components/table";
+import { DataTablePagination } from "@/components/data-table";
+import { ComponentPropsWithoutRef, FC, useEffect, useState } from "react";
+import { faker } from "@faker-js/faker";
 
 type Investor = {
-  name: string
-  buyIn: number
-  stake: number
-  expiry: Date | null
-}
-
+  name: string;
+  buyIn: number;
+  stake: number;
+  expiry: Date | null;
+};
 
 export const columns: ColumnDef<Investor>[] = [
   {
@@ -39,66 +38,88 @@ export const columns: ColumnDef<Investor>[] = [
       <DataTableColumnHeader column={column} title="Name" />
     ),
     cell: ({ row }) => {
-      const { name } = row.original
-      return <div className="text-left font-medium">{name}</div>
+      const { name } = row.original;
+      return <div className="text-left font-medium">{name}</div>;
     },
   },
   {
     accessorKey: "buyIn",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Buy In" isSortable={false} />
+      <DataTableColumnHeader
+        column={column}
+        title="Buy In"
+        isSortable={false}
+      />
     ),
     cell: ({ row }) => {
-      const { buyIn } = row.original
-      return <div className="text-left font-medium">{Math.round(buyIn)}</div>
+      const { buyIn } = row.original;
+      return <div className="text-left font-medium">{Math.round(buyIn)}</div>;
     },
   },
   {
     accessorKey: "stake",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Percentage" isSortable={false} />
+      <DataTableColumnHeader
+        column={column}
+        title="Percentage"
+        isSortable={false}
+      />
     ),
     cell: ({ row }) => {
-      const { stake } = row.original
-      return <div className="text-left font-medium">{Number.isInteger(stake) ? stake : stake.toFixed(2)}%</div>
+      const { stake } = row.original;
+      return (
+        <div className="text-left font-medium">
+          {Number.isInteger(stake) ? stake : stake.toFixed(2)}%
+        </div>
+      );
     },
   },
   {
     accessorKey: "expiry",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Contract Expiry" isSortable={false} />
+      <DataTableColumnHeader
+        column={column}
+        title="Contract Expiry"
+        isSortable={false}
+      />
     ),
     cell: ({ row }) => {
-      const { expiry } = row.original
-      return <div className="text-left font-medium">{expiry ? format(expiry, "PPP") : "Never"}</div>
+      const { expiry } = row.original;
+      return (
+        <div className="text-left font-medium">
+          {expiry ? format(expiry, "PPP") : "Never"}
+        </div>
+      );
     },
   },
-]
+];
 
-interface KeyInvestorTableProps extends ComponentPropsWithoutRef<typeof Table> {
-}
+interface KeyInvestorTableProps
+  extends ComponentPropsWithoutRef<typeof Table> {}
 
 export const KeyInvestorsTable: FC<KeyInvestorTableProps> = () => {
-  const [data, setData] = useState<Investor[]>([])
+  const [data, setData] = useState<Investor[]>([]);
   useEffect(() => {
-    setData(Array.from({ length: 15 }, () => ({
-      name: faker.person.fullName(),
-      buyIn: faker.number.int({ min: 1000, max: 1000000 }),
-      stake: faker.number.float({ min: 1, max: 95 }),
-      expiry: faker.date.future(),
-    })))
-  }, [])
+    setData(
+      Array.from({ length: 15 }, () => ({
+        name: faker.person.fullName(),
+        buyIn: faker.number.int({ min: 1000, max: 1000000 }),
+        stake: faker.number.float({ min: 1, max: 95 }),
+        expiry: faker.date.future(),
+      })),
+    );
+  }, []);
 
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10,
-  })
+  });
 
-  const [rowCount] = useState(0)
+  const [rowCount] = useState(0);
 
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
-  const [rowSelection, setRowSelection] = useState({})
+  const [rowSelection, setRowSelection] = useState({});
 
   // const { execute, isExecuting } = useAction(getAccountInvestmentsByPage, {
   //   onSuccess: ({ data }) => {
@@ -138,7 +159,7 @@ export const KeyInvestorsTable: FC<KeyInvestorTableProps> = () => {
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
     onPaginationChange: (updater) => {
-      setPagination(updater)
+      setPagination(updater);
     },
     rowCount,
     manualPagination: true,
@@ -147,7 +168,7 @@ export const KeyInvestorsTable: FC<KeyInvestorTableProps> = () => {
       columnVisibility,
       rowSelection,
     },
-  })
+  });
 
   return (
     <div className="flex flex-col gap-4 w-full h-full">
@@ -162,11 +183,11 @@ export const KeyInvestorsTable: FC<KeyInvestorTableProps> = () => {
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
                     </TableHead>
-                  )
+                  );
                 })}
               </TableRow>
             ))}
@@ -180,14 +201,20 @@ export const KeyInvestorsTable: FC<KeyInvestorTableProps> = () => {
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
                     </TableCell>
                   ))}
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
                   No results.
                 </TableCell>
               </TableRow>
@@ -197,5 +224,5 @@ export const KeyInvestorsTable: FC<KeyInvestorTableProps> = () => {
       </div>
       <DataTablePagination table={table} />
     </div>
-  )
-}
+  );
+};

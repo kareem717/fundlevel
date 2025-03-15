@@ -5,13 +5,15 @@ import { Label } from "@workspace/ui/components/label";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import { Round } from "@workspace/sdk";
 import { cn } from "@workspace/ui/lib/utils";
-import { ComponentPropsWithoutRef, FC, useEffect, useState } from "react"
+import { ComponentPropsWithoutRef, FC, useEffect, useState } from "react";
 
-export interface ActiveRoundsSectionProps extends ComponentPropsWithoutRef<"section"> {
+export interface ActiveRoundsSectionProps
+  extends ComponentPropsWithoutRef<"section"> {}
 
-};
-
-export const ActiveRoundsSection: FC<ActiveRoundsSectionProps> = ({ className, ...props }) => {
+export const ActiveRoundsSection: FC<ActiveRoundsSectionProps> = ({
+  className,
+  ...props
+}) => {
   const [rounds] = useState<Round[]>([]);
   const [isExecuting, setIsExecuting] = useState(true);
 
@@ -21,7 +23,6 @@ export const ActiveRoundsSection: FC<ActiveRoundsSectionProps> = ({ className, .
       setIsExecuting(false);
     }, 1000);
   }, []);
-
 
   return (
     <section className={cn("flex flex-col gap-4", className)} {...props}>
@@ -48,9 +49,7 @@ export const ActiveRoundsSection: FC<ActiveRoundsSectionProps> = ({ className, .
           }}
         />
       ) : (
-        <>
-          Rounds
-        </>
+        <>Rounds</>
       )}
     </section>
   );

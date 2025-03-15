@@ -47,16 +47,15 @@ export function HeroBadge({
   const controls = useAnimation();
 
   // TODO: Fix this type error
-  const BadgeWrapper = href ? Link : motion.button as any;
-  const wrapperProps = href !== undefined
-    ? { href }
-    : { type: "button" as const, onClick };
+  const BadgeWrapper = href ? Link : (motion.button as any);
+  const wrapperProps =
+    href !== undefined ? { href } : { type: "button" as const, onClick };
 
   const baseClassName = cn(
     "inline-flex items-center rounded-full border transition-colors",
     badgeVariants[variant],
     sizeVariants[size],
-    className
+    className,
   );
 
   return (

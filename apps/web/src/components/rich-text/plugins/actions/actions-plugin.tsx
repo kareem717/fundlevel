@@ -4,5 +4,5 @@ export function ActionsPlugin() {
       {/* left action plugins */}
       <div className="flex justify-end">{/* right action plugins */}</div>
     </div>
-  )
+  );
 }

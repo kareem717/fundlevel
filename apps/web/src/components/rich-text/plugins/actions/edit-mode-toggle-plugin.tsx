@@ -1,31 +1,31 @@
-import { useState } from 'react'
+import { useState } from "react";
 
-import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext'
-import { LockIcon, UnlockIcon } from 'lucide-react'
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import { LockIcon, UnlockIcon } from "lucide-react";
 
-import { Button } from '@workspace/ui/components/button'
+import { Button } from "@workspace/ui/components/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from '@workspace/ui/components/tooltip'
+} from "@workspace/ui/components/tooltip";
 
 export function EditModeTogglePlugin() {
-  const [editor] = useLexicalComposerContext()
-  const [isEditable, setIsEditable] = useState(() => editor.isEditable())
+  const [editor] = useLexicalComposerContext();
+  const [isEditable, setIsEditable] = useState(() => editor.isEditable());
 
   return (
     <Tooltip>
       <TooltipTrigger asChild>
         <Button
-          variant={'ghost'}
+          variant={"ghost"}
           onClick={() => {
-            editor.setEditable(!editor.isEditable())
-            setIsEditable(editor.isEditable())
+            editor.setEditable(!editor.isEditable());
+            setIsEditable(editor.isEditable());
           }}
           title="Read-Only Mode"
-          aria-label={`${!isEditable ? 'Unlock' : 'Lock'} read-only mode`}
-          size={'sm'}
+          aria-label={`${!isEditable ? "Unlock" : "Lock"} read-only mode`}
+          size={"sm"}
           className="p-2"
         >
           {isEditable ? (
@@ -36,8 +36,8 @@ export function EditModeTogglePlugin() {
         </Button>
       </TooltipTrigger>
       <TooltipContent>
-        {isEditable ? 'View Only Mode' : 'Edit Mode'}
+        {isEditable ? "View Only Mode" : "Edit Mode"}
       </TooltipContent>
     </Tooltip>
-  )
+  );
 }

@@ -11,21 +11,28 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@workspace/ui/components/dialog"
+} from "@workspace/ui/components/dialog";
 import { ComponentPropsWithoutRef, useRef, useState } from "react";
 import { formatCurrency } from "@/lib/utils";
 import { EmbeddedCheckoutFormRef } from "@/components/stripe/embedded-checkout";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-export interface CheckoutModalProps extends ComponentPropsWithoutRef<typeof Dialog> {
+export interface CheckoutModalProps
+  extends ComponentPropsWithoutRef<typeof Dialog> {
   investmentId: number;
   amount: number;
   currency: string;
   triggerText?: string;
 }
 
-export function CheckoutModal({ investmentId, amount, currency, triggerText = "Checkout", ...props }: CheckoutModalProps) {
+export function CheckoutModal({
+  investmentId,
+  amount,
+  currency,
+  triggerText = "Checkout",
+  ...props
+}: CheckoutModalProps) {
   const { toast } = useToast();
   const checkoutFormRef = useRef<EmbeddedCheckoutFormRef>(null);
   const [open, setOpen] = useState(false);
@@ -33,9 +40,7 @@ export function CheckoutModal({ investmentId, amount, currency, triggerText = "C
 
   return (
     <Dialog open={open} onOpenChange={setOpen} {...props}>
-      <DialogTrigger>
-        {triggerText}
-      </DialogTrigger>
+      <DialogTrigger>{triggerText}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Checkout</DialogTitle>
@@ -45,7 +50,8 @@ export function CheckoutModal({ investmentId, amount, currency, triggerText = "C
         </DialogHeader>
         <LegalContainer>
           <span className="text-sm text-muted-foreground">
-            You will be charged {formatCurrency(amount / 100, currency, "en-US")} USD
+            You will be charged{" "}
+            {formatCurrency(amount / 100, currency, "en-US")} USD
           </span>
           <EmbeddedCheckoutForm
             amount={amount}
@@ -73,11 +79,13 @@ export function CheckoutModal({ investmentId, amount, currency, triggerText = "C
             onClick={() => checkoutFormRef.current?.submitCheckout()}
             disabled={checkoutFormRef.current?.isLoading}
           >
-            {checkoutFormRef.current?.isLoading && <Loader2 className="size-4 mr-2 animate-spin" />}
+            {checkoutFormRef.current?.isLoading && (
+              <Loader2 className="size-4 mr-2 animate-spin" />
+            )}
             Checkout
           </Button>
         </LegalContainer>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

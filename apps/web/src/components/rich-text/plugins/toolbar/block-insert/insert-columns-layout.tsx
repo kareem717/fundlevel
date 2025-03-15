@@ -1,18 +1,18 @@
-import { Columns3Icon } from 'lucide-react'
+import { Columns3Icon } from "lucide-react";
 
-import { useToolbarContext } from '@/components/rich-text/context/toolbar-context'
-import { SelectItem } from '@workspace/ui/components/select'
+import { useToolbarContext } from "@/components/rich-text/context/toolbar-context";
+import { SelectItem } from "@workspace/ui/components/select";
 
-import { InsertLayoutDialog } from '@/components/rich-text/plugins/layout-plugin'
+import { InsertLayoutDialog } from "@/components/rich-text/plugins/layout-plugin";
 
 export function InsertColumnsLayout() {
-  const { activeEditor, showModal } = useToolbarContext()
+  const { activeEditor, showModal } = useToolbarContext();
 
   return (
     <SelectItem
       value="columns"
       onPointerUp={() =>
-        showModal('Insert Columns Layout', (onClose) => (
+        showModal("Insert Columns Layout", (onClose) => (
           <InsertLayoutDialog activeEditor={activeEditor} onClose={onClose} />
         ))
       }
@@ -23,5 +23,5 @@ export function InsertColumnsLayout() {
         <span>Columns Layout</span>
       </div>
     </SelectItem>
-  )
+  );
 }

@@ -6,7 +6,14 @@ import { createAccountAction } from "@/actions/auth";
 import { useRouter } from "next/navigation";
 import { redirects } from "@/lib/config/redirects";
 import { Loader2 } from "lucide-react";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@workspace/ui/components/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@workspace/ui/components/form";
 import { Input } from "@workspace/ui/components/input";
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,11 +21,12 @@ import { zCreateAccountParams } from "@workspace/sdk/zod";
 import { useToast } from "@workspace/ui/hooks/use-toast";
 import { cn } from "@workspace/ui/lib/utils";
 
-export interface CreateAccountFormProps extends ComponentPropsWithoutRef<"form"> {
-  defaultFirstName?: string
-  defaultLastName?: string
-  redirect?: string
-  onSuccess?: () => void
+export interface CreateAccountFormProps
+  extends ComponentPropsWithoutRef<"form"> {
+  defaultFirstName?: string;
+  defaultLastName?: string;
+  redirect?: string;
+  onSuccess?: () => void;
 }
 
 export function CreateAccountForm({
@@ -29,40 +37,41 @@ export function CreateAccountForm({
   className,
   ...props
 }: CreateAccountFormProps) {
-  const router = useRouter()
+  const router = useRouter();
   const { toast } = useToast();
 
   // We want to keep the loading state through redirect on success
   // thus we can't use the isExecuting state from the action
-  const [isExecuting, setIsExecuting] = useState(false)
+  const [isExecuting, setIsExecuting] = useState(false);
 
-  const { form, handleSubmitWithAction } =
-    useHookFormAction(createAccountAction, zodResolver(zCreateAccountParams), {
+  const { form, handleSubmitWithAction } = useHookFormAction(
+    createAccountAction,
+    zodResolver(zCreateAccountParams),
+    {
       actionProps: {
         onExecute: () => setIsExecuting(true),
         onSuccess: () => {
           toast({
             title: "Done!",
             description: `Your account has been created successfully.${redirect ? ` We are redirecting you now.` : ""}`,
-          })
+          });
 
-          form.reset()
+          form.reset();
 
-          onSuccess?.()
+          onSuccess?.();
 
           if (redirect) {
-            router.push(redirect)
+            router.push(redirect);
           }
-
         },
         onError: ({ error }) => {
           toast({
             title: "Error",
             description: error.serverError?.message ?? "An error occurred",
             variant: "destructive",
-          })
-          setIsExecuting(false)
-        }
+          });
+          setIsExecuting(false);
+        },
       },
       formProps: {
         defaultValues: {
@@ -70,11 +79,16 @@ export function CreateAccountForm({
           last_name: defaultLastName,
         },
       },
-    });
+    },
+  );
 
   return (
     <Form {...form}>
-      <form onSubmit={handleSubmitWithAction} className={cn("grid gap-6", className)} {...props} >
+      <form
+        onSubmit={handleSubmitWithAction}
+        className={cn("grid gap-6", className)}
+        {...props}
+      >
         <div className="grid md:grid-cols-2 gap-6">
           <FormField
             control={form.control}
@@ -83,11 +97,7 @@ export function CreateAccountForm({
               <FormItem>
                 <FormLabel>First Name</FormLabel>
                 <FormControl>
-                  <Input
-                    type="text"
-                    placeholder="Foo"
-                    {...field}
-                  />
+                  <Input type="text" placeholder="Foo" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -100,11 +110,7 @@ export function CreateAccountForm({
               <FormItem>
                 <FormLabel>Last Name</FormLabel>
                 <FormControl>
-                  <Input
-                    type="text"
-                    placeholder="Bar"
-                    {...field}
-                  />
+                  <Input type="text" placeholder="Bar" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -118,4 +124,4 @@ export function CreateAccountForm({
       </form>
     </Form>
   );
-};
+}

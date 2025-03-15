@@ -2,10 +2,13 @@ import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
-} from "@workspace/ui/components/sidebar"
-import { Metadata } from "next"
+} from "@workspace/ui/components/sidebar";
+import { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
-import { getBusinessesAction, getBusinessStripeAccountAction } from "@/actions/business"
+import {
+  getBusinessesAction,
+  getBusinessStripeAccountAction,
+} from "@/actions/business";
 import { Separator } from "@workspace/ui/components/separator";
 import { BusinessSidebar } from "./components/business-sidebar";
 import { BusinessProvider } from "@/components/providers/business-provider";
@@ -20,29 +23,35 @@ export const metadata: Metadata = {
     default: "Dashboard",
     template: "%s | Dashboard",
   },
-}
+};
 
-export default async function BusinessDashboardLayout({ children, params }: { children: React.ReactNode, params: Promise<{ businessId: string }> }) {
-  const businesses = await getBusinessesAction()
-  const businessesData = businesses?.data?.businesses
+export default async function BusinessDashboardLayout({
+  children,
+  params,
+}: { children: React.ReactNode; params: Promise<{ businessId: string }> }) {
+  const businesses = await getBusinessesAction();
+  const businessesData = businesses?.data?.businesses;
 
   //TODO: handle error
   if (!businessesData || businessesData?.length < 1) {
-    redirect(redirects.app.createBusiness)
+    redirect(redirects.app.createBusiness);
   }
 
   const { businessId } = await params;
   const parsedBusinessId = parseInt(businessId);
 
   //TODO: can be improved when have large amount of projects
-  const business = businessesData?.find(business => business.id === parsedBusinessId);
+  const business = businessesData?.find(
+    (business) => business.id === parsedBusinessId,
+  );
 
   if (!business) {
     return notFound();
   }
 
-  const stripeAccount = (await getBusinessStripeAccountAction(business.id))?.data?.stripeAccount
-  let alertComponent: ReactNode | undefined = undefined
+  const stripeAccount = (await getBusinessStripeAccountAction(business.id))
+    ?.data?.stripeAccount;
+  let alertComponent: ReactNode | undefined = undefined;
 
   if (!stripeAccount || stripeAccount.stripe_disabled_reason) {
     //todo: fix css
@@ -52,14 +61,12 @@ export default async function BusinessDashboardLayout({ children, params }: { ch
         className="max-w-lg fixed bottom-2 left-1/2 -translate-x-1/2 sm:top-4 sm:bottom-auto w-[calc(100%-16px)]"
       >
         <div className="flex gap-2 mt-2">
-          Please finish setting up your Stripe account to fully use the platform.
-          <StripeOnboardRedirector
-            businessId={business.id}
-            text="Finish"
-          />
+          Please finish setting up your Stripe account to fully use the
+          platform.
+          <StripeOnboardRedirector businessId={business.id} text="Finish" />
         </div>
       </DismissableAlert>
-    )
+    );
   }
 
   return (
@@ -75,11 +82,9 @@ export default async function BusinessDashboardLayout({ children, params }: { ch
               <BusinessBreadcrumb />
             </div>
           </header>
-          <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-            {children}
-          </div>
+          <div className="flex flex-1 flex-col gap-4 p-4 pt-0">{children}</div>
         </SidebarInset>
-      </SidebarProvider >
+      </SidebarProvider>
     </BusinessProvider>
   );
 }

@@ -4,7 +4,7 @@ import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from "@workspace/ui/components/avatar"
+} from "@workspace/ui/components/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,32 +13,36 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@workspace/ui/components/dropdown-menu"
+} from "@workspace/ui/components/dropdown-menu";
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@workspace/ui/components/sidebar"
-import { ComponentPropsWithoutRef } from "react"
-import Link from "next/link"
-import { redirects } from "@/lib/config/redirects"
+} from "@workspace/ui/components/sidebar";
+import { ComponentPropsWithoutRef } from "react";
+import Link from "next/link";
+import { redirects } from "@/lib/config/redirects";
 import { ChevronsUpDown, LogOut, Settings } from "lucide-react";
 import { ModeToggle } from "@/components/mode-toggle";
 import { useAuth } from "../providers/auth-provider";
 
-export function SidebarUser({ ...props }: ComponentPropsWithoutRef<typeof SidebarMenu>) {
-  const { isMobile } = useSidebar()
-  const { user, account } = useAuth()
+export function SidebarUser({
+  ...props
+}: ComponentPropsWithoutRef<typeof SidebarMenu>) {
+  const { isMobile } = useSidebar();
+  const { user, account } = useAuth();
 
   if (!user || !account) {
-    throw new Error("SidebarUser must be used within an AuthProvider with a user and account")
+    throw new Error(
+      "SidebarUser must be used within an AuthProvider with a user and account",
+    );
   }
 
-  const firstName = account.first_name
-  const lastName = account.last_name
-  const avatar = user.user_metadata.avatar
-  const email = user.email
+  const firstName = account.first_name;
+  const lastName = account.last_name;
+  const avatar = user.user_metadata.avatar;
+  const email = user.email;
 
   return (
     <SidebarMenu {...props}>
@@ -90,7 +94,7 @@ export function SidebarUser({ ...props }: ComponentPropsWithoutRef<typeof Sideba
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem asChild>
-                <Link href={redirects.app.settings} >
+                <Link href={redirects.app.settings}>
                   <Settings />
                   Settings
                 </Link>
@@ -98,7 +102,10 @@ export function SidebarUser({ ...props }: ComponentPropsWithoutRef<typeof Sideba
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <Link href={redirects.auth.logout} className="w-full flex items-center justify-start gap-2">
+              <Link
+                href={redirects.auth.logout}
+                className="w-full flex items-center justify-start gap-2"
+              >
                 <LogOut className="size-4" />
                 Log out
               </Link>
@@ -110,4 +117,4 @@ export function SidebarUser({ ...props }: ComponentPropsWithoutRef<typeof Sideba
       </SidebarMenuItem>
     </SidebarMenu>
   );
-};
+}

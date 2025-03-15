@@ -1,16 +1,18 @@
-import {
-  SidebarMenuButton,
-} from "@workspace/ui/components/sidebar"
-import { ComponentPropsWithoutRef } from "react"
-import { redirects } from "@/lib/config/redirects"
-import { Icons } from "@/components/icons"
-import Link from "next/link"
+import { SidebarMenuButton } from "@workspace/ui/components/sidebar";
+import { ComponentPropsWithoutRef } from "react";
+import { redirects } from "@/lib/config/redirects";
+import { Icons } from "@/components/icons";
+import Link from "next/link";
 
-export interface SidebarLogoProps extends ComponentPropsWithoutRef<typeof SidebarMenuButton> {
-  redirect?: string | boolean
+export interface SidebarLogoProps
+  extends ComponentPropsWithoutRef<typeof SidebarMenuButton> {
+  redirect?: string | boolean;
 }
 
-export function SidebarLogo({ redirect = redirects.app.root, ...props }: SidebarLogoProps) {
+export function SidebarLogo({
+  redirect = redirects.app.root,
+  ...props
+}: SidebarLogoProps) {
   return (
     <SidebarMenuButton size="lg" asChild {...props}>
       {redirect && typeof redirect === "string" ? (
@@ -33,5 +35,5 @@ export function SidebarLogo({ redirect = redirects.app.root, ...props }: Sidebar
         </div>
       )}
     </SidebarMenuButton>
-  )
+  );
 }

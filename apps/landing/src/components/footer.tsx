@@ -1,16 +1,22 @@
-import Link from 'next/link'
-import { cn } from '@workspace/ui/lib/utils'
-import { ComponentPropsWithoutRef, FC } from 'react'
-import { contact } from '@/lib/config'
-import { Separator } from '@workspace/ui/components/separator'
-import { LogoDiv } from '@/components/logo-div'
+import Link from "next/link";
+import { cn } from "@workspace/ui/lib/utils";
+import { ComponentPropsWithoutRef, FC } from "react";
+import { contact } from "@/lib/config";
+import { Separator } from "@workspace/ui/components/separator";
+import { LogoDiv } from "@/components/logo-div";
 
 export function Footer({
   className,
   ...props
-}: ComponentPropsWithoutRef<'footer'>) {
+}: ComponentPropsWithoutRef<"footer">) {
   return (
-    <footer className={cn('w-full pb-6 rounded-lg text-card-foreground p-6 shadow-2xl bg-secondary flex flex-col', className)} {...props}>
+    <footer
+      className={cn(
+        "w-full pb-6 rounded-lg text-card-foreground p-6 shadow-2xl bg-secondary flex flex-col",
+        className,
+      )}
+      {...props}
+    >
       <div className="flex flex-col justify-center lg:flex-row md:justify-start gap-12 xl:gap-40">
         <LogoDiv className="w-48 md:w-64" />
       </div>
@@ -33,5 +39,5 @@ export function Footer({
         </div>
       </div>
     </footer>
-  )
+  );
 }

@@ -1,5 +1,11 @@
 import { VerifyOTPForm } from "@/components/auth/verify-otp-form";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@workspace/ui/components/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@workspace/ui/components/card";
 import { LegalContainer } from "@/components/legal-container";
 
 export default async function OTPPage() {
@@ -8,14 +14,12 @@ export default async function OTPPage() {
       <Card className="flex flex-col gap-6">
         <CardHeader className="text-center">
           <CardTitle className="text-xl">Log In</CardTitle>
-          <CardDescription>
-            Enter the OTP sent to your email
-          </CardDescription>
+          <CardDescription>Enter the OTP sent to your email</CardDescription>
         </CardHeader>
         <CardContent>
           <VerifyOTPForm />
         </CardContent>
       </Card>
-    </LegalContainer >
-  )
+    </LegalContainer>
+  );
 }

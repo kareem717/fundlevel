@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { ComponentPropsWithoutRef, FC } from "react"
+import { ComponentPropsWithoutRef, FC } from "react";
 import {
   Card,
   CardContent,
@@ -8,18 +8,27 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@workspace/ui/components/card"
-import { cn } from "@workspace/ui/lib/utils"
+} from "@workspace/ui/components/card";
+import { cn } from "@workspace/ui/lib/utils";
 
-export interface ChartWrapperProps extends ComponentPropsWithoutRef<typeof Card> {
-  children: React.ReactNode
-  title?: string
-  description?: string
-  headerClassName?: string
-  footerContent?: React.ReactNode
-};
+export interface ChartWrapperProps
+  extends ComponentPropsWithoutRef<typeof Card> {
+  children: React.ReactNode;
+  title?: string;
+  description?: string;
+  headerClassName?: string;
+  footerContent?: React.ReactNode;
+}
 
-export const ChartWrapper: FC<ChartWrapperProps> = ({ children, title, description, footerContent, className, headerClassName, ...props }) => {
+export const ChartWrapper: FC<ChartWrapperProps> = ({
+  children,
+  title,
+  description,
+  footerContent,
+  className,
+  headerClassName,
+  ...props
+}) => {
   return (
     <Card className={cn("flex flex-col", className)} {...props}>
       {(title || description) && (
@@ -28,9 +37,7 @@ export const ChartWrapper: FC<ChartWrapperProps> = ({ children, title, descripti
           <CardDescription>{description}</CardDescription>
         </CardHeader>
       )}
-      <CardContent className="flex-1 pb-0 w-full h-min">
-        {children}
-      </CardContent>
+      <CardContent className="flex-1 pb-0 w-full h-min">{children}</CardContent>
       {footerContent && (
         <CardFooter className="flex-col gap-2 text-sm">
           {footerContent}

@@ -4,16 +4,17 @@ import { Label } from "@workspace/ui/components/label";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import { Round } from "@workspace/sdk";
 import { cn } from "@workspace/ui/lib/utils";
-import { ComponentPropsWithoutRef, FC, useEffect, useState } from "react"
+import { ComponentPropsWithoutRef, FC, useEffect, useState } from "react";
 
-export interface PastRoundsSectionProps extends ComponentPropsWithoutRef<"section"> {
+export interface PastRoundsSectionProps
+  extends ComponentPropsWithoutRef<"section"> {}
 
-};
-
-export const PastRoundsSection: FC<PastRoundsSectionProps> = ({ className, ...props }) => {
+export const PastRoundsSection: FC<PastRoundsSectionProps> = ({
+  className,
+  ...props
+}) => {
   const [rounds] = useState<Round[]>([]);
   const [isExecuting, setIsExecuting] = useState(true);
-
 
   useEffect(() => {
     //simulate loading
@@ -33,9 +34,7 @@ export const PastRoundsSection: FC<PastRoundsSectionProps> = ({ className, ...pr
           ))}
         </div>
       ) : (
-        <>
-          Rounds
-        </>
+        <>Rounds</>
       )}
     </section>
   );

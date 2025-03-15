@@ -1,131 +1,128 @@
-"use client"
+"use client";
 
-import {
-  Area,
-  AreaChart,
-  ResponsiveContainer,
-  XAxis,
-  YAxis,
-} from 'recharts'
+import { Area, AreaChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from '@workspace/ui/components/chart'
-import { ComponentPropsWithoutRef } from 'react'
-import { cn } from '@workspace/ui/lib/utils'
+} from "@workspace/ui/components/chart";
+import { ComponentPropsWithoutRef } from "react";
+import { cn } from "@workspace/ui/lib/utils";
 
 const CHART_DATA = [
   {
     date: "2023-01-01",
-    value: 155467.06
+    value: 155467.06,
   },
   {
     date: "2023-01-02",
-    value: 241199.15
+    value: 241199.15,
   },
   {
     date: "2023-01-03",
-    value: 162307.58
+    value: 162307.58,
   },
   {
     date: "2023-01-04",
-    value: 223810.29
+    value: 223810.29,
   },
   {
     date: "2023-01-05",
-    value: 193236.03
+    value: 193236.03,
   },
   {
     date: "2023-01-06",
-    value: 273108.40
+    value: 273108.4,
   },
   {
     date: "2023-01-07",
-    value: 227638.63
+    value: 227638.63,
   },
   {
     date: "2023-01-08",
-    value: 254711.16
+    value: 254711.16,
   },
   {
     date: "2023-01-09",
-    value: 273742.54
+    value: 273742.54,
   },
   {
     date: "2023-01-10",
-    value: 278161.96
+    value: 278161.96,
   },
   {
     date: "2023-01-11",
-    value: 203725.89
+    value: 203725.89,
   },
   {
     date: "2023-01-12",
-    value: 215592.23
+    value: 215592.23,
   },
   {
     date: "2023-01-13",
-    value: 220686.74
+    value: 220686.74,
   },
   {
     date: "2023-01-14",
-    value: 257627.72
+    value: 257627.72,
   },
   {
     date: "2023-01-15",
-    value: 287452.62
+    value: 287452.62,
   },
   {
     date: "2023-01-16",
-    value: 247691.67
+    value: 247691.67,
   },
   {
     date: "2023-01-17",
-    value: 277305.15
+    value: 277305.15,
   },
   {
     date: "2023-01-18",
-    value: 292053.28
+    value: 292053.28,
   },
   {
     date: "2023-01-19",
-    value: 321960.29
+    value: 321960.29,
   },
   {
     date: "2023-01-20",
-    value: 340615.41
-  }
-]
+    value: 340615.41,
+  },
+];
 
 const CHART_CONFIG = {
   value: {
     label: "Value",
     color: "hsl(var(--primary))",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
-const PERCENTAGE_CHANGE = (CHART_DATA[CHART_DATA.length - 1]!.value! - CHART_DATA[0]!.value!) / CHART_DATA[0]!.value! * 100
+const PERCENTAGE_CHANGE =
+  ((CHART_DATA[CHART_DATA.length - 1]!.value! - CHART_DATA[0]!.value!) /
+    CHART_DATA[0]!.value!) *
+  100;
 
 const formatCurrency = (value: any) => {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-  }).format(value)
-}
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  }).format(value);
+};
 
-export function PortfolioLineGraph({ className, ...props }: ComponentPropsWithoutRef<"div">) {
+export function PortfolioLineGraph({
+  className,
+  ...props
+}: ComponentPropsWithoutRef<"div">) {
   return (
-    <div className={cn("flex flex-col", className)} {...props} >
+    <div className={cn("flex flex-col", className)} {...props}>
       <div className="flex items-center text-xl font-medium">
         {PERCENTAGE_CHANGE.toFixed(2)}
         <span className="ml-1">%</span>
       </div>
-      <ChartContainer
-        config={CHART_CONFIG}
-        className="h-[200px]"
-      >
+      <ChartContainer config={CHART_CONFIG} className="h-[200px]">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart
             data={CHART_DATA}
@@ -166,5 +163,5 @@ export function PortfolioLineGraph({ className, ...props }: ComponentPropsWithou
         </ResponsiveContainer>
       </ChartContainer>
     </div>
-  )
+  );
 }

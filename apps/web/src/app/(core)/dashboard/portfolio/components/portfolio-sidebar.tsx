@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import {
   Sidebar,
   SidebarContent,
@@ -7,20 +7,22 @@ import {
   SidebarRail,
   SidebarMenu as SidebarMenuComponent,
   SidebarMenuButton,
-} from "@workspace/ui/components/sidebar"
-import { SidebarMenu } from "@/components/sidebar/sidebar-menu"
-import { ComponentPropsWithoutRef } from "react"
-import { sidebar } from "@/lib/config/sidebar"
-import { SidebarUser } from "@/components/sidebar/sidebar-user"
-import { SidebarNotification } from "@/components/sidebar/sidebar-notification"
-import { redirects } from "@/lib/config/redirects"
-import { Icons } from "@/components/icons"
-import Link from "next/link"
-import { SidebarLogo } from "@/components/sidebar/sidebar-logo"
+} from "@workspace/ui/components/sidebar";
+import { SidebarMenu } from "@/components/sidebar/sidebar-menu";
+import { ComponentPropsWithoutRef } from "react";
+import { sidebar } from "@/lib/config/sidebar";
+import { SidebarUser } from "@/components/sidebar/sidebar-user";
+import { SidebarNotification } from "@/components/sidebar/sidebar-notification";
+import { redirects } from "@/lib/config/redirects";
+import { Icons } from "@/components/icons";
+import Link from "next/link";
+import { SidebarLogo } from "@/components/sidebar/sidebar-logo";
 
 //TODO: this doesn't have to be a client component
-export function PortfolioSidebar({ ...props }: ComponentPropsWithoutRef<typeof Sidebar>) {
-  const { portfolio } = sidebar
+export function PortfolioSidebar({
+  ...props
+}: ComponentPropsWithoutRef<typeof Sidebar>) {
+  const { portfolio } = sidebar;
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>
@@ -37,5 +39,5 @@ export function PortfolioSidebar({ ...props }: ComponentPropsWithoutRef<typeof S
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }

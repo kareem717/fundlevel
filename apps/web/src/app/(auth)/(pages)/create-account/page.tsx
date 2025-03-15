@@ -1,26 +1,30 @@
 import { getUserAction } from "@/actions/auth";
 import { CreateAccountForm } from "@/components/auth/create-account-form";
 import { LegalContainer } from "@/components/legal-container";
-import { Card, CardTitle, CardDescription, CardHeader, CardContent } from "@workspace/ui/components/card";
+import {
+  Card,
+  CardTitle,
+  CardDescription,
+  CardHeader,
+  CardContent,
+} from "@workspace/ui/components/card";
 
 export default async function CreateAccountPage() {
-  const user = (await getUserAction())?.data
+  const user = (await getUserAction())?.data;
 
   if (!user) {
-    throw new Error("User not found")
+    throw new Error("User not found");
   }
 
-  const userFullName = user.user_metadata.full_name ?? ""
-  const [firstName = "", lastName = ""] = userFullName.split(" ")
+  const userFullName = user.user_metadata.full_name ?? "";
+  const [firstName = "", lastName = ""] = userFullName.split(" ");
 
   return (
     <LegalContainer>
       <Card>
         <CardHeader className="text-center">
           <CardTitle className="text-xl">Create Account</CardTitle>
-          <CardDescription>
-            Create an account to get started
-          </CardDescription>
+          <CardDescription>Create an account to get started</CardDescription>
         </CardHeader>
         <CardContent>
           <CreateAccountForm
@@ -30,5 +34,5 @@ export default async function CreateAccountPage() {
         </CardContent>
       </Card>
     </LegalContainer>
-  )
+  );
 }

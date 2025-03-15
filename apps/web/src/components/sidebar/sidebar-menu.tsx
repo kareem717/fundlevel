@@ -1,12 +1,12 @@
 "use client";
 
 import { NavigationMenu } from "@/lib/config/sidebar";
-import { ComponentPropsWithoutRef } from "react"
+import { ComponentPropsWithoutRef } from "react";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@workspace/ui/components/collapsible"
+} from "@workspace/ui/components/collapsible";
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -16,26 +16,23 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-} from "@workspace/ui/components/sidebar"
+} from "@workspace/ui/components/sidebar";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 
-export interface SidebarMenuProps extends ComponentPropsWithoutRef<typeof SidebarMenuComponent> {
-  config: NavigationMenu
-};
+export interface SidebarMenuProps
+  extends ComponentPropsWithoutRef<typeof SidebarMenuComponent> {
+  config: NavigationMenu;
+}
 
 export function SidebarMenu({ config, ...props }: SidebarMenuProps) {
   return (
     <SidebarGroup>
       <SidebarGroupLabel>{config.name}</SidebarGroupLabel>
       <SidebarMenuComponent {...props}>
-        {config.items.map((item) => (
-          'root' in item ? (
-            <Collapsible
-              key={item.title}
-              asChild
-              className="group/collapsible"
-            >
+        {config.items.map((item) =>
+          "root" in item ? (
+            <Collapsible key={item.title} asChild className="group/collapsible">
               <SidebarMenuItem>
                 <CollapsibleTrigger asChild>
                   <SidebarMenuButton tooltip={item.title}>
@@ -70,9 +67,9 @@ export function SidebarMenu({ config, ...props }: SidebarMenuProps) {
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
-          )
-        ))}
+          ),
+        )}
       </SidebarMenuComponent>
     </SidebarGroup>
   );
-};
+}

@@ -8,10 +8,7 @@ export interface ProvidersProps {
   themeProps?: ThemeProviderProps;
 }
 
-export const Providers: FC<ProvidersProps> = ({
-  children,
-  themeProps,
-}) => {
+export const Providers: FC<ProvidersProps> = ({ children, themeProps }) => {
   return (
     <ThemeProvider {...themeProps}>
       <WrapBalancer>

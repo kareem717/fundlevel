@@ -1,18 +1,18 @@
-import { FileImageIcon } from 'lucide-react'
+import { FileImageIcon } from "lucide-react";
 
-import { useToolbarContext } from '@/components/rich-text/context/toolbar-context'
-import { SelectItem } from '@workspace/ui/components/select'
+import { useToolbarContext } from "@/components/rich-text/context/toolbar-context";
+import { SelectItem } from "@workspace/ui/components/select";
 
-import { InsertInlineImageDialog } from '@/components/rich-text/plugins/inline-image-plugin'
+import { InsertInlineImageDialog } from "@/components/rich-text/plugins/inline-image-plugin";
 
 export function InsertInlineImage() {
-  const { activeEditor, showModal } = useToolbarContext()
+  const { activeEditor, showModal } = useToolbarContext();
 
   return (
     <SelectItem
       value="inline-image"
       onPointerUp={() =>
-        showModal('Insert Inline Image', (onClose) => (
+        showModal("Insert Inline Image", (onClose) => (
           <InsertInlineImageDialog
             activeEditor={activeEditor}
             onClose={onClose}
@@ -26,5 +26,5 @@ export function InsertInlineImage() {
         <span>Inline Image</span>
       </div>
     </SelectItem>
-  )
+  );
 }

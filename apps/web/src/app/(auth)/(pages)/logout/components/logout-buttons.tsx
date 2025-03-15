@@ -10,13 +10,15 @@ import { redirects } from "@/lib/config/redirects";
 import { useToast } from "@workspace/ui/hooks/use-toast";
 import Link from "next/link";
 
-export function LogoutButtons({ className, ...props }: ComponentPropsWithoutRef<"div">) {
+export function LogoutButtons({
+  className,
+  ...props
+}: ComponentPropsWithoutRef<"div">) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
   const { toast } = useToast();
 
   async function handleLogout() {
-
     setIsLoading(true);
 
     const sb = createClient();
@@ -32,17 +34,28 @@ export function LogoutButtons({ className, ...props }: ComponentPropsWithoutRef<
     } else {
       router.push(redirects.auth.login);
     }
-  };
+  }
 
   return (
-    <div className={cn("grid grid-cols-2 gap-4 md:grid-cols-1", className)} {...props}>
-      <Button className="w-full" variant="secondary" onClick={handleLogout} disabled={isLoading}>
+    <div
+      className={cn("grid grid-cols-2 gap-4 md:grid-cols-1", className)}
+      {...props}
+    >
+      <Button
+        className="w-full"
+        variant="secondary"
+        onClick={handleLogout}
+        disabled={isLoading}
+      >
         {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
         Logout
       </Button>
-      <Link className={cn(buttonVariants(), "w-full")} href={redirects.app.root}>
+      <Link
+        className={cn(buttonVariants(), "w-full")}
+        href={redirects.app.root}
+      >
         Dashboard
       </Link>
     </div>
   );
-};
+}

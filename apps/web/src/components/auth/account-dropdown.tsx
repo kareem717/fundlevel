@@ -34,7 +34,7 @@ export const AccountDropdown: FC<AccountDropdownProps> = ({
         className={cn(
           "flex items-center justify-center gap-2",
           buttonVariants({ variant: "outline" }),
-          className
+          className,
         )}
         {...props}
       >

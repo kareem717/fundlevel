@@ -1,13 +1,19 @@
-import { PortfolioSidebar } from "./components/portfolio-sidebar"
+import { PortfolioSidebar } from "./components/portfolio-sidebar";
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
-} from "@workspace/ui/components/sidebar"
-import { Metadata } from "next"
+} from "@workspace/ui/components/sidebar";
+import { Metadata } from "next";
 import { Separator } from "@workspace/ui/components/separator";
 import { Suspense } from "react";
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@workspace/ui/components/breadcrumb";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+} from "@workspace/ui/components/breadcrumb";
 import { redirects } from "@/lib/config/redirects";
 
 export const metadata: Metadata = {
@@ -15,12 +21,12 @@ export const metadata: Metadata = {
     default: "Portfolio",
     template: "%s | Portfolio",
   },
-}
+};
 
 export default async function PortfolioLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <SidebarProvider>
@@ -38,19 +44,15 @@ export default async function PortfolioLayout({
                   </BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  Portfolio
-                </BreadcrumbItem>
+                <BreadcrumbItem>Portfolio</BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <Suspense fallback={<div>Loading...</div>}>
-            {children}
-          </Suspense>
+          <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
         </div>
       </SidebarInset>
     </SidebarProvider>
-  )
+  );
 }

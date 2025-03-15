@@ -1,25 +1,25 @@
-import { $createQuoteNode } from '@lexical/rich-text'
-import { $setBlocksType } from '@lexical/selection'
-import { $getSelection } from 'lexical'
+import { $createQuoteNode } from "@lexical/rich-text";
+import { $setBlocksType } from "@lexical/selection";
+import { $getSelection } from "lexical";
 
-import { useToolbarContext } from '@/components/rich-text/context/toolbar-context'
-import { SelectItem } from '@workspace/ui/components/select'
+import { useToolbarContext } from "@/components/rich-text/context/toolbar-context";
+import { SelectItem } from "@workspace/ui/components/select";
 
-import { blockTypeToBlockName } from '@/components/rich-text/plugins/toolbar/block-format/block-format-data'
+import { blockTypeToBlockName } from "@/components/rich-text/plugins/toolbar/block-format/block-format-data";
 
-const BLOCK_FORMAT_VALUE = 'quote'
+const BLOCK_FORMAT_VALUE = "quote";
 
 export function FormatQuote() {
-  const { activeEditor, blockType } = useToolbarContext()
+  const { activeEditor, blockType } = useToolbarContext();
 
   const formatQuote = () => {
-    if (blockType !== 'quote') {
+    if (blockType !== "quote") {
       activeEditor.update(() => {
-        const selection = $getSelection()
-        $setBlocksType(selection, () => $createQuoteNode())
-      })
+        const selection = $getSelection();
+        $setBlocksType(selection, () => $createQuoteNode());
+      });
     }
-  }
+  };
 
   return (
     <SelectItem value="quote" onPointerDown={formatQuote}>
@@ -28,5 +28,5 @@ export function FormatQuote() {
         {blockTypeToBlockName[BLOCK_FORMAT_VALUE]?.label}
       </div>
     </SelectItem>
-  )
+  );
 }

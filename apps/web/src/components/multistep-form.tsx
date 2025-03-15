@@ -4,10 +4,7 @@ import { Button } from "@workspace/ui/components/button";
 import { Icons } from "@/components/icons";
 import { Progress } from "@workspace/ui/components/progress";
 import { cn } from "@workspace/ui/lib/utils";
-import {
-  ComponentPropsWithoutRef,
-  useState,
-} from "react";
+import { ComponentPropsWithoutRef, useState } from "react";
 import { Form } from "@workspace/ui/components/form";
 import { FieldValues, Path, UseFormReturn } from "react-hook-form";
 
@@ -17,9 +14,10 @@ export type Step<T extends FieldValues> = {
   onNext?: () => void | boolean | Promise<void | boolean>;
   onBack?: () => void | boolean | Promise<void | boolean>;
   nextButtonText?: string;
-}
+};
 
-export interface MultiStepFormProps<T extends FieldValues> extends ComponentPropsWithoutRef<"form"> {
+export interface MultiStepFormProps<T extends FieldValues>
+  extends ComponentPropsWithoutRef<"form"> {
   steps: Step<T>[];
   form: UseFormReturn<T>;
   defaultStep?: number;
@@ -39,9 +37,9 @@ export function MultiStepForm<T extends FieldValues>({
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [isExecuting, setIsExecuting] = useState(false);
 
-  const isLastStep = step >= steps.length - 1
-  const hasNext = step < steps.length
-  const hasPrevious = step > 0
+  const isLastStep = step >= steps.length - 1;
+  const hasNext = step < steps.length;
+  const hasPrevious = step > 0;
 
   const next = async () => {
     if (!hasNext) return;
@@ -94,9 +92,18 @@ export function MultiStepForm<T extends FieldValues>({
 
   return (
     <Form {...formProps}>
-      <form className={cn("flex flex-col justify-center h-full w-full", className)} {...props}>
+      <form
+        className={cn("flex flex-col justify-center h-full w-full", className)}
+        {...props}
+      >
         {steps.map((stepItem, index) => (
-          <div key={index} className={cn("flex items-center justify-center flex-grow w-full", index !== step && "hidden")}>
+          <div
+            key={index}
+            className={cn(
+              "flex items-center justify-center flex-grow w-full",
+              index !== step && "hidden",
+            )}
+          >
             {stepItem.content}
           </div>
         ))}
@@ -116,12 +123,18 @@ export function MultiStepForm<T extends FieldValues>({
               onClick={next}
               type="button"
             >
-              {(isExecuting || isSubmitting) && <Icons.spinner className="animate-spin size-4" />}
-              {steps[step]?.nextButtonText ? steps[step].nextButtonText : isLastStep ? "Submit" : "Next"}
+              {(isExecuting || isSubmitting) && (
+                <Icons.spinner className="animate-spin size-4" />
+              )}
+              {steps[step]?.nextButtonText
+                ? steps[step].nextButtonText
+                : isLastStep
+                  ? "Submit"
+                  : "Next"}
             </Button>
           </div>
         </div>
       </form>
     </Form>
   );
-};
+}

@@ -1,18 +1,18 @@
-import { TableIcon } from 'lucide-react'
+import { TableIcon } from "lucide-react";
 
-import { useToolbarContext } from '@/components/rich-text/context/toolbar-context'
-import { SelectItem } from '@workspace/ui/components/select'
+import { useToolbarContext } from "@/components/rich-text/context/toolbar-context";
+import { SelectItem } from "@workspace/ui/components/select";
 
-import { InsertTableDialog } from '@/components/rich-text/plugins/table-plugin'
+import { InsertTableDialog } from "@/components/rich-text/plugins/table-plugin";
 
 export function InsertTable() {
-  const { activeEditor, showModal } = useToolbarContext()
+  const { activeEditor, showModal } = useToolbarContext();
 
   return (
     <SelectItem
       value="table"
       onPointerUp={() =>
-        showModal('Insert Table', (onClose) => (
+        showModal("Insert Table", (onClose) => (
           <InsertTableDialog activeEditor={activeEditor} onClose={onClose} />
         ))
       }
@@ -23,5 +23,5 @@ export function InsertTable() {
         <span>Table</span>
       </div>
     </SelectItem>
-  )
+  );
 }

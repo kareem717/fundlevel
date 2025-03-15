@@ -1,20 +1,20 @@
-import { ImageIcon } from 'lucide-react'
+import { ImageIcon } from "lucide-react";
 
-import { useToolbarContext } from '@/components/rich-text/context/toolbar-context'
-import { SelectItem } from '@workspace/ui/components/select'
+import { useToolbarContext } from "@/components/rich-text/context/toolbar-context";
+import { SelectItem } from "@workspace/ui/components/select";
 
-import { InsertImageDialog } from '@/components/rich-text/plugins/images-plugin'
+import { InsertImageDialog } from "@/components/rich-text/plugins/images-plugin";
 
 export function InsertImage() {
-  const { activeEditor, showModal } = useToolbarContext()
+  const { activeEditor, showModal } = useToolbarContext();
 
   return (
     <SelectItem
       value="image"
       onPointerUp={(e) => {
-        showModal('Insert Image', (onClose) => (
+        showModal("Insert Image", (onClose) => (
           <InsertImageDialog activeEditor={activeEditor} onClose={onClose} />
-        ))
+        ));
       }}
       className=""
     >
@@ -23,5 +23,5 @@ export function InsertImage() {
         <span>Image</span>
       </div>
     </SelectItem>
-  )
+  );
 }

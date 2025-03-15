@@ -1,38 +1,39 @@
-'use client'
+"use client";
 
 import {
   InitialConfigType,
   InitialEditorStateType,
   LexicalComposer,
-} from '@lexical/react/LexicalComposer'
-import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin'
-import { EditorState, SerializedEditorState } from 'lexical'
+} from "@lexical/react/LexicalComposer";
+import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
+import { EditorState, SerializedEditorState } from "lexical";
 
-import { FloatingLinkContext } from '@/components/rich-text/context/floating-link-context'
-import { SharedAutocompleteContext } from '@/components/rich-text/context/shared-autocomplete-context'
-import { editorTheme } from '@/components/rich-text/themes/editor-theme'
-import { TooltipProvider } from '@workspace/ui/components/tooltip'
+import { FloatingLinkContext } from "@/components/rich-text/context/floating-link-context";
+import { SharedAutocompleteContext } from "@/components/rich-text/context/shared-autocomplete-context";
+import { editorTheme } from "@/components/rich-text/themes/editor-theme";
+import { TooltipProvider } from "@workspace/ui/components/tooltip";
 
-import { nodes } from './nodes'
-import { Plugins } from './plugins'
-import { ComponentPropsWithoutRef } from 'react'
-import { cn } from '@/lib/utils'
+import { nodes } from "./nodes";
+import { Plugins } from "./plugins";
+import { ComponentPropsWithoutRef } from "react";
+import { cn } from "@/lib/utils";
 
 const editorConfig: InitialConfigType = {
-  namespace: 'Editor',
+  namespace: "Editor",
   theme: editorTheme,
   nodes,
   onError: (error: Error) => {
-    console.error(error)
+    console.error(error);
   },
-}
+};
 
-export interface LexicalEditorProps extends Omit<ComponentPropsWithoutRef<'div'>, 'onChange'> {
-  initialEditorState?: InitialEditorStateType
-  onChange?: (editorState: EditorState) => void
-  onSerializedChange?: (editorSerializedState: SerializedEditorState) => void
-  maxLength?: number
-  contentClassName?: string
+export interface LexicalEditorProps
+  extends Omit<ComponentPropsWithoutRef<"div">, "onChange"> {
+  initialEditorState?: InitialEditorStateType;
+  onChange?: (editorState: EditorState) => void;
+  onSerializedChange?: (editorSerializedState: SerializedEditorState) => void;
+  maxLength?: number;
+  contentClassName?: string;
 }
 
 export function LexicalEditor({
@@ -45,7 +46,13 @@ export function LexicalEditor({
   ...props
 }: LexicalEditorProps) {
   return (
-    <div className={cn("overflow-hidden rounded-lg border bg-background shadow", className)} {...props}>
+    <div
+      className={cn(
+        "overflow-hidden rounded-lg border bg-background shadow",
+        className,
+      )}
+      {...props}
+    >
       <LexicalComposer
         initialConfig={{
           ...editorConfig,
@@ -59,8 +66,8 @@ export function LexicalEditor({
               <OnChangePlugin
                 ignoreSelectionChange={true}
                 onChange={(editorState) => {
-                  onChange?.(editorState)
-                  onSerializedChange?.(editorState.toJSON())
+                  onChange?.(editorState);
+                  onSerializedChange?.(editorState.toJSON());
                 }}
               />
             </FloatingLinkContext>
@@ -68,5 +75,5 @@ export function LexicalEditor({
         </TooltipProvider>
       </LexicalComposer>
     </div>
-  )
+  );
 }

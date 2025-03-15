@@ -1,11 +1,16 @@
-import { Card, CardContent, CardTitle, CardHeader } from "@workspace/ui/components/card";
+import {
+  Card,
+  CardContent,
+  CardTitle,
+  CardHeader,
+} from "@workspace/ui/components/card";
 import { UpdateAccountForm } from "./components/update-account-form";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@workspace/ui/components/accordion"
+} from "@workspace/ui/components/accordion";
 import { getStripeIdentityAction } from "@/actions/auth";
 import { VerifyIdentityModalButton } from "@/components/stripe/verify-identity-modal-button";
 

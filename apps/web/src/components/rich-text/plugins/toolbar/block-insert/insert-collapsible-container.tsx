@@ -1,12 +1,12 @@
-import { ChevronRightIcon } from 'lucide-react'
+import { ChevronRightIcon } from "lucide-react";
 
-import { useToolbarContext } from '@/components/rich-text/context/toolbar-context'
-import { SelectItem } from '@workspace/ui/components/select'
+import { useToolbarContext } from "@/components/rich-text/context/toolbar-context";
+import { SelectItem } from "@workspace/ui/components/select";
 
-import { INSERT_COLLAPSIBLE_COMMAND } from '@/components/rich-text/plugins/collapsible-plugin'
+import { INSERT_COLLAPSIBLE_COMMAND } from "@/components/rich-text/plugins/collapsible-plugin";
 
 export function InsertCollapsibleContainer() {
-  const { activeEditor } = useToolbarContext()
+  const { activeEditor } = useToolbarContext();
   return (
     <SelectItem
       value="collapsible"
@@ -20,5 +20,5 @@ export function InsertCollapsibleContainer() {
         <span>Collapsible container</span>
       </div>
     </SelectItem>
-  )
+  );
 }

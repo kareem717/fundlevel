@@ -1,14 +1,15 @@
-"use client"
+"use client";
 
-import { ComponentPropsWithoutRef, FC, Suspense as ReactSuspense } from "react"
+import { ComponentPropsWithoutRef, FC, Suspense as ReactSuspense } from "react";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import { cn } from "@workspace/ui/lib/utils";
 
-export interface SuspenseProps<T extends React.ElementType = typeof Skeleton> extends ComponentPropsWithoutRef<typeof ReactSuspense> {
-  orientation?: "landscape" | "portrait"
-  fallback?: React.ReactElement<T>
-  fallbackProps?: ComponentPropsWithoutRef<T>
-};
+export interface SuspenseProps<T extends React.ElementType = typeof Skeleton>
+  extends ComponentPropsWithoutRef<typeof ReactSuspense> {
+  orientation?: "landscape" | "portrait";
+  fallback?: React.ReactElement<T>;
+  fallbackProps?: ComponentPropsWithoutRef<T>;
+}
 
 export const Suspense: FC<SuspenseProps> = ({
   children,
@@ -17,15 +18,12 @@ export const Suspense: FC<SuspenseProps> = ({
   fallbackProps = {}, // Default to an empty object
   ...props
 }) => {
-  const aspectRatio = orientation === "landscape" ? "aspect-[16/9]" : "aspect-[9/16]"
+  const aspectRatio =
+    orientation === "landscape" ? "aspect-[16/9]" : "aspect-[9/16]";
 
   const DefaultFallback: FC = () => (
     <Skeleton
-      className={cn(
-        "w-full max-w-lg",
-        aspectRatio,
-        fallbackProps.className
-      )}
+      className={cn("w-full max-w-lg", aspectRatio, fallbackProps.className)}
       {...fallbackProps}
     />
   );

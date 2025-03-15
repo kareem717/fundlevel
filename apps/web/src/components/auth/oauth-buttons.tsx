@@ -11,32 +11,54 @@ import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 export type OAuthProvider = "google" | "github";
 
-export interface OAuthButtonProps extends ComponentPropsWithoutRef<typeof Button> {
+export interface OAuthButtonProps
+  extends ComponentPropsWithoutRef<typeof Button> {
   provider: OAuthProvider;
   icon: keyof typeof Icons;
   isLoading: string | null;
   handleLogin: (provider: OAuthProvider) => void;
 }
 
-export function OAuthButton({ icon, provider, isLoading, handleLogin, disabled, ...props }: OAuthButtonProps) {
+export function OAuthButton({
+  icon,
+  provider,
+  isLoading,
+  handleLogin,
+  disabled,
+  ...props
+}: OAuthButtonProps) {
   const Icon = Icons[icon];
 
   return (
-    <Button className="w-full" variant="secondary" onClick={() => handleLogin(provider)} disabled={!!isLoading || disabled} {...props}>
-      {
-        isLoading === provider ? <Loader2 className="w-4 h-4 animate-spin" /> : <Icon className="w-4 h-4" />
-      }
+    <Button
+      className="w-full"
+      variant="secondary"
+      onClick={() => handleLogin(provider)}
+      disabled={!!isLoading || disabled}
+      {...props}
+    >
+      {isLoading === provider ? (
+        <Loader2 className="w-4 h-4 animate-spin" />
+      ) : (
+        <Icon className="w-4 h-4" />
+      )}
     </Button>
-  )
-};
+  );
+}
 
 export interface OAuthButtonsProps extends ComponentPropsWithoutRef<"div"> {
-  providers: { provider: OAuthProvider, icon: keyof typeof Icons }[];
+  providers: { provider: OAuthProvider; icon: keyof typeof Icons }[];
   disabled?: boolean;
   redirectTo?: string;
 }
 
-export function OAuthButtons({ providers, disabled, className, redirectTo, ...props }: OAuthButtonsProps) {
+export function OAuthButtons({
+  providers,
+  disabled,
+  className,
+  redirectTo,
+  ...props
+}: OAuthButtonsProps) {
   const [isLoading, setIsLoading] = useState<string | null>(null);
   const router = useRouter();
 
@@ -47,24 +69,36 @@ export function OAuthButtons({ providers, disabled, className, redirectTo, ...pr
     const { data, error } = await sb.auth.signInWithOAuth({
       provider: provider,
       options: {
-        redirectTo: `${env.NEXT_PUBLIC_APP_URL}${redirects.auth.callback(redirectTo)}`
-      }
+        redirectTo: `${env.NEXT_PUBLIC_APP_URL}${redirects.auth.callback(redirectTo)}`,
+      },
     });
 
     if (error) {
-      throw error
+      throw error;
     } else {
-      router.push(data.url)
+      router.push(data.url);
     }
     setIsLoading(null);
   };
 
   return (
-
-    <div className={cn("grid grid-cols-2 gap-2 md:gap-4 md:grid-cols-1", className)} {...props}>
+    <div
+      className={cn(
+        "grid grid-cols-2 gap-2 md:gap-4 md:grid-cols-1",
+        className,
+      )}
+      {...props}
+    >
       {providers.map(({ provider, icon }) => (
-        <OAuthButton key={provider} provider={provider} icon={icon} isLoading={isLoading} handleLogin={handleLogin} disabled={disabled} />
+        <OAuthButton
+          key={provider}
+          provider={provider}
+          icon={icon}
+          isLoading={isLoading}
+          handleLogin={handleLogin}
+          disabled={disabled}
+        />
       ))}
     </div>
   );
-};
+}

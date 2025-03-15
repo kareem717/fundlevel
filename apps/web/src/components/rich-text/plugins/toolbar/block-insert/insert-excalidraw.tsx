@@ -1,12 +1,12 @@
-import { FrameIcon } from 'lucide-react'
+import { FrameIcon } from "lucide-react";
 
-import { useToolbarContext } from '@/components/rich-text/context/toolbar-context'
-import { SelectItem } from '@workspace/ui/components/select'
+import { useToolbarContext } from "@/components/rich-text/context/toolbar-context";
+import { SelectItem } from "@workspace/ui/components/select";
 
-import { INSERT_EXCALIDRAW_COMMAND } from '@/components/rich-text/plugins/excalidraw-plugin'
+import { INSERT_EXCALIDRAW_COMMAND } from "@/components/rich-text/plugins/excalidraw-plugin";
 
 export function InsertExcalidraw() {
-  const { activeEditor } = useToolbarContext()
+  const { activeEditor } = useToolbarContext();
   return (
     <SelectItem
       value="excalidraw"
@@ -20,5 +20,5 @@ export function InsertExcalidraw() {
         <span>Excalidraw</span>
       </div>
     </SelectItem>
-  )
+  );
 }

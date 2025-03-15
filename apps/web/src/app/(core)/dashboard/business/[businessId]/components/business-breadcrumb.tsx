@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   Breadcrumb,
@@ -6,14 +6,14 @@ import {
   BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbSeparator,
-} from "@workspace/ui/components/breadcrumb"
+} from "@workspace/ui/components/breadcrumb";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@workspace/ui/components/dropdown-menu"
-import { ChevronDownIcon } from "lucide-react"
+} from "@workspace/ui/components/dropdown-menu";
+import { ChevronDownIcon } from "lucide-react";
 import { redirects } from "@/lib/config/redirects";
 import { useBusiness } from "@/components/providers/business-provider";
 import { usePathname } from "next/navigation";
@@ -25,15 +25,13 @@ export function BusinessBreadcrumb() {
 
   const generatePath = (businessId: number): string => {
     return pathname.replace(/\/business\/\d+/, `/business/${businessId}`);
-  }
+  };
 
   return (
     <Breadcrumb>
       <BreadcrumbList>
         <BreadcrumbItem className="hidden md:block">
-          <BreadcrumbLink href={redirects.app.root}>
-            Dashboard
-          </BreadcrumbLink>
+          <BreadcrumbLink href={redirects.app.root}>Dashboard</BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator className="hidden md:block" />
         <BreadcrumbItem>
@@ -55,5 +53,5 @@ export function BusinessBreadcrumb() {
         </BreadcrumbItem>
       </BreadcrumbList>
     </Breadcrumb>
-  )
+  );
 }

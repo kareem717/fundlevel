@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
 import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
   useReactTable,
-} from "@tanstack/react-table"
+} from "@tanstack/react-table";
 import {
   Table,
   TableBody,
@@ -13,18 +13,18 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@workspace/ui/components/table"
-import { Table as TableType } from "@tanstack/react-table"
+} from "@workspace/ui/components/table";
+import { Table as TableType } from "@tanstack/react-table";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@workspace/ui/components/select"
-import { Column } from "@tanstack/react-table"
-import { cn } from "@workspace/ui/lib/utils"
-import { Button } from "@workspace/ui/components/button"
+} from "@workspace/ui/components/select";
+import { Column } from "@tanstack/react-table";
+import { cn } from "@workspace/ui/lib/utils";
+import { Button } from "@workspace/ui/components/button";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -33,12 +33,12 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@workspace/ui/components/dropdown-menu"
-import { Icons } from "./icons"
-import { Skeleton } from "@workspace/ui/components/skeleton"
+} from "@workspace/ui/components/dropdown-menu";
+import { Icons } from "./icons";
+import { Skeleton } from "@workspace/ui/components/skeleton";
 
 interface DataTableViewOptionsProps<TData> {
-  table: TableType<TData>
+  table: TableType<TData>;
 }
 
 export const DataTableViewOptions = <TData,>({
@@ -63,7 +63,7 @@ export const DataTableViewOptions = <TData,>({
           .getAllColumns()
           .filter(
             (column) =>
-              typeof column.accessorFn !== "undefined" && column.getCanHide()
+              typeof column.accessorFn !== "undefined" && column.getCanHide(),
           )
           .map((column) => {
             return (
@@ -75,18 +75,18 @@ export const DataTableViewOptions = <TData,>({
               >
                 {column.id}
               </DropdownMenuCheckboxItem>
-            )
+            );
           })}
       </DropdownMenuContent>
     </DropdownMenu>
-  )
-}
+  );
+};
 
 interface DataTableColumnHeaderProps<TData, TValue>
   extends React.HTMLAttributes<HTMLDivElement> {
-  column: Column<TData, TValue>
-  title: string
-  isSortable?: boolean
+  column: Column<TData, TValue>;
+  title: string;
+  isSortable?: boolean;
 }
 
 export const DataTableColumnHeader = <TData, TValue>({
@@ -140,12 +140,12 @@ export const DataTableColumnHeader = <TData, TValue>({
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
-  )
-}
+  );
+};
 
 export interface DataTablePaginationProps<TData> {
-  table: TableType<TData>
-  className?: string
+  table: TableType<TData>;
+  className?: string;
 }
 
 export const DataTablePagination = <TData,>({
@@ -153,7 +153,9 @@ export const DataTablePagination = <TData,>({
   className,
 }: DataTablePaginationProps<TData>) => {
   return (
-    <div className={cn("flex items-center justify-between px-2 w-full", className)}>
+    <div
+      className={cn("flex items-center justify-between px-2 w-full", className)}
+    >
       <div className="flex-1 text-sm text-muted-foreground">
         {table.getFilteredSelectedRowModel().rows.length} of{" "}
         {table.getFilteredRowModel().rows.length} row(s) selected.
@@ -164,7 +166,7 @@ export const DataTablePagination = <TData,>({
           <Select
             value={`${table.getState().pagination.pageSize}`}
             onValueChange={(value) => {
-              table.setPageSize(Number(value))
+              table.setPageSize(Number(value));
             }}
           >
             <SelectTrigger className="h-8 w-[70px]">
@@ -223,13 +225,13 @@ export const DataTablePagination = <TData,>({
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
-  data: TData[]
-  isLoading?: boolean
+  columns: ColumnDef<TData, TValue>[];
+  data: TData[];
+  isLoading?: boolean;
 }
 
 export const DataTable = <TData, TValue>({
@@ -241,7 +243,7 @@ export const DataTable = <TData, TValue>({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-  })
+  });
 
   const TableSkeleton = () => (
     <TableBody>
@@ -255,7 +257,7 @@ export const DataTable = <TData, TValue>({
         </TableRow>
       ))}
     </TableBody>
-  )
+  );
 
   return (
     <div className="rounded-md border">
@@ -269,11 +271,11 @@ export const DataTable = <TData, TValue>({
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
                   </TableHead>
-                )
+                );
               })}
             </TableRow>
           ))}
@@ -290,14 +292,20 @@ export const DataTable = <TData, TValue>({
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
                     </TableCell>
                   ))}
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
                   No results.
                 </TableCell>
               </TableRow>
@@ -306,5 +314,5 @@ export const DataTable = <TData, TValue>({
         )}
       </Table>
     </div>
-  )
-}
+  );
+};

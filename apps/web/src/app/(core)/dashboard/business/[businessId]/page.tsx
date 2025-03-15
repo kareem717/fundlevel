@@ -3,7 +3,13 @@ import { BusinessImpressionAnalytics } from "./components/impression-analytics-c
 import { KeyInvestorsTable } from "./components/key-investors-table";
 import { BusinessRaiseRate } from "./components/raise-rate-chart";
 import { BusinessStatisticOverview } from "./components/statistic-overview";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@workspace/ui/components/card";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@workspace/ui/components/card";
 
 export default function BusinessDashboard() {
   return (
@@ -41,5 +47,5 @@ export default function BusinessDashboard() {
         </Card>
       </div>
     </div>
-  )
+  );
 }

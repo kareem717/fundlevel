@@ -1,20 +1,26 @@
-"use client"
+"use client";
 
-import { LoginForm } from "@/components/auth/login-form"
-import { Dialog, DialogTitle, DialogDescription, DialogHeader, DialogContent } from "@workspace/ui/components/dialog"
-import { useRouter, useSearchParams } from "next/navigation"
-import { useState } from "react"
+import { LoginForm } from "@/components/auth/login-form";
+import {
+  Dialog,
+  DialogTitle,
+  DialogDescription,
+  DialogHeader,
+  DialogContent,
+} from "@workspace/ui/components/dialog";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
 
 export default function LoginModal() {
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const [open, setOpen] = useState<boolean>(true)
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [open, setOpen] = useState<boolean>(true);
 
-  const redirect = searchParams.get('redirect')
+  const redirect = searchParams.get("redirect");
 
   function closeDialog() {
-    setOpen(false)
-    router.back()
+    setOpen(false);
+    router.back();
   }
 
   return (
@@ -31,5 +37,5 @@ export default function LoginModal() {
         </div>
       </DialogContent>
     </Dialog>
-  )
-} 
+  );
+}

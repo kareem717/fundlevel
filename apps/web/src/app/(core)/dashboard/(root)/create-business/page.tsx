@@ -1,4 +1,9 @@
-import { Card, CardTitle, CardHeader, CardContent } from "@workspace/ui/components/card";
+import {
+  Card,
+  CardTitle,
+  CardHeader,
+  CardContent,
+} from "@workspace/ui/components/card";
 import { CreateBusinessForm } from "./components/create-business-form";
 
 export default function CreateBusiness() {

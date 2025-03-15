@@ -1,11 +1,17 @@
 "use client";
 
-import { ComponentPropsWithoutRef, FC, RefObject, useEffect, useId, useState } from "react";
+import {
+  ComponentPropsWithoutRef,
+  FC,
+  RefObject,
+  useEffect,
+  useId,
+  useState,
+} from "react";
 import { motion } from "framer-motion";
 import { cn } from "@workspace/ui/lib/utils";
 
-export interface AnimatedBeamProps
-  extends ComponentPropsWithoutRef<"svg"> {
+export interface AnimatedBeamProps extends ComponentPropsWithoutRef<"svg"> {
   containerRef: RefObject<HTMLElement | null>; // Container ref
   fromRef: RefObject<HTMLElement | null>;
   toRef: RefObject<HTMLElement | null>;
@@ -51,17 +57,17 @@ export const AnimatedBeam: FC<AnimatedBeamProps> = ({
   // Calculate the gradient coordinates based on the reverse prop
   const gradientCoordinates = reverse
     ? {
-      x1: ["90%", "-10%"],
-      x2: ["100%", "0%"],
-      y1: ["0%", "0%"],
-      y2: ["0%", "0%"],
-    }
+        x1: ["90%", "-10%"],
+        x2: ["100%", "0%"],
+        y1: ["0%", "0%"],
+        y2: ["0%", "0%"],
+      }
     : {
-      x1: ["10%", "110%"],
-      x2: ["0%", "100%"],
-      y1: ["0%", "0%"],
-      y2: ["0%", "0%"],
-    };
+        x1: ["10%", "110%"],
+        x2: ["0%", "100%"],
+        y1: ["0%", "0%"],
+        y2: ["0%", "0%"],
+      };
 
   useEffect(() => {
     const updatePath = () => {
@@ -84,8 +90,9 @@ export const AnimatedBeam: FC<AnimatedBeamProps> = ({
           rectB.top - containerRect.top + rectB.height / 2 + endYOffset;
 
         const controlY = startY - curvature;
-        const d = `M ${startX},${startY} Q ${(startX + endX) / 2
-          },${controlY} ${endX},${endY}`;
+        const d = `M ${startX},${startY} Q ${
+          (startX + endX) / 2
+        },${controlY} ${endX},${endY}`;
         setPathD(d);
       }
     };
@@ -129,7 +136,7 @@ export const AnimatedBeam: FC<AnimatedBeamProps> = ({
       xmlns="http://www.w3.org/2000/svg"
       className={cn(
         "pointer-events-none absolute left-0 top-0 transform-gpu stroke-2",
-        className
+        className,
       )}
       viewBox={`0 0 ${svgDimensions.width} ${svgDimensions.height}`}
       {...props}

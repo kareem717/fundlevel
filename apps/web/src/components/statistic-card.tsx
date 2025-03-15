@@ -1,22 +1,37 @@
-"use client"
+"use client";
 
 import { cn } from "@workspace/ui/lib/utils";
-import { ComponentPropsWithoutRef, FC } from "react"
+import { ComponentPropsWithoutRef, FC } from "react";
 import { Card } from "@workspace/ui/components/card";
 import { Icons } from "./icons";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@workspace/ui/components/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@workspace/ui/components/tooltip";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 
-export interface StatisticCardProps extends ComponentPropsWithoutRef<typeof Card> {
+export interface StatisticCardProps
+  extends ComponentPropsWithoutRef<typeof Card> {
   title: string;
   value: string;
   icon: keyof typeof Icons;
   description: string;
   tooltip?: string;
   isLoading?: boolean;
-};
+}
 
-export const StatisticCard: FC<StatisticCardProps> = ({ className, title, value, icon, description, tooltip, isLoading, ...props }) => {
+export const StatisticCard: FC<StatisticCardProps> = ({
+  className,
+  title,
+  value,
+  icon,
+  description,
+  tooltip,
+  isLoading,
+  ...props
+}) => {
   const Icon = Icons[icon];
 
   return (

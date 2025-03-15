@@ -1,16 +1,24 @@
-"use client"
+"use client";
 
 import { StatisticCard } from "@/components/statistic-card";
 import { cn } from "@workspace/ui/lib/utils";
-import { ComponentPropsWithoutRef, FC } from "react"
+import { ComponentPropsWithoutRef, FC } from "react";
 
-export interface BusinessStatisticOverviewProps extends ComponentPropsWithoutRef<"div"> {
+export interface BusinessStatisticOverviewProps
+  extends ComponentPropsWithoutRef<"div"> {}
 
-};
-
-export const BusinessStatisticOverview: FC<BusinessStatisticOverviewProps> = ({ className, ...props }) => {
+export const BusinessStatisticOverview: FC<BusinessStatisticOverviewProps> = ({
+  className,
+  ...props
+}) => {
   return (
-    <div className={cn("grid grid-rows-3 lg:grid-cols-3 lg:grid-rows-1 gap-4 [&>div]:h-full", className)} {...props}>
+    <div
+      className={cn(
+        "grid grid-rows-3 lg:grid-cols-3 lg:grid-rows-1 gap-4 [&>div]:h-full",
+        className,
+      )}
+      {...props}
+    >
       <StatisticCard
         title="Total Funding"
         value="$100,000"

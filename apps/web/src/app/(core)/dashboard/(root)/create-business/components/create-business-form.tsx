@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@workspace/ui/lib/utils";
-import { ComponentPropsWithoutRef } from "react"
+import { ComponentPropsWithoutRef } from "react";
 import {
   Form,
   FormControl,
@@ -10,13 +10,17 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@workspace/ui/components/form"
-import { Input } from "@workspace/ui/components/input"
+} from "@workspace/ui/components/form";
+import { Input } from "@workspace/ui/components/input";
 import { Icons } from "@/components/icons";
 import { Button } from "@workspace/ui/components/button";
 import { useToast } from "@workspace/ui/hooks/use-toast";
 import { useRouter } from "next/navigation";
-import { Popover, PopoverTrigger, PopoverContent } from "@workspace/ui/components/popover";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@workspace/ui/components/popover";
 import { format } from "date-fns";
 import { Calendar } from "@workspace/ui/components/calendar";
 import {
@@ -24,7 +28,7 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
+  SelectValue,
 } from "@workspace/ui/components/select";
 import { IndustrySelect } from "@/components/industry-select";
 import { redirects } from "@/lib/config/redirects";
@@ -33,33 +37,43 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
 import { createBusinessAction } from "@/actions/business";
 
-export function CreateBusinessForm({ className, ...props }: ComponentPropsWithoutRef<"form">) {
-  const router = useRouter()
+export function CreateBusinessForm({
+  className,
+  ...props
+}: ComponentPropsWithoutRef<"form">) {
+  const router = useRouter();
   const { toast } = useToast();
 
-  const { form, action: { isExecuting }, handleSubmitWithAction } =
-    useHookFormAction(createBusinessAction, zodResolver(zCreateBusinessParams), {
+  const {
+    form,
+    action: { isExecuting },
+    handleSubmitWithAction,
+  } = useHookFormAction(
+    createBusinessAction,
+    zodResolver(zCreateBusinessParams),
+    {
       actionProps: {
         onSuccess: ({ data }) => {
-          form.reset()
+          form.reset();
           toast({
             title: "Done!",
             description: "Your business has been created.",
-          })
+          });
 
           if (data) {
-            router.push(redirects.app.businessDashboard(data.id).root)
+            router.push(redirects.app.businessDashboard(data.id).root);
           } else {
-            router.push(redirects.app.root)
+            router.push(redirects.app.root);
           }
         },
         onError: ({ error }) => {
           toast({
             title: "Something went wrong",
-            description: error.serverError?.message || "An unknown error occurred",
+            description:
+              error.serverError?.message || "An unknown error occurred",
             variant: "destructive",
-          })
-        }
+          });
+        },
       },
       formProps: {
         defaultValues: {
@@ -69,13 +83,18 @@ export function CreateBusinessForm({ className, ...props }: ComponentPropsWithou
             employee_count: "1",
           },
           industry_ids: [],
-        }
+        },
       },
-    });
+    },
+  );
 
   return (
     <Form {...form}>
-      <form onSubmit={handleSubmitWithAction} className={cn("space-y-8 w-full max-w-md", className)} {...props}>
+      <form
+        onSubmit={handleSubmitWithAction}
+        className={cn("space-y-8 w-full max-w-md", className)}
+        {...props}
+      >
         <FormField
           control={form.control}
           name="business.display_name"
@@ -106,8 +125,18 @@ export function CreateBusinessForm({ className, ...props }: ComponentPropsWithou
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {["1", "2-10", "11-50", "51-200", "201-500", "501-1000", "1000+"].map((value) => (
-                    <SelectItem key={value} value={value}>{value}</SelectItem>
+                  {[
+                    "1",
+                    "2-10",
+                    "11-50",
+                    "51-200",
+                    "201-500",
+                    "501-1000",
+                    "1000+",
+                  ].map((value) => (
+                    <SelectItem key={value} value={value}>
+                      {value}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -149,7 +178,7 @@ export function CreateBusinessForm({ className, ...props }: ComponentPropsWithou
                       variant={"outline"}
                       className={cn(
                         "pl-3 text-left font-normal",
-                        !field.value && "text-muted-foreground"
+                        !field.value && "text-muted-foreground",
                       )}
                     >
                       {field.value ? (
@@ -166,7 +195,7 @@ export function CreateBusinessForm({ className, ...props }: ComponentPropsWithou
                     mode="single"
                     selected={field.value ? new Date(field.value) : undefined}
                     onSelect={(date) => {
-                      field.onChange(date?.toISOString() || undefined)
+                      field.onChange(date?.toISOString() || undefined);
                     }}
                     disabled={(date) =>
                       date > new Date() || date < new Date("1800-01-01")
@@ -175,9 +204,7 @@ export function CreateBusinessForm({ className, ...props }: ComponentPropsWithou
                   />
                 </PopoverContent>
               </Popover>
-              <FormDescription>
-                When was this business founded?
-              </FormDescription>
+              <FormDescription>When was this business founded?</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -189,5 +216,5 @@ export function CreateBusinessForm({ className, ...props }: ComponentPropsWithou
         </Button>
       </form>
     </Form>
-  )
+  );
 }

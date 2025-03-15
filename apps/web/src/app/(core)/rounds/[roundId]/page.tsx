@@ -6,37 +6,40 @@ import { notFound } from "next/navigation";
 import { getPublicBusinessAction } from "@/actions/business";
 import { getActiveRoundInvestmentAction } from "@/actions/investment";
 
-export default async function RoundPage({ params }: { params: { roundId: string } }) {
-  const { roundId } = await params
-  const parsedRoundId = parseInt(roundId)
+export default async function RoundPage({
+  params,
+}: { params: { roundId: string } }) {
+  const { roundId } = await params;
+  const parsedRoundId = parseInt(roundId);
 
   if (isNaN(parsedRoundId)) {
-    return notFound()
+    return notFound();
   }
 
-  const activeInvestment = (await getActiveRoundInvestmentAction(parsedRoundId))?.data?.investment
+  const activeInvestment = (await getActiveRoundInvestmentAction(parsedRoundId))
+    ?.data?.investment;
 
   //TODO: handle error
-  const round = (await getPublicRoundAction(parsedRoundId))?.data
+  const round = (await getPublicRoundAction(parsedRoundId))?.data;
   if (!round) {
-    console.error("Round not found", round)
-    return notFound()
+    console.error("Round not found", round);
+    return notFound();
   }
 
   // TODO: handle error
-  const business = (await getPublicBusinessAction(round.business_id))?.data?.business
+  const business = (await getPublicBusinessAction(round.business_id))?.data
+    ?.business;
   if (!business) {
-    console.error("Business not found", business)
-    return notFound()
+    console.error("Business not found", business);
+    return notFound();
   }
 
-  const terms = (await getRoundTermsAction(parsedRoundId))?.data
+  const terms = (await getRoundTermsAction(parsedRoundId))?.data;
 
   if (!terms) {
-    console.error("Terms not found", terms)
-    return notFound()
+    console.error("Terms not found", terms);
+    return notFound();
   }
-
 
   return (
     <FormPageLayout>
@@ -50,5 +53,5 @@ export default async function RoundPage({ params }: { params: { roundId: string 
         />
       </div>
     </FormPageLayout>
-  )
+  );
 }

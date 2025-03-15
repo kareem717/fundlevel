@@ -3,21 +3,25 @@ import Link from "next/link";
 import { redirects } from "@/lib/config/redirects";
 
 export default async function RootDashboardPage() {
-  const response = await getBusinessesAction()
+  const response = await getBusinessesAction();
 
-  const businesses = response?.data?.businesses || []
+  const businesses = response?.data?.businesses || [];
 
   return (
     <div className="flex flex-wrap gap-4">
-      {businesses.length > 0 ? businesses.map((business) => (
-        <Link
-          key={business.id}
-          href={redirects.app.businessDashboard(business.id).root} className="bg-secondary rounded-md aspect-square w-32 flex items-center justify-center"
-        >
-          {business.display_name}
-        </Link>
-      )) : <div className="flex-1">No businesses found</div>}
+      {businesses.length > 0 ? (
+        businesses.map((business) => (
+          <Link
+            key={business.id}
+            href={redirects.app.businessDashboard(business.id).root}
+            className="bg-secondary rounded-md aspect-square w-32 flex items-center justify-center"
+          >
+            {business.display_name}
+          </Link>
+        ))
+      ) : (
+        <div className="flex-1">No businesses found</div>
+      )}
     </div>
-  )
+  );
 }
-

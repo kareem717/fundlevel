@@ -5,40 +5,40 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
-import * as React from 'react'
-import { useCallback, useState, JSX } from 'react'
+import * as React from "react";
+import { useCallback, useState, JSX } from "react";
 
-import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext'
-import { ErrorBoundary } from 'react-error-boundary'
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import { ErrorBoundary } from "react-error-boundary";
 
-import { Button } from '@workspace/ui/components/button'
-import { Checkbox } from '@workspace/ui/components/checkbox'
-import { Input } from '@workspace/ui/components/input'
-import { Label } from '@workspace/ui/components/label'
-import { Textarea } from '@workspace/ui/components/textarea'
+import { Button } from "@workspace/ui/components/button";
+import { Checkbox } from "@workspace/ui/components/checkbox";
+import { Input } from "@workspace/ui/components/input";
+import { Label } from "@workspace/ui/components/label";
+import { Textarea } from "@workspace/ui/components/textarea";
 
-import KatexRenderer from '@/components/rich-text/editor-ui/katex-renderer'
+import KatexRenderer from "@/components/rich-text/editor-ui/katex-renderer";
 
 type Props = {
-  initialEquation?: string
-  onConfirm: (equation: string, inline: boolean) => void
-}
+  initialEquation?: string;
+  onConfirm: (equation: string, inline: boolean) => void;
+};
 
 export default function KatexEquationAlterer({
   onConfirm,
-  initialEquation = '',
+  initialEquation = "",
 }: Props): JSX.Element {
-  const [editor] = useLexicalComposerContext()
-  const [equation, setEquation] = useState<string>(initialEquation)
-  const [inline, setInline] = useState<boolean>(true)
+  const [editor] = useLexicalComposerContext();
+  const [equation, setEquation] = useState<string>(initialEquation);
+  const [inline, setInline] = useState<boolean>(true);
 
   const onClick = useCallback(() => {
-    onConfirm(equation, inline)
-  }, [onConfirm, equation, inline])
+    onConfirm(equation, inline);
+  }, [onConfirm, equation, inline]);
 
   const onCheckboxChange = useCallback(() => {
-    setInline(!inline)
-  }, [setInline, inline])
+    setInline(!inline);
+  }, [setInline, inline]);
 
   return (
     <>
@@ -92,5 +92,5 @@ export default function KatexEquationAlterer({
         <Button onClick={onClick}>Confirm</Button>
       </div>
     </>
-  )
+  );
 }

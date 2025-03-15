@@ -10,5 +10,5 @@ export default function LoadingRound() {
         <Skeleton className="h-96 w-full max-w-2xl" />
       </div>
     </FormPageLayout>
-  )
+  );
 }

@@ -5,9 +5,9 @@ import Link from "next/link";
 import { ComponentPropsWithoutRef } from "react";
 
 export interface BetaRequestLinkProps
-  extends Omit<ComponentPropsWithoutRef<typeof Link>, 'href'> {
-  variant?: ComponentPropsWithoutRef<typeof Button>['variant'];
-  size?: ComponentPropsWithoutRef<typeof Button>['size'];
+  extends Omit<ComponentPropsWithoutRef<typeof Link>, "href"> {
+  variant?: ComponentPropsWithoutRef<typeof Button>["variant"];
+  size?: ComponentPropsWithoutRef<typeof Button>["size"];
 }
 
 export function BetaRequestLink({
@@ -28,4 +28,3 @@ export function BetaRequestLink({
     </Link>
   );
 }
-

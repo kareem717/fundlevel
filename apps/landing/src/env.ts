@@ -1,11 +1,11 @@
-import { createEnv } from '@t3-oss/env-nextjs'
-import { z } from 'zod'
+import { createEnv } from "@t3-oss/env-nextjs";
+import { z } from "zod";
 
 export const env = createEnv({
   server: {
     NODE_ENV: z
-      .enum(['development', 'test', 'production'])
-      .default('development'),
+      .enum(["development", "test", "production"])
+      .default("development"),
     BEEHIIV_API_KEY: z.string().min(1),
     BEEHIIV_PUBLICATION_ID: z.string().min(1),
   },
@@ -20,5 +20,5 @@ export const env = createEnv({
       process.env.NEXT_PUBLIC_NEWS_LETTER_SIGN_UP_URL,
     NEXT_PUBLIC_BETA_REQUEST_LINK: process.env.NEXT_PUBLIC_BETA_REQUEST_LINK,
   },
-  skipValidation: process.env.NODE_ENV === 'production',
-})
+  skipValidation: process.env.NODE_ENV === "production",
+});

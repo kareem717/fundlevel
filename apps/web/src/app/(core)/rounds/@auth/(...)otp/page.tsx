@@ -1,18 +1,24 @@
-"use client"
+"use client";
 
-import { VerifyOTPForm } from "@/components/auth/verify-otp-form"
-import { redirects } from "@/lib/config/redirects"
-import { Dialog, DialogTitle, DialogDescription, DialogHeader, DialogContent } from "@workspace/ui/components/dialog"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { VerifyOTPForm } from "@/components/auth/verify-otp-form";
+import { redirects } from "@/lib/config/redirects";
+import {
+  Dialog,
+  DialogTitle,
+  DialogDescription,
+  DialogHeader,
+  DialogContent,
+} from "@workspace/ui/components/dialog";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function LoginModal() {
-  const router = useRouter()
-  const [open, setOpen] = useState<boolean>(true)
+  const router = useRouter();
+  const [open, setOpen] = useState<boolean>(true);
 
   function closeDialog() {
-    setOpen(false)
-    router.back()
+    setOpen(false);
+    router.back();
   }
 
   return (
@@ -21,13 +27,17 @@ export default function LoginModal() {
         <DialogHeader>
           <DialogTitle>Confirm OTP</DialogTitle>
           <DialogDescription>
-            Please enter the OTP sent to your email to continue with your investment.
+            Please enter the OTP sent to your email to continue with your
+            investment.
           </DialogDescription>
         </DialogHeader>
         <div className="px-4 pt-4">
-          <VerifyOTPForm redirectTo={redirects.auth.createAccount} replacePath />
+          <VerifyOTPForm
+            redirectTo={redirects.auth.createAccount}
+            replacePath
+          />
         </div>
       </DialogContent>
     </Dialog>
-  )
-} 
+  );
+}

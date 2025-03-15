@@ -1,16 +1,23 @@
-import { cn } from "@workspace/ui/lib/utils"
-import { ComponentPropsWithoutRef } from "react"
+import { cn } from "@workspace/ui/lib/utils";
+import { ComponentPropsWithoutRef } from "react";
 
-export interface LandingSectionProps extends ComponentPropsWithoutRef<'section'> {
-  title?: string
-  subheading?: string
+export interface LandingSectionProps
+  extends ComponentPropsWithoutRef<"section"> {
+  title?: string;
+  subheading?: string;
 }
 
-export function LandingSection({ children, className, title, subheading, ...props }: LandingSectionProps) {
-  const hasHeader = title || subheading
+export function LandingSection({
+  children,
+  className,
+  title,
+  subheading,
+  ...props
+}: LandingSectionProps) {
+  const hasHeader = title || subheading;
 
   return (
-    <section className={cn(hasHeader && 'space-y-12', 'w-full')} {...props}>
+    <section className={cn(hasHeader && "space-y-12", "w-full")} {...props}>
       {hasHeader && (
         <div className="space-y-4 text-center">
           {title && (
@@ -25,9 +32,7 @@ export function LandingSection({ children, className, title, subheading, ...prop
           )}
         </div>
       )}
-      <div className={className}>
-        {children}
-      </div>
+      <div className={className}>{children}</div>
     </section>
-  )
+  );
 }

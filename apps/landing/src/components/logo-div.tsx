@@ -16,10 +16,7 @@ export const LogoDiv: FC<LogoDivProps> = ({
   return (
     <Link
       aria-label="Redirect to home"
-      className={cn(
-        "w-52",
-        className
-      )}
+      className={cn("w-52", className)}
       href={href}
       {...props}
     >
@@ -38,7 +35,7 @@ export const SmallLogoDiv: FC<LogoDivProps> = ({
       aria-label="Redirect to home"
       className={cn(
         "flex flex-row items-center justify-center text-2xl font-bold hover:cursor-pointer",
-        className
+        className,
       )}
       href={href}
       {...props}

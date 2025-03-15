@@ -3,7 +3,7 @@ import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
-	return twMerge(clsx(inputs));
+  return twMerge(clsx(inputs));
 }
 
 /**
@@ -14,15 +14,15 @@ export function cn(...inputs: ClassValue[]) {
  * @return {*} Service instance.
  */
 export const registerService = <T>(name: string, initFn: () => T) => {
-	if (env.NODE_ENV === "development") {
-		if (!(name in global)) {
-			// @ts-expect-error global is not typed
-			global[name] = initFn();
-		}
-		// @ts-expect-error global is not typed
-		return global[name] as ReturnType<typeof initFn>;
-	}
-	return initFn();
+  if (env.NODE_ENV === "development") {
+    if (!(name in global)) {
+      // @ts-expect-error global is not typed
+      global[name] = initFn();
+    }
+    // @ts-expect-error global is not typed
+    return global[name] as ReturnType<typeof initFn>;
+  }
+  return initFn();
 };
 
 /**
@@ -33,35 +33,35 @@ export const registerService = <T>(name: string, initFn: () => T) => {
  * @return {string} Time since the given date.
  */
 export const formatTime = (then: Date) => {
-	const HOUR_IN_MINUTES = 60;
-	const DAY_IN_MINUTES = 24 * HOUR_IN_MINUTES;
-	const MONTH_IN_MINUTES = 30 * DAY_IN_MINUTES;
-	const YEAR_IN_MINUTES = 12 * MONTH_IN_MINUTES;
+  const HOUR_IN_MINUTES = 60;
+  const DAY_IN_MINUTES = 24 * HOUR_IN_MINUTES;
+  const MONTH_IN_MINUTES = 30 * DAY_IN_MINUTES;
+  const YEAR_IN_MINUTES = 12 * MONTH_IN_MINUTES;
 
-	const now = new Date();
-	const diff = now.getTime() - then.getTime();
-	const diffInMinutes = Math.floor(diff / (1000 * 60));
+  const now = new Date();
+  const diff = now.getTime() - then.getTime();
+  const diffInMinutes = Math.floor(diff / (1000 * 60));
 
-	const pluralize = (value: number, unit: string) => {
-		return `${value} ${unit}${value === 1 ? "" : "s"}`;
-	};
+  const pluralize = (value: number, unit: string) => {
+    return `${value} ${unit}${value === 1 ? "" : "s"}`;
+  };
 
-	const units = [
-		{ label: "year", value: YEAR_IN_MINUTES },
-		{ label: "month", value: MONTH_IN_MINUTES },
-		{ label: "day", value: DAY_IN_MINUTES },
-		{ label: "hour", value: HOUR_IN_MINUTES },
-		{ label: "minute", value: 1 },
-	];
+  const units = [
+    { label: "year", value: YEAR_IN_MINUTES },
+    { label: "month", value: MONTH_IN_MINUTES },
+    { label: "day", value: DAY_IN_MINUTES },
+    { label: "hour", value: HOUR_IN_MINUTES },
+    { label: "minute", value: 1 },
+  ];
 
-	for (const unit of units) {
-		if (diffInMinutes >= unit.value) {
-			const count = Math.floor(diffInMinutes / unit.value);
-			return `${pluralize(count, unit.label)}`;
-		}
-	}
+  for (const unit of units) {
+    if (diffInMinutes >= unit.value) {
+      const count = Math.floor(diffInMinutes / unit.value);
+      return `${pluralize(count, unit.label)}`;
+    }
+  }
 
-	return "less than a minute";
+  return "less than a minute";
 };
 
 /**
@@ -73,10 +73,10 @@ export const formatTime = (then: Date) => {
  * @return {string} Truncated text.
  */
 export const truncateText = (text: string, maxLength: number) => {
-	if (text.length > maxLength) {
-		return text.substring(0, maxLength) + "...";
-	}
-	return text;
+  if (text.length > maxLength) {
+    return text.substring(0, maxLength) + "...";
+  }
+  return text;
 };
 
 /**
@@ -87,10 +87,10 @@ export const truncateText = (text: string, maxLength: number) => {
  * @return {string} Formatted percentage.
  */
 export const toFixedRound = (rawPercentage: number, toFixed: number) =>
-	rawPercentage % 1 !== 0 &&
-	rawPercentage.toFixed(toFixed) !== rawPercentage.toString()
-		? rawPercentage.toFixed(toFixed)
-		: rawPercentage.toString();
+  rawPercentage % 1 !== 0 &&
+  rawPercentage.toFixed(toFixed) !== rawPercentage.toString()
+    ? rawPercentage.toFixed(toFixed)
+    : rawPercentage.toString();
 
 /**
  * Format currency.
@@ -101,14 +101,14 @@ export const toFixedRound = (rawPercentage: number, toFixed: number) =>
  * @return {string} Formatted currency.
  */
 export const formatCurrency = (
-	value: number,
-	currency: string,
-	locale: string = "en-CA"
+  value: number,
+  currency: string,
+  locale: string = "en-CA",
 ) => {
-	return Intl.NumberFormat(locale, {
-		style: "currency",
-		currency: currency.toLocaleUpperCase(locale),
-	}).format(value);
+  return Intl.NumberFormat(locale, {
+    style: "currency",
+    currency: currency.toLocaleUpperCase(locale),
+  }).format(value);
 };
 
 /**
@@ -122,15 +122,15 @@ export const formatCurrency = (
  * @return {string} Formatted number.
  */
 export const formatNumber = (
-	value: number,
-	minimumSignificantDigits: number = 1,
-	maximumSignificantDigits: number = 2,
-	addTilda: boolean = true,
-	locale: string = "en-US"
+  value: number,
+  minimumSignificantDigits: number = 1,
+  maximumSignificantDigits: number = 2,
+  addTilda: boolean = true,
+  locale: string = "en-US",
 ) => {
-	const formatted = value.toLocaleString(locale, {
-		maximumSignificantDigits,
-		minimumSignificantDigits,
-	});
-	return `${formatted !== value.toString() ? (addTilda ? "~ " : "") : ""}${formatted}`;
+  const formatted = value.toLocaleString(locale, {
+    maximumSignificantDigits,
+    minimumSignificantDigits,
+  });
+  return `${formatted !== value.toString() ? (addTilda ? "~ " : "") : ""}${formatted}`;
 };

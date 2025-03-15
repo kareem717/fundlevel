@@ -16,10 +16,7 @@ export default function NotFound() {
       <p className="text-center text-xl text-muted-foreground">
         We couldn&#39;t find what you were looking for
       </p>
-      <Link
-        href={redirects.app.root}
-        className={cn(buttonVariants(), "px-8")}
-      >
+      <Link href={redirects.app.root} className={cn(buttonVariants(), "px-8")}>
         Return to Dashboard
       </Link>
     </div>

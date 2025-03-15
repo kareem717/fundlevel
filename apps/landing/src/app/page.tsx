@@ -13,7 +13,7 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@workspace/ui/components/accordion"
+} from "@workspace/ui/components/accordion";
 import { contact } from "@/lib/config/company";
 import { env } from "@/env";
 import Link from "next/link";
@@ -23,18 +23,22 @@ const { services, hero, features } = copy.landing;
 
 const faqs = [
   {
-    question: 'What is Fundlevel?',
+    question: "What is Fundlevel?",
     answer: (
       <>
         <p>
-          Fundlevel is a platform that helps you raise capital and invest in high-growth opportunities.
-          We provide a white glove experience for all things equity crowdfunding.
-          We also offer a public marketplace for businesses to raise capital and for investors to explore investment opportunities.
+          Fundlevel is a platform that helps you raise capital and invest in
+          high-growth opportunities. We provide a white glove experience for all
+          things equity crowdfunding. We also offer a public marketplace for
+          businesses to raise capital and for investors to explore investment
+          opportunities.
         </p>
         <br />
         <p>
-          Our services are also available to businesses that simply want to raise capital through their own channels - thus we offer
-          'modular' services that you can mix and match to fit your business needs, like compliance, payment processing, and more.
+          Our services are also available to businesses that simply want to
+          raise capital through their own channels - thus we offer 'modular'
+          services that you can mix and match to fit your business needs, like
+          compliance, payment processing, and more.
         </p>
       </>
     ),
@@ -44,14 +48,22 @@ const faqs = [
     answer: (
       <>
         <p>
-          Simply put, the listing on our marketplace is free whilst our advanced services are paid. We are focused on providing real value by
-          helping companies who are fundraising save time and money - thus we only charge for services that
-          really ease the burden of raising capital. Our pricing is currently on a case by case basis, but we are working on making it more standardized.
+          Simply put, the listing on our marketplace is free whilst our advanced
+          services are paid. We are focused on providing real value by helping
+          companies who are fundraising save time and money - thus we only
+          charge for services that really ease the burden of raising capital.
+          Our pricing is currently on a case by case basis, but we are working
+          on making it more standardized.
         </p>
         <br />
         <p>
-          Don't let that scare you though - we are very quick to respond with a accurate price if you reach out to us at:&nbsp;
-          <Link href={`mailto:${contact.email}`} aria-label="Email us at" className="text-primary underline">
+          Don't let that scare you though - we are very quick to respond with a
+          accurate price if you reach out to us at:&nbsp;
+          <Link
+            href={`mailto:${contact.email}`}
+            aria-label="Email us at"
+            className="text-primary underline"
+          >
             {contact.email}
           </Link>
         </p>
@@ -59,37 +71,51 @@ const faqs = [
     ),
   },
   {
-    question: 'Can anyone be listed?',
+    question: "Can anyone be listed?",
     answer: (
       <>
         <p>
-          We adhere to a strict moral and ethical code of conduct. We do not list any businesses that are not in line with our values.
-          Companies that participate in gambling, sex work, certain forms of finance, etc. are not eligible for listing - though feel free to
-          submit a quick application to see if you qualify.
+          We adhere to a strict moral and ethical code of conduct. We do not
+          list any businesses that are not in line with our values. Companies
+          that participate in gambling, sex work, certain forms of finance, etc.
+          are not eligible for listing - though feel free to submit a quick
+          application to see if you qualify.
         </p>
       </>
     ),
   },
   {
-    question: 'How can I get started?',
+    question: "How can I get started?",
     answer: (
       <>
         <p>
-          Currently we are operating in a private beta, and are only accepting a limited number of businesses. If you are interested as either an investor or business,
-          please <Link href={env.NEXT_PUBLIC_BETA_REQUEST_LINK} className="text-primary underline" aria-label="Click here to get started">click here to get started</Link>&nbsp;
-          or reach out to us at:&nbsp;<Link href={`mailto:${contact.email}`} aria-label="Email us at">
+          Currently we are operating in a private beta, and are only accepting a
+          limited number of businesses. If you are interested as either an
+          investor or business, please{" "}
+          <Link
+            href={env.NEXT_PUBLIC_BETA_REQUEST_LINK}
+            className="text-primary underline"
+            aria-label="Click here to get started"
+          >
+            click here to get started
+          </Link>
+          &nbsp; or reach out to us at:&nbsp;
+          <Link href={`mailto:${contact.email}`} aria-label="Email us at">
             {contact.email}
           </Link>
         </p>
       </>
     ),
   },
-]
+];
 
 export default async function Home() {
   return (
     <div className="flex flex-col items-center w-full space-y-20 md:space-y-40">
-      <LandingSection className="flex flex-col items-center justify-center w-full pt-16 md:pt-32" id="hero">
+      <LandingSection
+        className="flex flex-col items-center justify-center w-full pt-16 md:pt-32"
+        id="hero"
+      >
         <HeroBadge
           href={env.NEXT_PUBLIC_BETA_REQUEST_LINK}
           text="New! Private Beta"
@@ -99,9 +125,7 @@ export default async function Home() {
         />
         <div className="container flex flex-col items-center justify-center w-full gap-4 px-4 pb-16 text-center sm:px-10 md:pb-24 lg:pb-32">
           <h1 className="text-3xl sm:text-4xl lg:text-7xl">
-            <Balancer>
-              {hero.title}
-            </Balancer>
+            <Balancer>{hero.title}</Balancer>
           </h1>
           <p className="mx-auto text-sm md:text-lg md:w-2/3 text-muted-foreground font-light">
             {hero.description}
@@ -133,7 +157,7 @@ export default async function Home() {
             className={cn(
               "p-4 rounded-lg overflow-hidden min-h-[300px] relative bg-secondary",
               // isMobile && 'col-span-1 row-span-1/2',
-              'md:col-span-2 md:row-span-2' // Added md breakpoint styles
+              "md:col-span-2 md:row-span-2", // Added md breakpoint styles
             )}
           >
             <div className="relative flex flex-col justify-around gap-8 h-full p-2 overflow-hidden group">
@@ -149,7 +173,7 @@ export default async function Home() {
             </div>
           </div>
         ))}
-      </LandingSection >
+      </LandingSection>
       <LandingSection
         id="services"
         title="Services & Solutions"
@@ -157,11 +181,7 @@ export default async function Home() {
         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
       >
         {services.map((service, index) => (
-          <NumberedCard
-            key={index}
-            index={index}
-            card={service}
-          />
+          <NumberedCard key={index} index={index} card={service} />
         ))}
       </LandingSection>
       <LandingSection
@@ -170,13 +190,15 @@ export default async function Home() {
         subheading="All your questions answered."
         className="flex flex-col md:flex-row gap-4 w-full"
       >
-        <Accordion type="single" collapsible className="w-full max-w-4xl mx-auto">
+        <Accordion
+          type="single"
+          collapsible
+          className="w-full max-w-4xl mx-auto"
+        >
           {faqs.map((faq, index) => (
             <AccordionItem value={`faq-${index}`} key={index}>
               <AccordionTrigger>{faq.question}</AccordionTrigger>
-              <AccordionContent>
-                {faq.answer}
-              </AccordionContent>
+              <AccordionContent>{faq.answer}</AccordionContent>
             </AccordionItem>
           ))}
         </Accordion>
@@ -202,9 +224,12 @@ export default async function Home() {
           <h3 className="hidden text-sm font-medium text-gray-600 dark:text-gray-300 lg:block">
             Subscribe to our newsletter
           </h3>
-          <NewsletterSubscribeForm className="flex flex-row gap-2" inputClassName="bg-background" />
+          <NewsletterSubscribeForm
+            className="flex flex-row gap-2"
+            inputClassName="bg-background"
+          />
         </div>
       </LandingSection>
-    </div >
+    </div>
   );
 }

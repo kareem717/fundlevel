@@ -30,7 +30,7 @@ export function NavMenu({
       className={cn(
         "flex items-center justify-between",
         direction === "column" ? "flex-col w-full" : "flex-row",
-        className
+        className,
       )}
       {...props}
     >
@@ -39,7 +39,7 @@ export function NavMenu({
           "flex items-center",
           direction === "column"
             ? "flex-col space-y-4 w-full"
-            : "flex-row space-x-4"
+            : "flex-row space-x-4",
         )}
       >
         {config.map((item, index) => (
@@ -54,7 +54,7 @@ export function NavMenu({
             className={cn(
               "block",
               direction === "column" &&
-              "w-full py-2 px-4 hover:bg-accent rounded-md"
+                "w-full py-2 px-4 hover:bg-accent rounded-md",
             )}
           >
             {item.label}
@@ -63,4 +63,4 @@ export function NavMenu({
       </ul>
     </nav>
   );
-};
+}

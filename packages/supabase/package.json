@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "biome check .",
+    "format": "biome format --write .",
+    "typecheck": "tsc --noEmit",
     "db:seed": "pnpm dlx tsx seed.ts",
     "db:seed:sync": "pnpm dlx @snaplet/seed sync",
     "db:seed:init": "pnpm dlx @snaplet/seed init",

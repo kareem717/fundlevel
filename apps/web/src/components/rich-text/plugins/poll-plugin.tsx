@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
-import { useEffect, useState, JSX } from 'react'
-import * as React from 'react'
+import { useEffect, useState, JSX } from "react";
+import * as React from "react";
 
-import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext'
-import { $wrapNodeInElement } from '@lexical/utils'
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import { $wrapNodeInElement } from "@lexical/utils";
 import {
   $createParagraphNode,
   $insertNodes,
@@ -18,32 +18,36 @@ import {
   LexicalCommand,
   LexicalEditor,
   createCommand,
-} from 'lexical'
+} from "lexical";
 
-import { Button } from '@workspace/ui/components/button'
-import { DialogFooter } from '@workspace/ui/components/dialog'
-import { Input } from '@workspace/ui/components/input'
-import { Label } from '@workspace/ui/components/label'
+import { Button } from "@workspace/ui/components/button";
+import { DialogFooter } from "@workspace/ui/components/dialog";
+import { Input } from "@workspace/ui/components/input";
+import { Label } from "@workspace/ui/components/label";
 
-import { $createPollNode, PollNode, createPollOption } from '@/components/rich-text/nodes/poll-node'
+import {
+  $createPollNode,
+  PollNode,
+  createPollOption,
+} from "@/components/rich-text/nodes/poll-node";
 
 export const INSERT_POLL_COMMAND: LexicalCommand<string> = createCommand(
-  'INSERT_POLL_COMMAND'
-)
+  "INSERT_POLL_COMMAND",
+);
 
 export function InsertPollDialog({
   activeEditor,
   onClose,
 }: {
-  activeEditor: LexicalEditor
-  onClose: () => void
+  activeEditor: LexicalEditor;
+  onClose: () => void;
 }): JSX.Element {
-  const [question, setQuestion] = useState('')
+  const [question, setQuestion] = useState("");
 
   const onClick = () => {
-    activeEditor.dispatchCommand(INSERT_POLL_COMMAND, question)
-    onClose()
-  }
+    activeEditor.dispatchCommand(INSERT_POLL_COMMAND, question);
+    onClose();
+  };
 
   return (
     <>
@@ -52,19 +56,19 @@ export function InsertPollDialog({
         <Input onChange={(e) => setQuestion(e.target.value)} value={question} />
       </div>
       <DialogFooter>
-        <Button disabled={question.trim() === ''} onClick={onClick}>
+        <Button disabled={question.trim() === ""} onClick={onClick}>
           Confirm
         </Button>
       </DialogFooter>
     </>
-  )
+  );
 }
 
 export function PollPlugin(): JSX.Element | null {
-  const [editor] = useLexicalComposerContext()
+  const [editor] = useLexicalComposerContext();
   useEffect(() => {
     if (!editor.hasNodes([PollNode])) {
-      throw new Error('PollPlugin: PollNode not registered on editor')
+      throw new Error("PollPlugin: PollNode not registered on editor");
     }
 
     return editor.registerCommand<string>(
@@ -73,16 +77,16 @@ export function PollPlugin(): JSX.Element | null {
         const pollNode = $createPollNode(payload, [
           createPollOption(),
           createPollOption(),
-        ])
-        $insertNodes([pollNode])
+        ]);
+        $insertNodes([pollNode]);
         if ($isRootOrShadowRoot(pollNode.getParentOrThrow())) {
-          $wrapNodeInElement(pollNode, $createParagraphNode).selectEnd()
+          $wrapNodeInElement(pollNode, $createParagraphNode).selectEnd();
         }
 
-        return true
+        return true;
       },
-      COMMAND_PRIORITY_EDITOR
-    )
-  }, [editor])
-  return null
+      COMMAND_PRIORITY_EDITOR,
+    );
+  }, [editor]);
+  return null;
 }

@@ -8,7 +8,7 @@ import { Account } from "@workspace/sdk";
 export interface AuthProviderProps {
   user?: User | null;
   account?: Account | null;
-};
+}
 
 const AuthContext = createContext<AuthProviderProps>({
   user: null,
@@ -17,13 +17,16 @@ const AuthContext = createContext<AuthProviderProps>({
 
 export const useAuth = () => {
   return useContext(AuthContext);
-}
+};
 
-export const AuthProvider: FC<AuthProviderProps & { children: ReactNode }> =
-  ({ children, user, account }) => {
-    return (
-      <AuthContext.Provider value={{ user, account }}>
-        {children}
-      </AuthContext.Provider>
-    );
-  }
+export const AuthProvider: FC<AuthProviderProps & { children: ReactNode }> = ({
+  children,
+  user,
+  account,
+}) => {
+  return (
+    <AuthContext.Provider value={{ user, account }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};

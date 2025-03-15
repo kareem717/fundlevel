@@ -1,8 +1,22 @@
 "use client";
 
 import { MultiStepForm, Step } from "@/components/multistep-form";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@workspace/ui/components/card";
-import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@workspace/ui/components/form";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@workspace/ui/components/card";
+import {
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@workspace/ui/components/form";
 import { Input } from "@workspace/ui/components/input";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -15,16 +29,27 @@ import { redirects } from "@/lib/config/redirects";
 import { useAction } from "next-safe-action/hooks";
 import { zCreateInvestmentParams } from "@workspace/sdk/zod";
 import { getSignatureAction } from "@/actions/terms";
-import { TooltipContent, TooltipTrigger, Tooltip } from "@workspace/ui/components/tooltip";
+import {
+  TooltipContent,
+  TooltipTrigger,
+  Tooltip,
+} from "@workspace/ui/components/tooltip";
 import { TooltipProvider } from "@workspace/ui/components/tooltip";
 import { Info } from "lucide-react";
 import { useToast } from "@workspace/ui/hooks/use-toast";
 import { ToastAction } from "@workspace/ui/components/toast";
 import { usePathname } from "next/navigation";
-import { getAccountAction, getSessionAction, getStripeIdentityAction } from "@/actions/auth";
+import {
+  getAccountAction,
+  getSessionAction,
+  getStripeIdentityAction,
+} from "@/actions/auth";
 import { upsertInvestmentAction } from "@/actions/investment";
 import { VerifyIdentityModalButton } from "@/components/stripe/verify-identity-modal-button";
-import { EmbeddedCheckoutForm, EmbeddedCheckoutFormRef } from "@/components/stripe/embedded-checkout";
+import {
+  EmbeddedCheckoutForm,
+  EmbeddedCheckoutFormRef,
+} from "@/components/stripe/embedded-checkout";
 import { useRouter } from "next/navigation";
 import { LexicalViewer } from "@/components/rich-text/viewer";
 
@@ -37,7 +62,11 @@ export interface InvestFormProps extends ComponentPropsWithoutRef<typeof Card> {
   defaultShareQuantity?: number;
 }
 
-function BreakdownField({ label, value, tooltip }: { label: string, value: string, tooltip?: string }) {
+function BreakdownField({
+  label,
+  value,
+  tooltip,
+}: { label: string; value: string; tooltip?: string }) {
   return (
     <div className="flex flex-col sm:flex-row justify-between sm:items-center">
       <span className="text-muted-foreground flex sm:flex-row-reverse items-center gap-1">
@@ -51,20 +80,25 @@ function BreakdownField({ label, value, tooltip }: { label: string, value: strin
         </Tooltip>
         {label}
       </span>
-      <span className="font-medium">
-        {value}
-      </span>
+      <span className="font-medium">{value}</span>
     </div>
-  )
+  );
 }
 
-export function InvestForm({ round, business, terms, defaultShareQuantity, className, ...props }: InvestFormProps) {
-  const { toast, dismiss } = useToast()
-  const currentPath = usePathname()
+export function InvestForm({
+  round,
+  business,
+  terms,
+  defaultShareQuantity,
+  className,
+  ...props
+}: InvestFormProps) {
+  const { toast, dismiss } = useToast();
+  const currentPath = usePathname();
   const embeddedCheckoutFormRef = useRef<EmbeddedCheckoutFormRef>(null);
   const [investmentId, setInvestmentId] = useState<number>(0);
   const [totalCost, setTotalCost] = useState(1);
-  const router = useRouter()
+  const router = useRouter();
   const form = useForm<InvestFormValues>({
     resolver: zodResolver(zCreateInvestmentParams),
     defaultValues: {
@@ -89,13 +123,10 @@ export function InvestForm({ round, business, terms, defaultShareQuantity, class
           description: "Failed to get signature data",
           variant: "destructive",
           action: (
-            <ToastAction
-              altText="Retry"
-              onClick={() => getSignature()}
-            >
+            <ToastAction altText="Retry" onClick={() => getSignature()}>
               Retry
             </ToastAction>
-          )
+          ),
         });
       }
     },
@@ -108,13 +139,14 @@ export function InvestForm({ round, business, terms, defaultShareQuantity, class
   const cardProps = {
     className: cn("w-full max-h-[70vh] overflow-y-auto", className),
     ...props,
-  }
+  };
 
-  const dollarCost = form.watch("share_quantity") * round.price_per_share_usd_cents / 100
+  const dollarCost =
+    (form.watch("share_quantity") * round.price_per_share_usd_cents) / 100;
 
-  const subTotalFormatted = formatCurrency(dollarCost, "USD", "en-US")
-  const feeFormatted = formatCurrency(dollarCost * 0.02, "USD", "en-US")
-  const totalFormatted = formatCurrency(dollarCost * 1.02, "USD", "en-US")
+  const subTotalFormatted = formatCurrency(dollarCost, "USD", "en-US");
+  const feeFormatted = formatCurrency(dollarCost * 0.02, "USD", "en-US");
+  const totalFormatted = formatCurrency(dollarCost * 1.02, "USD", "en-US");
 
   const steps: Step<InvestFormValues>[] = [
     {
@@ -125,16 +157,27 @@ export function InvestForm({ round, business, terms, defaultShareQuantity, class
             <CardTitle>Invest in {business.display_name}</CardTitle>
             <CardDescription>
               Review the round details before proceeding with your investment.
-              By proceeding, you agree to the <Link href={redirects.legal.terms} className="underline text-foreground">Terms of Service</Link> {" "}
-              and <Link href={redirects.legal.privacy} className="underline text-foreground">Privacy Policy</Link>.
+              By proceeding, you agree to the{" "}
+              <Link
+                href={redirects.legal.terms}
+                className="underline text-foreground"
+              >
+                Terms of Service
+              </Link>{" "}
+              and{" "}
+              <Link
+                href={redirects.legal.privacy}
+                className="underline text-foreground"
+              >
+                Privacy Policy
+              </Link>
+              .
             </CardDescription>
           </CardHeader>
           <CardContent className="px-0">
-            <LexicalViewer
-              editorState={round.description}
-            />
+            <LexicalViewer editorState={round.description} />
           </CardContent>
-        </Card >
+        </Card>
       ),
       nextButtonText: "Invest",
     },
@@ -145,26 +188,37 @@ export function InvestForm({ round, business, terms, defaultShareQuantity, class
           <CardHeader>
             <CardTitle>Accept Terms</CardTitle>
             <CardDescription>
-              Review the round terms and conditions before proceeding with your investment.
-              By proceeding, you agree to the <Link href={redirects.legal.terms} className="underline text-foreground">Terms of Service</Link> {" "}
-              and <Link href={redirects.legal.privacy} className="underline text-foreground">Privacy Policy</Link>.
+              Review the round terms and conditions before proceeding with your
+              investment. By proceeding, you agree to the{" "}
+              <Link
+                href={redirects.legal.terms}
+                className="underline text-foreground"
+              >
+                Terms of Service
+              </Link>{" "}
+              and{" "}
+              <Link
+                href={redirects.legal.privacy}
+                className="underline text-foreground"
+              >
+                Privacy Policy
+              </Link>
+              .
             </CardDescription>
           </CardHeader>
           <CardContent className="px-0">
-            <LexicalViewer
-              editorState={terms.content}
-            />
+            <LexicalViewer editorState={terms.content} />
           </CardContent>
-        </Card >
+        </Card>
       ),
       nextButtonText: "Accept",
       onNext: async () => {
         const resp = await getSignature();
         if (!resp?.data) {
-          return false
+          return false;
         }
 
-        return true
+        return true;
       },
     },
     {
@@ -212,7 +266,11 @@ export function InvestForm({ round, business, terms, defaultShareQuantity, class
                     <CardContent className="space-y-3 sm:space-y-2 text-sm">
                       <BreakdownField
                         label="Price per Share"
-                        value={formatCurrency(round.price_per_share_usd_cents / 100, "USD", "en-US")}
+                        value={formatCurrency(
+                          round.price_per_share_usd_cents / 100,
+                          "USD",
+                          "en-US",
+                        )}
                         tooltip="The cost to purchase one share of the business"
                       />
                       <BreakdownField
@@ -232,12 +290,26 @@ export function InvestForm({ round, business, terms, defaultShareQuantity, class
                       />
                       <BreakdownField
                         label="Post-Money Business Valuation"
-                        value={formatCurrency(round.total_business_shares * round.price_per_share_usd_cents / 100, "USD", "en-US")}
+                        value={formatCurrency(
+                          (round.total_business_shares *
+                            round.price_per_share_usd_cents) /
+                            100,
+                          "USD",
+                          "en-US",
+                        )}
                         tooltip="The total value of the business after this investment round"
                       />
                       <BreakdownField
                         label="Business Percentage For Sale"
-                        value={formatNumber((round.total_shares_for_sale / round.total_business_shares) * 100, 1, 5, true, "en-US")}
+                        value={formatNumber(
+                          (round.total_shares_for_sale /
+                            round.total_business_shares) *
+                            100,
+                          1,
+                          5,
+                          true,
+                          "en-US",
+                        )}
                         tooltip="The percentage of the business that is being sold in this round, based on the number of shares you&apos;re purchasing. If a &quot;~&quot; is shown, it means the percentage is rounded to 5 significant digits."
                       />
                     </CardContent>
@@ -275,46 +347,50 @@ export function InvestForm({ round, business, terms, defaultShareQuantity, class
         const session = await getSessionAction();
         if (!session?.data) {
           router.push(redirects.auth.login + `?redirect=${currentPath}`);
-          return false
+          return false;
         }
 
         const resp = await getAccountAction();
         if (!resp?.data) {
           router.push(redirects.auth.createAccount);
-          return false
+          return false;
         }
 
         const identity = await getStripeIdentityAction();
         if (!identity?.data) {
-          const toastId = "verify-toast"
+          const toastId = "verify-toast";
           toast({
             itemID: toastId,
             title: "Hold on!",
-            description: "We need you to log in and verify your identity before you can invest.",
+            description:
+              "We need you to log in and verify your identity before you can invest.",
             action: (
               <VerifyIdentityModalButton
                 variant="secondary"
                 size="sm"
                 onClick={() => dismiss(toastId)}
               />
-            )
-          })
+            ),
+          });
 
-          return false
+          return false;
         }
 
-        const newInvestment = (await upsertInvestmentAction(form.getValues()))?.data;
+        const newInvestment = (await upsertInvestmentAction(form.getValues()))
+          ?.data;
         if (!newInvestment) {
           toast({
             title: "Uh oh!",
             description: "Failed to create investment, please try again.",
             variant: "destructive",
           });
-          return false
+          return false;
         }
 
         setInvestmentId(newInvestment.id);
-        setTotalCost(form.getValues("share_quantity") * round.price_per_share_usd_cents);
+        setTotalCost(
+          form.getValues("share_quantity") * round.price_per_share_usd_cents,
+        );
       },
       onBack: () => {
         form.setValue("terms_accepted_at", "");
@@ -331,7 +407,8 @@ export function InvestForm({ round, business, terms, defaultShareQuantity, class
             <CardHeader>
               <CardTitle>Payment Details</CardTitle>
               <CardDescription>
-                Enter your payment details to complete your investment. You can exit now and come back later to pay.
+                Enter your payment details to complete your investment. You can
+                exit now and come back later to pay.
               </CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-6">
@@ -342,11 +419,13 @@ export function InvestForm({ round, business, terms, defaultShareQuantity, class
                 currency="usd"
                 //TODO: handle the id better
                 investmentId={investmentId}
-                onError={(error) => toast({
-                  title: "Uh oh!",
-                  description: error,
-                  variant: "destructive",
-                })}
+                onError={(error) =>
+                  toast({
+                    title: "Uh oh!",
+                    description: error,
+                    variant: "destructive",
+                  })
+                }
                 onSuccess={() => {
                   toast({
                     title: "Investment Successful",
@@ -374,9 +453,7 @@ export function InvestForm({ round, business, terms, defaultShareQuantity, class
                       The total amount you are investing in shares
                     </TooltipContent>
                   </Tooltip>
-                  <span>
-                    {subTotalFormatted}
-                  </span>
+                  <span>{subTotalFormatted}</span>
                 </p>
                 <p className="text-sm text-muted-foreground flex justify-between">
                   <Tooltip>
@@ -389,23 +466,18 @@ export function InvestForm({ round, business, terms, defaultShareQuantity, class
                       A 2% fee charged by the platform
                     </TooltipContent>
                   </Tooltip>
-                  <span>
-                    {feeFormatted}
-                  </span>
+                  <span>{feeFormatted}</span>
                 </p>
               </TooltipProvider>
             </div>
             <div className="md:absolute pb-4 md:pb-0 bottom-4 font-bold text-sm border-t pt-4 px-6 w-full justify-between flex">
               Total
-              <span>
-                {totalFormatted}
-              </span>
+              <span>{totalFormatted}</span>
             </div>
           </Card>
         </div>
       ),
     },
-
   ];
 
   return (

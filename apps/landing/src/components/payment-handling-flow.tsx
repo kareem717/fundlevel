@@ -8,10 +8,15 @@ import {
 } from "react";
 import { cn } from "@workspace/ui/lib/utils";
 import { AnimatedBeam } from "./animated-beam";
+import { SmallLogoIcon } from "@/components/icons";
 import {
-  SmallLogoIcon,
-} from "@/components/icons";
-import { Banknote, Bitcoin, CreditCard, HandCoins, Landmark, Users } from "lucide-react";
+  Banknote,
+  Bitcoin,
+  CreditCard,
+  HandCoins,
+  Landmark,
+  Users,
+} from "lucide-react";
 
 const Circle: FC<ComponentPropsWithRef<"div">> = ({
   className,
@@ -21,7 +26,7 @@ const Circle: FC<ComponentPropsWithRef<"div">> = ({
   <div
     className={cn(
       "z-10 flex size-12 items-center justify-center rounded-full border-2 bg-background p-3 shadow-[0_0_20px_-12px_rgba(0,0,0,0.8)]",
-      className
+      className,
     )}
     {...props}
   >
@@ -46,7 +51,7 @@ export const PaymentHandlingFlow: FC<ComponentPropsWithoutRef<"div">> = ({
     <div
       className={cn(
         "relative flex w-full items-center justify-center p-10",
-        className
+        className,
       )}
       ref={containerRef}
       {...props}

@@ -1,5 +1,11 @@
 import { LogoutButtons } from "./components/logout-buttons";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@workspace/ui/components/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@workspace/ui/components/card";
 
 export default async function LogoutPage() {
   return (
@@ -7,14 +13,12 @@ export default async function LogoutPage() {
       <Card>
         <CardHeader className="text-center">
           <CardTitle className="text-xl">Are you sure?</CardTitle>
-          <CardDescription>
-            Logout from your account
-          </CardDescription>
+          <CardDescription>Logout from your account</CardDescription>
         </CardHeader>
         <CardContent>
           <LogoutButtons />
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

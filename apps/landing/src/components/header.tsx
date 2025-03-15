@@ -61,7 +61,7 @@ export function Header({
           ? "bg-background/80 backdrop-blur-md shadow-xl mt-4 border"
           : "bg-transparent",
         isOpen && "!bg-background !backdrop-blur-xl",
-        className
+        className,
       )}
       {...props}
     >
@@ -74,9 +74,7 @@ export function Header({
         />
         <div className="flex-row items-center justify-end gap-4 hidden lg:flex">
           <ModeToggle />
-          <BetaRequestLink >
-            Get Started
-          </BetaRequestLink>
+          <BetaRequestLink>Get Started</BetaRequestLink>
         </div>
         <div className="flex flex-row items-center justify-end gap-1 lg:hidden">
           <ModeToggle />
@@ -99,19 +97,15 @@ export function Header({
             direction="column"
             onClick={() => setIsOpen(false)}
           />
-          <div
-            className="flex gap-4 h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
-          >
+          <div className="flex gap-4 h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md">
             <LogoIcon className="w-24 fill-foreground" />
             <p className="text-sm leading-tight text-muted-foreground">
               The best way to manage your investments.
             </p>
-            <BetaRequestLink className="w-full">
-              Get Started
-            </BetaRequestLink>
+            <BetaRequestLink className="w-full">Get Started</BetaRequestLink>
           </div>
         </div>
       )}
     </header>
   );
-};
+}

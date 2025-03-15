@@ -1,19 +1,21 @@
-"use client"
+"use client";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-} from "@workspace/ui/components/sidebar"
-import { SidebarMenu } from "@/components/sidebar/sidebar-menu"
-import { ComponentPropsWithoutRef } from "react"
-import { SidebarUser } from "@/components/sidebar/sidebar-user"
-import { sidebar } from "@/lib/config/sidebar"
-import { SidebarNotification } from "@/components/sidebar/sidebar-notification"
-import { SidebarLogo } from "@/components/sidebar/sidebar-logo"
+} from "@workspace/ui/components/sidebar";
+import { SidebarMenu } from "@/components/sidebar/sidebar-menu";
+import { ComponentPropsWithoutRef } from "react";
+import { SidebarUser } from "@/components/sidebar/sidebar-user";
+import { sidebar } from "@/lib/config/sidebar";
+import { SidebarNotification } from "@/components/sidebar/sidebar-notification";
+import { SidebarLogo } from "@/components/sidebar/sidebar-logo";
 
 //TODO: this doesn't have to be a client component
-export function DashboardSidebar({ ...props }: ComponentPropsWithoutRef<typeof Sidebar>) {
+export function DashboardSidebar({
+  ...props
+}: ComponentPropsWithoutRef<typeof Sidebar>) {
   const { dashboard } = sidebar;
 
   return (
@@ -31,5 +33,5 @@ export function DashboardSidebar({ ...props }: ComponentPropsWithoutRef<typeof S
         <SidebarUser />
       </SidebarFooter>
     </Sidebar>
-  )
+  );
 }

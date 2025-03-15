@@ -1,6 +1,12 @@
-import { ComponentPropsWithoutRef, FC, ReactNode } from "react"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@workspace/ui/components/select"
-import { cn } from "@workspace/ui/lib/utils"
+import { ComponentPropsWithoutRef, FC, ReactNode } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@workspace/ui/components/select";
+import { cn } from "@workspace/ui/lib/utils";
 
 export type Unit = {
   value: string;
@@ -9,16 +15,20 @@ export type Unit = {
 };
 
 interface UnitSelectProps extends ComponentPropsWithoutRef<typeof Select> {
-  availableUnits: Unit[]
-  triggerProps?: ComponentPropsWithoutRef<typeof SelectTrigger>
+  availableUnits: Unit[];
+  triggerProps?: ComponentPropsWithoutRef<typeof SelectTrigger>;
 }
 
-export const UnitSelect: FC<UnitSelectProps> = ({ availableUnits = [], triggerProps, ...props }) => {
+export const UnitSelect: FC<UnitSelectProps> = ({
+  availableUnits = [],
+  triggerProps,
+  ...props
+}) => {
   if (availableUnits.length < 1) {
-    throw new Error("No units provided")
+    throw new Error("No units provided");
   }
 
-  const isSelectDisabled = availableUnits.length === 1
+  const isSelectDisabled = availableUnits.length === 1;
 
   return (
     <Select
@@ -26,14 +36,14 @@ export const UnitSelect: FC<UnitSelectProps> = ({ availableUnits = [], triggerPr
       disabled={isSelectDisabled}
       {...props}
       onValueChange={(value) => {
-        console.log(value)
-        props.onValueChange?.(value)
+        console.log(value);
+        props.onValueChange?.(value);
       }}
     >
       <SelectTrigger
         className={cn(
           "w-min",
-          isSelectDisabled && "opacity-50 cursor-not-allowed"
+          isSelectDisabled && "opacity-50 cursor-not-allowed",
         )}
         {...triggerProps}
       >
@@ -50,6 +60,5 @@ export const UnitSelect: FC<UnitSelectProps> = ({ availableUnits = [], triggerPr
         ))}
       </SelectContent>
     </Select>
-  )
-}
-
+  );
+};

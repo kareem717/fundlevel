@@ -1,18 +1,18 @@
-import { INSERT_EMBED_COMMAND } from '@lexical/react/LexicalAutoEmbedPlugin'
+import { INSERT_EMBED_COMMAND } from "@lexical/react/LexicalAutoEmbedPlugin";
 
-import { useToolbarContext } from '@/components/rich-text/context/toolbar-context'
-import { SelectItem } from '@workspace/ui/components/select'
+import { useToolbarContext } from "@/components/rich-text/context/toolbar-context";
+import { SelectItem } from "@workspace/ui/components/select";
 
-import { EmbedConfigs } from '@/components/rich-text/plugins/embeds/auto-embed-plugin'
+import { EmbedConfigs } from "@/components/rich-text/plugins/embeds/auto-embed-plugin";
 
 export function InsertEmbeds() {
-  const { activeEditor } = useToolbarContext()
+  const { activeEditor } = useToolbarContext();
   return EmbedConfigs.map((embedConfig) => (
     <SelectItem
       key={embedConfig.type}
       value={embedConfig.type}
       onPointerUp={() => {
-        activeEditor.dispatchCommand(INSERT_EMBED_COMMAND, embedConfig.type)
+        activeEditor.dispatchCommand(INSERT_EMBED_COMMAND, embedConfig.type);
       }}
       className=""
     >
@@ -21,5 +21,5 @@ export function InsertEmbeds() {
         <span>{embedConfig.contentName}</span>
       </div>
     </SelectItem>
-  ))
+  ));
 }

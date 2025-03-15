@@ -5,13 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
-import * as React from 'react'
-import { useCallback, useEffect, useMemo, useRef, useState, JSX } from 'react'
+import * as React from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, JSX } from "react";
 
-import { useCollaborationContext } from '@lexical/react/LexicalCollaborationContext'
-import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext'
-import { useLexicalNodeSelection } from '@lexical/react/useLexicalNodeSelection'
-import { mergeRegister } from '@lexical/utils'
+import { useCollaborationContext } from "@lexical/react/LexicalCollaborationContext";
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import { useLexicalNodeSelection } from "@lexical/react/useLexicalNodeSelection";
+import { mergeRegister } from "@lexical/utils";
 import {
   $getNodeByKey,
   $getSelection,
@@ -22,18 +22,25 @@ import {
   KEY_BACKSPACE_COMMAND,
   KEY_DELETE_COMMAND,
   NodeKey,
-} from 'lexical'
+} from "lexical";
 
-import { Button } from '@workspace/ui/components/button'
-import { Input } from '@workspace/ui/components/input'
+import { Button } from "@workspace/ui/components/button";
+import { Input } from "@workspace/ui/components/input";
 
-import type { Option, Options, PollNode } from '@/components/rich-text/nodes/poll-node'
-import { $isPollNode, createPollOption } from '@/components/rich-text/nodes/poll-node'
+import type {
+  Option,
+  Options,
+  PollNode,
+} from "@/components/rich-text/nodes/poll-node";
+import {
+  $isPollNode,
+  createPollOption,
+} from "@/components/rich-text/nodes/poll-node";
 
 function getTotalVotes(options: Options): number {
   return options.reduce((totalVotes, next) => {
-    return totalVotes + next.votes.length
-  }, 0)
+    return totalVotes + next.votes.length;
+  }, 0);
 }
 
 function PollOptionComponent({
@@ -43,30 +50,31 @@ function PollOptionComponent({
   totalVotes,
   withPollNode,
 }: {
-  index: number
-  option: Option
-  options: Options
-  totalVotes: number
+  index: number;
+  option: Option;
+  options: Options;
+  totalVotes: number;
   withPollNode: (
     cb: (pollNode: PollNode) => void,
-    onSelect?: () => void
-  ) => void
+    onSelect?: () => void,
+  ) => void;
 }): JSX.Element {
-  const { clientID } = useCollaborationContext()
-  const checkboxRef = useRef(null)
-  const votesArray = option.votes
-  const checkedIndex = votesArray.indexOf(clientID)
-  const checked = checkedIndex !== -1
-  const votes = votesArray.length
-  const text = option.text
+  const { clientID } = useCollaborationContext();
+  const checkboxRef = useRef(null);
+  const votesArray = option.votes;
+  const checkedIndex = votesArray.indexOf(clientID);
+  const checked = checkedIndex !== -1;
+  const votes = votesArray.length;
+  const text = option.text;
 
   return (
     <div className="mb-2.5 flex flex-row items-center">
       <div
-        className={`relative mr-2.5 flex h-[22px] w-[22px] rounded-md border border-gray-400 ${checked
-          ? 'border-primary bg-primary after:pointer-events-none after:absolute after:left-2 after:top-1 after:m-0 after:block after:h-[9px] after:w-[5px] after:rotate-45 after:cursor-pointer after:border-b-2 after:border-r-2 after:border-solid after:border-white after:content-[""]'
-          : ''
-          }`}
+        className={`relative mr-2.5 flex h-[22px] w-[22px] rounded-md border border-gray-400 ${
+          checked
+            ? 'border-primary bg-primary after:pointer-events-none after:absolute after:left-2 after:top-1 after:m-0 after:block after:h-[9px] after:w-[5px] after:rotate-45 after:cursor-pointer after:border-b-2 after:border-r-2 after:border-solid after:border-white after:content-[""]'
+            : ""
+        }`}
       >
         <input
           ref={checkboxRef}
@@ -74,8 +82,8 @@ function PollOptionComponent({
           type="checkbox"
           onChange={(e) => {
             withPollNode((node) => {
-              node.toggleVote(option, clientID)
-            })
+              node.toggleVote(option, clientID);
+            });
           }}
           checked={checked}
         />
@@ -86,25 +94,25 @@ function PollOptionComponent({
           style={{ width: `${votes === 0 ? 0 : (votes / totalVotes) * 100}%` }}
         />
         <span className="absolute right-4 top-1.5 text-xs text-primary">
-          {votes > 0 && (votes === 1 ? '1 vote' : `${votes} votes`)}
+          {votes > 0 && (votes === 1 ? "1 vote" : `${votes} votes`)}
         </span>
         <Input
           type="text"
           value={text}
           onChange={(e) => {
-            const target = e.target
-            const value = target.value
-            const selectionStart = target.selectionStart
-            const selectionEnd = target.selectionEnd
+            const target = e.target;
+            const value = target.value;
+            const selectionStart = target.selectionStart;
+            const selectionEnd = target.selectionEnd;
             withPollNode(
               (node) => {
-                node.setOptionText(option, value)
+                node.setOptionText(option, value);
               },
               () => {
-                target.selectionStart = selectionStart
-                target.selectionEnd = selectionEnd
-              }
-            )
+                target.selectionStart = selectionStart;
+                target.selectionEnd = selectionEnd;
+              },
+            );
           }}
           placeholder={`Option ${index + 1}`}
         />
@@ -115,12 +123,12 @@ function PollOptionComponent({
         aria-label="Remove"
         onClick={() => {
           withPollNode((node) => {
-            node.deleteOption(option)
-          })
+            node.deleteOption(option);
+          });
         }}
       />
     </div>
-  )
+  );
 }
 
 export default function PollComponent({
@@ -128,98 +136,99 @@ export default function PollComponent({
   options,
   nodeKey,
 }: {
-  nodeKey: NodeKey
-  options: Options
-  question: string
+  nodeKey: NodeKey;
+  options: Options;
+  question: string;
 }): JSX.Element {
-  const [editor] = useLexicalComposerContext()
-  const totalVotes = useMemo(() => getTotalVotes(options), [options])
+  const [editor] = useLexicalComposerContext();
+  const totalVotes = useMemo(() => getTotalVotes(options), [options]);
   const [isSelected, setSelected, clearSelection] =
-    useLexicalNodeSelection(nodeKey)
-  const [selection, setSelection] = useState<BaseSelection | null>(null)
-  const ref = useRef(null)
+    useLexicalNodeSelection(nodeKey);
+  const [selection, setSelection] = useState<BaseSelection | null>(null);
+  const ref = useRef(null);
 
   const $onDelete = useCallback(
     (payload: KeyboardEvent) => {
-      const deleteSelection = $getSelection()
+      const deleteSelection = $getSelection();
       if (isSelected && $isNodeSelection(deleteSelection)) {
-        const event: KeyboardEvent = payload
-        event.preventDefault()
+        const event: KeyboardEvent = payload;
+        event.preventDefault();
         editor.update(() => {
           deleteSelection.getNodes().forEach((node) => {
             if ($isPollNode(node)) {
-              node.remove()
+              node.remove();
             }
-          })
-        })
+          });
+        });
       }
-      return false
+      return false;
     },
-    [editor, isSelected]
-  )
+    [editor, isSelected],
+  );
 
   useEffect(() => {
     return mergeRegister(
       editor.registerUpdateListener(({ editorState }) => {
-        setSelection(editorState.read(() => $getSelection()))
+        setSelection(editorState.read(() => $getSelection()));
       }),
       editor.registerCommand<MouseEvent>(
         CLICK_COMMAND,
         (payload) => {
-          const event = payload
+          const event = payload;
 
           if (event.target === ref.current) {
             if (!event.shiftKey) {
-              clearSelection()
+              clearSelection();
             }
-            setSelected(!isSelected)
-            return true
+            setSelected(!isSelected);
+            return true;
           }
 
-          return false
+          return false;
         },
-        COMMAND_PRIORITY_LOW
+        COMMAND_PRIORITY_LOW,
       ),
       editor.registerCommand(
         KEY_DELETE_COMMAND,
         $onDelete,
-        COMMAND_PRIORITY_LOW
+        COMMAND_PRIORITY_LOW,
       ),
       editor.registerCommand(
         KEY_BACKSPACE_COMMAND,
         $onDelete,
-        COMMAND_PRIORITY_LOW
-      )
-    )
-  }, [clearSelection, editor, isSelected, nodeKey, $onDelete, setSelected])
+        COMMAND_PRIORITY_LOW,
+      ),
+    );
+  }, [clearSelection, editor, isSelected, nodeKey, $onDelete, setSelected]);
 
   const withPollNode = (
     cb: (node: PollNode) => void,
-    onUpdate?: () => void
+    onUpdate?: () => void,
   ): void => {
     editor.update(
       () => {
-        const node = $getNodeByKey(nodeKey)
+        const node = $getNodeByKey(nodeKey);
         if ($isPollNode(node)) {
-          cb(node)
+          cb(node);
         }
       },
-      { onUpdate }
-    )
-  }
+      { onUpdate },
+    );
+  };
 
   const addOption = () => {
     withPollNode((node) => {
-      node.addOption(createPollOption())
-    })
-  }
+      node.addOption(createPollOption());
+    });
+  };
 
-  const isFocused = $isNodeSelection(selection) && isSelected
+  const isFocused = $isNodeSelection(selection) && isSelected;
 
   return (
     <div
-      className={`min-w-[400px] max-w-[600px] cursor-pointer select-none rounded-lg border border-gray-200 bg-background ${isFocused ? 'outline outline-2 outline-primary' : ''
-        }`}
+      className={`min-w-[400px] max-w-[600px] cursor-pointer select-none rounded-lg border border-gray-200 bg-background ${
+        isFocused ? "outline outline-2 outline-primary" : ""
+      }`}
       ref={ref}
     >
       <div className="m-4 cursor-default">
@@ -227,7 +236,7 @@ export default function PollComponent({
           {question}
         </h2>
         {options.map((option, index) => {
-          const key = option.uid
+          const key = option.uid;
           return (
             <PollOptionComponent
               key={key}
@@ -237,7 +246,7 @@ export default function PollComponent({
               options={options}
               totalVotes={totalVotes}
             />
-          )
+          );
         })}
         <div className="flex justify-center">
           <Button onClick={addOption} size="sm">
@@ -246,5 +255,5 @@ export default function PollComponent({
         </div>
       </div>
     </div>
-  )
+  );
 }

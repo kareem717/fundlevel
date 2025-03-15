@@ -1,21 +1,21 @@
-"use client"
+"use client";
 
-import { ComponentPropsWithoutRef, FC, useMemo } from "react"
-import { Label, Pie, PieChart } from "recharts"
+import { ComponentPropsWithoutRef, FC, useMemo } from "react";
+import { Label, Pie, PieChart } from "recharts";
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@workspace/ui/components/chart"
-import { cn } from "@workspace/ui/lib/utils"
+} from "@workspace/ui/components/chart";
+import { cn } from "@workspace/ui/lib/utils";
 
-export const description = "A donut chart with text"
+export const description = "A donut chart with text";
 const chartData = [
   { status: "active", rounds: 287, fill: "var(--color-active)" },
   { status: "successful", rounds: 173, fill: "var(--color-successful)" },
   { status: "failed", rounds: 190, fill: "var(--color-failed)" },
-]
+];
 const chartConfig = {
   rounds: {
     label: "Rounds",
@@ -32,22 +32,26 @@ const chartConfig = {
     label: "Failed",
     color: "hsl(var(--chart-5))",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
+export interface BusinessRaiseRateProps
+  extends Omit<
+    ComponentPropsWithoutRef<typeof ChartContainer>,
+    "config" | "children"
+  > {}
 
-export interface BusinessRaiseRateProps extends Omit<ComponentPropsWithoutRef<typeof ChartContainer>, "config" | "children"> {
-
-};
-
-export const BusinessRaiseRate: FC<BusinessRaiseRateProps> = ({ className, ...props }) => {
+export const BusinessRaiseRate: FC<BusinessRaiseRateProps> = ({
+  className,
+  ...props
+}) => {
   const successRate = useMemo(() => {
-    const total = chartData.reduce((acc, curr) => acc + curr.rounds, 0)
-    const successful = chartData.find(r => r.status === "successful")?.rounds || 0
-    return Math.round((successful / total) * 100)
-  }, [])
+    const total = chartData.reduce((acc, curr) => acc + curr.rounds, 0);
+    const successful =
+      chartData.find((r) => r.status === "successful")?.rounds || 0;
+    return Math.round((successful / total) * 100);
+  }, []);
 
   return (
-
     <ChartContainer
       config={chartConfig}
       className={cn("mx-auto aspect-square max-h-96", className)}
@@ -90,7 +94,7 @@ export const BusinessRaiseRate: FC<BusinessRaiseRateProps> = ({ className, ...pr
                       Successful
                     </tspan>
                   </text>
-                )
+                );
               }
             }}
           />

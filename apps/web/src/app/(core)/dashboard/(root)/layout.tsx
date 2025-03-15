@@ -1,11 +1,20 @@
 import { ReactNode } from "react";
-import { SidebarInset, SidebarProvider } from "@workspace/ui/components/sidebar";
+import {
+  SidebarInset,
+  SidebarProvider,
+} from "@workspace/ui/components/sidebar";
 import { SidebarTrigger } from "@workspace/ui/components/sidebar";
 import { Separator } from "@workspace/ui/components/separator";
 import { DashboardSidebar } from "./components/dashboard-sidebar";
-import { Breadcrumb, BreadcrumbItem, BreadcrumbList } from "@workspace/ui/components/breadcrumb";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbList,
+} from "@workspace/ui/components/breadcrumb";
 
-export default async function RootDashboardLayout({ children }: { children: ReactNode }) {
+export default async function RootDashboardLayout({
+  children,
+}: { children: ReactNode }) {
   return (
     <SidebarProvider>
       <DashboardSidebar />
@@ -23,10 +32,8 @@ export default async function RootDashboardLayout({ children }: { children: Reac
             </Breadcrumb>
           </div>
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          {children}
-        </div>
+        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">{children}</div>
       </SidebarInset>
-    </SidebarProvider >
+    </SidebarProvider>
   );
 }

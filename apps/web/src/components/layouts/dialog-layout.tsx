@@ -1,13 +1,11 @@
-"use client"
+"use client";
 
 import { ComponentPropsWithoutRef, FC, useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  Dialog,
-  DialogContent,
-} from "@workspace/ui/components/dialog";
+import { Dialog, DialogContent } from "@workspace/ui/components/dialog";
 
-export interface DialogLayoutProps extends ComponentPropsWithoutRef<typeof Dialog> {
+export interface DialogLayoutProps
+  extends ComponentPropsWithoutRef<typeof Dialog> {
   children: React.ReactNode;
 }
 
@@ -18,17 +16,13 @@ export const DialogLayout: FC<DialogLayoutProps> = ({ children, ...props }) => {
   const handleClose = () => {
     setOpen(false);
     router.back();
-  }
+  };
 
   return (
-    <Dialog
-      {...props}
-      onOpenChange={handleClose}
-      open={open}
-    >
+    <Dialog {...props} onOpenChange={handleClose} open={open}>
       <DialogContent className="w-min min-w-80 rounded-md">
         {children}
       </DialogContent>
     </Dialog>
-  )
-}
+  );
+};

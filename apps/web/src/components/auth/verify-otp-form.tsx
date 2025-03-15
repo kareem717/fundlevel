@@ -1,36 +1,36 @@
-"use client"
+"use client";
 
-import { cn } from "@/lib/utils"
-import { Button } from "@workspace/ui/components/button"
+import { cn } from "@/lib/utils";
+import { Button } from "@workspace/ui/components/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@workspace/ui/components/card"
-import { ComponentPropsWithoutRef, useState, useEffect } from "react"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { createClient } from "@/lib/utils/supabase/client"
-import { redirects } from "@/lib/config/redirects"
-import { useToast } from "@workspace/ui/hooks/use-toast"
+} from "@workspace/ui/components/card";
+import { ComponentPropsWithoutRef, useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { createClient } from "@/lib/utils/supabase/client";
+import { redirects } from "@/lib/config/redirects";
+import { useToast } from "@workspace/ui/hooks/use-toast";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
-  FormMessage
-} from "@workspace/ui/components/form"
-import { Loader2 } from "lucide-react"
+  FormMessage,
+} from "@workspace/ui/components/form";
+import { Loader2 } from "lucide-react";
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSlot,
-} from "@workspace/ui/components/input-otp"
-import { useRouter } from "next/navigation"
-import { createParser, useQueryState } from "nuqs"
+} from "@workspace/ui/components/input-otp";
+import { useRouter } from "next/navigation";
+import { createParser, useQueryState } from "nuqs";
 
 const formSchema = z.object({
   otp: z.string().length(6, {
@@ -39,22 +39,23 @@ const formSchema = z.object({
   email: z.string().email({
     message: "Invalid email address",
   }),
-})
+});
 
 const parseAsEmail = createParser({
   parse(queryValue) {
-    const isValid = z.string().email().safeParse(queryValue).success
-    if (!isValid) return null
-    return queryValue
+    const isValid = z.string().email().safeParse(queryValue).success;
+    if (!isValid) return null;
+    return queryValue;
   },
   serialize(value) {
-    return value
-  }
-})
+    return value;
+  },
+});
 
-export interface VerifyOTPFormProps extends Omit<ComponentPropsWithoutRef<"form">, "onSubmit"> {
+export interface VerifyOTPFormProps
+  extends Omit<ComponentPropsWithoutRef<"form">, "onSubmit"> {
   redirectTo?: string;
-  replacePath?: boolean
+  replacePath?: boolean;
 }
 
 export function VerifyOTPForm({
@@ -68,10 +69,10 @@ export function VerifyOTPForm({
   const [cooldown, setCooldown] = useState<number>(0);
   const router = useRouter();
   const { toast } = useToast();
-  const [email] = useQueryState("email", parseAsEmail)
+  const [email] = useQueryState("email", parseAsEmail);
 
   if (!email) {
-    throw new Error("Invalid email")
+    throw new Error("Invalid email");
   }
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -80,12 +81,13 @@ export function VerifyOTPForm({
       otp: "",
       email,
     },
-  })
+  });
 
   useEffect(() => {
-    const lastResend = localStorage.getItem('lastResendTime');
+    const lastResend = localStorage.getItem("lastResendTime");
     if (lastResend) {
-      const timeLeft = 30 - Math.floor((Date.now() - parseInt(lastResend)) / 1000);
+      const timeLeft =
+        30 - Math.floor((Date.now() - parseInt(lastResend)) / 1000);
       if (timeLeft > 0) {
         setCooldown(timeLeft);
       }
@@ -96,7 +98,7 @@ export function VerifyOTPForm({
     let timer: ReturnType<typeof setInterval>;
     if (cooldown > 0) {
       timer = setInterval(() => {
-        setCooldown(prev => prev - 1);
+        setCooldown((prev) => prev - 1);
       }, 1000);
     }
     return () => {
@@ -113,7 +115,7 @@ export function VerifyOTPForm({
       token: values.otp,
       type: "email",
       email: values.email,
-    })
+    });
 
     if (error) {
       console.error(error);
@@ -122,7 +124,7 @@ export function VerifyOTPForm({
         title: "Uh oh!",
         description: error.message,
         variant: "destructive",
-      })
+      });
     } else {
       toast({
         title: "Done!",
@@ -155,7 +157,7 @@ export function VerifyOTPForm({
         variant: "destructive",
       });
     } else {
-      localStorage.setItem('lastResendTime', Date.now().toString());
+      localStorage.setItem("lastResendTime", Date.now().toString());
       setCooldown(30);
       toast({
         title: "OTP Resent",
@@ -167,7 +169,11 @@ export function VerifyOTPForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className={cn("grid gap-6", className)} {...props} >
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className={cn("grid gap-6", className)}
+        {...props}
+      >
         <FormField
           control={form.control}
           name="otp"
@@ -211,5 +217,5 @@ export function VerifyOTPForm({
         </div>
       </form>
     </Form>
-  )
+  );
 }

@@ -1,17 +1,23 @@
-"use client"
+"use client";
 
-import { CreateAccountForm } from "@/components/auth/create-account-form"
-import { Dialog, DialogTitle, DialogDescription, DialogHeader, DialogContent } from "@workspace/ui/components/dialog"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { CreateAccountForm } from "@/components/auth/create-account-form";
+import {
+  Dialog,
+  DialogTitle,
+  DialogDescription,
+  DialogHeader,
+  DialogContent,
+} from "@workspace/ui/components/dialog";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function CreateAccountModal() {
-  const router = useRouter()
-  const [open, setOpen] = useState<boolean>(true)
+  const router = useRouter();
+  const [open, setOpen] = useState<boolean>(true);
 
   function closeDialog() {
-    setOpen(false)
-    router.back()
+    setOpen(false);
+    router.back();
   }
 
   return (
@@ -28,5 +34,5 @@ export default function CreateAccountModal() {
         </div>
       </DialogContent>
     </Dialog>
-  )
-} 
+  );
+}

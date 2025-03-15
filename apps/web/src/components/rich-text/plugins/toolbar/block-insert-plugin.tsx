@@ -1,21 +1,21 @@
-import { PlusIcon } from 'lucide-react'
+import { PlusIcon } from "lucide-react";
 
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectTrigger,
-} from '@workspace/ui/components/select'
+} from "@workspace/ui/components/select";
 
-import { useEditorModal } from '@/components/rich-text/editor-hooks/use-modal'
+import { useEditorModal } from "@/components/rich-text/editor-hooks/use-modal";
 
 export function BlockInsertPlugin({ children }: { children: React.ReactNode }) {
-  const [modal] = useEditorModal()
+  const [modal] = useEditorModal();
 
   return (
     <>
       {modal}
-      <Select value={''}>
+      <Select value={""}>
         <SelectTrigger className="h-8 w-min gap-1">
           <PlusIcon className="size-4" />
           <span>Insert</span>
@@ -25,5 +25,5 @@ export function BlockInsertPlugin({ children }: { children: React.ReactNode }) {
         </SelectContent>
       </Select>
     </>
-  )
+  );
 }

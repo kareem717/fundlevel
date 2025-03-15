@@ -1,38 +1,35 @@
-import { cn } from '@workspace/ui/lib/utils'
-import React, { ComponentPropsWithoutRef, FC } from 'react'
-import Balancer from 'react-wrap-balancer'
+import { cn } from "@workspace/ui/lib/utils";
+import React, { ComponentPropsWithoutRef, FC } from "react";
+import Balancer from "react-wrap-balancer";
 
 export type NumberedCard = {
-  title: string
-  description: string
-}
+  title: string;
+  description: string;
+};
 
-export interface NumberedCardProps extends ComponentPropsWithoutRef<'div'> {
-  card: NumberedCard
-  index?: number
+export interface NumberedCardProps extends ComponentPropsWithoutRef<"div"> {
+  card: NumberedCard;
+  index?: number;
 }
 
 export function NumberedCard({
   className,
-  card: {
-    title,
-    description,
-  },
+  card: { title, description },
   index = 1,
   ...props
 }: NumberedCardProps) {
   return (
     <div
       className={cn(
-        'group relative rounded-lg',
-        'p-6 flex flex-col h-[280px] lg:h-[350px] text-foreground gap-8',
-        'bg-secondary',
+        "group relative rounded-lg",
+        "p-6 flex flex-col h-[280px] lg:h-[350px] text-foreground gap-8",
+        "bg-secondary",
         className,
       )}
       {...props}
     >
       <div className="text-sm font-medium text-muted-foreground">
-        {String(index + 1).padStart(2, '0')}
+        {String(index + 1).padStart(2, "0")}
       </div>
       <div className="flex flex-col flex-1 gap-4">
         <h3 className="text-xl font-medium">
@@ -43,5 +40,5 @@ export function NumberedCard({
         </p>
       </div>
     </div>
-  )
+  );
 }

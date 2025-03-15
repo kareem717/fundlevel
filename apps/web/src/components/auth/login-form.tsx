@@ -1,41 +1,44 @@
-"use client"
+"use client";
 
-import { Button } from "@workspace/ui/components/button"
-import { Input } from "@workspace/ui/components/input"
-import { ComponentPropsWithoutRef, useState } from "react"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { createClient } from "@/lib/utils/supabase/client"
-import { redirects } from "@/lib/config/redirects"
+import { Button } from "@workspace/ui/components/button";
+import { Input } from "@workspace/ui/components/input";
+import { ComponentPropsWithoutRef, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { createClient } from "@/lib/utils/supabase/client";
+import { redirects } from "@/lib/config/redirects";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage
-} from "@workspace/ui/components/form"
-import { Loader2 } from "lucide-react"
-import { OAuthButtons } from "./oauth-buttons"
-import { useRouter } from "next/navigation"
-import { useToast } from "@workspace/ui/hooks/use-toast"
-import { cn } from "@workspace/ui/lib/utils"
+  FormMessage,
+} from "@workspace/ui/components/form";
+import { Loader2 } from "lucide-react";
+import { OAuthButtons } from "./oauth-buttons";
+import { useRouter } from "next/navigation";
+import { useToast } from "@workspace/ui/hooks/use-toast";
+import { cn } from "@workspace/ui/lib/utils";
 
 const formSchema = z.object({
-  email: z.string({
-    required_error: "Email is required",
-    message: "Invalid email address.",
-  }).email({
-    message: "Invalid email address.",
-  }).min(1, {
-    message: "Email is required",
-  }),
-})
+  email: z
+    .string({
+      required_error: "Email is required",
+      message: "Invalid email address.",
+    })
+    .email({
+      message: "Invalid email address.",
+    })
+    .min(1, {
+      message: "Email is required",
+    }),
+});
 
 export interface LoginFormProps extends ComponentPropsWithoutRef<"div"> {
   afterOAuthRedirect?: string;
-  replacePath?: boolean
+  replacePath?: boolean;
 }
 
 export function LoginForm({
@@ -52,7 +55,7 @@ export function LoginForm({
     defaultValues: {
       email: "",
     },
-  })
+  });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
@@ -64,7 +67,7 @@ export function LoginForm({
       options: {
         shouldCreateUser: true,
       },
-    })
+    });
 
     if (error) {
       console.error(error);
@@ -89,9 +92,9 @@ export function LoginForm({
   }
 
   return (
-    <div className={cn("grid gap-6", className)} {...props} >
+    <div className={cn("grid gap-6", className)} {...props}>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-6" >
+        <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-6">
           <FormField
             control={form.control}
             name="email"
@@ -121,7 +124,14 @@ export function LoginForm({
           Or continue with
         </span>
       </div>
-      <OAuthButtons providers={[{ provider: "google", icon: "google" }, { provider: "github", icon: "github" }]} disabled={isLoading} redirectTo={afterOAuthRedirect} />
+      <OAuthButtons
+        providers={[
+          { provider: "google", icon: "google" },
+          { provider: "github", icon: "github" },
+        ]}
+        disabled={isLoading}
+        redirectTo={afterOAuthRedirect}
+      />
     </div>
-  )
+  );
 }

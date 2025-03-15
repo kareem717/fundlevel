@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { ColumnDef } from "@tanstack/react-table"
-import { DataTableColumnHeader } from "@/components/data-table"
+import { ColumnDef } from "@tanstack/react-table";
+import { DataTableColumnHeader } from "@/components/data-table";
 import {
   VisibilityState,
   flexRender,
@@ -10,7 +10,7 @@ import {
   getFilteredRowModel,
   getSortedRowModel,
   useReactTable,
-} from "@tanstack/react-table"
+} from "@tanstack/react-table";
 import {
   Table,
   TableBody,
@@ -18,9 +18,15 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@workspace/ui/components/table"
-import { DataTablePagination } from "@/components/data-table"
-import { ComponentPropsWithoutRef, FC, useEffect, useMemo, useState } from "react"
+} from "@workspace/ui/components/table";
+import { DataTablePagination } from "@/components/data-table";
+import {
+  ComponentPropsWithoutRef,
+  FC,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -28,16 +34,21 @@ import {
   DropdownMenuCheckboxItem,
   DropdownMenuItem,
   DropdownMenuLabel,
-} from "@workspace/ui/components/dropdown-menu"
-import { Button } from "@workspace/ui/components/button"
-import { Icons } from "@/components/icons"
-import { BusinessMemberWithRoleNameAndAccount } from "@workspace/sdk"
-import { useAction } from "next-safe-action/hooks"
-import { useBusiness } from "@/components/providers/business-provider"
-import { createParser, parseAsInteger, useQueryState, useQueryStates } from "nuqs"
-import { object } from "yup"
-import { Skeleton } from "@workspace/ui/components/skeleton"
-import { getBusinessMembersByPage } from "@/actions/business"
+} from "@workspace/ui/components/dropdown-menu";
+import { Button } from "@workspace/ui/components/button";
+import { Icons } from "@/components/icons";
+import { BusinessMemberWithRoleNameAndAccount } from "@workspace/sdk";
+import { useAction } from "next-safe-action/hooks";
+import { useBusiness } from "@/components/providers/business-provider";
+import {
+  createParser,
+  parseAsInteger,
+  useQueryState,
+  useQueryStates,
+} from "nuqs";
+import { object } from "yup";
+import { Skeleton } from "@workspace/ui/components/skeleton";
+import { getBusinessMembersByPage } from "@/actions/business";
 
 export const columns: ColumnDef<BusinessMemberWithRoleNameAndAccount>[] = [
   {
@@ -46,8 +57,12 @@ export const columns: ColumnDef<BusinessMemberWithRoleNameAndAccount>[] = [
       <DataTableColumnHeader column={column} title="Name" />
     ),
     cell: ({ row }) => {
-      const { account } = row.original
-      return <div className="text-left font-medium">{account.first_name} {account.last_name}</div>
+      const { account } = row.original;
+      return (
+        <div className="text-left font-medium">
+          {account.first_name} {account.last_name}
+        </div>
+      );
     },
   },
   {
@@ -56,14 +71,14 @@ export const columns: ColumnDef<BusinessMemberWithRoleNameAndAccount>[] = [
       <DataTableColumnHeader column={column} title="Role" />
     ),
     cell: ({ row }) => {
-      const { role } = row.original
-      return <div className="text-left font-medium">{role}</div>
+      const { role } = row.original;
+      return <div className="text-left font-medium">{role}</div>;
     },
   },
   {
     id: "actions",
     cell: ({ row }) => {
-      const investor = row.original
+      const investor = row.original;
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -75,77 +90,92 @@ export const columns: ColumnDef<BusinessMemberWithRoleNameAndAccount>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(investor.account.first_name + " " + investor.account.last_name)}
+              onClick={() =>
+                navigator.clipboard.writeText(
+                  investor.account.first_name +
+                    " " +
+                    investor.account.last_name,
+                )
+              }
             >
               Copy account name
             </DropdownMenuItem>
-
           </DropdownMenuContent>
         </DropdownMenu>
-      )
+      );
     },
   },
-]
+];
 
-interface MemberTableProps extends ComponentPropsWithoutRef<typeof Table> {
-}
+interface MemberTableProps extends ComponentPropsWithoutRef<typeof Table> {}
 
 export const MemberTable: FC<MemberTableProps> = ({ className }) => {
-  const [data, setData] = useState<BusinessMemberWithRoleNameAndAccount[]>([])
+  const [data, setData] = useState<BusinessMemberWithRoleNameAndAccount[]>([]);
 
   const { selectedBusiness } = useBusiness();
 
   if (!selectedBusiness) {
-    throw new Error("MemberTable must be used inside a BusinessContextProvider.")
+    throw new Error(
+      "MemberTable must be used inside a BusinessContextProvider.",
+    );
   }
-
 
   const [pagination, setPagination] = useQueryStates(
     {
       page: parseAsInteger.withDefault(1),
-      pageSize: parseAsInteger.withDefault(10)
+      pageSize: parseAsInteger.withDefault(10),
     },
     {
       urlKeys: {
-        pageSize: 'limit'
-      }
-    }
-  )
-
-
-  const [rowCount, setRowCount] = useState(0)
-
-  const parser = useMemo(() => createParser(
-    {
-      parse: (value: unknown) => object().test(
-        'is-visibility-state',
-        'Must be a valid visibility state object',
-        (value) => {
-          if (typeof value !== 'object' || value === null) return false;
-          return Object.entries(value).every(([_, v]) => typeof v === 'boolean');
-        }
-      ).validateSync(value) as VisibilityState,
-      serialize: (value: VisibilityState) => {
-        return Object.entries(value).map(([key, value]) => `${key}=${value ? 'true' : 'false'}`).join(',')
+        pageSize: "limit",
       },
-    }),
-    []
-  )
+    },
+  );
 
-  const [columnVisibility, setColumnVisibility] = useQueryState('columns', parser.withDefault({}))
+  const [rowCount, setRowCount] = useState(0);
 
-  const [rowSelection, setRowSelection] = useState({})
+  const parser = useMemo(
+    () =>
+      createParser({
+        parse: (value: unknown) =>
+          object()
+            .test(
+              "is-visibility-state",
+              "Must be a valid visibility state object",
+              (value) => {
+                if (typeof value !== "object" || value === null) return false;
+                return Object.entries(value).every(
+                  ([_, v]) => typeof v === "boolean",
+                );
+              },
+            )
+            .validateSync(value) as VisibilityState,
+        serialize: (value: VisibilityState) => {
+          return Object.entries(value)
+            .map(([key, value]) => `${key}=${value ? "true" : "false"}`)
+            .join(",");
+        },
+      }),
+    [],
+  );
+
+  const [columnVisibility, setColumnVisibility] = useQueryState(
+    "columns",
+    parser.withDefault({}),
+  );
+
+  const [rowSelection, setRowSelection] = useState({});
 
   const { execute, isExecuting } = useAction(getBusinessMembersByPage, {
     onSuccess: ({ data }) => {
-      setData(data?.members || [])
-      setRowCount(data?.total || 0)
+      setData(data?.members || []);
+      setRowCount(data?.total || 0);
 
-      console.log('data', data)
+      console.log("data", data);
     },
     onError: (error) => {
       throw error;
-    }
+    },
   });
 
   useEffect(() => {
@@ -153,18 +183,18 @@ export const MemberTable: FC<MemberTableProps> = ({ className }) => {
       businessId: selectedBusiness.id,
       // convert into nuqs state
       pagination,
-    })
-  }, [pagination, selectedBusiness.id, execute])
+    });
+  }, [pagination, selectedBusiness.id, execute]);
 
   const columnsMemo = useMemo(
     () =>
       isExecuting
         ? columns.map((column) => ({
-          ...column,
-          cell: () => <Skeleton className="h-8 w-full" />,
-        }))
+            ...column,
+            cell: () => <Skeleton className="h-8 w-full" />,
+          }))
         : columns,
-    [isExecuting]
+    [isExecuting],
   );
 
   const table = useReactTable({
@@ -177,9 +207,15 @@ export const MemberTable: FC<MemberTableProps> = ({ className }) => {
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
     onPaginationChange: (updater) => {
-      if (typeof updater === 'function') {
-        const newState = updater({ pageIndex: pagination.page - 1, pageSize: pagination.pageSize })
-        setPagination({ page: newState.pageIndex + 1, pageSize: newState.pageSize })
+      if (typeof updater === "function") {
+        const newState = updater({
+          pageIndex: pagination.page - 1,
+          pageSize: pagination.pageSize,
+        });
+        setPagination({
+          page: newState.pageIndex + 1,
+          pageSize: newState.pageSize,
+        });
       }
     },
     rowCount,
@@ -192,7 +228,7 @@ export const MemberTable: FC<MemberTableProps> = ({ className }) => {
       columnVisibility,
       rowSelection,
     },
-  })
+  });
 
   return (
     <div className="flex flex-col gap-4 w-full h-full">
@@ -214,9 +250,7 @@ export const MemberTable: FC<MemberTableProps> = ({ className }) => {
           <DropdownMenuContent align="end">
             {table
               .getAllColumns()
-              .filter(
-                (column) => column.getCanHide()
-              )
+              .filter((column) => column.getCanHide())
               .map((column) => {
                 return (
                   <DropdownMenuCheckboxItem
@@ -229,7 +263,7 @@ export const MemberTable: FC<MemberTableProps> = ({ className }) => {
                   >
                     {column.id}
                   </DropdownMenuCheckboxItem>
-                )
+                );
               })}
           </DropdownMenuContent>
         </DropdownMenu>
@@ -246,11 +280,11 @@ export const MemberTable: FC<MemberTableProps> = ({ className }) => {
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
                     </TableHead>
-                  )
+                  );
                 })}
               </TableRow>
             ))}
@@ -264,14 +298,20 @@ export const MemberTable: FC<MemberTableProps> = ({ className }) => {
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
                     </TableCell>
                   ))}
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
                   No results.
                 </TableCell>
               </TableRow>
@@ -281,5 +321,5 @@ export const MemberTable: FC<MemberTableProps> = ({ className }) => {
       </div>
       <DataTablePagination table={table} />
     </div>
-  )
-}
+  );
+};

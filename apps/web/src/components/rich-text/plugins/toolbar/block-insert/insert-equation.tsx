@@ -1,18 +1,18 @@
-import { DiffIcon } from 'lucide-react'
+import { DiffIcon } from "lucide-react";
 
-import { useToolbarContext } from '@/components/rich-text/context/toolbar-context'
-import { SelectItem } from '@workspace/ui/components/select'
+import { useToolbarContext } from "@/components/rich-text/context/toolbar-context";
+import { SelectItem } from "@workspace/ui/components/select";
 
-import { InsertEquationDialog } from '@/components/rich-text/plugins/equations-plugin'
+import { InsertEquationDialog } from "@/components/rich-text/plugins/equations-plugin";
 
 export function InsertEquation() {
-  const { activeEditor, showModal } = useToolbarContext()
+  const { activeEditor, showModal } = useToolbarContext();
 
   return (
     <SelectItem
       value="equation"
       onPointerUp={() =>
-        showModal('Insert Equation', (onClose) => (
+        showModal("Insert Equation", (onClose) => (
           <InsertEquationDialog activeEditor={activeEditor} onClose={onClose} />
         ))
       }
@@ -23,5 +23,5 @@ export function InsertEquation() {
         <span>Equation</span>
       </div>
     </SelectItem>
-  )
+  );
 }
