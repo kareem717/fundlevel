@@ -1,26 +1,23 @@
-import type { Database } from "@fundlevel/supabase/types";
-import {
-  publicPlaidBankAccountsInsertSchemaSchema,
-  publicPlaidBankAccountsRowSchemaSchema,
-  publicPlaidTransactionsInsertSchemaSchema,
-  publicPlaidTransactionsRowSchemaSchema,
-} from "@fundlevel/supabase/zod";
 import { z } from "@hono/zod-openapi";
 import type { OmitEntityFields } from "./utils";
+import type { Database } from "@fundlevel/supabase/types";
+import { publicPlaidBankAccountsInsertSchemaSchema, publicPlaidTransactionsInsertSchemaSchema, publicPlaidTransactionsRowSchemaSchema } from "@fundlevel/supabase/zod";
+import { publicPlaidBankAccountsRowSchemaSchema } from "@fundlevel/supabase/zod";
 
 export type BankAccount =
   Database["public"]["Tables"]["plaid_bank_accounts"]["Row"];
 
-export type CreateBankAccount = OmitEntityFields<
-  Database["public"]["Tables"]["plaid_bank_accounts"]["Insert"]
->;
+export type CreateBankAccount =
+  Omit<Database["public"]["Tables"]["plaid_bank_accounts"]["Insert"], "id" | "company_id" | "created_at" | "updated_at">
+
+export type UpdateBankAccount =
+  Omit<Database["public"]["Tables"]["plaid_bank_accounts"]["Update"], "id" | "company_id" | "created_at" | "updated_at">
 
 export type BankTransaction =
   Database["public"]["Tables"]["plaid_transactions"]["Row"];
 
-export type CreateBankTransaction = OmitEntityFields<
-  Database["public"]["Tables"]["plaid_transactions"]["Insert"]
->;
+export type CreateBankTransaction =
+  Omit<Database["public"]["Tables"]["plaid_transactions"]["Insert"], "id" | "company_id" | "created_at" | "updated_at">;
 
 export const bankAccountSchema = z
   .object({

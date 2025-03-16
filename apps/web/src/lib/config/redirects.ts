@@ -1,5 +1,5 @@
-const appRoot = "/dashboard";
-const companyRoot = "/linked-account";
+const appRoot = "/";
+export const companyRoot = "/company";
 
 // Helper function moved to top for clarity
 const companyPrefix = (id: number, path?: string) =>
@@ -29,7 +29,7 @@ export const redirects = {
   },
   app: {
     company: (id: number) => ({
-      root: companyPath(id).root(),
+      root: `${companyRoot}/${id}`,
     }),
     root: appRoot,
   },

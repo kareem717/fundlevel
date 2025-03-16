@@ -17,6 +17,8 @@ export interface ICompanyRepository {
 
   createPlaidCredentials(params: CreatePlaidCredentials): Promise<PlaidCredentials>;
   deletePlaidCredentials(companyId: number): Promise<void>;
+  getPlaidCredentialsByItemId(itemId: string): Promise<PlaidCredentials>;
+  updateTransactionCursor(companyId: number, cursor: string): Promise<void>;
   deleteCompany(id: number): Promise<void>;
 
 

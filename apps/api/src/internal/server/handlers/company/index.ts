@@ -12,11 +12,11 @@ import {
   quickBooksCallback,
 } from "./routes";
 import type {
-  ICompanieservice,
+  ICompanyService,
 } from "../../../service";
 
 const companyHandler = (
-  companieservice: ICompanieservice,
+  companyservice: ICompanyService,
 ) => {
   const app = new OpenAPIHono()
     .openapi(createCompanyRoute, async (c) => {
@@ -32,7 +32,7 @@ const companyHandler = (
 
       const params = c.req.valid("json");
 
-      const company = await companieservice.create({
+      const company = await companyservice.create({
         owner_id: account.id,
         ...params,
       });
@@ -50,7 +50,7 @@ const companyHandler = (
         );
       }
 
-      const companies = await companieservice.getByAccountId(
+      const companies = await companyservice.getByAccountId(
         account.id,
       );
       return c.json(companies, 200);
@@ -68,7 +68,7 @@ const companyHandler = (
 
       const { id } = c.req.valid("param");
 
-      const company = await companieservice.getById(id);
+      const company = await companyservice.getById(id);
 
       if (company.owner_id !== account.id) {
         return c.json(
@@ -78,7 +78,7 @@ const companyHandler = (
           403,
         );
       }
-      const linkToken = await companieservice.createPlaidLinkToken({
+      const linkToken = await companyservice.createPlaidLinkToken({
         companyId: company.id,
       });
 
@@ -103,7 +103,7 @@ const companyHandler = (
       const { id } = c.req.valid("param");
       const { redirect_uri } = c.req.valid("query");
 
-      const url = await companieservice.startQuickBooksOAuthFlow(id, redirect_uri);
+      const url = await companyservice.startQuickBooksOAuthFlow(id, redirect_uri);
 
       return c.json(
         {
@@ -113,7 +113,7 @@ const companyHandler = (
       );
     })
     .openapi(quickBooksCallback, async (c) => {
-      const redirectUrl = await companieservice.completeQuickBooksOAuthFlow(
+      const redirectUrl = await companyservice.completeQuickBooksOAuthFlow(
         c.req.valid("query"),
       );
       return c.redirect(redirectUrl);
@@ -130,7 +130,7 @@ const companyHandler = (
       }
 
       const { id } = c.req.valid("param");
-      const company = await companieservice.getById(id);
+      const company = await companyservice.getById(id);
 
       return c.json(company, 200);
     })
@@ -148,7 +148,7 @@ const companyHandler = (
       const { id } = c.req.valid("param");
 
       // Verify the linked account belongs to the user
-      const company = await companieservice.getById(id);
+      const company = await companyservice.getById(id);
       if (!company) {
         return c.json(
           {
@@ -168,7 +168,7 @@ const companyHandler = (
       }
 
       // Delete the credentials
-      await companieservice.deletePlaidCredentials(company.id);
+      await companyservice.deletePlaidCredentials(company.id);
 
       // Return 204 No Content for successful deletion
       return new Response(null, { status: 204 });
@@ -187,7 +187,7 @@ const companyHandler = (
       const { id } = c.req.valid("param");
 
       // Verify the linked account belongs to the user
-      const company = await companieservice.getById(id);
+      const company = await companyservice.getById(id);
       if (!company) {
         return c.json(
           {
@@ -207,7 +207,7 @@ const companyHandler = (
       }
 
       // Delete the linked account and all associated credentials
-      await companieservice.deleteCompany(company.id);
+      await companyservice.deleteCompany(company.id);
 
       // Return 204 No Content for successful deletion
       return new Response(null, { status: 204 });
@@ -227,7 +227,7 @@ const companyHandler = (
       const { public_token } = c.req.valid("query");
 
       // Verify the linked account belongs to the user
-      const company = await companieservice.getById(id);
+      const company = await companyservice.getById(id);
       if (!company) {
         return c.json(
           {
@@ -247,16 +247,17 @@ const companyHandler = (
       }
 
       // Exchange the public token for an access token
-      const credentials = await companieservice.createPlaidCredentials({
+      const { item_id } = await companyservice.createPlaidCredentials({
         companyId: company.id,
         publicToken: public_token,
       });
 
+      await companyservice.syncPlaidTransactions(item_id);
+      await companyservice.syncPlaidBankAccounts(item_id);
+
       return c.json(
-        {
-          access_token: credentials.access_token,
-        },
-        201,
+        { success: true },
+        201
       );
     });
 

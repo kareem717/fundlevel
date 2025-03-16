@@ -9,8 +9,8 @@ import Link from "next/link";
 import { format } from "date-fns";
 import { redirects } from "@/lib/config/redirects";
 import { LinkIcon } from "lucide-react";
-import { CreateCompanyDialog } from "./components/create-linked-account-dialog";
-
+import { CreateCompanyDialog } from "./components/create-company-dialog";
+import { env } from "@/env";
 export default async function DashboardPage() {
   const companies = (await getCompaniesAction())?.data || [];
 

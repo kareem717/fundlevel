@@ -1,4 +1,4 @@
-import { redirects } from "@/lib/config/redirects";
+import { companyRoot, redirects } from "@/lib/config/redirects";
 import { type NextRequest, NextResponse } from "next/server";
 import { getAccountAction, getUserAction } from "@/actions/auth";
 
@@ -12,7 +12,8 @@ export const updateSession = async (request: NextRequest) => {
     if (!user) {
       // Only redirect to login if trying to access protected routes
       if (
-        pathname.includes(redirects.app.root) ||
+        (pathname === redirects.app.root ||
+          pathname.startsWith(`${companyRoot}/`)) ||
         pathname.includes(redirects.auth.logout)
       ) {
         return NextResponse.redirect(
@@ -46,7 +47,8 @@ export const updateSession = async (request: NextRequest) => {
       // Only redirect to createAccount if they're trying to access app routes
       // and are not already on the createAccount page
       if (
-        pathname.includes(redirects.app.root) &&
+        (pathname === redirects.app.root ||
+          pathname.startsWith(`${companyRoot}/`)) &&
         !pathname.includes(redirects.auth.createAccount)
       ) {
         return NextResponse.redirect(

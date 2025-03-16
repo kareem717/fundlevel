@@ -8,7 +8,7 @@ import { z } from "zod";
 export const getQuickBooksAuthUrlAction = actionClientWithAccount
   .schema(z.number().int().positive())
   .action(async ({ ctx: { api }, parsedInput }) => {
-    const req = await api["linked-accounts"][":id"].quickbooks.connect.$get({
+    const req = await api["companies"][":id"].quickbooks.connect.$get({
       param: {
         id: parsedInput,
       },
@@ -30,7 +30,7 @@ export const getQuickBooksAuthUrlAction = actionClientWithAccount
 export const createPlaidLinkTokenAction = actionClientWithAccount
   .schema(z.number().int().positive())
   .action(async ({ ctx: { api }, parsedInput }) => {
-    const req = await api["linked-accounts"][":id"].link.plaid.$get({
+    const req = await api["companies"][":id"].link.plaid.$get({
       param: {
         id: parsedInput,
       },
@@ -55,7 +55,7 @@ export const swapPlaidPublicTokenAction = actionClientWithAccount
     }),
   )
   .action(async ({ ctx: { api }, parsedInput }) => {
-    const req = await api["linked-accounts"][":id"].credentials.plaid.$post({
+    const req = await api["companies"][":id"].credentials.plaid.$post({
       param: {
         id: parsedInput.companyId,
       },
@@ -79,7 +79,7 @@ export const swapPlaidPublicTokenAction = actionClientWithAccount
 export const createCompanyAction = actionClientWithAccount
   .schema(createCompanytSchema)
   .action(async ({ ctx: { api }, parsedInput }) => {
-    const req = await api["linked-accounts"].$post({
+    const req = await api["companies"].$post({
       json: parsedInput,
     });
 
@@ -96,7 +96,7 @@ export const createCompanyAction = actionClientWithAccount
 export const getCompanyByIdAction = actionClientWithAccount
   .schema(z.number().int().positive())
   .action(async ({ ctx: { api }, parsedInput }) => {
-    const req = await api["linked-accounts"][":id"].$get({
+    const req = await api["companies"][":id"].$get({
       param: {
         id: parsedInput,
       },
@@ -114,7 +114,7 @@ export const getCompanyByIdAction = actionClientWithAccount
 
 export const getCompaniesAction = actionClientWithAccount.action(
   async ({ ctx: { api } }) => {
-    const req = await api["linked-accounts"].list.$get();
+    const req = await api["companies"].list.$get();
 
     switch (req.status) {
       case 200:

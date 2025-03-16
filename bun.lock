@@ -15,7 +15,6 @@
         "@fundlevel/supabase": "workspace:*",
         "@hono/swagger-ui": "^0.5.1",
         "@hono/zod-openapi": "^0.19.2",
-        "@mergeapi/merge-node-client": "^1.1.5",
         "@supabase/ssr": "^0.5.2",
         "@supabase/supabase-js": "^2.49.1",
         "@t3-oss/env-core": "^0.12.0",
@@ -362,8 +361,6 @@
     "@langchain/groq": ["@langchain/groq@0.0.15", "", { "dependencies": { "@langchain/core": ">=0.2.16 <0.3.0", "@langchain/openai": "~0.2.4", "groq-sdk": "^0.3.2", "zod": "^3.22.4", "zod-to-json-schema": "^3.22.5" } }, "sha512-JN6dlPNHZEFKc8JjQzO+H7IqCpcE3s/1nYnb+sHxpc22Amr3yxXgp6CvanLhmD+R8Wj1AE1vG7AkzjM8MLtv+A=="],
 
     "@langchain/openai": ["@langchain/openai@0.2.11", "", { "dependencies": { "@langchain/core": ">=0.2.26 <0.3.0", "js-tiktoken": "^1.0.12", "openai": "^4.57.3", "zod": "^3.22.4", "zod-to-json-schema": "^3.22.3" } }, "sha512-Pu8+WfJojCgSf0bAsXb4AjqvcDyAWyoEB1AoCRNACgEnBWZuitz3hLwCo9I+6hAbeg3QJ37g82yKcmvKAg1feg=="],
-
-    "@mergeapi/merge-node-client": ["@mergeapi/merge-node-client@1.1.5", "", { "dependencies": { "form-data": "^4.0.0", "formdata-node": "^6.0.3", "js-base64": "3.7.2", "node-fetch": "2.7.0", "qs": "6.11.2", "readable-stream": "^4.5.2", "url-join": "4.0.1" } }, "sha512-1O+4qkwpOefcIoibk/dOc9h3wmoQKQkxLrbaQ2/pCsw+WUc0DE22J9dg6Yte9ZYRxdtYdCZjc0fEjF7znilZTA=="],
 
     "@mergeapi/react-merge-link": ["@mergeapi/react-merge-link@2.2.1", "", {}, "sha512-sm445/7E3zNqY3XIYARufgJVAsFhvNzLJzDT+MhywEwSN5SNoYC7zc7sXanFjlRkCdB+ut8eRC39a38jVykdMg=="],
 

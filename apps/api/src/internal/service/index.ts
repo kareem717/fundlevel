@@ -1,24 +1,20 @@
-/**
- * Service layer exports
- */
-
 import {
   AccountService,
-  Companieservice,
+  CompanyService,
 } from "./implementations";
 import type {
-  ICompanieservice,
+  ICompanyService,
   IAccountService,
 } from "./interfaces";
 import type { Storage } from "../storage";
 
 export class Service {
   public readonly account: IAccountService;
-  public readonly company: ICompanieservice;
+  public readonly company: ICompanyService;
 
   constructor(storage: Storage) {
     this.account = new AccountService(storage.account);
-    this.company = new Companieservice(storage.company);
+    this.company = new CompanyService(storage.company, storage.accounting);
   }
 }
 

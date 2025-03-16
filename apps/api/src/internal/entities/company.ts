@@ -2,8 +2,8 @@ import type { Database } from "@fundlevel/supabase/types";
 import {
   publicCompaniesInsertSchemaSchema,
   publicCompaniesRowSchemaSchema,
-  publicCompanyPlaidCredentialsInsertSchemaSchema,
-  publicCompanyPlaidCredentialsRowSchemaSchema,
+  publicPlaidCredentialsInsertSchemaSchema,
+  publicPlaidCredentialsRowSchemaSchema,
 } from "@fundlevel/supabase/zod";
 import { z } from "@hono/zod-openapi";
 
@@ -44,14 +44,14 @@ export type CreatePlaidCredentials = Omit<
 
 export const plaidCredentialsSchema = z
   .object({
-    ...publicCompanyPlaidCredentialsRowSchemaSchema.shape,
+    ...publicPlaidCredentialsRowSchemaSchema.shape,
   })
   .openapi("PlaidCredentials")
   .required();
 
 export const createPlaidCredentialsSchema = z
   .object({
-    ...publicCompanyPlaidCredentialsInsertSchemaSchema.omit({
+    ...publicPlaidCredentialsInsertSchemaSchema.omit({
       created_at: true,
       company_id: true,
     }).shape,

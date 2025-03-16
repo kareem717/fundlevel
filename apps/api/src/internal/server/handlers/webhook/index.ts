@@ -3,6 +3,7 @@ import { createHash } from "node:crypto";
 import * as jose from "jose";
 import { Configuration, PlaidApi, PlaidEnvironments } from "plaid";
 import { env } from "../../../../env";
+import type { ICompanyService } from "../../../service";
 
 // Type definition for Plaid verification key
 interface PlaidVerificationKey {
@@ -20,7 +21,7 @@ interface PlaidVerificationKey {
 // Cache for Plaid verification keys to avoid repeated API calls
 const plaidKeyCache: Record<string, PlaidVerificationKey> = {};
 
-const webhookHandler = () => {
+const webhookHandler = (companyService: ICompanyService) => {
   const app = new OpenAPIHono().post("/plaid", async (c) => {
     const plaidConfig = new Configuration({
       basePath: PlaidEnvironments[env.PLAID_ENVIRONMENT],
@@ -54,13 +55,10 @@ const webhookHandler = () => {
         console.error("Failed to verify Plaid webhook");
         return c.json({ error: "Invalid webhook signature" }, 401);
       }
-
-      console.log("Plaid webhook verified successfully");
     }
 
     // Process the webhook payload
     const payload = await c.req.json();
-    console.log("Received Plaid webhook:", payload);
 
     // Implement Plaid webhook handling based on webhook type
     const webhookType = payload.webhook_type as string | undefined;
@@ -76,30 +74,41 @@ const webhookHandler = () => {
       return c.json({ error: "Undefined webhook code" }, 400);
     }
 
-    // let handled = false;
-
-    switch (webhookType) {
-      case "LINK": {
-        // Handle transaction webhooks
-        switch (webhookCode) {
-          case "ITEM_ADD_RESULT": {
+    try {
+      switch (webhookType) {
+        case "ITEM": {
+          // Handle transaction webhooks
+          switch (webhookCode) {
+            case "NEW_ACCOUNTS_AVAILABLE": {
+              const itemId = payload.item_id;
+              await companyService.syncPlaidBankAccounts(itemId);
+            }
           }
+          break;
         }
-        break;
+        case "TRANSACTIONS": {
+          // Handle transaction webhooks
+          switch (webhookCode) {
+            case "SYNC_UPDATES_AVAILABLE": {
+              console.log("HIT");
+              const itemId = payload.item_id;
+              await companyService.syncPlaidTransactions(itemId);
+            }
+          }
+          break;
+        }
+        default: {
+          // Log unhandled webhook types but still return 200
+          console.log(`Unhandled webhook type => TYPE: ${webhookType} CODE: ${webhookCode}`);
+        }
       }
+    } catch (error) {
+      // Log error but still return 200 to acknowledge receipt
+      console.error(`Error processing webhook: ${error}`);
     }
 
-    //TODO: this might be worng for how plaid does webhooks - they don't let you opt out it seems
-    // if (!handled) {
-    return c.json(
-      {
-        error: `Unhandled webhook type => TYPE: ${webhookType} CODE: ${webhookCode}`,
-      },
-      501,
-    );
-    // }
-
-    // return c.json({ success: true }, 200);
+    // Always return 200 OK for Plaid webhooks
+    return c.json({ success: true }, 200);
   });
 
   return app;

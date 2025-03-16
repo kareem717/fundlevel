@@ -1,3 +1,3 @@
 export * from "./account";
-export * from "./quickbooks";
 export * from "./company";
+export * from "./accounting";

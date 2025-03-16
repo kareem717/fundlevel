@@ -122,6 +122,7 @@ export const publicPlaidCredentialsRowSchemaSchema = z.object({
   company_id: z.number(),
   created_at: z.string(),
   item_id: z.string(),
+  transaction_cursor: z.string().nullable(),
   updated_at: z.string().nullable(),
 });
 
@@ -130,6 +131,7 @@ export const publicPlaidCredentialsInsertSchemaSchema = z.object({
   company_id: z.number(),
   created_at: z.string().optional(),
   item_id: z.string(),
+  transaction_cursor: z.string().optional().nullable(),
   updated_at: z.string().optional().nullable(),
 });
 
@@ -138,6 +140,7 @@ export const publicPlaidCredentialsUpdateSchemaSchema = z.object({
   company_id: z.number().optional(),
   created_at: z.string().optional(),
   item_id: z.string().optional(),
+  transaction_cursor: z.string().optional().nullable(),
   updated_at: z.string().optional().nullable(),
 });
 
@@ -152,56 +155,29 @@ export const publicPlaidCredentialsRelationshipsSchemaSchema = z.tuple([
 ]);
 
 export const publicPlaidTransactionsRowSchemaSchema = z.object({
-  account_owner: z.string().nullable(),
-  amount: z.number(),
-  category: z.string().nullable(),
   company_id: z.number(),
+  content: jsonSchema,
   created_at: z.string(),
-  date: z.string(),
   id: z.number(),
-  iso_currency_code: z.string().nullable(),
-  name: z.string(),
-  pending: z.boolean(),
-  plaid_category_id: z.string().nullable(),
-  plaid_transaction_id: z.string(),
-  type: z.string(),
-  unofficial_currency_code: z.string().nullable(),
+  remote_id: z.string(),
   updated_at: z.string().nullable(),
 });
 
 export const publicPlaidTransactionsInsertSchemaSchema = z.object({
-  account_owner: z.string().optional().nullable(),
-  amount: z.number(),
-  category: z.string().optional().nullable(),
   company_id: z.number(),
+  content: jsonSchema,
   created_at: z.string().optional(),
-  date: z.string(),
   id: z.number().optional(),
-  iso_currency_code: z.string().optional().nullable(),
-  name: z.string(),
-  pending: z.boolean(),
-  plaid_category_id: z.string().optional().nullable(),
-  plaid_transaction_id: z.string(),
-  type: z.string(),
-  unofficial_currency_code: z.string().optional().nullable(),
+  remote_id: z.string(),
   updated_at: z.string().optional().nullable(),
 });
 
 export const publicPlaidTransactionsUpdateSchemaSchema = z.object({
-  account_owner: z.string().optional().nullable(),
-  amount: z.number().optional(),
-  category: z.string().optional().nullable(),
   company_id: z.number().optional(),
+  content: jsonSchema.optional(),
   created_at: z.string().optional(),
-  date: z.string().optional(),
   id: z.number().optional(),
-  iso_currency_code: z.string().optional().nullable(),
-  name: z.string().optional(),
-  pending: z.boolean().optional(),
-  plaid_category_id: z.string().optional().nullable(),
-  plaid_transaction_id: z.string().optional(),
-  type: z.string().optional(),
-  unofficial_currency_code: z.string().optional().nullable(),
+  remote_id: z.string().optional(),
   updated_at: z.string().optional().nullable(),
 });
 

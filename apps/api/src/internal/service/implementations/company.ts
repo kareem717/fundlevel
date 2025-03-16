@@ -1,21 +1,23 @@
-import type { ICompanieservice } from "../interfaces";
-import type { ICompanyRepository } from "../../storage";
+import type { ICompanyService } from "../interfaces";
+import type { IAccountingRepository, ICompanyRepository } from "../../storage";
 import {
   Configuration,
   PlaidApi,
   PlaidEnvironments,
   CountryCode,
   Products,
+  type Transaction,
+  type RemovedTransaction,
 } from "plaid";
-import type { CreateCompany, Company } from "../../entities";
+import type { CreateCompany, Company, CreateBankTransaction } from "../../entities";
 import { env } from "../../../env";
 import { randomUUIDv7 } from "bun";
 import axios from "axios";
 
-export class Companieservice implements ICompanieservice {
+export class CompanyService implements ICompanyService {
   private plaid;
   private companyRepo;
-
+  private accountingRepo;
   private qbApiBaseUrl: string;
   private static qbStateExpiresInMs = 60 * 5 * 1000; // 5 minutes;
 
@@ -27,8 +29,9 @@ export class Companieservice implements ICompanieservice {
   private static readonly QUICK_BOOKS_OAUTH_REVOKE_URL =
     "https://developer.api.intuit.com/v2/oauth2/tokens/revoke";
 
-  constructor(companyRepo: ICompanyRepository) {
+  constructor(companyRepo: ICompanyRepository, accountingRepo: IAccountingRepository) {
     this.companyRepo = companyRepo;
+    this.accountingRepo = accountingRepo;
 
     // Set the appropriate base URLs based on environment
     switch (env.QB_ENVIRONMENT) {
@@ -132,19 +135,19 @@ export class Companieservice implements ICompanieservice {
     const params = new URLSearchParams({
       client_id: env.QB_CLIENT_ID,
       response_type: "code",
-      scope: Companieservice.QUICK_BOOKS_OAUTH_SCOPES,
-      redirect_uri: redirectUrl,
+      scope: CompanyService.QUICK_BOOKS_OAUTH_SCOPES,
+      redirect_uri: env.QB_REDIRECT_URI,
       state,
     });
 
-    const auth_url = `${Companieservice.QUICK_BOOKS_OAUTH_BASE_URL}/authorize?${params.toString()}`;
+    const auth_url = `${CompanyService.QUICK_BOOKS_OAUTH_BASE_URL}/authorize?${params.toString()}`;
 
     // Save the state in the session
     await this.companyRepo.createQuickBooksOAuthState(
       {
         state,
         expires_at: new Date(
-          Date.now() + Companieservice.qbStateExpiresInMs,
+          Date.now() + CompanyService.qbStateExpiresInMs,
         ).toISOString(),
         redirect_url: redirectUrl,
         auth_url,
@@ -164,18 +167,18 @@ export class Companieservice implements ICompanieservice {
     const { company_id, redirect_url } = await this.companyRepo.getQuickBooksOAuthState(callbackState);
 
     const response = await axios.post(
-      Companieservice.QUICK_BOOKS_OAUTH_TOKEN_URL,
+      CompanyService.QUICK_BOOKS_OAUTH_TOKEN_URL,
       new URLSearchParams({
         grant_type: "authorization_code",
         code,
-        redirect_uri: redirect_url,
+        redirect_uri: env.QB_REDIRECT_URI,
       }).toString(),
       {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
           Accept: "application/json",
           Authorization: `Basic ${Buffer.from(
-            `${env.PLAID_CLIENT_ID}:${env.QB_CLIENT_SECRET}`,
+            `${env.QB_CLIENT_ID}:${env.QB_CLIENT_SECRET}`,
           ).toString("base64")}`,
         },
       },
@@ -241,7 +244,7 @@ export class Companieservice implements ICompanieservice {
 
     if (creds.access_token_expiry < new Date().toISOString()) {
       const response = await axios.post(
-        Companieservice.QUICK_BOOKS_OAUTH_TOKEN_URL,
+        CompanyService.QUICK_BOOKS_OAUTH_TOKEN_URL,
         new URLSearchParams({
           grant_type: "refresh_token",
           refresh_token: creds.refresh_token,
@@ -287,7 +290,7 @@ export class Companieservice implements ICompanieservice {
     const creds = await this.companyRepo.getQuickBooksOAuthCredentials(companyId);
 
     await axios.post(
-      Companieservice.QUICK_BOOKS_OAUTH_REVOKE_URL,
+      CompanyService.QUICK_BOOKS_OAUTH_REVOKE_URL,
       new URLSearchParams({
         token: creds.refresh_token,
       }).toString(),
@@ -303,5 +306,69 @@ export class Companieservice implements ICompanieservice {
     );
 
     await this.companyRepo.deleteQuickBooksOAuthCredentials(companyId);
+  }
+
+  async syncPlaidBankAccounts(itemId: string) {
+    const creds = await this.companyRepo.getPlaidCredentialsByItemId(itemId);
+
+
+    const plaidResp = await this.plaid.accountsGet({
+      access_token: creds.access_token,
+    })
+
+    const accounts = plaidResp.data.accounts;
+
+    for (const account of accounts) {
+      await this.accountingRepo.upsertBankAccount({
+        remote_id: account.account_id,
+        content: JSON.stringify(account),
+      }, creds.company_id);
+    }
+  }
+
+  async syncPlaidTransactions(itemId: string) {
+    const {
+      access_token,
+      company_id,
+      transaction_cursor
+    } = await this.companyRepo.getPlaidCredentialsByItemId(itemId);
+
+    let cursor = transaction_cursor ?? undefined;
+
+    // New transaction updates since "cursor"
+    let upsert: Array<Transaction> = [];
+    let remove: Array<RemovedTransaction> = [];
+    let hasMore = true;
+
+    // Iterate through each page of new transaction updates for item
+    while (hasMore) {
+      const response = await this.plaid.transactionsSync({
+        access_token,
+        cursor,
+      });
+      const data = response.data;
+
+      // Add this page of results
+      upsert = upsert.concat(data.added, data.modified);
+      remove = remove.concat(data.removed);
+
+      hasMore = data.has_more;
+
+      // Update cursor to the next cursor
+      cursor = data.next_cursor;
+    }
+
+    const convertedUpsert: CreateBankTransaction[] = upsert.map(t => ({
+      remote_id: t.transaction_id,
+      content: JSON.stringify(t),
+    }));
+
+    //TODO: THIS IS SUPER UNSAFE, WE NEED TO USE TXN - MIGRATE TO DRIZZLE
+    await this.accountingRepo.upsertTransaction(convertedUpsert, company_id);
+    await this.accountingRepo.deleteTransactionByRemoteId(remove.map(r => r.transaction_id));
+
+    if (cursor) {
+      await this.companyRepo.updateTransactionCursor(company_id, cursor);
+    }
   }
 }

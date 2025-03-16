@@ -11,7 +11,6 @@
     "@fundlevel/supabase": "workspace:*",
     "@hono/swagger-ui": "^0.5.1",
     "@hono/zod-openapi": "^0.19.2",
-    "@mergeapi/merge-node-client": "^1.1.5",
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.49.1",
     "@t3-oss/env-core": "^0.12.0",

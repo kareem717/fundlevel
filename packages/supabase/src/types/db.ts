@@ -134,6 +134,7 @@ export type Database = {
           company_id: number
           created_at: string
           item_id: string
+          transaction_cursor: string | null
           updated_at: string | null
         }
         Insert: {
@@ -141,6 +142,7 @@ export type Database = {
           company_id: number
           created_at?: string
           item_id: string
+          transaction_cursor?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -148,6 +150,7 @@ export type Database = {
           company_id?: number
           created_at?: string
           item_id?: string
+          transaction_cursor?: string | null
           updated_at?: string | null
         }
         Relationships: [
@@ -162,54 +165,27 @@ export type Database = {
       }
       plaid_transactions: {
         Row: {
-          account_owner: string | null
-          amount: number
-          category: string | null
           company_id: number
+          content: Json
           created_at: string
-          date: string
           id: number
-          iso_currency_code: string | null
-          name: string
-          pending: boolean
-          plaid_category_id: string | null
-          plaid_transaction_id: string
-          type: string
-          unofficial_currency_code: string | null
+          remote_id: string
           updated_at: string | null
         }
         Insert: {
-          account_owner?: string | null
-          amount: number
-          category?: string | null
           company_id: number
+          content: Json
           created_at?: string
-          date: string
           id?: number
-          iso_currency_code?: string | null
-          name: string
-          pending: boolean
-          plaid_category_id?: string | null
-          plaid_transaction_id: string
-          type: string
-          unofficial_currency_code?: string | null
+          remote_id: string
           updated_at?: string | null
         }
         Update: {
-          account_owner?: string | null
-          amount?: number
-          category?: string | null
           company_id?: number
+          content?: Json
           created_at?: string
-          date?: string
           id?: number
-          iso_currency_code?: string | null
-          name?: string
-          pending?: boolean
-          plaid_category_id?: string | null
-          plaid_transaction_id?: string
-          type?: string
-          unofficial_currency_code?: string | null
+          remote_id?: string
           updated_at?: string | null
         }
         Relationships: [

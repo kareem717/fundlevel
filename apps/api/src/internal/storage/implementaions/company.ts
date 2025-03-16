@@ -102,6 +102,21 @@ export class CompanyRepository implements ICompanyRepository {
     }
   }
 
+  async getPlaidCredentialsByItemId(itemId: string) {
+    const { data, error } = await this.sb
+      .from("plaid_credentials")
+      .select()
+      .eq("item_id", itemId)
+      .single();
+
+    if (error) {
+      console.error(error);
+      throw new Error("Failed to get Plaid credentials");
+    }
+
+    return data;
+  }
+
   async getQuickBooksOAuthCredentials(companyId: number) {
     const { data, error } = await this.sb
       .from("quick_books_oauth_credentials")
@@ -153,6 +168,17 @@ export class CompanyRepository implements ICompanyRepository {
     }
 
     return data;
+  }
+
+  async updateTransactionCursor(companyId: number, cursor: string): Promise<void> {
+    const { error } = await this.sb
+      .from("plaid_credentials")
+      .update({ transaction_cursor: cursor })
+      .eq("company_id", companyId);
+
+    if (error) {
+      throw new Error(`Failed to update transaction cursor: ${error.message}`);
+    }
   }
 
   async deleteQuickBooksOAuthCredentials(companyId: number) {

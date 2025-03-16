@@ -5,7 +5,7 @@ import type {
   QuickBooksOAuthCredentials
 } from "../../entities";
 
-export interface ICompanieservice {
+export interface ICompanyService {
   getById(id: number): Promise<Company>;
   getByAccountId(accountId: number): Promise<Company[]>;
   create(params: CreateCompany): Promise<Company>;
@@ -22,6 +22,8 @@ export interface ICompanieservice {
     publicToken: string;
   }): Promise<PlaidCredentials>;
 
+  syncPlaidBankAccounts(itemId: string): Promise<void>;
+  syncPlaidTransactions(itemId: string): Promise<void>;
 
   startQuickBooksOAuthFlow(companyId: number, redirectUrl: string): Promise<string>
   getQuickBooksOAuthCredentials(companyId: number): Promise<QuickBooksOAuthCredentials>

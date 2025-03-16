@@ -171,10 +171,7 @@ export const swapPlaidPublicTokenRoute = createRoute({
       content: {
         "application/json": {
           schema: z.object({
-            access_token: z
-              .string()
-              .min(1)
-              .openapi({ description: "Plaid access token" }),
+            success: z.boolean().openapi({ description: "Success" }),
           }),
         },
       },
