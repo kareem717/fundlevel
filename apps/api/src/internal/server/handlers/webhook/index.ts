@@ -1,12 +1,7 @@
 import { OpenAPIHono } from "@hono/zod-openapi";
-import { createHmac, timingSafeEqual, createHash } from "node:crypto";
+import { createHash } from "node:crypto";
 import * as jose from "jose";
-import type { ILinkedAccountService } from "../../../service";
-import {
-  Configuration,
-  PlaidApi,
-  PlaidEnvironments,
-} from "plaid";
+import { Configuration, PlaidApi, PlaidEnvironments } from "plaid";
 import { env } from "../../../../env";
 
 // Type definition for Plaid verification key
@@ -25,159 +20,87 @@ interface PlaidVerificationKey {
 // Cache for Plaid verification keys to avoid repeated API calls
 const plaidKeyCache: Record<string, PlaidVerificationKey> = {};
 
-const webhookHandler = (linkedAccountService: ILinkedAccountService) => {
-  const app = new OpenAPIHono()
-    .post("/merge", async (c) => {
-      // Get the signature from header
-      const signature = c.req.header("x-merge-webhook-signature");
+const webhookHandler = () => {
+  const app = new OpenAPIHono().post("/plaid", async (c) => {
+    const plaidConfig = new Configuration({
+      basePath: PlaidEnvironments[env.PLAID_ENVIRONMENT],
+      baseOptions: {
+        headers: {
+          "PLAID-CLIENT-ID": env.PLAID_CLIENT_ID,
+          "PLAID-SECRET": env.PLAID_SECRET,
+        },
+      },
+    });
 
-      if (!signature) {
-        console.error("No webhook signature, webhook is not from Merge");
-        return c.json({ error: "Missing webhook signature" }, 401);
-      }
+    const plaid = new PlaidApi(plaidConfig);
 
-      // Get request body as text
-      const rawRequestBody = await c.req.text();
+    // 1. Extract the JWT from the Plaid-Verification header
+    const plaidVerification = c.req.header("plaid-verification");
+    if (!plaidVerification) {
+      console.warn("Plaid webhook received without verification header");
+      // Continue processing - verification is optional according to Plaid
+    } else {
+      // Get the raw body as text for verification
+      const rawBody = await c.req.raw.clone().text();
 
-      // Verify signature
-      const encodedBody = Buffer.from(rawRequestBody, "utf-8").toString();
-      const b64Encoded = createHmac("sha256", env.MERGE_WEBHOOK_SIGNATURE)
-        .update(encodedBody)
-        .digest("base64")
-        .replace(/\+/g, "-")
-        .replace(/\//g, "_");
+      // 2. Verify the webhook
+      const isVerified = await verifyPlaidWebhook(
+        plaidVerification,
+        rawBody,
+        plaid,
+      );
 
-      // Use timingSafeEqual to prevent timing attacks
-      const sigBuffer = Buffer.from(signature);
-      const calcBuffer = Buffer.from(b64Encoded);
-
-      if (
-        !(
-          sigBuffer.length === calcBuffer.length &&
-          timingSafeEqual(sigBuffer, calcBuffer)
-        )
-      ) {
-        console.error("Invalid webhook signature");
+      if (!isVerified) {
+        console.error("Failed to verify Plaid webhook");
         return c.json({ error: "Invalid webhook signature" }, 401);
       }
 
-      // Parse the webhook payload
-      const payload = JSON.parse(rawRequestBody);
+      console.log("Plaid webhook verified successfully");
+    }
 
-      // Handle different webhook event types
-      const eventType = payload.hook.event;
+    // Process the webhook payload
+    const payload = await c.req.json();
+    console.log("Received Plaid webhook:", payload);
 
-      if (!eventType) {
-        console.error("No webhook type in payload");
-        return c.json({ error: "Undefined webhook type" }, 400);
-      }
+    // Implement Plaid webhook handling based on webhook type
+    const webhookType = payload.webhook_type as string | undefined;
+    const webhookCode = payload.webhook_code as string | undefined;
 
-      console.log(
-        `Received Merge webhook: ${eventType} for linked account ${payload.linked_account.end_user_origin_id}`,
-      );
+    if (!webhookType) {
+      console.error("No webhook type in payload");
+      return c.json({ error: "Undefined webhook type" }, 400);
+    }
 
-      switch (eventType) {
-        case "LinkedAccount.linked": {
-          await linkedAccountService.createMergeCredentials({
-            linkedAccountId: payload.linked_account.end_user_origin_id,
-            accountToken: payload.data.account_token,
-          });
-          break;
-        }
-        case "LinkedAccount.deleted": {
-          await linkedAccountService.deleteMergeCredentials(Number(payload.linked_account.end_user_origin_id));
-          break;
-        }
-        default: {
-          console.log("Unhandled webhook event type:", eventType);
-          return c.json({ error: "Unhandled webhook event type" }, 501);
-        }
-      }
+    if (!webhookCode) {
+      console.error("No webhook type in payload");
+      return c.json({ error: "Undefined webhook code" }, 400);
+    }
 
-      // Always respond with 200 to acknowledge receipt
-      return c.json({ success: true }, 200);
-    })
-    .post("/plaid", async (c) => {
-      const plaidConfig = new Configuration({
-        basePath: PlaidEnvironments[env.PLAID_ENVIRONMENT],
-        baseOptions: {
-          headers: {
-            "PLAID-CLIENT-ID": env.PLAID_CLIENT_ID,
-            "PLAID-SECRET": env.PLAID_SECRET,
-          },
-        },
-      });
+    // let handled = false;
 
-      const plaid = new PlaidApi(plaidConfig);
-
-      // 1. Extract the JWT from the Plaid-Verification header
-      const plaidVerification = c.req.header("plaid-verification");
-      if (!plaidVerification) {
-        console.warn("Plaid webhook received without verification header");
-        // Continue processing - verification is optional according to Plaid
-      } else {
-        // Get the raw body as text for verification
-        const rawBody = await c.req.raw.clone().text();
-
-        // 2. Verify the webhook
-        const isVerified = await verifyPlaidWebhook(
-          plaidVerification,
-          rawBody,
-          plaid,
-        );
-
-        if (!isVerified) {
-          console.error("Failed to verify Plaid webhook");
-          return c.json({ error: "Invalid webhook signature" }, 401);
-        }
-
-        console.log("Plaid webhook verified successfully");
-      }
-
-      // Process the webhook payload
-      const payload = await c.req.json();
-      console.log("Received Plaid webhook:", payload);
-
-      // Implement Plaid webhook handling based on webhook type
-      const webhookType = payload.webhook_type as string | undefined;
-      const webhookCode = payload.webhook_code as string | undefined;
-
-      if (!webhookType) {
-        console.error("No webhook type in payload");
-        return c.json({ error: "Undefined webhook type" }, 400);
-      }
-
-      if (!webhookCode) {
-        console.error("No webhook type in payload");
-        return c.json({ error: "Undefined webhook code" }, 400);
-      }
-
-      // let handled = false;
-
-      switch (webhookType) {
-        case "LINK": {
-          // Handle transaction webhooks
-          switch (webhookCode) {
-            case "ITEM_ADD_RESULT": {
-              
-            }
+    switch (webhookType) {
+      case "LINK": {
+        // Handle transaction webhooks
+        switch (webhookCode) {
+          case "ITEM_ADD_RESULT": {
           }
-          break;
         }
+        break;
       }
+    }
 
-      //TODO: this might be worng for how plaid does webhooks - they don't let you opt out it seems
-      // if (!handled) {
-        return c.json(
-          {
-            error: `Unhandled webhook type => TYPE: ${webhookType} CODE: ${webhookCode}`,
-          },
-          501,
-        );
-      // }
+    //TODO: this might be worng for how plaid does webhooks - they don't let you opt out it seems
+    // if (!handled) {
+    return c.json(
+      {
+        error: `Unhandled webhook type => TYPE: ${webhookType} CODE: ${webhookCode}`,
+      },
+      501,
+    );
+    // }
 
-      // return c.json({ success: true }, 200);
-    });
+    // return c.json({ success: true }, 200);
+  });
 
   return app;
 };

@@ -1,19 +1,23 @@
 import { getAccount } from "../../middleware";
 import { OpenAPIHono } from "@hono/zod-openapi";
 import {
-  createMergeLinkTokenRoute,
+  connectQuickBooksRoute,
   getByIdRoute,
   getByAccountIdRoute,
   createPlaidLinkTokenRoute,
   createLinkedAccountRoute,
   deletePlaidCredentialsRoute,
-  deleteMergeCredentialsRoute,
   deleteLinkedAccountRoute,
   swapPlaidPublicTokenRoute,
+  quickBooksCallback,
 } from "./routes";
-import type { ILinkedAccountService } from "../../../service";
+import type {
+  ILinkedAccountService,
+} from "../../../service";
 
-const linkedAccountHandler = (linkedAccountService: ILinkedAccountService) => {
+const linkedAccountHandler = (
+  linkedAccountService: ILinkedAccountService,
+) => {
   const app = new OpenAPIHono()
     .openapi(createLinkedAccountRoute, async (c) => {
       const account = getAccount(c);
@@ -51,43 +55,6 @@ const linkedAccountHandler = (linkedAccountService: ILinkedAccountService) => {
       );
       return c.json(linkedAccounts, 200);
     })
-    .openapi(createMergeLinkTokenRoute, async (c) => {
-      const account = getAccount(c);
-      if (!account) {
-        return c.json(
-          {
-            error: "Account not found",
-          },
-          401,
-        );
-      }
-
-      const { id } = c.req.valid("param");
-
-      const linkedAccount = await linkedAccountService.getById(id);
-      if (linkedAccount.owner_id !== account.id) {
-        return c.json(
-          {
-            error: "Forbidden from managing this account",
-          },
-          403,
-        );
-      }
-
-      const linkToken = await linkedAccountService.createMergeLinkToken({
-        linkedAccountId: linkedAccount.id,
-        //TODO: maybe swap to linkedAccount emails?
-        organizationEmail: linkedAccount.email,
-        organizationName: linkedAccount.name,
-      });
-
-      return c.json(
-        {
-          linkToken,
-        },
-        200,
-      );
-    })
     .openapi(createPlaidLinkTokenRoute, async (c) => {
       const account = getAccount(c);
       if (!account) {
@@ -121,6 +88,35 @@ const linkedAccountHandler = (linkedAccountService: ILinkedAccountService) => {
         },
         200,
       );
+    })
+    .openapi(connectQuickBooksRoute, async (c) => {
+      const account = getAccount(c);
+      if (!account) {
+        return c.json(
+          {
+            error: "Account not found",
+          },
+          401,
+        );
+      }
+
+      const { id } = c.req.valid("param");
+      const { redirect_uri } = c.req.valid("query");
+
+      const url = await linkedAccountService.startQuickBooksOAuthFlow(id, redirect_uri);
+
+      return c.json(
+        {
+          url,
+        },
+        200,
+      );
+    })
+    .openapi(quickBooksCallback, async (c) => {
+      const redirectUrl = await linkedAccountService.completeQuickBooksOAuthFlow(
+        c.req.valid("query"),
+      );
+      return c.redirect(redirectUrl);
     })
     .openapi(getByIdRoute, async (c) => {
       const account = getAccount(c);
@@ -177,45 +173,6 @@ const linkedAccountHandler = (linkedAccountService: ILinkedAccountService) => {
       // Return 204 No Content for successful deletion
       return new Response(null, { status: 204 });
     })
-    .openapi(deleteMergeCredentialsRoute, async (c) => {
-      const account = getAccount(c);
-      if (!account) {
-        return c.json(
-          {
-            error: "Account not found",
-          },
-          401,
-        );
-      }
-
-      const { id } = c.req.valid("param");
-
-      // Verify the linked account belongs to the user
-      const linkedAccount = await linkedAccountService.getById(id);
-      if (!linkedAccount) {
-        return c.json(
-          {
-            error: "Linked account not found",
-          },
-          404,
-        );
-      }
-
-      if (linkedAccount.owner_id !== account.id) {
-        return c.json(
-          {
-            error: "Forbidden from managing this account",
-          },
-          403,
-        );
-      }
-
-      // Delete the credentials
-      await linkedAccountService.deleteMergeCredentials(linkedAccount.id);
-
-      // Return 204 No Content for successful deletion
-      return new Response(null, { status: 204 });
-    })
     .openapi(deleteLinkedAccountRoute, async (c) => {
       const account = getAccount(c);
       if (!account) {
@@ -254,7 +211,8 @@ const linkedAccountHandler = (linkedAccountService: ILinkedAccountService) => {
 
       // Return 204 No Content for successful deletion
       return new Response(null, { status: 204 });
-    }).openapi(swapPlaidPublicTokenRoute, async (c) => {
+    })
+    .openapi(swapPlaidPublicTokenRoute, async (c) => {
       const account = getAccount(c);
       if (!account) {
         return c.json(
@@ -300,7 +258,6 @@ const linkedAccountHandler = (linkedAccountService: ILinkedAccountService) => {
         },
         201,
       );
-
     });
 
   return app;

@@ -1,9 +1,17 @@
 "use client";
 
-import { createPlaidLinkTokenAction, swapPlaidPublicTokenAction } from "@/actions/linked-account";
+import {
+  createPlaidLinkTokenAction,
+  swapPlaidPublicTokenAction,
+} from "@/actions/linked-account";
 import { Button } from "@fundlevel/ui/components/button";
 import { usePlaidLink } from "react-plaid-link";
-import { useCallback, useState, useEffect, type ComponentPropsWithoutRef } from "react";
+import {
+  useCallback,
+  useState,
+  useEffect,
+  type ComponentPropsWithoutRef,
+} from "react";
 import { useToast } from "@fundlevel/ui/hooks/use-toast";
 import { useAction } from "next-safe-action/hooks";
 import { cn } from "@fundlevel/ui/lib/utils";
@@ -22,26 +30,30 @@ export function LinkPlaidButton({
 
   const { toast } = useToast();
 
-
-  const { execute: swap, isExecuting: isSwapping } = useAction(swapPlaidPublicTokenAction, {
-    onSuccess: (result) => {
-      return toast({
-        title: "Done!",
-        description: "Your financial accounts were linked successfully.",
-      });
+  const { execute: swap, isExecuting: isSwapping } = useAction(
+    swapPlaidPublicTokenAction,
+    {
+      onSuccess: (result) => {
+        return toast({
+          title: "Done!",
+          description: "Your financial accounts were linked successfully.",
+        });
+      },
+      onError: () => {
+        return toast({
+          variant: "destructive",
+          title: "Uh oh!",
+          description: "An error occurred, please try again.",
+        });
+      },
     },
-    onError: () => {
-      return toast({
-        variant: "destructive",
-        title: "Uh oh!",
-        description: "An error occurred, please try again.",
-      });
-    },
-  });
+  );
 
   const { open, ready } = usePlaidLink({
     token,
-    onSuccess: (publicToken) => { swap({ linkedAccountId, publicToken, }); },
+    onSuccess: (publicToken) => {
+      swap({ linkedAccountId, publicToken });
+    },
   });
 
   // Use useEffect to call open() after token is set and Link is ready

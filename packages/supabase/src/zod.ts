@@ -108,33 +108,6 @@ export const publicBankAccountVerificationStatusesSchema = z.union([
   z.literal("database_insights_fail"),
 ]);
 
-export const publicInvoiceCurrenciesSchema = z.union([
-  z.literal("USD"),
-  z.literal("EUR"),
-  z.literal("GBP"),
-  z.literal("CAD"),
-  z.literal("AUD"),
-  z.literal("JPY"),
-  z.literal("CNY"),
-  z.literal("INR"),
-  z.literal("BRL"),
-  z.literal("MXN"),
-]);
-
-export const publicInvoiceStatusesSchema = z.union([
-  z.literal("PAID"),
-  z.literal("DRAFT"),
-  z.literal("SUBMITTED"),
-  z.literal("PARTIALLY_PAID"),
-  z.literal("OPEN"),
-  z.literal("VOID"),
-]);
-
-export const publicInvoiceTypesSchema = z.union([
-  z.literal("ACCOUNTS_RECEIVABLE"),
-  z.literal("ACCOUNTS_PAYABLE"),
-]);
-
 export const publicTransactionCodesSchema = z.union([
   z.literal("adjustment"),
   z.literal("atm"),
@@ -200,40 +173,6 @@ export const publicAccountsUpdateSchemaSchema = z.object({
   updated_at: z.string().optional().nullable(),
   user_id: z.string().optional(),
 });
-
-export const publicLinkedAccountMergeCredentialsRowSchemaSchema = z.object({
-  access_token: z.string(),
-  created_at: z.string(),
-  linked_account_id: z.number(),
-  updated_at: z.string().nullable(),
-});
-
-export const publicLinkedAccountMergeCredentialsInsertSchemaSchema = z.object({
-  access_token: z.string(),
-  created_at: z.string().optional(),
-  linked_account_id: z.number(),
-  updated_at: z.string().optional().nullable(),
-});
-
-export const publicLinkedAccountMergeCredentialsUpdateSchemaSchema = z.object({
-  access_token: z.string().optional(),
-  created_at: z.string().optional(),
-  linked_account_id: z.number().optional(),
-  updated_at: z.string().optional().nullable(),
-});
-
-export const publicLinkedAccountMergeCredentialsRelationshipsSchemaSchema =
-  z.tuple([
-    z.object({
-      foreignKeyName: z.literal(
-        "linked_account_merge_credentials_linked_account_id_fkey",
-      ),
-      columns: z.tuple([z.literal("linked_account_id")]),
-      isOneToOne: z.literal(true),
-      referencedRelation: z.literal("linked_accounts"),
-      referencedColumns: z.tuple([z.literal("id")]),
-    }),
-  ]);
 
 export const publicLinkedAccountPlaidCredentialsRowSchemaSchema = z.object({
   access_token: z.string(),
@@ -305,136 +244,6 @@ export const publicLinkedAccountsRelationshipsSchemaSchema = z.tuple([
     columns: z.tuple([z.literal("owner_id")]),
     isOneToOne: z.literal(false),
     referencedRelation: z.literal("accounts"),
-    referencedColumns: z.tuple([z.literal("id")]),
-  }),
-]);
-
-export const publicMergeInvoicesRowSchemaSchema = z.object({
-  accounting_period_id: z.string().nullable(),
-  applied_payments: jsonSchema.nullable(),
-  balance: z.number().nullable(),
-  company_id: z.string().nullable(),
-  contact_id: z.string().nullable(),
-  created_at: z.string(),
-  currency: publicInvoiceCurrenciesSchema.nullable(),
-  due_date: z.string().nullable(),
-  employee_id: z.string().nullable(),
-  exchange_rate: z.string().nullable(),
-  field_mappings: jsonSchema.nullable(),
-  id: z.number(),
-  inclusive_of_tax: z.boolean().nullable(),
-  integration_remote_id: z.string().nullable(),
-  issue_date: z.string().nullable(),
-  line_items: jsonSchema.nullable(),
-  linked_account_id: z.number(),
-  memo: z.string().nullable(),
-  merge_id: z.string().nullable(),
-  modified_at: z.string().nullable(),
-  number: z.string().nullable(),
-  paid_on_date: z.string().nullable(),
-  payment_term_id: z.string().nullable(),
-  payments: jsonSchema.nullable(),
-  purchase_orders: jsonSchema.nullable(),
-  remote_data: jsonSchema.nullable(),
-  remote_fields: jsonSchema.nullable(),
-  remote_updated_at: z.string().nullable(),
-  remote_was_deleted: z.boolean().nullable(),
-  status: publicInvoiceStatusesSchema.nullable(),
-  sub_total: z.number().nullable(),
-  total_amount: z.number().nullable(),
-  total_discount: z.number().nullable(),
-  total_tax_amount: z.number().nullable(),
-  tracking_categories: jsonSchema.nullable(),
-  type: publicInvoiceTypesSchema.nullable(),
-  updated_at: z.string().nullable(),
-});
-
-export const publicMergeInvoicesInsertSchemaSchema = z.object({
-  accounting_period_id: z.string().optional().nullable(),
-  applied_payments: jsonSchema.optional().nullable(),
-  balance: z.number().optional().nullable(),
-  company_id: z.string().optional().nullable(),
-  contact_id: z.string().optional().nullable(),
-  created_at: z.string().optional(),
-  currency: publicInvoiceCurrenciesSchema.optional().nullable(),
-  due_date: z.string().optional().nullable(),
-  employee_id: z.string().optional().nullable(),
-  exchange_rate: z.string().optional().nullable(),
-  field_mappings: jsonSchema.optional().nullable(),
-  id: z.number().optional(),
-  inclusive_of_tax: z.boolean().optional().nullable(),
-  integration_remote_id: z.string().optional().nullable(),
-  issue_date: z.string().optional().nullable(),
-  line_items: jsonSchema.optional().nullable(),
-  linked_account_id: z.number(),
-  memo: z.string().optional().nullable(),
-  merge_id: z.string().optional().nullable(),
-  modified_at: z.string().optional().nullable(),
-  number: z.string().optional().nullable(),
-  paid_on_date: z.string().optional().nullable(),
-  payment_term_id: z.string().optional().nullable(),
-  payments: jsonSchema.optional().nullable(),
-  purchase_orders: jsonSchema.optional().nullable(),
-  remote_data: jsonSchema.optional().nullable(),
-  remote_fields: jsonSchema.optional().nullable(),
-  remote_updated_at: z.string().optional().nullable(),
-  remote_was_deleted: z.boolean().optional().nullable(),
-  status: publicInvoiceStatusesSchema.optional().nullable(),
-  sub_total: z.number().optional().nullable(),
-  total_amount: z.number().optional().nullable(),
-  total_discount: z.number().optional().nullable(),
-  total_tax_amount: z.number().optional().nullable(),
-  tracking_categories: jsonSchema.optional().nullable(),
-  type: publicInvoiceTypesSchema.optional().nullable(),
-  updated_at: z.string().optional().nullable(),
-});
-
-export const publicMergeInvoicesUpdateSchemaSchema = z.object({
-  accounting_period_id: z.string().optional().nullable(),
-  applied_payments: jsonSchema.optional().nullable(),
-  balance: z.number().optional().nullable(),
-  company_id: z.string().optional().nullable(),
-  contact_id: z.string().optional().nullable(),
-  created_at: z.string().optional(),
-  currency: publicInvoiceCurrenciesSchema.optional().nullable(),
-  due_date: z.string().optional().nullable(),
-  employee_id: z.string().optional().nullable(),
-  exchange_rate: z.string().optional().nullable(),
-  field_mappings: jsonSchema.optional().nullable(),
-  id: z.number().optional(),
-  inclusive_of_tax: z.boolean().optional().nullable(),
-  integration_remote_id: z.string().optional().nullable(),
-  issue_date: z.string().optional().nullable(),
-  line_items: jsonSchema.optional().nullable(),
-  linked_account_id: z.number().optional(),
-  memo: z.string().optional().nullable(),
-  merge_id: z.string().optional().nullable(),
-  modified_at: z.string().optional().nullable(),
-  number: z.string().optional().nullable(),
-  paid_on_date: z.string().optional().nullable(),
-  payment_term_id: z.string().optional().nullable(),
-  payments: jsonSchema.optional().nullable(),
-  purchase_orders: jsonSchema.optional().nullable(),
-  remote_data: jsonSchema.optional().nullable(),
-  remote_fields: jsonSchema.optional().nullable(),
-  remote_updated_at: z.string().optional().nullable(),
-  remote_was_deleted: z.boolean().optional().nullable(),
-  status: publicInvoiceStatusesSchema.optional().nullable(),
-  sub_total: z.number().optional().nullable(),
-  total_amount: z.number().optional().nullable(),
-  total_discount: z.number().optional().nullable(),
-  total_tax_amount: z.number().optional().nullable(),
-  tracking_categories: jsonSchema.optional().nullable(),
-  type: publicInvoiceTypesSchema.optional().nullable(),
-  updated_at: z.string().optional().nullable(),
-});
-
-export const publicMergeInvoicesRelationshipsSchemaSchema = z.tuple([
-  z.object({
-    foreignKeyName: z.literal("merge_invoices_linked_account_id_fkey"),
-    columns: z.tuple([z.literal("linked_account_id")]),
-    isOneToOne: z.literal(false),
-    referencedRelation: z.literal("linked_accounts"),
     referencedColumns: z.tuple([z.literal("id")]),
   }),
 ]);
@@ -676,6 +485,88 @@ export const publicPlaidTransactionsRelationshipsSchemaSchema = z.tuple([
     columns: z.tuple([z.literal("plaid_bank_account_id")]),
     isOneToOne: z.literal(false),
     referencedRelation: z.literal("plaid_bank_accounts"),
+    referencedColumns: z.tuple([z.literal("id")]),
+  }),
+]);
+
+export const publicQuickBooksOauthCredentialsRowSchemaSchema = z.object({
+  access_token: z.string(),
+  access_token_expiry: z.string(),
+  created_at: z.string(),
+  linked_account_id: z.number(),
+  realm_id: z.string(),
+  refresh_token: z.string(),
+  refresh_token_expiry: z.string(),
+  updated_at: z.string().nullable(),
+});
+
+export const publicQuickBooksOauthCredentialsInsertSchemaSchema = z.object({
+  access_token: z.string(),
+  access_token_expiry: z.string(),
+  created_at: z.string().optional(),
+  linked_account_id: z.number().optional(),
+  realm_id: z.string(),
+  refresh_token: z.string(),
+  refresh_token_expiry: z.string(),
+  updated_at: z.string().optional().nullable(),
+});
+
+export const publicQuickBooksOauthCredentialsUpdateSchemaSchema = z.object({
+  access_token: z.string().optional(),
+  access_token_expiry: z.string().optional(),
+  created_at: z.string().optional(),
+  linked_account_id: z.number().optional(),
+  realm_id: z.string().optional(),
+  refresh_token: z.string().optional(),
+  refresh_token_expiry: z.string().optional(),
+  updated_at: z.string().optional().nullable(),
+});
+
+export const publicQuickBooksOauthCredentialsRelationshipsSchemaSchema =
+  z.tuple([
+    z.object({
+      foreignKeyName: z.literal(
+        "quick_books_oauth_credentials_linked_account_id_fkey",
+      ),
+      columns: z.tuple([z.literal("linked_account_id")]),
+      isOneToOne: z.literal(true),
+      referencedRelation: z.literal("linked_accounts"),
+      referencedColumns: z.tuple([z.literal("id")]),
+    }),
+  ]);
+
+export const publicQuickBooksOauthStatesRowSchemaSchema = z.object({
+  auth_url: z.string(),
+  expires_at: z.string(),
+  linked_account_id: z.number(),
+  redirect_url: z.string(),
+  state: z.string(),
+});
+
+export const publicQuickBooksOauthStatesInsertSchemaSchema = z.object({
+  auth_url: z.string(),
+  expires_at: z.string(),
+  linked_account_id: z.number().optional(),
+  redirect_url: z.string(),
+  state: z.string(),
+});
+
+export const publicQuickBooksOauthStatesUpdateSchemaSchema = z.object({
+  auth_url: z.string().optional(),
+  expires_at: z.string().optional(),
+  linked_account_id: z.number().optional(),
+  redirect_url: z.string().optional(),
+  state: z.string().optional(),
+});
+
+export const publicQuickBooksOauthStatesRelationshipsSchemaSchema = z.tuple([
+  z.object({
+    foreignKeyName: z.literal(
+      "quick_books_oauth_states_linked_account_id_fkey",
+    ),
+    columns: z.tuple([z.literal("linked_account_id")]),
+    isOneToOne: z.literal(true),
+    referencedRelation: z.literal("linked_accounts"),
     referencedColumns: z.tuple([z.literal("id")]),
   }),
 ]);

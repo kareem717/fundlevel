@@ -71,7 +71,10 @@ export class Server {
 
     this.routes = app
       .route("/accounts", accountHandler(service.account))
-      .route("/linked-accounts", linkedAccountHandler(service.linkedAccount))
-      .route("/webhooks", webhookHandler(service.linkedAccount));
+      .route(
+        "/linked-accounts",
+        linkedAccountHandler(service.linkedAccount),
+      )
+      .route("/webhooks", webhookHandler());
   }
 }

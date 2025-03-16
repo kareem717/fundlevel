@@ -12,18 +12,18 @@ export type CreateAccount = OmitEntityFields<
   Database["public"]["Tables"]["accounts"]["Insert"]
 >;
 
-export const accountSchema =
-  z.object({
-    ...publicAccountsRowSchemaSchema.shape
+export const accountSchema = z
+  .object({
+    ...publicAccountsRowSchemaSchema.shape,
   })
-    .openapi("Account")
-    .required();
+  .openapi("Account")
+  .required();
 
-export const createAccountSchema =
-  z.object({
+export const createAccountSchema = z
+  .object({
     ...publicAccountsInsertSchemaSchema.pick({
       email: true,
-    }).shape
+    }).shape,
   })
-    .openapi("CreateAccountParams")
-    .required();
+  .openapi("CreateAccountParams")
+  .required();

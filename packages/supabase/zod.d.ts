@@ -18,15 +18,6 @@ export type PublicBankAccountTypes = z.infer<
 export type PublicBankAccountVerificationStatuses = z.infer<
   typeof generated.publicBankAccountVerificationStatusesSchema
 >;
-export type PublicInvoiceCurrencies = z.infer<
-  typeof generated.publicInvoiceCurrenciesSchema
->;
-export type PublicInvoiceStatuses = z.infer<
-  typeof generated.publicInvoiceStatusesSchema
->;
-export type PublicInvoiceTypes = z.infer<
-  typeof generated.publicInvoiceTypesSchema
->;
 export type PublicTransactionCodes = z.infer<
   typeof generated.publicTransactionCodesSchema
 >;
@@ -45,18 +36,6 @@ export type PublicAccountsInsertSchema = z.infer<
 >;
 export type PublicAccountsUpdateSchema = z.infer<
   typeof generated.publicAccountsUpdateSchemaSchema
->;
-export type PublicLinkedAccountMergeCredentialsRowSchema = z.infer<
-  typeof generated.publicLinkedAccountMergeCredentialsRowSchemaSchema
->;
-export type PublicLinkedAccountMergeCredentialsInsertSchema = z.infer<
-  typeof generated.publicLinkedAccountMergeCredentialsInsertSchemaSchema
->;
-export type PublicLinkedAccountMergeCredentialsUpdateSchema = z.infer<
-  typeof generated.publicLinkedAccountMergeCredentialsUpdateSchemaSchema
->;
-export type PublicLinkedAccountMergeCredentialsRelationshipsSchema = z.infer<
-  typeof generated.publicLinkedAccountMergeCredentialsRelationshipsSchemaSchema
 >;
 export type PublicLinkedAccountPlaidCredentialsRowSchema = z.infer<
   typeof generated.publicLinkedAccountPlaidCredentialsRowSchemaSchema
@@ -82,18 +61,6 @@ export type PublicLinkedAccountsUpdateSchema = z.infer<
 export type PublicLinkedAccountsRelationshipsSchema = z.infer<
   typeof generated.publicLinkedAccountsRelationshipsSchemaSchema
 >;
-export type PublicMergeInvoicesRowSchema = z.infer<
-  typeof generated.publicMergeInvoicesRowSchemaSchema
->;
-export type PublicMergeInvoicesInsertSchema = z.infer<
-  typeof generated.publicMergeInvoicesInsertSchemaSchema
->;
-export type PublicMergeInvoicesUpdateSchema = z.infer<
-  typeof generated.publicMergeInvoicesUpdateSchemaSchema
->;
-export type PublicMergeInvoicesRelationshipsSchema = z.infer<
-  typeof generated.publicMergeInvoicesRelationshipsSchemaSchema
->;
 export type PublicPlaidBankAccountsRowSchema = z.infer<
   typeof generated.publicPlaidBankAccountsRowSchemaSchema
 >;
@@ -117,4 +84,28 @@ export type PublicPlaidTransactionsUpdateSchema = z.infer<
 >;
 export type PublicPlaidTransactionsRelationshipsSchema = z.infer<
   typeof generated.publicPlaidTransactionsRelationshipsSchemaSchema
+>;
+export type PublicQuickBooksOauthCredentialsRowSchema = z.infer<
+  typeof generated.publicQuickBooksOauthCredentialsRowSchemaSchema
+>;
+export type PublicQuickBooksOauthCredentialsInsertSchema = z.infer<
+  typeof generated.publicQuickBooksOauthCredentialsInsertSchemaSchema
+>;
+export type PublicQuickBooksOauthCredentialsUpdateSchema = z.infer<
+  typeof generated.publicQuickBooksOauthCredentialsUpdateSchemaSchema
+>;
+export type PublicQuickBooksOauthCredentialsRelationshipsSchema = z.infer<
+  typeof generated.publicQuickBooksOauthCredentialsRelationshipsSchemaSchema
+>;
+export type PublicQuickBooksOauthStatesRowSchema = z.infer<
+  typeof generated.publicQuickBooksOauthStatesRowSchemaSchema
+>;
+export type PublicQuickBooksOauthStatesInsertSchema = z.infer<
+  typeof generated.publicQuickBooksOauthStatesInsertSchemaSchema
+>;
+export type PublicQuickBooksOauthStatesUpdateSchema = z.infer<
+  typeof generated.publicQuickBooksOauthStatesUpdateSchemaSchema
+>;
+export type PublicQuickBooksOauthStatesRelationshipsSchema = z.infer<
+  typeof generated.publicQuickBooksOauthStatesRelationshipsSchemaSchema
 >;

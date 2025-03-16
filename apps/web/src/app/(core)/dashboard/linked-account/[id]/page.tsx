@@ -14,13 +14,13 @@ import {
 } from "@fundlevel/ui/components/tabs";
 import { notFound } from "next/navigation";
 import { format } from "date-fns";
-import { LinkMergeButton } from "./components/link-merge-dialog";
-import { LinkPlaidButton } from "./components/link-plaid-dialog";
+import { LinkPlaidButton } from "./components/link-plaid-button";
+import { LinkQuickBooksButton } from "./components/link-quick-books-button";
 
 export default async function LinkedAccountPage({
   params,
-}: { params: { id: string } }) {
-  const { id } = params;
+}: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const parsedId = Number.parseInt(id, 10);
 
   if (Number.isNaN(parsedId)) {
@@ -47,7 +47,7 @@ export default async function LinkedAccountPage({
             linkedAccountId={linkedAccount.id}
             variant="outline"
           />
-          <LinkMergeButton
+          <LinkQuickBooksButton
             linkedAccountId={linkedAccount.id}
             variant="default"
           />

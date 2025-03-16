@@ -1,20 +1,16 @@
-/**
- * Storage layer exports
- */
-
 import type {
   IAccountRepository,
   ILinkedAccountRepository,
 } from "./interfaces";
-import { AccountRepository } from "./implementaions/account";
 import type { Client } from "@fundlevel/supabase/types";
 import { createClient } from "@supabase/supabase-js";
-import { LinkedAccountRepository } from "./implementaions/linked-account";
+import { LinkedAccountRepository, AccountRepository } from "./implementaions";
 import { env } from "../../env";
 
 export class Storage {
   public readonly account: IAccountRepository;
   public readonly linkedAccount: ILinkedAccountRepository;
+
   private readonly sb: Client;
 
   constructor() {

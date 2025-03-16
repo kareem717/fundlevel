@@ -1,38 +1,35 @@
 import type {
   CreateLinkedAccount,
   LinkedAccount,
-  MergeCredentials,
   PlaidCredentials,
+  QuickBooksOAuthCredentials
 } from "../../entities";
 
 export interface ILinkedAccountService {
-  createMergeLinkToken(params: {
-    linkedAccountId: number;
-    organizationEmail: string;
-    organizationName: string;
-  }): Promise<string>;
+  getById(id: number): Promise<LinkedAccount>;
+  getByAccountId(accountId: number): Promise<LinkedAccount[]>;
+  create(params: CreateLinkedAccount): Promise<LinkedAccount>;
+  deleteLinkedAccount(id: number): Promise<void>;
 
-  createMergeCredentials(params: {
-    linkedAccountId: number;
-    accountToken: string;
-  }): Promise<MergeCredentials>;
-
+  deletePlaidCredentials(linkedAccountId: number): Promise<void>;
   createPlaidLinkToken({
     linkedAccountId,
   }: {
     linkedAccountId: number;
   }): Promise<string>;
-
   createPlaidCredentials(params: {
     linkedAccountId: number;
     publicToken: string;
   }): Promise<PlaidCredentials>;
 
-  getById(id: number): Promise<LinkedAccount>;
-  getByAccountId(accountId: number): Promise<LinkedAccount[]>;
-  create(params: CreateLinkedAccount): Promise<LinkedAccount>;
 
-  deletePlaidCredentials(linkedAccountId: number): Promise<void>;
-  deleteMergeCredentials(linkedAccountId: number): Promise<void>;
-  deleteLinkedAccount(id: number): Promise<void>;
+  startQuickBooksOAuthFlow(linkedAccountId: number, redirectUrl: string): Promise<string>
+  getQuickBooksOAuthCredentials(linkedAccountId: number): Promise<QuickBooksOAuthCredentials>
+  deleteQuickBooksOAuthCredentials(linkedAccountId: number): Promise<void>;
+  completeQuickBooksOAuthFlow(params: {
+    code: string;
+    state: string;
+    realmId: string;
+  }): Promise<string>
+  
 }

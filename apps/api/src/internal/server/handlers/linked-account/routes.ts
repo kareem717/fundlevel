@@ -181,10 +181,9 @@ export const swapPlaidPublicTokenRoute = createRoute({
     },
     ...unauthorizedResponse,
     ...notFoundResponse,
-    ...forbiddenResponse
+    ...forbiddenResponse,
   },
 });
-
 
 export const deletePlaidCredentialsRoute = createRoute({
   summary: "Delete Plaid credentials for a linked account",
@@ -193,27 +192,6 @@ export const deletePlaidCredentialsRoute = createRoute({
   security: [bearerAuthSchema],
   method: "delete",
   path: "/{id}/credentials/plaid",
-  request: {
-    params: z.object({
-      id: pathIdParamSchema,
-    }),
-  },
-  responses: {
-    204: {
-      description: "Credentials deleted successfully",
-    },
-    ...unauthorizedResponse,
-    ...notFoundResponse,
-  },
-});
-
-export const deleteMergeCredentialsRoute = createRoute({
-  summary: "Delete Merge credentials for a linked account",
-  operationId: "deleteMergeCredentials",
-  tags: ["Linked Accounts"],
-  security: [bearerAuthSchema],
-  method: "delete",
-  path: "/{id}/credentials/merge",
   request: {
     params: z.object({
       id: pathIdParamSchema,
@@ -246,5 +224,59 @@ export const deleteLinkedAccountRoute = createRoute({
     },
     ...unauthorizedResponse,
     ...notFoundResponse,
+  },
+});
+
+export const connectQuickBooksRoute = createRoute({
+  summary: "Connect QuickBooks account",
+  operationId: "getQuickBooksAuthUrl",
+  tags: ["Linked Accounts"],
+  security: [bearerAuthSchema],
+  method: "get",
+  path: "/{id}/quickbooks/connect",
+  request: {
+    params: z.object({
+      id: pathIdParamSchema,
+    }),
+    query: z.object({
+      redirect_uri: z.string().min(1).openapi({ description: "Redirect URI" }),
+    }),
+  },
+  responses: {
+    200: {
+      description: "Linked account created successfully",
+      content: {
+        "application/json": {
+          schema: z.object({
+            url: z
+              .string()
+              .min(1)
+              .openapi({ description: "QuickBooks auth URL" }),
+          }),
+        },
+      },
+    },
+    ...unauthorizedResponse,
+  },
+});
+
+export const quickBooksCallback = createRoute({
+  method: "get",
+  path: "/quickbooks/callback",
+  tags: ["Linked Accounts"],
+  request: {
+    query: z.object({
+      code: z.string(),
+      realmId: z.string(),
+      state: z.string(),
+    }),
+  },
+  responses: {
+    302: {
+      description: "Successful redirect",
+      headers: z.object({
+        location: z.string(),
+      }),
+    },
   },
 });

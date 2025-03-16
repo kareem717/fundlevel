@@ -58,35 +58,6 @@ export type Database = {
         }
         Relationships: []
       }
-      linked_account_merge_credentials: {
-        Row: {
-          access_token: string
-          created_at: string
-          linked_account_id: number
-          updated_at: string | null
-        }
-        Insert: {
-          access_token: string
-          created_at?: string
-          linked_account_id: number
-          updated_at?: string | null
-        }
-        Update: {
-          access_token?: string
-          created_at?: string
-          linked_account_id?: number
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "linked_account_merge_credentials_linked_account_id_fkey"
-            columns: ["linked_account_id"]
-            isOneToOne: true
-            referencedRelation: "linked_accounts"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       linked_account_plaid_credentials: {
         Row: {
           access_token: string
@@ -150,134 +121,6 @@ export type Database = {
             columns: ["owner_id"]
             isOneToOne: false
             referencedRelation: "accounts"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      merge_invoices: {
-        Row: {
-          accounting_period_id: string | null
-          applied_payments: Json | null
-          balance: number | null
-          company_id: string | null
-          contact_id: string | null
-          created_at: string
-          currency: Database["public"]["Enums"]["invoice_currencies"] | null
-          due_date: string | null
-          employee_id: string | null
-          exchange_rate: string | null
-          field_mappings: Json | null
-          id: number
-          inclusive_of_tax: boolean | null
-          integration_remote_id: string | null
-          issue_date: string | null
-          line_items: Json | null
-          linked_account_id: number
-          memo: string | null
-          merge_id: string | null
-          modified_at: string | null
-          number: string | null
-          paid_on_date: string | null
-          payment_term_id: string | null
-          payments: Json | null
-          purchase_orders: Json | null
-          remote_data: Json | null
-          remote_fields: Json | null
-          remote_updated_at: string | null
-          remote_was_deleted: boolean | null
-          status: Database["public"]["Enums"]["invoice_statuses"] | null
-          sub_total: number | null
-          total_amount: number | null
-          total_discount: number | null
-          total_tax_amount: number | null
-          tracking_categories: Json | null
-          type: Database["public"]["Enums"]["invoice_types"] | null
-          updated_at: string | null
-        }
-        Insert: {
-          accounting_period_id?: string | null
-          applied_payments?: Json | null
-          balance?: number | null
-          company_id?: string | null
-          contact_id?: string | null
-          created_at?: string
-          currency?: Database["public"]["Enums"]["invoice_currencies"] | null
-          due_date?: string | null
-          employee_id?: string | null
-          exchange_rate?: string | null
-          field_mappings?: Json | null
-          id?: number
-          inclusive_of_tax?: boolean | null
-          integration_remote_id?: string | null
-          issue_date?: string | null
-          line_items?: Json | null
-          linked_account_id: number
-          memo?: string | null
-          merge_id?: string | null
-          modified_at?: string | null
-          number?: string | null
-          paid_on_date?: string | null
-          payment_term_id?: string | null
-          payments?: Json | null
-          purchase_orders?: Json | null
-          remote_data?: Json | null
-          remote_fields?: Json | null
-          remote_updated_at?: string | null
-          remote_was_deleted?: boolean | null
-          status?: Database["public"]["Enums"]["invoice_statuses"] | null
-          sub_total?: number | null
-          total_amount?: number | null
-          total_discount?: number | null
-          total_tax_amount?: number | null
-          tracking_categories?: Json | null
-          type?: Database["public"]["Enums"]["invoice_types"] | null
-          updated_at?: string | null
-        }
-        Update: {
-          accounting_period_id?: string | null
-          applied_payments?: Json | null
-          balance?: number | null
-          company_id?: string | null
-          contact_id?: string | null
-          created_at?: string
-          currency?: Database["public"]["Enums"]["invoice_currencies"] | null
-          due_date?: string | null
-          employee_id?: string | null
-          exchange_rate?: string | null
-          field_mappings?: Json | null
-          id?: number
-          inclusive_of_tax?: boolean | null
-          integration_remote_id?: string | null
-          issue_date?: string | null
-          line_items?: Json | null
-          linked_account_id?: number
-          memo?: string | null
-          merge_id?: string | null
-          modified_at?: string | null
-          number?: string | null
-          paid_on_date?: string | null
-          payment_term_id?: string | null
-          payments?: Json | null
-          purchase_orders?: Json | null
-          remote_data?: Json | null
-          remote_fields?: Json | null
-          remote_updated_at?: string | null
-          remote_was_deleted?: boolean | null
-          status?: Database["public"]["Enums"]["invoice_statuses"] | null
-          sub_total?: number | null
-          total_amount?: number | null
-          total_discount?: number | null
-          total_tax_amount?: number | null
-          tracking_categories?: Json | null
-          type?: Database["public"]["Enums"]["invoice_types"] | null
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "merge_invoices_linked_account_id_fkey"
-            columns: ["linked_account_id"]
-            isOneToOne: false
-            referencedRelation: "linked_accounts"
             referencedColumns: ["id"]
           },
         ]
@@ -526,6 +369,79 @@ export type Database = {
           },
         ]
       }
+      quick_books_oauth_credentials: {
+        Row: {
+          access_token: string
+          access_token_expiry: string
+          created_at: string
+          linked_account_id: number
+          realm_id: string
+          refresh_token: string
+          refresh_token_expiry: string
+          updated_at: string | null
+        }
+        Insert: {
+          access_token: string
+          access_token_expiry: string
+          created_at?: string
+          linked_account_id?: number
+          realm_id: string
+          refresh_token: string
+          refresh_token_expiry: string
+          updated_at?: string | null
+        }
+        Update: {
+          access_token?: string
+          access_token_expiry?: string
+          created_at?: string
+          linked_account_id?: number
+          realm_id?: string
+          refresh_token?: string
+          refresh_token_expiry?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quick_books_oauth_credentials_linked_account_id_fkey"
+            columns: ["linked_account_id"]
+            isOneToOne: true
+            referencedRelation: "linked_accounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quick_books_oauth_states: {
+        Row: {
+          auth_url: string
+          expires_at: string
+          linked_account_id: number
+          redirect_url: string
+          state: string
+        }
+        Insert: {
+          auth_url: string
+          expires_at: string
+          linked_account_id?: number
+          redirect_url: string
+          state: string
+        }
+        Update: {
+          auth_url?: string
+          expires_at?: string
+          linked_account_id?: number
+          redirect_url?: string
+          state?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quick_books_oauth_states_linked_account_id_fkey"
+            columns: ["linked_account_id"]
+            isOneToOne: true
+            referencedRelation: "linked_accounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -624,25 +540,6 @@ export type Database = {
         | "database_insights_pass"
         | "database_insights_pass_with_caution"
         | "database_insights_fail"
-      invoice_currencies:
-        | "USD"
-        | "EUR"
-        | "GBP"
-        | "CAD"
-        | "AUD"
-        | "JPY"
-        | "CNY"
-        | "INR"
-        | "BRL"
-        | "MXN"
-      invoice_statuses:
-        | "PAID"
-        | "DRAFT"
-        | "SUBMITTED"
-        | "PARTIALLY_PAID"
-        | "OPEN"
-        | "VOID"
-      invoice_types: "ACCOUNTS_RECEIVABLE" | "ACCOUNTS_PAYABLE"
       transaction_codes:
         | "adjustment"
         | "atm"

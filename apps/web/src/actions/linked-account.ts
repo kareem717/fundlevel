@@ -1,15 +1,19 @@
 "use server";
 
+import { env } from "@/env";
 import { actionClientWithAccount } from "@/lib/safe-action";
 import { createLinkedAccounttSchema } from "@fundlevel/api/types";
 import { z } from "zod";
 
-export const createMergeLinkTokenAction = actionClientWithAccount
+export const getQuickBooksAuthUrlAction = actionClientWithAccount
   .schema(z.number().int().positive())
   .action(async ({ ctx: { api }, parsedInput }) => {
-    const req = await api["linked-accounts"][":id"].link.merge.$get({
+    const req = await api["linked-accounts"][":id"].quickbooks.connect.$get({
       param: {
         id: parsedInput,
+      },
+      query: {
+        redirect_uri: env.NEXT_PUBLIC_APP_URL,
       },
     });
 
@@ -17,7 +21,6 @@ export const createMergeLinkTokenAction = actionClientWithAccount
       case 200:
         return await req.json();
       case 401:
-      case 403:
         throw new Error((await req.json()).error);
       default:
         throw new Error("An error occurred");
@@ -45,11 +48,13 @@ export const createPlaidLinkTokenAction = actionClientWithAccount
   });
 
 export const swapPlaidPublicTokenAction = actionClientWithAccount
-  .schema(z.object({
-    linkedAccountId: z.number().int().positive(),
-    publicToken: z.string(),
-  })).action(async ({ ctx: { api }, parsedInput }) => {
-
+  .schema(
+    z.object({
+      linkedAccountId: z.number().int().positive(),
+      publicToken: z.string(),
+    }),
+  )
+  .action(async ({ ctx: { api }, parsedInput }) => {
     const req = await api["linked-accounts"][":id"].credentials.plaid.$post({
       param: {
         id: parsedInput.linkedAccountId,
@@ -57,7 +62,7 @@ export const swapPlaidPublicTokenAction = actionClientWithAccount
       query: {
         public_token: parsedInput.publicToken,
       },
-    })
+    });
 
     switch (req.status) {
       case 201:
@@ -69,8 +74,7 @@ export const swapPlaidPublicTokenAction = actionClientWithAccount
       default:
         throw new Error("An error occurred");
     }
-  })
-  
+  });
 
 export const createLinkedAccountAction = actionClientWithAccount
   .schema(createLinkedAccounttSchema)

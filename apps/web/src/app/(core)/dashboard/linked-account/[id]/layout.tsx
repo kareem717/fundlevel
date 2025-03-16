@@ -15,9 +15,9 @@ export default async function LinkedAccountLayout({
   params,
 }: {
   children: ReactNode;
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const { id } = params;
+  const { id } = await params;
   const parsedId = Number.parseInt(id, 10);
 
   if (Number.isNaN(parsedId)) {

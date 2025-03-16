@@ -1,49 +1,37 @@
 "use client";
 
-import { createMergeLinkTokenAction } from "@/actions/linked-account";
+import { getQuickBooksAuthUrlAction } from "@/actions/linked-account";
 import { Button } from "@fundlevel/ui/components/button";
-import { useMergeLink } from "@mergeapi/react-merge-link";
-import { useCallback, useEffect, useState, type ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithoutRef } from "react";
 import { useToast } from "@fundlevel/ui/hooks/use-toast";
 import { useAction } from "next-safe-action/hooks";
 import { cn } from "@fundlevel/ui/lib/utils";
 import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
-interface LinkMergeButtonProps extends ComponentPropsWithoutRef<typeof Button> {
+interface LinkQuickBooksButtonProps
+  extends ComponentPropsWithoutRef<typeof Button> {
   linkedAccountId: number;
 }
 
-export function LinkMergeButton({
+export function LinkQuickBooksButton({
   className,
   linkedAccountId,
   ...props
-}: LinkMergeButtonProps) {
-  const [linkToken, setLinkToken] = useState<string>("");
-
+}: LinkQuickBooksButtonProps) {
   const { toast } = useToast();
+  const router = useRouter();
 
-  const { open, isReady } = useMergeLink({
-    linkToken,
-    onSuccess: () => { },
-  });
-
-  // Use useEffect to call open() after token is set and Link is ready
-  useEffect(() => {
-    if (linkToken && isReady) {
-      open();
-    }
-  }, [linkToken, isReady, open]);
-
-  const { execute, isExecuting } = useAction(createMergeLinkTokenAction, {
+  const { execute, isExecuting } = useAction(getQuickBooksAuthUrlAction, {
     onSuccess: (result) => {
-      if (!result?.data?.linkToken) {
+      if (!result?.data?.url) {
         return toast({
           variant: "destructive",
           title: "Uh oh!",
           description: "An error occurred",
         });
       }
-      setLinkToken(result.data.linkToken);
+      router.push(result.data.url);
     },
     onError: () => {
       return toast({
@@ -61,7 +49,7 @@ export function LinkMergeButton({
       {...props}
     >
       {isExecuting && <Loader2 className="mr-2 animate-spin" />}
-      Link Merge
+      Link QuickBooks
     </Button>
   );
 }
