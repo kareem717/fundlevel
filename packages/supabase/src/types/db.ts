@@ -154,6 +154,378 @@ export type Database = {
           },
         ]
       }
+      merge_invoices: {
+        Row: {
+          accounting_period_id: string | null
+          applied_payments: Json | null
+          balance: number | null
+          company_id: string | null
+          contact_id: string | null
+          created_at: string
+          currency: Database["public"]["Enums"]["invoice_currencies"] | null
+          due_date: string | null
+          employee_id: string | null
+          exchange_rate: string | null
+          field_mappings: Json | null
+          id: number
+          inclusive_of_tax: boolean | null
+          integration_remote_id: string | null
+          issue_date: string | null
+          line_items: Json | null
+          linked_account_id: number
+          memo: string | null
+          merge_id: string | null
+          modified_at: string | null
+          number: string | null
+          paid_on_date: string | null
+          payment_term_id: string | null
+          payments: Json | null
+          purchase_orders: Json | null
+          remote_data: Json | null
+          remote_fields: Json | null
+          remote_updated_at: string | null
+          remote_was_deleted: boolean | null
+          status: Database["public"]["Enums"]["invoice_statuses"] | null
+          sub_total: number | null
+          total_amount: number | null
+          total_discount: number | null
+          total_tax_amount: number | null
+          tracking_categories: Json | null
+          type: Database["public"]["Enums"]["invoice_types"] | null
+          updated_at: string | null
+        }
+        Insert: {
+          accounting_period_id?: string | null
+          applied_payments?: Json | null
+          balance?: number | null
+          company_id?: string | null
+          contact_id?: string | null
+          created_at?: string
+          currency?: Database["public"]["Enums"]["invoice_currencies"] | null
+          due_date?: string | null
+          employee_id?: string | null
+          exchange_rate?: string | null
+          field_mappings?: Json | null
+          id?: number
+          inclusive_of_tax?: boolean | null
+          integration_remote_id?: string | null
+          issue_date?: string | null
+          line_items?: Json | null
+          linked_account_id: number
+          memo?: string | null
+          merge_id?: string | null
+          modified_at?: string | null
+          number?: string | null
+          paid_on_date?: string | null
+          payment_term_id?: string | null
+          payments?: Json | null
+          purchase_orders?: Json | null
+          remote_data?: Json | null
+          remote_fields?: Json | null
+          remote_updated_at?: string | null
+          remote_was_deleted?: boolean | null
+          status?: Database["public"]["Enums"]["invoice_statuses"] | null
+          sub_total?: number | null
+          total_amount?: number | null
+          total_discount?: number | null
+          total_tax_amount?: number | null
+          tracking_categories?: Json | null
+          type?: Database["public"]["Enums"]["invoice_types"] | null
+          updated_at?: string | null
+        }
+        Update: {
+          accounting_period_id?: string | null
+          applied_payments?: Json | null
+          balance?: number | null
+          company_id?: string | null
+          contact_id?: string | null
+          created_at?: string
+          currency?: Database["public"]["Enums"]["invoice_currencies"] | null
+          due_date?: string | null
+          employee_id?: string | null
+          exchange_rate?: string | null
+          field_mappings?: Json | null
+          id?: number
+          inclusive_of_tax?: boolean | null
+          integration_remote_id?: string | null
+          issue_date?: string | null
+          line_items?: Json | null
+          linked_account_id?: number
+          memo?: string | null
+          merge_id?: string | null
+          modified_at?: string | null
+          number?: string | null
+          paid_on_date?: string | null
+          payment_term_id?: string | null
+          payments?: Json | null
+          purchase_orders?: Json | null
+          remote_data?: Json | null
+          remote_fields?: Json | null
+          remote_updated_at?: string | null
+          remote_was_deleted?: boolean | null
+          status?: Database["public"]["Enums"]["invoice_statuses"] | null
+          sub_total?: number | null
+          total_amount?: number | null
+          total_discount?: number | null
+          total_tax_amount?: number | null
+          tracking_categories?: Json | null
+          type?: Database["public"]["Enums"]["invoice_types"] | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "merge_invoices_linked_account_id_fkey"
+            columns: ["linked_account_id"]
+            isOneToOne: false
+            referencedRelation: "linked_accounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      plaid_bank_accounts: {
+        Row: {
+          available_balance: number | null
+          balance_last_updated_at: string | null
+          created_at: string
+          current_balance: number | null
+          holder_category:
+            | Database["public"]["Enums"]["bank_account_holder_categories"]
+            | null
+          id: number
+          iso_currency_code: string | null
+          limit_amount: number | null
+          linked_account_id: number
+          mask: string | null
+          name: string
+          official_name: string | null
+          persistant_account_id: string
+          remote_id: string
+          subtype: Database["public"]["Enums"]["bank_account_sub_types"] | null
+          type: Database["public"]["Enums"]["bank_account_types"]
+          unofficial_currency_code: string | null
+          updated_at: string | null
+          verification_name: string
+          verification_status: Database["public"]["Enums"]["bank_account_verification_statuses"]
+        }
+        Insert: {
+          available_balance?: number | null
+          balance_last_updated_at?: string | null
+          created_at?: string
+          current_balance?: number | null
+          holder_category?:
+            | Database["public"]["Enums"]["bank_account_holder_categories"]
+            | null
+          id?: number
+          iso_currency_code?: string | null
+          limit_amount?: number | null
+          linked_account_id: number
+          mask?: string | null
+          name: string
+          official_name?: string | null
+          persistant_account_id: string
+          remote_id: string
+          subtype?: Database["public"]["Enums"]["bank_account_sub_types"] | null
+          type: Database["public"]["Enums"]["bank_account_types"]
+          unofficial_currency_code?: string | null
+          updated_at?: string | null
+          verification_name: string
+          verification_status: Database["public"]["Enums"]["bank_account_verification_statuses"]
+        }
+        Update: {
+          available_balance?: number | null
+          balance_last_updated_at?: string | null
+          created_at?: string
+          current_balance?: number | null
+          holder_category?:
+            | Database["public"]["Enums"]["bank_account_holder_categories"]
+            | null
+          id?: number
+          iso_currency_code?: string | null
+          limit_amount?: number | null
+          linked_account_id?: number
+          mask?: string | null
+          name?: string
+          official_name?: string | null
+          persistant_account_id?: string
+          remote_id?: string
+          subtype?: Database["public"]["Enums"]["bank_account_sub_types"] | null
+          type?: Database["public"]["Enums"]["bank_account_types"]
+          unofficial_currency_code?: string | null
+          updated_at?: string | null
+          verification_name?: string
+          verification_status?: Database["public"]["Enums"]["bank_account_verification_statuses"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plaid_bank_accounts_linked_account_id_fkey"
+            columns: ["linked_account_id"]
+            isOneToOne: false
+            referencedRelation: "linked_accounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      plaid_transactions: {
+        Row: {
+          account_owner: string | null
+          amount: number
+          authorized_date: string | null
+          authorized_datetime: string | null
+          check_number: string | null
+          counterparties: Json | null
+          created_at: string
+          date: string
+          id: number
+          iso_currency_code: string | null
+          location_address: string | null
+          location_city: string | null
+          location_country: string | null
+          location_lat: number | null
+          location_lon: number | null
+          location_postal_code: string | null
+          location_region: string | null
+          location_store_number: string | null
+          logo_url: string | null
+          merchant_entity_id: string | null
+          merchant_name: string | null
+          name: string
+          original_description: string | null
+          payment_channel: Database["public"]["Enums"]["transaction_payment_channels"]
+          payment_meta_by_order_of: string | null
+          payment_meta_payee: string | null
+          payment_meta_payer: string | null
+          payment_meta_payment_method: string | null
+          payment_meta_payment_processor: string | null
+          payment_meta_ppd_id: string | null
+          payment_meta_reference_number: string | null
+          pending: boolean
+          pending_transaction_id: string | null
+          personal_finance_category_confidence_level:
+            | Database["public"]["Enums"]["transaction_personal_finance_category_confidence_levels"]
+            | null
+          personal_finance_category_detailed: string | null
+          personal_finance_category_icon_url: string
+          personal_finance_category_primary: string | null
+          plaid_bank_account_id: number
+          posted_datetime: string | null
+          transaction_code:
+            | Database["public"]["Enums"]["transaction_codes"]
+            | null
+          transaction_id: string
+          unofficial_currency_code: string | null
+          updated_at: string | null
+          website: string | null
+        }
+        Insert: {
+          account_owner?: string | null
+          amount: number
+          authorized_date?: string | null
+          authorized_datetime?: string | null
+          check_number?: string | null
+          counterparties?: Json | null
+          created_at?: string
+          date: string
+          id?: number
+          iso_currency_code?: string | null
+          location_address?: string | null
+          location_city?: string | null
+          location_country?: string | null
+          location_lat?: number | null
+          location_lon?: number | null
+          location_postal_code?: string | null
+          location_region?: string | null
+          location_store_number?: string | null
+          logo_url?: string | null
+          merchant_entity_id?: string | null
+          merchant_name?: string | null
+          name: string
+          original_description?: string | null
+          payment_channel: Database["public"]["Enums"]["transaction_payment_channels"]
+          payment_meta_by_order_of?: string | null
+          payment_meta_payee?: string | null
+          payment_meta_payer?: string | null
+          payment_meta_payment_method?: string | null
+          payment_meta_payment_processor?: string | null
+          payment_meta_ppd_id?: string | null
+          payment_meta_reference_number?: string | null
+          pending: boolean
+          pending_transaction_id?: string | null
+          personal_finance_category_confidence_level?:
+            | Database["public"]["Enums"]["transaction_personal_finance_category_confidence_levels"]
+            | null
+          personal_finance_category_detailed?: string | null
+          personal_finance_category_icon_url: string
+          personal_finance_category_primary?: string | null
+          plaid_bank_account_id: number
+          posted_datetime?: string | null
+          transaction_code?:
+            | Database["public"]["Enums"]["transaction_codes"]
+            | null
+          transaction_id: string
+          unofficial_currency_code?: string | null
+          updated_at?: string | null
+          website?: string | null
+        }
+        Update: {
+          account_owner?: string | null
+          amount?: number
+          authorized_date?: string | null
+          authorized_datetime?: string | null
+          check_number?: string | null
+          counterparties?: Json | null
+          created_at?: string
+          date?: string
+          id?: number
+          iso_currency_code?: string | null
+          location_address?: string | null
+          location_city?: string | null
+          location_country?: string | null
+          location_lat?: number | null
+          location_lon?: number | null
+          location_postal_code?: string | null
+          location_region?: string | null
+          location_store_number?: string | null
+          logo_url?: string | null
+          merchant_entity_id?: string | null
+          merchant_name?: string | null
+          name?: string
+          original_description?: string | null
+          payment_channel?: Database["public"]["Enums"]["transaction_payment_channels"]
+          payment_meta_by_order_of?: string | null
+          payment_meta_payee?: string | null
+          payment_meta_payer?: string | null
+          payment_meta_payment_method?: string | null
+          payment_meta_payment_processor?: string | null
+          payment_meta_ppd_id?: string | null
+          payment_meta_reference_number?: string | null
+          pending?: boolean
+          pending_transaction_id?: string | null
+          personal_finance_category_confidence_level?:
+            | Database["public"]["Enums"]["transaction_personal_finance_category_confidence_levels"]
+            | null
+          personal_finance_category_detailed?: string | null
+          personal_finance_category_icon_url?: string
+          personal_finance_category_primary?: string | null
+          plaid_bank_account_id?: number
+          posted_datetime?: string | null
+          transaction_code?:
+            | Database["public"]["Enums"]["transaction_codes"]
+            | null
+          transaction_id?: string
+          unofficial_currency_code?: string | null
+          updated_at?: string | null
+          website?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plaid_transactions_plaid_bank_account_id_fkey"
+            columns: ["plaid_bank_account_id"]
+            isOneToOne: false
+            referencedRelation: "plaid_bank_accounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -162,7 +534,135 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      bank_account_holder_categories: "business" | "personal" | "unrecognized"
+      bank_account_sub_types:
+        | "401a"
+        | "401k"
+        | "403B"
+        | "457b"
+        | "529"
+        | "auto"
+        | "brokerage"
+        | "business"
+        | "cash isa"
+        | "cash management"
+        | "cd"
+        | "checking"
+        | "commercial"
+        | "construction"
+        | "consumer"
+        | "credit card"
+        | "crypto exchange"
+        | "ebt"
+        | "education savings account"
+        | "fixed annuity"
+        | "gic"
+        | "health reimbursement arrangement"
+        | "home equity"
+        | "hsa"
+        | "isa"
+        | "ira"
+        | "keogh"
+        | "lif"
+        | "life insurance"
+        | "line of credit"
+        | "lira"
+        | "loan"
+        | "lrif"
+        | "lrsp"
+        | "money market"
+        | "mortgage"
+        | "mutual fund"
+        | "non-custodial wallet"
+        | "non-taxable brokerage account"
+        | "other"
+        | "other insurance"
+        | "other annuity"
+        | "overdraft"
+        | "paypal"
+        | "payroll"
+        | "pension"
+        | "prepaid"
+        | "prif"
+        | "profit sharing plan"
+        | "rdsp"
+        | "resp"
+        | "retirement"
+        | "rlif"
+        | "roth"
+        | "roth 401k"
+        | "rrif"
+        | "rrsp"
+        | "sarsep"
+        | "savings"
+        | "sep ira"
+        | "simple ira"
+        | "sipp"
+        | "stock plan"
+        | "student"
+        | "thrift savings plan"
+        | "tfsa"
+        | "trust"
+        | "ugma"
+        | "utma"
+        | "variable annuity"
+      bank_account_types:
+        | "investment"
+        | "credit"
+        | "depository"
+        | "loan"
+        | "brokerage"
+        | "other"
+      bank_account_verification_statuses:
+        | "automatically_verified"
+        | "pending_automatic_verification"
+        | "pending_manual_verification"
+        | "manually_verified"
+        | "verification_expired"
+        | "verification_failed"
+        | "database_matched"
+        | "database_insights_pass"
+        | "database_insights_pass_with_caution"
+        | "database_insights_fail"
+      invoice_currencies:
+        | "USD"
+        | "EUR"
+        | "GBP"
+        | "CAD"
+        | "AUD"
+        | "JPY"
+        | "CNY"
+        | "INR"
+        | "BRL"
+        | "MXN"
+      invoice_statuses:
+        | "PAID"
+        | "DRAFT"
+        | "SUBMITTED"
+        | "PARTIALLY_PAID"
+        | "OPEN"
+        | "VOID"
+      invoice_types: "ACCOUNTS_RECEIVABLE" | "ACCOUNTS_PAYABLE"
+      transaction_codes:
+        | "adjustment"
+        | "atm"
+        | "bank charge"
+        | "bill payment"
+        | "cash"
+        | "cashback"
+        | "cheque"
+        | "direct debit"
+        | "interest"
+        | "purchase"
+        | "standing order"
+        | "transfer"
+      transaction_payment_channels: "online" | "in_store" | "other"
+      transaction_personal_finance_category_confidence_levels:
+        | "very_high"
+        | "high"
+        | "medium"
+        | "low"
+        | "unkown"
     }
     CompositeTypes: {
       [_ in never]: never

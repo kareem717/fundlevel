@@ -1,0 +1,66 @@
+CREATE TYPE transaction_payment_channels AS ENUM('online', 'in_store', 'other');
+
+CREATE TYPE transaction_personal_finance_category_confidence_levels AS ENUM('very_high', 'high', 'medium', 'low', 'unkown');
+
+CREATE TYPE transaction_codes AS ENUM(
+    'adjustment',
+    'atm',
+    'bank charge',
+    'bill payment',
+    'cash',
+    'cashback',
+    'cheque',
+    'direct debit',
+    'interest',
+    'purchase',
+    'standing order',
+    'transfer'
+);
+
+CREATE TABLE
+    plaid_transactions (
+        id SERIAL PRIMARY KEY NOT NULL,
+        plaid_bank_account_id INT REFERENCES plaid_bank_accounts (id) NOT NULL,
+        amount DECIMAL NOT NULL,
+        iso_currency_code TEXT,
+        unofficial_currency_code TEXT,
+        check_number TEXT,
+        date DATE NOT NULL,
+        location_address TEXT,
+        location_city TEXT,
+        location_region TEXT,
+        location_postal_code TEXT,
+        location_country TEXT,
+        location_lat DECIMAL,
+        location_lon DECIMAL,
+        location_store_number TEXT,
+        NAME TEXT NOT NULL,
+        merchant_name TEXT,
+        original_description TEXT,
+        payment_meta_reference_number TEXT,
+        payment_meta_ppd_id TEXT,
+        payment_meta_payee TEXT,
+        payment_meta_payer TEXT,
+        payment_meta_payment_method TEXT,
+        payment_meta_payment_processor TEXT,
+        payment_meta_by_order_of TEXT,
+        pending BOOLEAN NOT NULL,
+        pending_transaction_id TEXT,
+        account_owner TEXT,
+        transaction_id TEXT NOT NULL,
+        logo_url TEXT,
+        website TEXT,
+        authorized_date DATE,
+        authorized_datetime TIMESTAMP WITH TIME ZONE,
+        posted_datetime TIMESTAMP WITH TIME ZONE,
+        payment_channel transaction_payment_channels NOT NULL,
+        personal_finance_category_primary TEXT,
+        personal_finance_category_detailed TEXT,
+        personal_finance_category_confidence_level transaction_personal_finance_category_confidence_levels,
+        transaction_code transaction_codes,
+        personal_finance_category_icon_url TEXT NOT NULL,
+        counterparties JSONB,
+        merchant_entity_id TEXT,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
+        updated_at TIMESTAMP WITH TIME ZONE
+    );
