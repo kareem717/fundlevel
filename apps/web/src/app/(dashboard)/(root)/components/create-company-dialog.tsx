@@ -102,11 +102,11 @@ export function CreateCompanyDialog({
           triggerProps?.className,
         )}
       >
-        {triggerProps?.children || "Add Account"}
+        {triggerProps?.children || "New"}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add linked account</DialogTitle>
+          <DialogTitle>New Company</DialogTitle>
           <DialogDescription>
             Some stuff about adding a linked account
           </DialogDescription>
@@ -160,7 +160,7 @@ export function CreateCompanyDialog({
             />
             <Button type="submit" disabled={isExecuting} className="w-full">
               {isExecuting && <Loader2 className="mr-2 animate-spin" />}
-              Add Account
+              Create Company
             </Button>
           </form>
         </Form>

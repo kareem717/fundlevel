@@ -19,7 +19,7 @@
 		"next.config.js",
 		".next/types/**/*.ts",
 		"src/middleware.ts",
-		"src/app/(core)/company/[id]"
+		"src/app/(dashboard)/company/[id]"
 	],
 	"exclude": ["node_modules"]
 }

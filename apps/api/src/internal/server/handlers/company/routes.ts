@@ -277,3 +277,31 @@ export const quickBooksCallback = createRoute({
     },
   },
 });
+
+export const searchCompaniesRoute = createRoute({
+  summary: "Search companies by name",
+  operationId: "searchCompanies",
+  tags: ["Linked Accounts"],
+  security: [bearerAuthSchema],
+  method: "get",
+  path: "/search",
+  request: {
+    query: z.object({
+      query: z.string().optional().openapi({
+        description: "Search query for company name",
+        example: "acme",
+      }),
+    }),
+  },
+  responses: {
+    200: {
+      description: "Companies found",
+      content: {
+        "application/json": {
+          schema: z.array(companieschema),
+        },
+      },
+    },
+    ...unauthorizedResponse,
+  },
+});

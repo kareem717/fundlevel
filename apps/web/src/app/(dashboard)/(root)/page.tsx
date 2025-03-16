@@ -10,13 +10,15 @@ import { format } from "date-fns";
 import { redirects } from "@/lib/config/redirects";
 import { LinkIcon } from "lucide-react";
 import { CreateCompanyDialog } from "./components/create-company-dialog";
-import { env } from "@/env";
+import { SearchCommand } from "./components/search-command";
+
 export default async function DashboardPage() {
   const companies = (await getCompaniesAction())?.data || [];
 
   return (
-    <div className="container py-8 mx-auto">
-      <div className="mb-6">
+    <div className="py-8 mx-auto w-full">
+      <div className="mb-6 flex justify-between">
+        <SearchCommand />
         <CreateCompanyDialog />
       </div>
       {companies.length > 0 ? (

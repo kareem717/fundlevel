@@ -10,6 +10,7 @@ import {
   deleteCompanyRoute,
   swapPlaidPublicTokenRoute,
   quickBooksCallback,
+  searchCompaniesRoute,
 } from "./routes";
 import type {
   ICompanyService,
@@ -19,6 +20,24 @@ const companyHandler = (
   companyservice: ICompanyService,
 ) => {
   const app = new OpenAPIHono()
+    .openapi(searchCompaniesRoute, async (c) => {
+      const account = getAccount(c);
+      if (!account) {
+        return c.json(
+          {
+            error: "Account not found",
+          },
+          401,
+        );
+      }
+
+      const { query } = c.req.valid("query");
+      const searchQuery = query || ""; // Default to empty string if no query is provided
+
+      const companies = await companyservice.searchCompanies(searchQuery, account.id);
+
+      return c.json(companies, 200);
+    })
     .openapi(createCompanyRoute, async (c) => {
       const account = getAccount(c);
       if (!account) {
@@ -261,7 +280,7 @@ const companyHandler = (
         { success: true },
         201
       );
-    });
+    })
 
   return app;
 };

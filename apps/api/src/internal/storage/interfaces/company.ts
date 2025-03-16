@@ -14,6 +14,7 @@ export interface ICompanyRepository {
   create(account: CreateCompany): Promise<Company>;
   getById(id: number): Promise<Company>;
   getByAccountId(accountId: number): Promise<Company[]>;
+  searchCompanies(query: string, accountId: number): Promise<Company[]>;
 
   createPlaidCredentials(params: CreatePlaidCredentials): Promise<PlaidCredentials>;
   deletePlaidCredentials(companyId: number): Promise<void>;

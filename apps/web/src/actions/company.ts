@@ -5,10 +5,29 @@ import { actionClientWithAccount } from "@/lib/safe-action";
 import { createCompanytSchema } from "@fundlevel/api/types";
 import { z } from "zod";
 
+export const searchCompaniesAction = actionClientWithAccount
+  .schema(z.string())
+  .action(async ({ ctx: { api }, parsedInput }) => {
+    const req = await api.companies.search.$get({
+      query: {
+        query: parsedInput,
+      },
+    });
+
+    switch (req.status) {
+      case 200:
+        return await req.json();
+      case 401:
+        throw new Error((await req.json()).error);
+      default:
+        throw new Error("An error occurred");
+    }
+  });
+
 export const getQuickBooksAuthUrlAction = actionClientWithAccount
   .schema(z.number().int().positive())
   .action(async ({ ctx: { api }, parsedInput }) => {
-    const req = await api["companies"][":id"].quickbooks.connect.$get({
+    const req = await api.companies[":id"].quickbooks.connect.$get({
       param: {
         id: parsedInput,
       },
@@ -30,7 +49,7 @@ export const getQuickBooksAuthUrlAction = actionClientWithAccount
 export const createPlaidLinkTokenAction = actionClientWithAccount
   .schema(z.number().int().positive())
   .action(async ({ ctx: { api }, parsedInput }) => {
-    const req = await api["companies"][":id"].link.plaid.$get({
+    const req = await api.companies[":id"].link.plaid.$get({
       param: {
         id: parsedInput,
       },
@@ -55,7 +74,7 @@ export const swapPlaidPublicTokenAction = actionClientWithAccount
     }),
   )
   .action(async ({ ctx: { api }, parsedInput }) => {
-    const req = await api["companies"][":id"].credentials.plaid.$post({
+    const req = await api.companies[":id"].credentials.plaid.$post({
       param: {
         id: parsedInput.companyId,
       },
@@ -79,7 +98,7 @@ export const swapPlaidPublicTokenAction = actionClientWithAccount
 export const createCompanyAction = actionClientWithAccount
   .schema(createCompanytSchema)
   .action(async ({ ctx: { api }, parsedInput }) => {
-    const req = await api["companies"].$post({
+    const req = await api.companies.$post({
       json: parsedInput,
     });
 
@@ -96,7 +115,7 @@ export const createCompanyAction = actionClientWithAccount
 export const getCompanyByIdAction = actionClientWithAccount
   .schema(z.number().int().positive())
   .action(async ({ ctx: { api }, parsedInput }) => {
-    const req = await api["companies"][":id"].$get({
+    const req = await api.companies[":id"].$get({
       param: {
         id: parsedInput,
       },
@@ -114,7 +133,7 @@ export const getCompanyByIdAction = actionClientWithAccount
 
 export const getCompaniesAction = actionClientWithAccount.action(
   async ({ ctx: { api } }) => {
-    const req = await api["companies"].list.$get();
+    const req = await api.companies.list.$get();
 
     switch (req.status) {
       case 200:
