@@ -219,4 +219,41 @@ export class CompanyRepository implements ICompanyRepository {
       company_id: companyId,
     });
   }
+
+  async getCompanyByQuickBooksRealmId(realmId: string): Promise<Company | undefined> {
+    const { data: credentials, error: credentialsError } = await this.sb
+      .from("quick_books_oauth_credentials")
+      .select("company_id")
+      .eq("realm_id", realmId)
+      .single();
+
+    if (credentialsError) {
+      if (credentialsError.code === "PGRST116") {
+        // Not found
+        return undefined;
+      }
+      throw new Error(`Failed to find QuickBooks credentials: ${credentialsError.message}`);
+    }
+
+    if (!credentials) {
+      return undefined;
+    }
+
+    // Get the company using the company_id from the credentials
+    const { data: company, error: companyError } = await this.sb
+      .from("companies")
+      .select("*")
+      .eq("id", credentials.company_id)
+      .single();
+
+    if (companyError) {
+      if (companyError.code === "PGRST116") {
+        // Not found
+        return undefined;
+      }
+      throw new Error(`Failed to find company: ${companyError.message}`);
+    }
+
+    return company;
+  }
 }

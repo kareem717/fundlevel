@@ -23,6 +23,7 @@ export interface ICompanyRepository {
 
 
   getQuickBooksOAuthCredentials(companyId: number): Promise<QuickBooksOAuthCredentials>;
+  getCompanyByQuickBooksRealmId(realmId: string): Promise<Company | undefined>;
   updateQuickBooksOAuthCredentials(params: UpdateQuickBooksOAuthCredentials, companyId: number): Promise<QuickBooksOAuthCredentials>;
   deleteQuickBooksOAuthCredentials(companyId: number): Promise<void>;
   createQuickBooksOAuthCredentials(params: CreateQuickBooksOAuthCredentials, companyId: number): Promise<void>;

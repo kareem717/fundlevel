@@ -1,5 +1,5 @@
 import { OpenAPIHono } from "@hono/zod-openapi";
-import { createHash } from "node:crypto";
+import { createHash, createHmac } from "node:crypto";
 import * as jose from "jose";
 import { Configuration, PlaidApi, PlaidEnvironments } from "plaid";
 import { env } from "../../../../env";
@@ -22,94 +22,179 @@ interface PlaidVerificationKey {
 const plaidKeyCache: Record<string, PlaidVerificationKey> = {};
 
 const webhookHandler = (companyService: ICompanyService) => {
-  const app = new OpenAPIHono().post("/plaid", async (c) => {
-    const plaidConfig = new Configuration({
-      basePath: PlaidEnvironments[env.PLAID_ENVIRONMENT],
-      baseOptions: {
-        headers: {
-          "PLAID-CLIENT-ID": env.PLAID_CLIENT_ID,
-          "PLAID-SECRET": env.PLAID_SECRET,
+  const app = new OpenAPIHono()
+    .post("/plaid", async (c) => {
+      const plaidConfig = new Configuration({
+        basePath: PlaidEnvironments[env.PLAID_ENVIRONMENT],
+        baseOptions: {
+          headers: {
+            "PLAID-CLIENT-ID": env.PLAID_CLIENT_ID,
+            "PLAID-SECRET": env.PLAID_SECRET,
+          },
         },
-      },
-    });
+      });
 
-    const plaid = new PlaidApi(plaidConfig);
+      const plaid = new PlaidApi(plaidConfig);
 
-    // 1. Extract the JWT from the Plaid-Verification header
-    const plaidVerification = c.req.header("plaid-verification");
-    if (!plaidVerification) {
-      console.warn("Plaid webhook received without verification header");
-      // Continue processing - verification is optional according to Plaid
-    } else {
-      // Get the raw body as text for verification
+      // 1. Extract the JWT from the Plaid-Verification header
+      const plaidVerification = c.req.header("plaid-verification");
+      if (!plaidVerification) {
+        console.warn("Plaid webhook received without verification header");
+        // Continue processing - verification is optional according to Plaid
+      } else {
+        // Get the raw body as text for verification
+        const rawBody = await c.req.raw.clone().text();
+
+        // 2. Verify the webhook
+        const isVerified = await verifyPlaidWebhook(
+          plaidVerification,
+          rawBody,
+          plaid,
+        );
+
+        if (!isVerified) {
+          console.error("Failed to verify Plaid webhook");
+          return c.json({ error: "Invalid webhook signature" }, 401);
+        }
+      }
+
+      // Process the webhook payload
+      const payload = await c.req.json();
+
+      // Implement Plaid webhook handling based on webhook type
+      const webhookType = payload.webhook_type as string | undefined;
+      const webhookCode = payload.webhook_code as string | undefined;
+
+      if (!webhookType) {
+        console.error("No webhook type in payload");
+        return c.json({ error: "Undefined webhook type" }, 400);
+      }
+
+      if (!webhookCode) {
+        console.error("No webhook type in payload");
+        return c.json({ error: "Undefined webhook code" }, 400);
+      }
+
+      try {
+        switch (webhookType) {
+          case "ITEM": {
+            // Handle transaction webhooks
+            switch (webhookCode) {
+              case "NEW_ACCOUNTS_AVAILABLE": {
+                const itemId = payload.item_id;
+                await companyService.syncPlaidBankAccounts(itemId);
+              }
+            }
+            break;
+          }
+          case "TRANSACTIONS": {
+            // Handle transaction webhooks
+            switch (webhookCode) {
+              case "SYNC_UPDATES_AVAILABLE": {
+                console.log("HIT");
+                const itemId = payload.item_id;
+                await companyService.syncPlaidTransactions(itemId);
+              }
+            }
+            break;
+          }
+          default: {
+            // Log unhandled webhook types but still return 200
+            console.log(`Unhandled webhook type => TYPE: ${webhookType} CODE: ${webhookCode}`);
+          }
+        }
+      } catch (error) {
+        // Log error but still return 200 to acknowledge receipt
+        console.error(`Error processing webhook: ${error}`);
+      }
+
+      // Always return 200 OK for Plaid webhooks
+      return c.json({ success: true }, 200);
+    })
+    .post("/quickbooks", async (c) => {
+      // Validate the webhook request
+      // QuickBooks uses HMAC signature for webhook verification
+      const signature = c.req.header("intuit-signature");
+
+      if (!signature) {
+        console.error("No signature provided in QuickBooks webhook");
+        return c.json({ error: "Intuit signature missing" }, 401);
+      }
+
+      // Get the raw body for signature verification
       const rawBody = await c.req.raw.clone().text();
 
-      // 2. Verify the webhook
-      const isVerified = await verifyPlaidWebhook(
-        plaidVerification,
-        rawBody,
-        plaid,
-      );
+      // Verify the webhook signature
+      // The signature is a Base64 encoded string of the HMAC-SHA256 of the request body
+      // using the webhook verifier token as the key
+      const hmac = createHmac("sha256", env.QB_WEBHOOK_VERIFIER_TOKEN);
+      hmac.update(rawBody);
+      const computedSignature = hmac.digest("base64");
 
-      if (!isVerified) {
-        console.error("Failed to verify Plaid webhook");
-        return c.json({ error: "Invalid webhook signature" }, 401);
+      if (computedSignature !== signature) {
+        console.error("Invalid signature for QuickBooks webhook");
+        return c.json({ error: "Invalid signature" }, 401);
       }
-    }
 
-    // Process the webhook payload
-    const payload = await c.req.json();
+      // Parse the webhook payload
+      const payload = await c.req.json();
+      console.log("Received QuickBooks webhook:", payload);
 
-    // Implement Plaid webhook handling based on webhook type
-    const webhookType = payload.webhook_type as string | undefined;
-    const webhookCode = payload.webhook_code as string | undefined;
+      // QuickBooks webhooks have an eventNotifications array containing the events
+      const eventNotifications = payload.eventNotifications;
 
-    if (!webhookType) {
-      console.error("No webhook type in payload");
-      return c.json({ error: "Undefined webhook type" }, 400);
-    }
+      if (!Array.isArray(eventNotifications) || eventNotifications.length === 0) {
+        console.error("No events in QuickBooks webhook payload");
+        return c.json({ message: "No events to process" }, 200);
+      }
 
-    if (!webhookCode) {
-      console.error("No webhook type in payload");
-      return c.json({ error: "Undefined webhook code" }, 400);
-    }
+      // Process each event notification
+      for (const notification of eventNotifications) {
+        // Each notification has a realmId and an entities array
+        const { realmId, dataChangeEvent } = notification;
 
-    try {
-      switch (webhookType) {
-        case "ITEM": {
-          // Handle transaction webhooks
-          switch (webhookCode) {
-            case "NEW_ACCOUNTS_AVAILABLE": {
-              const itemId = payload.item_id;
-              await companyService.syncPlaidBankAccounts(itemId);
+        if (!realmId) {
+          console.error("No realmId in QuickBooks webhook notification");
+          continue;
+        }
+
+        if (!dataChangeEvent || !dataChangeEvent.entities) {
+          console.error("No entities in QuickBooks webhook notification");
+          continue;
+        }
+
+        // Find the company by realmId
+        try {
+          // Process each entity in the notification
+          const entities = dataChangeEvent.entities;
+
+          for (const entity of entities) {
+            // We're only interested in Invoice entities
+            if (entity.name === "Invoice") {
+              console.log(`Processing Invoice event for realmId: ${realmId}, operation: ${entity.operation}`);
+
+              // Find the company with this realmId
+              const company = await companyService.getCompanyByQuickBooksRealmId(realmId);
+
+              if (!company) {
+                console.error(`No company found with realmId: ${realmId}`);
+                continue;
+              }
+
+              // Sync the invoices for this company
+              await companyService.syncQuickBooksInvoices(company.id);
+              console.log(`Successfully synced invoices for company ${company.id}`);
             }
           }
-          break;
-        }
-        case "TRANSACTIONS": {
-          // Handle transaction webhooks
-          switch (webhookCode) {
-            case "SYNC_UPDATES_AVAILABLE": {
-              console.log("HIT");
-              const itemId = payload.item_id;
-              await companyService.syncPlaidTransactions(itemId);
-            }
-          }
-          break;
-        }
-        default: {
-          // Log unhandled webhook types but still return 200
-          console.log(`Unhandled webhook type => TYPE: ${webhookType} CODE: ${webhookCode}`);
+        } catch (error: unknown) {
+          console.error(`Error processing QuickBooks webhook for realmId ${realmId}:`, error);
+          // Continue processing other notifications
         }
       }
-    } catch (error) {
-      // Log error but still return 200 to acknowledge receipt
-      console.error(`Error processing webhook: ${error}`);
-    }
 
-    // Always return 200 OK for Plaid webhooks
-    return c.json({ success: true }, 200);
-  });
+      // Always return 200 to acknowledge receipt
+      return c.json({ success: true }, 200);
+    });
 
   return app;
 };

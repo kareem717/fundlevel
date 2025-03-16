@@ -8,6 +8,7 @@ import type {
 export interface ICompanyService {
   getById(id: number): Promise<Company>;
   getByAccountId(accountId: number): Promise<Company[]>;
+  getCompanyByQuickBooksRealmId(realmId: string): Promise<Company | undefined>;
   create(params: CreateCompany): Promise<Company>;
   deleteCompany(id: number): Promise<void>;
 

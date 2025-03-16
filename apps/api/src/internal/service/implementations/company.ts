@@ -104,6 +104,10 @@ export class CompanyService implements ICompanyService {
     return this.companyRepo.getByAccountId(accountId);
   }
 
+  async getCompanyByQuickBooksRealmId(realmId: string): Promise<Company | undefined> {
+    return this.companyRepo.getCompanyByQuickBooksRealmId(realmId);
+  }
+
   async create(params: CreateCompany): Promise<Company> {
     return this.companyRepo.create(params);
   }
