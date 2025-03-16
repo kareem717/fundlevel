@@ -1,5 +1,4 @@
 import { getLinkedAccountsAction } from "@/actions/linked-account";
-import { LinkAccountDialog } from "./components/link-account-dialog";
 import {
   Card,
   CardDescription,
@@ -10,6 +9,7 @@ import Link from "next/link";
 import { format } from "date-fns";
 import { redirects } from "@/lib/config/redirects";
 import { LinkIcon } from "lucide-react";
+import { CreateLinkedAccountDialog } from "./components/create-linked-account-dialog";
 
 export default async function DashboardPage() {
   const linkedAccounts = (await getLinkedAccountsAction())?.data || [];
@@ -17,12 +17,15 @@ export default async function DashboardPage() {
   return (
     <div className="container py-8 mx-auto">
       <div className="mb-6">
-        <LinkAccountDialog />
+        <CreateLinkedAccountDialog />
       </div>
       {linkedAccounts.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {linkedAccounts.map((account) => (
-            <Link key={account.id} href={redirects.app.linkedAccount(account.id).root}>
+            <Link
+              key={account.id}
+              href={redirects.app.linkedAccount(account.id).root}
+            >
               <Card className="flex flex-col h-full">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -47,7 +50,7 @@ export default async function DashboardPage() {
             Connect your financial accounts to get started with FundLevel. Link
             your first account to begin tracking your finances.
           </p>
-          <LinkAccountDialog />
+          <CreateLinkedAccountDialog />
         </div>
       )}
     </div>

@@ -10,13 +10,9 @@ export class Service {
   public readonly account: IAccountService;
   public readonly linkedAccount: ILinkedAccountService;
 
-  constructor(storage: Storage, mergeApiKey: string) {
+  constructor(storage: Storage) {
     this.account = new AccountService(storage.account);
-    this.linkedAccount = new LinkedAccountService(
-      mergeApiKey,
-      storage.account,
-      storage.linkedAccount,
-    );
+    this.linkedAccount = new LinkedAccountService(storage.linkedAccount);
   }
 }
 

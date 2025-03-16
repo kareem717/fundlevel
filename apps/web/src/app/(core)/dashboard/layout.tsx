@@ -1,7 +1,9 @@
 import { getAccountAction, getUserAction } from "@/actions/auth";
 import { AuthProvider } from "@/components/providers/auth-provider";
 
-export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default async function DashboardLayout({
+  children,
+}: { children: React.ReactNode }) {
   const user = (await getUserAction())?.data;
   const account = (await getAccountAction())?.data;
 
@@ -10,7 +12,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   }
 
   return (
-    <AuthProvider user={user} account={account} >
+    <AuthProvider user={user} account={account}>
       {/* // <NotificationProvider notifications={notifications}> */}
       {children}
       {/* // </NotificationProvider> */}

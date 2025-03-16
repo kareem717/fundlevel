@@ -9,22 +9,13 @@ import { swaggerUI } from "@hono/swagger-ui";
 import accountHandler from "./handlers/account";
 import type { Service } from "../service";
 import linkedAccountHandler from "./handlers/linked-account";
+import webhookHandler from "./handlers/webhook";
 
 export class Server {
-  public readonly port: number;
   public readonly routes;
   public readonly app;
 
-  constructor(
-    port: number,
-    service: Service,
-    supabase: {
-      url: string;
-      serviceKey: string;
-    },
-  ) {
-    this.port = port;
-
+  constructor(service: Service) {
     const app = new OpenAPIHono({
       defaultHook: (result, c) => {
         if (!result.success) {
@@ -54,7 +45,7 @@ export class Server {
           credentials: true,
         }),
       )
-      .use("*", authMiddleware(service.account, supabase));
+      .use("*", authMiddleware(service.account));
 
     app.openAPIRegistry.registerComponent("securitySchemes", "Bearer", {
       type: "http",
@@ -80,6 +71,7 @@ export class Server {
 
     this.routes = app
       .route("/accounts", accountHandler(service.account))
-      .route("/linked-accounts", linkedAccountHandler(service.linkedAccount));
+      .route("/linked-accounts", linkedAccountHandler(service.linkedAccount))
+      .route("/webhooks", webhookHandler(service.linkedAccount));
   }
 }

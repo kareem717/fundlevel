@@ -1,45 +1,56 @@
-import { Merge, MergeClient } from "@mergeapi/merge-node-client";
+import {
+  Merge,
+  MergeClient,
+  MergeEnvironment,
+} from "@mergeapi/merge-node-client";
 import type { ILinkedAccountService } from "../interfaces";
+import type { ILinkedAccountRepository } from "../../storage";
+import {
+  Configuration,
+  PlaidApi,
+  PlaidEnvironments,
+  CountryCode,
+  Products,
+} from "plaid";
 import type {
-  IAccountRepository,
-  ILinkedAccountRepository,
-} from "../../storage";
+  CreateLinkedAccount,
+  LinkedAccount,
+} from "../../entities";
+import { env } from "../../../env";
 
 export class LinkedAccountService implements ILinkedAccountService {
   private merge;
-  private accounRepo;
+  private plaid;
   private linkedAccountRepo;
 
-  constructor(
-    mergeApiKey: string,
-    accounRepo: IAccountRepository,
-    linkedAccountRepo: ILinkedAccountRepository,
-  ) {
-    //TODO: set environment to production
-    this.merge = new MergeClient({
-      apiKey: mergeApiKey,
+  constructor(linkedAccountRepo: ILinkedAccountRepository) {
+    const plaidConfig = new Configuration({
+      basePath: PlaidEnvironments[env.PLAID_ENVIRONMENT],
+      baseOptions: {
+        headers: {
+          "PLAID-CLIENT-ID": env.PLAID_CLIENT_ID,
+          "PLAID-SECRET": env.PLAID_SECRET,
+        },
+      },
     });
-    this.accounRepo = accounRepo;
+
+    this.plaid = new PlaidApi(plaidConfig);
+    this.merge = new MergeClient({
+      apiKey: env.MERGE_API_KEY,
+    });
+
     this.linkedAccountRepo = linkedAccountRepo;
   }
 
-  async createLinkToken({
-    accountId,
-    organizationName,
-  }: {
-    accountId: number;
+  async createMergeLinkToken(params: {
+    linkedAccountId: number;
+    organizationEmail: string;
     organizationName: string;
   }) {
-    const account = await this.accounRepo.getById(accountId);
-
-    if (!account) {
-      throw new Error("Account not found");
-    }
-
     const token = await this.merge.accounting.linkToken.create({
-      endUserEmailAddress: account.email,
-      endUserOrganizationName: organizationName,
-      endUserOriginId: String(account.id),
+      endUserEmailAddress: params.organizationEmail,
+      endUserOrganizationName: params.organizationName,
+      endUserOriginId: params.linkedAccountId.toString(),
       categories: [Merge.accounting.CategoriesEnum.Accounting],
       linkExpiryMins: 30,
     });
@@ -47,35 +58,52 @@ export class LinkedAccountService implements ILinkedAccountService {
     return token.linkToken;
   }
 
-  async swapPublicToken({
-    accountId,
-    publicToken,
+  async createMergeCredentials(params: {
+    linkedAccountId: number;
+    accountToken: string;
+  }) {
+    return await this.linkedAccountRepo.createMergeCredentials({
+      linked_account_id: params.linkedAccountId,
+      access_token: params.accountToken,
+    });
+  }
+
+  async createPlaidLinkToken({
+    linkedAccountId,
   }: {
-    accountId: number;
+    linkedAccountId: number;
+  }) {
+    const resp = await this.plaid.linkTokenCreate({
+      // TODO: read from config
+      client_name: "Fundlevel",
+      language: "en",
+      country_codes: [CountryCode.Us, CountryCode.Ca],
+      products: [Products.Transactions],
+      user: {
+        client_user_id: String(linkedAccountId),
+      },
+      webhook: env.PLAID_WEBHOOK_URL,
+    });
+
+
+    return resp.data.link_token;
+  }
+
+  async createPlaidCredentials(params: {
+    linkedAccountId: number;
     publicToken: string;
   }) {
-    const token =
-      await this.merge.accounting.accountToken.retrieve(publicToken);
+    const { item_id, access_token } = (await this.plaid.itemPublicTokenExchange({
+      public_token: params.publicToken,
+    })).data;
 
-    const account = await this.merge.accounting.linkedAccounts.list(
-      {
-        endUserOriginId: String(accountId),
-        status: "COMPLETE",
-      },
-      {
-        accountToken: token.accountToken,
-      },
-    );
-
-    if (account.results?.length !== 1) {
-      throw new Error(`Invalid account quantity: ${account.results?.length}`);
-    }
-
-    return await this.linkedAccountRepo.create({
-      owner_id: accountId,
-      merge_dev_account_token: token.accountToken,
-      name: account.results[0].endUserOrganizationName,
+    const creds = await this.linkedAccountRepo.createPlaidCredentials({
+      linked_account_id: params.linkedAccountId,
+      item_id,
+      access_token,
     });
+
+    return creds;
   }
 
   async getById(id: number) {
@@ -84,5 +112,21 @@ export class LinkedAccountService implements ILinkedAccountService {
 
   async getByAccountId(accountId: number) {
     return this.linkedAccountRepo.getByAccountId(accountId);
+  }
+
+  async create(params: CreateLinkedAccount): Promise<LinkedAccount> {
+    return this.linkedAccountRepo.create(params);
+  }
+
+  async deletePlaidCredentials(linkedAccountId: number): Promise<void> {
+    await this.linkedAccountRepo.deletePlaidCredentials(linkedAccountId);
+  }
+
+  async deleteMergeCredentials(linkedAccountId: number): Promise<void> {
+    await this.linkedAccountRepo.deleteMergeCredentials(linkedAccountId);
+  }
+
+  async deleteLinkedAccount(id: number): Promise<void> {
+    await this.linkedAccountRepo.deleteLinkedAccount(id);
   }
 }

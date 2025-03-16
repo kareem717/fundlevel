@@ -4,19 +4,19 @@ import type { ElementType } from "react";
 
 export type NavigationItem =
   | {
-    title: string;
-    url: string;
-    icon?: ElementType;
-  }
-  | {
-    title: string;
-    root: string;
-    icon?: ElementType;
-    items: {
       title: string;
       url: string;
-    }[];
-  };
+      icon?: ElementType;
+    }
+  | {
+      title: string;
+      root: string;
+      icon?: ElementType;
+      items: {
+        title: string;
+        url: string;
+      }[];
+    };
 
 export type NavigationMenu = {
   name: string;
@@ -45,7 +45,7 @@ const dashboard: NavigationMenu[] = [
       {
         title: "Logout",
         url: redirects.auth.logout,
-        icon: LogOut
+        icon: LogOut,
       },
     ],
   },
@@ -70,5 +70,5 @@ const linkedAccountDashboard = (id: number): NavigationMenu[] => [
  */
 export const sidebar = {
   dashboard,
-  linkedAccountDashboard
+  linkedAccountDashboard,
 };

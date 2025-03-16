@@ -43,10 +43,81 @@ export const publicAccountsUpdateSchemaSchema = z.object({
   user_id: z.string().optional(),
 });
 
+export const publicLinkedAccountMergeCredentialsRowSchemaSchema = z.object({
+  access_token: z.string(),
+  created_at: z.string(),
+  linked_account_id: z.number(),
+  updated_at: z.string().nullable(),
+});
+
+export const publicLinkedAccountMergeCredentialsInsertSchemaSchema = z.object({
+  access_token: z.string(),
+  created_at: z.string().optional(),
+  linked_account_id: z.number(),
+  updated_at: z.string().optional().nullable(),
+});
+
+export const publicLinkedAccountMergeCredentialsUpdateSchemaSchema = z.object({
+  access_token: z.string().optional(),
+  created_at: z.string().optional(),
+  linked_account_id: z.number().optional(),
+  updated_at: z.string().optional().nullable(),
+});
+
+export const publicLinkedAccountMergeCredentialsRelationshipsSchemaSchema =
+  z.tuple([
+    z.object({
+      foreignKeyName: z.literal(
+        "linked_account_merge_credentials_linked_account_id_fkey",
+      ),
+      columns: z.tuple([z.literal("linked_account_id")]),
+      isOneToOne: z.literal(true),
+      referencedRelation: z.literal("linked_accounts"),
+      referencedColumns: z.tuple([z.literal("id")]),
+    }),
+  ]);
+
+export const publicLinkedAccountPlaidCredentialsRowSchemaSchema = z.object({
+  access_token: z.string(),
+  created_at: z.string(),
+  item_id: z.string(),
+  linked_account_id: z.number(),
+  updated_at: z.string().nullable(),
+});
+
+export const publicLinkedAccountPlaidCredentialsInsertSchemaSchema = z.object({
+  access_token: z.string(),
+  created_at: z.string().optional(),
+  item_id: z.string(),
+  linked_account_id: z.number(),
+  updated_at: z.string().optional().nullable(),
+});
+
+export const publicLinkedAccountPlaidCredentialsUpdateSchemaSchema = z.object({
+  access_token: z.string().optional(),
+  created_at: z.string().optional(),
+  item_id: z.string().optional(),
+  linked_account_id: z.number().optional(),
+  updated_at: z.string().optional().nullable(),
+});
+
+export const publicLinkedAccountPlaidCredentialsRelationshipsSchemaSchema =
+  z.tuple([
+    z.object({
+      foreignKeyName: z.literal(
+        "linked_account_plaid_credentials_linked_account_id_fkey",
+      ),
+      columns: z.tuple([z.literal("linked_account_id")]),
+      isOneToOne: z.literal(true),
+      referencedRelation: z.literal("linked_accounts"),
+      referencedColumns: z.tuple([z.literal("id")]),
+    }),
+  ]);
+
 export const publicLinkedAccountsRowSchemaSchema = z.object({
   created_at: z.string(),
+  email: z.string(),
   id: z.number(),
-  merge_dev_account_token: z.string(),
   name: z.string(),
   owner_id: z.number(),
   updated_at: z.string().nullable(),
@@ -54,8 +125,8 @@ export const publicLinkedAccountsRowSchemaSchema = z.object({
 
 export const publicLinkedAccountsInsertSchemaSchema = z.object({
   created_at: z.string().optional(),
+  email: z.string(),
   id: z.number().optional(),
-  merge_dev_account_token: z.string(),
   name: z.string(),
   owner_id: z.number(),
   updated_at: z.string().optional().nullable(),
@@ -63,8 +134,8 @@ export const publicLinkedAccountsInsertSchemaSchema = z.object({
 
 export const publicLinkedAccountsUpdateSchemaSchema = z.object({
   created_at: z.string().optional(),
+  email: z.string().optional(),
   id: z.number().optional(),
-  merge_dev_account_token: z.string().optional(),
   name: z.string().optional(),
   owner_id: z.number().optional(),
   updated_at: z.string().optional().nullable(),

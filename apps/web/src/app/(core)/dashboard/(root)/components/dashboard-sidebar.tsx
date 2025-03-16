@@ -25,7 +25,7 @@ export function DashboardSidebar({
       </SidebarHeader>
       <SidebarContent className="divide-y border-b-2">
         {dashboard.map((menu) => (
-          <SidebarMenu key={menu.name} config={menu}/>
+          <SidebarMenu key={menu.name} config={menu} />
         ))}
       </SidebarContent>
       <SidebarFooter>

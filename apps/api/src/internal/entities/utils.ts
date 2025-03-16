@@ -7,4 +7,11 @@ export type OmitEntityFields<
     createdAt?: Date | string;
     updatedAt?: Date | string | null;
   },
-> = Omit<T, "id" | "createdAt" | "updatedAt">;
+> = OmitTimestampFields<Omit<T, "id">>;
+
+export type OmitTimestampFields<
+  T extends {
+    createdAt?: Date | string;
+    updatedAt?: Date | string | null;
+  },
+> = Omit<T, "createdAt" | "updatedAt">;

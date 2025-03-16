@@ -1,16 +1,21 @@
 import { getAccount } from "../../middleware";
 import { OpenAPIHono } from "@hono/zod-openapi";
 import {
-  swapPublicTokenRoute,
-  createLinkTokenRoute,
+  createMergeLinkTokenRoute,
   getByIdRoute,
   getByAccountIdRoute,
+  createPlaidLinkTokenRoute,
+  createLinkedAccountRoute,
+  deletePlaidCredentialsRoute,
+  deleteMergeCredentialsRoute,
+  deleteLinkedAccountRoute,
+  swapPlaidPublicTokenRoute,
 } from "./routes";
 import type { ILinkedAccountService } from "../../../service";
 
 const linkedAccountHandler = (linkedAccountService: ILinkedAccountService) => {
   const app = new OpenAPIHono()
-    .openapi(createLinkTokenRoute, async (c) => {
+    .openapi(createLinkedAccountRoute, async (c) => {
       const account = getAccount(c);
       if (!account) {
         return c.json(
@@ -21,39 +26,14 @@ const linkedAccountHandler = (linkedAccountService: ILinkedAccountService) => {
         );
       }
 
-      const { name } = c.req.valid("query");
-      const linkToken = await linkedAccountService.createLinkToken({
-        accountId: account.id,
-        organizationName: name,
+      const params = c.req.valid("json");
+
+      const linkedAccount = await linkedAccountService.create({
+        owner_id: account.id,
+        ...params,
       });
 
-      return c.json(
-        {
-          linkToken,
-        },
-        200,
-      );
-    })
-    .openapi(swapPublicTokenRoute, async (c) => {
-      const account = getAccount(c);
-
-      if (!account) {
-        return c.json(
-          {
-            error: "Account not found",
-          },
-          401,
-        );
-      }
-
-      const { publicToken } = c.req.valid("query");
-
-      const record = await linkedAccountService.swapPublicToken({
-        accountId: account.id,
-        publicToken,
-      });
-
-      return c.json(record, 200);
+      return c.json(linkedAccount, 201);
     })
     .openapi(getByAccountIdRoute, async (c) => {
       const account = getAccount(c);
@@ -71,6 +51,77 @@ const linkedAccountHandler = (linkedAccountService: ILinkedAccountService) => {
       );
       return c.json(linkedAccounts, 200);
     })
+    .openapi(createMergeLinkTokenRoute, async (c) => {
+      const account = getAccount(c);
+      if (!account) {
+        return c.json(
+          {
+            error: "Account not found",
+          },
+          401,
+        );
+      }
+
+      const { id } = c.req.valid("param");
+
+      const linkedAccount = await linkedAccountService.getById(id);
+      if (linkedAccount.owner_id !== account.id) {
+        return c.json(
+          {
+            error: "Forbidden from managing this account",
+          },
+          403,
+        );
+      }
+
+      const linkToken = await linkedAccountService.createMergeLinkToken({
+        linkedAccountId: linkedAccount.id,
+        //TODO: maybe swap to linkedAccount emails?
+        organizationEmail: linkedAccount.email,
+        organizationName: linkedAccount.name,
+      });
+
+      return c.json(
+        {
+          linkToken,
+        },
+        200,
+      );
+    })
+    .openapi(createPlaidLinkTokenRoute, async (c) => {
+      const account = getAccount(c);
+      if (!account) {
+        return c.json(
+          {
+            error: "Account not found",
+          },
+          401,
+        );
+      }
+
+      const { id } = c.req.valid("param");
+
+      const linkedAccount = await linkedAccountService.getById(id);
+
+      if (linkedAccount.owner_id !== account.id) {
+        return c.json(
+          {
+            error: "Forbidden from managing this account",
+          },
+          403,
+        );
+      }
+      const linkToken = await linkedAccountService.createPlaidLinkToken({
+        linkedAccountId: linkedAccount.id,
+      });
+
+      return c.json(
+        {
+          linkToken,
+        },
+        200,
+      );
+    })
     .openapi(getByIdRoute, async (c) => {
       const account = getAccount(c);
       if (!account) {
@@ -87,7 +138,170 @@ const linkedAccountHandler = (linkedAccountService: ILinkedAccountService) => {
 
       return c.json(linkedAccount, 200);
     })
+    .openapi(deletePlaidCredentialsRoute, async (c) => {
+      const account = getAccount(c);
+      if (!account) {
+        return c.json(
+          {
+            error: "Account not found",
+          },
+          401,
+        );
+      }
 
+      const { id } = c.req.valid("param");
+
+      // Verify the linked account belongs to the user
+      const linkedAccount = await linkedAccountService.getById(id);
+      if (!linkedAccount) {
+        return c.json(
+          {
+            error: "Linked account not found",
+          },
+          404,
+        );
+      }
+
+      if (linkedAccount.owner_id !== account.id) {
+        return c.json(
+          {
+            error: "Forbidden from managing this account",
+          },
+          403,
+        );
+      }
+
+      // Delete the credentials
+      await linkedAccountService.deletePlaidCredentials(linkedAccount.id);
+
+      // Return 204 No Content for successful deletion
+      return new Response(null, { status: 204 });
+    })
+    .openapi(deleteMergeCredentialsRoute, async (c) => {
+      const account = getAccount(c);
+      if (!account) {
+        return c.json(
+          {
+            error: "Account not found",
+          },
+          401,
+        );
+      }
+
+      const { id } = c.req.valid("param");
+
+      // Verify the linked account belongs to the user
+      const linkedAccount = await linkedAccountService.getById(id);
+      if (!linkedAccount) {
+        return c.json(
+          {
+            error: "Linked account not found",
+          },
+          404,
+        );
+      }
+
+      if (linkedAccount.owner_id !== account.id) {
+        return c.json(
+          {
+            error: "Forbidden from managing this account",
+          },
+          403,
+        );
+      }
+
+      // Delete the credentials
+      await linkedAccountService.deleteMergeCredentials(linkedAccount.id);
+
+      // Return 204 No Content for successful deletion
+      return new Response(null, { status: 204 });
+    })
+    .openapi(deleteLinkedAccountRoute, async (c) => {
+      const account = getAccount(c);
+      if (!account) {
+        return c.json(
+          {
+            error: "Account not found",
+          },
+          401,
+        );
+      }
+
+      const { id } = c.req.valid("param");
+
+      // Verify the linked account belongs to the user
+      const linkedAccount = await linkedAccountService.getById(id);
+      if (!linkedAccount) {
+        return c.json(
+          {
+            error: "Linked account not found",
+          },
+          404,
+        );
+      }
+
+      if (linkedAccount.owner_id !== account.id) {
+        return c.json(
+          {
+            error: "Forbidden from managing this account",
+          },
+          403,
+        );
+      }
+
+      // Delete the linked account and all associated credentials
+      await linkedAccountService.deleteLinkedAccount(linkedAccount.id);
+
+      // Return 204 No Content for successful deletion
+      return new Response(null, { status: 204 });
+    }).openapi(swapPlaidPublicTokenRoute, async (c) => {
+      const account = getAccount(c);
+      if (!account) {
+        return c.json(
+          {
+            error: "Account not found",
+          },
+          401,
+        );
+      }
+
+      const { id } = c.req.valid("param");
+      const { public_token } = c.req.valid("query");
+
+      // Verify the linked account belongs to the user
+      const linkedAccount = await linkedAccountService.getById(id);
+      if (!linkedAccount) {
+        return c.json(
+          {
+            error: "Linked account not found",
+          },
+          404,
+        );
+      }
+
+      if (linkedAccount.owner_id !== account.id) {
+        return c.json(
+          {
+            error: "Forbidden from managing this account",
+          },
+          403,
+        );
+      }
+
+      // Exchange the public token for an access token
+      const credentials = await linkedAccountService.createPlaidCredentials({
+        linkedAccountId: linkedAccount.id,
+        publicToken: public_token,
+      });
+
+      return c.json(
+        {
+          access_token: credentials.access_token,
+        },
+        201,
+      );
+
+    });
 
   return app;
 };

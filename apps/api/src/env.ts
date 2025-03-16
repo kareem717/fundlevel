@@ -17,6 +17,12 @@ export const env = createEnv({
     DATABASE_URL: z.string().url(),
 
     MERGE_API_KEY: z.string().min(1),
+    MERGE_WEBHOOK_SIGNATURE: z.string().min(1),
+
+    PLAID_CLIENT_ID: z.string().min(1),
+    PLAID_SECRET: z.string().min(1),
+    PLAID_ENVIRONMENT: z.enum(["sandbox", "production"]),
+    PLAID_WEBHOOK_URL: z.string().url(),
   },
 
   /**

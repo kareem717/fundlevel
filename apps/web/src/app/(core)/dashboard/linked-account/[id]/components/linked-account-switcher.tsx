@@ -1,22 +1,32 @@
-"use client"
+"use client";
 
 import {
   SidebarHeader,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenu as SidebarMenuComponent,
-} from "@fundlevel/ui/components/sidebar"
-import type { ComponentPropsWithoutRef } from "react"
-import { ChevronsUpDown, LinkIcon, Plus } from "lucide-react"
-import { redirects } from "@/lib/config/redirects"
-import { DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "@fundlevel/ui/components/dropdown-menu"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@fundlevel/ui/components/dropdown-menu"
-import { useLinkedAccount } from "@/components/providers/linked-account-provider"
-import { useIsMobile } from "@/hooks/use-mobile"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
+} from "@fundlevel/ui/components/sidebar";
+import type { ComponentPropsWithoutRef } from "react";
+import { ChevronsUpDown, LinkIcon, Plus } from "lucide-react";
+import { redirects } from "@/lib/config/redirects";
+import {
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from "@fundlevel/ui/components/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@fundlevel/ui/components/dropdown-menu";
+import { useLinkedAccount } from "@/components/providers/linked-account-provider";
+import { useIsMobile } from "@/hooks/use-mobile";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-export function LinkedAccountSwitcher({ ...props }: ComponentPropsWithoutRef<typeof SidebarHeader>) {
+export function LinkedAccountSwitcher({
+  ...props
+}: ComponentPropsWithoutRef<typeof SidebarHeader>) {
   const { selectedAccount, accounts } = useLinkedAccount();
   const isMobile = useIsMobile();
   const router = useRouter();
@@ -38,7 +48,9 @@ export function LinkedAccountSwitcher({ ...props }: ComponentPropsWithoutRef<typ
                   <span className="truncate font-semibold">
                     {selectedAccount.name}
                   </span>
-                  <span className="truncate text-xs text-muted-foreground">Connected Account</span>
+                  <span className="truncate text-xs text-muted-foreground">
+                    Connected Account
+                  </span>
                 </div>
                 <ChevronsUpDown className="ml-auto" />
               </SidebarMenuButton>
@@ -55,7 +67,9 @@ export function LinkedAccountSwitcher({ ...props }: ComponentPropsWithoutRef<typ
               {accounts.map((account) => (
                 <DropdownMenuItem
                   key={account.id}
-                  onClick={() => router.push(redirects.app.linkedAccount(account.id).root)}
+                  onClick={() =>
+                    router.push(redirects.app.linkedAccount(account.id).root)
+                  }
                   className="gap-2 p-2"
                 >
                   <div className="flex size-6 items-center justify-center rounded-sm border">
@@ -82,5 +96,5 @@ export function LinkedAccountSwitcher({ ...props }: ComponentPropsWithoutRef<typ
         </SidebarMenuItem>
       </SidebarMenuComponent>
     </SidebarHeader>
-  )
+  );
 }

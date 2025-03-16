@@ -3,12 +3,12 @@ const linkedAccountRoot = "/linked-account";
 
 // Helper function moved to top for clarity
 const linkedAccountPrefix = (id: number, path?: string) =>
-	`${appRoot}/${linkedAccountRoot}/${id}${path ? `/${path}` : ""}`;
+  `${appRoot}/${linkedAccountRoot}/${id}${path ? `/${path}` : ""}`;
 
 // Helper to reduce repetition in business dashboard paths
 const linkedAccountPath = (id: number) => ({
-	root: () => linkedAccountPrefix(id),
-	path: (suffix: string) => linkedAccountPrefix(id, suffix),
+  root: () => linkedAccountPrefix(id),
+  path: (suffix: string) => linkedAccountPrefix(id, suffix),
 });
 
 export const redirects = {
@@ -25,12 +25,12 @@ export const redirects = {
     afterLogin: appRoot,
     otp: (email?: string) => `/otp${email ? `?email=${email}` : ""}`,
     createAccount: "/create-account",
-    error: (error: string) => `/error?error=${error}`,
+    error: (error: string) => `/auth-error?error=${error}`,
   },
   app: {
     linkedAccount: (id: number) => ({
-			root: linkedAccountPath(id).root(),
-		}),
+      root: linkedAccountPath(id).root(),
+    }),
     root: appRoot,
   },
 };

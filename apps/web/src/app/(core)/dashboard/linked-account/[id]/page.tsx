@@ -1,10 +1,25 @@
 import { getLinkedAccountByIdAction } from "@/actions/linked-account";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@fundlevel/ui/components/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@fundlevel/ui/components/tabs";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@fundlevel/ui/components/card";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@fundlevel/ui/components/tabs";
 import { notFound } from "next/navigation";
 import { format } from "date-fns";
+import { LinkMergeButton } from "./components/link-merge-dialog";
+import { LinkPlaidButton } from "./components/link-plaid-dialog";
 
-export default async function LinkedAccountPage({ params }: { params: { id: string } }) {
+export default async function LinkedAccountPage({
+  params,
+}: { params: { id: string } }) {
   const { id } = params;
   const parsedId = Number.parseInt(id, 10);
 
@@ -20,11 +35,23 @@ export default async function LinkedAccountPage({ params }: { params: { id: stri
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold mb-2">{linkedAccount.name}</h1>
-        <p className="text-muted-foreground">
-          Manage your linked account and view financial data
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold mb-2">{linkedAccount.name}</h1>
+          <p className="text-muted-foreground">
+            Manage your linked account and view financial data
+          </p>
+        </div>
+        <div className="flex gap-3">
+          <LinkPlaidButton
+            linkedAccountId={linkedAccount.id}
+            variant="outline"
+          />
+          <LinkMergeButton
+            linkedAccountId={linkedAccount.id}
+            variant="default"
+          />
+        </div>
       </div>
 
       <Tabs defaultValue="overview">
@@ -38,25 +65,39 @@ export default async function LinkedAccountPage({ params }: { params: { id: stri
           <Card>
             <CardHeader>
               <CardTitle>Account Information</CardTitle>
-              <CardDescription>Details about your linked account</CardDescription>
+              <CardDescription>
+                Details about your linked account
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-2">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">ID</p>
+                  <p className="text-sm font-medium text-muted-foreground">
+                    ID
+                  </p>
                   <p>{linkedAccount.id}</p>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Name</p>
+                  <p className="text-sm font-medium text-muted-foreground">
+                    Name
+                  </p>
                   <p>{linkedAccount.name}</p>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Connected on</p>
+                  <p className="text-sm font-medium text-muted-foreground">
+                    Connected on
+                  </p>
                   <p>{format(new Date(linkedAccount.created_at), "PPP")}</p>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Last updated</p>
-                  <p>{linkedAccount.updated_at ? format(new Date(linkedAccount.updated_at), "PPP") : 'Never'}</p>
+                  <p className="text-sm font-medium text-muted-foreground">
+                    Last updated
+                  </p>
+                  <p>
+                    {linkedAccount.updated_at
+                      ? format(new Date(linkedAccount.updated_at), "PPP")
+                      : "Never"}
+                  </p>
                 </div>
               </div>
             </CardContent>

@@ -1,17 +1,21 @@
-import { getLinkedAccountByIdAction, getLinkedAccountsAction } from "@/actions/linked-account";
+import { getLinkedAccountsAction } from "@/actions/linked-account";
 import { notFound } from "next/navigation";
 import { Separator } from "@fundlevel/ui/components/separator";
-import { SidebarInset, SidebarProvider, SidebarTrigger } from "@fundlevel/ui/components/sidebar";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@fundlevel/ui/components/sidebar";
 import type { ReactNode } from "react";
 import { LinkedAccountProvider } from "@/components/providers/linked-account-provider";
 import { LinkedAccountSidebar } from "./components/linked-account-sidebar";
 
 export default async function LinkedAccountLayout({
   children,
-  params
+  params,
 }: {
-  children: ReactNode,
-  params: { id: string }
+  children: ReactNode;
+  params: { id: string };
 }) {
   const { id } = params;
   const parsedId = Number.parseInt(id, 10);
@@ -43,11 +47,9 @@ export default async function LinkedAccountLayout({
               {/* <BusinessBreadcrumb /> */}
             </div>
           </header>
-          <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-            {children}
-          </div>
+          <div className="flex flex-1 flex-col gap-4 p-4 pt-0">{children}</div>
         </SidebarInset>
-      </SidebarProvider >
+      </SidebarProvider>
     </LinkedAccountProvider>
   );
 }

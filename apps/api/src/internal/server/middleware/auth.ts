@@ -1,8 +1,8 @@
-import { Account } from "../../entities";
+import type { Account } from "../../entities";
 import { env } from "../../../env";
-import { IAccountService } from "../../service";
+import type { IAccountService } from "../../service";
 import { createServerClient, parseCookieHeader } from "@supabase/ssr";
-import { User } from "@supabase/supabase-js";
+import type { User } from "@supabase/supabase-js";
 import type { Context, MiddlewareHandler } from "hono";
 import { setCookie } from "hono/cookie";
 
@@ -25,10 +25,6 @@ export const getAccount = (c: Context) => {
 
 export const authMiddleware = (
   accountService: IAccountService,
-  sb: {
-    url: string;
-    serviceKey: string;
-  },
 ): MiddlewareHandler => {
   return async (c, next) => {
     const bearerToken = c.req.header("Authorization")?.split("Bearer ")[1];
@@ -38,53 +34,57 @@ export const authMiddleware = (
     }
 
     // Create Supabase client with cookie handling
-    const supabase = createServerClient(sb.url, sb.serviceKey, {
-      cookies: {
-        getAll() {
-          return parseCookieHeader(c.req.header("Cookie") ?? "");
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) => {
-            let sameSite: "Strict" | "Lax" | "None" | undefined = undefined;
-            let priority: "Low" | "Medium" | "High" | undefined = undefined;
+    const supabase = createServerClient(
+      env.SUPABASE_URL,
+      env.SUPABASE_SERVICE_KEY,
+      {
+        cookies: {
+          getAll() {
+            return parseCookieHeader(c.req.header("Cookie") ?? "");
+          },
+          setAll(cookiesToSet) {
+            for (const { name, value, options } of cookiesToSet) {
+              let sameSite: "Strict" | "Lax" | "None" | undefined = undefined;
+              let priority: "Low" | "Medium" | "High" | undefined = undefined;
 
-            if (options.sameSite !== undefined) {
-              switch (options.sameSite) {
-                case "strict":
-                  sameSite = "Strict";
-                  break;
-                case "lax":
-                  sameSite = "Lax";
-                  break;
-                case "none":
-                  sameSite = "None";
-                  break;
+              if (options.sameSite !== undefined) {
+                switch (options.sameSite) {
+                  case "strict":
+                    sameSite = "Strict";
+                    break;
+                  case "lax":
+                    sameSite = "Lax";
+                    break;
+                  case "none":
+                    sameSite = "None";
+                    break;
+                }
               }
-            }
 
-            if (options.priority !== undefined) {
-              switch (options.priority) {
-                case "low":
-                  priority = "Low";
-                  break;
-                case "medium":
-                  priority = "Medium";
-                  break;
-                case "high":
-                  priority = "High";
-                  break;
+              if (options.priority !== undefined) {
+                switch (options.priority) {
+                  case "low":
+                    priority = "Low";
+                    break;
+                  case "medium":
+                    priority = "Medium";
+                    break;
+                  case "high":
+                    priority = "High";
+                    break;
+                }
               }
-            }
 
-            return setCookie(c, name, value, {
-              ...options,
-              sameSite,
-              priority,
-            });
-          });
+              setCookie(c, name, value, {
+                ...options,
+                sameSite,
+                priority,
+              });
+            }
+          },
         },
       },
-    });
+    );
 
     // Attempt to get authenticated user
     const { data, error } = await supabase.auth.getUser(bearerToken);
