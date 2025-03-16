@@ -191,6 +191,43 @@ export const publicPlaidTransactionsRelationshipsSchemaSchema = z.tuple([
   }),
 ]);
 
+export const publicQuickBooksInvoicesRowSchemaSchema = z.object({
+  company_id: z.number(),
+  content: jsonSchema,
+  created_at: z.string(),
+  id: z.number(),
+  remote_id: z.string(),
+  updated_at: z.string().nullable(),
+});
+
+export const publicQuickBooksInvoicesInsertSchemaSchema = z.object({
+  company_id: z.number(),
+  content: jsonSchema,
+  created_at: z.string().optional(),
+  id: z.number().optional(),
+  remote_id: z.string(),
+  updated_at: z.string().optional().nullable(),
+});
+
+export const publicQuickBooksInvoicesUpdateSchemaSchema = z.object({
+  company_id: z.number().optional(),
+  content: jsonSchema.optional(),
+  created_at: z.string().optional(),
+  id: z.number().optional(),
+  remote_id: z.string().optional(),
+  updated_at: z.string().optional().nullable(),
+});
+
+export const publicQuickBooksInvoicesRelationshipsSchemaSchema = z.tuple([
+  z.object({
+    foreignKeyName: z.literal("quick_books_invoices_company_id_fkey"),
+    columns: z.tuple([z.literal("company_id")]),
+    isOneToOne: z.literal(false),
+    referencedRelation: z.literal("companies"),
+    referencedColumns: z.tuple([z.literal("id")]),
+  }),
+]);
+
 export const publicQuickBooksOauthCredentialsRowSchemaSchema = z.object({
   access_token: z.string(),
   access_token_expiry: z.string(),

@@ -198,6 +198,41 @@ export type Database = {
           },
         ]
       }
+      quick_books_invoices: {
+        Row: {
+          company_id: number
+          content: Json
+          created_at: string
+          id: number
+          remote_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          company_id: number
+          content: Json
+          created_at?: string
+          id?: number
+          remote_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          company_id?: number
+          content?: Json
+          created_at?: string
+          id?: number
+          remote_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quick_books_invoices_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       quick_books_oauth_credentials: {
         Row: {
           access_token: string

@@ -1,4 +1,4 @@
-import type { BankAccount, CreateBankAccount, CreateBankTransaction, UpdateBankAccount, BankTransaction } from "../../entities";
+import type { BankAccount, CreateBankAccount, CreateBankTransaction, UpdateBankAccount, BankTransaction, CreateInvoice, Invoice } from "../../entities";
 
 export interface IAccountingRepository {
   upsertBankAccount(params: CreateBankAccount, companyId: number): Promise<BankAccount>;
@@ -10,4 +10,9 @@ export interface IAccountingRepository {
   getTransactionById(id: number): Promise<BankTransaction | undefined>;
   getTransactionsByCompanyId(companyId: number): Promise<BankTransaction[]>;
   deleteTransactionByRemoteId(remoteId: string | string[]): Promise<void>;
+
+  upsertInvoice(params: CreateInvoice, companyId: number): Promise<Invoice>;
+  getInvoiceById(id: number): Promise<Invoice | undefined>;
+  getInvoicesByCompanyId(companyId: number): Promise<Invoice[]>;
+  deleteInvoiceByRemoteId(remoteId: string | string[]): Promise<void>;
 } 

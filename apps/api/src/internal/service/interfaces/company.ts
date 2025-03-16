@@ -32,6 +32,10 @@ export interface ICompanyService {
     code: string;
     state: string;
     realmId: string;
-  }): Promise<string>
+  }): Promise<{
+    redirect_url: string;
+    company_id: number;
+  }>
 
+  syncQuickBooksInvoices(companyId: number): Promise<void>;
 }

@@ -236,7 +236,10 @@ export class CompanyService implements ICompanyService {
     // Doesn't really have to be in a tx
     await this.companyRepo.deleteQuickBooksOAuthStates(company_id);
 
-    return redirect_url;
+    return {
+      redirect_url,
+      company_id,
+    };
   }
 
   async getQuickBooksOAuthCredentials(companyId: number) {
@@ -369,6 +372,102 @@ export class CompanyService implements ICompanyService {
 
     if (cursor) {
       await this.companyRepo.updateTransactionCursor(company_id, cursor);
+    }
+  }
+
+  async syncQuickBooksInvoices(companyId: number): Promise<void> {
+    try {
+      // Get QuickBooks OAuth credentials for the company
+      const credentials = await this.getQuickBooksOAuthCredentials(companyId);
+
+      if (!credentials) {
+        throw new Error(`No QuickBooks credentials found for company ${companyId}`);
+      }
+
+      // Check if access token is expired and refresh if needed
+      const now = new Date();
+      const tokenExpirationDate = new Date(credentials.access_token_expiry);
+
+      let accessToken = credentials.access_token;
+
+      // If token is expired or about to expire in the next 5 minutes, refresh it
+      if (tokenExpirationDate.getTime() - now.getTime() < 5 * 60 * 1000) {
+        // Refresh the token
+        const refreshResponse = await axios.post(
+          CompanyService.QUICK_BOOKS_OAUTH_TOKEN_URL,
+          new URLSearchParams({
+            grant_type: "refresh_token",
+            refresh_token: credentials.refresh_token,
+          }),
+          {
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+              Authorization: `Basic ${Buffer.from(
+                `${env.QB_CLIENT_ID}:${env.QB_CLIENT_SECRET}`
+              ).toString("base64")}`,
+            },
+          }
+        );
+
+        const refreshData = refreshResponse.data;
+
+        // Update credentials in database
+        await this.companyRepo.updateQuickBooksOAuthCredentials(
+          {
+            access_token: refreshData.access_token,
+            refresh_token: refreshData.refresh_token,
+            access_token_expiry: new Date(
+              Date.now() + refreshData.expires_in * 1000
+            ).toISOString(),
+            refresh_token_expiry: new Date(
+              Date.now() + refreshData.x_refresh_token_expires_in * 1000
+            ).toISOString(),
+          },
+          companyId
+        );
+
+        accessToken = refreshData.access_token;
+      }
+
+      // Fetch invoices from QuickBooks API
+      const response = await axios.get(
+        `${this.qbApiBaseUrl}/v3/company/${credentials.realm_id}/query`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            Accept: "application/json",
+          },
+          params: {
+            query: "SELECT * FROM Invoice WHERE Metadata.LastUpdatedTime > '2000-01-01'",
+            minorversion: 65, // Use appropriate minor version
+          },
+        }
+      );
+
+      const invoicesData = response.data;
+
+      // Process and store invoices
+      if (invoicesData.QueryResponse?.Invoice) {
+        const invoices = invoicesData.QueryResponse.Invoice;
+
+        // Process each invoice
+        for (const invoice of invoices) {
+          await this.accountingRepo.upsertInvoice(
+            {
+              remote_id: invoice.Id,
+              content: invoice, // Store the full invoice response as JSON
+            },
+            companyId
+          );
+        }
+
+        console.log(`Synced ${invoices.length} invoices for company ${companyId}`);
+      } else {
+        console.log(`No invoices found for company ${companyId}`);
+      }
+    } catch (error: unknown) {
+      console.error("Error syncing QuickBooks invoices:", error);
+      throw new Error(`Failed to sync QuickBooks invoices: ${(error as Error).message || "Unknown error"}`);
     }
   }
 }

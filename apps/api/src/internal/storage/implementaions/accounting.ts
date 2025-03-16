@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@fundlevel/supabase/types";
-import type { BankAccount, CreateBankAccount, BankTransaction, CreateBankTransaction } from "../../entities";
+import type { BankAccount, CreateBankAccount, BankTransaction, CreateBankTransaction, CreateInvoice, Invoice } from "../../entities";
 import type { IAccountingRepository } from "../interfaces/accounting";
 
 export class AccountingRepository implements IAccountingRepository {
@@ -129,6 +129,60 @@ export class AccountingRepository implements IAccountingRepository {
 
     if (error) {
       throw new Error(`Failed to delete transaction: ${error.message}`);
+    }
+  }
+
+  async upsertInvoice(invoice: CreateInvoice, companyId: number): Promise<Invoice> {
+    const { data, error } = await this.supabase
+      .from("quick_books_invoices")
+      .upsert({ ...invoice, company_id: companyId }, {
+        onConflict: "remote_id",
+      })
+      .select("*")
+      .single();
+
+    if (error) {
+      throw new Error(`Failed to create/update invoice: ${error.message}`);
+    }
+
+    return data;
+  }
+
+  async getInvoiceById(id: number): Promise<Invoice | undefined> {
+    const { data, error } = await this.supabase
+      .from("quick_books_invoices")
+      .select("*")
+      .eq("id", id)
+      .single();
+
+    if (error && error.code !== "PGRST116") {
+      throw new Error(`Failed to get invoice: ${error.message}`);
+    }
+
+    return data || undefined;
+  }
+
+  async getInvoicesByCompanyId(companyId: number): Promise<Invoice[]> {
+    const { data, error } = await this.supabase
+      .from("quick_books_invoices")
+      .select("*")
+      .eq("company_id", companyId);
+
+    if (error) {
+      throw new Error(`Failed to get invoices: ${error.message}`);
+    }
+
+    return data || [];
+  }
+
+  async deleteInvoiceByRemoteId(remoteId: string | string[]): Promise<void> {
+    const { error } = await this.supabase
+      .from("quick_books_invoices")
+      .delete()
+      .in("remote_id", Array.isArray(remoteId) ? remoteId : [remoteId]);
+
+    if (error) {
+      throw new Error(`Failed to delete invoice: ${error.message}`);
     }
   }
 } 

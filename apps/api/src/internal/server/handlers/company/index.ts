@@ -113,10 +113,12 @@ const companyHandler = (
       );
     })
     .openapi(quickBooksCallback, async (c) => {
-      const redirectUrl = await companyservice.completeQuickBooksOAuthFlow(
+      const { redirect_url, company_id } = await companyservice.completeQuickBooksOAuthFlow(
         c.req.valid("query"),
       );
-      return c.redirect(redirectUrl);
+
+      await companyservice.syncQuickBooksInvoices(company_id);
+      return c.redirect(redirect_url);
     })
     .openapi(getByIdRoute, async (c) => {
       const account = getAccount(c);

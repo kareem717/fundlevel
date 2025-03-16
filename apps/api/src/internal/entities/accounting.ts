@@ -19,6 +19,12 @@ export type BankTransaction =
 export type CreateBankTransaction =
   Omit<Database["public"]["Tables"]["plaid_transactions"]["Insert"], "id" | "company_id" | "created_at" | "updated_at">;
 
+export type Invoice =
+  Database["public"]["Tables"]["quick_books_invoices"]["Row"];
+
+export type CreateInvoice =
+  Omit<Database["public"]["Tables"]["quick_books_invoices"]["Insert"], "id" | "company_id" | "created_at" | "updated_at">;
+
 export const bankAccountSchema = z
   .object({
     ...publicPlaidBankAccountsRowSchemaSchema.shape,

@@ -64,6 +64,18 @@ export type PublicPlaidTransactionsUpdateSchema = z.infer<
 export type PublicPlaidTransactionsRelationshipsSchema = z.infer<
   typeof generated.publicPlaidTransactionsRelationshipsSchemaSchema
 >;
+export type PublicQuickBooksInvoicesRowSchema = z.infer<
+  typeof generated.publicQuickBooksInvoicesRowSchemaSchema
+>;
+export type PublicQuickBooksInvoicesInsertSchema = z.infer<
+  typeof generated.publicQuickBooksInvoicesInsertSchemaSchema
+>;
+export type PublicQuickBooksInvoicesUpdateSchema = z.infer<
+  typeof generated.publicQuickBooksInvoicesUpdateSchemaSchema
+>;
+export type PublicQuickBooksInvoicesRelationshipsSchema = z.infer<
+  typeof generated.publicQuickBooksInvoicesRelationshipsSchemaSchema
+>;
 export type PublicQuickBooksOauthCredentialsRowSchema = z.infer<
   typeof generated.publicQuickBooksOauthCredentialsRowSchemaSchema
 >;
