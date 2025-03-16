@@ -6,10 +6,7 @@ import {
   forbiddenResponse,
   notFoundResponse,
 } from "../shared/schemas";
-import {
-  createCompanytSchema,
-  companieschema,
-} from "../../../entities";
+import { createCompanytSchema, companieschema } from "../../../entities";
 
 export const createCompanyRoute = createRoute({
   summary: "Create a new linked account manually",

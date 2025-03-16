@@ -1,17 +1,30 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@fundlevel/supabase/types";
-import type { BankAccount, CreateBankAccount, BankTransaction, CreateBankTransaction, CreateInvoice, Invoice } from "../../entities";
+import type {
+  BankAccount,
+  CreateBankAccount,
+  BankTransaction,
+  CreateBankTransaction,
+  CreateInvoice,
+  Invoice,
+} from "../../entities";
 import type { IAccountingRepository } from "../interfaces/accounting";
 
 export class AccountingRepository implements IAccountingRepository {
-  constructor(private supabase: SupabaseClient<Database>) { }
+  constructor(private supabase: SupabaseClient<Database>) {}
 
-  async upsertBankAccount(bankAccount: CreateBankAccount, companyId: number): Promise<BankAccount> {
+  async upsertBankAccount(
+    bankAccount: CreateBankAccount,
+    companyId: number,
+  ): Promise<BankAccount> {
     const { data, error } = await this.supabase
       .from("plaid_bank_accounts")
-      .upsert({ ...bankAccount, company_id: companyId }, {
-        onConflict: "remote_id",
-      })
+      .upsert(
+        { ...bankAccount, company_id: companyId },
+        {
+          onConflict: "remote_id",
+        },
+      )
       .select("*")
       .single();
 
@@ -51,7 +64,7 @@ export class AccountingRepository implements IAccountingRepository {
 
   async updateBankAccount(
     id: number,
-    bankAccount: Partial<CreateBankAccount>
+    bankAccount: Partial<CreateBankAccount>,
   ): Promise<BankAccount> {
     const { data, error } = await this.supabase
       .from("plaid_bank_accounts")
@@ -78,19 +91,24 @@ export class AccountingRepository implements IAccountingRepository {
     }
   }
 
-  async upsertTransaction(transaction: CreateBankTransaction | CreateBankTransaction[], companyId: number) {
-    const transactions = Array.isArray(transaction) ? transaction : [transaction];
+  async upsertTransaction(
+    transaction: CreateBankTransaction | CreateBankTransaction[],
+    companyId: number,
+  ) {
+    const transactions = Array.isArray(transaction)
+      ? transaction
+      : [transaction];
 
-    const { error } = await this.supabase
-      .from("plaid_transactions")
-      .upsert(transactions.map(t => ({ ...t, company_id: companyId })), {
+    const { error } = await this.supabase.from("plaid_transactions").upsert(
+      transactions.map((t) => ({ ...t, company_id: companyId })),
+      {
         onConflict: "remote_id",
-      })
+      },
+    );
 
     if (error) {
       throw new Error(`Failed to create transaction: ${error.message}`);
     }
-
   }
 
   async getTransactionById(id: number): Promise<BankTransaction | undefined> {
@@ -107,7 +125,9 @@ export class AccountingRepository implements IAccountingRepository {
     return data || undefined;
   }
 
-  async getTransactionsByCompanyId(companyId: number): Promise<BankTransaction[]> {
+  async getTransactionsByCompanyId(
+    companyId: number,
+  ): Promise<BankTransaction[]> {
     const { data, error } = await this.supabase
       .from("plaid_transactions")
       .select("*")
@@ -120,24 +140,31 @@ export class AccountingRepository implements IAccountingRepository {
     return data || [];
   }
 
-
-  async deleteTransactionByRemoteId(remoteId: string | string[]): Promise<void> {
+  async deleteTransactionByRemoteId(
+    remoteId: string | string[],
+  ): Promise<void> {
     const { error } = await this.supabase
       .from("plaid_transactions")
       .delete()
-      .in("remote_id", Array.isArray(remoteId) ? remoteId : [remoteId])
+      .in("remote_id", Array.isArray(remoteId) ? remoteId : [remoteId]);
 
     if (error) {
       throw new Error(`Failed to delete transaction: ${error.message}`);
     }
   }
 
-  async upsertInvoice(invoice: CreateInvoice, companyId: number): Promise<Invoice> {
+  async upsertInvoice(
+    invoice: CreateInvoice,
+    companyId: number,
+  ): Promise<Invoice> {
     const { data, error } = await this.supabase
       .from("quick_books_invoices")
-      .upsert({ ...invoice, company_id: companyId }, {
-        onConflict: "remote_id",
-      })
+      .upsert(
+        { ...invoice, company_id: companyId },
+        {
+          onConflict: "remote_id",
+        },
+      )
       .select("*")
       .single();
 
@@ -185,4 +212,4 @@ export class AccountingRepository implements IAccountingRepository {
       throw new Error(`Failed to delete invoice: ${error.message}`);
     }
   }
-} 
+}

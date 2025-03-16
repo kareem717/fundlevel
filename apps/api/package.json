@@ -8,12 +8,14 @@
     "check:types": "tsc --noEmit"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^1.2.5",
     "@fundlevel/supabase": "workspace:*",
     "@hono/swagger-ui": "^0.5.1",
     "@hono/zod-openapi": "^0.19.2",
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.49.1",
     "@t3-oss/env-core": "^0.12.0",
+    "ai": "^4.1.61",
     "hono": "^4.7.4",
     "jose": "^6.0.10",
     "plaid": "^31.1.0"

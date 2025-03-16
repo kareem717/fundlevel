@@ -3,13 +3,7 @@ export const companyRoot = "/company";
 
 // Helper function moved to top for clarity
 const companyPrefix = (id: number, path?: string) =>
-  `${appRoot}/${companyRoot}/${id}${path ? `/${path}` : ""}`;
-
-// Helper to reduce repetition in business dashboard paths
-const companyPath = (id: number) => ({
-  root: () => companyPrefix(id),
-  path: (suffix: string) => companyPrefix(id, suffix),
-});
+  `${companyRoot}/${id}${path ? `/${path}` : ""}`;
 
 export const redirects = {
   legal: {
@@ -29,7 +23,8 @@ export const redirects = {
   },
   app: {
     company: (id: number) => ({
-      root: `${companyRoot}/${id}`,
+      root: companyPrefix(id),
+      reconciliation: companyPrefix(id, "reconciliation"),
     }),
     root: appRoot,
   },

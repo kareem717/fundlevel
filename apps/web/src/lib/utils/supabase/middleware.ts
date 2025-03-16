@@ -12,8 +12,8 @@ export const updateSession = async (request: NextRequest) => {
     if (!user) {
       // Only redirect to login if trying to access protected routes
       if (
-        (pathname === redirects.app.root ||
-          pathname.startsWith(`${companyRoot}/`)) ||
+        pathname === redirects.app.root ||
+        pathname.startsWith(`${companyRoot}/`) ||
         pathname.includes(redirects.auth.logout)
       ) {
         return NextResponse.redirect(

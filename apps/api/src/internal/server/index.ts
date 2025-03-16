@@ -10,6 +10,8 @@ import accountHandler from "./handlers/account";
 import type { Service } from "../service";
 import companyHandler from "./handlers/company";
 import webhookHandler from "./handlers/webhook";
+import aiHandler from "./handlers/ai";
+import accountingHandler from "./handlers/accounting";
 
 export class Server {
   public readonly routes;
@@ -71,10 +73,9 @@ export class Server {
 
     this.routes = app
       .route("/accounts", accountHandler(service.account))
-      .route(
-        "/companies",
-        companyHandler(service.company),
-      )
-      .route("/webhooks", webhookHandler(service.company));
+      .route("/companies", companyHandler(service.company))
+      .route("/webhooks", webhookHandler(service.company))
+      .route("/ai", aiHandler(service.ai, service.accounting, service.company))
+      .route("/accounting", accountingHandler(service.accounting));
   }
 }

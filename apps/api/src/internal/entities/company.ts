@@ -7,8 +7,7 @@ import {
 } from "@fundlevel/supabase/zod";
 import { z } from "@hono/zod-openapi";
 
-export type Company =
-  Database["public"]["Tables"]["companies"]["Row"];
+export type Company = Database["public"]["Tables"]["companies"]["Row"];
 
 export type CreateCompany = Omit<
   Database["public"]["Tables"]["companies"]["Insert"],
@@ -32,7 +31,6 @@ export const createCompanytSchema = z
   })
   .openapi("CreateCompanyParams")
   .required();
-
 
 export type PlaidCredentials =
   Database["public"]["Tables"]["plaid_credentials"]["Row"];

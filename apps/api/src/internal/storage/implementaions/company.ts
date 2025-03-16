@@ -10,7 +10,7 @@ import type { Client } from "@fundlevel/supabase/types";
 import type { ICompanyRepository } from "../interfaces/company";
 
 export class CompanyRepository implements ICompanyRepository {
-  constructor(private readonly sb: Client) { }
+  constructor(private readonly sb: Client) {}
 
   async create(params: CreateCompany) {
     const { data, error } = await this.sb
@@ -57,66 +57,15 @@ export class CompanyRepository implements ICompanyRepository {
 
   async searchCompanies(query: string, accountId: number): Promise<Company[]> {
     // Create a base query
-    let dbQuery = this.sb
+
+    const { data, error } = await this.sb
       .from("companies")
       .select()
-      .eq("owner_id", accountId); // Always filter by owner_id
+      .eq("owner_id", accountId)
+      .ilike("name", `%${query}%`);
 
-    console.log("Search query:", query);
-
-    // Add search filter using text search for better results when query is provided
-    if (query) {
-      try {
-        // First try with text search (this might fail if the proper index isn't set up)
-        console.log("Attempting text search with query:", query);
-
-        const textSearchQuery = this.sb
-          .from("companies")
-          .select()
-          .eq("owner_id", accountId)
-          .textSearch(
-            'name', // Column to search
-            query,  // Search query
-            {
-              type: 'websearch', // Use websearch mode for natural language queries
-              config: 'english'  // Use English dictionary for stemming and stop words
-            }
-          );
-
-        const { data: textSearchData, error: textSearchError } = await textSearchQuery;
-
-        console.log("Text search results:", textSearchData, "Error:", textSearchError);
-
-        // If text search worked, return those results
-        if (textSearchData && textSearchData.length > 0 && !textSearchError) {
-          return textSearchData;
-        }
-
-        console.log("Text search returned no results or errored, falling back to ILIKE");
-
-        // Otherwise, fall back to ILIKE (this should always work)
-        dbQuery = this.sb
-          .from("companies")
-          .select()
-          .eq("owner_id", accountId)
-          .ilike("name", `%${query}%`);
-      } catch (e) {
-        console.error("Error with text search, falling back to ILIKE:", e);
-        // Fall back to ILIKE if textSearch throws an error
-        dbQuery = this.sb
-          .from("companies")
-          .select()
-          .eq("owner_id", accountId)
-          .ilike("name", `%${query}%`);
-      }
-    }
-
-    // Execute the query
-    const { data, error } = await dbQuery;
-
-    console.log("Final search results:", data);
+    // Ex
     if (error) {
-      console.error("Search error:", error);
       throw new Error("Failed to search companies");
     }
 
@@ -159,10 +108,7 @@ export class CompanyRepository implements ICompanyRepository {
     }
 
     // Then delete the linked account
-    const { error } = await this.sb
-      .from("companies")
-      .delete()
-      .eq("id", id);
+    const { error } = await this.sb.from("companies").delete().eq("id", id);
 
     if (error) {
       console.error(error);
@@ -238,7 +184,10 @@ export class CompanyRepository implements ICompanyRepository {
     return data;
   }
 
-  async updateTransactionCursor(companyId: number, cursor: string): Promise<void> {
+  async updateTransactionCursor(
+    companyId: number,
+    cursor: string,
+  ): Promise<void> {
     const { error } = await this.sb
       .from("plaid_credentials")
       .update({ transaction_cursor: cursor })
@@ -288,7 +237,9 @@ export class CompanyRepository implements ICompanyRepository {
     });
   }
 
-  async getCompanyByQuickBooksRealmId(realmId: string): Promise<Company | undefined> {
+  async getCompanyByQuickBooksRealmId(
+    realmId: string,
+  ): Promise<Company | undefined> {
     const { data: credentials, error: credentialsError } = await this.sb
       .from("quick_books_oauth_credentials")
       .select("company_id")
@@ -300,7 +251,9 @@ export class CompanyRepository implements ICompanyRepository {
         // Not found
         return undefined;
       }
-      throw new Error(`Failed to find QuickBooks credentials: ${credentialsError.message}`);
+      throw new Error(
+        `Failed to find QuickBooks credentials: ${credentialsError.message}`,
+      );
     }
 
     if (!credentials) {

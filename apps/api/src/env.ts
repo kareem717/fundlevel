@@ -26,6 +26,7 @@ export const env = createEnv({
     PLAID_SECRET: z.string().min(1),
     PLAID_ENVIRONMENT: z.enum(["sandbox", "production"]),
     PLAID_WEBHOOK_URL: z.string().url(),
+    OPENAI_API_KEY: z.string().min(1),
   },
 
   /**

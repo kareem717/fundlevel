@@ -19,10 +19,7 @@ export interface CompaniesidebarProps
 }
 
 //TODO: this doesn't have to be a client component
-export function Companiesidebar({
-  accountId,
-  ...props
-}: CompaniesidebarProps) {
+export function Companiesidebar({ accountId, ...props }: CompaniesidebarProps) {
   const sidebarConfig = sidebar.companyDashboard(accountId);
 
   return (

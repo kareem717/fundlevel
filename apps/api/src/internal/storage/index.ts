@@ -5,7 +5,11 @@ import type {
 } from "./interfaces";
 import type { Client } from "@fundlevel/supabase/types";
 import { createClient } from "@supabase/supabase-js";
-import { CompanyRepository, AccountRepository, AccountingRepository } from "./implementaions";
+import {
+  CompanyRepository,
+  AccountRepository,
+  AccountingRepository,
+} from "./implementaions";
 import { env } from "../../env";
 
 export class Storage {

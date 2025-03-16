@@ -1,5 +1,5 @@
 "use client";
-import { type ComponentPropsWithoutRef, useEffect, useState } from "react"
+import { type ComponentPropsWithoutRef, useEffect, useState } from "react";
 import {
   // Command,
   CommandDialog,
@@ -15,22 +15,30 @@ import {
 import { searchCompaniesAction } from "@/actions/company";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useRouter } from "next/navigation";
-import { Banknote, Building, Loader2, LogOut, Search, Settings } from "lucide-react";
+import {
+  Banknote,
+  Building,
+  Loader2,
+  LogOut,
+  Search,
+  Settings,
+} from "lucide-react";
 import { Button } from "@fundlevel/ui/components/button";
 import { useAction } from "next-safe-action/hooks";
 import { useToast } from "@fundlevel/ui/hooks/use-toast";
 import Link from "next/link";
 import { redirects } from "@/lib/config/redirects";
 
-interface SearchCommandProps extends ComponentPropsWithoutRef<typeof CommandDialog> {
-
-}
+interface SearchCommandProps
+  extends ComponentPropsWithoutRef<typeof CommandDialog> {}
 //TODO: Companies not showing
 
 export function SearchCommand({ ...props }: SearchCommandProps) {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [companies, setCompanies] = useState<Array<{ id: number; name: string }>>([]);
+  const [companies, setCompanies] = useState<
+    Array<{ id: number; name: string }>
+  >([]);
   const debouncedQuery = useDebounce(searchQuery, 300);
   const router = useRouter();
   const { toast } = useToast();
@@ -39,30 +47,33 @@ export function SearchCommand({ ...props }: SearchCommandProps) {
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
       if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
-        e.preventDefault()
-        setOpen((open) => !open)
+        e.preventDefault();
+        setOpen((open) => !open);
       }
-    }
-    document.addEventListener("keydown", down)
-    return () => document.removeEventListener("keydown", down)
+    };
+    document.addEventListener("keydown", down);
+    return () => document.removeEventListener("keydown", down);
   }, []);
 
   // Set up search action with useAction
-  const { execute: search, isExecuting: isLoading } = useAction(searchCompaniesAction, {
-    onSuccess: (result) => {
-      console.log(result);
-      setCompanies(result.data || []);
+  const { execute: search, isExecuting: isLoading } = useAction(
+    searchCompaniesAction,
+    {
+      onSuccess: (result) => {
+        console.log(result);
+        setCompanies(result.data || []);
+      },
+      onError: (error) => {
+        console.error("Failed to search companies:", error);
+        setCompanies([]);
+        toast({
+          variant: "destructive",
+          title: "Search failed",
+          description: "Could not load company search results",
+        });
+      },
     },
-    onError: (error) => {
-      console.error("Failed to search companies:", error);
-      setCompanies([]);
-      toast({
-        variant: "destructive",
-        title: "Search failed",
-        description: "Could not load company search results",
-      });
-    },
-  });
+  );
 
   // Search companies when debounced query changes
   useEffect(() => {
@@ -95,7 +106,7 @@ export function SearchCommand({ ...props }: SearchCommandProps) {
           </kbd>
         </Button>
       </div>
-      <CommandDialog {...props} open={open} onOpenChange={setOpen} >
+      <CommandDialog {...props} open={open} onOpenChange={setOpen}>
         <CommandInput
           placeholder="Search companies..."
           value={searchQuery}
@@ -125,5 +136,5 @@ export function SearchCommand({ ...props }: SearchCommandProps) {
         </CommandList>
       </CommandDialog>
     </>
-  )
+  );
 }

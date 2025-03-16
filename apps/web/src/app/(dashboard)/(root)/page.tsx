@@ -8,7 +8,7 @@ import {
 import Link from "next/link";
 import { format } from "date-fns";
 import { redirects } from "@/lib/config/redirects";
-import { LinkIcon } from "lucide-react";
+import { LinkIcon, StoreIcon } from "lucide-react";
 import { CreateCompanyDialog } from "./components/create-company-dialog";
 import { SearchCommand } from "./components/search-command";
 
@@ -45,9 +45,9 @@ export default async function DashboardPage() {
       ) : (
         <div className="flex flex-col items-center justify-center py-12 text-center">
           <div className="bg-muted rounded-full p-6 mb-4">
-            <LinkIcon className="h-10 w-10 text-muted-foreground" />
+            <StoreIcon className="h-10 w-10 text-muted-foreground" />
           </div>
-          <h2 className="text-2xl font-bold mb-2">No accounts linked yet</h2>
+          <h2 className="text-2xl font-bold mb-2">No companies yet</h2>
           <p className="text-muted-foreground max-w-md mb-6">
             Connect your financial accounts to get started with FundLevel. Link
             your first account to begin tracking your finances.

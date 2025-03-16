@@ -10,16 +10,14 @@ export interface CompanyProviderProps {
   accounts: Company[];
 }
 
-const CompanyContext = createContext<
-  CompanyProviderProps | undefined
->(undefined);
+const CompanyContext = createContext<CompanyProviderProps | undefined>(
+  undefined,
+);
 
 export const useCompany = () => {
   const context = useContext(CompanyContext);
   if (!context) {
-    throw new Error(
-      "useCompany must be used within a CompanyProvider",
-    );
+    throw new Error("useCompany must be used within a CompanyProvider");
   }
 
   return context;
@@ -35,9 +33,7 @@ export function CompanyProvider({
   defaultAccount: Company;
 }) {
   if (accounts.length === 0) {
-    throw new Error(
-      "CompanyProvider must be used with at least one account",
-    );
+    throw new Error("CompanyProvider must be used with at least one account");
   }
 
   const [selectedAccount, setSelectedAccount] =

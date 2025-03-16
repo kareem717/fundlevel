@@ -1,20 +1,31 @@
+import type { Storage } from "../storage";
 import {
   AccountService,
   CompanyService,
+  AIService,
+  AccountingService,
 } from "./implementations";
 import type {
-  ICompanyService,
   IAccountService,
+  ICompanyService,
+  IAIService,
+  IAccountingService,
 } from "./interfaces";
-import type { Storage } from "../storage";
 
 export class Service {
-  public readonly account: IAccountService;
-  public readonly company: ICompanyService;
+  readonly account: IAccountService;
+  readonly company: ICompanyService;
+  readonly ai: IAIService;
+  readonly accounting: IAccountingService;
 
   constructor(storage: Storage) {
+    const company = new CompanyService(storage.company, storage.accounting);
+    const accounting = new AccountingService(storage.accounting, company);
+
     this.account = new AccountService(storage.account);
-    this.company = new CompanyService(storage.company, storage.accounting);
+    this.company = company;
+    this.accounting = accounting;
+    this.ai = new AIService(accounting);
   }
 }
 

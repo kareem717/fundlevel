@@ -16,20 +16,32 @@ export interface ICompanyRepository {
   getByAccountId(accountId: number): Promise<Company[]>;
   searchCompanies(query: string, accountId: number): Promise<Company[]>;
 
-  createPlaidCredentials(params: CreatePlaidCredentials): Promise<PlaidCredentials>;
+  createPlaidCredentials(
+    params: CreatePlaidCredentials,
+  ): Promise<PlaidCredentials>;
   deletePlaidCredentials(companyId: number): Promise<void>;
   getPlaidCredentialsByItemId(itemId: string): Promise<PlaidCredentials>;
   updateTransactionCursor(companyId: number, cursor: string): Promise<void>;
   deleteCompany(id: number): Promise<void>;
 
-
-  getQuickBooksOAuthCredentials(companyId: number): Promise<QuickBooksOAuthCredentials>;
+  getQuickBooksOAuthCredentials(
+    companyId: number,
+  ): Promise<QuickBooksOAuthCredentials>;
   getCompanyByQuickBooksRealmId(realmId: string): Promise<Company | undefined>;
-  updateQuickBooksOAuthCredentials(params: UpdateQuickBooksOAuthCredentials, companyId: number): Promise<QuickBooksOAuthCredentials>;
+  updateQuickBooksOAuthCredentials(
+    params: UpdateQuickBooksOAuthCredentials,
+    companyId: number,
+  ): Promise<QuickBooksOAuthCredentials>;
   deleteQuickBooksOAuthCredentials(companyId: number): Promise<void>;
-  createQuickBooksOAuthCredentials(params: CreateQuickBooksOAuthCredentials, companyId: number): Promise<void>;
+  createQuickBooksOAuthCredentials(
+    params: CreateQuickBooksOAuthCredentials,
+    companyId: number,
+  ): Promise<void>;
 
   getQuickBooksOAuthState(state: string): Promise<QuickBooksOAuthState>;
   deleteQuickBooksOAuthStates(companyId: number): Promise<void>;
-  createQuickBooksOAuthState(params: CreateQuickBooksOAuthState, companyId: number): Promise<void>;
+  createQuickBooksOAuthState(
+    params: CreateQuickBooksOAuthState,
+    companyId: number,
+  ): Promise<void>;
 }

@@ -155,6 +155,7 @@ export const publicPlaidCredentialsRelationshipsSchemaSchema = z.tuple([
 ]);
 
 export const publicPlaidTransactionsRowSchemaSchema = z.object({
+  account_id: z.string().nullable(),
   company_id: z.number(),
   content: jsonSchema,
   created_at: z.string(),
@@ -164,6 +165,7 @@ export const publicPlaidTransactionsRowSchemaSchema = z.object({
 });
 
 export const publicPlaidTransactionsInsertSchemaSchema = z.object({
+  account_id: z.string().optional().nullable(),
   company_id: z.number(),
   content: jsonSchema,
   created_at: z.string().optional(),
@@ -173,6 +175,7 @@ export const publicPlaidTransactionsInsertSchemaSchema = z.object({
 });
 
 export const publicPlaidTransactionsUpdateSchemaSchema = z.object({
+  account_id: z.string().optional().nullable(),
   company_id: z.number().optional(),
   content: jsonSchema.optional(),
   created_at: z.string().optional(),

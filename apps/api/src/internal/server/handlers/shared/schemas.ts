@@ -2,13 +2,7 @@ import { z } from "@hono/zod-openapi";
 
 export const pathIdParamSchema = z.coerce
   .number()
-  .min(1)
-  .openapi({
-    param: {
-      name: "id",
-      in: "path",
-    },
-  });
+  .min(1);
 
 export const bearerAuthSchema = {
   Bearer: [],
@@ -48,6 +42,17 @@ export const forbiddenResponse = {
         schema: z.object({
           error: z.string(),
         }),
+      },
+    },
+  },
+};
+
+export const streamResponse = {
+  200: {
+    description: "Streaming AI response",
+    content: {
+      "text/event-stream": {
+        schema: z.any(),
       },
     },
   },

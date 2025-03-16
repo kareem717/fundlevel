@@ -2,7 +2,7 @@ import type {
   CreateCompany,
   Company,
   PlaidCredentials,
-  QuickBooksOAuthCredentials
+  QuickBooksOAuthCredentials,
 } from "../../entities";
 
 export interface ICompanyService {
@@ -27,8 +27,13 @@ export interface ICompanyService {
   syncPlaidBankAccounts(itemId: string): Promise<void>;
   syncPlaidTransactions(itemId: string): Promise<void>;
 
-  startQuickBooksOAuthFlow(companyId: number, redirectUrl: string): Promise<string>
-  getQuickBooksOAuthCredentials(companyId: number): Promise<QuickBooksOAuthCredentials>
+  startQuickBooksOAuthFlow(
+    companyId: number,
+    redirectUrl: string,
+  ): Promise<string>;
+  getQuickBooksOAuthCredentials(
+    companyId: number,
+  ): Promise<QuickBooksOAuthCredentials>;
   deleteQuickBooksOAuthCredentials(companyId: number): Promise<void>;
   completeQuickBooksOAuthFlow(params: {
     code: string;
@@ -37,7 +42,7 @@ export interface ICompanyService {
   }): Promise<{
     redirect_url: string;
     company_id: number;
-  }>
+  }>;
 
   syncQuickBooksInvoices(companyId: number): Promise<void>;
 }

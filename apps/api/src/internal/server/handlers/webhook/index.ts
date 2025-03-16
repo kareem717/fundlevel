@@ -100,7 +100,9 @@ const webhookHandler = (companyService: ICompanyService) => {
           }
           default: {
             // Log unhandled webhook types but still return 200
-            console.log(`Unhandled webhook type => TYPE: ${webhookType} CODE: ${webhookCode}`);
+            console.log(
+              `Unhandled webhook type => TYPE: ${webhookType} CODE: ${webhookCode}`,
+            );
           }
         }
       } catch (error) {
@@ -143,7 +145,10 @@ const webhookHandler = (companyService: ICompanyService) => {
       // QuickBooks webhooks have an eventNotifications array containing the events
       const eventNotifications = payload.eventNotifications;
 
-      if (!Array.isArray(eventNotifications) || eventNotifications.length === 0) {
+      if (
+        !Array.isArray(eventNotifications) ||
+        eventNotifications.length === 0
+      ) {
         console.error("No events in QuickBooks webhook payload");
         return c.json({ message: "No events to process" }, 200);
       }
@@ -171,10 +176,13 @@ const webhookHandler = (companyService: ICompanyService) => {
           for (const entity of entities) {
             // We're only interested in Invoice entities
             if (entity.name === "Invoice") {
-              console.log(`Processing Invoice event for realmId: ${realmId}, operation: ${entity.operation}`);
+              console.log(
+                `Processing Invoice event for realmId: ${realmId}, operation: ${entity.operation}`,
+              );
 
               // Find the company with this realmId
-              const company = await companyService.getCompanyByQuickBooksRealmId(realmId);
+              const company =
+                await companyService.getCompanyByQuickBooksRealmId(realmId);
 
               if (!company) {
                 console.error(`No company found with realmId: ${realmId}`);
@@ -183,11 +191,16 @@ const webhookHandler = (companyService: ICompanyService) => {
 
               // Sync the invoices for this company
               await companyService.syncQuickBooksInvoices(company.id);
-              console.log(`Successfully synced invoices for company ${company.id}`);
+              console.log(
+                `Successfully synced invoices for company ${company.id}`,
+              );
             }
           }
         } catch (error: unknown) {
-          console.error(`Error processing QuickBooks webhook for realmId ${realmId}:`, error);
+          console.error(
+            `Error processing QuickBooks webhook for realmId ${realmId}:`,
+            error,
+          );
           // Continue processing other notifications
         }
       }

@@ -16,6 +16,9 @@ import { notFound } from "next/navigation";
 import { format } from "date-fns";
 import { LinkPlaidButton } from "./components/link-plaid-button";
 import { LinkQuickBooksButton } from "./components/link-quick-books-button";
+import Link from "next/link";
+import { redirects } from "@/lib/config/redirects";
+import { buttonVariants } from "@fundlevel/ui/components/button";
 
 export default async function CompanyPage({
   params,
@@ -43,14 +46,14 @@ export default async function CompanyPage({
           </p>
         </div>
         <div className="flex gap-3">
-          <LinkPlaidButton
-            companyId={company.id}
-            variant="outline"
-          />
-          <LinkQuickBooksButton
-            companyId={company.id}
-            variant="default"
-          />
+          <LinkPlaidButton companyId={company.id} variant="outline" />
+          <LinkQuickBooksButton companyId={company.id} variant="default" />
+          <Link
+            href={redirects.app.company(company.id).reconciliation}
+            className={buttonVariants({ variant: "outline" })}
+          >
+            Reconcile
+          </Link>
         </div>
       </div>
 

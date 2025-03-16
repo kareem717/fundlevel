@@ -12,13 +12,9 @@ import {
   quickBooksCallback,
   searchCompaniesRoute,
 } from "./routes";
-import type {
-  ICompanyService,
-} from "../../../service";
+import type { ICompanyService } from "../../../service";
 
-const companyHandler = (
-  companyservice: ICompanyService,
-) => {
+const companyHandler = (companyservice: ICompanyService) => {
   const app = new OpenAPIHono()
     .openapi(searchCompaniesRoute, async (c) => {
       const account = getAccount(c);
@@ -34,7 +30,10 @@ const companyHandler = (
       const { query } = c.req.valid("query");
       const searchQuery = query || ""; // Default to empty string if no query is provided
 
-      const companies = await companyservice.searchCompanies(searchQuery, account.id);
+      const companies = await companyservice.searchCompanies(
+        searchQuery,
+        account.id,
+      );
 
       return c.json(companies, 200);
     })
@@ -69,9 +68,7 @@ const companyHandler = (
         );
       }
 
-      const companies = await companyservice.getByAccountId(
-        account.id,
-      );
+      const companies = await companyservice.getByAccountId(account.id);
       return c.json(companies, 200);
     })
     .openapi(createPlaidLinkTokenRoute, async (c) => {
@@ -122,7 +119,10 @@ const companyHandler = (
       const { id } = c.req.valid("param");
       const { redirect_uri } = c.req.valid("query");
 
-      const url = await companyservice.startQuickBooksOAuthFlow(id, redirect_uri);
+      const url = await companyservice.startQuickBooksOAuthFlow(
+        id,
+        redirect_uri,
+      );
 
       return c.json(
         {
@@ -132,9 +132,8 @@ const companyHandler = (
       );
     })
     .openapi(quickBooksCallback, async (c) => {
-      const { redirect_url, company_id } = await companyservice.completeQuickBooksOAuthFlow(
-        c.req.valid("query"),
-      );
+      const { redirect_url, company_id } =
+        await companyservice.completeQuickBooksOAuthFlow(c.req.valid("query"));
 
       await companyservice.syncQuickBooksInvoices(company_id);
       return c.redirect(redirect_url);
@@ -276,11 +275,8 @@ const companyHandler = (
       await companyservice.syncPlaidTransactions(item_id);
       await companyservice.syncPlaidBankAccounts(item_id);
 
-      return c.json(
-        { success: true },
-        201
-      );
-    })
+      return c.json({ success: true }, 201);
+    });
 
   return app;
 };

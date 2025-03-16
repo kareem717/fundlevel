@@ -9,7 +9,11 @@ import {
   type Transaction,
   type RemovedTransaction,
 } from "plaid";
-import type { CreateCompany, Company, CreateBankTransaction } from "../../entities";
+import type {
+  CreateCompany,
+  Company,
+  CreateBankTransaction,
+} from "../../entities";
 import { env } from "../../../env";
 import { randomUUIDv7 } from "bun";
 import axios from "axios";
@@ -29,7 +33,10 @@ export class CompanyService implements ICompanyService {
   private static readonly QUICK_BOOKS_OAUTH_REVOKE_URL =
     "https://developer.api.intuit.com/v2/oauth2/tokens/revoke";
 
-  constructor(companyRepo: ICompanyRepository, accountingRepo: IAccountingRepository) {
+  constructor(
+    companyRepo: ICompanyRepository,
+    accountingRepo: IAccountingRepository,
+  ) {
     this.companyRepo = companyRepo;
     this.accountingRepo = accountingRepo;
 
@@ -104,7 +111,9 @@ export class CompanyService implements ICompanyService {
     return this.companyRepo.getByAccountId(accountId);
   }
 
-  async getCompanyByQuickBooksRealmId(realmId: string): Promise<Company | undefined> {
+  async getCompanyByQuickBooksRealmId(
+    realmId: string,
+  ): Promise<Company | undefined> {
     return this.companyRepo.getCompanyByQuickBooksRealmId(realmId);
   }
 
@@ -172,7 +181,8 @@ export class CompanyService implements ICompanyService {
     realmId: string;
   }) {
     const { code, state: callbackState, realmId } = params;
-    const { company_id, redirect_url } = await this.companyRepo.getQuickBooksOAuthState(callbackState);
+    const { company_id, redirect_url } =
+      await this.companyRepo.getQuickBooksOAuthState(callbackState);
 
     const response = await axios.post(
       CompanyService.QUICK_BOOKS_OAUTH_TOKEN_URL,
@@ -251,7 +261,8 @@ export class CompanyService implements ICompanyService {
   }
 
   async getQuickBooksOAuthCredentials(companyId: number) {
-    const creds = await this.companyRepo.getQuickBooksOAuthCredentials(companyId);
+    const creds =
+      await this.companyRepo.getQuickBooksOAuthCredentials(companyId);
 
     if (creds.access_token_expiry < new Date().toISOString()) {
       const response = await axios.post(
@@ -298,7 +309,8 @@ export class CompanyService implements ICompanyService {
   }
 
   async deleteQuickBooksOAuthCredentials(companyId: number) {
-    const creds = await this.companyRepo.getQuickBooksOAuthCredentials(companyId);
+    const creds =
+      await this.companyRepo.getQuickBooksOAuthCredentials(companyId);
 
     await axios.post(
       CompanyService.QUICK_BOOKS_OAUTH_REVOKE_URL,
@@ -322,27 +334,26 @@ export class CompanyService implements ICompanyService {
   async syncPlaidBankAccounts(itemId: string) {
     const creds = await this.companyRepo.getPlaidCredentialsByItemId(itemId);
 
-
     const plaidResp = await this.plaid.accountsGet({
       access_token: creds.access_token,
-    })
+    });
 
     const accounts = plaidResp.data.accounts;
 
     for (const account of accounts) {
-      await this.accountingRepo.upsertBankAccount({
-        remote_id: account.account_id,
-        content: JSON.stringify(account),
-      }, creds.company_id);
+      await this.accountingRepo.upsertBankAccount(
+        {
+          remote_id: account.account_id,
+          content: JSON.stringify(account),
+        },
+        creds.company_id,
+      );
     }
   }
 
   async syncPlaidTransactions(itemId: string) {
-    const {
-      access_token,
-      company_id,
-      transaction_cursor
-    } = await this.companyRepo.getPlaidCredentialsByItemId(itemId);
+    const { access_token, company_id, transaction_cursor } =
+      await this.companyRepo.getPlaidCredentialsByItemId(itemId);
 
     let cursor = transaction_cursor ?? undefined;
 
@@ -369,14 +380,16 @@ export class CompanyService implements ICompanyService {
       cursor = data.next_cursor;
     }
 
-    const convertedUpsert: CreateBankTransaction[] = upsert.map(t => ({
+    const convertedUpsert: CreateBankTransaction[] = upsert.map((t) => ({
       remote_id: t.transaction_id,
       content: JSON.stringify(t),
     }));
 
     //TODO: THIS IS SUPER UNSAFE, WE NEED TO USE TXN - MIGRATE TO DRIZZLE
     await this.accountingRepo.upsertTransaction(convertedUpsert, company_id);
-    await this.accountingRepo.deleteTransactionByRemoteId(remove.map(r => r.transaction_id));
+    await this.accountingRepo.deleteTransactionByRemoteId(
+      remove.map((r) => r.transaction_id),
+    );
 
     if (cursor) {
       await this.companyRepo.updateTransactionCursor(company_id, cursor);
@@ -389,7 +402,9 @@ export class CompanyService implements ICompanyService {
       const credentials = await this.getQuickBooksOAuthCredentials(companyId);
 
       if (!credentials) {
-        throw new Error(`No QuickBooks credentials found for company ${companyId}`);
+        throw new Error(
+          `No QuickBooks credentials found for company ${companyId}`,
+        );
       }
 
       // Check if access token is expired and refresh if needed
@@ -411,10 +426,10 @@ export class CompanyService implements ICompanyService {
             headers: {
               "Content-Type": "application/x-www-form-urlencoded",
               Authorization: `Basic ${Buffer.from(
-                `${env.QB_CLIENT_ID}:${env.QB_CLIENT_SECRET}`
+                `${env.QB_CLIENT_ID}:${env.QB_CLIENT_SECRET}`,
               ).toString("base64")}`,
             },
-          }
+          },
         );
 
         const refreshData = refreshResponse.data;
@@ -425,13 +440,13 @@ export class CompanyService implements ICompanyService {
             access_token: refreshData.access_token,
             refresh_token: refreshData.refresh_token,
             access_token_expiry: new Date(
-              Date.now() + refreshData.expires_in * 1000
+              Date.now() + refreshData.expires_in * 1000,
             ).toISOString(),
             refresh_token_expiry: new Date(
-              Date.now() + refreshData.x_refresh_token_expires_in * 1000
+              Date.now() + refreshData.x_refresh_token_expires_in * 1000,
             ).toISOString(),
           },
-          companyId
+          companyId,
         );
 
         accessToken = refreshData.access_token;
@@ -446,10 +461,11 @@ export class CompanyService implements ICompanyService {
             Accept: "application/json",
           },
           params: {
-            query: "SELECT * FROM Invoice WHERE Metadata.LastUpdatedTime > '2000-01-01'",
+            query:
+              "SELECT * FROM Invoice WHERE Metadata.LastUpdatedTime > '2000-01-01'",
             minorversion: 65, // Use appropriate minor version
           },
-        }
+        },
       );
 
       const invoicesData = response.data;
@@ -465,17 +481,21 @@ export class CompanyService implements ICompanyService {
               remote_id: invoice.Id,
               content: invoice, // Store the full invoice response as JSON
             },
-            companyId
+            companyId,
           );
         }
 
-        console.log(`Synced ${invoices.length} invoices for company ${companyId}`);
+        console.log(
+          `Synced ${invoices.length} invoices for company ${companyId}`,
+        );
       } else {
         console.log(`No invoices found for company ${companyId}`);
       }
     } catch (error: unknown) {
       console.error("Error syncing QuickBooks invoices:", error);
-      throw new Error(`Failed to sync QuickBooks invoices: ${(error as Error).message || "Unknown error"}`);
+      throw new Error(
+        `Failed to sync QuickBooks invoices: ${(error as Error).message || "Unknown error"}`,
+      );
     }
   }
 }
