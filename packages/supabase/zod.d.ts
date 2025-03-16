@@ -6,27 +6,6 @@
 
 import { z } from "zod";
 import * as generated from "./src/zod";
-export type PublicBankAccountHolderCategories = z.infer<
-  typeof generated.publicBankAccountHolderCategoriesSchema
->;
-export type PublicBankAccountSubTypes = z.infer<
-  typeof generated.publicBankAccountSubTypesSchema
->;
-export type PublicBankAccountTypes = z.infer<
-  typeof generated.publicBankAccountTypesSchema
->;
-export type PublicBankAccountVerificationStatuses = z.infer<
-  typeof generated.publicBankAccountVerificationStatusesSchema
->;
-export type PublicTransactionCodes = z.infer<
-  typeof generated.publicTransactionCodesSchema
->;
-export type PublicTransactionPaymentChannels = z.infer<
-  typeof generated.publicTransactionPaymentChannelsSchema
->;
-export type PublicTransactionPersonalFinanceCategoryConfidenceLevels = z.infer<
-  typeof generated.publicTransactionPersonalFinanceCategoryConfidenceLevelsSchema
->;
 export type Json = z.infer<typeof generated.jsonSchema>;
 export type PublicAccountsRowSchema = z.infer<
   typeof generated.publicAccountsRowSchemaSchema
@@ -37,29 +16,17 @@ export type PublicAccountsInsertSchema = z.infer<
 export type PublicAccountsUpdateSchema = z.infer<
   typeof generated.publicAccountsUpdateSchemaSchema
 >;
-export type PublicLinkedAccountPlaidCredentialsRowSchema = z.infer<
-  typeof generated.publicLinkedAccountPlaidCredentialsRowSchemaSchema
+export type PublicCompaniesRowSchema = z.infer<
+  typeof generated.publicCompaniesRowSchemaSchema
 >;
-export type PublicLinkedAccountPlaidCredentialsInsertSchema = z.infer<
-  typeof generated.publicLinkedAccountPlaidCredentialsInsertSchemaSchema
+export type PublicCompaniesInsertSchema = z.infer<
+  typeof generated.publicCompaniesInsertSchemaSchema
 >;
-export type PublicLinkedAccountPlaidCredentialsUpdateSchema = z.infer<
-  typeof generated.publicLinkedAccountPlaidCredentialsUpdateSchemaSchema
+export type PublicCompaniesUpdateSchema = z.infer<
+  typeof generated.publicCompaniesUpdateSchemaSchema
 >;
-export type PublicLinkedAccountPlaidCredentialsRelationshipsSchema = z.infer<
-  typeof generated.publicLinkedAccountPlaidCredentialsRelationshipsSchemaSchema
->;
-export type PublicLinkedAccountsRowSchema = z.infer<
-  typeof generated.publicLinkedAccountsRowSchemaSchema
->;
-export type PublicLinkedAccountsInsertSchema = z.infer<
-  typeof generated.publicLinkedAccountsInsertSchemaSchema
->;
-export type PublicLinkedAccountsUpdateSchema = z.infer<
-  typeof generated.publicLinkedAccountsUpdateSchemaSchema
->;
-export type PublicLinkedAccountsRelationshipsSchema = z.infer<
-  typeof generated.publicLinkedAccountsRelationshipsSchemaSchema
+export type PublicCompaniesRelationshipsSchema = z.infer<
+  typeof generated.publicCompaniesRelationshipsSchemaSchema
 >;
 export type PublicPlaidBankAccountsRowSchema = z.infer<
   typeof generated.publicPlaidBankAccountsRowSchemaSchema
@@ -72,6 +39,18 @@ export type PublicPlaidBankAccountsUpdateSchema = z.infer<
 >;
 export type PublicPlaidBankAccountsRelationshipsSchema = z.infer<
   typeof generated.publicPlaidBankAccountsRelationshipsSchemaSchema
+>;
+export type PublicPlaidCredentialsRowSchema = z.infer<
+  typeof generated.publicPlaidCredentialsRowSchemaSchema
+>;
+export type PublicPlaidCredentialsInsertSchema = z.infer<
+  typeof generated.publicPlaidCredentialsInsertSchemaSchema
+>;
+export type PublicPlaidCredentialsUpdateSchema = z.infer<
+  typeof generated.publicPlaidCredentialsUpdateSchemaSchema
+>;
+export type PublicPlaidCredentialsRelationshipsSchema = z.infer<
+  typeof generated.publicPlaidCredentialsRelationshipsSchemaSchema
 >;
 export type PublicPlaidTransactionsRowSchema = z.infer<
   typeof generated.publicPlaidTransactionsRowSchemaSchema

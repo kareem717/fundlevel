@@ -7,137 +7,6 @@
 import { z } from "zod";
 import { type Json } from "./types/db";
 
-export const publicBankAccountHolderCategoriesSchema = z.union([
-  z.literal("business"),
-  z.literal("personal"),
-  z.literal("unrecognized"),
-]);
-
-export const publicBankAccountSubTypesSchema = z.union([
-  z.literal("401a"),
-  z.literal("401k"),
-  z.literal("403B"),
-  z.literal("457b"),
-  z.literal("529"),
-  z.literal("auto"),
-  z.literal("brokerage"),
-  z.literal("business"),
-  z.literal("cash isa"),
-  z.literal("cash management"),
-  z.literal("cd"),
-  z.literal("checking"),
-  z.literal("commercial"),
-  z.literal("construction"),
-  z.literal("consumer"),
-  z.literal("credit card"),
-  z.literal("crypto exchange"),
-  z.literal("ebt"),
-  z.literal("education savings account"),
-  z.literal("fixed annuity"),
-  z.literal("gic"),
-  z.literal("health reimbursement arrangement"),
-  z.literal("home equity"),
-  z.literal("hsa"),
-  z.literal("isa"),
-  z.literal("ira"),
-  z.literal("keogh"),
-  z.literal("lif"),
-  z.literal("life insurance"),
-  z.literal("line of credit"),
-  z.literal("lira"),
-  z.literal("loan"),
-  z.literal("lrif"),
-  z.literal("lrsp"),
-  z.literal("money market"),
-  z.literal("mortgage"),
-  z.literal("mutual fund"),
-  z.literal("non-custodial wallet"),
-  z.literal("non-taxable brokerage account"),
-  z.literal("other"),
-  z.literal("other insurance"),
-  z.literal("other annuity"),
-  z.literal("overdraft"),
-  z.literal("paypal"),
-  z.literal("payroll"),
-  z.literal("pension"),
-  z.literal("prepaid"),
-  z.literal("prif"),
-  z.literal("profit sharing plan"),
-  z.literal("rdsp"),
-  z.literal("resp"),
-  z.literal("retirement"),
-  z.literal("rlif"),
-  z.literal("roth"),
-  z.literal("roth 401k"),
-  z.literal("rrif"),
-  z.literal("rrsp"),
-  z.literal("sarsep"),
-  z.literal("savings"),
-  z.literal("sep ira"),
-  z.literal("simple ira"),
-  z.literal("sipp"),
-  z.literal("stock plan"),
-  z.literal("student"),
-  z.literal("thrift savings plan"),
-  z.literal("tfsa"),
-  z.literal("trust"),
-  z.literal("ugma"),
-  z.literal("utma"),
-  z.literal("variable annuity"),
-]);
-
-export const publicBankAccountTypesSchema = z.union([
-  z.literal("investment"),
-  z.literal("credit"),
-  z.literal("depository"),
-  z.literal("loan"),
-  z.literal("brokerage"),
-  z.literal("other"),
-]);
-
-export const publicBankAccountVerificationStatusesSchema = z.union([
-  z.literal("automatically_verified"),
-  z.literal("pending_automatic_verification"),
-  z.literal("pending_manual_verification"),
-  z.literal("manually_verified"),
-  z.literal("verification_expired"),
-  z.literal("verification_failed"),
-  z.literal("database_matched"),
-  z.literal("database_insights_pass"),
-  z.literal("database_insights_pass_with_caution"),
-  z.literal("database_insights_fail"),
-]);
-
-export const publicTransactionCodesSchema = z.union([
-  z.literal("adjustment"),
-  z.literal("atm"),
-  z.literal("bank charge"),
-  z.literal("bill payment"),
-  z.literal("cash"),
-  z.literal("cashback"),
-  z.literal("cheque"),
-  z.literal("direct debit"),
-  z.literal("interest"),
-  z.literal("purchase"),
-  z.literal("standing order"),
-  z.literal("transfer"),
-]);
-
-export const publicTransactionPaymentChannelsSchema = z.union([
-  z.literal("online"),
-  z.literal("in_store"),
-  z.literal("other"),
-]);
-
-export const publicTransactionPersonalFinanceCategoryConfidenceLevelsSchema =
-  z.union([
-    z.literal("very_high"),
-    z.literal("high"),
-    z.literal("medium"),
-    z.literal("low"),
-    z.literal("unkown"),
-  ]);
-
 export const jsonSchema: z.ZodSchema<Json> = z.lazy(() =>
   z
     .union([
@@ -174,44 +43,7 @@ export const publicAccountsUpdateSchemaSchema = z.object({
   user_id: z.string().optional(),
 });
 
-export const publicLinkedAccountPlaidCredentialsRowSchemaSchema = z.object({
-  access_token: z.string(),
-  created_at: z.string(),
-  item_id: z.string(),
-  linked_account_id: z.number(),
-  updated_at: z.string().nullable(),
-});
-
-export const publicLinkedAccountPlaidCredentialsInsertSchemaSchema = z.object({
-  access_token: z.string(),
-  created_at: z.string().optional(),
-  item_id: z.string(),
-  linked_account_id: z.number(),
-  updated_at: z.string().optional().nullable(),
-});
-
-export const publicLinkedAccountPlaidCredentialsUpdateSchemaSchema = z.object({
-  access_token: z.string().optional(),
-  created_at: z.string().optional(),
-  item_id: z.string().optional(),
-  linked_account_id: z.number().optional(),
-  updated_at: z.string().optional().nullable(),
-});
-
-export const publicLinkedAccountPlaidCredentialsRelationshipsSchemaSchema =
-  z.tuple([
-    z.object({
-      foreignKeyName: z.literal(
-        "linked_account_plaid_credentials_linked_account_id_fkey",
-      ),
-      columns: z.tuple([z.literal("linked_account_id")]),
-      isOneToOne: z.literal(true),
-      referencedRelation: z.literal("linked_accounts"),
-      referencedColumns: z.tuple([z.literal("id")]),
-    }),
-  ]);
-
-export const publicLinkedAccountsRowSchemaSchema = z.object({
+export const publicCompaniesRowSchemaSchema = z.object({
   created_at: z.string(),
   email: z.string(),
   id: z.number(),
@@ -220,7 +52,7 @@ export const publicLinkedAccountsRowSchemaSchema = z.object({
   updated_at: z.string().nullable(),
 });
 
-export const publicLinkedAccountsInsertSchemaSchema = z.object({
+export const publicCompaniesInsertSchemaSchema = z.object({
   created_at: z.string().optional(),
   email: z.string(),
   id: z.number().optional(),
@@ -229,7 +61,7 @@ export const publicLinkedAccountsInsertSchemaSchema = z.object({
   updated_at: z.string().optional().nullable(),
 });
 
-export const publicLinkedAccountsUpdateSchemaSchema = z.object({
+export const publicCompaniesUpdateSchemaSchema = z.object({
   created_at: z.string().optional(),
   email: z.string().optional(),
   id: z.number().optional(),
@@ -238,9 +70,9 @@ export const publicLinkedAccountsUpdateSchemaSchema = z.object({
   updated_at: z.string().optional().nullable(),
 });
 
-export const publicLinkedAccountsRelationshipsSchemaSchema = z.tuple([
+export const publicCompaniesRelationshipsSchemaSchema = z.tuple([
   z.object({
-    foreignKeyName: z.literal("linked_accounts_owner_id_fkey"),
+    foreignKeyName: z.literal("companies_owner_id_fkey"),
     columns: z.tuple([z.literal("owner_id")]),
     isOneToOne: z.literal(false),
     referencedRelation: z.literal("accounts"),
@@ -249,84 +81,72 @@ export const publicLinkedAccountsRelationshipsSchemaSchema = z.tuple([
 ]);
 
 export const publicPlaidBankAccountsRowSchemaSchema = z.object({
-  available_balance: z.number().nullable(),
-  balance_last_updated_at: z.string().nullable(),
+  company_id: z.number(),
+  content: jsonSchema,
   created_at: z.string(),
-  current_balance: z.number().nullable(),
-  holder_category: publicBankAccountHolderCategoriesSchema.nullable(),
   id: z.number(),
-  iso_currency_code: z.string().nullable(),
-  limit_amount: z.number().nullable(),
-  linked_account_id: z.number(),
-  mask: z.string().nullable(),
-  name: z.string(),
-  official_name: z.string().nullable(),
-  persistant_account_id: z.string(),
   remote_id: z.string(),
-  subtype: publicBankAccountSubTypesSchema.nullable(),
-  type: publicBankAccountTypesSchema,
-  unofficial_currency_code: z.string().nullable(),
   updated_at: z.string().nullable(),
-  verification_name: z.string(),
-  verification_status: publicBankAccountVerificationStatusesSchema,
 });
 
 export const publicPlaidBankAccountsInsertSchemaSchema = z.object({
-  available_balance: z.number().optional().nullable(),
-  balance_last_updated_at: z.string().optional().nullable(),
+  company_id: z.number(),
+  content: jsonSchema,
   created_at: z.string().optional(),
-  current_balance: z.number().optional().nullable(),
-  holder_category: publicBankAccountHolderCategoriesSchema
-    .optional()
-    .nullable(),
   id: z.number().optional(),
-  iso_currency_code: z.string().optional().nullable(),
-  limit_amount: z.number().optional().nullable(),
-  linked_account_id: z.number(),
-  mask: z.string().optional().nullable(),
-  name: z.string(),
-  official_name: z.string().optional().nullable(),
-  persistant_account_id: z.string(),
   remote_id: z.string(),
-  subtype: publicBankAccountSubTypesSchema.optional().nullable(),
-  type: publicBankAccountTypesSchema,
-  unofficial_currency_code: z.string().optional().nullable(),
   updated_at: z.string().optional().nullable(),
-  verification_name: z.string(),
-  verification_status: publicBankAccountVerificationStatusesSchema,
 });
 
 export const publicPlaidBankAccountsUpdateSchemaSchema = z.object({
-  available_balance: z.number().optional().nullable(),
-  balance_last_updated_at: z.string().optional().nullable(),
+  company_id: z.number().optional(),
+  content: jsonSchema.optional(),
   created_at: z.string().optional(),
-  current_balance: z.number().optional().nullable(),
-  holder_category: publicBankAccountHolderCategoriesSchema
-    .optional()
-    .nullable(),
   id: z.number().optional(),
-  iso_currency_code: z.string().optional().nullable(),
-  limit_amount: z.number().optional().nullable(),
-  linked_account_id: z.number().optional(),
-  mask: z.string().optional().nullable(),
-  name: z.string().optional(),
-  official_name: z.string().optional().nullable(),
-  persistant_account_id: z.string().optional(),
   remote_id: z.string().optional(),
-  subtype: publicBankAccountSubTypesSchema.optional().nullable(),
-  type: publicBankAccountTypesSchema.optional(),
-  unofficial_currency_code: z.string().optional().nullable(),
   updated_at: z.string().optional().nullable(),
-  verification_name: z.string().optional(),
-  verification_status: publicBankAccountVerificationStatusesSchema.optional(),
 });
 
 export const publicPlaidBankAccountsRelationshipsSchemaSchema = z.tuple([
   z.object({
-    foreignKeyName: z.literal("plaid_bank_accounts_linked_account_id_fkey"),
-    columns: z.tuple([z.literal("linked_account_id")]),
+    foreignKeyName: z.literal("plaid_bank_accounts_company_id_fkey"),
+    columns: z.tuple([z.literal("company_id")]),
     isOneToOne: z.literal(false),
-    referencedRelation: z.literal("linked_accounts"),
+    referencedRelation: z.literal("companies"),
+    referencedColumns: z.tuple([z.literal("id")]),
+  }),
+]);
+
+export const publicPlaidCredentialsRowSchemaSchema = z.object({
+  access_token: z.string(),
+  company_id: z.number(),
+  created_at: z.string(),
+  item_id: z.string(),
+  updated_at: z.string().nullable(),
+});
+
+export const publicPlaidCredentialsInsertSchemaSchema = z.object({
+  access_token: z.string(),
+  company_id: z.number(),
+  created_at: z.string().optional(),
+  item_id: z.string(),
+  updated_at: z.string().optional().nullable(),
+});
+
+export const publicPlaidCredentialsUpdateSchemaSchema = z.object({
+  access_token: z.string().optional(),
+  company_id: z.number().optional(),
+  created_at: z.string().optional(),
+  item_id: z.string().optional(),
+  updated_at: z.string().optional().nullable(),
+});
+
+export const publicPlaidCredentialsRelationshipsSchemaSchema = z.tuple([
+  z.object({
+    foreignKeyName: z.literal("plaid_credentials_company_id_fkey"),
+    columns: z.tuple([z.literal("company_id")]),
+    isOneToOne: z.literal(true),
+    referencedRelation: z.literal("companies"),
     referencedColumns: z.tuple([z.literal("id")]),
   }),
 ]);
@@ -334,157 +154,63 @@ export const publicPlaidBankAccountsRelationshipsSchemaSchema = z.tuple([
 export const publicPlaidTransactionsRowSchemaSchema = z.object({
   account_owner: z.string().nullable(),
   amount: z.number(),
-  authorized_date: z.string().nullable(),
-  authorized_datetime: z.string().nullable(),
-  check_number: z.string().nullable(),
-  counterparties: jsonSchema.nullable(),
+  category: z.string().nullable(),
+  company_id: z.number(),
   created_at: z.string(),
   date: z.string(),
   id: z.number(),
   iso_currency_code: z.string().nullable(),
-  location_address: z.string().nullable(),
-  location_city: z.string().nullable(),
-  location_country: z.string().nullable(),
-  location_lat: z.number().nullable(),
-  location_lon: z.number().nullable(),
-  location_postal_code: z.string().nullable(),
-  location_region: z.string().nullable(),
-  location_store_number: z.string().nullable(),
-  logo_url: z.string().nullable(),
-  merchant_entity_id: z.string().nullable(),
-  merchant_name: z.string().nullable(),
   name: z.string(),
-  original_description: z.string().nullable(),
-  payment_channel: publicTransactionPaymentChannelsSchema,
-  payment_meta_by_order_of: z.string().nullable(),
-  payment_meta_payee: z.string().nullable(),
-  payment_meta_payer: z.string().nullable(),
-  payment_meta_payment_method: z.string().nullable(),
-  payment_meta_payment_processor: z.string().nullable(),
-  payment_meta_ppd_id: z.string().nullable(),
-  payment_meta_reference_number: z.string().nullable(),
   pending: z.boolean(),
-  pending_transaction_id: z.string().nullable(),
-  personal_finance_category_confidence_level:
-    publicTransactionPersonalFinanceCategoryConfidenceLevelsSchema.nullable(),
-  personal_finance_category_detailed: z.string().nullable(),
-  personal_finance_category_icon_url: z.string(),
-  personal_finance_category_primary: z.string().nullable(),
-  plaid_bank_account_id: z.number(),
-  posted_datetime: z.string().nullable(),
-  transaction_code: publicTransactionCodesSchema.nullable(),
-  transaction_id: z.string(),
+  plaid_category_id: z.string().nullable(),
+  plaid_transaction_id: z.string(),
+  type: z.string(),
   unofficial_currency_code: z.string().nullable(),
   updated_at: z.string().nullable(),
-  website: z.string().nullable(),
 });
 
 export const publicPlaidTransactionsInsertSchemaSchema = z.object({
   account_owner: z.string().optional().nullable(),
   amount: z.number(),
-  authorized_date: z.string().optional().nullable(),
-  authorized_datetime: z.string().optional().nullable(),
-  check_number: z.string().optional().nullable(),
-  counterparties: jsonSchema.optional().nullable(),
+  category: z.string().optional().nullable(),
+  company_id: z.number(),
   created_at: z.string().optional(),
   date: z.string(),
   id: z.number().optional(),
   iso_currency_code: z.string().optional().nullable(),
-  location_address: z.string().optional().nullable(),
-  location_city: z.string().optional().nullable(),
-  location_country: z.string().optional().nullable(),
-  location_lat: z.number().optional().nullable(),
-  location_lon: z.number().optional().nullable(),
-  location_postal_code: z.string().optional().nullable(),
-  location_region: z.string().optional().nullable(),
-  location_store_number: z.string().optional().nullable(),
-  logo_url: z.string().optional().nullable(),
-  merchant_entity_id: z.string().optional().nullable(),
-  merchant_name: z.string().optional().nullable(),
   name: z.string(),
-  original_description: z.string().optional().nullable(),
-  payment_channel: publicTransactionPaymentChannelsSchema,
-  payment_meta_by_order_of: z.string().optional().nullable(),
-  payment_meta_payee: z.string().optional().nullable(),
-  payment_meta_payer: z.string().optional().nullable(),
-  payment_meta_payment_method: z.string().optional().nullable(),
-  payment_meta_payment_processor: z.string().optional().nullable(),
-  payment_meta_ppd_id: z.string().optional().nullable(),
-  payment_meta_reference_number: z.string().optional().nullable(),
   pending: z.boolean(),
-  pending_transaction_id: z.string().optional().nullable(),
-  personal_finance_category_confidence_level:
-    publicTransactionPersonalFinanceCategoryConfidenceLevelsSchema
-      .optional()
-      .nullable(),
-  personal_finance_category_detailed: z.string().optional().nullable(),
-  personal_finance_category_icon_url: z.string(),
-  personal_finance_category_primary: z.string().optional().nullable(),
-  plaid_bank_account_id: z.number(),
-  posted_datetime: z.string().optional().nullable(),
-  transaction_code: publicTransactionCodesSchema.optional().nullable(),
-  transaction_id: z.string(),
+  plaid_category_id: z.string().optional().nullable(),
+  plaid_transaction_id: z.string(),
+  type: z.string(),
   unofficial_currency_code: z.string().optional().nullable(),
   updated_at: z.string().optional().nullable(),
-  website: z.string().optional().nullable(),
 });
 
 export const publicPlaidTransactionsUpdateSchemaSchema = z.object({
   account_owner: z.string().optional().nullable(),
   amount: z.number().optional(),
-  authorized_date: z.string().optional().nullable(),
-  authorized_datetime: z.string().optional().nullable(),
-  check_number: z.string().optional().nullable(),
-  counterparties: jsonSchema.optional().nullable(),
+  category: z.string().optional().nullable(),
+  company_id: z.number().optional(),
   created_at: z.string().optional(),
   date: z.string().optional(),
   id: z.number().optional(),
   iso_currency_code: z.string().optional().nullable(),
-  location_address: z.string().optional().nullable(),
-  location_city: z.string().optional().nullable(),
-  location_country: z.string().optional().nullable(),
-  location_lat: z.number().optional().nullable(),
-  location_lon: z.number().optional().nullable(),
-  location_postal_code: z.string().optional().nullable(),
-  location_region: z.string().optional().nullable(),
-  location_store_number: z.string().optional().nullable(),
-  logo_url: z.string().optional().nullable(),
-  merchant_entity_id: z.string().optional().nullable(),
-  merchant_name: z.string().optional().nullable(),
   name: z.string().optional(),
-  original_description: z.string().optional().nullable(),
-  payment_channel: publicTransactionPaymentChannelsSchema.optional(),
-  payment_meta_by_order_of: z.string().optional().nullable(),
-  payment_meta_payee: z.string().optional().nullable(),
-  payment_meta_payer: z.string().optional().nullable(),
-  payment_meta_payment_method: z.string().optional().nullable(),
-  payment_meta_payment_processor: z.string().optional().nullable(),
-  payment_meta_ppd_id: z.string().optional().nullable(),
-  payment_meta_reference_number: z.string().optional().nullable(),
   pending: z.boolean().optional(),
-  pending_transaction_id: z.string().optional().nullable(),
-  personal_finance_category_confidence_level:
-    publicTransactionPersonalFinanceCategoryConfidenceLevelsSchema
-      .optional()
-      .nullable(),
-  personal_finance_category_detailed: z.string().optional().nullable(),
-  personal_finance_category_icon_url: z.string().optional(),
-  personal_finance_category_primary: z.string().optional().nullable(),
-  plaid_bank_account_id: z.number().optional(),
-  posted_datetime: z.string().optional().nullable(),
-  transaction_code: publicTransactionCodesSchema.optional().nullable(),
-  transaction_id: z.string().optional(),
+  plaid_category_id: z.string().optional().nullable(),
+  plaid_transaction_id: z.string().optional(),
+  type: z.string().optional(),
   unofficial_currency_code: z.string().optional().nullable(),
   updated_at: z.string().optional().nullable(),
-  website: z.string().optional().nullable(),
 });
 
 export const publicPlaidTransactionsRelationshipsSchemaSchema = z.tuple([
   z.object({
-    foreignKeyName: z.literal("plaid_transactions_plaid_bank_account_id_fkey"),
-    columns: z.tuple([z.literal("plaid_bank_account_id")]),
+    foreignKeyName: z.literal("plaid_transactions_company_id_fkey"),
+    columns: z.tuple([z.literal("company_id")]),
     isOneToOne: z.literal(false),
-    referencedRelation: z.literal("plaid_bank_accounts"),
+    referencedRelation: z.literal("companies"),
     referencedColumns: z.tuple([z.literal("id")]),
   }),
 ]);
@@ -492,8 +218,8 @@ export const publicPlaidTransactionsRelationshipsSchemaSchema = z.tuple([
 export const publicQuickBooksOauthCredentialsRowSchemaSchema = z.object({
   access_token: z.string(),
   access_token_expiry: z.string(),
+  company_id: z.number(),
   created_at: z.string(),
-  linked_account_id: z.number(),
   realm_id: z.string(),
   refresh_token: z.string(),
   refresh_token_expiry: z.string(),
@@ -503,8 +229,8 @@ export const publicQuickBooksOauthCredentialsRowSchemaSchema = z.object({
 export const publicQuickBooksOauthCredentialsInsertSchemaSchema = z.object({
   access_token: z.string(),
   access_token_expiry: z.string(),
+  company_id: z.number().optional(),
   created_at: z.string().optional(),
-  linked_account_id: z.number().optional(),
   realm_id: z.string(),
   refresh_token: z.string(),
   refresh_token_expiry: z.string(),
@@ -514,8 +240,8 @@ export const publicQuickBooksOauthCredentialsInsertSchemaSchema = z.object({
 export const publicQuickBooksOauthCredentialsUpdateSchemaSchema = z.object({
   access_token: z.string().optional(),
   access_token_expiry: z.string().optional(),
+  company_id: z.number().optional(),
   created_at: z.string().optional(),
-  linked_account_id: z.number().optional(),
   realm_id: z.string().optional(),
   refresh_token: z.string().optional(),
   refresh_token_expiry: z.string().optional(),
@@ -526,47 +252,45 @@ export const publicQuickBooksOauthCredentialsRelationshipsSchemaSchema =
   z.tuple([
     z.object({
       foreignKeyName: z.literal(
-        "quick_books_oauth_credentials_linked_account_id_fkey",
+        "quick_books_oauth_credentials_company_id_fkey",
       ),
-      columns: z.tuple([z.literal("linked_account_id")]),
+      columns: z.tuple([z.literal("company_id")]),
       isOneToOne: z.literal(true),
-      referencedRelation: z.literal("linked_accounts"),
+      referencedRelation: z.literal("companies"),
       referencedColumns: z.tuple([z.literal("id")]),
     }),
   ]);
 
 export const publicQuickBooksOauthStatesRowSchemaSchema = z.object({
   auth_url: z.string(),
+  company_id: z.number(),
   expires_at: z.string(),
-  linked_account_id: z.number(),
   redirect_url: z.string(),
   state: z.string(),
 });
 
 export const publicQuickBooksOauthStatesInsertSchemaSchema = z.object({
   auth_url: z.string(),
+  company_id: z.number().optional(),
   expires_at: z.string(),
-  linked_account_id: z.number().optional(),
   redirect_url: z.string(),
   state: z.string(),
 });
 
 export const publicQuickBooksOauthStatesUpdateSchemaSchema = z.object({
   auth_url: z.string().optional(),
+  company_id: z.number().optional(),
   expires_at: z.string().optional(),
-  linked_account_id: z.number().optional(),
   redirect_url: z.string().optional(),
   state: z.string().optional(),
 });
 
 export const publicQuickBooksOauthStatesRelationshipsSchemaSchema = z.tuple([
   z.object({
-    foreignKeyName: z.literal(
-      "quick_books_oauth_states_linked_account_id_fkey",
-    ),
-    columns: z.tuple([z.literal("linked_account_id")]),
+    foreignKeyName: z.literal("quick_books_oauth_states_company_id_fkey"),
+    columns: z.tuple([z.literal("company_id")]),
     isOneToOne: z.literal(true),
-    referencedRelation: z.literal("linked_accounts"),
+    referencedRelation: z.literal("companies"),
     referencedColumns: z.tuple([z.literal("id")]),
   }),
 ]);

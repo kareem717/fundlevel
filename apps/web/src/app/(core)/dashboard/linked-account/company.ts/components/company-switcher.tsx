@@ -19,15 +19,15 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@fundlevel/ui/components/dropdown-menu";
-import { useLinkedAccount } from "@/components/providers/linked-account-provider";
+import { useCompany } from "@/components/providers/company-provider";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-export function LinkedAccountSwitcher({
+export function Companieswitcher({
   ...props
 }: ComponentPropsWithoutRef<typeof SidebarHeader>) {
-  const { selectedAccount, accounts } = useLinkedAccount();
+  const { selectedAccount, accounts } = useCompany();
   const isMobile = useIsMobile();
   const router = useRouter();
 
@@ -68,7 +68,7 @@ export function LinkedAccountSwitcher({
                 <DropdownMenuItem
                   key={account.id}
                   onClick={() =>
-                    router.push(redirects.app.linkedAccount(account.id).root)
+                    router.push(redirects.app.company(account.id).root)
                   }
                   className="gap-2 p-2"
                 >

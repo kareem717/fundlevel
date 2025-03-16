@@ -1,6 +1,6 @@
 "use client";
 
-import { getQuickBooksAuthUrlAction } from "@/actions/linked-account";
+import { getQuickBooksAuthUrlAction } from "@/actions/company";
 import { Button } from "@fundlevel/ui/components/button";
 import type { ComponentPropsWithoutRef } from "react";
 import { useToast } from "@fundlevel/ui/hooks/use-toast";
@@ -11,12 +11,12 @@ import { useRouter } from "next/navigation";
 
 interface LinkQuickBooksButtonProps
   extends ComponentPropsWithoutRef<typeof Button> {
-  linkedAccountId: number;
+  companyId: number;
 }
 
 export function LinkQuickBooksButton({
   className,
-  linkedAccountId,
+  companyId,
   ...props
 }: LinkQuickBooksButtonProps) {
   const { toast } = useToast();
@@ -45,7 +45,7 @@ export function LinkQuickBooksButton({
   return (
     <Button
       className={cn(className)}
-      onClick={() => execute(linkedAccountId)}
+      onClick={() => execute(companyId)}
       {...props}
     >
       {isExecuting && <Loader2 className="mr-2 animate-spin" />}

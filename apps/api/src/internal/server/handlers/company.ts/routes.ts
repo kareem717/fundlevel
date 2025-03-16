@@ -7,13 +7,13 @@ import {
   notFoundResponse,
 } from "../shared/schemas";
 import {
-  createLinkedAccounttSchema,
-  linkedAccountSchema,
+  createCompanytSchema,
+  companieschema,
 } from "../../../entities";
 
-export const createLinkedAccountRoute = createRoute({
+export const createCompanyRoute = createRoute({
   summary: "Create a new linked account manually",
-  operationId: "createLinkedAccount",
+  operationId: "createCompany",
   tags: ["Linked Accounts"],
   security: [bearerAuthSchema],
   method: "post",
@@ -22,7 +22,7 @@ export const createLinkedAccountRoute = createRoute({
     body: {
       content: {
         "application/json": {
-          schema: createLinkedAccounttSchema,
+          schema: createCompanytSchema,
         },
       },
     },
@@ -32,7 +32,7 @@ export const createLinkedAccountRoute = createRoute({
       description: "Linked account created successfully",
       content: {
         "application/json": {
-          schema: linkedAccountSchema,
+          schema: companieschema,
         },
       },
     },
@@ -104,7 +104,7 @@ export const createPlaidLinkTokenRoute = createRoute({
 
 export const getByIdRoute = createRoute({
   summary: "Get linked account by ID",
-  operationId: "getLinkedAccountById",
+  operationId: "getCompanyById",
   tags: ["Linked Accounts"],
   security: [bearerAuthSchema],
   method: "get",
@@ -119,7 +119,7 @@ export const getByIdRoute = createRoute({
       description: "Linked account details",
       content: {
         "application/json": {
-          schema: linkedAccountSchema,
+          schema: companieschema,
         },
       },
     },
@@ -129,7 +129,7 @@ export const getByIdRoute = createRoute({
 
 export const getByAccountIdRoute = createRoute({
   summary: "Get all linked accounts for an account",
-  operationId: "getLinkedAccountsByAccountId",
+  operationId: "getCompaniesByAccountId",
   tags: ["Linked Accounts"],
   security: [bearerAuthSchema],
   method: "get",
@@ -139,7 +139,7 @@ export const getByAccountIdRoute = createRoute({
       description: "List of linked accounts",
       content: {
         "application/json": {
-          schema: z.array(linkedAccountSchema),
+          schema: z.array(companieschema),
         },
       },
     },
@@ -206,9 +206,9 @@ export const deletePlaidCredentialsRoute = createRoute({
   },
 });
 
-export const deleteLinkedAccountRoute = createRoute({
+export const deleteCompanyRoute = createRoute({
   summary: "Delete a linked account and all associated credentials",
-  operationId: "deleteLinkedAccount",
+  operationId: "deleteCompany",
   tags: ["Linked Accounts"],
   security: [bearerAuthSchema],
   method: "delete",

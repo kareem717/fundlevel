@@ -1,4 +1,4 @@
-import { getLinkedAccountByIdAction } from "@/actions/linked-account";
+import { getCompanyByIdAction } from "@/actions/company";
 import {
   Card,
   CardContent,
@@ -17,7 +17,7 @@ import { format } from "date-fns";
 import { LinkPlaidButton } from "./components/link-plaid-button";
 import { LinkQuickBooksButton } from "./components/link-quick-books-button";
 
-export default async function LinkedAccountPage({
+export default async function CompanyPage({
   params,
 }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -27,9 +27,9 @@ export default async function LinkedAccountPage({
     return notFound();
   }
 
-  const linkedAccount = (await getLinkedAccountByIdAction(parsedId))?.data;
+  const company = (await getCompanyByIdAction(parsedId))?.data;
 
-  if (!linkedAccount) {
+  if (!company) {
     return notFound();
   }
 
@@ -37,18 +37,18 @@ export default async function LinkedAccountPage({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold mb-2">{linkedAccount.name}</h1>
+          <h1 className="text-3xl font-bold mb-2">{company.name}</h1>
           <p className="text-muted-foreground">
             Manage your linked account and view financial data
           </p>
         </div>
         <div className="flex gap-3">
           <LinkPlaidButton
-            linkedAccountId={linkedAccount.id}
+            companyId={company.id}
             variant="outline"
           />
           <LinkQuickBooksButton
-            linkedAccountId={linkedAccount.id}
+            companyId={company.id}
             variant="default"
           />
         </div>
@@ -75,27 +75,27 @@ export default async function LinkedAccountPage({
                   <p className="text-sm font-medium text-muted-foreground">
                     ID
                   </p>
-                  <p>{linkedAccount.id}</p>
+                  <p>{company.id}</p>
                 </div>
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">
                     Name
                   </p>
-                  <p>{linkedAccount.name}</p>
+                  <p>{company.name}</p>
                 </div>
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">
                     Connected on
                   </p>
-                  <p>{format(new Date(linkedAccount.created_at), "PPP")}</p>
+                  <p>{format(new Date(company.created_at), "PPP")}</p>
                 </div>
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">
                     Last updated
                   </p>
                   <p>
-                    {linkedAccount.updated_at
-                      ? format(new Date(linkedAccount.updated_at), "PPP")
+                    {company.updated_at
+                      ? format(new Date(company.updated_at), "PPP")
                       : "Never"}
                   </p>
                 </div>

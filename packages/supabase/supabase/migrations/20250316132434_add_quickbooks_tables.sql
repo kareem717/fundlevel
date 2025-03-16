@@ -1,6 +1,6 @@
 CREATE TABLE
     quick_books_oauth_credentials (
-        linked_account_id serial PRIMARY KEY NOT NULL REFERENCES linked_accounts,
+        company_id serial PRIMARY KEY NOT NULL REFERENCES companies,
         realm_id TEXT NOT NULL,
         access_token TEXT NOT NULL,
         access_token_expiry TIMESTAMP WITH TIME ZONE NOT NULL,
@@ -12,7 +12,7 @@ CREATE TABLE
 
 CREATE TABLE
     quick_books_oauth_states (
-        linked_account_id serial NOT NULL PRIMARY KEY REFERENCES linked_accounts,
+        company_id serial NOT NULL PRIMARY KEY REFERENCES companies,
         state UUID NOT NULL,
         redirect_url TEXT NOT NULL,
         auth_url TEXT NOT NULL,

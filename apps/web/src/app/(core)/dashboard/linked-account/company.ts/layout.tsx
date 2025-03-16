@@ -1,4 +1,4 @@
-import { getLinkedAccountsAction } from "@/actions/linked-account";
+import { getCompaniesAction } from "@/actions/company";
 import { notFound } from "next/navigation";
 import { Separator } from "@fundlevel/ui/components/separator";
 import {
@@ -7,10 +7,10 @@ import {
   SidebarTrigger,
 } from "@fundlevel/ui/components/sidebar";
 import type { ReactNode } from "react";
-import { LinkedAccountProvider } from "@/components/providers/linked-account-provider";
-import { LinkedAccountSidebar } from "./components/linked-account-sidebar";
+import { CompanyProvider } from "@/components/providers/company-provider";
+import { Companiesidebar } from "./components/company-sidebar";
 
-export default async function LinkedAccountLayout({
+export default async function CompanyLayout({
   children,
   params,
 }: {
@@ -24,20 +24,20 @@ export default async function LinkedAccountLayout({
     return notFound();
   }
 
-  const linkedAccounts = (await getLinkedAccountsAction())?.data;
-  if (!linkedAccounts || !linkedAccounts.length) {
+  const companies = (await getCompaniesAction())?.data;
+  if (!companies || !companies.length) {
     return notFound();
   }
 
-  const current = linkedAccounts.find((account) => account.id === parsedId);
+  const current = companies.find((account) => account.id === parsedId);
   if (!current) {
     return notFound();
   }
 
   return (
-    <LinkedAccountProvider accounts={linkedAccounts} defaultAccount={current}>
+    <CompanyProvider accounts={companies} defaultAccount={current}>
       <SidebarProvider>
-        <LinkedAccountSidebar accountId={current.id} />
+        <Companiesidebar accountId={current.id} />
         <SidebarInset>
           {/* {alertComponent} */}
           <header className="flex h-16 shrink-0 items-center gap-2">
@@ -50,6 +50,6 @@ export default async function LinkedAccountLayout({
           <div className="flex flex-1 flex-col gap-4 p-4 pt-0">{children}</div>
         </SidebarInset>
       </SidebarProvider>
-    </LinkedAccountProvider>
+    </CompanyProvider>
   );
 }

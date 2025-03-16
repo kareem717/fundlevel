@@ -5,21 +5,21 @@ import {
   getByIdRoute,
   getByAccountIdRoute,
   createPlaidLinkTokenRoute,
-  createLinkedAccountRoute,
+  createCompanyRoute,
   deletePlaidCredentialsRoute,
-  deleteLinkedAccountRoute,
+  deleteCompanyRoute,
   swapPlaidPublicTokenRoute,
   quickBooksCallback,
 } from "./routes";
 import type {
-  ILinkedAccountService,
+  ICompanieservice,
 } from "../../../service";
 
-const linkedAccountHandler = (
-  linkedAccountService: ILinkedAccountService,
+const companyHandler = (
+  companieservice: ICompanieservice,
 ) => {
   const app = new OpenAPIHono()
-    .openapi(createLinkedAccountRoute, async (c) => {
+    .openapi(createCompanyRoute, async (c) => {
       const account = getAccount(c);
       if (!account) {
         return c.json(
@@ -32,12 +32,12 @@ const linkedAccountHandler = (
 
       const params = c.req.valid("json");
 
-      const linkedAccount = await linkedAccountService.create({
+      const company = await companieservice.create({
         owner_id: account.id,
         ...params,
       });
 
-      return c.json(linkedAccount, 201);
+      return c.json(company, 201);
     })
     .openapi(getByAccountIdRoute, async (c) => {
       const account = getAccount(c);
@@ -50,10 +50,10 @@ const linkedAccountHandler = (
         );
       }
 
-      const linkedAccounts = await linkedAccountService.getByAccountId(
+      const companies = await companieservice.getByAccountId(
         account.id,
       );
-      return c.json(linkedAccounts, 200);
+      return c.json(companies, 200);
     })
     .openapi(createPlaidLinkTokenRoute, async (c) => {
       const account = getAccount(c);
@@ -68,9 +68,9 @@ const linkedAccountHandler = (
 
       const { id } = c.req.valid("param");
 
-      const linkedAccount = await linkedAccountService.getById(id);
+      const company = await companieservice.getById(id);
 
-      if (linkedAccount.owner_id !== account.id) {
+      if (company.owner_id !== account.id) {
         return c.json(
           {
             error: "Forbidden from managing this account",
@@ -78,8 +78,8 @@ const linkedAccountHandler = (
           403,
         );
       }
-      const linkToken = await linkedAccountService.createPlaidLinkToken({
-        linkedAccountId: linkedAccount.id,
+      const linkToken = await companieservice.createPlaidLinkToken({
+        companyId: company.id,
       });
 
       return c.json(
@@ -103,7 +103,7 @@ const linkedAccountHandler = (
       const { id } = c.req.valid("param");
       const { redirect_uri } = c.req.valid("query");
 
-      const url = await linkedAccountService.startQuickBooksOAuthFlow(id, redirect_uri);
+      const url = await companieservice.startQuickBooksOAuthFlow(id, redirect_uri);
 
       return c.json(
         {
@@ -113,7 +113,7 @@ const linkedAccountHandler = (
       );
     })
     .openapi(quickBooksCallback, async (c) => {
-      const redirectUrl = await linkedAccountService.completeQuickBooksOAuthFlow(
+      const redirectUrl = await companieservice.completeQuickBooksOAuthFlow(
         c.req.valid("query"),
       );
       return c.redirect(redirectUrl);
@@ -130,9 +130,9 @@ const linkedAccountHandler = (
       }
 
       const { id } = c.req.valid("param");
-      const linkedAccount = await linkedAccountService.getById(id);
+      const company = await companieservice.getById(id);
 
-      return c.json(linkedAccount, 200);
+      return c.json(company, 200);
     })
     .openapi(deletePlaidCredentialsRoute, async (c) => {
       const account = getAccount(c);
@@ -148,8 +148,8 @@ const linkedAccountHandler = (
       const { id } = c.req.valid("param");
 
       // Verify the linked account belongs to the user
-      const linkedAccount = await linkedAccountService.getById(id);
-      if (!linkedAccount) {
+      const company = await companieservice.getById(id);
+      if (!company) {
         return c.json(
           {
             error: "Linked account not found",
@@ -158,7 +158,7 @@ const linkedAccountHandler = (
         );
       }
 
-      if (linkedAccount.owner_id !== account.id) {
+      if (company.owner_id !== account.id) {
         return c.json(
           {
             error: "Forbidden from managing this account",
@@ -168,12 +168,12 @@ const linkedAccountHandler = (
       }
 
       // Delete the credentials
-      await linkedAccountService.deletePlaidCredentials(linkedAccount.id);
+      await companieservice.deletePlaidCredentials(company.id);
 
       // Return 204 No Content for successful deletion
       return new Response(null, { status: 204 });
     })
-    .openapi(deleteLinkedAccountRoute, async (c) => {
+    .openapi(deleteCompanyRoute, async (c) => {
       const account = getAccount(c);
       if (!account) {
         return c.json(
@@ -187,8 +187,8 @@ const linkedAccountHandler = (
       const { id } = c.req.valid("param");
 
       // Verify the linked account belongs to the user
-      const linkedAccount = await linkedAccountService.getById(id);
-      if (!linkedAccount) {
+      const company = await companieservice.getById(id);
+      if (!company) {
         return c.json(
           {
             error: "Linked account not found",
@@ -197,7 +197,7 @@ const linkedAccountHandler = (
         );
       }
 
-      if (linkedAccount.owner_id !== account.id) {
+      if (company.owner_id !== account.id) {
         return c.json(
           {
             error: "Forbidden from managing this account",
@@ -207,7 +207,7 @@ const linkedAccountHandler = (
       }
 
       // Delete the linked account and all associated credentials
-      await linkedAccountService.deleteLinkedAccount(linkedAccount.id);
+      await companieservice.deleteCompany(company.id);
 
       // Return 204 No Content for successful deletion
       return new Response(null, { status: 204 });
@@ -227,8 +227,8 @@ const linkedAccountHandler = (
       const { public_token } = c.req.valid("query");
 
       // Verify the linked account belongs to the user
-      const linkedAccount = await linkedAccountService.getById(id);
-      if (!linkedAccount) {
+      const company = await companieservice.getById(id);
+      if (!company) {
         return c.json(
           {
             error: "Linked account not found",
@@ -237,7 +237,7 @@ const linkedAccountHandler = (
         );
       }
 
-      if (linkedAccount.owner_id !== account.id) {
+      if (company.owner_id !== account.id) {
         return c.json(
           {
             error: "Forbidden from managing this account",
@@ -247,8 +247,8 @@ const linkedAccountHandler = (
       }
 
       // Exchange the public token for an access token
-      const credentials = await linkedAccountService.createPlaidCredentials({
-        linkedAccountId: linkedAccount.id,
+      const credentials = await companieservice.createPlaidCredentials({
+        companyId: company.id,
         publicToken: public_token,
       });
 
@@ -263,4 +263,4 @@ const linkedAccountHandler = (
   return app;
 };
 
-export default linkedAccountHandler;
+export default companyHandler;

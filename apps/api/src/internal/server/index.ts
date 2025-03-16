@@ -8,7 +8,7 @@ import { OpenAPIHono } from "@hono/zod-openapi";
 import { swaggerUI } from "@hono/swagger-ui";
 import accountHandler from "./handlers/account";
 import type { Service } from "../service";
-import linkedAccountHandler from "./handlers/linked-account";
+import companyHandler from "./handlers/company.ts";
 import webhookHandler from "./handlers/webhook";
 
 export class Server {
@@ -73,7 +73,7 @@ export class Server {
       .route("/accounts", accountHandler(service.account))
       .route(
         "/linked-accounts",
-        linkedAccountHandler(service.linkedAccount),
+        companyHandler(service.company),
       )
       .route("/webhooks", webhookHandler());
   }

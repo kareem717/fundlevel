@@ -1,14 +1,14 @@
 const appRoot = "/dashboard";
-const linkedAccountRoot = "/linked-account";
+const companyRoot = "/linked-account";
 
 // Helper function moved to top for clarity
-const linkedAccountPrefix = (id: number, path?: string) =>
-  `${appRoot}/${linkedAccountRoot}/${id}${path ? `/${path}` : ""}`;
+const companyPrefix = (id: number, path?: string) =>
+  `${appRoot}/${companyRoot}/${id}${path ? `/${path}` : ""}`;
 
 // Helper to reduce repetition in business dashboard paths
-const linkedAccountPath = (id: number) => ({
-  root: () => linkedAccountPrefix(id),
-  path: (suffix: string) => linkedAccountPrefix(id, suffix),
+const companyPath = (id: number) => ({
+  root: () => companyPrefix(id),
+  path: (suffix: string) => companyPrefix(id, suffix),
 });
 
 export const redirects = {
@@ -28,8 +28,8 @@ export const redirects = {
     error: (error: string) => `/auth-error?error=${error}`,
   },
   app: {
-    linkedAccount: (id: number) => ({
-      root: linkedAccountPath(id).root(),
+    company: (id: number) => ({
+      root: companyPath(id).root(),
     }),
     root: appRoot,
   },

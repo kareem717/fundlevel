@@ -1,5 +1,5 @@
-import type { ILinkedAccountService } from "../interfaces";
-import type { ILinkedAccountRepository } from "../../storage";
+import type { ICompanieservice } from "../interfaces";
+import type { ICompanyRepository } from "../../storage";
 import {
   Configuration,
   PlaidApi,
@@ -7,14 +7,14 @@ import {
   CountryCode,
   Products,
 } from "plaid";
-import type { CreateLinkedAccount, LinkedAccount } from "../../entities";
+import type { CreateCompany, Company } from "../../entities";
 import { env } from "../../../env";
 import { randomUUIDv7 } from "bun";
 import axios from "axios";
 
-export class LinkedAccountService implements ILinkedAccountService {
+export class Companieservice implements ICompanieservice {
   private plaid;
-  private linkedAccountRepo;
+  private companyRepo;
 
   private qbApiBaseUrl: string;
   private static qbStateExpiresInMs = 60 * 5 * 1000; // 5 minutes;
@@ -27,8 +27,8 @@ export class LinkedAccountService implements ILinkedAccountService {
   private static readonly QUICK_BOOKS_OAUTH_REVOKE_URL =
     "https://developer.api.intuit.com/v2/oauth2/tokens/revoke";
 
-  constructor(linkedAccountRepo: ILinkedAccountRepository) {
-    this.linkedAccountRepo = linkedAccountRepo;
+  constructor(companyRepo: ICompanyRepository) {
+    this.companyRepo = companyRepo;
 
     // Set the appropriate base URLs based on environment
     switch (env.QB_ENVIRONMENT) {
@@ -51,13 +51,13 @@ export class LinkedAccountService implements ILinkedAccountService {
     });
 
     this.plaid = new PlaidApi(plaidConfig);
-    this.linkedAccountRepo = linkedAccountRepo;
+    this.companyRepo = companyRepo;
   }
 
   async createPlaidLinkToken({
-    linkedAccountId,
+    companyId,
   }: {
-    linkedAccountId: number;
+    companyId: number;
   }) {
     const resp = await this.plaid.linkTokenCreate({
       // TODO: read from config
@@ -66,7 +66,7 @@ export class LinkedAccountService implements ILinkedAccountService {
       country_codes: [CountryCode.Us, CountryCode.Ca],
       products: [Products.Transactions],
       user: {
-        client_user_id: String(linkedAccountId),
+        client_user_id: String(companyId),
       },
       webhook: env.PLAID_WEBHOOK_URL,
     });
@@ -75,7 +75,7 @@ export class LinkedAccountService implements ILinkedAccountService {
   }
 
   async createPlaidCredentials(params: {
-    linkedAccountId: number;
+    companyId: number;
     publicToken: string;
   }) {
     const { item_id, access_token } = (
@@ -84,8 +84,8 @@ export class LinkedAccountService implements ILinkedAccountService {
       })
     ).data;
 
-    const creds = await this.linkedAccountRepo.createPlaidCredentials({
-      linked_account_id: params.linkedAccountId,
+    const creds = await this.companyRepo.createPlaidCredentials({
+      company_id: params.companyId,
       item_id,
       access_token,
     });
@@ -94,35 +94,35 @@ export class LinkedAccountService implements ILinkedAccountService {
   }
 
   async getById(id: number) {
-    return this.linkedAccountRepo.getById(id);
+    return this.companyRepo.getById(id);
   }
 
   async getByAccountId(accountId: number) {
-    return this.linkedAccountRepo.getByAccountId(accountId);
+    return this.companyRepo.getByAccountId(accountId);
   }
 
-  async create(params: CreateLinkedAccount): Promise<LinkedAccount> {
-    return this.linkedAccountRepo.create(params);
+  async create(params: CreateCompany): Promise<Company> {
+    return this.companyRepo.create(params);
   }
 
-  async deletePlaidCredentials(linkedAccountId: number): Promise<void> {
-    await this.linkedAccountRepo.deletePlaidCredentials(linkedAccountId);
+  async deletePlaidCredentials(companyId: number): Promise<void> {
+    await this.companyRepo.deletePlaidCredentials(companyId);
   }
 
-  async deleteLinkedAccount(id: number): Promise<void> {
+  async deleteCompany(id: number): Promise<void> {
     try {
-      await this.linkedAccountRepo.deleteQuickBooksOAuthCredentials(id);
+      await this.companyRepo.deleteQuickBooksOAuthCredentials(id);
     } catch {
       //ignore error
     }
 
-    await this.linkedAccountRepo.deleteLinkedAccount(id);
+    await this.companyRepo.deleteCompany(id);
   }
 
-  async startQuickBooksOAuthFlow(linkedAccountId: number, redirectUrl: string) {
+  async startQuickBooksOAuthFlow(companyId: number, redirectUrl: string) {
     try {
       // Clear old states to avoid conflicts
-      await this.linkedAccountRepo.deleteQuickBooksOAuthStates(linkedAccountId);
+      await this.companyRepo.deleteQuickBooksOAuthStates(companyId);
     } catch {
       //ignore error
     }
@@ -132,24 +132,24 @@ export class LinkedAccountService implements ILinkedAccountService {
     const params = new URLSearchParams({
       client_id: env.QB_CLIENT_ID,
       response_type: "code",
-      scope: LinkedAccountService.QUICK_BOOKS_OAUTH_SCOPES,
+      scope: Companieservice.QUICK_BOOKS_OAUTH_SCOPES,
       redirect_uri: redirectUrl,
       state,
     });
 
-    const auth_url = `${LinkedAccountService.QUICK_BOOKS_OAUTH_BASE_URL}/authorize?${params.toString()}`;
+    const auth_url = `${Companieservice.QUICK_BOOKS_OAUTH_BASE_URL}/authorize?${params.toString()}`;
 
     // Save the state in the session
-    await this.linkedAccountRepo.createQuickBooksOAuthState(
+    await this.companyRepo.createQuickBooksOAuthState(
       {
         state,
         expires_at: new Date(
-          Date.now() + LinkedAccountService.qbStateExpiresInMs,
+          Date.now() + Companieservice.qbStateExpiresInMs,
         ).toISOString(),
         redirect_url: redirectUrl,
         auth_url,
       },
-      linkedAccountId,
+      companyId,
     );
 
     return auth_url;
@@ -161,10 +161,10 @@ export class LinkedAccountService implements ILinkedAccountService {
     realmId: string;
   }) {
     const { code, state: callbackState, realmId } = params;
-    const { linked_account_id, redirect_url } = await this.linkedAccountRepo.getQuickBooksOAuthState(callbackState);
+    const { company_id, redirect_url } = await this.companyRepo.getQuickBooksOAuthState(callbackState);
 
     const response = await axios.post(
-      LinkedAccountService.QUICK_BOOKS_OAUTH_TOKEN_URL,
+      Companieservice.QUICK_BOOKS_OAUTH_TOKEN_URL,
       new URLSearchParams({
         grant_type: "authorization_code",
         code,
@@ -216,7 +216,7 @@ export class LinkedAccountService implements ILinkedAccountService {
       throw new Error("Invalid response format from QuickBooks API");
     }
 
-    await this.linkedAccountRepo.createQuickBooksOAuthCredentials(
+    await this.companyRepo.createQuickBooksOAuthCredentials(
       {
         realm_id: realmId,
         access_token: access_token,
@@ -228,20 +228,20 @@ export class LinkedAccountService implements ILinkedAccountService {
           Date.now() + x_refresh_token_expires_in * 1000,
         ).toISOString(),
       },
-      linked_account_id,
+      company_id,
     );
     // Doesn't really have to be in a tx
-    await this.linkedAccountRepo.deleteQuickBooksOAuthStates(linked_account_id);
+    await this.companyRepo.deleteQuickBooksOAuthStates(company_id);
 
     return redirect_url;
   }
 
-  async getQuickBooksOAuthCredentials(linkedAccountId: number) {
-    const creds = await this.linkedAccountRepo.getQuickBooksOAuthCredentials(linkedAccountId);
+  async getQuickBooksOAuthCredentials(companyId: number) {
+    const creds = await this.companyRepo.getQuickBooksOAuthCredentials(companyId);
 
     if (creds.access_token_expiry < new Date().toISOString()) {
       const response = await axios.post(
-        LinkedAccountService.QUICK_BOOKS_OAUTH_TOKEN_URL,
+        Companieservice.QUICK_BOOKS_OAUTH_TOKEN_URL,
         new URLSearchParams({
           grant_type: "refresh_token",
           refresh_token: creds.refresh_token,
@@ -266,14 +266,14 @@ export class LinkedAccountService implements ILinkedAccountService {
       ).toISOString();
 
       // Update the database with new token data
-      const newRrcord = await this.linkedAccountRepo.updateQuickBooksOAuthCredentials(
+      const newRrcord = await this.companyRepo.updateQuickBooksOAuthCredentials(
         {
           access_token: response.data.access_token,
           refresh_token: response.data.refresh_token,
           access_token_expiry,
           refresh_token_expiry,
         },
-        linkedAccountId,
+        companyId,
       );
 
       // Update the return object with fresh data
@@ -283,11 +283,11 @@ export class LinkedAccountService implements ILinkedAccountService {
     return creds;
   }
 
-  async deleteQuickBooksOAuthCredentials(linkedAccountId: number) {
-    const creds = await this.linkedAccountRepo.getQuickBooksOAuthCredentials(linkedAccountId);
+  async deleteQuickBooksOAuthCredentials(companyId: number) {
+    const creds = await this.companyRepo.getQuickBooksOAuthCredentials(companyId);
 
     await axios.post(
-      LinkedAccountService.QUICK_BOOKS_OAUTH_REVOKE_URL,
+      Companieservice.QUICK_BOOKS_OAUTH_REVOKE_URL,
       new URLSearchParams({
         token: creds.refresh_token,
       }).toString(),
@@ -302,6 +302,6 @@ export class LinkedAccountService implements ILinkedAccountService {
       },
     );
 
-    await this.linkedAccountRepo.deleteQuickBooksOAuthCredentials(linkedAccountId);
+    await this.companyRepo.deleteQuickBooksOAuthCredentials(companyId);
   }
 }

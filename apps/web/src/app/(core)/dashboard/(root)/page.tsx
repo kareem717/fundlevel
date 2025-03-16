@@ -1,4 +1,4 @@
-import { getLinkedAccountsAction } from "@/actions/linked-account";
+import { getCompaniesAction } from "@/actions/company";
 import {
   Card,
   CardDescription,
@@ -9,22 +9,22 @@ import Link from "next/link";
 import { format } from "date-fns";
 import { redirects } from "@/lib/config/redirects";
 import { LinkIcon } from "lucide-react";
-import { CreateLinkedAccountDialog } from "./components/create-linked-account-dialog";
+import { CreateCompanyDialog } from "./components/create-linked-account-dialog";
 
 export default async function DashboardPage() {
-  const linkedAccounts = (await getLinkedAccountsAction())?.data || [];
+  const companies = (await getCompaniesAction())?.data || [];
 
   return (
     <div className="container py-8 mx-auto">
       <div className="mb-6">
-        <CreateLinkedAccountDialog />
+        <CreateCompanyDialog />
       </div>
-      {linkedAccounts.length > 0 ? (
+      {companies.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {linkedAccounts.map((account) => (
+          {companies.map((account) => (
             <Link
               key={account.id}
-              href={redirects.app.linkedAccount(account.id).root}
+              href={redirects.app.company(account.id).root}
             >
               <Card className="flex flex-col h-full">
                 <CardHeader>
@@ -50,7 +50,7 @@ export default async function DashboardPage() {
             Connect your financial accounts to get started with FundLevel. Link
             your first account to begin tracking your finances.
           </p>
-          <CreateLinkedAccountDialog />
+          <CreateCompanyDialog />
         </div>
       )}
     </div>

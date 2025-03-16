@@ -1,59 +1,59 @@
 import type { Database } from "@fundlevel/supabase/types";
 import {
-  publicLinkedAccountsInsertSchemaSchema,
-  publicLinkedAccountsRowSchemaSchema,
-  publicLinkedAccountPlaidCredentialsInsertSchemaSchema,
-  publicLinkedAccountPlaidCredentialsRowSchemaSchema,
+  publicCompaniesInsertSchemaSchema,
+  publicCompaniesRowSchemaSchema,
+  publicCompanyPlaidCredentialsInsertSchemaSchema,
+  publicCompanyPlaidCredentialsRowSchemaSchema,
 } from "@fundlevel/supabase/zod";
 import { z } from "@hono/zod-openapi";
 
-export type LinkedAccount =
-  Database["public"]["Tables"]["linked_accounts"]["Row"];
+export type Company =
+  Database["public"]["Tables"]["companies"]["Row"];
 
-export type CreateLinkedAccount = Omit<
-  Database["public"]["Tables"]["linked_accounts"]["Insert"],
+export type CreateCompany = Omit<
+  Database["public"]["Tables"]["companies"]["Insert"],
   "created_at" | "updated_at" | "id"
 >;
 
-export const linkedAccountSchema = z
+export const companieschema = z
   .object({
-    ...publicLinkedAccountsRowSchemaSchema.shape,
+    ...publicCompaniesRowSchemaSchema.shape,
   })
-  .openapi("LinkedAccount")
+  .openapi("Company")
   .required();
-export const createLinkedAccounttSchema = z
+export const createCompanytSchema = z
   .object({
-    ...publicLinkedAccountsInsertSchemaSchema.omit({
+    ...publicCompaniesInsertSchemaSchema.omit({
       created_at: true,
       updated_at: true,
       id: true,
       owner_id: true,
     }).shape,
   })
-  .openapi("CreateLinkedAccountParams")
+  .openapi("CreateCompanyParams")
   .required();
 
 
 export type PlaidCredentials =
-  Database["public"]["Tables"]["linked_account_plaid_credentials"]["Row"];
+  Database["public"]["Tables"]["plaid_credentials"]["Row"];
 
 export type CreatePlaidCredentials = Omit<
-  Database["public"]["Tables"]["linked_account_plaid_credentials"]["Insert"],
+  Database["public"]["Tables"]["plaid_credentials"]["Insert"],
   "created_at" | "updated_at"
 >;
 
 export const plaidCredentialsSchema = z
   .object({
-    ...publicLinkedAccountPlaidCredentialsRowSchemaSchema.shape,
+    ...publicCompanyPlaidCredentialsRowSchemaSchema.shape,
   })
   .openapi("PlaidCredentials")
   .required();
 
 export const createPlaidCredentialsSchema = z
   .object({
-    ...publicLinkedAccountPlaidCredentialsInsertSchemaSchema.omit({
+    ...publicCompanyPlaidCredentialsInsertSchemaSchema.omit({
       created_at: true,
-      linked_account_id: true,
+      company_id: true,
     }).shape,
   })
   .openapi("CreatePlaidCredentialsParams")
@@ -63,18 +63,18 @@ export type QuickBooksOAuthCredentials =
   Database["public"]["Tables"]["quick_books_oauth_credentials"]["Row"];
 export type CreateQuickBooksOAuthCredentials = Omit<
   Database["public"]["Tables"]["quick_books_oauth_credentials"]["Insert"],
-  "linked_account_id" | "created_at" | "updated_at"
+  "company_id" | "created_at" | "updated_at"
 >;
 export type UpdateQuickBooksOAuthCredentials = Omit<
   Database["public"]["Tables"]["quick_books_oauth_credentials"]["Update"],
-  "linked_account_id" | "realm_id" | "created_at" | "updated_at"
+  "company_id" | "realm_id" | "created_at" | "updated_at"
 >;
 
 export type QuickBooksOAuthState =
   Database["public"]["Tables"]["quick_books_oauth_states"]["Row"];
 export type CreateQuickBooksOAuthState = Omit<
   Database["public"]["Tables"]["quick_books_oauth_states"]["Insert"],
-  "linked_account_id"
+  "company_id"
 >;
 
 /**

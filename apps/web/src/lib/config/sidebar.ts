@@ -4,19 +4,19 @@ import type { ElementType } from "react";
 
 export type NavigationItem =
   | {
+    title: string;
+    url: string;
+    icon?: ElementType;
+  }
+  | {
+    title: string;
+    root: string;
+    icon?: ElementType;
+    items: {
       title: string;
       url: string;
-      icon?: ElementType;
-    }
-  | {
-      title: string;
-      root: string;
-      icon?: ElementType;
-      items: {
-        title: string;
-        url: string;
-      }[];
-    };
+    }[];
+  };
 
 export type NavigationMenu = {
   name: string;
@@ -51,14 +51,14 @@ const dashboard: NavigationMenu[] = [
   },
 ];
 
-const linkedAccountDashboard = (id: number): NavigationMenu[] => [
+const companyDashboard = (id: number): NavigationMenu[] => [
   {
     name: "Linked Account",
-    path: redirects.app.linkedAccount(id).root,
+    path: redirects.app.company(id).root,
     items: [
       {
         title: "Overview",
-        url: redirects.app.linkedAccount(id).root,
+        url: redirects.app.company(id).root,
         icon: LayoutGrid,
       },
     ],
@@ -70,5 +70,5 @@ const linkedAccountDashboard = (id: number): NavigationMenu[] => [
  */
 export const sidebar = {
   dashboard,
-  linkedAccountDashboard,
+  companyDashboard,
 };

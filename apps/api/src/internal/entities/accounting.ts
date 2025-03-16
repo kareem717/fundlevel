@@ -33,7 +33,7 @@ export const createBankAccountSchema = z
   .object({
     ...publicPlaidBankAccountsInsertSchemaSchema.omit({
       id: true,
-      linked_account_id: true,
+      company_id: true,
       created_at: true,
       updated_at: true,
     }).shape,

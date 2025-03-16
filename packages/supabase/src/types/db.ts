@@ -58,39 +58,7 @@ export type Database = {
         }
         Relationships: []
       }
-      linked_account_plaid_credentials: {
-        Row: {
-          access_token: string
-          created_at: string
-          item_id: string
-          linked_account_id: number
-          updated_at: string | null
-        }
-        Insert: {
-          access_token: string
-          created_at?: string
-          item_id: string
-          linked_account_id: number
-          updated_at?: string | null
-        }
-        Update: {
-          access_token?: string
-          created_at?: string
-          item_id?: string
-          linked_account_id?: number
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "linked_account_plaid_credentials_linked_account_id_fkey"
-            columns: ["linked_account_id"]
-            isOneToOne: true
-            referencedRelation: "linked_accounts"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      linked_accounts: {
+      companies: {
         Row: {
           created_at: string
           email: string
@@ -117,7 +85,7 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "linked_accounts_owner_id_fkey"
+            foreignKeyName: "companies_owner_id_fkey"
             columns: ["owner_id"]
             isOneToOne: false
             referencedRelation: "accounts"
@@ -127,83 +95,67 @@ export type Database = {
       }
       plaid_bank_accounts: {
         Row: {
-          available_balance: number | null
-          balance_last_updated_at: string | null
+          company_id: number
+          content: Json
           created_at: string
-          current_balance: number | null
-          holder_category:
-            | Database["public"]["Enums"]["bank_account_holder_categories"]
-            | null
           id: number
-          iso_currency_code: string | null
-          limit_amount: number | null
-          linked_account_id: number
-          mask: string | null
-          name: string
-          official_name: string | null
-          persistant_account_id: string
           remote_id: string
-          subtype: Database["public"]["Enums"]["bank_account_sub_types"] | null
-          type: Database["public"]["Enums"]["bank_account_types"]
-          unofficial_currency_code: string | null
           updated_at: string | null
-          verification_name: string
-          verification_status: Database["public"]["Enums"]["bank_account_verification_statuses"]
         }
         Insert: {
-          available_balance?: number | null
-          balance_last_updated_at?: string | null
+          company_id: number
+          content: Json
           created_at?: string
-          current_balance?: number | null
-          holder_category?:
-            | Database["public"]["Enums"]["bank_account_holder_categories"]
-            | null
           id?: number
-          iso_currency_code?: string | null
-          limit_amount?: number | null
-          linked_account_id: number
-          mask?: string | null
-          name: string
-          official_name?: string | null
-          persistant_account_id: string
           remote_id: string
-          subtype?: Database["public"]["Enums"]["bank_account_sub_types"] | null
-          type: Database["public"]["Enums"]["bank_account_types"]
-          unofficial_currency_code?: string | null
           updated_at?: string | null
-          verification_name: string
-          verification_status: Database["public"]["Enums"]["bank_account_verification_statuses"]
         }
         Update: {
-          available_balance?: number | null
-          balance_last_updated_at?: string | null
+          company_id?: number
+          content?: Json
           created_at?: string
-          current_balance?: number | null
-          holder_category?:
-            | Database["public"]["Enums"]["bank_account_holder_categories"]
-            | null
           id?: number
-          iso_currency_code?: string | null
-          limit_amount?: number | null
-          linked_account_id?: number
-          mask?: string | null
-          name?: string
-          official_name?: string | null
-          persistant_account_id?: string
           remote_id?: string
-          subtype?: Database["public"]["Enums"]["bank_account_sub_types"] | null
-          type?: Database["public"]["Enums"]["bank_account_types"]
-          unofficial_currency_code?: string | null
           updated_at?: string | null
-          verification_name?: string
-          verification_status?: Database["public"]["Enums"]["bank_account_verification_statuses"]
         }
         Relationships: [
           {
-            foreignKeyName: "plaid_bank_accounts_linked_account_id_fkey"
-            columns: ["linked_account_id"]
+            foreignKeyName: "plaid_bank_accounts_company_id_fkey"
+            columns: ["company_id"]
             isOneToOne: false
-            referencedRelation: "linked_accounts"
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      plaid_credentials: {
+        Row: {
+          access_token: string
+          company_id: number
+          created_at: string
+          item_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          access_token: string
+          company_id: number
+          created_at?: string
+          item_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          access_token?: string
+          company_id?: number
+          created_at?: string
+          item_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plaid_credentials_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "companies"
             referencedColumns: ["id"]
           },
         ]
@@ -212,159 +164,60 @@ export type Database = {
         Row: {
           account_owner: string | null
           amount: number
-          authorized_date: string | null
-          authorized_datetime: string | null
-          check_number: string | null
-          counterparties: Json | null
+          category: string | null
+          company_id: number
           created_at: string
           date: string
           id: number
           iso_currency_code: string | null
-          location_address: string | null
-          location_city: string | null
-          location_country: string | null
-          location_lat: number | null
-          location_lon: number | null
-          location_postal_code: string | null
-          location_region: string | null
-          location_store_number: string | null
-          logo_url: string | null
-          merchant_entity_id: string | null
-          merchant_name: string | null
           name: string
-          original_description: string | null
-          payment_channel: Database["public"]["Enums"]["transaction_payment_channels"]
-          payment_meta_by_order_of: string | null
-          payment_meta_payee: string | null
-          payment_meta_payer: string | null
-          payment_meta_payment_method: string | null
-          payment_meta_payment_processor: string | null
-          payment_meta_ppd_id: string | null
-          payment_meta_reference_number: string | null
           pending: boolean
-          pending_transaction_id: string | null
-          personal_finance_category_confidence_level:
-            | Database["public"]["Enums"]["transaction_personal_finance_category_confidence_levels"]
-            | null
-          personal_finance_category_detailed: string | null
-          personal_finance_category_icon_url: string
-          personal_finance_category_primary: string | null
-          plaid_bank_account_id: number
-          posted_datetime: string | null
-          transaction_code:
-            | Database["public"]["Enums"]["transaction_codes"]
-            | null
-          transaction_id: string
+          plaid_category_id: string | null
+          plaid_transaction_id: string
+          type: string
           unofficial_currency_code: string | null
           updated_at: string | null
-          website: string | null
         }
         Insert: {
           account_owner?: string | null
           amount: number
-          authorized_date?: string | null
-          authorized_datetime?: string | null
-          check_number?: string | null
-          counterparties?: Json | null
+          category?: string | null
+          company_id: number
           created_at?: string
           date: string
           id?: number
           iso_currency_code?: string | null
-          location_address?: string | null
-          location_city?: string | null
-          location_country?: string | null
-          location_lat?: number | null
-          location_lon?: number | null
-          location_postal_code?: string | null
-          location_region?: string | null
-          location_store_number?: string | null
-          logo_url?: string | null
-          merchant_entity_id?: string | null
-          merchant_name?: string | null
           name: string
-          original_description?: string | null
-          payment_channel: Database["public"]["Enums"]["transaction_payment_channels"]
-          payment_meta_by_order_of?: string | null
-          payment_meta_payee?: string | null
-          payment_meta_payer?: string | null
-          payment_meta_payment_method?: string | null
-          payment_meta_payment_processor?: string | null
-          payment_meta_ppd_id?: string | null
-          payment_meta_reference_number?: string | null
           pending: boolean
-          pending_transaction_id?: string | null
-          personal_finance_category_confidence_level?:
-            | Database["public"]["Enums"]["transaction_personal_finance_category_confidence_levels"]
-            | null
-          personal_finance_category_detailed?: string | null
-          personal_finance_category_icon_url: string
-          personal_finance_category_primary?: string | null
-          plaid_bank_account_id: number
-          posted_datetime?: string | null
-          transaction_code?:
-            | Database["public"]["Enums"]["transaction_codes"]
-            | null
-          transaction_id: string
+          plaid_category_id?: string | null
+          plaid_transaction_id: string
+          type: string
           unofficial_currency_code?: string | null
           updated_at?: string | null
-          website?: string | null
         }
         Update: {
           account_owner?: string | null
           amount?: number
-          authorized_date?: string | null
-          authorized_datetime?: string | null
-          check_number?: string | null
-          counterparties?: Json | null
+          category?: string | null
+          company_id?: number
           created_at?: string
           date?: string
           id?: number
           iso_currency_code?: string | null
-          location_address?: string | null
-          location_city?: string | null
-          location_country?: string | null
-          location_lat?: number | null
-          location_lon?: number | null
-          location_postal_code?: string | null
-          location_region?: string | null
-          location_store_number?: string | null
-          logo_url?: string | null
-          merchant_entity_id?: string | null
-          merchant_name?: string | null
           name?: string
-          original_description?: string | null
-          payment_channel?: Database["public"]["Enums"]["transaction_payment_channels"]
-          payment_meta_by_order_of?: string | null
-          payment_meta_payee?: string | null
-          payment_meta_payer?: string | null
-          payment_meta_payment_method?: string | null
-          payment_meta_payment_processor?: string | null
-          payment_meta_ppd_id?: string | null
-          payment_meta_reference_number?: string | null
           pending?: boolean
-          pending_transaction_id?: string | null
-          personal_finance_category_confidence_level?:
-            | Database["public"]["Enums"]["transaction_personal_finance_category_confidence_levels"]
-            | null
-          personal_finance_category_detailed?: string | null
-          personal_finance_category_icon_url?: string
-          personal_finance_category_primary?: string | null
-          plaid_bank_account_id?: number
-          posted_datetime?: string | null
-          transaction_code?:
-            | Database["public"]["Enums"]["transaction_codes"]
-            | null
-          transaction_id?: string
+          plaid_category_id?: string | null
+          plaid_transaction_id?: string
+          type?: string
           unofficial_currency_code?: string | null
           updated_at?: string | null
-          website?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "plaid_transactions_plaid_bank_account_id_fkey"
-            columns: ["plaid_bank_account_id"]
+            foreignKeyName: "plaid_transactions_company_id_fkey"
+            columns: ["company_id"]
             isOneToOne: false
-            referencedRelation: "plaid_bank_accounts"
+            referencedRelation: "companies"
             referencedColumns: ["id"]
           },
         ]
@@ -373,8 +226,8 @@ export type Database = {
         Row: {
           access_token: string
           access_token_expiry: string
+          company_id: number
           created_at: string
-          linked_account_id: number
           realm_id: string
           refresh_token: string
           refresh_token_expiry: string
@@ -383,8 +236,8 @@ export type Database = {
         Insert: {
           access_token: string
           access_token_expiry: string
+          company_id?: number
           created_at?: string
-          linked_account_id?: number
           realm_id: string
           refresh_token: string
           refresh_token_expiry: string
@@ -393,8 +246,8 @@ export type Database = {
         Update: {
           access_token?: string
           access_token_expiry?: string
+          company_id?: number
           created_at?: string
-          linked_account_id?: number
           realm_id?: string
           refresh_token?: string
           refresh_token_expiry?: string
@@ -402,10 +255,10 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "quick_books_oauth_credentials_linked_account_id_fkey"
-            columns: ["linked_account_id"]
+            foreignKeyName: "quick_books_oauth_credentials_company_id_fkey"
+            columns: ["company_id"]
             isOneToOne: true
-            referencedRelation: "linked_accounts"
+            referencedRelation: "companies"
             referencedColumns: ["id"]
           },
         ]
@@ -413,31 +266,31 @@ export type Database = {
       quick_books_oauth_states: {
         Row: {
           auth_url: string
+          company_id: number
           expires_at: string
-          linked_account_id: number
           redirect_url: string
           state: string
         }
         Insert: {
           auth_url: string
+          company_id?: number
           expires_at: string
-          linked_account_id?: number
           redirect_url: string
           state: string
         }
         Update: {
           auth_url?: string
+          company_id?: number
           expires_at?: string
-          linked_account_id?: number
           redirect_url?: string
           state?: string
         }
         Relationships: [
           {
-            foreignKeyName: "quick_books_oauth_states_linked_account_id_fkey"
-            columns: ["linked_account_id"]
+            foreignKeyName: "quick_books_oauth_states_company_id_fkey"
+            columns: ["company_id"]
             isOneToOne: true
-            referencedRelation: "linked_accounts"
+            referencedRelation: "companies"
             referencedColumns: ["id"]
           },
         ]
@@ -450,116 +303,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      bank_account_holder_categories: "business" | "personal" | "unrecognized"
-      bank_account_sub_types:
-        | "401a"
-        | "401k"
-        | "403B"
-        | "457b"
-        | "529"
-        | "auto"
-        | "brokerage"
-        | "business"
-        | "cash isa"
-        | "cash management"
-        | "cd"
-        | "checking"
-        | "commercial"
-        | "construction"
-        | "consumer"
-        | "credit card"
-        | "crypto exchange"
-        | "ebt"
-        | "education savings account"
-        | "fixed annuity"
-        | "gic"
-        | "health reimbursement arrangement"
-        | "home equity"
-        | "hsa"
-        | "isa"
-        | "ira"
-        | "keogh"
-        | "lif"
-        | "life insurance"
-        | "line of credit"
-        | "lira"
-        | "loan"
-        | "lrif"
-        | "lrsp"
-        | "money market"
-        | "mortgage"
-        | "mutual fund"
-        | "non-custodial wallet"
-        | "non-taxable brokerage account"
-        | "other"
-        | "other insurance"
-        | "other annuity"
-        | "overdraft"
-        | "paypal"
-        | "payroll"
-        | "pension"
-        | "prepaid"
-        | "prif"
-        | "profit sharing plan"
-        | "rdsp"
-        | "resp"
-        | "retirement"
-        | "rlif"
-        | "roth"
-        | "roth 401k"
-        | "rrif"
-        | "rrsp"
-        | "sarsep"
-        | "savings"
-        | "sep ira"
-        | "simple ira"
-        | "sipp"
-        | "stock plan"
-        | "student"
-        | "thrift savings plan"
-        | "tfsa"
-        | "trust"
-        | "ugma"
-        | "utma"
-        | "variable annuity"
-      bank_account_types:
-        | "investment"
-        | "credit"
-        | "depository"
-        | "loan"
-        | "brokerage"
-        | "other"
-      bank_account_verification_statuses:
-        | "automatically_verified"
-        | "pending_automatic_verification"
-        | "pending_manual_verification"
-        | "manually_verified"
-        | "verification_expired"
-        | "verification_failed"
-        | "database_matched"
-        | "database_insights_pass"
-        | "database_insights_pass_with_caution"
-        | "database_insights_fail"
-      transaction_codes:
-        | "adjustment"
-        | "atm"
-        | "bank charge"
-        | "bill payment"
-        | "cash"
-        | "cashback"
-        | "cheque"
-        | "direct debit"
-        | "interest"
-        | "purchase"
-        | "standing order"
-        | "transfer"
-      transaction_payment_channels: "online" | "in_store" | "other"
-      transaction_personal_finance_category_confidence_levels:
-        | "very_high"
-        | "high"
-        | "medium"
-        | "low"
-        | "unkown"
+      [_ in never]: never
     }
     CompositeTypes: {
       [_ in never]: never

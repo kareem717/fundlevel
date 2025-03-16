@@ -2,7 +2,7 @@
 
 import { env } from "@/env";
 import { actionClientWithAccount } from "@/lib/safe-action";
-import { createLinkedAccounttSchema } from "@fundlevel/api/types";
+import { createCompanytSchema } from "@fundlevel/api/types";
 import { z } from "zod";
 
 export const getQuickBooksAuthUrlAction = actionClientWithAccount
@@ -50,14 +50,14 @@ export const createPlaidLinkTokenAction = actionClientWithAccount
 export const swapPlaidPublicTokenAction = actionClientWithAccount
   .schema(
     z.object({
-      linkedAccountId: z.number().int().positive(),
+      companyId: z.number().int().positive(),
       publicToken: z.string(),
     }),
   )
   .action(async ({ ctx: { api }, parsedInput }) => {
     const req = await api["linked-accounts"][":id"].credentials.plaid.$post({
       param: {
-        id: parsedInput.linkedAccountId,
+        id: parsedInput.companyId,
       },
       query: {
         public_token: parsedInput.publicToken,
@@ -76,8 +76,8 @@ export const swapPlaidPublicTokenAction = actionClientWithAccount
     }
   });
 
-export const createLinkedAccountAction = actionClientWithAccount
-  .schema(createLinkedAccounttSchema)
+export const createCompanyAction = actionClientWithAccount
+  .schema(createCompanytSchema)
   .action(async ({ ctx: { api }, parsedInput }) => {
     const req = await api["linked-accounts"].$post({
       json: parsedInput,
@@ -93,7 +93,7 @@ export const createLinkedAccountAction = actionClientWithAccount
     }
   });
 
-export const getLinkedAccountByIdAction = actionClientWithAccount
+export const getCompanyByIdAction = actionClientWithAccount
   .schema(z.number().int().positive())
   .action(async ({ ctx: { api }, parsedInput }) => {
     const req = await api["linked-accounts"][":id"].$get({
@@ -112,7 +112,7 @@ export const getLinkedAccountByIdAction = actionClientWithAccount
     }
   });
 
-export const getLinkedAccountsAction = actionClientWithAccount.action(
+export const getCompaniesAction = actionClientWithAccount.action(
   async ({ ctx: { api } }) => {
     const req = await api["linked-accounts"].list.$get();
 

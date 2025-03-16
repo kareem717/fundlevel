@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
-import { createLinkedAccountAction } from "@/actions/linked-account";
+import { createCompanyAction } from "@/actions/company";
 import { Button, buttonVariants } from "@fundlevel/ui/components/button";
 import {
   Form,
@@ -26,20 +26,20 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@fundlevel/ui/components/dialog";
-import { createLinkedAccounttSchema } from "@fundlevel/api/types";
+import { createCompanytSchema } from "@fundlevel/api/types";
 import { useRouter } from "next/navigation";
 import { redirects } from "@/lib/config/redirects";
 
-interface CreateLinkedAccountDialogProps
+interface CreateCompanyDialogProps
   extends Omit<ComponentPropsWithoutRef<"form">, "onSubmit"> {
   triggerProps?: ComponentPropsWithoutRef<typeof Button>;
 }
 
-export function CreateLinkedAccountDialog({
+export function CreateCompanyDialog({
   className,
   triggerProps,
   ...props
-}: CreateLinkedAccountDialogProps) {
+}: CreateCompanyDialogProps) {
   const { toast } = useToast();
   const router = useRouter();
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -50,8 +50,8 @@ export function CreateLinkedAccountDialog({
     handleSubmitWithAction,
     action: { isExecuting },
   } = useHookFormAction(
-    createLinkedAccountAction,
-    zodResolver(createLinkedAccounttSchema),
+    createCompanyAction,
+    zodResolver(createCompanytSchema),
     {
       formProps: {
         defaultValues: {
@@ -78,7 +78,7 @@ export function CreateLinkedAccountDialog({
               "Account linked successfully. We're redirecting you to the dashboard.",
           });
 
-          router.push(redirects.app.linkedAccount(result.data.id).root);
+          router.push(redirects.app.company(result.data.id).root);
         },
         onError: (errorResult) => {
           return toast({

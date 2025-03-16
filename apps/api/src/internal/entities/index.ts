@@ -1,3 +1,3 @@
 export * from "./account";
 export * from "./accounting";
-export * from "./linked-account";
+export * from "./company";

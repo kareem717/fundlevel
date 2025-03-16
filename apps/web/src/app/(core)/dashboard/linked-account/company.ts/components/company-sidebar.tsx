@@ -11,23 +11,23 @@ import { sidebar } from "@/lib/config/sidebar";
 import { SidebarUser } from "@/components/sidebar/sidebar-user";
 import { SidebarMenu } from "@/components/sidebar/sidebar-menu";
 import { SidebarNotification } from "@/components/sidebar/sidebar-notification";
-import { LinkedAccountSwitcher } from "./linked-account-switcher";
+import { Companieswitcher } from "./company-switcher";
 
-export interface LinkedAccountSidebarProps
+export interface CompaniesidebarProps
   extends ComponentPropsWithoutRef<typeof Sidebar> {
   accountId: number;
 }
 
 //TODO: this doesn't have to be a client component
-export function LinkedAccountSidebar({
+export function Companiesidebar({
   accountId,
   ...props
-}: LinkedAccountSidebarProps) {
-  const sidebarConfig = sidebar.linkedAccountDashboard(accountId);
+}: CompaniesidebarProps) {
+  const sidebarConfig = sidebar.companyDashboard(accountId);
 
   return (
     <Sidebar variant="inset" {...props}>
-      <LinkedAccountSwitcher />
+      <Companieswitcher />
       <SidebarContent>
         {sidebarConfig.map((menu) => (
           <SidebarMenu key={menu.name} config={menu} />

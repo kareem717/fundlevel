@@ -1,20 +1,20 @@
 import type {
-  CreateLinkedAccount,
+  CreateCompany,
   CreatePlaidCredentials,
   CreateQuickBooksOAuthCredentials,
   CreateQuickBooksOAuthState,
-  LinkedAccount,
+  Company,
   UpdateQuickBooksOAuthCredentials,
 } from "../../entities";
 import type { Client } from "@fundlevel/supabase/types";
-import type { ILinkedAccountRepository } from "../interfaces/linked-account";
+import type { ICompanyRepository } from "../interfaces/company";
 
-export class LinkedAccountRepository implements ILinkedAccountRepository {
+export class CompanyRepository implements ICompanyRepository {
   constructor(private readonly sb: Client) { }
 
-  async create(params: CreateLinkedAccount) {
+  async create(params: CreateCompany) {
     const { data, error } = await this.sb
-      .from("linked_accounts")
+      .from("companies")
       .insert(params)
       .select()
       .single();
@@ -26,9 +26,9 @@ export class LinkedAccountRepository implements ILinkedAccountRepository {
     return data;
   }
 
-  async getById(id: number): Promise<LinkedAccount> {
+  async getById(id: number): Promise<Company> {
     const { data, error } = await this.sb
-      .from("linked_accounts")
+      .from("companies")
       .select()
       .eq("id", id)
       .single();
@@ -41,9 +41,9 @@ export class LinkedAccountRepository implements ILinkedAccountRepository {
     return data;
   }
 
-  async getByAccountId(accountId: number): Promise<LinkedAccount[]> {
+  async getByAccountId(accountId: number): Promise<Company[]> {
     const { data, error } = await this.sb
-      .from("linked_accounts")
+      .from("companies")
       .select()
       .eq("owner_id", accountId);
 
@@ -57,7 +57,7 @@ export class LinkedAccountRepository implements ILinkedAccountRepository {
 
   async createPlaidCredentials(params: CreatePlaidCredentials) {
     const { data, error } = await this.sb
-      .from("linked_account_plaid_credentials")
+      .from("plaid_credentials")
       .insert(params)
       .select()
       .single();
@@ -70,11 +70,11 @@ export class LinkedAccountRepository implements ILinkedAccountRepository {
     return data;
   }
 
-  async deletePlaidCredentials(linkedAccountId: number): Promise<void> {
+  async deletePlaidCredentials(companyId: number): Promise<void> {
     const { error } = await this.sb
-      .from("linked_account_plaid_credentials")
+      .from("plaid_credentials")
       .delete()
-      .eq("linked_account_id", linkedAccountId);
+      .eq("company_id", companyId);
 
     if (error) {
       console.error(error);
@@ -82,7 +82,7 @@ export class LinkedAccountRepository implements ILinkedAccountRepository {
     }
   }
 
-  async deleteLinkedAccount(id: number): Promise<void> {
+  async deleteCompany(id: number): Promise<void> {
     // First delete any credentials
     try {
       await this.deletePlaidCredentials(id);
@@ -92,7 +92,7 @@ export class LinkedAccountRepository implements ILinkedAccountRepository {
 
     // Then delete the linked account
     const { error } = await this.sb
-      .from("linked_accounts")
+      .from("companies")
       .delete()
       .eq("id", id);
 
@@ -102,11 +102,11 @@ export class LinkedAccountRepository implements ILinkedAccountRepository {
     }
   }
 
-  async getQuickBooksOAuthCredentials(linkedAccountId: number) {
+  async getQuickBooksOAuthCredentials(companyId: number) {
     const { data, error } = await this.sb
       .from("quick_books_oauth_credentials")
       .select()
-      .eq("linked_account_id", linkedAccountId)
+      .eq("company_id", companyId)
       .single();
 
     if (error) {
@@ -119,12 +119,12 @@ export class LinkedAccountRepository implements ILinkedAccountRepository {
 
   async updateQuickBooksOAuthCredentials(
     params: UpdateQuickBooksOAuthCredentials,
-    linkedAccountId: number,
+    companyId: number,
   ) {
     const { data, error } = await this.sb
       .from("quick_books_oauth_credentials")
       .update(params)
-      .eq("linked_account_id", linkedAccountId)
+      .eq("company_id", companyId)
       .single();
 
     if (error) {
@@ -137,13 +137,13 @@ export class LinkedAccountRepository implements ILinkedAccountRepository {
 
   async createQuickBooksOAuthCredentials(
     params: CreateQuickBooksOAuthCredentials,
-    linkedAccountId: number,
+    companyId: number,
   ) {
     const { data, error } = await this.sb
       .from("quick_books_oauth_credentials")
       .insert({
         ...params,
-        linked_account_id: linkedAccountId,
+        company_id: companyId,
       })
       .single();
 
@@ -155,11 +155,11 @@ export class LinkedAccountRepository implements ILinkedAccountRepository {
     return data;
   }
 
-  async deleteQuickBooksOAuthCredentials(linkedAccountId: number) {
+  async deleteQuickBooksOAuthCredentials(companyId: number) {
     await this.sb
       .from("quick_books_oauth_credentials")
       .delete()
-      .eq("linked_account_id", linkedAccountId);
+      .eq("company_id", companyId);
   }
 
   async getQuickBooksOAuthState(state: string) {
@@ -177,20 +177,20 @@ export class LinkedAccountRepository implements ILinkedAccountRepository {
     return data;
   }
 
-  async deleteQuickBooksOAuthStates(linkedAccountId: number) {
+  async deleteQuickBooksOAuthStates(companyId: number) {
     await this.sb
       .from("quick_books_oauth_states")
       .delete()
-      .eq("linked_account_id", linkedAccountId);
+      .eq("company_id", companyId);
   }
 
   async createQuickBooksOAuthState(
     params: CreateQuickBooksOAuthState,
-    linkedAccountId: number,
+    companyId: number,
   ) {
     await this.sb.from("quick_books_oauth_states").insert({
       ...params,
-      linked_account_id: linkedAccountId,
+      company_id: companyId,
     });
   }
 }

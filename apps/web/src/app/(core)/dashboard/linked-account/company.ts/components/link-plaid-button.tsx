@@ -3,7 +3,7 @@
 import {
   createPlaidLinkTokenAction,
   swapPlaidPublicTokenAction,
-} from "@/actions/linked-account";
+} from "@/actions/company";
 import { Button } from "@fundlevel/ui/components/button";
 import { usePlaidLink } from "react-plaid-link";
 import {
@@ -18,12 +18,12 @@ import { cn } from "@fundlevel/ui/lib/utils";
 import { Loader2 } from "lucide-react";
 
 interface LinkPlaidButtonProps extends ComponentPropsWithoutRef<typeof Button> {
-  linkedAccountId: number;
+  companyId: number;
 }
 
 export function LinkPlaidButton({
   className,
-  linkedAccountId,
+  companyId,
   ...props
 }: LinkPlaidButtonProps) {
   const [token, setToken] = useState<string>("");
@@ -52,7 +52,7 @@ export function LinkPlaidButton({
   const { open, ready } = usePlaidLink({
     token,
     onSuccess: (publicToken) => {
-      swap({ linkedAccountId, publicToken });
+      swap({ companyId, publicToken });
     },
   });
 
@@ -91,7 +91,7 @@ export function LinkPlaidButton({
   return (
     <Button
       className={cn(className)}
-      onClick={() => execute(linkedAccountId)}
+      onClick={() => execute(companyId)}
       disabled={isLoading}
       {...props}
     >
