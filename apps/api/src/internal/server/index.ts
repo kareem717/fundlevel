@@ -12,6 +12,7 @@ import companyHandler from "./handlers/company";
 import webhookHandler from "./handlers/webhook";
 import aiHandler from "./handlers/ai";
 import accountingHandler from "./handlers/accounting";
+import { createFiberplane } from "@fiberplane/hono";
 
 export class Server {
   public readonly routes;
@@ -55,11 +56,11 @@ export class Server {
       bearerFormat: "JWT",
     });
 
-    app.doc("/doc", (c) => ({
+    app.doc("/openapi.json", (c) => ({
       openapi: "3.0.0",
       info: {
         version: "1.0.0",
-        title: "My API",
+        title: "Fundlevel API",
       },
       servers: [
         {
@@ -68,7 +69,8 @@ export class Server {
         },
       ],
     }));
-    app.get("/ui", swaggerUI({ url: "/doc" }));
+
+
     this.app = app;
 
     this.routes = app
@@ -76,6 +78,15 @@ export class Server {
       .route("/companies", companyHandler(service.company))
       .route("/webhooks", webhookHandler(service.company))
       .route("/ai", aiHandler(service.ai, service.accounting, service.company))
-      .route("/accounting", accountingHandler(service.accounting));
+      .route("/accounting", accountingHandler(service.accounting))
+      // It is important to mount Fiberplane’s middleware after all of your route definitions.
+      .use(
+        "/fp/*",
+        createFiberplane({
+          openapi: {
+            url: "/openapi.json"
+          }
+        })
+      );
   }
 }
