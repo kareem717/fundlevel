@@ -31,7 +31,7 @@ const accountingHandler = (accountingService: IAccountingService) => {
 
       const { id } = c.req.valid("param");
 
-      const bankAccount = await accountingService.getAccountDetails(id);
+      const bankAccount = await accountingService.getBankAccountDetails(id);
       return c.json(bankAccount, 200);
     })
     .openapi(getTransactionsRoute, async (c) => {
@@ -42,7 +42,7 @@ const accountingHandler = (accountingService: IAccountingService) => {
 
       const { id } = c.req.valid("param");
 
-      const transactions = await accountingService.getTransactions(id);
+      const transactions = await accountingService.getTransactionsByBankAccountId(id);
       return c.json(transactions, 200);
     });
 

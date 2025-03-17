@@ -11,7 +11,7 @@ import type {
 import type { IAccountingRepository } from "../interfaces/accounting";
 
 export class AccountingRepository implements IAccountingRepository {
-  constructor(private supabase: SupabaseClient<Database>) {}
+  constructor(private supabase: SupabaseClient<Database>) { }
 
   async upsertBankAccount(
     bankAccount: CreateBankAccount,
@@ -35,18 +35,18 @@ export class AccountingRepository implements IAccountingRepository {
     return data;
   }
 
-  async getBankAccountById(id: number): Promise<BankAccount | undefined> {
+  async getBankAccountByRemoteId(id: string): Promise<BankAccount> {
     const { data, error } = await this.supabase
       .from("plaid_bank_accounts")
       .select("*")
-      .eq("id", id)
+      .eq("remote_id", id)
       .single();
 
-    if (error && error.code !== "PGRST116") {
+    if (error) {
       throw new Error(`Failed to get bank account: ${error.message}`);
     }
 
-    return data || undefined;
+    return data;
   }
 
   async getBankAccountsByCompanyId(companyId: number): Promise<BankAccount[]> {
@@ -63,13 +63,13 @@ export class AccountingRepository implements IAccountingRepository {
   }
 
   async updateBankAccount(
-    id: number,
+    remoteId: string,
     bankAccount: Partial<CreateBankAccount>,
   ): Promise<BankAccount> {
     const { data, error } = await this.supabase
       .from("plaid_bank_accounts")
       .update(bankAccount)
-      .eq("id", id)
+      .eq("remote_id", remoteId)
       .select("*")
       .single();
 
@@ -80,11 +80,11 @@ export class AccountingRepository implements IAccountingRepository {
     return data;
   }
 
-  async deleteBankAccount(id: number): Promise<void> {
+  async deleteBankAccount(remoteId: string): Promise<void> {
     const { error } = await this.supabase
       .from("plaid_bank_accounts")
       .delete()
-      .eq("id", id);
+      .eq("remote_id", remoteId);
 
     if (error) {
       throw new Error(`Failed to delete bank account: ${error.message}`);
@@ -125,13 +125,13 @@ export class AccountingRepository implements IAccountingRepository {
     return data || undefined;
   }
 
-  async getTransactionsByCompanyId(
-    companyId: number,
+  async getTransactionsByBankAccountId(
+    bankAccountId: string,
   ): Promise<BankTransaction[]> {
     const { data, error } = await this.supabase
       .from("plaid_transactions")
       .select("*")
-      .eq("company_id", companyId);
+      .eq("bank_account_id", bankAccountId);
 
     if (error) {
       throw new Error(`Failed to get transactions: ${error.message}`);

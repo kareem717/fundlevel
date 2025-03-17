@@ -331,7 +331,7 @@ export class AIService implements IAIService {
     invoices: Invoice[],
     accountInfo: BankAccount,
   ): Promise<ReconciliationResult> {
-    console.log(`Reconciling transactions for account: ${accountInfo.id}`);
+    console.log(`Reconciling transactions for account: ${accountInfo.remote_id}`);
 
     // Step 1: Preprocess and clean the transaction and invoice data in parallel
     console.log(`Preparing reconciliation data for ${transactions.length} transactions and ${invoices.length} invoices`);

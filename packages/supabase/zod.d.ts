@@ -6,6 +6,12 @@
 
 import { z } from "zod";
 import * as generated from "./src/zod";
+export type PublicPlaidAccountSubtype = z.infer<
+  typeof generated.publicPlaidAccountSubtypeSchema
+>;
+export type PublicPlaidAccountType = z.infer<
+  typeof generated.publicPlaidAccountTypeSchema
+>;
 export type Json = z.infer<typeof generated.jsonSchema>;
 export type PublicAccountsRowSchema = z.infer<
   typeof generated.publicAccountsRowSchemaSchema

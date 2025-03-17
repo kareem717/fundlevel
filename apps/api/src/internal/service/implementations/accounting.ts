@@ -71,17 +71,17 @@ export class AccountingService implements IAccountingService {
   /**
    * Fetch bank transactions for a specific account
    */
-  async getTransactions(id: number): Promise<BankTransaction[]> {
-    return await this.accountingRepo.getTransactionsByCompanyId(id);
+  async getTransactionsByBankAccountId(bankAccountId: string): Promise<BankTransaction[]> {
+    return await this.accountingRepo.getTransactionsByBankAccountId(bankAccountId);
   }
 
   /**
    * Fetch bank account details
    */
-  async getAccountDetails(id: number): Promise<BankAccount> {
-    const result = await this.accountingRepo.getBankAccountById(id);
+  async getBankAccountDetails(remoteId: string): Promise<BankAccount> {
+    const result = await this.accountingRepo.getBankAccountByRemoteId(remoteId);
     if (!result) {
-      throw new Error(`Bank account not found: ${id}`);
+      throw new Error(`Bank account not found: ${remoteId}`);
     }
     return result;
   }

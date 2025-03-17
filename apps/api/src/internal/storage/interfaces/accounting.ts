@@ -13,16 +13,16 @@ export interface IAccountingRepository {
     params: CreateBankAccount,
     companyId: number,
   ): Promise<BankAccount>;
-  getBankAccountById(id: number): Promise<BankAccount | undefined>;
+  getBankAccountByRemoteId(id: string): Promise<BankAccount>;
   getBankAccountsByCompanyId(companyId: number): Promise<BankAccount[]>;
-  deleteBankAccount(id: number): Promise<void>;
+  deleteBankAccount(id: string): Promise<void>;
 
   upsertTransaction(
     params: CreateBankTransaction | CreateBankTransaction[],
     companyId: number,
   ): Promise<void>;
   getTransactionById(id: number): Promise<BankTransaction | undefined>;
-  getTransactionsByCompanyId(companyId: number): Promise<BankTransaction[]>;
+  getTransactionsByBankAccountId(bankAccountId: string): Promise<BankTransaction[]>;
   deleteTransactionByRemoteId(remoteId: string | string[]): Promise<void>;
 
   upsertInvoice(params: CreateInvoice, companyId: number): Promise<Invoice>;

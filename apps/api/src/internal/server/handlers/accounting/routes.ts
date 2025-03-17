@@ -1,5 +1,5 @@
 import { createRoute, z } from "@hono/zod-openapi";
-import { bearerAuthSchema, pathIdParamSchema, unauthorizedResponse, } from "../shared/schemas";
+import { bearerAuthSchema, intPathIdParamSchema, stringPathIdParamSchema, unauthorizedResponse, } from "../shared/schemas";
 import { bankAccountSchema, bankTransactionSchema } from "../../../entities";
 
 // Route for getting bank accounts for a company
@@ -12,7 +12,7 @@ export const getBankAccountsForCompanyRoute = createRoute({
   path: "/bank-accounts/company/{id}",
   request: {
     params: z.object({
-      id: pathIdParamSchema
+      id: intPathIdParamSchema
     }),
   },
   responses: {
@@ -38,7 +38,7 @@ export const getBankAccountRoute = createRoute({
   path: "/bank-accounts/{id}",
   request: {
     params: z.object({
-      id: pathIdParamSchema
+      id: stringPathIdParamSchema
     }),
   },
   responses: {
@@ -64,7 +64,7 @@ export const getTransactionsRoute = createRoute({
   path: "/bank-accounts/{id}/transactions",
   request: {
     params: z.object({
-      id: pathIdParamSchema
+      id: stringPathIdParamSchema
     }),
   },
   responses: {

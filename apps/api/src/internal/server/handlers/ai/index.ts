@@ -17,7 +17,7 @@ import type { Context } from "hono";
 /**
  * Setup streaming headers for AI responses
  */
-const setupStreamingHeaders = (c: Context) => {
+export const setupStreamingHeaders = (c: Context) => {
   // Mark the response as a data stream
   c.header("X-Vercel-AI-Data-Stream", "v1");
   c.header("Content-Type", "text/plain; charset=utf-8");
@@ -82,7 +82,7 @@ const aiHandler = (ai: IAIService, accountingService: IAccountingService, compan
 
       const { id } = c.req.valid("param");
 
-      const bankAccount = await accountingService.getAccountDetails(id);
+      const bankAccount = await accountingService.getBankAccountDetails(id);
       console.log(bankAccount.company_id);
       const company = await companyService.getById(bankAccount.company_id);
       if (company.owner_id !== account.id) {
@@ -91,7 +91,7 @@ const aiHandler = (ai: IAIService, accountingService: IAccountingService, compan
 
       // Get the necessary data from the accounting service
       const bankTransactions =
-        await accountingService.getTransactions(bankAccount.id);
+        await accountingService.getTransactionsByBankAccountId(bankAccount.remote_id);
       const invoices = await accountingService.getInvoicesForCompany(company.id);
 
       // Perform the reconciliation

@@ -13,6 +13,7 @@ import webhookHandler from "./handlers/webhook";
 import aiHandler from "./handlers/ai";
 import accountingHandler from "./handlers/accounting";
 import { createFiberplane } from "@fiberplane/hono";
+import { env } from "../../env";
 
 export class Server {
   public readonly routes;
@@ -85,7 +86,7 @@ export class Server {
         createFiberplane({
           openapi: {
             url: "/openapi.json"
-          }
+          },
         })
       );
   }

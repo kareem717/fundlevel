@@ -12,12 +12,12 @@ export type BankAccount =
 
 export type CreateBankAccount = Omit<
   Database["public"]["Tables"]["plaid_bank_accounts"]["Insert"],
-  "id" | "company_id" | "created_at" | "updated_at"
+  "company_id" | "created_at" | "updated_at"
 >;
 
 export type UpdateBankAccount = Omit<
   Database["public"]["Tables"]["plaid_bank_accounts"]["Update"],
-  "id" | "company_id" | "created_at" | "updated_at"
+  "remote_id" | "company_id" | "created_at" | "updated_at"
 >;
 
 export type BankTransaction =
@@ -51,7 +51,6 @@ export const createBankAccountSchema = z
     ...publicPlaidBankAccountsInsertSchemaSchema.shape,
   })
   .omit({
-    id: true,
     company_id: true,
     created_at: true,
     updated_at: true,

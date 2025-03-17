@@ -1,5 +1,5 @@
 import { createRoute, z } from "@hono/zod-openapi";
-import { bearerAuthSchema, forbiddenResponse, pathIdParamSchema, streamResponse } from "../shared/schemas";
+import { bearerAuthSchema, forbiddenResponse, intPathIdParamSchema, streamResponse, stringPathIdParamSchema } from "../shared/schemas";
 import { unauthorizedResponse, notFoundResponse } from "../shared/schemas";
 
 // Define the message schema for AI requests
@@ -21,7 +21,7 @@ export const analyzeBalanceSheetRoute = createRoute({
   path: "/company/{id}/balance-sheet",
   request: {
     params: z.object({
-      id: pathIdParamSchema,
+      id: intPathIdParamSchema,
     }),
     body: {
       content: {
@@ -50,7 +50,7 @@ export const analyzeFinancialHealthRoute = createRoute({
   path: "/company/{id}/financial-health",
   request: {
     params: z.object({
-      id: pathIdParamSchema,
+      id: intPathIdParamSchema,
     }),
     body: {
       content: {
@@ -79,7 +79,7 @@ export const projectCashFlowRoute = createRoute({
   path: "/company/{id}/cash-flow",
   request: {
     params: z.object({
-      id: pathIdParamSchema,
+      id: intPathIdParamSchema,
     }),
     body: {
       content: {
@@ -108,7 +108,7 @@ export const reconcileTransactionsRoute = createRoute({
   path: "/bank-account/{id}/reconcile",
   request: {
     params: z.object({
-      id: pathIdParamSchema,
+      id: stringPathIdParamSchema,
     }),
   },
   responses: {

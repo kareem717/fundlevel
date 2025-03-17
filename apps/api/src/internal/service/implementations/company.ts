@@ -341,10 +341,50 @@ export class CompanyService implements ICompanyService {
     const accounts = plaidResp.data.accounts;
 
     for (const account of accounts) {
+      const { 
+        account_id,
+        balances,
+        mask,
+        name,
+        official_name,
+        subtype,
+        type,
+        ...rest } = account;
+      const { current, available, iso_currency_code, unofficial_currency_code, ...restBalances } =
+        balances;
+
+      // Not possible according to plaid docs
+      if (iso_currency_code && unofficial_currency_code) {
+        throw new Error(
+          "Payload contains both iso and unofficial currency code",
+        );
+      }
+
+      // Not possible according to plaid docs
+      if (!iso_currency_code && !unofficial_currency_code) {
+        throw new Error(
+          "Payload contains neither iso nor unofficial currency code",
+        );
+      }
+
+      const remaining_remote_content = JSON.stringify({
+        ...rest,
+        balances: restBalances,
+      });
+
       await this.accountingRepo.upsertBankAccount(
         {
-          remote_id: account.account_id,
-          content: JSON.stringify(account),
+          remote_id: account_id,
+          remaining_remote_content,
+          current_balance: current,
+          available_balance: available,
+          iso_currency_code,
+          unofficial_currency_code,
+          mask,
+          name,
+          official_name,
+          subtype,
+          type,
         },
         creds.company_id,
       );
@@ -382,6 +422,7 @@ export class CompanyService implements ICompanyService {
 
     const convertedUpsert: CreateBankTransaction[] = upsert.map((t) => ({
       remote_id: t.transaction_id,
+      bank_account_id: t.account_id,
       content: JSON.stringify(t),
     }));
 

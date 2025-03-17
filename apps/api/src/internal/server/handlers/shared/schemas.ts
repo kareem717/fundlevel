@@ -1,8 +1,10 @@
 import { z } from "@hono/zod-openapi";
 
-export const pathIdParamSchema = z.coerce
+export const intPathIdParamSchema = z.coerce
   .number()
   .min(1);
+
+export const stringPathIdParamSchema = z.string();
 
 export const bearerAuthSchema = {
   Bearer: [],

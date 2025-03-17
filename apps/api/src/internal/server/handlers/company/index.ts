@@ -272,8 +272,8 @@ const companyHandler = (companyservice: ICompanyService) => {
         publicToken: public_token,
       });
 
-      await companyservice.syncPlaidTransactions(item_id);
       await companyservice.syncPlaidBankAccounts(item_id);
+      await companyservice.syncPlaidTransactions(item_id);
 
       return c.json({ success: true }, 201);
     });

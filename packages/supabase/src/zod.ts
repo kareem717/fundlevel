@@ -7,6 +7,88 @@
 import { z } from "zod";
 import { type Json } from "./types/db";
 
+export const publicPlaidAccountSubtypeSchema = z.union([
+  z.literal("401a"),
+  z.literal("401k"),
+  z.literal("403B"),
+  z.literal("457b"),
+  z.literal("529"),
+  z.literal("auto"),
+  z.literal("brokerage"),
+  z.literal("business"),
+  z.literal("cash isa"),
+  z.literal("cash management"),
+  z.literal("cd"),
+  z.literal("checking"),
+  z.literal("commercial"),
+  z.literal("construction"),
+  z.literal("consumer"),
+  z.literal("credit card"),
+  z.literal("crypto exchange"),
+  z.literal("ebt"),
+  z.literal("education savings account"),
+  z.literal("fixed annuity"),
+  z.literal("gic"),
+  z.literal("health reimbursement arrangement"),
+  z.literal("home equity"),
+  z.literal("hsa"),
+  z.literal("isa"),
+  z.literal("ira"),
+  z.literal("keogh"),
+  z.literal("lif"),
+  z.literal("life insurance"),
+  z.literal("line of credit"),
+  z.literal("lira"),
+  z.literal("loan"),
+  z.literal("lrif"),
+  z.literal("lrsp"),
+  z.literal("money market"),
+  z.literal("mortgage"),
+  z.literal("mutual fund"),
+  z.literal("non-custodial wallet"),
+  z.literal("non-taxable brokerage account"),
+  z.literal("other"),
+  z.literal("other insurance"),
+  z.literal("other annuity"),
+  z.literal("overdraft"),
+  z.literal("paypal"),
+  z.literal("payroll"),
+  z.literal("pension"),
+  z.literal("prepaid"),
+  z.literal("prif"),
+  z.literal("profit sharing plan"),
+  z.literal("rdsp"),
+  z.literal("resp"),
+  z.literal("retirement"),
+  z.literal("rlif"),
+  z.literal("roth"),
+  z.literal("roth 401k"),
+  z.literal("rrif"),
+  z.literal("rrsp"),
+  z.literal("sarsep"),
+  z.literal("savings"),
+  z.literal("sep ira"),
+  z.literal("simple ira"),
+  z.literal("sipp"),
+  z.literal("stock plan"),
+  z.literal("student"),
+  z.literal("thrift savings plan"),
+  z.literal("tfsa"),
+  z.literal("trust"),
+  z.literal("ugma"),
+  z.literal("utma"),
+  z.literal("variable annuity"),
+]);
+
+export const publicPlaidAccountTypeSchema = z.union([
+  z.literal("investment"),
+  z.literal("credit"),
+  z.literal("depository"),
+  z.literal("loan"),
+  z.literal("brokerage"),
+  z.literal("other"),
+]);
+
 export const jsonSchema: z.ZodSchema<Json> = z.lazy(() =>
   z
     .union([
@@ -81,29 +163,53 @@ export const publicCompaniesRelationshipsSchemaSchema = z.tuple([
 ]);
 
 export const publicPlaidBankAccountsRowSchemaSchema = z.object({
+  available_balance: z.number().nullable(),
   company_id: z.number(),
-  content: jsonSchema,
   created_at: z.string(),
-  id: z.number(),
+  current_balance: z.number().nullable(),
+  iso_currency_code: z.string().nullable(),
+  mask: z.string().nullable(),
+  name: z.string(),
+  official_name: z.string().nullable(),
+  remaining_remote_content: jsonSchema,
   remote_id: z.string(),
+  subtype: publicPlaidAccountSubtypeSchema.nullable(),
+  type: publicPlaidAccountTypeSchema,
+  unofficial_currency_code: z.string().nullable(),
   updated_at: z.string().nullable(),
 });
 
 export const publicPlaidBankAccountsInsertSchemaSchema = z.object({
+  available_balance: z.number().optional().nullable(),
   company_id: z.number(),
-  content: jsonSchema,
   created_at: z.string().optional(),
-  id: z.number().optional(),
+  current_balance: z.number().optional().nullable(),
+  iso_currency_code: z.string().optional().nullable(),
+  mask: z.string().optional().nullable(),
+  name: z.string(),
+  official_name: z.string().optional().nullable(),
+  remaining_remote_content: jsonSchema,
   remote_id: z.string(),
+  subtype: publicPlaidAccountSubtypeSchema.optional().nullable(),
+  type: publicPlaidAccountTypeSchema,
+  unofficial_currency_code: z.string().optional().nullable(),
   updated_at: z.string().optional().nullable(),
 });
 
 export const publicPlaidBankAccountsUpdateSchemaSchema = z.object({
+  available_balance: z.number().optional().nullable(),
   company_id: z.number().optional(),
-  content: jsonSchema.optional(),
   created_at: z.string().optional(),
-  id: z.number().optional(),
+  current_balance: z.number().optional().nullable(),
+  iso_currency_code: z.string().optional().nullable(),
+  mask: z.string().optional().nullable(),
+  name: z.string().optional(),
+  official_name: z.string().optional().nullable(),
+  remaining_remote_content: jsonSchema.optional(),
   remote_id: z.string().optional(),
+  subtype: publicPlaidAccountSubtypeSchema.optional().nullable(),
+  type: publicPlaidAccountTypeSchema.optional(),
+  unofficial_currency_code: z.string().optional().nullable(),
   updated_at: z.string().optional().nullable(),
 });
 
@@ -155,7 +261,7 @@ export const publicPlaidCredentialsRelationshipsSchemaSchema = z.tuple([
 ]);
 
 export const publicPlaidTransactionsRowSchemaSchema = z.object({
-  account_id: z.string().nullable(),
+  bank_account_id: z.string().nullable(),
   company_id: z.number(),
   content: jsonSchema,
   created_at: z.string(),
@@ -165,7 +271,7 @@ export const publicPlaidTransactionsRowSchemaSchema = z.object({
 });
 
 export const publicPlaidTransactionsInsertSchemaSchema = z.object({
-  account_id: z.string().optional().nullable(),
+  bank_account_id: z.string().optional().nullable(),
   company_id: z.number(),
   content: jsonSchema,
   created_at: z.string().optional(),
@@ -175,7 +281,7 @@ export const publicPlaidTransactionsInsertSchemaSchema = z.object({
 });
 
 export const publicPlaidTransactionsUpdateSchemaSchema = z.object({
-  account_id: z.string().optional().nullable(),
+  bank_account_id: z.string().optional().nullable(),
   company_id: z.number().optional(),
   content: jsonSchema.optional(),
   created_at: z.string().optional(),
@@ -185,6 +291,13 @@ export const publicPlaidTransactionsUpdateSchemaSchema = z.object({
 });
 
 export const publicPlaidTransactionsRelationshipsSchemaSchema = z.tuple([
+  z.object({
+    foreignKeyName: z.literal("plaid_transactions_bank_account_id_fkey"),
+    columns: z.tuple([z.literal("bank_account_id")]),
+    isOneToOne: z.literal(false),
+    referencedRelation: z.literal("plaid_bank_accounts"),
+    referencedColumns: z.tuple([z.literal("remote_id")]),
+  }),
   z.object({
     foreignKeyName: z.literal("plaid_transactions_company_id_fkey"),
     columns: z.tuple([z.literal("company_id")]),

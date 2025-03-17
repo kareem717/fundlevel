@@ -2,7 +2,7 @@ import { createRoute, z } from "@hono/zod-openapi";
 import {
   unauthorizedResponse,
   bearerAuthSchema,
-  pathIdParamSchema,
+  intPathIdParamSchema,
   forbiddenResponse,
   notFoundResponse,
 } from "../shared/schemas";
@@ -46,7 +46,7 @@ export const createMergeLinkTokenRoute = createRoute({
   path: "/{id}/link/merge",
   request: {
     params: z.object({
-      id: pathIdParamSchema,
+      id: intPathIdParamSchema,
     }),
   },
   responses: {
@@ -77,7 +77,7 @@ export const createPlaidLinkTokenRoute = createRoute({
   path: "/{id}/link/plaid",
   request: {
     params: z.object({
-      id: pathIdParamSchema,
+      id: intPathIdParamSchema,
     }),
   },
   responses: {
@@ -108,7 +108,7 @@ export const getByIdRoute = createRoute({
   path: "/{id}",
   request: {
     params: z.object({
-      id: pathIdParamSchema,
+      id: intPathIdParamSchema,
     }),
   },
   responses: {
@@ -153,7 +153,7 @@ export const swapPlaidPublicTokenRoute = createRoute({
   path: "/{id}/credentials/plaid",
   request: {
     params: z.object({
-      id: pathIdParamSchema,
+      id: intPathIdParamSchema,
     }),
     query: z.object({
       public_token: z
@@ -188,7 +188,7 @@ export const deletePlaidCredentialsRoute = createRoute({
   path: "/{id}/credentials/plaid",
   request: {
     params: z.object({
-      id: pathIdParamSchema,
+      id: intPathIdParamSchema,
     }),
   },
   responses: {
@@ -209,7 +209,7 @@ export const deleteCompanyRoute = createRoute({
   path: "/{id}",
   request: {
     params: z.object({
-      id: pathIdParamSchema,
+      id: intPathIdParamSchema,
     }),
   },
   responses: {
@@ -230,7 +230,7 @@ export const connectQuickBooksRoute = createRoute({
   path: "/{id}/quickbooks/connect",
   request: {
     params: z.object({
-      id: pathIdParamSchema,
+      id: intPathIdParamSchema,
     }),
     query: z.object({
       redirect_uri: z.string().min(1).openapi({ description: "Redirect URI" }),
