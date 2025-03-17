@@ -116,7 +116,17 @@ export const reconcileTransactionsRoute = createRoute({
       description: "Successful reconciliation",
       content: {
         "application/json": {
-          schema: z.any(),
+          schema: z.object({
+            matches: z.array(z.object({
+              transactionId: z.string(),
+              invoiceId: z.string().nullable(),
+              confidence: z.number(),
+              matchReason: z.string(),
+              needsReview: z.boolean(),
+            })),
+            unmatchedTransactions: z.array(z.string()),
+            unmatchedInvoices: z.array(z.string()),
+          }),
         },
       },
     },

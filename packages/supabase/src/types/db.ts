@@ -189,40 +189,87 @@ export type Database = {
       }
       plaid_transactions: {
         Row: {
-          bank_account_id: string | null
+          amount: number
+          authorized_at: string | null
+          bank_account_id: string
+          check_number: string | null
+          code: Database["public"]["Enums"]["plaid_transaction_code"] | null
           company_id: number
-          content: Json
           created_at: string
-          id: number
+          date: string
+          datetime: string | null
+          iso_currency_code: string | null
+          merchant_name: string | null
+          name: string
+          original_description: string | null
+          payment_channel: Database["public"]["Enums"]["plaid_transaction_payment_channel"]
+          pending: boolean
+          personal_finance_category_confidence_level:
+            | Database["public"]["Enums"]["plaid_confidence_level"]
+            | null
+          personal_finance_category_detailed: string | null
+          personal_finance_category_primary: string | null
+          remaining_remote_content: Json
           remote_id: string
+          unofficial_currency_code: string | null
           updated_at: string | null
+          website: string | null
         }
         Insert: {
-          bank_account_id?: string | null
+          amount: number
+          authorized_at?: string | null
+          bank_account_id: string
+          check_number?: string | null
+          code?: Database["public"]["Enums"]["plaid_transaction_code"] | null
           company_id: number
-          content: Json
           created_at?: string
-          id?: number
+          date: string
+          datetime?: string | null
+          iso_currency_code?: string | null
+          merchant_name?: string | null
+          name: string
+          original_description?: string | null
+          payment_channel: Database["public"]["Enums"]["plaid_transaction_payment_channel"]
+          pending: boolean
+          personal_finance_category_confidence_level?:
+            | Database["public"]["Enums"]["plaid_confidence_level"]
+            | null
+          personal_finance_category_detailed?: string | null
+          personal_finance_category_primary?: string | null
+          remaining_remote_content: Json
           remote_id: string
+          unofficial_currency_code?: string | null
           updated_at?: string | null
+          website?: string | null
         }
         Update: {
-          bank_account_id?: string | null
+          amount?: number
+          authorized_at?: string | null
+          bank_account_id?: string
+          check_number?: string | null
+          code?: Database["public"]["Enums"]["plaid_transaction_code"] | null
           company_id?: number
-          content?: Json
           created_at?: string
-          id?: number
+          date?: string
+          datetime?: string | null
+          iso_currency_code?: string | null
+          merchant_name?: string | null
+          name?: string
+          original_description?: string | null
+          payment_channel?: Database["public"]["Enums"]["plaid_transaction_payment_channel"]
+          pending?: boolean
+          personal_finance_category_confidence_level?:
+            | Database["public"]["Enums"]["plaid_confidence_level"]
+            | null
+          personal_finance_category_detailed?: string | null
+          personal_finance_category_primary?: string | null
+          remaining_remote_content?: Json
           remote_id?: string
+          unofficial_currency_code?: string | null
           updated_at?: string | null
+          website?: string | null
         }
         Relationships: [
-          {
-            foreignKeyName: "plaid_transactions_bank_account_id_fkey"
-            columns: ["bank_account_id"]
-            isOneToOne: false
-            referencedRelation: "plaid_bank_accounts"
-            referencedColumns: ["remote_id"]
-          },
           {
             foreignKeyName: "plaid_transactions_company_id_fkey"
             columns: ["company_id"]
@@ -426,6 +473,27 @@ export type Database = {
         | "loan"
         | "brokerage"
         | "other"
+      plaid_confidence_level:
+        | "VERY_HIGH"
+        | "HIGH"
+        | "MEDIUM"
+        | "LOW"
+        | "UNKNOWN"
+      plaid_transaction_code:
+        | "adjustment"
+        | "atm"
+        | "bank charge"
+        | "bill payment"
+        | "cash"
+        | "cashback"
+        | "cheque"
+        | "direct debit"
+        | "interest"
+        | "purchase"
+        | "standing order"
+        | "transfer"
+        | "null"
+      plaid_transaction_payment_channel: "online" | "in store" | "other"
     }
     CompositeTypes: {
       [_ in never]: never

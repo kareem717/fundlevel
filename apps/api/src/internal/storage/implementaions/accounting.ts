@@ -111,11 +111,11 @@ export class AccountingRepository implements IAccountingRepository {
     }
   }
 
-  async getTransactionById(id: number): Promise<BankTransaction | undefined> {
+  async getTransactionById(id: string): Promise<BankTransaction | undefined> {
     const { data, error } = await this.supabase
       .from("plaid_transactions")
       .select("*")
-      .eq("id", id)
+      .eq("remote_id", id)
       .single();
 
     if (error && error.code !== "PGRST116") {
@@ -140,13 +140,13 @@ export class AccountingRepository implements IAccountingRepository {
     return data || [];
   }
 
-  async deleteTransactionByRemoteId(
-    remoteId: string | string[],
+  async deleteTransaction(
+    id: string | string[],
   ): Promise<void> {
     const { error } = await this.supabase
       .from("plaid_transactions")
       .delete()
-      .in("remote_id", Array.isArray(remoteId) ? remoteId : [remoteId]);
+      .in("remote_id", Array.isArray(id) ? id : [id]);
 
     if (error) {
       throw new Error(`Failed to delete transaction: ${error.message}`);

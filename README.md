@@ -125,9 +125,9 @@ The backend of the Fundlevel platform.
    ```
 
    - Use the `API URL` as the `SUPABASE_HOST` value in the backend (use in the front end as well if you're running it locally).
-   - Use the `DB URL` as the `DATABASE_URL` value in the backend.
+   - Use the `DB URL` as the `POSTGRES_URL` value in the backend.
    - Use the `anon key` as the `SUPABASE_ANON_KEY` value in the frontend if you're running it locally.
-   - Use the `service_role key` as the `SUPABASE_SERVICE_KEY` value in the backend.
+   - Use the `service_role key` as the `SUPABASE_SERVICE_ROLE_KEY` value in the backend.
 
    Note:
 

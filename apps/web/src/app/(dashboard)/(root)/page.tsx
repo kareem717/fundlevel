@@ -8,7 +8,7 @@ import {
 import Link from "next/link";
 import { format } from "date-fns";
 import { redirects } from "@/lib/config/redirects";
-import { LinkIcon, StoreIcon } from "lucide-react";
+import { StoreIcon } from "lucide-react";
 import { CreateCompanyDialog } from "./components/create-company-dialog";
 import { SearchCommand } from "./components/search-command";
 
@@ -23,19 +23,19 @@ export default async function DashboardPage() {
       </div>
       {companies.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {companies.map((account) => (
+          {companies.map((company) => (
             <Link
-              key={account.id}
-              href={redirects.app.company(account.id).root}
+              key={company.id}
+              href={redirects.app.company(company.id).root}
             >
               <Card className="flex flex-col h-full">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    {account.name}
+                    {company.name}
                   </CardTitle>
                   <CardDescription>
                     Connected on{" "}
-                    {format(new Date(account.created_at), "MMM d, yyyy")}
+                    {format(new Date(company.created_at), "MMM d, yyyy")}
                   </CardDescription>
                 </CardHeader>
               </Card>

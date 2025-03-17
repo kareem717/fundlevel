@@ -20,7 +20,7 @@ export class Storage {
   private readonly sb: Client;
 
   constructor() {
-    this.sb = createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_KEY);
+    this.sb = createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY);
 
     this.account = new AccountRepository(this.sb);
     this.company = new CompanyRepository(this.sb);

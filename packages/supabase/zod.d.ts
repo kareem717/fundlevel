@@ -12,6 +12,15 @@ export type PublicPlaidAccountSubtype = z.infer<
 export type PublicPlaidAccountType = z.infer<
   typeof generated.publicPlaidAccountTypeSchema
 >;
+export type PublicPlaidConfidenceLevel = z.infer<
+  typeof generated.publicPlaidConfidenceLevelSchema
+>;
+export type PublicPlaidTransactionCode = z.infer<
+  typeof generated.publicPlaidTransactionCodeSchema
+>;
+export type PublicPlaidTransactionPaymentChannel = z.infer<
+  typeof generated.publicPlaidTransactionPaymentChannelSchema
+>;
 export type Json = z.infer<typeof generated.jsonSchema>;
 export type PublicAccountsRowSchema = z.infer<
   typeof generated.publicAccountsRowSchemaSchema

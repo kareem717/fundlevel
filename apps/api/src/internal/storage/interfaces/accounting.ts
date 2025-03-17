@@ -21,9 +21,9 @@ export interface IAccountingRepository {
     params: CreateBankTransaction | CreateBankTransaction[],
     companyId: number,
   ): Promise<void>;
-  getTransactionById(id: number): Promise<BankTransaction | undefined>;
+  getTransactionById(id: string): Promise<BankTransaction | undefined>;
   getTransactionsByBankAccountId(bankAccountId: string): Promise<BankTransaction[]>;
-  deleteTransactionByRemoteId(remoteId: string | string[]): Promise<void>;
+  deleteTransaction(id: string | string[]): Promise<void>;
 
   upsertInvoice(params: CreateInvoice, companyId: number): Promise<Invoice>;
   getInvoiceById(id: number): Promise<Invoice | undefined>;

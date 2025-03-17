@@ -101,8 +101,11 @@ const aiHandler = (ai: IAIService, accountingService: IAccountingService, compan
         bankAccount,
       );
 
-      console.log(result);
-      return c.json(result, 200);
+      return c.json({
+        matches: result.matches,
+        unmatchedTransactions: result.unmatchedTransactions,
+        unmatchedInvoices: result.unmatchedInvoices,
+      }, 200);
     });
 
   return app;

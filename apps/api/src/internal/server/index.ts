@@ -5,7 +5,6 @@ import { prettyJSON } from "hono/pretty-json";
 import { secureHeaders } from "hono/secure-headers";
 import { cors } from "hono/cors";
 import { OpenAPIHono } from "@hono/zod-openapi";
-import { swaggerUI } from "@hono/swagger-ui";
 import accountHandler from "./handlers/account";
 import type { Service } from "../service";
 import companyHandler from "./handlers/company";
@@ -13,7 +12,6 @@ import webhookHandler from "./handlers/webhook";
 import aiHandler from "./handlers/ai";
 import accountingHandler from "./handlers/accounting";
 import { createFiberplane } from "@fiberplane/hono";
-import { env } from "../../env";
 
 export class Server {
   public readonly routes;
@@ -80,14 +78,15 @@ export class Server {
       .route("/webhooks", webhookHandler(service.company))
       .route("/ai", aiHandler(service.ai, service.accounting, service.company))
       .route("/accounting", accountingHandler(service.accounting))
+
       // It is important to mount Fiberplane’s middleware after all of your route definitions.
-      .use(
-        "/fp/*",
-        createFiberplane({
-          openapi: {
-            url: "/openapi.json"
-          },
-        })
-      );
+    app.use(
+      "/fp/*",
+      createFiberplane({
+        openapi: {
+          url: "/openapi.json"
+        },
+      })
+    );
   }
 }

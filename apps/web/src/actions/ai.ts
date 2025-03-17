@@ -8,7 +8,7 @@ import { z } from "zod";
  * Uses the AI service to identify matches and discrepancies
  */
 export const reconcileTransactionsAction = actionClientWithAccount
-  .schema(z.number())
+  .schema(z.string())
   .action(async ({ ctx: { api }, parsedInput }) => {
     const req = await api.ai["bank-account"][":id"].reconcile.$post({
       param: {

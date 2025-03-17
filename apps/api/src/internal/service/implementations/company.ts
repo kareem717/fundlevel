@@ -8,6 +8,7 @@ import {
   Products,
   type Transaction,
   type RemovedTransaction,
+  type TransactionCode,
 } from "plaid";
 import type {
   CreateCompany,
@@ -341,7 +342,7 @@ export class CompanyService implements ICompanyService {
     const accounts = plaidResp.data.accounts;
 
     for (const account of accounts) {
-      const { 
+      const {
         account_id,
         balances,
         mask,
@@ -420,15 +421,60 @@ export class CompanyService implements ICompanyService {
       cursor = data.next_cursor;
     }
 
-    const convertedUpsert: CreateBankTransaction[] = upsert.map((t) => ({
-      remote_id: t.transaction_id,
-      bank_account_id: t.account_id,
-      content: JSON.stringify(t),
-    }));
+
+    const convertedUpsert: CreateBankTransaction[] = upsert.map((t) => {
+      const {
+        transaction_id,
+        account_id,
+        personal_finance_category,
+        name,
+        iso_currency_code,
+        unofficial_currency_code,
+        check_number,
+        merchant_name,
+        datetime,
+        pending,
+        original_description,
+        authorized_datetime,
+        date,
+        website,
+        amount,
+        payment_channel,
+        transaction_code,
+        ...rest
+      } = t;
+
+      const remaining_remote_content = JSON.stringify({
+        ...rest,
+      });
+
+      return {
+        remote_id: transaction_id,
+        bank_account_id: account_id,
+        personal_finance_category_confidence_level: personal_finance_category?.confidence_level as "VERY_HIGH" | "HIGH" | "MEDIUM" | "LOW" | "UNKNOWN" | undefined,
+        personal_finance_category_primary: personal_finance_category?.primary,
+        personal_finance_category_detailed: personal_finance_category?.detailed,
+        remaining_remote_content,
+        iso_currency_code,
+        unofficial_currency_code,
+        check_number,
+        date,
+        datetime,
+        name,
+        merchant_name,
+        website,
+        authorized_at: authorized_datetime,
+        original_description,
+        pending,
+        amount,
+        code: transaction_code as TransactionCode,
+        payment_channel,
+      };
+    });
 
     //TODO: THIS IS SUPER UNSAFE, WE NEED TO USE TXN - MIGRATE TO DRIZZLE
     await this.accountingRepo.upsertTransaction(convertedUpsert, company_id);
-    await this.accountingRepo.deleteTransactionByRemoteId(
+    await this.accountingRepo.deleteTransaction(
       remove.map((r) => r.transaction_id),
     );
 

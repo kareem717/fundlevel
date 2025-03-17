@@ -6,15 +6,15 @@ config();
 
 export const env = createEnv({
   server: {
-    APP_URL: z.string().url(),
+    BACKEND_APP_URL: z.string().url(),
     PORT: z.coerce.number().default(8080),
 
     NODE_ENV: z.enum(["development", "production"]),
 
     SUPABASE_URL: z.string().url(),
-    SUPABASE_SERVICE_KEY: z.string().min(1),
+    SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
 
-    DATABASE_URL: z.string().url(),
+    POSTGRES_URL: z.string().url(),
 
     QB_CLIENT_ID: z.string().min(1),
     QB_CLIENT_SECRET: z.string().min(1),

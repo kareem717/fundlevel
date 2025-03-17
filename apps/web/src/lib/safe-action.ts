@@ -16,10 +16,10 @@ export const actionClient = createSafeActionClient({
   next({
     ctx: {
       axiosClient: deprecatedCreateClient({
-        baseURL: env.NEXT_PUBLIC_BACKEND_API_URL,
+        baseURL: env.NEXT_PUBLIC_BACKEND_APP_URL,
       }),
       api: createClient({
-        url: env.NEXT_PUBLIC_BACKEND_API_URL,
+        url: env.NEXT_PUBLIC_BACKEND_APP_URL,
       }),
     },
   }),
@@ -62,7 +62,7 @@ export const actionClientWithUser = actionClient.use(async ({ next, ctx }) => {
   // Create typed API client with auth token
   const apiClient = createClient({
     bearer: session.access_token,
-    url: env.NEXT_PUBLIC_BACKEND_API_URL,
+    url: env.NEXT_PUBLIC_BACKEND_APP_URL,
   });
 
   return next({

@@ -64,7 +64,7 @@ export const bankTransactionSchema = z
   })
   .omit({
     // Not sure why json types are causing issues
-    content: true,
+    remaining_remote_content: true,
   })
   .openapi("BankTransaction")
   .required();
@@ -72,8 +72,8 @@ export const bankTransactionSchema = z
 export const createBankTransactionSchema = z
   .object({
     ...publicPlaidTransactionsInsertSchemaSchema.omit({
-      id: true,
       created_at: true,
+      company_id: true,
       updated_at: true,
     }).shape,
   })

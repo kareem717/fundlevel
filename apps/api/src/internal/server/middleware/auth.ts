@@ -36,7 +36,7 @@ export const authMiddleware = (
     // Create Supabase client with cookie handling
     const supabase = createServerClient(
       env.SUPABASE_URL,
-      env.SUPABASE_SERVICE_KEY,
+      env.SUPABASE_SERVICE_ROLE_KEY,
       {
         cookies: {
           getAll() {
