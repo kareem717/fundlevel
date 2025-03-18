@@ -1,3 +1,3 @@
-# `@workspace/eslint-config`
+# `@fundlevel/eslint-config`
 
 Shared eslint configuration for the workspace.

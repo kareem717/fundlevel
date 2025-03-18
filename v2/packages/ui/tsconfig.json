@@ -1,11 +1,13 @@
 {
-  "extends": "@workspace/typescript-config/react-library.json",
+  "extends": "@fundlevel/typescript-config/react-library.json",
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@workspace/ui/*": ["./src/*"]
-    }
+      "@/*": ["./src/*"]
+    },
+    "moduleResolution": "nodenext",
+    "allowSyntheticDefaultImports": true
   },
-  "include": ["."],
-  "exclude": ["node_modules", "dist"]
+  "include": ["src"],
+  "exclude": ["node_modules"]
 }
