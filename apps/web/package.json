@@ -43,7 +43,7 @@
   "devDependencies": {
     "@babel/core": "^7.26.0",
     "@babel/types": "^7.26.5",
-    "@fundlevel/typescript-config": "workspace:*",
+    "@fundlevel/tsconfig": "workspace:*",
     "@types/node": "^20",
     "@types/react": "19.0.10",
     "@types/react-dom": "19.0.4",

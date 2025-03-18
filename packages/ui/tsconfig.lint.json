@@ -1,5 +1,5 @@
 {
-  "extends": "@fundlevel/typescript-config/react-library.json",
+  "extends": "@fundlevel/tsconfig/react-library.json",
   "compilerOptions": {
     "outDir": "dist"
   },

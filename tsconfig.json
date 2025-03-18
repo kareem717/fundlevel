@@ -1,4 +1,4 @@
 {
-  "extends": "@fundlevel/typescript-config/base.json"
+  "extends": "@fundlevel/tsconfig/base.json"
 }
 
