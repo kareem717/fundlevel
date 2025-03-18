@@ -16,6 +16,7 @@
         "@ai-sdk/openai": "^1.2.5",
         "@fiberplane/hono": "^0.5.2",
         "@fundlevel/supabase": "workspace:*",
+        "@hono/node-server": "^1.13.8",
         "@hono/swagger-ui": "^0.5.1",
         "@hono/zod-openapi": "^0.19.2",
         "@supabase/ssr": "^0.5.2",
@@ -285,6 +286,8 @@
     "@glideapps/ts-necessities": ["@glideapps/ts-necessities@2.2.3", "", {}, "sha512-gXi0awOZLHk3TbW55GZLCPP6O+y/b5X1pBXKBVckFONSwF1z1E5ND2BGJsghQFah+pW7pkkyFb2VhUQI2qhL5w=="],
 
     "@hey-api/client-axios": ["@hey-api/client-axios@0.3.4", "", { "peerDependencies": { "axios": ">= 1.0.0 < 2" } }, "sha512-9jyZb1kicWZoZwlu/2XnwRDQJsrGi+ExBuSn3liT5slQ6uRSbN5HYqZr1YzRy4fbAkxY9S2vFbqfdHniqWgGGg=="],
+
+    "@hono/node-server": ["@hono/node-server@1.13.8", "", { "peerDependencies": { "hono": "^4" } }, "sha512-fsn8ucecsAXUoVxrUil0m13kOEq4mkX4/4QozCqmY+HpGfKl74OYSn8JcMA8GnG0ClfdRI4/ZSeG7zhFaVg+wg=="],
 
     "@hono/standard-validator": ["@hono/standard-validator@0.1.2", "", { "peerDependencies": { "@standard-schema/spec": "1.0.0", "hono": ">=3.9.0" } }, "sha512-mVyv2fpx/o0MNAEhjXhvuVbW3BWTGnf8F4w8ZifztE+TWXjUAKr7KAOZfcDhVrurgVhKw7RbTnEog2beZM6QtQ=="],
 
