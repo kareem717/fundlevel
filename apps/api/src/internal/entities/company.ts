@@ -1,10 +1,10 @@
-import type { Database } from "@fundlevel/supabase"
+import type { Database } from "@fundlevel/supabase";
 import {
   publicCompaniesInsertSchemaSchema,
   publicCompaniesRowSchemaSchema,
   publicPlaidCredentialsInsertSchemaSchema,
   publicPlaidCredentialsRowSchemaSchema,
-} from "@fundlevel/supabase"
+} from "@fundlevel/supabase";
 import { z } from "@hono/zod-openapi";
 
 export type Company = Database["public"]["Tables"]["companies"]["Row"];

@@ -4,11 +4,14 @@ import { buttonVariants } from "@fundlevel/ui/components/button";
 import Link from "next/link";
 import { cn } from "@fundlevel/ui/lib/utils";
 
-export default async function BankAccountsPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function BankAccountsPage({
+  params,
+}: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const companyId = Number.parseInt(id, 10);
 
-  const bankAccounts = (await getBankAccountsByCompanyIdAction(companyId))?.data || [];
+  const bankAccounts =
+    (await getBankAccountsByCompanyIdAction(companyId))?.data || [];
 
   return (
     <div className="space-y-6">
@@ -19,17 +22,25 @@ export default async function BankAccountsPage({ params }: { params: Promise<{ i
         </p>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
-        {bankAccounts.length > 0 ? bankAccounts.map((account) => (
-          <pre key={account.remote_id} className="bg-muted p-4 rounded-md gap-4 flex flex-col overflow-hidden">
-            {JSON.stringify(account, null, 2)}
-            <Link href={redirects.app.company(companyId).bank.transactions(account.remote_id)} className={cn(buttonVariants({ variant: "outline" }))}>
-              View Transactions
-            </Link>
-          </pre>
-        )) : (
-          <p className="text-muted-foreground">
-            No bank accounts found
-          </p>
+        {bankAccounts.length > 0 ? (
+          bankAccounts.map((account) => (
+            <pre
+              key={account.remote_id}
+              className="bg-muted p-4 rounded-md gap-4 flex flex-col overflow-hidden"
+            >
+              {JSON.stringify(account, null, 2)}
+              <Link
+                href={redirects.app
+                  .company(companyId)
+                  .bank.transactions(account.remote_id)}
+                className={cn(buttonVariants({ variant: "outline" }))}
+              >
+                View Transactions
+              </Link>
+            </pre>
+          ))
+        ) : (
+          <p className="text-muted-foreground">No bank accounts found</p>
         )}
       </div>
     </div>

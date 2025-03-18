@@ -47,7 +47,10 @@ export class AccountingService implements IAccountingService {
   private companyService: ICompanyService;
   private qbApiBaseUrl: string;
 
-  constructor(accountingRepo: IAccountingRepository, companyService: ICompanyService) {
+  constructor(
+    accountingRepo: IAccountingRepository,
+    companyService: ICompanyService,
+  ) {
     this.accountingRepo = accountingRepo;
     this.companyService = companyService;
     // Set the appropriate base URLs based on environment
@@ -71,8 +74,12 @@ export class AccountingService implements IAccountingService {
   /**
    * Fetch bank transactions for a specific account
    */
-  async getTransactionsByBankAccountId(bankAccountId: string): Promise<BankTransaction[]> {
-    return await this.accountingRepo.getTransactionsByBankAccountId(bankAccountId);
+  async getTransactionsByBankAccountId(
+    bankAccountId: string,
+  ): Promise<BankTransaction[]> {
+    return await this.accountingRepo.getTransactionsByBankAccountId(
+      bankAccountId,
+    );
   }
 
   /**

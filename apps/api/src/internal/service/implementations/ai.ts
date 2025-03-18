@@ -331,17 +331,23 @@ export class AIService implements IAIService {
     invoices: Invoice[],
     accountInfo: BankAccount,
   ): Promise<ReconciliationResult> {
-    console.log(`Reconciling transactions for account: ${accountInfo.remote_id}`);
+    console.log(
+      `Reconciling transactions for account: ${accountInfo.remote_id}`,
+    );
 
     // Step 1: Preprocess and clean the transaction and invoice data in parallel
-    console.log(`Preparing reconciliation data for ${transactions.length} transactions and ${invoices.length} invoices`);
+    console.log(
+      `Preparing reconciliation data for ${transactions.length} transactions and ${invoices.length} invoices`,
+    );
     const [cleanedTransactions, cleanedInvoices] = await Promise.all([
       this.cleanTransactions(transactions),
       this.cleanInvoices(invoices),
     ]);
 
     // Step 2: Find potential matches between transactions and invoices
-    console.log(`Finding potential matches for ${cleanedTransactions.length} transactions and ${cleanedInvoices.length} invoices`);
+    console.log(
+      `Finding potential matches for ${cleanedTransactions.length} transactions and ${cleanedInvoices.length} invoices`,
+    );
     const potentialMatches = await this.findPotentialMatches(
       cleanedTransactions,
       cleanedInvoices,
@@ -349,14 +355,18 @@ export class AIService implements IAIService {
     );
 
     // Step 3: Create a final reconciliation report
-    console.log(`Creating reconciliation report for ${cleanedTransactions.length} transactions and ${cleanedInvoices.length} invoices`);
+    console.log(
+      `Creating reconciliation report for ${cleanedTransactions.length} transactions and ${cleanedInvoices.length} invoices`,
+    );
     const reconciliationResult = await this.createReconciliationReport(
       cleanedTransactions,
       cleanedInvoices,
       potentialMatches,
     );
 
-    console.log(`Reconciliation complete for ${cleanedTransactions.length} transactions and ${cleanedInvoices.length} invoices`);
+    console.log(
+      `Reconciliation complete for ${cleanedTransactions.length} transactions and ${cleanedInvoices.length} invoices`,
+    );
     return reconciliationResult;
   }
 
@@ -402,7 +412,7 @@ export class AIService implements IAIService {
     });
 
     // Convert any null values to undefined to match our CleanedTransaction interface
-    return cleanedData.object.transactions.map(transaction => ({
+    return cleanedData.object.transactions.map((transaction) => ({
       ...transaction,
       description: transaction.description || undefined,
       category: transaction.category || undefined,
@@ -413,9 +423,7 @@ export class AIService implements IAIService {
   /**
    * Clean and standardize invoice data
    */
-  private async cleanInvoices(
-    invoices: Invoice[],
-  ): Promise<CleanedInvoice[]> {
+  private async cleanInvoices(invoices: Invoice[]): Promise<CleanedInvoice[]> {
     const invoiceSchema = z.object({
       invoices: z.array(
         z
@@ -452,7 +460,7 @@ export class AIService implements IAIService {
     });
 
     // Convert any null values to undefined to match our CleanedInvoice interface
-    return cleanedData.object.invoices.map(invoice => ({
+    return cleanedData.object.invoices.map((invoice) => ({
       ...invoice,
       dueDate: invoice.dueDate || undefined,
       customer: invoice.customer || undefined,
@@ -481,22 +489,21 @@ export class AIService implements IAIService {
       needsReview: boolean;
     }
 
-    const matchingSchema =
-      z.object({
-        matches: z.array(
-          z.object({
-            transactionId: z.string(),
-            transactionAmount: z.number(),
-            transactionDate: z.string(),
-            invoiceId: z.string().nullable(),
-            invoiceAmount: z.number().nullable(),
-            invoiceDate: z.string().nullable(),
-            confidence: z.number(),
-            matchReason: z.string(),
-            needsReview: z.boolean(),
-          }),
-        ),
-      });
+    const matchingSchema = z.object({
+      matches: z.array(
+        z.object({
+          transactionId: z.string(),
+          transactionAmount: z.number(),
+          transactionDate: z.string(),
+          invoiceId: z.string().nullable(),
+          invoiceAmount: z.number().nullable(),
+          invoiceDate: z.string().nullable(),
+          confidence: z.number(),
+          matchReason: z.string(),
+          needsReview: z.boolean(),
+        }),
+      ),
+    });
 
     const matchingResult = await generateObject({
       model: this.openai("gpt-4o-mini"),

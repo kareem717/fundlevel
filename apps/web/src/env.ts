@@ -8,16 +8,10 @@ export const env = createEnv({
       .default("development"),
   },
   client: {
-    NEXT_PUBLIC_APP_URL: z
-      .string()
-      .url()
-      .min(1),
+    NEXT_PUBLIC_APP_URL: z.string().url().min(1),
     NEXT_PUBLIC_SUPABASE_URL: z.string().url().min(1),
     NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1),
-    NEXT_PUBLIC_BACKEND_APP_URL: z
-      .string()
-      .url()
-      .min(1)
+    NEXT_PUBLIC_BACKEND_APP_URL: z.string().url().min(1),
   },
   experimental__runtimeEnv: {
     NEXT_PUBLIC_APP_URL: process.env.WEB_APP_URL,

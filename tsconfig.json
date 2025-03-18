@@ -1,4 +1,3 @@
 {
   "extends": "@fundlevel/tsconfig/base.json"
 }
-

@@ -1,0 +1,26 @@
+{
+  "name": "@fundlevel/db",
+  "version": "0.0.0",
+  "private": true,
+  "main": "dist/src/index.js",
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc",
+    "lint": "biome check .",
+    "format": "biome --write .",
+    "typecheck": "tsc --noEmit",
+    "db:pull": "drizzle-kit pull"
+  },
+  "dependencies": {
+    "@hono/zod-openapi": "^0.19.2",
+    "drizzle-orm": "^0.40.1",
+    "drizzle-zod": "^0.7.0",
+    "postgres": "^3.4.5"
+  },
+  "devDependencies": {
+    "@fundlevel/tsconfig": "workspace:*",
+    "dotenv": "^16.4.7",
+    "drizzle-kit": "^0.30.5",
+    "zod": "^3.24.2"
+  }
+}

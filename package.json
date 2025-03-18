@@ -7,6 +7,7 @@
     "start": "turbo run start",
     "test": "turbo run test",
     "install": "turbo run install",
+    "db:pull": "turbo run db:pull",
     "supabase:reset": "turbo run supabase:reset",
     "supabase:up": "turbo run supabase:up",
     "supabase:seed": "turbo run supabase:seed",

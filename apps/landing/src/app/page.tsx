@@ -35,9 +35,9 @@ const faqs = [
         <br />
         <p>
           Our services are also available to businesses that simply want to
-          raise capital through their own channels - thus we offer &apos;modular&apos;
-          services that you can mix and match to fit your business needs, like
-          compliance, payment processing, and more.
+          raise capital through their own channels - thus we offer
+          &apos;modular&apos; services that you can mix and match to fit your
+          business needs, like compliance, payment processing, and more.
         </p>
       </>
     ),
@@ -56,8 +56,8 @@ const faqs = [
         </p>
         <br />
         <p>
-          Don&apos;t let that scare you though - we are very quick to respond with a
-          accurate price if you reach out to us at:&nbsp;
+          Don&apos;t let that scare you though - we are very quick to respond
+          with a accurate price if you reach out to us at:&nbsp;
           <Link
             href={`mailto:${contact.email}`}
             aria-label="Email us at"

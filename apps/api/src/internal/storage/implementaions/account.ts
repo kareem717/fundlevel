@@ -1,9 +1,9 @@
 import type { Account, CreateAccount } from "../../entities";
 import type { IAccountRepository } from "..";
-import type { Client } from "@fundlevel/supabase"
+import type { Client } from "@fundlevel/supabase";
 
 export class AccountRepository implements IAccountRepository {
-  constructor(private readonly sb: Client) { }
+  constructor(private readonly sb: Client) {}
 
   async getByUserId(id: string): Promise<Account | undefined> {
     const { data, error } = await this.sb

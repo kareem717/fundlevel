@@ -28,7 +28,8 @@ export const redirects = {
       bank: {
         root: companyPrefix(id, "bank"),
         reconciliation: companyPrefix(id, "bank/reconciliation"),
-        transactions: (accountId: string) => companyPrefix(id, `bank/${accountId}/transactions`),
+        transactions: (accountId: string) =>
+          companyPrefix(id, `bank/${accountId}/transactions`),
       },
       settings: {
         root: companyPrefix(id, "settings"),

@@ -48,7 +48,7 @@ export function HeroBadge({
   const controls = useAnimation();
 
   // TODO: Fix this type error
-  const BadgeWrapper = href ? Link : motion.button as ElementType;
+  const BadgeWrapper = href ? Link : (motion.button as ElementType);
   const wrapperProps =
     href !== undefined ? { href } : { type: "button" as const, onClick };
 

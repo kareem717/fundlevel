@@ -45,9 +45,11 @@ interface ReconciliationClientProps {
 }
 
 export function ReconciliationClient({
-  bankAccounts
+  bankAccounts,
 }: ReconciliationClientProps) {
-  const [selectedAccountId, setSelectedAccountId] = useState<string | undefined>();
+  const [selectedAccountId, setSelectedAccountId] = useState<
+    string | undefined
+  >();
   const [results, setResults] = useState<{
     matches: Array<{
       transactionId: string;
@@ -80,7 +82,7 @@ export function ReconciliationClient({
           description: error.error.serverError?.message || "An error occurred",
         });
       },
-    }
+    },
   );
 
   const handleReconcile = () => {
@@ -101,7 +103,7 @@ export function ReconciliationClient({
     } else {
       setSelectedAccountId(accountId);
     }
-  }
+  };
 
   return (
     <>
@@ -121,7 +123,7 @@ export function ReconciliationClient({
                     key={account.remote_id}
                     onClick={() => handleAccountSelection(account.remote_id)}
                     onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
+                      if (e.key === "Enter" || e.key === " ") {
                         e.preventDefault();
                         handleAccountSelection(account.remote_id);
                       }
@@ -129,24 +131,29 @@ export function ReconciliationClient({
                     tabIndex={0}
                     type="button"
                     aria-selected={selectedAccountId === account.remote_id}
-                    className={`p-4 border rounded-lg cursor-pointer transition-colors ${selectedAccountId === account.remote_id
-                      ? "border-primary bg-primary/5"
-                      : "hover:border-primary/50"
-                      }`}
+                    className={`p-4 border rounded-lg cursor-pointer transition-colors ${
+                      selectedAccountId === account.remote_id
+                        ? "border-primary bg-primary/5"
+                        : "hover:border-primary/50"
+                    }`}
                   >
                     <div className="flex items-center gap-2">
                       <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-medium">
                         {account.name?.charAt(0) || "A"}
                       </div>
                       <div>
-                        <div className="font-medium">{account.name || "Account"}</div>
+                        <div className="font-medium">
+                          {account.name || "Account"}
+                        </div>
                         {account.mask && (
-                          <div className="text-sm text-muted-foreground">****{account.mask}</div>
+                          <div className="text-sm text-muted-foreground">
+                            ****{account.mask}
+                          </div>
                         )}
                       </div>
                     </div>
                   </button>
-                )
+                );
               })
             ) : (
               <div className="col-span-full text-center p-6 border rounded-lg text-muted-foreground">
@@ -177,8 +184,18 @@ export function ReconciliationClient({
       {results && (
         <Tabs defaultValue="matches">
           <TabsList className="mb-4">
-            <TabsTrigger value="matches" disabled={results.matches.length === 0}>Matches ({results.matches.length})</TabsTrigger>
-            <TabsTrigger value="unmatched" disabled={results.unmatchedTransactions.length === 0}>Unmatched Items ({results.unmatchedTransactions.length})</TabsTrigger>
+            <TabsTrigger
+              value="matches"
+              disabled={results.matches.length === 0}
+            >
+              Matches ({results.matches.length})
+            </TabsTrigger>
+            <TabsTrigger
+              value="unmatched"
+              disabled={results.unmatchedTransactions.length === 0}
+            >
+              Unmatched Items ({results.unmatchedTransactions.length})
+            </TabsTrigger>
           </TabsList>
           <TabsContent value="matches">
             <Card>
@@ -201,10 +218,7 @@ export function ReconciliationClient({
                             Transaction: {match.transactionId}
                           </span>
                           {match.needsReview && (
-                            <Badge
-                              variant="outline"
-                              className="bg-yellow-100"
-                            >
+                            <Badge variant="outline" className="bg-yellow-100">
                               Needs Review
                             </Badge>
                           )}
@@ -214,9 +228,7 @@ export function ReconciliationClient({
                             Matched to Invoice: {match.invoiceId}
                           </div>
                         )}
-                        <div className="text-sm mt-1">
-                          {match.matchReason}
-                        </div>
+                        <div className="text-sm mt-1">{match.matchReason}</div>
                       </div>
                       <div className="flex items-center gap-2">
                         <Badge

@@ -147,9 +147,7 @@ export function PortfolioLineGraph({
             <ChartTooltip
               content={
                 <ChartTooltipContent
-                  formatter={(value: unknown) =>
-                    formatCurrency(Number(value))
-                  }
+                  formatter={(value: unknown) => formatCurrency(Number(value))}
                 />
               }
             />

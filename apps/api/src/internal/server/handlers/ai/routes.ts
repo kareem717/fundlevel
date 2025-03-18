@@ -1,5 +1,11 @@
 import { createRoute, z } from "@hono/zod-openapi";
-import { bearerAuthSchema, forbiddenResponse, intPathIdParamSchema, streamResponse, stringPathIdParamSchema } from "../shared/schemas";
+import {
+  bearerAuthSchema,
+  forbiddenResponse,
+  intPathIdParamSchema,
+  streamResponse,
+  stringPathIdParamSchema,
+} from "../shared/schemas";
 import { unauthorizedResponse, notFoundResponse } from "../shared/schemas";
 
 // Define the message schema for AI requests
@@ -117,13 +123,15 @@ export const reconcileTransactionsRoute = createRoute({
       content: {
         "application/json": {
           schema: z.object({
-            matches: z.array(z.object({
-              transactionId: z.string(),
-              invoiceId: z.string().nullable(),
-              confidence: z.number(),
-              matchReason: z.string(),
-              needsReview: z.boolean(),
-            })),
+            matches: z.array(
+              z.object({
+                transactionId: z.string(),
+                invoiceId: z.string().nullable(),
+                confidence: z.number(),
+                matchReason: z.string(),
+                needsReview: z.boolean(),
+              }),
+            ),
             unmatchedTransactions: z.array(z.string()),
             unmatchedInvoices: z.array(z.string()),
           }),

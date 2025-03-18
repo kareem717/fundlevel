@@ -1,5 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "@fundlevel/supabase"
+import type { Database } from "@fundlevel/supabase";
 import type {
   BankAccount,
   CreateBankAccount,
@@ -11,7 +11,7 @@ import type {
 import type { IAccountingRepository } from "../interfaces/accounting";
 
 export class AccountingRepository implements IAccountingRepository {
-  constructor(private supabase: SupabaseClient<Database>) { }
+  constructor(private supabase: SupabaseClient<Database>) {}
 
   async upsertBankAccount(
     bankAccount: CreateBankAccount,
@@ -140,9 +140,7 @@ export class AccountingRepository implements IAccountingRepository {
     return data || [];
   }
 
-  async deleteTransaction(
-    id: string | string[],
-  ): Promise<void> {
+  async deleteTransaction(id: string | string[]): Promise<void> {
     const { error } = await this.supabase
       .from("plaid_transactions")
       .delete()

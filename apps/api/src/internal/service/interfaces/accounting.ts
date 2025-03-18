@@ -96,7 +96,9 @@ export interface IAccountingService {
    */
   getBankAccountsForCompany(companyId: number): Promise<BankAccount[]>;
 
-  getTransactionsByBankAccountId(bankAccountId: string): Promise<BankTransaction[]>;
+  getTransactionsByBankAccountId(
+    bankAccountId: string,
+  ): Promise<BankTransaction[]>;
 
   /**
    * Fetch bank account details

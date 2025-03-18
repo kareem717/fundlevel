@@ -3,7 +3,7 @@ import type {
   ICompanyRepository,
   IAccountingRepository,
 } from "./interfaces";
-import type { Client } from "@fundlevel/supabase"
+import type { Client } from "@fundlevel/supabase";
 import { createClient } from "@supabase/supabase-js";
 import {
   CompanyRepository,

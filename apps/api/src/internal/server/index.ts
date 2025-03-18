@@ -69,7 +69,6 @@ export class Server {
       ],
     }));
 
-
     this.app = app;
 
     this.routes = app
@@ -77,16 +76,16 @@ export class Server {
       .route("/companies", companyHandler(service.company))
       .route("/webhooks", webhookHandler(service.company))
       .route("/ai", aiHandler(service.ai, service.accounting, service.company))
-      .route("/accounting", accountingHandler(service.accounting))
+      .route("/accounting", accountingHandler(service.accounting));
 
-      // It is important to mount Fiberplane’s middleware after all of your route definitions.
+    // It is important to mount Fiberplane’s middleware after all of your route definitions.
     app.use(
       "/fp/*",
       createFiberplane({
         openapi: {
-          url: "/openapi.json"
+          url: "/openapi.json",
         },
-      })
+      }),
     );
   }
 }

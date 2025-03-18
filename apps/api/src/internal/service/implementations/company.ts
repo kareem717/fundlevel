@@ -350,9 +350,15 @@ export class CompanyService implements ICompanyService {
         official_name,
         subtype,
         type,
-        ...rest } = account;
-      const { current, available, iso_currency_code, unofficial_currency_code, ...restBalances } =
-        balances;
+        ...rest
+      } = account;
+      const {
+        current,
+        available,
+        iso_currency_code,
+        unofficial_currency_code,
+        ...restBalances
+      } = balances;
 
       // Not possible according to plaid docs
       if (iso_currency_code && unofficial_currency_code) {
@@ -421,7 +427,6 @@ export class CompanyService implements ICompanyService {
       cursor = data.next_cursor;
     }
 
-
     const convertedUpsert: CreateBankTransaction[] = upsert.map((t) => {
       const {
         transaction_id,
@@ -451,7 +456,14 @@ export class CompanyService implements ICompanyService {
       return {
         remote_id: transaction_id,
         bank_account_id: account_id,
-        personal_finance_category_confidence_level: personal_finance_category?.confidence_level as "VERY_HIGH" | "HIGH" | "MEDIUM" | "LOW" | "UNKNOWN" | undefined,
+        personal_finance_category_confidence_level:
+          personal_finance_category?.confidence_level as
+            | "VERY_HIGH"
+            | "HIGH"
+            | "MEDIUM"
+            | "LOW"
+            | "UNKNOWN"
+            | undefined,
         personal_finance_category_primary: personal_finance_category?.primary,
         personal_finance_category_detailed: personal_finance_category?.detailed,
         remaining_remote_content,

@@ -26,7 +26,11 @@ export const setupStreamingHeaders = (c: Context) => {
 /**
  * Handler for AI-powered financial analysis endpoints
  */
-const aiHandler = (ai: IAIService, accountingService: IAccountingService, companyService: ICompanyService) => {
+const aiHandler = (
+  ai: IAIService,
+  accountingService: IAccountingService,
+  companyService: ICompanyService,
+) => {
   const app = new OpenAPIHono()
     .openapi(analyzeBalanceSheetRoute, async (c) => {
       const account = getAccount(c);
@@ -86,13 +90,20 @@ const aiHandler = (ai: IAIService, accountingService: IAccountingService, compan
       console.log(bankAccount.company_id);
       const company = await companyService.getById(bankAccount.company_id);
       if (company.owner_id !== account.id) {
-        return c.json({ error: "Unauthorized to access this bank account" }, 403);
+        return c.json(
+          { error: "Unauthorized to access this bank account" },
+          403,
+        );
       }
 
       // Get the necessary data from the accounting service
       const bankTransactions =
-        await accountingService.getTransactionsByBankAccountId(bankAccount.remote_id);
-      const invoices = await accountingService.getInvoicesForCompany(company.id);
+        await accountingService.getTransactionsByBankAccountId(
+          bankAccount.remote_id,
+        );
+      const invoices = await accountingService.getInvoicesForCompany(
+        company.id,
+      );
 
       // Perform the reconciliation
       const result = await ai.reconcileTransactions(
@@ -101,11 +112,14 @@ const aiHandler = (ai: IAIService, accountingService: IAccountingService, compan
         bankAccount,
       );
 
-      return c.json({
-        matches: result.matches,
-        unmatchedTransactions: result.unmatchedTransactions,
-        unmatchedInvoices: result.unmatchedInvoices,
-      }, 200);
+      return c.json(
+        {
+          matches: result.matches,
+          unmatchedTransactions: result.unmatchedTransactions,
+          unmatchedInvoices: result.unmatchedInvoices,
+        },
+        200,
+      );
     });
 
   return app;

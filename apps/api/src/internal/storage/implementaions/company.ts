@@ -6,11 +6,11 @@ import type {
   Company,
   UpdateQuickBooksOAuthCredentials,
 } from "../../entities";
-import type { Client } from "@fundlevel/supabase"
+import type { Client } from "@fundlevel/supabase";
 import type { ICompanyRepository } from "../interfaces/company";
 
 export class CompanyRepository implements ICompanyRepository {
-  constructor(private readonly sb: Client) { }
+  constructor(private readonly sb: Client) {}
 
   async create(params: CreateCompany) {
     const { data, error } = await this.sb

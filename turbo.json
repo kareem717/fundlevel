@@ -40,6 +40,10 @@
       "cache": false,
       "dependsOn": ["^test"]
     },
+    "db:pull": {
+      "cache": false,
+      "dependsOn": ["^db:pull"]
+    },
     "supabase:start": {
       "cache": false,
       "dependsOn": ["^supabase:start"]

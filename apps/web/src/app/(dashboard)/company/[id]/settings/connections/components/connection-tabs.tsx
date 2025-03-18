@@ -1,15 +1,13 @@
 "use client";
 
-import type {
-  ComponentPropsWithoutRef,
-} from "react";
+import type { ComponentPropsWithoutRef } from "react";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
 } from "@fundlevel/ui/components/tabs";
-import { useQueryState } from 'nuqs'
+import { useQueryState } from "nuqs";
 import {
   Card,
   CardContent,
@@ -31,14 +29,17 @@ export function ConnectionTabs({
   companyId,
   ...props
 }: ConnectionTabsProps) {
-  const [provider, setProvider] = useQueryState('provider',
-    {
-      clearOnDefault: true,
-      defaultValue: 'plaid',
-    },
-  )
+  const [provider, setProvider] = useQueryState("provider", {
+    clearOnDefault: true,
+    defaultValue: "plaid",
+  });
   return (
-    <Tabs defaultValue={provider} onValueChange={setProvider} className={cn(className)} {...props}>
+    <Tabs
+      defaultValue={provider}
+      onValueChange={setProvider}
+      className={cn(className)}
+      {...props}
+    >
       <TabsList>
         <TabsTrigger value="plaid">Plaid</TabsTrigger>
         <TabsTrigger value="quickbooks">Quickbooks</TabsTrigger>
@@ -52,10 +53,7 @@ export function ConnectionTabs({
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
-            <LinkPlaidButton
-              companyId={companyId}
-              className="w-full"
-            />
+            <LinkPlaidButton companyId={companyId} className="w-full" />
           </CardContent>
         </Card>
       </TabsContent>
@@ -66,10 +64,7 @@ export function ConnectionTabs({
             <CardDescription>Link your Quickbooks account</CardDescription>
           </CardHeader>
           <CardContent>
-            <LinkQuickBooksButton
-              companyId={companyId}
-              className="w-full"
-            />
+            <LinkQuickBooksButton companyId={companyId} className="w-full" />
           </CardContent>
         </Card>
       </TabsContent>

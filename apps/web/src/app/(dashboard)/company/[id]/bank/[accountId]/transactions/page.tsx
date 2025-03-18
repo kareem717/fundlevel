@@ -1,9 +1,12 @@
 import { getBankTransactionsByAccountIdAction } from "@/actions/accounting";
 
-export default async function BankAccountTransactionsPage({ params }: { params: Promise<{ id: string, accountId: string }> }) {
+export default async function BankAccountTransactionsPage({
+  params,
+}: { params: Promise<{ id: string; accountId: string }> }) {
   const { accountId } = await params;
 
-  const transactions = (await getBankTransactionsByAccountIdAction(accountId))?.data || [];
+  const transactions =
+    (await getBankTransactionsByAccountIdAction(accountId))?.data || [];
 
   return (
     <div className="space-y-6">
@@ -14,14 +17,17 @@ export default async function BankAccountTransactionsPage({ params }: { params: 
         </p>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
-        {transactions.length > 0 ? transactions.map((transaction) => (
-          <pre key={transaction.remote_id} className="bg-muted p-4 rounded-md gap-4 flex flex-col overflow-hidden">
-            {JSON.stringify(transaction, null, 2)}
-          </pre>
-        )) : (
-          <p className="text-muted-foreground">
-            No transactions found
-          </p>
+        {transactions.length > 0 ? (
+          transactions.map((transaction) => (
+            <pre
+              key={transaction.remote_id}
+              className="bg-muted p-4 rounded-md gap-4 flex flex-col overflow-hidden"
+            >
+              {JSON.stringify(transaction, null, 2)}
+            </pre>
+          ))
+        ) : (
+          <p className="text-muted-foreground">No transactions found</p>
         )}
       </div>
     </div>

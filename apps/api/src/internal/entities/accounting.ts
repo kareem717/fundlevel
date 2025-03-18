@@ -1,11 +1,11 @@
 import { z } from "@hono/zod-openapi";
-import type { Database } from "@fundlevel/supabase"
+import type { Database } from "@fundlevel/supabase";
 import {
   publicPlaidBankAccountsInsertSchemaSchema,
   publicPlaidTransactionsInsertSchemaSchema,
   publicPlaidTransactionsRowSchemaSchema,
-} from "@fundlevel/supabase"
-import { publicPlaidBankAccountsRowSchemaSchema } from "@fundlevel/supabase"
+} from "@fundlevel/supabase";
+import { publicPlaidBankAccountsRowSchemaSchema } from "@fundlevel/supabase";
 
 export type BankAccount =
   Database["public"]["Tables"]["plaid_bank_accounts"]["Row"];
@@ -39,7 +39,8 @@ export type CreateInvoice = Omit<
 export const bankAccountSchema = z
   .object({
     ...publicPlaidBankAccountsRowSchemaSchema.shape,
-  }).omit({
+  })
+  .omit({
     // Not sure why json types are causing issues
     remaining_remote_content: true,
   })
@@ -60,7 +61,7 @@ export const createBankAccountSchema = z
 
 export const bankTransactionSchema = z
   .object({
-    ...publicPlaidTransactionsRowSchemaSchema.shape
+    ...publicPlaidTransactionsRowSchemaSchema.shape,
   })
   .omit({
     // Not sure why json types are causing issues

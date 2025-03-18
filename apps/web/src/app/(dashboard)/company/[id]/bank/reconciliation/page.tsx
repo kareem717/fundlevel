@@ -8,7 +8,8 @@ export default async function ReconciliationPage({
   const { id } = await params;
   const companyId = Number.parseInt(id, 10);
 
-  const bankAccounts = (await getBankAccountsByCompanyIdAction(companyId))?.data || [];
+  const bankAccounts =
+    (await getBankAccountsByCompanyIdAction(companyId))?.data || [];
 
   return (
     <div className="flex flex-col gap-6">
