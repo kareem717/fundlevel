@@ -4,10 +4,6 @@
   "version": "0.0.0",
   "main": "./dist/index.js",
   "scripts": {
-    "dev": "tsc --watch",
-    "build": "rm -rf dist && tsc",
-    "lint": "eslint .",
-    "typecheck": "tsc --noEmit",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
@@ -28,21 +24,9 @@
     "typescript": "~5.7.2"
   },
   "exports": {
-    ".": {
-      "types": "./src/client.ts",
-      "default": "./dist/client.js"
-    },
-    "./types": {
-      "types": "./src/types.ts",
-      "default": "./dist/types.js"
-    },
-    "./validators": {
-      "types": "./src/validators.ts",
-      "default": "./dist/validators.js"
-    },
-    "./schema": {
-      "types": "./src/schema.ts",
-      "default": "./dist/schema.js"
-    }
+    ".": "./src/client.ts",
+    "./types": "./src/types.ts",
+    "./validators": "./src/validators.ts",
+    "./schema": "./src/schema.ts"
   }
 }

@@ -1,9 +1,6 @@
-import { Hono } from 'hono'
+import { Server } from './internal/server'
 
-const app = new Hono()
+const server = new Server()
 
-app.get('/', (c) => {
-  return c.text('Hello Hono!')
-})
-
-export default app
+export type AppType = typeof server.routes
+export default server.routes
