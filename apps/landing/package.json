@@ -5,11 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "next dev --turbo",
-    "build": "next build && cp -r .next/static .next/standalone/apps/landing/.next",
-    "start": "node .next/standalone/apps/landing/server.js",
-    "lint": "next lint",
-    "lint:fix": "next lint --fix",
-    "typecheck": "tsc --noEmit"
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
     "@beehiiv/sdk": "^0.1.5",

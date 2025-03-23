@@ -3,9 +3,8 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "build:landing": "turbo build --filter=@fundlevel/landing...",
-    "start:landing": "turbo start --filter=@fundlevel/landing...",
     "build": "turbo build",
+    "start": "turbo start",
     "dev": "turbo dev",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
