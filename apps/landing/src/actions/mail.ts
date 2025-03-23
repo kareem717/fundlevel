@@ -1,9 +1,9 @@
 "use server";
 
-import { actionClient } from "@/lib/safe-action";
+import { actionClient } from "@fundlevel/landing/lib/safe-action";
 import { z } from "zod";
 import { BeehiivClient } from "@beehiiv/sdk";
-import { env } from "@/env";
+import { env } from "@fundlevel/landing/env";
 
 export const subscribeToNewsletter = actionClient
   .schema(z.string().email())

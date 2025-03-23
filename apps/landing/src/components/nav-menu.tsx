@@ -9,7 +9,6 @@ export type NavigationItem = {
 
 interface NavConfigProps {
   config: NavigationItem[];
-  currentPath: string;
 }
 
 interface NavMenuProps extends ComponentPropsWithoutRef<"nav">, NavConfigProps {

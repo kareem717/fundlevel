@@ -1,8 +1,12 @@
 "use client";
 
-import { ComponentPropsWithoutRef, useEffect, useState } from "react";
+import {
+  type ComponentPropsWithoutRef,
+  useEffect,
+  useState,
+} from "react";
 import { LogoDiv } from "./logo-div";
-import { NavigationItem, NavMenu } from "./nav-menu";
+import { type NavigationItem, NavMenu } from "./nav-menu";
 import { Button } from "@fundlevel/ui/components/button";
 import { cn } from "@fundlevel/ui/lib/utils";
 import { ModeToggle } from "./mode-toggle";
@@ -69,7 +73,6 @@ export function Header({
         <LogoDiv className="w-24 md:w-32" />
         <NavMenu
           config={config}
-          currentPath={currentPath}
           className="hidden lg:flex"
         />
         <div className="flex-row items-center justify-end gap-4 hidden lg:flex">
@@ -93,7 +96,6 @@ export function Header({
         <div className="lg:hidden border-t transition-all duration-300 ease-in-out grid sm:grid-cols-2 gap-4 p-4 w-full">
           <NavMenu
             config={config}
-            currentPath={currentPath}
             direction="column"
             onClick={() => setIsOpen(false)}
           />

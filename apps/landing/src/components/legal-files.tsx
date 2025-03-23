@@ -26,7 +26,7 @@ export function LegalFiles() {
     <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 h-full">
       {files.slice(0, 3).map((f, idx) => (
         <figure
-          key={idx}
+          key={f.name}
           className={cn(
             "relative w-full h-full p-6 rounded-sm border",
             "border-border bg-background cursor-pointer overflow-hidden",

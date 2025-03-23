@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { cn } from "@fundlevel/ui/lib/utils";
 import type { ComponentPropsWithoutRef } from "react";
-import { contact } from "@/lib/config";
+import { contact } from "@fundlevel/landing/lib/config";
 import { Separator } from "@fundlevel/ui/components/separator";
-import { LogoDiv } from "@/components/logo-div";
+import { LogoDiv } from "@fundlevel/landing/components/logo-div";
 
 export function Footer({
   className,
@@ -28,7 +28,7 @@ export function Footer({
         <div className="flex space-x-4 mt-4 md:mt-0">
           {contact.socials.map((social, index) => (
             <Link
-              key={index}
+              key={social.label}
               href={social.link}
               className="text-muted-foreground hover:text-black"
             >

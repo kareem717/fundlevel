@@ -2,8 +2,8 @@
 
 import {
   Children,
-  ComponentPropsWithoutRef,
-  FC,
+  type ComponentPropsWithoutRef,
+  type FC,
   memo,
   useEffect,
   useMemo,
@@ -60,7 +60,7 @@ export const AnimatedList: FC<AnimatedListProps> = memo(
 
     return (
       <div
-        className={cn(`flex flex-col items-center gap-4`, className)}
+        className={cn("flex flex-col items-center gap-4", className)}
         {...props}
       >
         <AnimatePresence>

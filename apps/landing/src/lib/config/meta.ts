@@ -1,5 +1,5 @@
-import { env } from "@/env";
-import { Metadata } from "next";
+import { env } from "@fundlevel/landing/env";
+import type { Metadata } from "next";
 
 /**
  * Configuration for error page meta content.

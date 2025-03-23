@@ -1,4 +1,4 @@
-import { NavigationItem } from "@/components/nav-menu";
+import type { NavigationItem } from "@fundlevel/landing/components/nav-menu";
 
 export const navigationConfig: NavigationItem[] = [
   {

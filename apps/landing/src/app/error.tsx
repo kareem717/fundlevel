@@ -1,15 +1,15 @@
 "use client";
 
-import { SmallLogoDiv } from "@/components/logo-div";
+import { SmallLogoDiv } from "@fundlevel/landing/components/logo-div";
 import { Button, buttonVariants } from "@fundlevel/ui/components/button";
-import { meta, redirects } from "@/lib/config";
+import { meta, redirects } from "@fundlevel/landing/lib/config";
 import { cn } from "@fundlevel/ui/lib/utils";
 import Link from "next/link";
 import { useEffect } from "react";
 
 export const metadata = meta.error;
 
-export default function Error({
+export default function ErrorPage({
   error,
   reset,
 }: {

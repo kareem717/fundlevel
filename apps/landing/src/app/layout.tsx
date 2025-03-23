@@ -1,12 +1,12 @@
 import "@fundlevel/ui/globals.css";
 
-import { Providers } from "@/components/providers";
+import { Providers } from "@fundlevel/landing/components/providers";
 
-import { navigationConfig } from "@/lib/config/navigation";
-import { Header } from "../components/header";
+import { navigationConfig } from "@fundlevel/landing/lib/config/navigation";
+import { Header } from "@fundlevel/landing/components/header";
 import { Geist, Geist_Mono } from "next/font/google";
-import { meta } from "@/lib/config";
-import { Footer } from "../components/footer";
+import { meta } from "@fundlevel/landing/lib/config";
+import { Footer } from "@fundlevel/landing/components/footer";
 
 const fontSans = Geist({
   subsets: ["latin"],

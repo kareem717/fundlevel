@@ -1,6 +1,6 @@
-import { XIcon } from "@/components/icons";
+import { XIcon } from "@fundlevel/landing/components/icons";
 import { Linkedin } from "lucide-react";
-import { ElementType } from "react";
+import type { ElementType } from "react";
 
 type Social = {
   label: string;

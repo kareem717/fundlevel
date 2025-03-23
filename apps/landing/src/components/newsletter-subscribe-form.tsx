@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useAction } from "next-safe-action/hooks";
-import { subscribeToNewsletter } from "@/actions/mail";
+import { subscribeToNewsletter } from "@fundlevel/landing/actions/mail";
 import { Button } from "@fundlevel/ui/components/button";
 import {
   Form,

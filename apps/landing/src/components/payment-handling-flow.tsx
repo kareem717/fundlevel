@@ -8,7 +8,7 @@ import {
 } from "react";
 import { cn } from "@fundlevel/ui/lib/utils";
 import { AnimatedBeam } from "./animated-beam";
-import { SmallLogoIcon } from "@/components/icons";
+import { SmallLogoIcon } from "@fundlevel/landing/components/icons";
 import {
   Banknote,
   Bitcoin,

@@ -1,10 +1,10 @@
-import { env } from "@/env";
-import { NumberedCard } from "@/components/numbered-card";
-import { ElementType } from "react";
-import { PortfolioLineGraph } from "@/components/portfolio-line-graph";
-import { NotificationList } from "@/components/notification-list";
-import { LegalFiles } from "@/components/legal-files";
-import { PaymentHandlingFlow } from "@/components/payment-handling-flow";
+import { env } from "@fundlevel/landing/env";
+import type { NumberedCard } from "@fundlevel/landing/components/numbered-card";
+import type { ElementType } from "react";
+import { PortfolioLineGraph } from "@fundlevel/landing/components/portfolio-line-graph";
+import { NotificationList } from "@fundlevel/landing/components/notification-list";
+import { LegalFiles } from "@fundlevel/landing/components/legal-files";
+import { PaymentHandlingFlow } from "@fundlevel/landing/components/payment-handling-flow";
 
 /**
  * Contains all of the copy written for services section of the landing page.

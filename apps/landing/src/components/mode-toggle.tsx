@@ -2,7 +2,7 @@
 
 import { useTheme } from "next-themes";
 import { Button } from "@fundlevel/ui/components/button";
-import { FC } from "react";
+import type { FC } from "react";
 import { Moon, Sun } from "lucide-react";
 
 export const ModeToggle: FC = () => {

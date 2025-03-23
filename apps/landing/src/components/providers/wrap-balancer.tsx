@@ -1,4 +1,4 @@
-import { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithoutRef } from "react";
 import { Provider } from "react-wrap-balancer";
 
 export type WrapBalancerProps = ComponentPropsWithoutRef<typeof Provider>;

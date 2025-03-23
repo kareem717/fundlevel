@@ -1,13 +1,18 @@
 {
-  "extends": "@fundlevel/tsconfig/react-library.json",
+  "extends": "@fundlevel/typescript-config/react-library.json",
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
-    },
-    "moduleResolution": "nodenext",
-    "allowSyntheticDefaultImports": true
+      "@fundlevel/ui/*": [
+        "./src/*"
+      ]
+    }
   },
-  "include": ["src"],
-  "exclude": ["node_modules"]
+  "include": [
+    "."
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }

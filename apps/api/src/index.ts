@@ -1,8 +1,9 @@
-import { serve } from "@hono/node-server";
-import { server } from "./core";
-import { env } from "./env";
+import { Hono } from 'hono'
 
-serve({
-  fetch: server.app.fetch,
-  port: env.PORT,
-});
+const app = new Hono()
+
+app.get('/', (c) => {
+  return c.text('Hello Hono!')
+})
+
+export default app

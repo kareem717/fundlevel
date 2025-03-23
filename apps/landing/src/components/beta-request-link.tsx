@@ -1,8 +1,8 @@
-import { env } from "@/env";
-import { Button, buttonVariants } from "@fundlevel/ui/components/button";
+import { env } from "@fundlevel/landing/env";
+import { type Button, buttonVariants } from "@fundlevel/ui/components/button";
 import { cn } from "@fundlevel/ui/lib/utils";
 import Link from "next/link";
-import { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithoutRef } from "react";
 
 export interface BetaRequestLinkProps
   extends Omit<ComponentPropsWithoutRef<typeof Link>, "href"> {

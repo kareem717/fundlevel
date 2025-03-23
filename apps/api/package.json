@@ -1,39 +1,15 @@
 {
-  "name": "@fundlevel/api",
-  "type": "module",
+  "name": "api",
   "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "start": "node ./dist/src/index.js",
-    "build": "tsc && pnpm dlx tsc-alias",
-    "lint": "biome check .",
-    "format": "biome format --write .",
-    "check:types": "tsc --noEmit"
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy --minify"
   },
   "dependencies": {
-    "@ai-sdk/openai": "^1.2.5",
-    "@fiberplane/hono": "^0.5.2",
-    "@fundlevel/db": "workspace:*",
-    "@hono/node-server": "^1.13.8",
-    "@hono/swagger-ui": "^0.5.1",
-    "@hono/zod-openapi": "^0.19.2",
-    "@supabase/ssr": "^0.5.2",
-    "@supabase/supabase-js": "^2.49.1",
-    "@t3-oss/env-core": "^0.12.0",
-    "ai": "^4.1.61",
-    "axios": "^1.8.3",
-    "dotenv": "^16.4.7",
-    "hono": "^4.7.4",
-    "jose": "^6.0.10",
-    "plaid": "^31.1.0",
-    "uuid": "^11.1.0",
-    "zod": "^3.24.1"
-  },
-  "exports": {
-    "./client": "./src/client.ts",
-    "./types": "./src/internal/entities/index.ts"
+    "hono": "^4.7.5"
   },
   "devDependencies": {
-    "@types/bun": "latest",
-    "@types/node": "^22.13.10"
+    "@fundlevel/typescript-config": "workspace:*",
+    "@cloudflare/workers-types": "^4.20250214.0",
+    "wrangler": "^3.109.2"
   }
 }

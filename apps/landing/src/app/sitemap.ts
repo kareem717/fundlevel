@@ -1,5 +1,5 @@
-import { env } from "@/env";
-import { redirects } from "@/lib/config";
+import { env } from "@fundlevel/landing/env";
+import { redirects } from "@fundlevel/landing/lib/config";
 import type { MetadataRoute } from "next";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

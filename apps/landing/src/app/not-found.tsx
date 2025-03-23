@@ -1,8 +1,8 @@
-import { redirects } from "@/lib/config";
+import { redirects } from "@fundlevel/landing/lib/config";
 import Link from "next/link";
 import { cn } from "@fundlevel/ui/lib/utils";
 import { buttonVariants } from "@fundlevel/ui/components/button";
-import { meta } from "@/lib/config";
+import { meta } from "@fundlevel/landing/lib/config";
 
 export const metadata = meta.notFound;
 

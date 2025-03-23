@@ -1,5 +1,5 @@
-import { FC, ReactNode } from "react";
-import { ThemeProvider, ThemeProviderProps } from "./theme-provider";
+import type { FC, ReactNode } from "react";
+import { ThemeProvider, type ThemeProviderProps } from "./theme-provider";
 import { WrapBalancer } from "./wrap-balancer";
 import { Toaster } from "sonner";
 

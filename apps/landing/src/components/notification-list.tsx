@@ -1,6 +1,6 @@
-import { AnimatedList } from "./animated-list";
+import { AnimatedList } from "@fundlevel/landing/components/animated-list";
 import { cn } from "@fundlevel/ui/lib/utils";
-import { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithoutRef } from "react";
 
 interface Item {
   name: string;
@@ -128,8 +128,8 @@ export function NotificationList({
       {...props}
     >
       <AnimatedList>
-        {NOTIFICATION_CONTENT.map((item, idx) => (
-          <Notification {...item} key={idx} />
+        {NOTIFICATION_CONTENT.map((item) => (
+          <Notification {...item} key={item.name} />
         ))}
       </AnimatedList>
     </div>

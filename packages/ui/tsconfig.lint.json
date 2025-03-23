@@ -1,8 +1,14 @@
 {
-  "extends": "@fundlevel/tsconfig/react-library.json",
+  "extends": "@fundlevel/typescript-config/react-library.json",
   "compilerOptions": {
     "outDir": "dist"
   },
-  "include": ["src", "turbo"],
-  "exclude": ["node_modules", "dist"]
+  "include": [
+    "src",
+    "turbo"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }

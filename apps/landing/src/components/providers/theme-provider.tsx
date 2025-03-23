@@ -1,6 +1,6 @@
 "use client";
 
-import { FC, ComponentPropsWithoutRef } from "react";
+import type { FC, ComponentPropsWithoutRef } from "react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 
 export type ThemeProviderProps = ComponentPropsWithoutRef<

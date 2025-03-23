@@ -1,22 +1,22 @@
-import { LandingSection } from "../components/landing-section";
-import { copy } from "@/lib/config/copy";
-import { NumberedCard } from "../components/numbered-card";
+import { LandingSection } from "@fundlevel/landing/components/landing-section";
+import { copy } from "@fundlevel/landing/lib/config/copy";
+import { NumberedCard } from "@fundlevel/landing/components/numbered-card";
 import { Mail, ChartLine, Megaphone, ChevronRight } from "lucide-react";
-import { NewsletterSubscribeForm } from "../components/newsletter-subscribe-form";
+import { NewsletterSubscribeForm } from "@fundlevel/landing/components/newsletter-subscribe-form";
 import { cn } from "@fundlevel/ui/lib/utils";
 import Image from "next/image";
 import Balancer from "react-wrap-balancer";
-import { BetaRequestLink } from "@/components/beta-request-link";
+import { BetaRequestLink } from "@fundlevel/landing/components/beta-request-link";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@fundlevel/ui/components/accordion";
-import { contact } from "@/lib/config/company";
-import { env } from "@/env";
+import { contact } from "@fundlevel/landing/lib/config/company";
+import { env } from "@fundlevel/landing/env";
 import Link from "next/link";
-import { HeroBadge } from "@/components/hero-badge";
+import { HeroBadge } from "@fundlevel/landing/components/hero-badge";
 
 const { services, hero, features } = copy.landing;
 
@@ -43,7 +43,7 @@ const faqs = [
     ),
   },
   {
-    question: "What&apos;s the price?",
+    question: "What's the price?",
     answer: (
       <>
         <p>
