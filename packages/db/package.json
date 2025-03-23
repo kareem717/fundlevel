@@ -39,6 +39,10 @@
     "./validators": {
       "types": "./src/validators.ts",
       "default": "./dist/validators.js"
+    },
+    "./schema": {
+      "types": "./src/schema.ts",
+      "default": "./dist/schema.js"
     }
   }
 }

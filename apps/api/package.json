@@ -5,12 +5,17 @@
     "deploy": "wrangler deploy --minify"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^1.3.0",
+    "@fundlevel/db": "workspace:*",
+    "ai": "^4.2.0",
+    "axios": "^1.8.4",
     "hono": "^4.7.5",
-    "@fundlevel/db": "workspace:*"
+    "plaid": "^31.1.0",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
-    "@fundlevel/typescript-config": "workspace:*",
     "@cloudflare/workers-types": "^4.20250214.0",
+    "@fundlevel/typescript-config": "workspace:*",
     "wrangler": "^3.109.2"
   }
 }
