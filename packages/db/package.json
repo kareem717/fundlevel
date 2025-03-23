@@ -7,13 +7,38 @@
     "dev": "tsc --watch",
     "build": "rm -rf dist && tsc",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^0.10.4",
+    "dotenv": "^16.4.7",
+    "drizzle-orm": "^0.41.0",
+    "drizzle-zod": "^0.7.0",
+    "ws": "^8.18.1"
   },
   "devDependencies": {
     "@fundlevel/eslint-config": "workspace:*",
     "@fundlevel/typescript-config": "workspace:*",
+    "drizzle-kit": "^0.30.5",
+    "tsx": "^4.19.3",
     "typescript": "~5.7.2"
+  },
+  "exports": {
+    ".": {
+      "types": "./src/client.ts",
+      "default": "./dist/client.js"
+    },
+    "./types": {
+      "types": "./src/types.ts",
+      "default": "./dist/types.js"
+    },
+    "./validators": {
+      "types": "./src/validators.ts",
+      "default": "./dist/validators.js"
+    }
   }
 }

@@ -5,7 +5,8 @@
     "deploy": "wrangler deploy --minify"
   },
   "dependencies": {
-    "hono": "^4.7.5"
+    "hono": "^4.7.5",
+    "@fundlevel/db": "workspace:*"
   },
   "devDependencies": {
     "@fundlevel/typescript-config": "workspace:*",

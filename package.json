@@ -5,6 +5,10 @@
   "scripts": {
     "build": "turbo build",
     "start": "turbo start",
+    "db:generate": "pnpm --filter @fundlevel/db db:generate",
+    "db:migrate": "pnpm --filter @fundlevel/db db:migrate",
+    "db:push": "pnpm --filter @fundlevel/db db:push",
+    "db:studio": "pnpm --filter @fundlevel/db db:studio",
     "dev": "turbo dev",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
