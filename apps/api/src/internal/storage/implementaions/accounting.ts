@@ -1,213 +1,166 @@
-import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "@fundlevel/supabase";
 import type {
-  BankAccount,
-  CreateBankAccount,
-  BankTransaction,
-  CreateBankTransaction,
-  CreateInvoice,
-  Invoice,
+  PlaidBankAccount,
+  CreatePlaidBankAccountParams,
+  PlaidTransaction,
+  CreatePlaidTransactionParams,
+  QuickBooksInvoice,
+  CreateQuickBooksInvoiceParams,
 } from "../../entities";
 import type { IAccountingRepository } from "../interfaces/accounting";
-
+import { plaidBankAccounts, plaidTransactions, quickBooksInvoices } from "@fundlevel/db/schema";
+import type { Client } from "@fundlevel/db";
+import { eq, inArray } from "@fundlevel/db";
 export class AccountingRepository implements IAccountingRepository {
-  constructor(private supabase: SupabaseClient<Database>) {}
+  constructor(private db: Client) { }
 
   async upsertBankAccount(
-    bankAccount: CreateBankAccount,
+    bankAccount: CreatePlaidBankAccountParams,
     companyId: number,
-  ): Promise<BankAccount> {
-    const { data, error } = await this.supabase
-      .from("plaid_bank_accounts")
-      .upsert(
-        { ...bankAccount, company_id: companyId },
-        {
-          onConflict: "remote_id",
-        },
-      )
-      .select("*")
-      .single();
+  ): Promise<PlaidBankAccount> {
+    const [data] = await this.db
+      .insert(plaidBankAccounts)
+      .values({ ...bankAccount, companyId })
+      .onConflictDoUpdate({
+        target: [plaidBankAccounts.remoteId],
+        set: { ...bankAccount },
+      })
+      .returning();
 
-    if (error) {
-      throw new Error(`Failed to create bank account: ${error.message}`);
+    if (!data) {
+      throw new Error("Failed to create bank account");
     }
 
     return data;
   }
 
-  async getBankAccountByRemoteId(id: string): Promise<BankAccount> {
-    const { data, error } = await this.supabase
-      .from("plaid_bank_accounts")
-      .select("*")
-      .eq("remote_id", id)
-      .single();
+  async getBankAccountByRemoteId(id: string): Promise<PlaidBankAccount> {
+    const [data] = await this.db
+      .select()
+      .from(plaidBankAccounts)
+      .where(eq(plaidBankAccounts.remoteId, id))
+      .limit(1);
 
-    if (error) {
-      throw new Error(`Failed to get bank account: ${error.message}`);
+    if (!data) {
+      throw new Error(`Failed to get bank account: ${id}`);
     }
 
     return data;
   }
 
-  async getBankAccountsByCompanyId(companyId: number): Promise<BankAccount[]> {
-    const { data, error } = await this.supabase
-      .from("plaid_bank_accounts")
-      .select("*")
-      .eq("company_id", companyId);
+  async getBankAccountsByCompanyId(companyId: number): Promise<PlaidBankAccount[]> {
+    const data = await this.db
+      .select()
+      .from(plaidBankAccounts)
+      .where(eq(plaidBankAccounts.companyId, companyId));
 
-    if (error) {
-      throw new Error(`Failed to get bank accounts: ${error.message}`);
-    }
-
-    return data || [];
+    return data;
   }
 
   async updateBankAccount(
     remoteId: string,
-    bankAccount: Partial<CreateBankAccount>,
-  ): Promise<BankAccount> {
-    const { data, error } = await this.supabase
-      .from("plaid_bank_accounts")
-      .update(bankAccount)
-      .eq("remote_id", remoteId)
-      .select("*")
-      .single();
+    bankAccount: Partial<CreatePlaidBankAccountParams>,
+  ): Promise<PlaidBankAccount> {
+    const [data] = await this.db
+      .update(plaidBankAccounts)
+      .set(bankAccount)
+      .where(eq(plaidBankAccounts.remoteId, remoteId))
+      .returning();
 
-    if (error) {
-      throw new Error(`Failed to update bank account: ${error.message}`);
+    if (!data) {
+      throw new Error("Failed to update bank account");
     }
 
     return data;
   }
 
   async deleteBankAccount(remoteId: string): Promise<void> {
-    const { error } = await this.supabase
-      .from("plaid_bank_accounts")
-      .delete()
-      .eq("remote_id", remoteId);
-
-    if (error) {
-      throw new Error(`Failed to delete bank account: ${error.message}`);
-    }
+    await this.db
+      .delete(plaidBankAccounts)
+      .where(eq(plaidBankAccounts.remoteId, remoteId));
   }
 
   async upsertTransaction(
-    transaction: CreateBankTransaction | CreateBankTransaction[],
+    transaction: CreatePlaidTransactionParams | CreatePlaidTransactionParams[],
     companyId: number,
   ) {
     const transactions = Array.isArray(transaction)
       ? transaction
       : [transaction];
 
-    const { error } = await this.supabase.from("plaid_transactions").upsert(
-      transactions.map((t) => ({ ...t, company_id: companyId })),
-      {
-        onConflict: "remote_id",
-      },
+    await this.db.insert(plaidTransactions).values(
+      transactions.map((t) => ({ ...t, companyId })),
     );
-
-    if (error) {
-      throw new Error(`Failed to create transaction: ${error.message}`);
-    }
   }
 
-  async getTransactionById(id: string): Promise<BankTransaction | undefined> {
-    const { data, error } = await this.supabase
-      .from("plaid_transactions")
-      .select("*")
-      .eq("remote_id", id)
-      .single();
+  async getTransactionById(id: string): Promise<PlaidTransaction | undefined> {
+    const [data] = await this.db
+      .select()
+      .from(plaidTransactions)
+      .where(eq(plaidTransactions.remoteId, id))
+      .limit(1);
 
-    if (error && error.code !== "PGRST116") {
-      throw new Error(`Failed to get transaction: ${error.message}`);
-    }
-
-    return data || undefined;
+    return data;
   }
 
   async getTransactionsByBankAccountId(
     bankAccountId: string,
-  ): Promise<BankTransaction[]> {
-    const { data, error } = await this.supabase
-      .from("plaid_transactions")
-      .select("*")
-      .eq("bank_account_id", bankAccountId);
+  ): Promise<PlaidTransaction[]> {
+    const data = await this.db
+      .select()
+      .from(plaidTransactions)
+      .where(eq(plaidTransactions.bankAccountId, bankAccountId));
 
-    if (error) {
-      throw new Error(`Failed to get transactions: ${error.message}`);
-    }
-
-    return data || [];
+    return data;
   }
 
   async deleteTransaction(id: string | string[]): Promise<void> {
-    const { error } = await this.supabase
-      .from("plaid_transactions")
-      .delete()
-      .in("remote_id", Array.isArray(id) ? id : [id]);
-
-    if (error) {
-      throw new Error(`Failed to delete transaction: ${error.message}`);
-    }
+    await this.db
+      .delete(plaidTransactions)
+      .where(inArray(plaidTransactions.remoteId, Array.isArray(id) ? id : [id]));
   }
 
   async upsertInvoice(
-    invoice: CreateInvoice,
+    invoice: CreateQuickBooksInvoiceParams,
     companyId: number,
-  ): Promise<Invoice> {
-    const { data, error } = await this.supabase
-      .from("quick_books_invoices")
-      .upsert(
-        { ...invoice, company_id: companyId },
-        {
-          onConflict: "remote_id",
-        },
-      )
-      .select("*")
-      .single();
+  ): Promise<QuickBooksInvoice> {
+    const [data] = await this.db
+      .insert(quickBooksInvoices)
+      .values({ ...invoice, companyId })
+      .onConflictDoUpdate({
+        target: [quickBooksInvoices.remoteId],
+        set: { ...invoice },
+      })
+      .returning();
 
-    if (error) {
-      throw new Error(`Failed to create/update invoice: ${error.message}`);
+    if (!data) {
+      throw new Error("Failed to create/update invoice");
     }
 
     return data;
   }
 
-  async getInvoiceById(id: number): Promise<Invoice | undefined> {
-    const { data, error } = await this.supabase
-      .from("quick_books_invoices")
-      .select("*")
-      .eq("id", id)
-      .single();
+  async getInvoiceById(id: number): Promise<QuickBooksInvoice | undefined> {
+    const [data] = await this.db
+      .select()
+      .from(quickBooksInvoices)
+      .where(eq(quickBooksInvoices.id, id))
+      .limit(1);
 
-    if (error && error.code !== "PGRST116") {
-      throw new Error(`Failed to get invoice: ${error.message}`);
-    }
-
-    return data || undefined;
+    return data;
   }
 
-  async getInvoicesByCompanyId(companyId: number): Promise<Invoice[]> {
-    const { data, error } = await this.supabase
-      .from("quick_books_invoices")
-      .select("*")
-      .eq("company_id", companyId);
+  async getInvoicesByCompanyId(companyId: number): Promise<QuickBooksInvoice[]> {
+    const data = await this.db
+      .select()
+      .from(quickBooksInvoices)
+      .where(eq(quickBooksInvoices.companyId, companyId));
 
-    if (error) {
-      throw new Error(`Failed to get invoices: ${error.message}`);
-    }
-
-    return data || [];
+    return data;
   }
 
   async deleteInvoiceByRemoteId(remoteId: string | string[]): Promise<void> {
-    const { error } = await this.supabase
-      .from("quick_books_invoices")
-      .delete()
-      .in("remote_id", Array.isArray(remoteId) ? remoteId : [remoteId]);
-
-    if (error) {
-      throw new Error(`Failed to delete invoice: ${error.message}`);
-    }
+    await this.db
+      .delete(quickBooksInvoices)
+      .where(inArray(quickBooksInvoices.remoteId, Array.isArray(remoteId) ? remoteId : [remoteId]));
   }
 }

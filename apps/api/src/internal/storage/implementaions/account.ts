@@ -1,33 +1,31 @@
-import type { Account, CreateAccount } from "../../entities";
+import type { Account, CreateAccountParams } from "../../entities";
 import type { IAccountRepository } from "..";
-import type { Client } from "@fundlevel/supabase";
-
+import type { Client } from "@fundlevel/db";
+import { accounts } from "@fundlevel/db/schema";
+import { eq } from "@fundlevel/db";
 export class AccountRepository implements IAccountRepository {
-  constructor(private readonly sb: Client) {}
+  constructor(private readonly db: Client) {}
 
   async getByUserId(id: string): Promise<Account | undefined> {
-    const { data, error } = await this.sb
-      .from("accounts")
-      .select("*")
-      .eq("user_id", id);
+    const [data] = await this.db
+      .select()
+      .from(accounts)
+      .where(eq(accounts.userId, id));
 
-    if (error) {
-      console.error("Error fetching account by user ID:", error);
-      throw new Error("Failed to fetch account by user ID");
+    if (!data) {
+      return undefined;
     }
 
-    return data?.[0];
+    return data;
   }
 
-  async create(params: CreateAccount): Promise<Account> {
-    const { data, error } = await this.sb
-      .from("accounts")
-      .insert(params)
-      .select()
-      .single();
+  async create(params: CreateAccountParams): Promise<Account> {
+    const [data] = await this.db
+      .insert(accounts)
+      .values(params)
+      .returning();
 
-    if (error || !data) {
-      console.error("Error creating account:", error);
+    if (!data) {
       throw new Error("Failed to create account");
     }
 
@@ -35,16 +33,15 @@ export class AccountRepository implements IAccountRepository {
   }
 
   async getById(id: number): Promise<Account | undefined> {
-    const { data, error } = await this.sb
-      .from("accounts")
-      .select("*")
-      .eq("id", id);
+    const [data] = await this.db
+      .select()
+      .from(accounts)
+      .where(eq(accounts.id, id));
 
-    if (error) {
-      console.error("Error fetching account by ID:", error);
-      throw new Error("Failed to fetch account by ID");
+    if (!data) {
+      return undefined;
     }
 
-    return data?.[0];
+    return data;
   }
 }

@@ -11,14 +11,13 @@
     "supabase:stop": "supabase stop",
     "supabase:status": "supabase status",
     "supabase:restart": "pnpm run supabase:stop && pnpm run supabase:start",
-    "supabase:seed": "tsx scripts/seed.ts",
+    "supabase:seed": "pnpm dlx @snaplet/seed",
     "supabase:seed:sync": "pnpm dlx @snaplet/seed sync",
     "supabase:seed:init": "pnpm dlx @snaplet/seed init",
     "supabase:up": "supabase migration up",
     "supabase:new": "supabase migration new",
     "supabase:reset": "supabase db reset",
-    "supabase:diff": "supabase db diff",
-    "supabase:typegen": "supabase gen types typescript --local > src/types/db.ts && pnpm supazod -i src/types/db.ts -o src/zod.ts -t zod.d.ts -s public"
+    "supabase:diff": "supabase db diff"
   },
   "keywords": [],
   "author": "",

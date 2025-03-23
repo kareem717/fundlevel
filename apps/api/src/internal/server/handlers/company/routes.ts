@@ -6,7 +6,7 @@ import {
   forbiddenResponse,
   notFoundResponse,
 } from "../shared/schemas";
-import { createCompanytSchema, companieschema } from "../../../entities";
+import { CreateCompanyParamsSchema, CompanySchema } from "../../../entities";
 
 export const createCompanyRoute = createRoute({
   summary: "Create a new linked account manually",
@@ -19,7 +19,7 @@ export const createCompanyRoute = createRoute({
     body: {
       content: {
         "application/json": {
-          schema: createCompanytSchema,
+          schema: CreateCompanyParamsSchema.required(),
         },
       },
     },
@@ -29,7 +29,7 @@ export const createCompanyRoute = createRoute({
       description: "Linked account created successfully",
       content: {
         "application/json": {
-          schema: companieschema,
+          schema: CompanySchema.required(), 
         },
       },
     },
@@ -116,7 +116,7 @@ export const getByIdRoute = createRoute({
       description: "Linked account details",
       content: {
         "application/json": {
-          schema: companieschema,
+          schema: CompanySchema.required(),
         },
       },
     },
@@ -136,7 +136,7 @@ export const getByAccountIdRoute = createRoute({
       description: "List of linked accounts",
       content: {
         "application/json": {
-          schema: z.array(companieschema),
+          schema: z.array(CompanySchema.required()),
         },
       },
     },
@@ -295,7 +295,7 @@ export const searchCompaniesRoute = createRoute({
       description: "Companies found",
       content: {
         "application/json": {
-          schema: z.array(companieschema),
+          schema: z.array(CompanySchema.required()),
         },
       },
     },

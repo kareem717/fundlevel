@@ -1,8 +1,8 @@
 import type {
-  CreateCompany,
+  CreateCompanyParams,
   Company,
-  PlaidCredentials,
-  QuickBooksOAuthCredentials,
+  PlaidCredential,
+  QuickBooksOauthCredential,
 } from "../../entities";
 
 export interface ICompanyService {
@@ -10,7 +10,7 @@ export interface ICompanyService {
   getByAccountId(accountId: number): Promise<Company[]>;
   getCompanyByQuickBooksRealmId(realmId: string): Promise<Company | undefined>;
   searchCompanies(query: string, accountId: number): Promise<Company[]>;
-  create(params: CreateCompany): Promise<Company>;
+  create(params: CreateCompanyParams, ownerId: number): Promise<Company>;
   deleteCompany(id: number): Promise<void>;
 
   deletePlaidCredentials(companyId: number): Promise<void>;
@@ -22,7 +22,7 @@ export interface ICompanyService {
   createPlaidCredentials(params: {
     companyId: number;
     publicToken: string;
-  }): Promise<PlaidCredentials>;
+  }): Promise<PlaidCredential>;
 
   syncPlaidBankAccounts(itemId: string): Promise<void>;
   syncPlaidTransactions(itemId: string): Promise<void>;
@@ -33,7 +33,7 @@ export interface ICompanyService {
   ): Promise<string>;
   getQuickBooksOAuthCredentials(
     companyId: number,
-  ): Promise<QuickBooksOAuthCredentials>;
+  ): Promise<QuickBooksOauthCredential>;
   deleteQuickBooksOAuthCredentials(companyId: number): Promise<void>;
   completeQuickBooksOAuthFlow(params: {
     code: string;

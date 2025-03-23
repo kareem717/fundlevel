@@ -1,34 +1,37 @@
 import type {
-  BankAccount,
-  CreateBankAccount,
-  CreateBankTransaction,
-  UpdateBankAccount,
-  BankTransaction,
-  CreateInvoice,
-  Invoice,
+  PlaidBankAccount,
+  CreatePlaidBankAccountParams,
+  CreatePlaidTransactionParams,
+  UpdatePlaidBankAccountParams,
+  PlaidTransaction,
+  CreateQuickBooksInvoiceParams,
+  QuickBooksInvoice,
 } from "../../entities";
 
 export interface IAccountingRepository {
   upsertBankAccount(
-    params: CreateBankAccount,
+    params: CreatePlaidBankAccountParams,
     companyId: number,
-  ): Promise<BankAccount>;
-  getBankAccountByRemoteId(id: string): Promise<BankAccount>;
-  getBankAccountsByCompanyId(companyId: number): Promise<BankAccount[]>;
+  ): Promise<PlaidBankAccount>;
+  getBankAccountByRemoteId(id: string): Promise<PlaidBankAccount>;
+  getBankAccountsByCompanyId(companyId: number): Promise<PlaidBankAccount[]>;
   deleteBankAccount(id: string): Promise<void>;
 
   upsertTransaction(
-    params: CreateBankTransaction | CreateBankTransaction[],
+    params: CreatePlaidTransactionParams | CreatePlaidTransactionParams[],
     companyId: number,
   ): Promise<void>;
-  getTransactionById(id: string): Promise<BankTransaction | undefined>;
+  getTransactionById(id: string): Promise<PlaidTransaction | undefined>;
   getTransactionsByBankAccountId(
     bankAccountId: string,
-  ): Promise<BankTransaction[]>;
+  ): Promise<PlaidTransaction[]>;
   deleteTransaction(id: string | string[]): Promise<void>;
 
-  upsertInvoice(params: CreateInvoice, companyId: number): Promise<Invoice>;
-  getInvoiceById(id: number): Promise<Invoice | undefined>;
-  getInvoicesByCompanyId(companyId: number): Promise<Invoice[]>;
+  upsertInvoice(
+    params: CreateQuickBooksInvoiceParams,
+    companyId: number,
+  ): Promise<QuickBooksInvoice>;
+  getInvoiceById(id: number): Promise<QuickBooksInvoice | undefined>;
+  getInvoicesByCompanyId(companyId: number): Promise<QuickBooksInvoice[]>;
   deleteInvoiceByRemoteId(remoteId: string | string[]): Promise<void>;
 }

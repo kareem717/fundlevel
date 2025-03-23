@@ -1,5 +1,9 @@
 import type { IAccountingService } from "../interfaces/accounting";
-import type { BankTransaction, BankAccount, Invoice } from "../../entities";
+import type {
+  PlaidTransaction as BankTransaction,
+  PlaidBankAccount as BankAccount,
+  QuickBooksInvoice as Invoice
+} from "@fundlevel/db/types";
 import type {
   BalanceSheetReport,
   CashFlowReport,
@@ -118,10 +122,10 @@ export class AccountingService implements IAccountingService {
       const credentials = await this.getCompanyCredentials(companyId);
 
       const response = await axios.get(
-        `${this.qbApiBaseUrl}/v3/company/${credentials.realm_id}/reports/BalanceSheet`,
+        `${this.qbApiBaseUrl}/v3/company/${credentials.realmId}/reports/BalanceSheet`,
         {
           headers: {
-            Authorization: `Bearer ${credentials.access_token}`,
+            Authorization: `Bearer ${credentials.accessToken}`,
             Accept: "application/json",
           },
           params: {
@@ -171,10 +175,10 @@ export class AccountingService implements IAccountingService {
       const credentials = await this.getCompanyCredentials(companyId);
 
       const response = await axios.get(
-        `${this.qbApiBaseUrl}/v3/company/${credentials.realm_id}/reports/ProfitAndLoss`,
+        `${this.qbApiBaseUrl}/v3/company/${credentials.realmId}/reports/ProfitAndLoss`,
         {
           headers: {
-            Authorization: `Bearer ${credentials.access_token}`,
+            Authorization: `Bearer ${credentials.accessToken}`,
             Accept: "application/json",
           },
           params: {
@@ -224,10 +228,10 @@ export class AccountingService implements IAccountingService {
       const credentials = await this.getCompanyCredentials(companyId);
 
       const response = await axios.get(
-        `${this.qbApiBaseUrl}/v3/company/${credentials.realm_id}/reports/CashFlow`,
+        `${this.qbApiBaseUrl}/v3/company/${credentials.realmId}/reports/CashFlow`,
         {
           headers: {
-            Authorization: `Bearer ${credentials.access_token}`,
+            Authorization: `Bearer ${credentials.accessToken}`,
             Accept: "application/json",
           },
           params: {

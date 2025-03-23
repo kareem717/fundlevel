@@ -1,4 +1,4 @@
-import type { CreateAccount } from "../../entities";
+import type { CreateAccountParams } from "../../entities";
 import type { IAccountService } from "..";
 import type { IAccountRepository } from "../../storage";
 
@@ -9,7 +9,7 @@ export class AccountService implements IAccountService {
     return await this.accountRepo.getByUserId(id);
   }
 
-  async create(account: CreateAccount) {
+  async create(account: CreateAccountParams) {
     return await this.accountRepo.create(account);
   }
 }

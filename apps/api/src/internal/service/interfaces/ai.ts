@@ -1,5 +1,5 @@
 import type { Message } from "ai";
-import type { BankTransaction, BankAccount, Invoice } from "../../entities";
+import type { PlaidTransaction, PlaidBankAccount, QuickBooksInvoice } from "../../entities";
 
 /**
  * Result of transaction reconciliation process
@@ -72,8 +72,8 @@ export interface IAIService {
    * @returns Structured reconciliation results
    */
   reconcileTransactions(
-    transactions: BankTransaction[],
-    invoices: Invoice[],
-    accountInfo: BankAccount,
+    transactions: PlaidTransaction[],
+    invoices: QuickBooksInvoice[],
+    accountInfo: PlaidBankAccount,
   ): Promise<ReconciliationResult>;
 }

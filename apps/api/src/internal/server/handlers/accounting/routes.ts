@@ -5,7 +5,7 @@ import {
   stringPathIdParamSchema,
   unauthorizedResponse,
 } from "../shared/schemas";
-import { bankAccountSchema, bankTransactionSchema } from "../../../entities";
+import { PlaidBankAccountSchema, PlaidTransactionSchema } from "../../../entities";
 
 // Route for getting bank accounts for a company
 export const getBankAccountsForCompanyRoute = createRoute({
@@ -25,7 +25,7 @@ export const getBankAccountsForCompanyRoute = createRoute({
       description: "List of bank accounts for the company",
       content: {
         "application/json": {
-          schema: z.array(bankAccountSchema),
+          schema: z.array(PlaidBankAccountSchema.required()),
         },
       },
     },
@@ -51,7 +51,7 @@ export const getBankAccountRoute = createRoute({
       description: "Bank account details",
       content: {
         "application/json": {
-          schema: bankAccountSchema,
+          schema: PlaidBankAccountSchema.required(),
         },
       },
     },
@@ -77,7 +77,7 @@ export const getTransactionsRoute = createRoute({
       description: "List of transactions for the bank account",
       content: {
         "application/json": {
-          schema: z.array(bankTransactionSchema),
+          schema: z.array(PlaidTransactionSchema.required()),
         },
       },
     },

@@ -12,7 +12,7 @@
   "dependencies": {
     "@ai-sdk/openai": "^1.2.5",
     "@fiberplane/hono": "^0.5.2",
-    "@fundlevel/supabase": "workspace:*",
+    "@fundlevel/db": "workspace:*",
     "@hono/node-server": "^1.13.8",
     "@hono/swagger-ui": "^0.5.1",
     "@hono/zod-openapi": "^0.19.2",

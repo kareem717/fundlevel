@@ -1,9 +1,9 @@
-import type { Account, CreateAccount } from "../../entities";
+import type { Account, CreateAccountParams } from "../../entities";
 
 export interface IAccountRepository {
   getByUserId(id: string): Promise<Account | undefined>;
 
-  create(account: CreateAccount): Promise<Account>;
+  create(account: CreateAccountParams): Promise<Account>;
 
   getById(id: number): Promise<Account | undefined>;
 }

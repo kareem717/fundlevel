@@ -1,4 +1,8 @@
-import type { BankTransaction, BankAccount, Invoice } from "../../entities";
+import type {
+  PlaidTransaction as BankTransaction,
+  PlaidBankAccount as BankAccount,
+  QuickBooksInvoice as Invoice
+} from "@fundlevel/db/types";
 
 /**
  * Report header information

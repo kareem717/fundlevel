@@ -33,9 +33,9 @@ importers:
       '@fiberplane/hono':
         specifier: ^0.5.2
         version: 0.5.2(@hono/zod-openapi@0.19.2(hono@4.7.4)(zod@3.24.2))(@standard-schema/spec@1.0.0)(hono@4.7.4)
-      '@fundlevel/supabase':
+      '@fundlevel/db':
         specifier: workspace:*
-        version: link:../../packages/supabase
+        version: link:../../packages/db
       '@hono/node-server':
         specifier: ^1.13.8
         version: 1.13.8(hono@4.7.4)

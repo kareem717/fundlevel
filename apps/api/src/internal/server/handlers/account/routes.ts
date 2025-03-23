@@ -1,5 +1,5 @@
 import { createRoute } from "@hono/zod-openapi";
-import { accountSchema, createAccountSchema } from "../../../entities/account";
+import { AccountSchema, CreateAccountParamsSchema } from "../../../entities/account";
 import {
   notFoundResponse,
   unauthorizedResponse,
@@ -18,7 +18,7 @@ export const getAccountRoute = createRoute({
       description: "Successful fetch",
       content: {
         "application/json": {
-          schema: accountSchema,
+          schema: AccountSchema.required(),
         },
       },
     },
@@ -37,7 +37,7 @@ export const createAccountRoute = createRoute({
     body: {
       content: {
         "application/json": {
-          schema: createAccountSchema,
+          schema: CreateAccountParamsSchema.required(),
         },
       },
     },
@@ -47,7 +47,7 @@ export const createAccountRoute = createRoute({
       description: "Successful fetch",
       content: {
         "application/json": {
-          schema: accountSchema,
+          schema: AccountSchema.required(),
         },
       },
     },

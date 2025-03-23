@@ -10,47 +10,47 @@ import type {
   quickBooksInvoices,
 } from "./drizzle/schema";
 
-export type Company = InferInsertModel<typeof companies>;
+export type Company = InferSelectModel<typeof companies>;
 export type CreateCompanyParams = Omit<
-  OmitEntityFields<InferSelectModel<typeof companies>>,
+  OmitEntityFields<InferInsertModel<typeof companies>>,
   "ownerId"
 >;
 export type UpdateCompanyParams = Partial<CreateCompanyParams>;
 
-export type Account = InferInsertModel<typeof accounts>;
+export type Account = InferSelectModel<typeof accounts>;
 export type CreateAccountParams = OmitEntityFields<
-  InferSelectModel<typeof accounts>
+  InferInsertModel<typeof accounts>
 >;
 export type UpdateAccountParams = Omit<Partial<CreateAccountParams>, "userId">;
 
-export type PlaidCredential = InferInsertModel<typeof plaidCredentials>;
+export type PlaidCredential = InferSelectModel<typeof plaidCredentials>;
 export type CreatePlaidCredentialParams = Omit<
-  OmitTimeStampFields<InferSelectModel<typeof plaidCredentials>>,
+  OmitTimeStampFields<InferInsertModel<typeof plaidCredentials>>,
   "companyId"
 >;
 export type UpdatePlaidCredentialParams = Partial<CreatePlaidCredentialParams>;
 
-export type PlaidBankAccount = InferInsertModel<typeof plaidBankAccounts>;
+export type PlaidBankAccount = InferSelectModel<typeof plaidBankAccounts>;
 export type CreatePlaidBankAccountParams = Omit<
-  OmitTimeStampFields<InferSelectModel<typeof plaidBankAccounts>>,
+  OmitTimeStampFields<InferInsertModel<typeof plaidBankAccounts>>,
   "companyId"
 >;
 export type UpdatePlaidBankAccountParams =
   Partial<CreatePlaidBankAccountParams>;
 
-export type PlaidTransaction = InferInsertModel<typeof plaidTransactions>;
+export type PlaidTransaction = InferSelectModel<typeof plaidTransactions>;
 export type CreatePlaidTransactionParams = Omit<
-  OmitTimeStampFields<InferSelectModel<typeof plaidTransactions>>,
+  OmitTimeStampFields<InferInsertModel<typeof plaidTransactions>>,
   "companyId"
 >;
 export type UpdatePlaidTransactionParams =
   Partial<CreatePlaidTransactionParams>;
 
-export type QuickBooksOauthCredential = InferInsertModel<
+export type QuickBooksOauthCredential = InferSelectModel<
   typeof quickBooksOauthCredentials
 >;
 export type CreateQuickBooksOauthCredentialParams = Omit<
-  OmitTimeStampFields<InferSelectModel<typeof quickBooksOauthCredentials>>,
+  OmitTimeStampFields<InferInsertModel<typeof quickBooksOauthCredentials>>,
   "companyId"
 >;
 export type UpdateQuickBooksOauthCredentialParams = Omit<
@@ -58,11 +58,11 @@ export type UpdateQuickBooksOauthCredentialParams = Omit<
   "realmId"
 >;
 
-export type QuickBooksOauthState = InferInsertModel<
+export type QuickBooksOauthState = InferSelectModel<
   typeof quickBooksOauthStates
 >;
 export type CreateQuickBooksOauthStateParams = Omit<
-  InferSelectModel<typeof quickBooksOauthStates>,
+  InferInsertModel<typeof quickBooksOauthStates>,
   "companyId"
 >;
 export type UpdateQuickBooksOauthStateParams =

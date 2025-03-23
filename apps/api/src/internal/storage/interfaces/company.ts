@@ -1,47 +1,48 @@
 import type {
   Company,
-  CreateCompany,
-  CreatePlaidCredentials,
-  PlaidCredentials,
-  QuickBooksOAuthCredentials,
-  CreateQuickBooksOAuthState,
-  QuickBooksOAuthState,
-  UpdateQuickBooksOAuthCredentials,
-  CreateQuickBooksOAuthCredentials,
+  CreateCompanyParams,
+  CreatePlaidCredentialParams,
+  PlaidCredential,
+  QuickBooksOauthCredential,
+  CreateQuickBooksOauthStateParams,
+  QuickBooksOauthState,
+  UpdateQuickBooksOauthCredentialParams,
+  CreateQuickBooksOauthCredentialParams,
 } from "../../entities";
 
 export interface ICompanyRepository {
-  create(account: CreateCompany): Promise<Company>;
+  create(account: CreateCompanyParams, ownerId: number): Promise<Company>;
   getById(id: number): Promise<Company>;
   getByAccountId(accountId: number): Promise<Company[]>;
   searchCompanies(query: string, accountId: number): Promise<Company[]>;
 
   createPlaidCredentials(
-    params: CreatePlaidCredentials,
-  ): Promise<PlaidCredentials>;
+    params: CreatePlaidCredentialParams,
+    companyId: number,
+  ): Promise<PlaidCredential>;
   deletePlaidCredentials(companyId: number): Promise<void>;
-  getPlaidCredentialsByItemId(itemId: string): Promise<PlaidCredentials>;
+  getPlaidCredentialsByItemId(itemId: string): Promise<PlaidCredential>;
   updateTransactionCursor(companyId: number, cursor: string): Promise<void>;
   deleteCompany(id: number): Promise<void>;
 
   getQuickBooksOAuthCredentials(
     companyId: number,
-  ): Promise<QuickBooksOAuthCredentials>;
+  ): Promise<QuickBooksOauthCredential>;
   getCompanyByQuickBooksRealmId(realmId: string): Promise<Company | undefined>;
   updateQuickBooksOAuthCredentials(
-    params: UpdateQuickBooksOAuthCredentials,
+    params: UpdateQuickBooksOauthCredentialParams,
     companyId: number,
-  ): Promise<QuickBooksOAuthCredentials>;
+  ): Promise<QuickBooksOauthCredential>;
   deleteQuickBooksOAuthCredentials(companyId: number): Promise<void>;
   createQuickBooksOAuthCredentials(
-    params: CreateQuickBooksOAuthCredentials,
+    params: CreateQuickBooksOauthCredentialParams,
     companyId: number,
-  ): Promise<void>;
+  ): Promise<QuickBooksOauthCredential>;
 
-  getQuickBooksOAuthState(state: string): Promise<QuickBooksOAuthState>;
-  deleteQuickBooksOAuthStates(companyId: number): Promise<void>;
-  createQuickBooksOAuthState(
-    params: CreateQuickBooksOAuthState,
+  getQuickBooksOauthState(state: string): Promise<QuickBooksOauthState>;
+  deleteQuickBooksOauthStates(companyId: number): Promise<void>;
+  createQuickBooksOauthState(
+    params: CreateQuickBooksOauthStateParams,
     companyId: number,
   ): Promise<void>;
 }

@@ -22,5 +22,11 @@
     "dotenv": "^16.4.7",
     "drizzle-kit": "^0.30.5",
     "zod": "^3.24.2"
+  },
+  "exports": {
+    ".": "./src/client.js",
+    "./types": "./src/types.js",
+    "./validators": "./src/validators.js",
+    "./schema": "./src/drizzle/schema.js"
   }
 }

@@ -1,102 +1,83 @@
 import type {
-  CreateCompany,
-  CreatePlaidCredentials,
-  CreateQuickBooksOAuthCredentials,
-  CreateQuickBooksOAuthState,
+  CreateCompanyParams,
+  CreatePlaidCredentialParams,
+  CreateQuickBooksOauthCredentialParams,
+  CreateQuickBooksOauthStateParams,
   Company,
-  UpdateQuickBooksOAuthCredentials,
+  UpdateQuickBooksOauthCredentialParams,
 } from "../../entities";
-import type { Client } from "@fundlevel/supabase";
+import type { Client } from "@fundlevel/db";
 import type { ICompanyRepository } from "../interfaces/company";
-
+import {
+  companies,
+  plaidCredentials,
+  quickBooksOauthCredentials,
+  quickBooksOauthStates,
+} from "@fundlevel/db/schema";
+import { and, eq, like } from "@fundlevel/db";
 export class CompanyRepository implements ICompanyRepository {
-  constructor(private readonly sb: Client) {}
+  constructor(private readonly db: Client) { }
 
-  async create(params: CreateCompany) {
-    const { data, error } = await this.sb
-      .from("companies")
-      .insert(params)
-      .select()
-      .single();
+  async create(params: CreateCompanyParams, ownerId: number) {
+    const [data] = await this.db
+      .insert(companies)
+      .values({ ...params, ownerId })
+      .returning();
 
-    if (error || !data) {
-      throw new Error("Failed to create account");
+    if (!data) {
+      throw new Error("Failed to create company");
     }
 
     return data;
   }
 
   async getById(id: number): Promise<Company> {
-    const { data, error } = await this.sb
-      .from("companies")
+    const [data] = await this.db
       .select()
-      .eq("id", id)
-      .single();
-
-    if (error) {
-      console.error(error);
-      throw new Error("Failed to get linked accounts");
-    }
+      .from(companies)
+      .where(eq(companies.id, id))
+      .limit(1);
 
     return data;
   }
 
   async getByAccountId(accountId: number): Promise<Company[]> {
-    const { data, error } = await this.sb
-      .from("companies")
+    const data = await this.db
       .select()
-      .eq("owner_id", accountId);
+      .from(companies)
+      .where(eq(companies.ownerId, accountId));
 
-    if (error) {
-      console.error(error);
-      throw new Error("Failed to get linked accounts");
-    }
-
-    return data || [];
+    return data;
   }
 
   async searchCompanies(query: string, accountId: number): Promise<Company[]> {
     // Create a base query
-
-    const { data, error } = await this.sb
-      .from("companies")
+    const data = await this.db
       .select()
-      .eq("owner_id", accountId)
-      .ilike("name", `%${query}%`);
+      .from(companies)
+      .where(
+        and(
+          eq(companies.ownerId, accountId),
+          like(companies.name, `%${query}%`),
+        ),
+      );
 
-    // Ex
-    if (error) {
-      throw new Error("Failed to search companies");
-    }
-
-    return data || [];
+    return data;
   }
 
-  async createPlaidCredentials(params: CreatePlaidCredentials) {
-    const { data, error } = await this.sb
-      .from("plaid_credentials")
-      .insert(params)
-      .select()
-      .single();
-
-    if (error) {
-      console.error(error);
-      throw new Error("Failed to store Plaid credentials");
-    }
+  async createPlaidCredentials(params: CreatePlaidCredentialParams, companyId: number) {
+    const [data] = await this.db
+      .insert(plaidCredentials)
+      .values({ ...params, companyId })
+      .returning();
 
     return data;
   }
 
   async deletePlaidCredentials(companyId: number): Promise<void> {
-    const { error } = await this.sb
-      .from("plaid_credentials")
-      .delete()
-      .eq("company_id", companyId);
-
-    if (error) {
-      console.error(error);
-      throw new Error("Failed to delete Plaid credentials");
-    }
+    await this.db
+      .delete(plaidCredentials)
+      .where(eq(plaidCredentials.companyId, companyId));
   }
 
   async deleteCompany(id: number): Promise<void> {
@@ -108,38 +89,27 @@ export class CompanyRepository implements ICompanyRepository {
     }
 
     // Then delete the linked account
-    const { error } = await this.sb.from("companies").delete().eq("id", id);
-
-    if (error) {
-      console.error(error);
-      throw new Error("Failed to delete linked account");
-    }
+    await this.db.delete(companies).where(eq(companies.id, id));
   }
 
   async getPlaidCredentialsByItemId(itemId: string) {
-    const { data, error } = await this.sb
-      .from("plaid_credentials")
+    const [data] = await this.db
       .select()
-      .eq("item_id", itemId)
-      .single();
-
-    if (error) {
-      console.error(error);
-      throw new Error("Failed to get Plaid credentials");
-    }
+      .from(plaidCredentials)
+      .where(eq(plaidCredentials.itemId, itemId))
+      .limit(1);
 
     return data;
   }
 
   async getQuickBooksOAuthCredentials(companyId: number) {
-    const { data, error } = await this.sb
-      .from("quick_books_oauth_credentials")
+    const [data] = await this.db
       .select()
-      .eq("company_id", companyId)
-      .single();
+      .from(quickBooksOauthCredentials)
+      .where(eq(quickBooksOauthCredentials.companyId, companyId))
+      .limit(1);
 
-    if (error) {
-      console.error(error);
+    if (!data) {
       throw new Error("Failed to get QuickBooks OAuth credentials");
     }
 
@@ -147,38 +117,36 @@ export class CompanyRepository implements ICompanyRepository {
   }
 
   async updateQuickBooksOAuthCredentials(
-    params: UpdateQuickBooksOAuthCredentials,
+    params: UpdateQuickBooksOauthCredentialParams,
     companyId: number,
   ) {
-    const { data, error } = await this.sb
-      .from("quick_books_oauth_credentials")
-      .update(params)
-      .eq("company_id", companyId)
-      .single();
+    const [data] = await this.db
+      .update(quickBooksOauthCredentials)
+      .set(params)
+      .where(eq(quickBooksOauthCredentials.companyId, companyId))
+      .returning();
 
-    if (error) {
-      console.error(error);
-      throw new Error("Failed to get QuickBooks OAuth credentials");
+    if (!data) {
+      throw new Error("Failed to update QuickBooks OAuth credentials");
     }
 
     return data;
   }
 
   async createQuickBooksOAuthCredentials(
-    params: CreateQuickBooksOAuthCredentials,
+    params: CreateQuickBooksOauthCredentialParams,
     companyId: number,
   ) {
-    const { data, error } = await this.sb
-      .from("quick_books_oauth_credentials")
-      .insert({
+    const [data] = await this.db
+      .insert(quickBooksOauthCredentials)
+      .values({
         ...params,
-        company_id: companyId,
+        companyId,
       })
-      .single();
+      .returning();
 
-    if (error) {
-      console.error(error);
-      throw new Error("Failed to get QuickBooks OAuth credentials");
+    if (!data) {
+      throw new Error("Failed to create QuickBooks OAuth credentials");
     }
 
     return data;
@@ -188,92 +156,75 @@ export class CompanyRepository implements ICompanyRepository {
     companyId: number,
     cursor: string,
   ): Promise<void> {
-    const { error } = await this.sb
-      .from("plaid_credentials")
-      .update({ transaction_cursor: cursor })
-      .eq("company_id", companyId);
+    const [data] = await this.db
+      .update(plaidCredentials)
+      .set({ transactionCursor: cursor })
+      .where(eq(plaidCredentials.companyId, companyId))
+      .returning();
 
-    if (error) {
-      throw new Error(`Failed to update transaction cursor: ${error.message}`);
+    if (!data) {
+      throw new Error("Failed to update transaction cursor");
     }
   }
 
   async deleteQuickBooksOAuthCredentials(companyId: number) {
-    await this.sb
-      .from("quick_books_oauth_credentials")
-      .delete()
-      .eq("company_id", companyId);
+    await this.db
+      .delete(quickBooksOauthCredentials)
+      .where(eq(quickBooksOauthCredentials.companyId, companyId));
   }
 
-  async getQuickBooksOAuthState(state: string) {
-    const { data, error } = await this.sb
-      .from("quick_books_oauth_states")
+  async getQuickBooksOauthState(state: string) {
+    const [data] = await this.db
       .select()
-      .eq("state", state)
-      .single();
-
-    if (error) {
-      console.error(error);
-      throw new Error("Failed to get QuickBooks OAuth credentials");
-    }
+      .from(quickBooksOauthStates)
+      .where(eq(quickBooksOauthStates.state, state))
+      .limit(1);
 
     return data;
   }
 
-  async deleteQuickBooksOAuthStates(companyId: number) {
-    await this.sb
-      .from("quick_books_oauth_states")
-      .delete()
-      .eq("company_id", companyId);
+  async deleteQuickBooksOauthStates(companyId: number) {
+    await this.db
+      .delete(quickBooksOauthStates)
+      .where(eq(quickBooksOauthStates.companyId, companyId));
   }
 
-  async createQuickBooksOAuthState(
-    params: CreateQuickBooksOAuthState,
+  async createQuickBooksOauthState(
+    params: CreateQuickBooksOauthStateParams,
     companyId: number,
-  ) {
-    await this.sb.from("quick_books_oauth_states").insert({
-      ...params,
-      company_id: companyId,
-    });
+  ): Promise<void> {
+    const [data] = await this.db
+      .insert(quickBooksOauthStates)
+      .values({
+        ...params,
+        companyId,
+      })
+      .returning();
+
+    if (!data) {
+      throw new Error("Failed to create QuickBooks OAuth state");
+    }
   }
 
   async getCompanyByQuickBooksRealmId(
     realmId: string,
   ): Promise<Company | undefined> {
-    const { data: credentials, error: credentialsError } = await this.sb
-      .from("quick_books_oauth_credentials")
-      .select("company_id")
-      .eq("realm_id", realmId)
-      .single();
+    const [data] = await this.db
+      .select()
+      .from(quickBooksOauthCredentials)
+      .where(eq(quickBooksOauthCredentials.realmId, realmId))
+      .limit(1);
 
-    if (credentialsError) {
-      if (credentialsError.code === "PGRST116") {
-        // Not found
-        return undefined;
-      }
-      throw new Error(
-        `Failed to find QuickBooks credentials: ${credentialsError.message}`,
-      );
-    }
-
-    if (!credentials) {
+    if (!data) {
       return undefined;
     }
 
     // Get the company using the company_id from the credentials
-    const { data: company, error: companyError } = await this.sb
-      .from("companies")
-      .select("*")
-      .eq("id", credentials.company_id)
-      .single();
-
-    if (companyError) {
-      if (companyError.code === "PGRST116") {
-        // Not found
-        return undefined;
-      }
-      throw new Error(`Failed to find company: ${companyError.message}`);
-    }
+    const [company] = await this.db
+      .select()
+      .from(companies)
+      .where(eq(companies.id, data.companyId))
+      .limit(1);
 
     return company;
   }

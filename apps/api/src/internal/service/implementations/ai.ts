@@ -4,7 +4,7 @@ import type { IAIService, ReconciliationResult } from "../interfaces/ai";
 import type { IAccountingService } from "../interfaces/accounting";
 import { env } from "../../../env";
 import { streamText, tool, type Message, generateObject } from "ai";
-import type { BankTransaction, BankAccount, Invoice } from "../../entities";
+import type { PlaidTransaction, PlaidBankAccount, QuickBooksInvoice } from "../../entities";
 
 // Define the schema for transaction reconciliation output
 const transactionMatchSchema = z.object({
@@ -327,12 +327,12 @@ export class AIService implements IAIService {
    * Reconcile bank transactions with invoices to identify matches and discrepancies
    */
   async reconcileTransactions(
-    transactions: BankTransaction[],
-    invoices: Invoice[],
-    accountInfo: BankAccount,
+    transactions: PlaidTransaction[],
+    invoices: QuickBooksInvoice[],
+    accountInfo: PlaidBankAccount,
   ): Promise<ReconciliationResult> {
     console.log(
-      `Reconciling transactions for account: ${accountInfo.remote_id}`,
+      `Reconciling transactions for account: ${accountInfo.remoteId}`,
     );
 
     // Step 1: Preprocess and clean the transaction and invoice data in parallel
@@ -374,7 +374,7 @@ export class AIService implements IAIService {
    * Clean and standardize transaction data
    */
   private async cleanTransactions(
-    transactions: BankTransaction[],
+    transactions: PlaidTransaction[],
   ): Promise<CleanedTransaction[]> {
     const transactionSchema = z.object({
       transactions: z.array(
@@ -423,7 +423,7 @@ export class AIService implements IAIService {
   /**
    * Clean and standardize invoice data
    */
-  private async cleanInvoices(invoices: Invoice[]): Promise<CleanedInvoice[]> {
+  private async cleanInvoices(invoices: QuickBooksInvoice[]): Promise<CleanedInvoice[]> {
     const invoiceSchema = z.object({
       invoices: z.array(
         z
@@ -474,7 +474,7 @@ export class AIService implements IAIService {
   private async findPotentialMatches(
     transactions: CleanedTransaction[],
     invoices: CleanedInvoice[],
-    accountInfo: BankAccount,
+    accountInfo: PlaidBankAccount,
   ) {
     // Define interface for the potential matches
     interface PotentialMatch {

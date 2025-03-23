@@ -11,9 +11,12 @@ import {
   type TransactionCode,
 } from "plaid";
 import type {
-  CreateCompany,
+  CreateCompanyParams,
   Company,
-  CreateBankTransaction,
+  CreatePlaidTransactionParams,
+  QuickBooksOauthCredential,
+  UpdateQuickBooksOauthCredentialParams,
+  CreateQuickBooksOauthCredentialParams,
 } from "../../entities";
 import { env } from "../../../env";
 import { v4 as uuidv4 } from "uuid";
@@ -96,10 +99,9 @@ export class CompanyService implements ICompanyService {
     ).data;
 
     const creds = await this.companyRepo.createPlaidCredentials({
-      company_id: params.companyId,
-      item_id,
-      access_token,
-    });
+      itemId: item_id,
+      accessToken: access_token,
+    }, params.companyId);
 
     return creds;
   }
@@ -122,8 +124,8 @@ export class CompanyService implements ICompanyService {
     return this.companyRepo.searchCompanies(query, accountId);
   }
 
-  async create(params: CreateCompany): Promise<Company> {
-    return this.companyRepo.create(params);
+  async create(params: CreateCompanyParams, ownerId: number): Promise<Company> {
+    return this.companyRepo.create(params, ownerId);
   }
 
   async deletePlaidCredentials(companyId: number): Promise<void> {
@@ -143,7 +145,7 @@ export class CompanyService implements ICompanyService {
   async startQuickBooksOAuthFlow(companyId: number, redirectUrl: string) {
     try {
       // Clear old states to avoid conflicts
-      await this.companyRepo.deleteQuickBooksOAuthStates(companyId);
+      await this.companyRepo.deleteQuickBooksOauthStates(companyId);
     } catch {
       //ignore error
     }
@@ -161,14 +163,14 @@ export class CompanyService implements ICompanyService {
     const auth_url = `${CompanyService.QUICK_BOOKS_OAUTH_BASE_URL}/authorize?${params.toString()}`;
 
     // Save the state in the session
-    await this.companyRepo.createQuickBooksOAuthState(
+    await this.companyRepo.createQuickBooksOauthState(
       {
         state,
-        expires_at: new Date(
+        expiresAt: new Date(
           Date.now() + CompanyService.qbStateExpiresInMs,
         ).toISOString(),
-        redirect_url: redirectUrl,
-        auth_url,
+        redirectUrl: redirectUrl,
+        authUrl: auth_url,
       },
       companyId,
     );
@@ -182,8 +184,8 @@ export class CompanyService implements ICompanyService {
     realmId: string;
   }) {
     const { code, state: callbackState, realmId } = params;
-    const { company_id, redirect_url } =
-      await this.companyRepo.getQuickBooksOAuthState(callbackState);
+    const { companyId, redirectUrl } =
+      await this.companyRepo.getQuickBooksOauthState(callbackState);
 
     const response = await axios.post(
       CompanyService.QUICK_BOOKS_OAUTH_TOKEN_URL,
@@ -240,24 +242,24 @@ export class CompanyService implements ICompanyService {
 
     await this.companyRepo.createQuickBooksOAuthCredentials(
       {
-        realm_id: realmId,
-        access_token: access_token,
-        refresh_token: refresh_token,
-        access_token_expiry: new Date(
+        realmId: realmId,
+        accessToken: access_token,
+        refreshToken: refresh_token,
+        accessTokenExpiry: new Date(
           Date.now() + expires_in * 1000,
         ).toISOString(),
-        refresh_token_expiry: new Date(
+        refreshTokenExpiry: new Date(
           Date.now() + x_refresh_token_expires_in * 1000,
         ).toISOString(),
       },
-      company_id,
+      companyId,
     );
     // Doesn't really have to be in a tx
-    await this.companyRepo.deleteQuickBooksOAuthStates(company_id);
+    await this.companyRepo.deleteQuickBooksOauthStates(companyId);
 
     return {
-      redirect_url,
-      company_id,
+      redirect_url: redirectUrl,
+      company_id: companyId,
     };
   }
 
@@ -265,12 +267,12 @@ export class CompanyService implements ICompanyService {
     const creds =
       await this.companyRepo.getQuickBooksOAuthCredentials(companyId);
 
-    if (creds.access_token_expiry < new Date().toISOString()) {
+    if (creds.accessTokenExpiry < new Date().toISOString()) {
       const response = await axios.post(
         CompanyService.QUICK_BOOKS_OAUTH_TOKEN_URL,
         new URLSearchParams({
           grant_type: "refresh_token",
-          refresh_token: creds.refresh_token,
+          refreshToken: creds.refreshToken,
         }).toString(),
         {
           headers: {
@@ -284,20 +286,20 @@ export class CompanyService implements ICompanyService {
       );
 
       // Update token expiry times
-      const access_token_expiry = new Date(
+      const accessTokenExpiry = new Date(
         Date.now() + response.data.expires_in * 1000,
       ).toISOString();
-      const refresh_token_expiry = new Date(
+      const refreshTokenExpiry = new Date(
         Date.now() + response.data.x_refresh_token_expires_in * 1000,
       ).toISOString();
 
       // Update the database with new token data
       const newRrcord = await this.companyRepo.updateQuickBooksOAuthCredentials(
         {
-          access_token: response.data.access_token,
-          refresh_token: response.data.refresh_token,
-          access_token_expiry,
-          refresh_token_expiry,
+          accessToken: response.data.access_token,
+          refreshToken: response.data.refresh_token,
+          accessTokenExpiry,
+          refreshTokenExpiry,
         },
         companyId,
       );
@@ -309,14 +311,14 @@ export class CompanyService implements ICompanyService {
     return creds;
   }
 
-  async deleteQuickBooksOAuthCredentials(companyId: number) {
+  async deleteQuickBooksOAuthCredentials(companyId: number): Promise<void> {
     const creds =
       await this.companyRepo.getQuickBooksOAuthCredentials(companyId);
 
     await axios.post(
       CompanyService.QUICK_BOOKS_OAUTH_REVOKE_URL,
       new URLSearchParams({
-        token: creds.refresh_token,
+        token: creds.refreshToken,
       }).toString(),
       {
         headers: {
@@ -336,7 +338,7 @@ export class CompanyService implements ICompanyService {
     const creds = await this.companyRepo.getPlaidCredentialsByItemId(itemId);
 
     const plaidResp = await this.plaid.accountsGet({
-      access_token: creds.access_token,
+      access_token: creds.accessToken,
     });
 
     const accounts = plaidResp.data.accounts;
@@ -381,28 +383,28 @@ export class CompanyService implements ICompanyService {
 
       await this.accountingRepo.upsertBankAccount(
         {
-          remote_id: account_id,
-          remaining_remote_content,
-          current_balance: current,
-          available_balance: available,
-          iso_currency_code,
-          unofficial_currency_code,
+          remoteId: account_id,
+          remainingRemoteContent: remaining_remote_content,
+          currentBalance: current,
+          availableBalance: available,
+          isoCurrencyCode: iso_currency_code,
+          unofficialCurrencyCode: unofficial_currency_code,
           mask,
           name,
-          official_name,
+          officialName: official_name,
           subtype,
           type,
         },
-        creds.company_id,
+        creds.companyId,
       );
     }
   }
 
   async syncPlaidTransactions(itemId: string) {
-    const { access_token, company_id, transaction_cursor } =
+    const { accessToken, companyId, transactionCursor } =
       await this.companyRepo.getPlaidCredentialsByItemId(itemId);
 
-    let cursor = transaction_cursor ?? undefined;
+    let cursor = transactionCursor ?? undefined;
 
     // New transaction updates since "cursor"
     let upsert: Array<Transaction> = [];
@@ -412,7 +414,7 @@ export class CompanyService implements ICompanyService {
     // Iterate through each page of new transaction updates for item
     while (hasMore) {
       const response = await this.plaid.transactionsSync({
-        access_token,
+        access_token: accessToken,
         cursor,
       });
       const data = response.data;
@@ -427,7 +429,7 @@ export class CompanyService implements ICompanyService {
       cursor = data.next_cursor;
     }
 
-    const convertedUpsert: CreateBankTransaction[] = upsert.map((t) => {
+    const convertedUpsert: CreatePlaidTransactionParams[] = upsert.map((t) => {
       const {
         transaction_id,
         account_id,
@@ -452,46 +454,45 @@ export class CompanyService implements ICompanyService {
       const remaining_remote_content = JSON.stringify({
         ...rest,
       });
-
       return {
-        remote_id: transaction_id,
-        bank_account_id: account_id,
-        personal_finance_category_confidence_level:
+        remoteId: transaction_id,
+        bankAccountId: account_id,
+        personalFinanceCategoryConfidenceLevel:
           personal_finance_category?.confidence_level as
-            | "VERY_HIGH"
-            | "HIGH"
-            | "MEDIUM"
-            | "LOW"
-            | "UNKNOWN"
-            | undefined,
-        personal_finance_category_primary: personal_finance_category?.primary,
-        personal_finance_category_detailed: personal_finance_category?.detailed,
-        remaining_remote_content,
-        iso_currency_code,
-        unofficial_currency_code,
-        check_number,
+          | "VERY_HIGH"
+          | "HIGH"
+          | "MEDIUM"
+          | "LOW"
+          | "UNKNOWN"
+          | undefined,
+        personalFinanceCategoryPrimary: personal_finance_category?.primary,
+        personalFinanceCategoryDetailed: personal_finance_category?.detailed,
+        remainingRemoteContent: remaining_remote_content,
+        isoCurrencyCode: iso_currency_code,
+        unofficialCurrencyCode: unofficial_currency_code,
+        checkNumber: check_number,
         date,
         datetime,
         name,
-        merchant_name,
+        merchantName: merchant_name,
         website,
-        authorized_at: authorized_datetime,
-        original_description,
+        authorizedAt: authorized_datetime,
+        originalDescription: original_description,
         pending,
         amount,
         code: transaction_code as TransactionCode,
-        payment_channel,
+        paymentChannel: payment_channel,
       };
     });
 
     //TODO: THIS IS SUPER UNSAFE, WE NEED TO USE TXN - MIGRATE TO DRIZZLE
-    await this.accountingRepo.upsertTransaction(convertedUpsert, company_id);
+    await this.accountingRepo.upsertTransaction(convertedUpsert, companyId);
     await this.accountingRepo.deleteTransaction(
       remove.map((r) => r.transaction_id),
     );
 
     if (cursor) {
-      await this.companyRepo.updateTransactionCursor(company_id, cursor);
+      await this.companyRepo.updateTransactionCursor(companyId, cursor);
     }
   }
 
@@ -508,9 +509,9 @@ export class CompanyService implements ICompanyService {
 
       // Check if access token is expired and refresh if needed
       const now = new Date();
-      const tokenExpirationDate = new Date(credentials.access_token_expiry);
+      const tokenExpirationDate = new Date(credentials.accessTokenExpiry);
 
-      let accessToken = credentials.access_token;
+      let accessToken = credentials.accessToken;
 
       // If token is expired or about to expire in the next 5 minutes, refresh it
       if (tokenExpirationDate.getTime() - now.getTime() < 5 * 60 * 1000) {
@@ -519,7 +520,7 @@ export class CompanyService implements ICompanyService {
           CompanyService.QUICK_BOOKS_OAUTH_TOKEN_URL,
           new URLSearchParams({
             grant_type: "refresh_token",
-            refresh_token: credentials.refresh_token,
+            refreshToken: credentials.refreshToken,
           }),
           {
             headers: {
@@ -536,12 +537,12 @@ export class CompanyService implements ICompanyService {
         // Update credentials in database
         await this.companyRepo.updateQuickBooksOAuthCredentials(
           {
-            access_token: refreshData.access_token,
-            refresh_token: refreshData.refresh_token,
-            access_token_expiry: new Date(
+            accessToken: refreshData.access_token,
+            refreshToken: refreshData.refresh_token,
+            accessTokenExpiry: new Date(
               Date.now() + refreshData.expires_in * 1000,
             ).toISOString(),
-            refresh_token_expiry: new Date(
+            refreshTokenExpiry: new Date(
               Date.now() + refreshData.x_refresh_token_expires_in * 1000,
             ).toISOString(),
           },
@@ -553,7 +554,7 @@ export class CompanyService implements ICompanyService {
 
       // Fetch invoices from QuickBooks API
       const response = await axios.get(
-        `${this.qbApiBaseUrl}/v3/company/${credentials.realm_id}/query`,
+        `${this.qbApiBaseUrl}/v3/company/${credentials.realmId}/query`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -577,7 +578,7 @@ export class CompanyService implements ICompanyService {
         for (const invoice of invoices) {
           await this.accountingRepo.upsertInvoice(
             {
-              remote_id: invoice.Id,
+              remoteId: invoice.Id,
               content: invoice, // Store the full invoice response as JSON
             },
             companyId,
@@ -596,5 +597,19 @@ export class CompanyService implements ICompanyService {
         `Failed to sync QuickBooks invoices: ${(error as Error).message || "Unknown error"}`,
       );
     }
+  }
+
+  async updateQuickBooksOAuthCredentials(
+    params: UpdateQuickBooksOauthCredentialParams,
+    companyId: number,
+  ): Promise<QuickBooksOauthCredential> {
+    return this.companyRepo.updateQuickBooksOAuthCredentials(params, companyId);
+  }
+
+  async createQuickBooksOAuthCredentials(
+    params: CreateQuickBooksOauthCredentialParams,
+    companyId: number,
+  ): Promise<QuickBooksOauthCredential> {
+    return this.companyRepo.createQuickBooksOAuthCredentials(params, companyId);
   }
 }
