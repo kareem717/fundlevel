@@ -1,0 +1,39 @@
+{
+  "extends": "@fundlevel/typescript-config/base.json",
+  "compilerOptions": {
+    "lib": [
+      "ESNext",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "rootDir": "src",
+    "paths": {
+      "@fundlevel/db/*": [
+        "./src/*"
+      ],
+      "@fundlevel/api/*": [
+        "../../apps/api/src/*"
+      ]
+    },
+    "typeRoots": [
+      "./node_modules/@types",
+      "./node_modules/@cloudflare"
+    ],
+    "declaration": true,
+    "declarationMap": true,
+    "outDir": "dist"
+  },
+  "watchOptions": {
+    "excludeDirectories": [
+      "**/node_modules",
+      "**/packages/web"
+    ]
+  },
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}

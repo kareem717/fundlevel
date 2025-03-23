@@ -177,6 +177,25 @@ importers:
         specifier: ^5
         version: 5.7.3
 
+  packages/db:
+    dependencies:
+      '@fundlevel/api':
+        specifier: workspace:^
+        version: link:../../apps/api
+      hono:
+        specifier: ^4.6.13
+        version: 4.7.5
+    devDependencies:
+      '@fundlevel/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@fundlevel/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      typescript:
+        specifier: ~5.7.2
+        version: 5.7.3
+
   packages/eslint-config:
     devDependencies:
       '@next/eslint-plugin-next':

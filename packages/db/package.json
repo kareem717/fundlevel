@@ -1,0 +1,19 @@
+{
+  "name": "@fundlevel/db",
+  "type": "module",
+  "version": "0.0.0",
+  "main": "./dist/index.js",
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "rm -rf dist && tsc",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "@fundlevel/eslint-config": "workspace:*",
+    "@fundlevel/typescript-config": "workspace:*",
+    "typescript": "~5.7.2"
+  }
+}
