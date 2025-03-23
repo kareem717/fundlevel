@@ -2,7 +2,7 @@
   "name": "@fundlevel/api",
   "scripts": {
     "dev": "sh copy_env.sh && wrangler dev",
-    "start": "wrangler deploy"
+    "deploy": "wrangler deploy"
   },
   "dependencies": {
     "@ai-sdk/openai": "^1.3.0",
@@ -14,6 +14,7 @@
     "ai": "^4.2.0",
     "axios": "^1.8.4",
     "hono": "^4.7.5",
+    "jose": "^6.0.10",
     "plaid": "^31.1.0",
     "uuid": "^11.1.0"
   },

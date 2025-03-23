@@ -23,3 +23,16 @@ export const notFoundResponse = {
     },
   },
 }}
+
+export const forbiddenResponse = {
+  403: {
+    description: 'Forbidden',
+    content: {
+      'application/json': {
+        schema: z.object({
+          error: z.string(),
+        }),
+      },
+    },
+  },
+}

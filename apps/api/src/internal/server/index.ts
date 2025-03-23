@@ -4,9 +4,11 @@ import { secureHeaders } from "hono/secure-headers";
 import { cors } from "hono/cors";
 import { OpenAPIHono } from "@hono/zod-openapi";
 import { createFiberplane } from "@fiberplane/hono";
-import authHandler from "./handlers/account-handler";
+import authHandler from "./handlers/auth";
 import { withService } from "./middleware/with-service-layer";
-
+import webhookHandler from "./handlers/webhook";
+import companyHandler from "./handlers/company";
+import accountingHandler from "./handlers/accounting";
 export class Server {
   public readonly routes;
 
@@ -71,10 +73,14 @@ export class Server {
     })
 
     this.routes = app.route("/auth", authHandler)
+    .route("/webhook", webhookHandler)
+    .route("/company", companyHandler)
+    .route("/accounting", accountingHandler)
+
 
     //! It is important to mount Fiberplane’s middleware after all of your route definitions.
     app.use(
-      "/fp/*",
+      "/docs/*",
       createFiberplane({
         openapi: {
           url: "/openapi.json"
