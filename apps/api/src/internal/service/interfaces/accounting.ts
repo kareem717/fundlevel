@@ -7,7 +7,7 @@ import type {
   QuickBooksVendorCredit,
   QuickBooksPayment,
   QuickBooksCreditNote,
-  QuickBooksJournalEntry
+  QuickBooksJournalEntry,
 } from "@fundlevel/db/types";
 
 /**
@@ -147,19 +147,27 @@ export interface IAccountingService {
   getInvoice(invoiceId: number): Promise<Invoice>;
   getInvoicesByCompanyId(companyId: number): Promise<Invoice[]>;
 
-  getAccountingAccountsByCompanyId(companyId: number): Promise<QuickBooksAccount[]>;
+  getAccountingAccountsByCompanyId(
+    companyId: number,
+  ): Promise<QuickBooksAccount[]>;
   getAccountingAccount(id: number): Promise<QuickBooksAccount>;
 
-  getAccountingTransactionsByCompanyId(companyId: number): Promise<QuickBooksTransaction[]>;
+  getAccountingTransactionsByCompanyId(
+    companyId: number,
+  ): Promise<QuickBooksTransaction[]>;
   getAccountingTransaction(id: number): Promise<QuickBooksTransaction>;
 
   getInvoicesByCompanyId(companyId: number): Promise<Invoice[]>;
   getInvoice(id: number): Promise<Invoice>;
 
-  getJournalEntriesByCompanyId(companyId: number): Promise<QuickBooksJournalEntry[]>;
+  getJournalEntriesByCompanyId(
+    companyId: number,
+  ): Promise<QuickBooksJournalEntry[]>;
   getJournalEntry(id: number): Promise<QuickBooksJournalEntry>;
 
-  getVendorCreditsByCompanyId(companyId: number): Promise<QuickBooksVendorCredit[]>;
+  getVendorCreditsByCompanyId(
+    companyId: number,
+  ): Promise<QuickBooksVendorCredit[]>;
   getVendorCredit(id: number): Promise<QuickBooksVendorCredit>;
 
   getCreditNotesByCompanyId(companyId: number): Promise<QuickBooksCreditNote[]>;

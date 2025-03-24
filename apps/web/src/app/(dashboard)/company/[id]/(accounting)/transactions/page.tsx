@@ -13,12 +13,17 @@ export default async function TransactionsPage({
   const companyId = Number.parseInt(id, 10);
   const token = await getTokenCached();
   if (!token) {
-    return redirect(redirects.auth.login)
+    return redirect(redirects.auth.login);
   }
 
-  const req = await client(env.NEXT_PUBLIC_BACKEND_URL, token).accounting.companies[":companyId"].transactions.$get({ param: { companyId } });
+  const req = await client(
+    env.NEXT_PUBLIC_BACKEND_URL,
+    token,
+  ).accounting.companies[":companyId"].transactions.$get({
+    param: { companyId },
+  });
   if (!req.ok) {
-    throw new Error("Failed to get transactions")
+    throw new Error("Failed to get transactions");
   }
 
   const transactions = await req.json();
@@ -49,5 +54,5 @@ export default async function TransactionsPage({
         )}
       </div>
     </div>
-  )
-} 
+  );
+}

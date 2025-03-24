@@ -1,5 +1,5 @@
-import { Server } from './internal/server'
+import { Server } from "./internal/server";
 
-const server = new Server()
+const server = new Server();
 
-export default server.routes
+export default server.routes;

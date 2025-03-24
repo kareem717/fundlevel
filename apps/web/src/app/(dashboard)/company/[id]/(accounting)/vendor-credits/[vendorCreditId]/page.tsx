@@ -11,12 +11,16 @@ export default async function VendorCreditPage({
 
   const token = await getTokenCached();
   if (!token) {
-    return redirect(redirects.auth.login)
+    return redirect(redirects.auth.login);
   }
 
-  const req = await client(env.NEXT_PUBLIC_BACKEND_URL, token).accounting["vendor-credits"][":vendorCreditId"].$get({ param: { vendorCreditId: parseInt(vendorCreditId) } });
+  const req = await client(env.NEXT_PUBLIC_BACKEND_URL, token).accounting[
+    "vendor-credits"
+  ][":vendorCreditId"].$get({
+    param: { vendorCreditId: parseInt(vendorCreditId) },
+  });
   if (!req.ok) {
-    throw new Error("Failed to get vendor credit")
+    throw new Error("Failed to get vendor credit");
   }
 
   const vendorCredit = await req.json();
@@ -24,7 +28,9 @@ export default async function VendorCreditPage({
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-3">
-        <h1 className="text-3xl font-bold mb-2">Vendor Credit {vendorCredit.id}</h1>
+        <h1 className="text-3xl font-bold mb-2">
+          Vendor Credit {vendorCredit.id}
+        </h1>
         <p className="text-muted-foreground">
           View vendor credit details and related information
         </p>
@@ -36,4 +42,4 @@ export default async function VendorCreditPage({
       </div>
     </div>
   );
-} 
+}

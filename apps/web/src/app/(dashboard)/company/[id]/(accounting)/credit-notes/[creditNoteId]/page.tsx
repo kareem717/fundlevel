@@ -11,12 +11,14 @@ export default async function CreditNotePage({
 
   const token = await getTokenCached();
   if (!token) {
-    return redirect(redirects.auth.login)
+    return redirect(redirects.auth.login);
   }
 
-  const req = await client(env.NEXT_PUBLIC_BACKEND_URL, token).accounting["credit-notes"][":creditNoteId"].$get({ param: { creditNoteId: parseInt(creditNoteId) } });
+  const req = await client(env.NEXT_PUBLIC_BACKEND_URL, token).accounting[
+    "credit-notes"
+  ][":creditNoteId"].$get({ param: { creditNoteId: parseInt(creditNoteId) } });
   if (!req.ok) {
-    throw new Error("Failed to get credit note")
+    throw new Error("Failed to get credit note");
   }
 
   const creditNote = await req.json();
@@ -36,4 +38,4 @@ export default async function CreditNotePage({
       </div>
     </div>
   );
-} 
+}

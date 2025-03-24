@@ -11,12 +11,14 @@ export default async function AccountingInvoicePage({
 
   const token = await getTokenCached();
   if (!token) {
-    return redirect(redirects.auth.login)
+    return redirect(redirects.auth.login);
   }
 
-  const req = await client(env.NEXT_PUBLIC_BACKEND_URL, token).accounting["invoices"][":invoiceId"].$get({ param: { invoiceId: parseInt(invoiceId) } });
+  const req = await client(env.NEXT_PUBLIC_BACKEND_URL, token).accounting[
+    "invoices"
+  ][":invoiceId"].$get({ param: { invoiceId: parseInt(invoiceId) } });
   if (!req.ok) {
-    throw new Error("Failed to get invoice")
+    throw new Error("Failed to get invoice");
   }
 
   const invoice = await req.json();

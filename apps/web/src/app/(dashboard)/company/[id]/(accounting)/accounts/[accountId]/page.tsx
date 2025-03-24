@@ -11,12 +11,17 @@ export default async function AccountingAccountPage({
 
   const token = await getTokenCached();
   if (!token) {
-    return redirect(redirects.auth.login)
+    return redirect(redirects.auth.login);
   }
 
-  const req = await client(env.NEXT_PUBLIC_BACKEND_URL, token).accounting.accounts[":accountId"].$get({ param: { accountId: parseInt(accountId) } });
+  const req = await client(
+    env.NEXT_PUBLIC_BACKEND_URL,
+    token,
+  ).accounting.accounts[":accountId"].$get({
+    param: { accountId: parseInt(accountId) },
+  });
   if (!req.ok) {
-    throw new Error("Failed to get accounting account")
+    throw new Error("Failed to get accounting account");
   }
 
   const account = await req.json();
@@ -36,4 +41,4 @@ export default async function AccountingAccountPage({
       </div>
     </div>
   );
-} 
+}

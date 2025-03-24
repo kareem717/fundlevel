@@ -4,7 +4,9 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "lint": "eslint . --max-warnings 0",
+    "lint": "biome lint .",
+    "format": "biome format .",
+    "typecheck": "tsc --noEmit",
     "clean": "rm -rf node_modules"
   },
   "dependencies": {
@@ -35,7 +37,7 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
-    "@fundlevel/eslint-config": "workspace:*",
+    "@biomejs/biome": "^1.5.3",
     "@fundlevel/typescript-config": "workspace:*",
     "@tailwindcss/postcss": "^4.0.8",
     "@turbo/gen": "^2.4.2",

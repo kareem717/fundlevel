@@ -35,12 +35,14 @@ export function ConnectionTabs({
   companyId,
   ...props
 }: ConnectionTabsProps) {
-  const [provider, setProvider] = useQueryState("provider",
+  const [provider, setProvider] = useQueryState(
+    "provider",
     parseAsStringEnum<ConnectionProvider>(Object.values(ConnectionProvider))
       .withDefault(ConnectionProvider.QUICKBOOKS)
       .withOptions({
         clearOnDefault: true,
-      }));
+      }),
+  );
 
   return (
     <Tabs

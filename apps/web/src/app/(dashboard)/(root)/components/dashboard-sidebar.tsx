@@ -5,7 +5,7 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-} from "@fundlevel/ui/components/sidebar";  
+} from "@fundlevel/ui/components/sidebar";
 import { SidebarMenu } from "@fundlevel/web/components/sidebar/sidebar-menu";
 import type { ComponentPropsWithoutRef } from "react";
 import { SidebarUser } from "@fundlevel/web/components/sidebar/sidebar-user";

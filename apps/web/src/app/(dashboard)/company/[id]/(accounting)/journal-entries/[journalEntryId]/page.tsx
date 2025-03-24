@@ -11,12 +11,16 @@ export default async function JournalEntryPage({
 
   const token = await getTokenCached();
   if (!token) {
-    return redirect(redirects.auth.login)
+    return redirect(redirects.auth.login);
   }
 
-  const req = await client(env.NEXT_PUBLIC_BACKEND_URL, token).accounting["journal-entries"][":journalEntryId"].$get({ param: { journalEntryId: parseInt(journalEntryId) } });
+  const req = await client(env.NEXT_PUBLIC_BACKEND_URL, token).accounting[
+    "journal-entries"
+  ][":journalEntryId"].$get({
+    param: { journalEntryId: parseInt(journalEntryId) },
+  });
   if (!req.ok) {
-    throw new Error("Failed to get journal entry")
+    throw new Error("Failed to get journal entry");
   }
 
   const journalEntry = await req.json();
@@ -24,7 +28,9 @@ export default async function JournalEntryPage({
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-3">
-        <h1 className="text-3xl font-bold mb-2">Journal Entry {journalEntry.id}</h1>
+        <h1 className="text-3xl font-bold mb-2">
+          Journal Entry {journalEntry.id}
+        </h1>
         <p className="text-muted-foreground">
           View journal entry details and related transactions
         </p>
@@ -36,4 +42,4 @@ export default async function JournalEntryPage({
       </div>
     </div>
   );
-} 
+}

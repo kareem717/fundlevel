@@ -3,7 +3,11 @@ import { createOpenAI, type OpenAIProvider } from "@ai-sdk/openai";
 import type { IAIService, ReconciliationResult } from "../interfaces/ai";
 import type { IAccountingService } from "../interfaces/accounting";
 import { streamText, tool, type Message, generateObject } from "ai";
-import type { PlaidTransaction, PlaidBankAccount, QuickBooksInvoice } from "@fundlevel/db/types";
+import type {
+  PlaidTransaction,
+  PlaidBankAccount,
+  QuickBooksInvoice,
+} from "@fundlevel/db/types";
 
 // Define the schema for transaction reconciliation output
 const transactionMatchSchema = z.object({
@@ -422,7 +426,9 @@ export class AIService implements IAIService {
   /**
    * Clean and standardize invoice data
    */
-  private async cleanInvoices(invoices: QuickBooksInvoice[]): Promise<CleanedInvoice[]> {
+  private async cleanInvoices(
+    invoices: QuickBooksInvoice[],
+  ): Promise<CleanedInvoice[]> {
     const invoiceSchema = z.object({
       invoices: z.array(
         z

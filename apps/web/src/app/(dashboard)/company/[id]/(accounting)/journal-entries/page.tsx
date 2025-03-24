@@ -13,12 +13,17 @@ export default async function JournalEntriesPage({
   const companyId = Number.parseInt(id, 10);
   const token = await getTokenCached();
   if (!token) {
-    return redirect(redirects.auth.login)
+    return redirect(redirects.auth.login);
   }
 
-  const req = await client(env.NEXT_PUBLIC_BACKEND_URL, token).accounting.companies[":companyId"]["journal-entries"].$get({ param: { companyId } });
+  const req = await client(
+    env.NEXT_PUBLIC_BACKEND_URL,
+    token,
+  ).accounting.companies[":companyId"]["journal-entries"].$get({
+    param: { companyId },
+  });
   if (!req.ok) {
-    throw new Error("Failed to get journal entries")
+    throw new Error("Failed to get journal entries");
   }
 
   const journalEntries = await req.json();
@@ -49,5 +54,5 @@ export default async function JournalEntriesPage({
         )}
       </div>
     </div>
-  )
-} 
+  );
+}

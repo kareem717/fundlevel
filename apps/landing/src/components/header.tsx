@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  type ComponentPropsWithoutRef,
-  useEffect,
-  useState,
-} from "react";
+import { type ComponentPropsWithoutRef, useEffect, useState } from "react";
 import { LogoDiv } from "./logo-div";
 import { type NavigationItem, NavMenu } from "./nav-menu";
 import { Button } from "@fundlevel/ui/components/button";
@@ -73,20 +69,15 @@ export function Header({
     >
       <div className="flex flex-row items-center justify-between w-full p-6 h-[7vh]">
         <LogoDiv className="w-24 md:w-32" />
-        <NavMenu
-          config={config}
-          className="hidden lg:flex"
-        />
+        <NavMenu config={config} className="hidden lg:flex" />
         <div className="flex-row items-center justify-end gap-4 hidden lg:flex">
           <ModeToggle />
           <Link
             href={env.NEXT_PUBLIC_WEB_URL}
-            className={cn(
-              buttonVariants({ variant: "default" }),
-              "w-full",
-            )}
+            className={cn(buttonVariants({ variant: "default" }), "w-full")}
           >
-            Get Started</Link>
+            Get Started
+          </Link>
         </div>
         <div className="flex flex-row items-center justify-end gap-1 lg:hidden">
           <ModeToggle />
@@ -115,10 +106,7 @@ export function Header({
             </p>
             <Link
               href={env.NEXT_PUBLIC_WEB_URL}
-              className={cn(
-                buttonVariants({ variant: "default" }),
-                "w-full",
-              )}
+              className={cn(buttonVariants({ variant: "default" }), "w-full")}
             >
               Get Started
             </Link>

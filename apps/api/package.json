@@ -3,7 +3,10 @@
   "scripts": {
     "dev": "sh copy_env.sh && wrangler dev",
     "deploy": "wrangler deploy",
-    "clean": "rm -rf node_modules"
+    "clean": "rm -rf node_modules",
+    "lint": "biome lint .",
+    "format": "biome format .",
+    "typecheck": "tsc --noEmit"
   },
   "type": "module",
   "dependencies": {
@@ -23,6 +26,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@biomejs/biome": "^1.5.3",
     "@cloudflare/workers-types": "^4.20250214.0",
     "@fundlevel/typescript-config": "workspace:*",
     "wrangler": "^3.109.2"

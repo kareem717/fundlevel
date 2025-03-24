@@ -21,9 +21,9 @@ export default async function CompanyLayout({
   children: ReactNode;
   params: Promise<{ id: string }>;
 }) {
-  const token = await getTokenCached()
+  const token = await getTokenCached();
   if (!token) {
-    return redirect(redirects.auth.login)
+    return redirect(redirects.auth.login);
   }
 
   const { id } = await params;
@@ -33,13 +33,13 @@ export default async function CompanyLayout({
     return notFound();
   }
 
-  const resp = await client(env.NEXT_PUBLIC_BACKEND_URL, token).company.$get()
+  const resp = await client(env.NEXT_PUBLIC_BACKEND_URL, token).company.$get();
 
   if (resp.status !== 200) {
-    throw new Error("Failed to fetch companies, status: " + resp.status)
+    throw new Error("Failed to fetch companies, status: " + resp.status);
   }
 
-  const companies = await resp.json()
+  const companies = await resp.json();
   if (!companies.length) {
     return notFound();
   }

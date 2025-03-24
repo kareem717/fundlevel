@@ -1,12 +1,12 @@
-"use client"
+"use client";
 
 import {
   QueryCache,
   QueryClient,
   QueryClientProvider as BaseQueryClientProvider,
-} from "@tanstack/react-query"
-import { HTTPException } from "hono/http-exception"
-import { PropsWithChildren, useState } from "react"
+} from "@tanstack/react-query";
+import { HTTPException } from "hono/http-exception";
+import { PropsWithChildren, useState } from "react";
 
 export function QueryClientProvider({ children }: PropsWithChildren) {
   const [queryClient] = useState(
@@ -15,16 +15,16 @@ export function QueryClientProvider({ children }: PropsWithChildren) {
         queryCache: new QueryCache({
           onError: (err) => {
             if (err instanceof HTTPException) {
-              console.error(err)
+              console.error(err);
             }
           },
         }),
-      })
-  )
+      }),
+  );
 
   return (
     <BaseQueryClientProvider client={queryClient}>
       {children}
     </BaseQueryClientProvider>
-  )
+  );
 }

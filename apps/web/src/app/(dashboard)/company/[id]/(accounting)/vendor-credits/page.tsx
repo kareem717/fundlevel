@@ -14,12 +14,17 @@ export default async function VendorCreditsPage({
   const companyId = Number.parseInt(id, 10);
   const token = await getTokenCached();
   if (!token) {
-    return redirect(redirects.auth.login)
+    return redirect(redirects.auth.login);
   }
 
-  const req = await client(env.NEXT_PUBLIC_BACKEND_URL, token).accounting.companies[":companyId"]["vendor-credits"].$get({ param: { companyId } });
+  const req = await client(
+    env.NEXT_PUBLIC_BACKEND_URL,
+    token,
+  ).accounting.companies[":companyId"]["vendor-credits"].$get({
+    param: { companyId },
+  });
   if (!req.ok) {
-    throw new Error("Failed to get vendor credits")
+    throw new Error("Failed to get vendor credits");
   }
 
   const vendorCredits = await req.json();
@@ -50,5 +55,5 @@ export default async function VendorCreditsPage({
         )}
       </div>
     </div>
-  )
-} 
+  );
+}

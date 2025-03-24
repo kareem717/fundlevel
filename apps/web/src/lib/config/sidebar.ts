@@ -15,19 +15,19 @@ import type { ElementType } from "react";
 
 export type NavigationItem =
   | {
-    title: string;
-    url: string;
-    icon?: ElementType;
-  }
-  | {
-    title: string;
-    root: string;
-    icon?: ElementType;
-    items: {
       title: string;
       url: string;
-    }[];
-  };
+      icon?: ElementType;
+    }
+  | {
+      title: string;
+      root: string;
+      icon?: ElementType;
+      items: {
+        title: string;
+        url: string;
+      }[];
+    };
 
 export type NavigationMenu = {
   name: string;

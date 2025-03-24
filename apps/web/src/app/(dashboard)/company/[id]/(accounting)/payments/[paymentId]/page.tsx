@@ -11,12 +11,17 @@ export default async function PaymentPage({
 
   const token = await getTokenCached();
   if (!token) {
-    return redirect(redirects.auth.login)
+    return redirect(redirects.auth.login);
   }
 
-  const req = await client(env.NEXT_PUBLIC_BACKEND_URL, token).accounting.payments[":paymentId"].$get({ param: { paymentId: parseInt(paymentId) } });
+  const req = await client(
+    env.NEXT_PUBLIC_BACKEND_URL,
+    token,
+  ).accounting.payments[":paymentId"].$get({
+    param: { paymentId: parseInt(paymentId) },
+  });
   if (!req.ok) {
-    throw new Error("Failed to get payment")
+    throw new Error("Failed to get payment");
   }
 
   const payment = await req.json();
@@ -36,4 +41,4 @@ export default async function PaymentPage({
       </div>
     </div>
   );
-} 
+}

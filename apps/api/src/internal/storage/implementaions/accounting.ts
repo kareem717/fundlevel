@@ -28,13 +28,13 @@ import {
   quickBooksJournalEntries,
   quickBooksPayments,
   quickBooksTransactions,
-  quickBooksVendorCredits
+  quickBooksVendorCredits,
 } from "@fundlevel/db/schema";
 import type { DB, Transaction } from "@fundlevel/db";
 import { eq, inArray, sql } from "drizzle-orm";
 import { CreateQuickBooksVendorCreditParamsSchema } from "@fundlevel/db/validators";
 export class AccountingRepository implements IAccountingRepository {
-  constructor(private db: DB | Transaction) { }
+  constructor(private db: DB | Transaction) {}
 
   async upsertBankAccount(
     bankAccounts: CreatePlaidBankAccountParams[],
@@ -47,7 +47,7 @@ export class AccountingRepository implements IAccountingRepository {
     const data = await this.db
       .insert(plaidBankAccounts)
       .values(
-        bankAccounts.map(bankAccount => ({ ...bankAccount, companyId }))
+        bankAccounts.map((bankAccount) => ({ ...bankAccount, companyId })),
       )
       .onConflictDoUpdate({
         target: [plaidBankAccounts.remoteId],
@@ -57,12 +57,24 @@ export class AccountingRepository implements IAccountingRepository {
           type: sql.raw(`excluded.${plaidBankAccounts.type.name}`),
           subtype: sql.raw(`excluded.${plaidBankAccounts.subtype.name}`),
           mask: sql.raw(`excluded.${plaidBankAccounts.mask.name}`),
-          currentBalance: sql.raw(`excluded.${plaidBankAccounts.currentBalance.name}`),
-          availableBalance: sql.raw(`excluded.${plaidBankAccounts.availableBalance.name}`),
-          isoCurrencyCode: sql.raw(`excluded.${plaidBankAccounts.isoCurrencyCode.name}`),
-          unofficialCurrencyCode: sql.raw(`excluded.${plaidBankAccounts.unofficialCurrencyCode.name}`),
-          officialName: sql.raw(`excluded.${plaidBankAccounts.officialName.name}`),
-          remainingRemoteContent: sql.raw(`excluded.${plaidBankAccounts.remainingRemoteContent.name}`),
+          currentBalance: sql.raw(
+            `excluded.${plaidBankAccounts.currentBalance.name}`,
+          ),
+          availableBalance: sql.raw(
+            `excluded.${plaidBankAccounts.availableBalance.name}`,
+          ),
+          isoCurrencyCode: sql.raw(
+            `excluded.${plaidBankAccounts.isoCurrencyCode.name}`,
+          ),
+          unofficialCurrencyCode: sql.raw(
+            `excluded.${plaidBankAccounts.unofficialCurrencyCode.name}`,
+          ),
+          officialName: sql.raw(
+            `excluded.${plaidBankAccounts.officialName.name}`,
+          ),
+          remainingRemoteContent: sql.raw(
+            `excluded.${plaidBankAccounts.remainingRemoteContent.name}`,
+          ),
         },
       })
       .returning();
@@ -88,7 +100,9 @@ export class AccountingRepository implements IAccountingRepository {
     return data;
   }
 
-  async getBankAccountsByCompanyId(companyId: number): Promise<PlaidBankAccount[]> {
+  async getBankAccountsByCompanyId(
+    companyId: number,
+  ): Promise<PlaidBankAccount[]> {
     const data = await this.db
       .select()
       .from(plaidBankAccounts)
@@ -128,9 +142,9 @@ export class AccountingRepository implements IAccountingRepository {
       return;
     }
 
-    await this.db.insert(plaidTransactions).values(
-      transactions.map((t) => ({ ...t, companyId })),
-    );
+    await this.db
+      .insert(plaidTransactions)
+      .values(transactions.map((t) => ({ ...t, companyId })));
   }
 
   async getTransactionById(id: string): Promise<PlaidTransaction | undefined> {
@@ -157,7 +171,9 @@ export class AccountingRepository implements IAccountingRepository {
   async deleteTransaction(id: string | string[]): Promise<void> {
     await this.db
       .delete(plaidTransactions)
-      .where(inArray(plaidTransactions.remoteId, Array.isArray(id) ? id : [id]));
+      .where(
+        inArray(plaidTransactions.remoteId, Array.isArray(id) ? id : [id]),
+      );
   }
 
   async upsertInvoice(
@@ -170,9 +186,7 @@ export class AccountingRepository implements IAccountingRepository {
 
     const data = await this.db
       .insert(quickBooksInvoices)
-      .values(
-        invoices.map(invoice => ({ ...invoice, companyId }))
-      )
+      .values(invoices.map((invoice) => ({ ...invoice, companyId })))
       .onConflictDoUpdate({
         target: [quickBooksInvoices.remoteId],
         set: {
@@ -199,7 +213,9 @@ export class AccountingRepository implements IAccountingRepository {
     return data;
   }
 
-  async getInvoicesByCompanyId(companyId: number): Promise<QuickBooksInvoice[]> {
+  async getInvoicesByCompanyId(
+    companyId: number,
+  ): Promise<QuickBooksInvoice[]> {
     const data = await this.db
       .select()
       .from(quickBooksInvoices)
@@ -211,7 +227,12 @@ export class AccountingRepository implements IAccountingRepository {
   async deleteInvoiceByRemoteId(remoteId: string | string[]): Promise<void> {
     await this.db
       .delete(quickBooksInvoices)
-      .where(inArray(quickBooksInvoices.remoteId, Array.isArray(remoteId) ? remoteId : [remoteId]));
+      .where(
+        inArray(
+          quickBooksInvoices.remoteId,
+          Array.isArray(remoteId) ? remoteId : [remoteId],
+        ),
+      );
   }
 
   // QuickBooks Account methods
@@ -225,9 +246,7 @@ export class AccountingRepository implements IAccountingRepository {
 
     const data = await this.db
       .insert(quickBooksAccounts)
-      .values(
-        accounts.map(account => ({ ...account, companyId }))
-      )
+      .values(accounts.map((account) => ({ ...account, companyId })))
       .onConflictDoUpdate({
         target: [quickBooksAccounts.remoteId],
         set: {
@@ -254,7 +273,9 @@ export class AccountingRepository implements IAccountingRepository {
     return data;
   }
 
-  async getAccountsByCompanyId(companyId: number): Promise<QuickBooksAccount[]> {
+  async getAccountsByCompanyId(
+    companyId: number,
+  ): Promise<QuickBooksAccount[]> {
     const data = await this.db
       .select()
       .from(quickBooksAccounts)
@@ -266,7 +287,12 @@ export class AccountingRepository implements IAccountingRepository {
   async deleteAccountByRemoteId(remoteId: string | string[]): Promise<void> {
     await this.db
       .delete(quickBooksAccounts)
-      .where(inArray(quickBooksAccounts.remoteId, Array.isArray(remoteId) ? remoteId : [remoteId]));
+      .where(
+        inArray(
+          quickBooksAccounts.remoteId,
+          Array.isArray(remoteId) ? remoteId : [remoteId],
+        ),
+      );
   }
 
   // QuickBooks Credit Note methods
@@ -280,9 +306,7 @@ export class AccountingRepository implements IAccountingRepository {
 
     const data = await this.db
       .insert(quickBooksCreditNotes)
-      .values(
-        creditNotes.map(creditNote => ({ ...creditNote, companyId }))
-      )
+      .values(creditNotes.map((creditNote) => ({ ...creditNote, companyId })))
       .onConflictDoUpdate({
         target: [quickBooksCreditNotes.remoteId],
         set: {
@@ -299,7 +323,9 @@ export class AccountingRepository implements IAccountingRepository {
     return data;
   }
 
-  async getCreditNoteById(id: number): Promise<QuickBooksCreditNote | undefined> {
+  async getCreditNoteById(
+    id: number,
+  ): Promise<QuickBooksCreditNote | undefined> {
     const [data] = await this.db
       .select()
       .from(quickBooksCreditNotes)
@@ -309,7 +335,9 @@ export class AccountingRepository implements IAccountingRepository {
     return data;
   }
 
-  async getCreditNotesByCompanyId(companyId: number): Promise<QuickBooksCreditNote[]> {
+  async getCreditNotesByCompanyId(
+    companyId: number,
+  ): Promise<QuickBooksCreditNote[]> {
     const data = await this.db
       .select()
       .from(quickBooksCreditNotes)
@@ -321,7 +349,12 @@ export class AccountingRepository implements IAccountingRepository {
   async deleteCreditNoteByRemoteId(remoteId: string | string[]): Promise<void> {
     await this.db
       .delete(quickBooksCreditNotes)
-      .where(inArray(quickBooksCreditNotes.remoteId, Array.isArray(remoteId) ? remoteId : [remoteId]));
+      .where(
+        inArray(
+          quickBooksCreditNotes.remoteId,
+          Array.isArray(remoteId) ? remoteId : [remoteId],
+        ),
+      );
   }
 
   // QuickBooks Journal Entry methods
@@ -336,12 +369,14 @@ export class AccountingRepository implements IAccountingRepository {
     const data = await this.db
       .insert(quickBooksJournalEntries)
       .values(
-        journalEntries.map(journalEntry => ({ ...journalEntry, companyId }))
+        journalEntries.map((journalEntry) => ({ ...journalEntry, companyId })),
       )
       .onConflictDoUpdate({
         target: [quickBooksJournalEntries.remoteId],
         set: {
-          remoteId: sql.raw(`excluded.${quickBooksJournalEntries.remoteId.name}`),
+          remoteId: sql.raw(
+            `excluded.${quickBooksJournalEntries.remoteId.name}`,
+          ),
           content: sql.raw(`excluded.${quickBooksJournalEntries.content.name}`),
         },
       })
@@ -354,7 +389,9 @@ export class AccountingRepository implements IAccountingRepository {
     return data;
   }
 
-  async getJournalEntryById(id: number): Promise<QuickBooksJournalEntry | undefined> {
+  async getJournalEntryById(
+    id: number,
+  ): Promise<QuickBooksJournalEntry | undefined> {
     const [data] = await this.db
       .select()
       .from(quickBooksJournalEntries)
@@ -364,7 +401,9 @@ export class AccountingRepository implements IAccountingRepository {
     return data;
   }
 
-  async getJournalEntriesByCompanyId(companyId: number): Promise<QuickBooksJournalEntry[]> {
+  async getJournalEntriesByCompanyId(
+    companyId: number,
+  ): Promise<QuickBooksJournalEntry[]> {
     const data = await this.db
       .select()
       .from(quickBooksJournalEntries)
@@ -373,10 +412,17 @@ export class AccountingRepository implements IAccountingRepository {
     return data;
   }
 
-  async deleteJournalEntryByRemoteId(remoteId: string | string[]): Promise<void> {
+  async deleteJournalEntryByRemoteId(
+    remoteId: string | string[],
+  ): Promise<void> {
     await this.db
       .delete(quickBooksJournalEntries)
-      .where(inArray(quickBooksJournalEntries.remoteId, Array.isArray(remoteId) ? remoteId : [remoteId]));
+      .where(
+        inArray(
+          quickBooksJournalEntries.remoteId,
+          Array.isArray(remoteId) ? remoteId : [remoteId],
+        ),
+      );
   }
 
   // QuickBooks Payment methods
@@ -390,9 +436,7 @@ export class AccountingRepository implements IAccountingRepository {
 
     const data = await this.db
       .insert(quickBooksPayments)
-      .values(
-        payments.map(payment => ({ ...payment, companyId }))
-      )
+      .values(payments.map((payment) => ({ ...payment, companyId })))
       .onConflictDoUpdate({
         target: [quickBooksPayments.remoteId],
         set: {
@@ -419,7 +463,9 @@ export class AccountingRepository implements IAccountingRepository {
     return data;
   }
 
-  async getPaymentsByCompanyId(companyId: number): Promise<QuickBooksPayment[]> {
+  async getPaymentsByCompanyId(
+    companyId: number,
+  ): Promise<QuickBooksPayment[]> {
     const data = await this.db
       .select()
       .from(quickBooksPayments)
@@ -431,7 +477,12 @@ export class AccountingRepository implements IAccountingRepository {
   async deletePaymentByRemoteId(remoteId: string | string[]): Promise<void> {
     await this.db
       .delete(quickBooksPayments)
-      .where(inArray(quickBooksPayments.remoteId, Array.isArray(remoteId) ? remoteId : [remoteId]));
+      .where(
+        inArray(
+          quickBooksPayments.remoteId,
+          Array.isArray(remoteId) ? remoteId : [remoteId],
+        ),
+      );
   }
 
   // QuickBooks Transaction methods
@@ -446,7 +497,7 @@ export class AccountingRepository implements IAccountingRepository {
     const data = await this.db
       .insert(quickBooksTransactions)
       .values(
-        transactions.map(transaction => ({ ...transaction, companyId }))
+        transactions.map((transaction) => ({ ...transaction, companyId })),
       )
       .onConflictDoUpdate({
         target: [quickBooksTransactions.remoteId],
@@ -464,7 +515,9 @@ export class AccountingRepository implements IAccountingRepository {
     return data;
   }
 
-  async getQbTransactionById(id: number): Promise<QuickBooksTransaction | undefined> {
+  async getQbTransactionById(
+    id: number,
+  ): Promise<QuickBooksTransaction | undefined> {
     const [data] = await this.db
       .select()
       .from(quickBooksTransactions)
@@ -474,7 +527,9 @@ export class AccountingRepository implements IAccountingRepository {
     return data;
   }
 
-  async getQbTransactionsByCompanyId(companyId: number): Promise<QuickBooksTransaction[]> {
+  async getQbTransactionsByCompanyId(
+    companyId: number,
+  ): Promise<QuickBooksTransaction[]> {
     const data = await this.db
       .select()
       .from(quickBooksTransactions)
@@ -483,10 +538,17 @@ export class AccountingRepository implements IAccountingRepository {
     return data;
   }
 
-  async deleteQbTransactionByRemoteId(remoteId: string | string[]): Promise<void> {
+  async deleteQbTransactionByRemoteId(
+    remoteId: string | string[],
+  ): Promise<void> {
     await this.db
       .delete(quickBooksTransactions)
-      .where(inArray(quickBooksTransactions.remoteId, Array.isArray(remoteId) ? remoteId : [remoteId]));
+      .where(
+        inArray(
+          quickBooksTransactions.remoteId,
+          Array.isArray(remoteId) ? remoteId : [remoteId],
+        ),
+      );
   }
 
   // QuickBooks Vendor Credit methods
@@ -501,12 +563,14 @@ export class AccountingRepository implements IAccountingRepository {
     const data = await this.db
       .insert(quickBooksVendorCredits)
       .values(
-        vendorCredits.map(vendorCredit => ({ ...vendorCredit, companyId }))
+        vendorCredits.map((vendorCredit) => ({ ...vendorCredit, companyId })),
       )
       .onConflictDoUpdate({
         target: [quickBooksVendorCredits.remoteId],
         set: {
-          remoteId: sql.raw(`excluded.${quickBooksVendorCredits.remoteId.name}`),
+          remoteId: sql.raw(
+            `excluded.${quickBooksVendorCredits.remoteId.name}`,
+          ),
           content: sql.raw(`excluded.${quickBooksVendorCredits.content.name}`),
         },
       })
@@ -519,7 +583,9 @@ export class AccountingRepository implements IAccountingRepository {
     return data;
   }
 
-  async getVendorCreditById(id: number): Promise<QuickBooksVendorCredit | undefined> {
+  async getVendorCreditById(
+    id: number,
+  ): Promise<QuickBooksVendorCredit | undefined> {
     const [data] = await this.db
       .select()
       .from(quickBooksVendorCredits)
@@ -529,7 +595,9 @@ export class AccountingRepository implements IAccountingRepository {
     return data;
   }
 
-  async getVendorCreditsByCompanyId(companyId: number): Promise<QuickBooksVendorCredit[]> {
+  async getVendorCreditsByCompanyId(
+    companyId: number,
+  ): Promise<QuickBooksVendorCredit[]> {
     const data = await this.db
       .select()
       .from(quickBooksVendorCredits)
@@ -538,17 +606,26 @@ export class AccountingRepository implements IAccountingRepository {
     return data;
   }
 
-  async deleteVendorCreditByRemoteId(remoteId: string | string[]): Promise<void> {
+  async deleteVendorCreditByRemoteId(
+    remoteId: string | string[],
+  ): Promise<void> {
     await this.db
       .delete(quickBooksVendorCredits)
-      .where(inArray(quickBooksVendorCredits.remoteId, Array.isArray(remoteId) ? remoteId : [remoteId]));
+      .where(
+        inArray(
+          quickBooksVendorCredits.remoteId,
+          Array.isArray(remoteId) ? remoteId : [remoteId],
+        ),
+      );
   }
 
   async getInvoice(id: number): Promise<QuickBooksInvoice | undefined> {
     return this.getInvoiceById(id);
   }
 
-  async getJournalEntry(id: number): Promise<QuickBooksJournalEntry | undefined> {
+  async getJournalEntry(
+    id: number,
+  ): Promise<QuickBooksJournalEntry | undefined> {
     return this.getJournalEntryById(id);
   }
 }

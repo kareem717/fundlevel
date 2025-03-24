@@ -2,7 +2,7 @@ import { withSentryConfig } from "@sentry/nextjs";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  transpilePackages: ["@fundlevel/ui"]
+  transpilePackages: ["@fundlevel/ui"],
 };
 
 if (!process.env.TURBOPACK) {

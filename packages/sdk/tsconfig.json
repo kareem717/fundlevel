@@ -3,16 +3,10 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@fundlevel/db/*": [
-        "./src/*"
-      ],
+      "@fundlevel/db/*": ["./src/*"]
     },
     "outDir": "./dist"
   },
   "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "build"
-  ]
+  "exclude": ["node_modules", "dist", "build"]
 }

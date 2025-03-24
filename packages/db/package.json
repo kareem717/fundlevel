@@ -8,7 +8,9 @@
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
-    "lint": "eslint . --max-warnings 0",
+    "lint": "biome lint .",
+    "format": "biome format .",
+    "typecheck": "tsc --noEmit",
     "clean": "rm -rf node_modules"
   },
   "dependencies": {
@@ -19,7 +21,7 @@
     "ws": "^8.18.1"
   },
   "devDependencies": {
-    "@fundlevel/eslint-config": "workspace:*",
+    "@biomejs/biome": "^1.5.3",
     "@fundlevel/typescript-config": "workspace:*",
     "drizzle-kit": "^0.30.5",
     "tsx": "^4.19.3",

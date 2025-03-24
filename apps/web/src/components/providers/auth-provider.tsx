@@ -5,7 +5,7 @@ import { type ReactNode, createContext, useContext } from "react";
 import type { Account } from "@fundlevel/db/types";
 
 export interface AuthProviderProps {
-  account?: Account | null; 
+  account?: Account | null;
   authToken?: string | null;
 }
 
@@ -27,7 +27,7 @@ export function AuthProvider({
   account,
   authToken,
 }: AuthProviderComponentProps) {
-  return (  
+  return (
     <AuthContext.Provider value={{ account, authToken }}>
       {children}
     </AuthContext.Provider>

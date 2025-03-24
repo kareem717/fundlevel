@@ -47,12 +47,15 @@ export function CreateAccountForm({
   const { mutate, isPending } = useMutation({
     mutationFn: async (values: CreateAccountFormValues) => {
       const token = await getTokenCached();
-      console.log(token)
+      console.log(token);
       if (!token) {
         redirect(redirects.auth.login);
       }
 
-      const result = await client(env.NEXT_PUBLIC_BACKEND_URL, token).auth.$post({ json: values });
+      const result = await client(
+        env.NEXT_PUBLIC_BACKEND_URL,
+        token,
+      ).auth.$post({ json: values });
 
       if (!result.ok) {
         throw new Error("Failed to create account");
@@ -63,12 +66,10 @@ export function CreateAccountForm({
     onSuccess: (result) => {
       form.reset();
 
-      toast.success(
-        "Success!",
-        {
-          description:
-            "Account created successfully. We're redirecting you to the dashboard.",
-        });
+      toast.success("Success!", {
+        description:
+          "Account created successfully. We're redirecting you to the dashboard.",
+      });
 
       router.push(redirects.app.root);
     },
@@ -77,7 +78,7 @@ export function CreateAccountForm({
         description: error.message,
       });
     },
-  })
+  });
 
   const form = useForm<CreateAccountFormValues>({
     resolver: zodResolver(CreateAccountParamsSchema),
@@ -86,7 +87,7 @@ export function CreateAccountForm({
       firstName: firstName || "",
       lastName: lastName || "",
     },
-  })
+  });
 
   function onSubmit(values: CreateAccountFormValues) {
     mutate(values);
@@ -107,10 +108,7 @@ export function CreateAccountForm({
               <FormItem>
                 <FormLabel>First Name</FormLabel>
                 <FormControl>
-                  <Input
-                    placeholder="Enter your first name"
-                    {...field}
-                  />
+                  <Input placeholder="Enter your first name" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -123,10 +121,7 @@ export function CreateAccountForm({
               <FormItem>
                 <FormLabel>Last Name</FormLabel>
                 <FormControl>
-                  <Input
-                    placeholder="Enter your email"
-                    {...field}
-                  />
+                  <Input placeholder="Enter your email" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -140,10 +135,7 @@ export function CreateAccountForm({
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input
-                  placeholder="Enter your email"
-                  {...field}
-                />
+                <Input placeholder="Enter your email" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -155,6 +147,5 @@ export function CreateAccountForm({
         </Button>
       </form>
     </Form>
-
   );
 }

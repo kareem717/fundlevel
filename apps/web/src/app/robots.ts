@@ -4,7 +4,6 @@ import { redirects } from "@fundlevel/web/lib/config/redirects";
 
 const appUrl = env.NEXT_PUBLIC_WEB_URL;
 
-
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [

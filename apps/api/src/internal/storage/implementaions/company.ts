@@ -18,44 +18,49 @@ import { SyncJobType } from "../interfaces";
 import { IDB } from "..";
 
 export class CompanyRepository implements ICompanyRepository {
-  constructor(private readonly db: IDB) { }
+  constructor(private readonly db: IDB) {}
 
-  async updateLastSyncedAt(type: SyncJobType, companyId: number): Promise<Company> {
-    let column
+  async updateLastSyncedAt(
+    type: SyncJobType,
+    companyId: number,
+  ): Promise<Company> {
+    let column;
 
     switch (type) {
       case SyncJobType.QUICKBOOKS_INVOICES:
-        column = companies.invoicesLastSyncedAt.name
+        column = companies.invoicesLastSyncedAt.name;
         break;
       case SyncJobType.QUICKBOOKS_ACCOUNTS:
-        column = companies.bankAccountsLastSyncedAt.name
+        column = companies.bankAccountsLastSyncedAt.name;
         break;
       case SyncJobType.QUICKBOOKS_TRANSACTIONS:
-        column = companies.transactionsLastSyncedAt.name
+        column = companies.transactionsLastSyncedAt.name;
         break;
       case SyncJobType.QUICKBOOKS_CREDIT_NOTES:
-        column = companies.creditNotesLastSyncedAt.name
+        column = companies.creditNotesLastSyncedAt.name;
         break;
       case SyncJobType.QUICKBOOKS_JOURNAL_ENTRIES:
-        column = companies.journalEntriesLastSyncedAt.name
+        column = companies.journalEntriesLastSyncedAt.name;
         break;
       case SyncJobType.QUICKBOOKS_PAYMENTS:
-        column = companies.paymentsLastSyncedAt.name
+        column = companies.paymentsLastSyncedAt.name;
         break;
       case SyncJobType.QUICKBOOKS_VENDOR_CREDITS:
-        column = companies.vendorCreditsLastSyncedAt.name
+        column = companies.vendorCreditsLastSyncedAt.name;
         break;
       case SyncJobType.PLAID_BANK_ACCOUNTS:
-        column = companies.bankAccountsLastSyncedAt.name
+        column = companies.bankAccountsLastSyncedAt.name;
         break;
       case SyncJobType.PLAID_TRANSACTIONS:
-        column = companies.transactionsLastSyncedAt.name
+        column = companies.transactionsLastSyncedAt.name;
         break;
       default:
         throw new Error(`Unknown sync job type: ${type}`);
     }
 
-    console.log(`Updating ${column} for company ${companyId} to ${new Date().toISOString()}`);
+    console.log(
+      `Updating ${column} for company ${companyId} to ${new Date().toISOString()}`,
+    );
 
     const [data] = await this.db
       .update(companies)
@@ -69,7 +74,7 @@ export class CompanyRepository implements ICompanyRepository {
 
     return data;
   }
-  
+
   async create(params: CreateCompanyParams, ownerId: number) {
     const [data] = await this.db
       .insert(companies)
@@ -121,7 +126,10 @@ export class CompanyRepository implements ICompanyRepository {
     return data;
   }
 
-  async createPlaidCredentials(params: CreatePlaidCredentialParams, companyId: number) {
+  async createPlaidCredentials(
+    params: CreatePlaidCredentialParams,
+    companyId: number,
+  ) {
     const [data] = await this.db
       .insert(plaidCredentials)
       .values({ ...params, companyId })

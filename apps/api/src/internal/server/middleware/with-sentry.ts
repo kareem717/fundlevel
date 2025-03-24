@@ -1,13 +1,13 @@
-import { sentry } from '@hono/sentry'
+import { sentry } from "@hono/sentry";
 import { env } from "hono/adapter";
 import { MiddlewareHandler } from "hono";
 
 export const withSentry = (): MiddlewareHandler => async (c, next) => {
-  if (env(c).NODE_ENV === 'production') {
+  if (env(c).NODE_ENV === "production") {
     return sentry({
       dsn: env(c).SENTRY_DSN,
-    })(c, next)
+    })(c, next);
   }
 
-  await next()
-}
+  await next();
+};

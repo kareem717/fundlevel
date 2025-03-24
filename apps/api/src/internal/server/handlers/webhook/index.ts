@@ -74,7 +74,10 @@ async function verifyPlaidWebhook(
 const webhookHandler = new OpenAPIHono()
   .openapi(plaidWebhookRoute, async (c) => {
     const plaidConfig = new Configuration({
-      basePath: env(c).PLAID_ENVIRONMENT === "sandbox" ? PlaidEnvironments.sandbox : PlaidEnvironments.production,
+      basePath:
+        env(c).PLAID_ENVIRONMENT === "sandbox"
+          ? PlaidEnvironments.sandbox
+          : PlaidEnvironments.production,
       baseOptions: {
         headers: {
           "PLAID-CLIENT-ID": env(c).PLAID_CLIENT_ID,
@@ -88,7 +91,11 @@ const webhookHandler = new OpenAPIHono()
 
     if (plaidVerification) {
       const rawBody = await c.req.raw.clone().text();
-      const isVerified = await verifyPlaidWebhook(plaidVerification, rawBody, plaid);
+      const isVerified = await verifyPlaidWebhook(
+        plaidVerification,
+        rawBody,
+        plaid,
+      );
 
       if (!isVerified) {
         console.error("Failed to verify Plaid webhook");
@@ -120,7 +127,9 @@ const webhookHandler = new OpenAPIHono()
           break;
         }
         default: {
-          console.log(`Unhandled webhook type => TYPE: ${webhookType} CODE: ${webhookCode}`);
+          console.log(
+            `Unhandled webhook type => TYPE: ${webhookType} CODE: ${webhookCode}`,
+          );
         }
       }
     } catch (error) {
@@ -138,7 +147,10 @@ const webhookHandler = new OpenAPIHono()
     }
 
     const rawBody = await c.req.raw.clone().text();
-    const hmac = createHmac("sha256", env(c).QUICK_BOOKS_WEBHOOK_VERIFIER_TOKEN as string);
+    const hmac = createHmac(
+      "sha256",
+      env(c).QUICK_BOOKS_WEBHOOK_VERIFIER_TOKEN as string,
+    );
     hmac.update(rawBody);
     const computedSignature = hmac.digest("base64");
 
@@ -167,7 +179,10 @@ const webhookHandler = new OpenAPIHono()
         for (const entity of dataChangeEvent.entities) {
           if (entity.name === "Invoice") {
             console.log(`Processing Invoice event for realmId: ${realmId}`);
-            const company = await getService(c).company.getCompanyByQuickBooksRealmId(realmId);
+            const company =
+              await getService(c).company.getCompanyByQuickBooksRealmId(
+                realmId,
+              );
 
             if (!company) {
               console.error(`No company found with realmId: ${realmId}`);
@@ -175,11 +190,16 @@ const webhookHandler = new OpenAPIHono()
             }
 
             await getService(c).company.syncInvoices(company.id);
-            console.log(`Successfully synced invoices for company ${company.id}`);
+            console.log(
+              `Successfully synced invoices for company ${company.id}`,
+            );
           }
         }
       } catch (error) {
-        console.error(`Error processing QuickBooks webhook for realmId ${realmId}:`, error);
+        console.error(
+          `Error processing QuickBooks webhook for realmId ${realmId}:`,
+          error,
+        );
       }
     }
 

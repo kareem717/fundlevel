@@ -7,21 +7,21 @@ import { getTokenCached, getAccountCached } from "../../actions/auth";
 export default async function DashboardLayout({
   children,
 }: { children: React.ReactNode }) {
-  const token = await getTokenCached()
+  const token = await getTokenCached();
   if (!token) {
-    redirect(redirects.auth.login)
+    redirect(redirects.auth.login);
   }
 
-  let account: Account | null = null
+  let account: Account | null = null;
   try {
-    account = await getAccountCached(token)
+    account = await getAccountCached(token);
 
     if (!account) {
-      redirect(redirects.auth.createAccount)
+      redirect(redirects.auth.createAccount);
     }
   } catch (error) {
-    console.error(error)
-    throw error
+    console.error(error);
+    throw error;
   }
 
   return (

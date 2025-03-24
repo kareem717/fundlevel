@@ -26,7 +26,7 @@ export function SidebarUser({
   ...props
 }: ComponentPropsWithoutRef<typeof SidebarMenu>) {
   const { isMobile } = useSidebar();
-  const { account } = useAuth()
+  const { account } = useAuth();
 
   if (!account) {
     throw new Error(
@@ -35,7 +35,7 @@ export function SidebarUser({
   }
 
   const avatarStyle = {
-    background: stringToGradient(account.email)
+    background: stringToGradient(account.email),
   };
 
   return (

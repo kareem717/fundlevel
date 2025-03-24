@@ -23,24 +23,32 @@ export function LinkQuickBooksButton({
   ...props
 }: LinkQuickBooksButtonProps) {
   const router = useRouter();
-  const { authToken } = useAuth()
+  const { authToken } = useAuth();
   if (!authToken) {
-    throw new Error("LinkQuickBooksButton: No bearer token found")
+    throw new Error("LinkQuickBooksButton: No bearer token found");
   }
 
   const { mutate, isPending } = useMutation({
     mutationFn: async () => {
-      const resp = await client(env.NEXT_PUBLIC_BACKEND_URL, authToken).company.quickbooks.connect.$post({
+      const resp = await client(
+        env.NEXT_PUBLIC_BACKEND_URL,
+        authToken,
+      ).company.quickbooks.connect.$post({
         json: {
           companyId,
-          redirectUrl: process.env.NEXT_PUBLIC_APP_URL + redirects.app.company(companyId).settings.connections,
+          redirectUrl:
+            process.env.NEXT_PUBLIC_APP_URL +
+            redirects.app.company(companyId).settings.connections,
         },
-      })
+      });
       if (resp.status !== 200) {
-        throw new Error("LinkQuickBooksButton: Failed to connect QuickBooks, status: " + resp.status)
+        throw new Error(
+          "LinkQuickBooksButton: Failed to connect QuickBooks, status: " +
+            resp.status,
+        );
       }
 
-      return await resp.json()
+      return await resp.json();
     },
     onSuccess: async ({ url }) => {
       toast.info("Hold on tight, we're taking you to QuickBooks");
@@ -54,11 +62,7 @@ export function LinkQuickBooksButton({
   });
 
   return (
-    <Button
-      className={cn(className)}
-      onClick={() => mutate()}
-      {...props}
-    >
+    <Button className={cn(className)} onClick={() => mutate()} {...props}>
       {isPending && <Loader2 className="mr-2 animate-spin" />}
       Link QuickBooks
     </Button>

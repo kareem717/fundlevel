@@ -10,18 +10,20 @@ export default async function CompanyPage({
   const { id } = await params;
   const parsedId = Number.parseInt(id, 10);
 
-  const token = await getTokenCached()
+  const token = await getTokenCached();
   if (!token) {
-    return redirect(redirects.auth.login)
+    return redirect(redirects.auth.login);
   }
 
-  const resp = await client(env.NEXT_PUBLIC_BACKEND_URL, token).company[":companyId"].$get({ param: { companyId: parsedId } })
+  const resp = await client(env.NEXT_PUBLIC_BACKEND_URL, token).company[
+    ":companyId"
+  ].$get({ param: { companyId: parsedId } });
 
   if (resp.status !== 200) {
-    throw new Error("Failed to fetch company, status: " + resp.status)
+    throw new Error("Failed to fetch company, status: " + resp.status);
   }
 
-  const company = await resp.json()
+  const company = await resp.json();
 
   return (
     <div className="space-y-6">

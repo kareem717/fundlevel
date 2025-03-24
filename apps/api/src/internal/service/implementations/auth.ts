@@ -3,9 +3,7 @@ import type { IAuthService } from "../interfaces/auth";
 import type { IAccountRepository } from "@fundlevel/api/internal/storage/interfaces";
 
 export class AuthService implements IAuthService {
-  constructor(
-    private readonly accountRepo: IAccountRepository,
-  ) { }
+  constructor(private readonly accountRepo: IAccountRepository) {}
 
   async createAccount(account: CreateAccountParams) {
     return await this.accountRepo.create(account);

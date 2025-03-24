@@ -11,12 +11,16 @@ export default async function AccountingTransactionPage({
 
   const token = await getTokenCached();
   if (!token) {
-    return redirect(redirects.auth.login)
+    return redirect(redirects.auth.login);
   }
 
-  const req = await client(env.NEXT_PUBLIC_BACKEND_URL, token).accounting["transactions"][":transactionId"].$get({ param: { transactionId: parseInt(transactionId) } });
+  const req = await client(env.NEXT_PUBLIC_BACKEND_URL, token).accounting[
+    "transactions"
+  ][":transactionId"].$get({
+    param: { transactionId: parseInt(transactionId) },
+  });
   if (!req.ok) {
-    throw new Error("Failed to get transaction")
+    throw new Error("Failed to get transaction");
   }
 
   const transaction = await req.json();
@@ -24,7 +28,9 @@ export default async function AccountingTransactionPage({
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-3">
-        <h1 className="text-3xl font-bold mb-2">Transaction {transaction.id}</h1>
+        <h1 className="text-3xl font-bold mb-2">
+          Transaction {transaction.id}
+        </h1>
         <p className="text-muted-foreground">
           View transaction details and related information
         </p>
@@ -36,4 +42,4 @@ export default async function AccountingTransactionPage({
       </div>
     </div>
   );
-} 
+}

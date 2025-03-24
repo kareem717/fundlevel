@@ -1,5 +1,9 @@
 import type { Message } from "ai";
-import type { PlaidTransaction, PlaidBankAccount, QuickBooksInvoice } from "@fundlevel/db/types";
+import type {
+  PlaidTransaction,
+  PlaidBankAccount,
+  QuickBooksInvoice,
+} from "@fundlevel/db/types";
 
 /**
  * Result of transaction reconciliation process

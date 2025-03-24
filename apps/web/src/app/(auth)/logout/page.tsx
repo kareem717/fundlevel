@@ -20,14 +20,9 @@ export default async function LogoutPage() {
         <CardDescription>Logout from your account</CardDescription>
       </CardHeader>
       <CardContent>
-        <div
-          className="grid grid-cols-2 gap-4 md:grid-cols-1"
-        >
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-1">
           <SignOutButton>
-            <Button
-              className="w-full"
-              variant="secondary"
-            >
+            <Button className="w-full" variant="secondary">
               Logout
             </Button>
           </SignOutButton>

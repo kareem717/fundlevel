@@ -49,12 +49,15 @@ export function CreateCompanyDialog({
   const [dialogOpen, setDialogOpen] = useState(false);
   const { authToken } = useAuth();
   if (!authToken) {
-    throw new Error("CreateCompanyDialog: No bearer token found")
+    throw new Error("CreateCompanyDialog: No bearer token found");
   }
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (values: CreateCompanyFormValues) => {
-      const result = await client(env.NEXT_PUBLIC_BACKEND_URL, authToken).company.$post({json: values});
+      const result = await client(
+        env.NEXT_PUBLIC_BACKEND_URL,
+        authToken,
+      ).company.$post({ json: values });
 
       if (!result.ok) {
         throw new Error("Failed to create company");
@@ -66,12 +69,10 @@ export function CreateCompanyDialog({
       form.reset();
       setDialogOpen(false);
 
-      toast.success(
-        "Success!",
-        {
-          description:
-            "Account linked successfully. We're redirecting you to the dashboard.",
-        });
+      toast.success("Success!", {
+        description:
+          "Account linked successfully. We're redirecting you to the dashboard.",
+      });
 
       router.push(redirects.app.company(result.id).root);
     },
@@ -80,16 +81,14 @@ export function CreateCompanyDialog({
         description: error.message,
       });
     },
-  })
+  });
 
   const form = useForm<CreateCompanyFormValues>({
     resolver: zodResolver(CreateCompanyParamsSchema),
     defaultValues: {
       name: "",
     },
-  })
-
-
+  });
 
   // 2. Define a submit handler.
   function onSubmit(values: CreateCompanyFormValues) {

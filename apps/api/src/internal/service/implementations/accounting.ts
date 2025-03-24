@@ -8,7 +8,7 @@ import type {
   QuickBooksJournalEntry,
   QuickBooksVendorCredit,
   QuickBooksCreditNote,
-  QuickBooksPayment
+  QuickBooksPayment,
 } from "@fundlevel/db/types";
 import type {
   BalanceSheetReport,
@@ -59,7 +59,7 @@ export class AccountingService implements IAccountingService {
   constructor(
     accountingRepo: IAccountingRepository,
     companyService: ICompanyService,
-    qbEnv: "sandbox" | "production"
+    qbEnv: "sandbox" | "production",
   ) {
     this.accountingRepo = accountingRepo;
     this.companyService = companyService;
@@ -460,7 +460,9 @@ export class AccountingService implements IAccountingService {
     return account;
   }
 
-  async getAccountingAccountsByCompanyId(companyId: number): Promise<QuickBooksAccount[]> {
+  async getAccountingAccountsByCompanyId(
+    companyId: number,
+  ): Promise<QuickBooksAccount[]> {
     return await this.accountingRepo.getAccountsByCompanyId(companyId);
   }
 
@@ -472,7 +474,9 @@ export class AccountingService implements IAccountingService {
     return transaction;
   }
 
-  async getAccountingTransactionsByCompanyId(companyId: number): Promise<QuickBooksTransaction[]> {
+  async getAccountingTransactionsByCompanyId(
+    companyId: number,
+  ): Promise<QuickBooksTransaction[]> {
     return await this.accountingRepo.getQbTransactionsByCompanyId(companyId);
   }
 
@@ -484,7 +488,9 @@ export class AccountingService implements IAccountingService {
     return journalEntry;
   }
 
-  async getJournalEntriesByCompanyId(companyId: number): Promise<QuickBooksJournalEntry[]> {
+  async getJournalEntriesByCompanyId(
+    companyId: number,
+  ): Promise<QuickBooksJournalEntry[]> {
     return await this.accountingRepo.getJournalEntriesByCompanyId(companyId);
   }
 
@@ -496,7 +502,9 @@ export class AccountingService implements IAccountingService {
     return vendorCredit;
   }
 
-  async getVendorCreditsByCompanyId(companyId: number): Promise<QuickBooksVendorCredit[]> {
+  async getVendorCreditsByCompanyId(
+    companyId: number,
+  ): Promise<QuickBooksVendorCredit[]> {
     return await this.accountingRepo.getVendorCreditsByCompanyId(companyId);
   }
 
@@ -508,7 +516,9 @@ export class AccountingService implements IAccountingService {
     return creditNote;
   }
 
-  async getCreditNotesByCompanyId(companyId: number): Promise<QuickBooksCreditNote[]> {
+  async getCreditNotesByCompanyId(
+    companyId: number,
+  ): Promise<QuickBooksCreditNote[]> {
     return await this.accountingRepo.getCreditNotesByCompanyId(companyId);
   }
 
@@ -520,7 +530,9 @@ export class AccountingService implements IAccountingService {
     return payment;
   }
 
-  async getPaymentsByCompanyId(companyId: number): Promise<QuickBooksPayment[]> {
+  async getPaymentsByCompanyId(
+    companyId: number,
+  ): Promise<QuickBooksPayment[]> {
     return await this.accountingRepo.getPaymentsByCompanyId(companyId);
   }
 }

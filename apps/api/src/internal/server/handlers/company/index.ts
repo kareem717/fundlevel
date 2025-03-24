@@ -4,7 +4,7 @@ import {
   getCompaniesByAccountIdRoute,
   connectQuickBooksRoute,
   quickBooksCallbackRoute,
-  getCompanyByIdRoute
+  getCompanyByIdRoute,
 } from "./route";
 import { getAccount } from "../../middleware/with-auth";
 import { getService } from "../../middleware/with-service-layer";
@@ -14,12 +14,15 @@ const companyHandler = new OpenAPIHono()
     const account = getAccount(c);
 
     if (!account) {
-      return c.json({
-        error: "Account not found.",
-      }, 401);
+      return c.json(
+        {
+          error: "Account not found.",
+        },
+        401,
+      );
     }
 
-    const input = c.req.valid('json');
+    const input = c.req.valid("json");
     const company = await getService(c).company.create(input, account.id);
 
     return c.json(company, 201);
@@ -28,9 +31,12 @@ const companyHandler = new OpenAPIHono()
     const account = getAccount(c);
 
     if (!account) {
-      return c.json({
-        error: "Account not found.",
-      }, 401);
+      return c.json(
+        {
+          error: "Account not found.",
+        },
+        401,
+      );
     }
 
     const companies = await getService(c).company.getByAccountId(account.id);
@@ -40,32 +46,40 @@ const companyHandler = new OpenAPIHono()
     const account = getAccount(c);
 
     if (!account) {
-      return c.json({
-        error: "Account not found.",
-      }, 401);
+      return c.json(
+        {
+          error: "Account not found.",
+        },
+        401,
+      );
     }
 
-    const { companyId, redirectUrl } = c.req.valid('json');
+    const { companyId, redirectUrl } = c.req.valid("json");
     const url = await getService(c).company.startQuickBooksOAuthFlow(
       companyId,
-      redirectUrl
+      redirectUrl,
     );
 
     return c.json({ url: url as string }, 200);
   })
   .openapi(quickBooksCallbackRoute, async (c) => {
-    const { realmId, code, state } = c.req.valid('query');
+    const { realmId, code, state } = c.req.valid("query");
 
     if (!realmId || !code || !state) {
-      return c.json({
-        message: `Missing required parameters: ${!realmId ? "realmId" : ""} ${!code ? "code" : ""} ${!state ? "state" : ""}`
-      }, 400);
+      return c.json(
+        {
+          message: `Missing required parameters: ${!realmId ? "realmId" : ""} ${!code ? "code" : ""} ${!state ? "state" : ""}`,
+        },
+        400,
+      );
     }
 
-    const { redirect_url } = await getService(c).company.completeQuickBooksOAuthFlow({
+    const { redirect_url } = await getService(
+      c,
+    ).company.completeQuickBooksOAuthFlow({
       realmId,
       code,
-      state
+      state,
     });
 
     return c.redirect(redirect_url);
@@ -74,18 +88,24 @@ const companyHandler = new OpenAPIHono()
     const account = getAccount(c);
 
     if (!account) {
-      return c.json({
-        error: "Account not found.",
-      }, 401);
+      return c.json(
+        {
+          error: "Account not found.",
+        },
+        401,
+      );
     }
 
-    const { companyId } = c.req.valid('param');
+    const { companyId } = c.req.valid("param");
     const company = await getService(c).company.getById(companyId);
 
     if (company.ownerId !== account.id) {
-      return c.json({
-        error: "Forbidden from managing this company",
-      }, 403);
+      return c.json(
+        {
+          error: "Forbidden from managing this company",
+        },
+        403,
+      );
     }
 
     return c.json(company, 200);

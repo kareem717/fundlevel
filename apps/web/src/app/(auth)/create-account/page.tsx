@@ -1,5 +1,10 @@
-
-import { Card, CardDescription, CardTitle, CardHeader, CardContent } from "@fundlevel/ui/components/card";
+import {
+  Card,
+  CardDescription,
+  CardTitle,
+  CardHeader,
+  CardContent,
+} from "@fundlevel/ui/components/card";
 import { CreateAccountForm } from "./components/create-account-form";
 import { currentUser } from "@clerk/nextjs/server";
 import { redirects } from "@fundlevel/web/lib/config/redirects";
@@ -8,8 +13,8 @@ import { redirect } from "next/navigation";
 export default async function CreateAccountPage() {
   const user = await currentUser();
   if (!user) {
-    console.error("User not found")
-    redirect(redirects.auth.login)
+    console.error("User not found");
+    redirect(redirects.auth.login);
   }
 
   return (

@@ -1,3 +1,3 @@
 export const bearerAuthSchema = {
-  Bearer: []
-}
+  Bearer: [],
+};
