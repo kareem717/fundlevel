@@ -5,6 +5,7 @@ export const env = createEnv({
   server: {
     NODE_ENV: z.enum(["development", "production"]),
     CLERK_SECRET_KEY: z.string(),
+    SENTRY_AUTH_TOKEN: z.string(),
   },
   client: {
     NEXT_PUBLIC_BACKEND_URL: z.string().url(),

@@ -14,6 +14,7 @@
     "@fundlevel/db": "workspace:*",
     "@fundlevel/sdk": "workspace:*",
     "@fundlevel/ui": "workspace:*",
+    "@sentry/nextjs": "^9",
     "@t3-oss/env-nextjs": "^0.11.1",
     "@tanstack/react-query": "^5.69.0",
     "date-fns": "^4.1.0",
