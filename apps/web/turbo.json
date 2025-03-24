@@ -1,0 +1,12 @@
+{
+  "extends": [
+    "//"
+  ],
+  "tasks": {
+    "build": {
+      "passThroughEnv": [
+        "CLERK_SECRET_KEY"
+      ]
+    }
+  }
+}

@@ -6,7 +6,7 @@ import {
   quickBooksCallbackRoute,
   getCompanyByIdRoute
 } from "./route";
-import { getAccount } from "../../middleware/with-account";
+import { getAccount } from "../../middleware/with-auth";
 import { getService } from "../../middleware/with-service-layer";
 
 const companyHandler = new OpenAPIHono()
@@ -51,7 +51,7 @@ const companyHandler = new OpenAPIHono()
       redirectUrl
     );
 
-    return c.json({ url }, 200);
+    return c.json({ url: url as string }, 200);
   })
   .openapi(quickBooksCallbackRoute, async (c) => {
     const { realmId, code, state } = c.req.valid('query');

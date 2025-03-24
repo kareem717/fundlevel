@@ -21,7 +21,7 @@ const notFound: Metadata = {
  * Configuration for the root layout meta content.
  */
 const root: Metadata = {
-  metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
+  metadataBase: new URL(env.NEXT_PUBLIC_LANDING_URL),
   title: {
     default: "Fundlevel",
     template: "%s | Fundlevel",

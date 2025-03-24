@@ -8,6 +8,9 @@
       ],
       "@fundlevel/ui/*": [
         "../../packages/ui/src/*"
+      ],
+      "@fundlevel/api/*": [
+        "../../apps/api/src/*"
       ]
     },
     "plugins": [

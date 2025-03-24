@@ -9,6 +9,8 @@ import { withService } from "./middleware/with-service-layer";
 import webhookHandler from "./handlers/webhook";
 import companyHandler from "./handlers/company";
 import accountingHandler from "./handlers/accounting";
+import { withAuth } from "./middleware/with-auth";
+
 export class Server {
   public readonly routes;
 
@@ -20,6 +22,9 @@ export class Server {
         DATABASE_URL: string,
         CLERK_SECRET_KEY: string,
         CLERK_PUBLISHABLE_KEY: string,
+        CLERK_PUBLIC_JWT_KEY: string,
+        WEB_URL: string,
+        APP_URL: string,
         QUICK_BOOKS_CLIENT_ID: string,
         QUICK_BOOKS_CLIENT_SECRET: string,
         QUICK_BOOKS_REDIRECT_URI: string,
@@ -56,6 +61,7 @@ export class Server {
         exposeHeaders: ["*"],
       }))
       .use("*", withService())
+      .use("*", withAuth())
 
     app.openAPIRegistry.registerComponent('securitySchemes', 'Bearer', {
       type: 'http',

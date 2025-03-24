@@ -5,6 +5,7 @@
   "scripts": {
     "build": "turbo build",
     "start": "turbo start",
+    "clean": "turbo clean && rm -rf node_modules && rm -rf pnpm-lock.yaml",
     "db:generate": "pnpm --filter @fundlevel/db db:generate",
     "db:migrate": "pnpm --filter @fundlevel/db db:migrate",
     "db:push": "pnpm --filter @fundlevel/db db:push",

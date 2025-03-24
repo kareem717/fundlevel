@@ -2,7 +2,8 @@
   "name": "@fundlevel/api",
   "scripts": {
     "dev": "sh copy_env.sh && wrangler dev",
-    "deploy": "wrangler deploy"
+    "deploy": "wrangler deploy",
+    "clean": "rm -rf node_modules"
   },
   "type": "module",
   "dependencies": {
@@ -10,7 +11,6 @@
     "@clerk/backend": "^1.25.5",
     "@fiberplane/hono": "^0.5.2",
     "@fundlevel/db": "workspace:*",
-    "@hono/clerk-auth": "^2.0.0",
     "@hono/zod-openapi": "^0.19.2",
     "ai": "^4.2.0",
     "axios": "^1.8.4",

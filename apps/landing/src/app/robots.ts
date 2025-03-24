@@ -9,6 +9,6 @@ export default function robots(): MetadataRoute.Robots {
         allow: ["/"],
       },
     ],
-    sitemap: `${env.NEXT_PUBLIC_APP_URL}/sitemap.xml`,
+    sitemap: `${env.NEXT_PUBLIC_LANDING_URL}/sitemap.xml`,
   };
 }

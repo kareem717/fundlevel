@@ -1,7 +1,17 @@
 import { z, createRoute } from '@hono/zod-openapi'
 import { unauthorizedResponse, forbiddenResponse } from '@fundlevel/api/internal/server/types/errors'
 import { bearerAuthSchema } from '@fundlevel/api/internal/server/types/security'
-import { PlaidBankAccountSchema, PlaidTransactionSchema, QuickBooksAccountSchema, QuickBooksCreditNoteSchema, QuickBooksInvoiceSchema, QuickBooksJournalEntrySchema, QuickBooksPaymentSchema, QuickBooksTransactionSchema, QuickBooksVendorCreditSchema } from '@fundlevel/db/validators'
+import {
+  PlaidBankAccountSchema,
+  PlaidTransactionSchema,
+  QuickBooksAccountSchema,
+  QuickBooksCreditNoteSchema,
+  QuickBooksInvoiceSchema,
+  QuickBooksJournalEntrySchema,
+  QuickBooksPaymentSchema,
+  QuickBooksTransactionSchema,
+  QuickBooksVendorCreditSchema
+} from '@fundlevel/db/validators'
 
 const intIdSchema = z.coerce.number().int().positive()
 const stringIdSchema = z.string().min(1)
@@ -205,7 +215,7 @@ export const getAccountingTransactionRoute = createRoute({
       description: 'Successful fetch',
       content: {
         'application/json': {
-          schema: z.any().openapi('AccountingTransaction'),
+          schema: QuickBooksTransactionSchema.openapi('Transaction'),
         },
       },
     },

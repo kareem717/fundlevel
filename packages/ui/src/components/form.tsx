@@ -16,6 +16,9 @@ import {
 import { cn } from "@fundlevel/ui/lib/utils"
 import { Label } from "@fundlevel/ui/components/label"
 
+export {useForm} from "react-hook-form"
+export { zodResolver } from "@hookform/resolvers/zod";
+
 const Form = FormProvider
 
 type FormFieldContextValue<

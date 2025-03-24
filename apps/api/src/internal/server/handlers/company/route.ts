@@ -11,7 +11,7 @@ export const createCompanyRoute = createRoute({
   tags: ['Company'],
   security: [bearerAuthSchema],
   method: 'post',
-  path: '/companies',
+  path: '/',
   request: {
     body: {
       content: {
@@ -41,7 +41,7 @@ export const getCompaniesByAccountIdRoute = createRoute({
   tags: ['Company'],
   security: [bearerAuthSchema],
   method: 'get',
-  path: '/companies',
+  path: '/',
   responses: {
     200: {
       description: 'Successful fetch',
@@ -62,7 +62,7 @@ export const connectQuickBooksRoute = createRoute({
   tags: ['Company'],
   security: [bearerAuthSchema],
   method: 'post',
-  path: '/companies/quickbooks/connect',
+  path: '/quickbooks/connect',
   request: {
     body: {
       content: {
@@ -82,12 +82,11 @@ export const connectQuickBooksRoute = createRoute({
         'application/json': {
           schema: z.object({
             url: z.string()
-          }).openapi('AuthUrlResponse'),
+          })
         },
       },
     },
     ...unauthorizedResponse,
-    ...forbiddenResponse,
   },
 })
 
@@ -96,7 +95,7 @@ export const quickBooksCallbackRoute = createRoute({
   operationId: "quickBooksCallback",
   tags: ['Company'],
   method: 'get',
-  path: '/companies/quickbooks/callback',
+  path: '/quickbooks/callback',
   request: {
     query: z.object({
       realmId: z.string().describe("The QuickBooks realm ID"),
@@ -127,7 +126,7 @@ export const getCompanyByIdRoute = createRoute({
   tags: ['Company'],
   security: [bearerAuthSchema],
   method: 'get',
-  path: '/companies/:companyId',
+  path: '/:companyId',
   request: {
     params: z.object({
       companyId: intIdSchema.describe("The ID of the company"),

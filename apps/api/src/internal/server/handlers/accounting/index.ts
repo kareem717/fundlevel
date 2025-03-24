@@ -18,8 +18,7 @@ import {
   getPaymentRoute,
   getPaymentsByCompanyIdRoute
 } from "./route";
-import { getAccount } from "../../middleware/with-account";
-import { getAuth } from "@hono/clerk-auth";
+import { getAccount } from "../../middleware/with-auth";
 import { getService } from "../../middleware/with-service-layer";
 
 const accountingHandler = new OpenAPIHono()

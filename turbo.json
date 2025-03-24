@@ -3,6 +3,7 @@
   "ui": "tui",
   "tasks": {
     "build": {
+      "passThroughEnv": ["CLERK_SECRET_KEY"],
       "dependsOn": [
         "^build"
       ],
@@ -32,6 +33,9 @@
     "dev": {
       "cache": false,
       "persistent": true
+    },
+    "clean": {
+      "cache": false
     }
   }
 }
