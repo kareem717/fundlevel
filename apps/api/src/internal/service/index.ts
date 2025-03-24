@@ -1,4 +1,4 @@
-import type { Storage } from "@/server/storage";
+import type { Storage } from "@fundlevel/api/internal/storage";
 import {
   AuthService,
   CompanyService,

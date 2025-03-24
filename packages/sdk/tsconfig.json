@@ -1,0 +1,18 @@
+{
+  "extends": "@fundlevel/typescript-config/nextjs.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@fundlevel/db/*": [
+        "./src/*"
+      ],
+    },
+    "outDir": "./dist"
+  },
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build"
+  ]
+}
