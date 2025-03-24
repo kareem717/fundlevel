@@ -1,6 +1,5 @@
 import { Account } from '@fundlevel/db/types'
 import type { Context, MiddlewareHandler } from 'hono'
-import { getCookie } from 'hono/cookie'
 import { HTTPException } from 'hono/http-exception'
 import { createClerkClient, verifyToken } from '@clerk/backend'
 import { getService } from './with-service-layer'
@@ -26,31 +25,37 @@ export const getUserId = (c: Context) => {
 
 export const withAuth = (): MiddlewareHandler => {
   return async (c, next) => {
-    const service = getService(c)
-
-    const cookies = getCookie(c);
-    const sessionCookie = cookies["__session"];
-    const authorization = c.req.header("Authorization")?.replace("Bearer ", "");
-
-    const token = sessionCookie || authorization;
-    const clerkClient = createClerkClient({
-      secretKey: env(c).CLERK_SECRET_KEY,
-      publishableKey: env(c).CLERK_PUBLISHABLE_KEY,
-    });
-
-    if (!token) {
+    const authorization = c.req.header("Authorization")
+    if (!authorization) {
       c.set('userId', null)
       c.set('account', null)
       return await next()
     }
 
-    let userId: string | null = null
+    const parsedBearer = authorization?.split("Bearer ")
+    if (authorization && parsedBearer?.length !== 2) {
+      c.get('sentry').setContext('authorization', {
+        hasAuthorization: !!authorization,
+        parsedBearer: (parsedBearer?.length && parsedBearer.length > 1) ? "Bearer [REDACTED]" : "MALFORMED",
+      })
 
+      c.get('sentry').captureMessage("Invalid authorization header", "error")
+      throw new HTTPException(400, {
+        message: "Invalid authorization header",
+      });
+    }
+
+    const clerkClient = createClerkClient({
+      secretKey: env(c).CLERK_SECRET_KEY,
+      publishableKey: env(c).CLERK_PUBLISHABLE_KEY,
+    });
+
+    let userId: string | null = null
     try {
       let verifiedToken: Awaited<ReturnType<typeof verifyToken>> | null = null
 
       try {
-        verifiedToken = await verifyToken(token, {
+        verifiedToken = await verifyToken(parsedBearer[1]!, {
           jwtKey: env(c).CLERK_PUBLIC_JWT_KEY,
           secretKey: env(c).CLERK_SECRET_KEY,
           clockSkewInMs: 120000,
@@ -61,8 +66,8 @@ export const withAuth = (): MiddlewareHandler => {
         });
       } catch (error) {
         c.get('sentry').setContext('token', {
-          hasToken: !!token,
-          token: token?.split('Bearer ').length > 1 ? "Bearer [REDACTED]" : "MALFORMED",
+          hasToken: !!parsedBearer,
+          token: (parsedBearer?.length && parsedBearer.length > 1) ? "Bearer [REDACTED]" : "MALFORMED",
         })
         c.get('sentry').captureException(error)
 
@@ -86,8 +91,8 @@ export const withAuth = (): MiddlewareHandler => {
       }
 
       c.get('sentry').setContext('token', {
-        hasToken: !!token,
-        token: token?.split('Bearer ').length > 1 ? "Bearer [REDACTED]" : "MALFORMED",
+        hasToken: !!parsedBearer,
+        token: (parsedBearer?.length && parsedBearer.length > 1) ? "Bearer [REDACTED]" : "MALFORMED",
       })
       c.get('sentry').captureException(error)
 
@@ -99,8 +104,19 @@ export const withAuth = (): MiddlewareHandler => {
     c.set('userId', userId)
 
     if (userId) {
-      const account = await service.auth.getAccountByUserId(userId)
-      c.set('account', account)
+      try {
+        const service = getService(c)
+        const account = await service.auth.getAccountByUserId(userId)
+        c.set('account', account)
+      } catch (error) {
+        c.get('sentry').setContext('account', {
+          userId: userId,
+        })
+        c.get('sentry').captureException(error)
+        throw new HTTPException(500, {
+          message: "Failed to get account.",
+        });
+      }
     } else {
       c.set('account', null)
     }
