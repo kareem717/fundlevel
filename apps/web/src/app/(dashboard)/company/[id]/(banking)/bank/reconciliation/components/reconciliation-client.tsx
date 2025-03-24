@@ -59,6 +59,7 @@ export function ReconciliationClient({
     unmatchedInvoices: string[];
   } | null>(null);
 
+
   const handleReconcile = () => {
     if (!selectedAccountId) {
       return toast.error("No account selected", {
@@ -103,11 +104,10 @@ export function ReconciliationClient({
                     tabIndex={0}
                     type="button"
                     aria-selected={selectedAccountId === account.remoteId}
-                    className={`p-4 border rounded-lg cursor-pointer transition-colors ${
-                      selectedAccountId === account.remoteId
+                    className={`p-4 border rounded-lg cursor-pointer transition-colors ${selectedAccountId === account.remoteId
                         ? "border-primary bg-primary/5"
                         : "hover:border-primary/50"
-                    }`}
+                      }`}
                   >
                     <div className="flex items-center gap-2">
                       <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-medium">
