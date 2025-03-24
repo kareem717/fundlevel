@@ -11,8 +11,10 @@ import { Button } from "@fundlevel/ui/components/button";
 import { cn } from "@fundlevel/ui/lib/utils";
 import { ModeToggle } from "./mode-toggle";
 import { Menu } from "lucide-react";
-import { BetaRequestLink } from "./beta-request-link";
 import { LogoIcon } from "./icons";
+import { env } from "@fundlevel/landing/env";
+import Link from "next/link";
+import { buttonVariants } from "@fundlevel/ui/components/button";
 
 interface HeaderProps extends ComponentPropsWithoutRef<"header"> {
   config: NavigationItem[];
@@ -77,7 +79,14 @@ export function Header({
         />
         <div className="flex-row items-center justify-end gap-4 hidden lg:flex">
           <ModeToggle />
-          <BetaRequestLink>Get Started</BetaRequestLink>
+          <Link
+            href={env.NEXT_PUBLIC_WEB_URL}
+            className={cn(
+              buttonVariants({ variant: "default" }),
+              "w-full",
+            )}
+          >
+            Get Started</Link>
         </div>
         <div className="flex flex-row items-center justify-end gap-1 lg:hidden">
           <ModeToggle />
@@ -104,7 +113,15 @@ export function Header({
             <p className="text-sm leading-tight text-muted-foreground">
               The best way to manage your investments.
             </p>
-            <BetaRequestLink className="w-full">Get Started</BetaRequestLink>
+            <Link
+              href={env.NEXT_PUBLIC_WEB_URL}
+              className={cn(
+                buttonVariants({ variant: "default" }),
+                "w-full",
+              )}
+            >
+              Get Started
+            </Link>
           </div>
         </div>
       )}

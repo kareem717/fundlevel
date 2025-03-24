@@ -12,6 +12,7 @@ import type {
   IAccountingService,
 } from "./interfaces";
 import type { QuickBooksConfig, PlaidConfig } from "./implementations/company";
+
 export class Service {
   readonly auth: IAuthService;
   readonly company: ICompanyService;

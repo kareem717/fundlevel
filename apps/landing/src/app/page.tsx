@@ -6,7 +6,6 @@ import { NewsletterSubscribeForm } from "@fundlevel/landing/components/newslette
 import { cn } from "@fundlevel/ui/lib/utils";
 import Image from "next/image";
 import Balancer from "react-wrap-balancer";
-import { BetaRequestLink } from "@fundlevel/landing/components/beta-request-link";
 import {
   Accordion,
   AccordionContent,
@@ -17,6 +16,7 @@ import { contact } from "@fundlevel/landing/lib/config/company";
 import { env } from "@fundlevel/landing/env";
 import Link from "next/link";
 import { HeroBadge } from "@fundlevel/landing/components/hero-badge";
+import { buttonVariants } from "@fundlevel/ui/components/button";
 
 const { services, hero, features } = copy.landing;
 
@@ -92,7 +92,7 @@ const faqs = [
           limited number of businesses. If you are interested as either an
           investor or business, please{" "}
           <Link
-            href={env.NEXT_PUBLIC_BETA_REQUEST_LINK}
+            href={env.NEXT_PUBLIC_WEB_URL}
             className="text-primary underline"
             aria-label="Click here to get started"
           >
@@ -116,7 +116,7 @@ export default async function Home() {
         id="hero"
       >
         <HeroBadge
-          href={env.NEXT_PUBLIC_BETA_REQUEST_LINK}
+          href={env.NEXT_PUBLIC_WEB_URL}
           text="New! Private Beta"
           icon={<Megaphone className="h-4 w-4" />}
           endIcon={<ChevronRight className="h-4 w-4" />}
@@ -129,10 +129,16 @@ export default async function Home() {
           <p className="mx-auto text-sm md:text-lg md:w-2/3 text-muted-foreground font-light">
             {hero.description}
           </p>
-          <BetaRequestLink className="md:w-4/5 max-w-2xl w-full" size="lg">
+          <Link
+            href={env.NEXT_PUBLIC_WEB_URL}
+            className={cn(
+              buttonVariants({ variant: "default" }),
+              "md:w-4/5 max-w-2xl w-full",
+            )}
+          >
             <ChartLine className="mr-2 size-4" />
             Join now
-          </BetaRequestLink>
+          </Link>
         </div>
         {/* //TODO: Image is a huge SEO cost. maybe cause of svg format or priority tag? */}
         <Image

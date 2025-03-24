@@ -25,6 +25,7 @@ export const getAccountCached = cache(async (token: string) => {
     case 404:
       return null
     default:
+      console.error(resp)
       throw new Error("Failed to fetch account, status: " + status)
   }
 })
