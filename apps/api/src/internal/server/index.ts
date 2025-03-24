@@ -10,7 +10,7 @@ import webhookHandler from "./handlers/webhook";
 import companyHandler from "./handlers/company";
 import accountingHandler from "./handlers/accounting";
 import { withAuth } from "./middleware/with-auth";
-
+import { withSentry } from "./middleware/with-sentry";
 export class Server {
   public readonly routes;
 
@@ -33,6 +33,7 @@ export class Server {
         PLAID_SECRET: string,
         PLAID_WEBHOOK_URL: string,
         PLAID_ENVIRONMENT: "sandbox" | "production",
+        SENTRY_DSN: string,
       }
     }>({
       defaultHook: (result, c) => {
@@ -49,7 +50,10 @@ export class Server {
       },
     })
 
+
+
     app
+      .use("*", withSentry())
       .use("*", logger())
       .use("*", prettyJSON())
       .use("*", secureHeaders())
@@ -79,12 +83,12 @@ export class Server {
     })
 
     this.routes = app.route("/auth", authHandler)
-    .route("/webhook", webhookHandler)
-    .route("/company", companyHandler)
-    .route("/accounting", accountingHandler)
+      .route("/webhook", webhookHandler)
+      .route("/company", companyHandler)
+      .route("/accounting", accountingHandler)
 
 
-    //! It is important to mount Fiberplane’s middleware after all of your route definitions.
+    //! It is important to mount Fiberplane's middleware after all of your route definitions.
     app.use(
       "/docs/*",
       createFiberplane({

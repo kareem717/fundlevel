@@ -34,8 +34,8 @@ export const withAuth = (): MiddlewareHandler => {
 
     const token = sessionCookie || authorization;
     const clerkClient = createClerkClient({
-      secretKey: c.env.CLERK_SECRET_KEY,
-      publishableKey: c.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
+      secretKey: env(c).CLERK_SECRET_KEY,
+      publishableKey: env(c).CLERK_PUBLISHABLE_KEY,
     });
 
     if (!token) {
@@ -60,11 +60,16 @@ export const withAuth = (): MiddlewareHandler => {
           ],
         });
       } catch (error) {
+        c.get('sentry').setContext('token', {
+          hasToken: !!token,
+          token: token?.split('Bearer ').length > 1 ? "Bearer [REDACTED]" : "MALFORMED",
+        })
+        c.get('sentry').captureException(error)
+
         throw new HTTPException(500, {
           message: "Failed to verify token.",
         });
       }
-
 
       if (!verifiedToken) {
         throw new HTTPException(401, {
@@ -79,6 +84,12 @@ export const withAuth = (): MiddlewareHandler => {
       if (error instanceof HTTPException) {
         throw error;
       }
+
+      c.get('sentry').setContext('token', {
+        hasToken: !!token,
+        token: token?.split('Bearer ').length > 1 ? "Bearer [REDACTED]" : "MALFORMED",
+      })
+      c.get('sentry').captureException(error)
 
       throw new HTTPException(500, {
         message: "Failed to verify token.",
