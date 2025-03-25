@@ -1,0 +1,64 @@
+---
+description: Describes how to write interfaces for the storage layer
+globs: 
+alwaysApply: false
+---
+# General
+* Should not define private methods
+* Should always include doc strings
+
+# Docstrings
+* Should be kept minimal
+* Only describe parameters that are non-intuative
+* Only add examples for non-intuative methods
+* Only add long descriptions for non-intuative methods
+
+# Parameter definitions
+* Should minimize the use of object parameters, opting for parmaters that can easily be explained using doc strings
+* Parent foreign-key params (i.e. `userId` on a `Account`, where a account belongs to a `user`) should be a sperate parameter.
+    * For example:
+    ```js
+      create(accountParams: CreateAccountParams, userId: number): Promise<Account>;
+    ```
+
+# Output definitionsa
+* Array fetches should always have an array output, simply returning a empty array if no records are found
+* Utilize [types.ts](mdc:packages/db/src/types.ts) and [validators.ts](mdc:packages/db/src/validators.ts)
+* Single object (non-array) fetches should always have a nullable output, i.e.:
+```js
+Get(id:number): Promise<Thing | null>
+```
+* Create, update, and deletes should return the mutated object
+  * For example:
+    ```js
+      delete(id: number): Promise<Account>;
+    ```
+
+# Naming conventions
+* Interface names should be prefixed with a `I`, i.e. `ICompanyRepository`.
+* Method names should account for the context of the repository.
+    * For example, when trying to implement a get method (get via primary-key to be specific) on some `ICompanyRepository`:
+        * Wrong implementaion
+        ```js
+        // - Over specific name
+        GetCompanyById(id: number): Promise<Company | null>
+
+        // - Over specific name
+        // - Non specific parameter names
+        GetCompanyEmployees(id: number): Promise<Employee[]>
+
+        // - Name doesn't specifcy we are talking about the accountId field on the Company record
+        GetCompanyByAccount(accountId: number): Promise<Company | null>
+        ```
+        * Correct implementaion
+        ```js
+         // - Uses parameter names to describe get-by key
+         // - Brief parameter names since we know it HAS to relate to the company entitity
+        Get(id: number): Promise<Company | null>
+
+        // - Describes get-by key since there is more that one option (i.e. company id or employee id)
+        // - We already know that we are getting the company's employees. 
+        GetEmployees(companyId: number): Promise<Employee[]>
+
+        GetCompanyByAccountId(accountId: number): Promise<Company | null>
+        ```
