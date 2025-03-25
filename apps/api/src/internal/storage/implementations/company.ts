@@ -15,7 +15,7 @@ import {
 } from "@fundlevel/db/schema";
 import { and, eq, like } from "drizzle-orm";
 import { SyncJobType } from "../interfaces";
-import { IDB } from "..";
+import type { IDB } from "../index";
 
 export class CompanyRepository implements ICompanyRepository {
   constructor(private readonly db: IDB) {}
@@ -24,7 +24,7 @@ export class CompanyRepository implements ICompanyRepository {
     type: SyncJobType,
     companyId: number,
   ): Promise<Company> {
-    let column;
+    let column: string;
 
     switch (type) {
       case SyncJobType.QUICKBOOKS_INVOICES:

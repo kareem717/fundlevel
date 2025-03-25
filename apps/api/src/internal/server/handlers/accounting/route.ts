@@ -71,6 +71,37 @@ export const getBankAccountRoute = createRoute({
   },
 });
 
+export const getBankAccountTransactionDetailsRoute = createRoute({
+  summary: "Get bank account transaction details",
+  operationId: "getBankAccountTransactionDetails",
+  tags: ["Accounting"],
+  security: [bearerAuthSchema],
+  method: "get",
+  path: "/bank-accounts/:bankAccountId/transaction-details",
+  request: {
+    params: z.object({
+      bankAccountId: stringIdSchema.describe("The ID of the bank account"),
+    }),
+  },
+  responses: {
+    200: {
+      description: "Successful fetch",
+      content: {
+        "application/json": {
+          schema: z.object({
+            totalVolume: z.number(),
+            accountedAmount: z.number(),
+            unaccountedAmount: z.number(),
+            unaccountedPercentage: z.number(),
+          }),
+        },
+      },
+    },
+    ...unauthorizedResponse,
+    ...forbiddenResponse,
+  },
+});
+
 export const getTransactionsByBankAccountIdRoute = createRoute({
   summary: "Get transactions by bank account ID",
   operationId: "getTransactionsByBankAccountId",

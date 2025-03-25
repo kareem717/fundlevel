@@ -29,12 +29,12 @@ import {
   quickBooksPayments,
   quickBooksTransactions,
   quickBooksVendorCredits,
+  transactionRelationships,
 } from "@fundlevel/db/schema";
 import type { DB, Transaction } from "@fundlevel/db";
 import { eq, inArray, sql } from "drizzle-orm";
-import { CreateQuickBooksVendorCreditParamsSchema } from "@fundlevel/db/validators";
 export class AccountingRepository implements IAccountingRepository {
-  constructor(private db: DB | Transaction) {}
+  constructor(private db: DB | Transaction) { }
 
   async upsertBankAccount(
     bankAccounts: CreatePlaidBankAccountParams[],
@@ -199,16 +199,6 @@ export class AccountingRepository implements IAccountingRepository {
     if (!data.length) {
       throw new Error("Failed to create/update invoices");
     }
-
-    return data;
-  }
-
-  async getInvoiceById(id: number): Promise<QuickBooksInvoice | undefined> {
-    const [data] = await this.db
-      .select()
-      .from(quickBooksInvoices)
-      .where(eq(quickBooksInvoices.id, id))
-      .limit(1);
 
     return data;
   }
@@ -388,19 +378,6 @@ export class AccountingRepository implements IAccountingRepository {
 
     return data;
   }
-
-  async getJournalEntryById(
-    id: number,
-  ): Promise<QuickBooksJournalEntry | undefined> {
-    const [data] = await this.db
-      .select()
-      .from(quickBooksJournalEntries)
-      .where(eq(quickBooksJournalEntries.id, id))
-      .limit(1);
-
-    return data;
-  }
-
   async getJournalEntriesByCompanyId(
     companyId: number,
   ): Promise<QuickBooksJournalEntry[]> {
@@ -620,12 +597,45 @@ export class AccountingRepository implements IAccountingRepository {
   }
 
   async getInvoice(id: number): Promise<QuickBooksInvoice | undefined> {
-    return this.getInvoiceById(id);
+    const [data] = await this.db
+      .select()
+      .from(quickBooksInvoices)
+      .where(eq(quickBooksInvoices.id, id))
+      .limit(1);
+
+    return data;
   }
 
   async getJournalEntry(
     id: number,
   ): Promise<QuickBooksJournalEntry | undefined> {
-    return this.getJournalEntryById(id);
+    const [data] = await this.db
+      .select()
+      .from(quickBooksJournalEntries)
+      .where(eq(quickBooksJournalEntries.id, id))
+      .limit(1);
+
+    return data;
+  }
+
+  async getBankAccountTransactionDetails(
+    bankAccountId: string,
+  ) {
+    const [transactions] = await this.db
+      .select({
+        totalVolume: sql<number>`sum(${plaidTransactions.amount})`,
+        accountedAmount: sql<number>`sum(${plaidTransactions.amount}) filter (where ${transactionRelationships.transactionId} is not null)`,
+        unaccountedAmount: sql<number>`sum(${plaidTransactions.amount}) filter (where ${transactionRelationships.transactionId} is null)`,
+      })
+      .from(plaidTransactions)
+      .leftJoin(transactionRelationships, eq(plaidTransactions.remoteId, transactionRelationships.plaidTransactionId))
+      .where(eq(plaidTransactions.bankAccountId, bankAccountId))
+      .groupBy(plaidTransactions.bankAccountId);
+
+    if (!transactions) {
+      return null;
+    }
+
+    return transactions;
   }
 }

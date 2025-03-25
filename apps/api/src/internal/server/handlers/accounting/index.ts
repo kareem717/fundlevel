@@ -17,6 +17,7 @@ import {
   getCreditNotesByCompanyIdRoute,
   getPaymentRoute,
   getPaymentsByCompanyIdRoute,
+  getBankAccountTransactionDetailsRoute,
 } from "./route";
 import { getAccount } from "../../middleware/with-auth";
 import { getService } from "../../middleware/with-service-layer";
@@ -532,6 +533,24 @@ const accountingHandler = new OpenAPIHono()
       await getService(c).accounting.getPaymentsByCompanyId(companyId);
 
     return c.json(payments, 200);
+  })
+  .openapi(getBankAccountTransactionDetailsRoute, async (c) => {
+    const account = getAccount(c);
+
+    if (!account) {
+      return c.json(
+        {
+          error: "Account not found.",
+        },
+        401,
+      );
+    }
+
+    const { bankAccountId } = c.req.valid("param");
+
+    const details = await getService(c).accounting.getBankAccountTransactionDetails(bankAccountId);
+
+    return c.json(details, 200);
   });
 
 export default accountingHandler;

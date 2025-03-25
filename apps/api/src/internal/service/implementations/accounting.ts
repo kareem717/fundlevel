@@ -441,7 +441,7 @@ export class AccountingService implements IAccountingService {
     }
   }
   async getInvoice(invoiceId: number): Promise<Invoice> {
-    const invoice = await this.accountingRepo.getInvoiceById(invoiceId);
+    const invoice = await this.accountingRepo.getInvoice(invoiceId);
     if (!invoice) {
       throw new Error(`Invoice not found: ${invoiceId}`);
     }
@@ -481,7 +481,7 @@ export class AccountingService implements IAccountingService {
   }
 
   async getJournalEntry(id: number): Promise<QuickBooksJournalEntry> {
-    const journalEntry = await this.accountingRepo.getJournalEntryById(id);
+    const journalEntry = await this.accountingRepo.getJournalEntry(id);
     if (!journalEntry) {
       throw new Error(`Journal entry not found: ${id}`);
     }
@@ -534,5 +534,26 @@ export class AccountingService implements IAccountingService {
     companyId: number,
   ): Promise<QuickBooksPayment[]> {
     return await this.accountingRepo.getPaymentsByCompanyId(companyId);
+  }
+
+  async getBankAccountTransactionDetails(
+    bankAccountId: string,
+  ) {
+    const details = await this.accountingRepo.getBankAccountTransactionDetails(bankAccountId);
+
+    if (!details) {
+      console.log(`No details found for bank account ${bankAccountId}`);
+      return {
+        totalVolume: 0,
+        accountedAmount: 0,
+        unaccountedAmount: 0,
+        unaccountedPercentage: 100,
+      };
+    }
+
+    return {
+      ...details,
+      unaccountedPercentage: Math.round(((details.totalVolume - details.unaccountedAmount) / details.totalVolume) * 100),
+    };
   }
 }

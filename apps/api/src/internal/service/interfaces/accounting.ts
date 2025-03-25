@@ -9,6 +9,7 @@ import type {
   QuickBooksCreditNote,
   QuickBooksJournalEntry,
 } from "@fundlevel/db/types";
+import type { BankAccountTransactionDetails } from "@fundlevel/api/internal/entities";
 
 /**
  * Report header information
@@ -175,4 +176,8 @@ export interface IAccountingService {
 
   getPaymentsByCompanyId(companyId: number): Promise<QuickBooksPayment[]>;
   getPayment(id: number): Promise<QuickBooksPayment>;
+
+  getBankAccountTransactionDetails(
+    bankAccountId: string,
+  ): Promise<BankAccountTransactionDetails>;
 }

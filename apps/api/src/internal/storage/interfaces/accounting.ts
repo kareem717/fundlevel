@@ -18,6 +18,7 @@ import type {
   QuickBooksVendorCredit,
   CreateQuickBooksVendorCreditParams,
 } from "@fundlevel/db/types";
+import type { BankAccountTransactionDetails } from "@fundlevel/api/internal/entities";
 
 export interface IAccountingRepository {
   // Plaid Bank Account methods
@@ -32,6 +33,9 @@ export interface IAccountingRepository {
     bankAccount: Partial<CreatePlaidBankAccountParams>,
   ): Promise<PlaidBankAccount>;
   deleteBankAccount(remoteId: string): Promise<void>;
+  getBankAccountTransactionDetails(
+    bankAccountId: string,
+  ): Promise<Omit<BankAccountTransactionDetails, "unaccountedPercentage"> | null>;
 
   // Plaid Transaction methods
   upsertTransaction(
@@ -49,7 +53,6 @@ export interface IAccountingRepository {
     invoice: CreateQuickBooksInvoiceParams[],
     companyId: number,
   ): Promise<QuickBooksInvoice[]>;
-  getInvoiceById(id: number): Promise<QuickBooksInvoice | undefined>;
   getInvoicesByCompanyId(companyId: number): Promise<QuickBooksInvoice[]>;
   deleteInvoiceByRemoteId(remoteId: string | string[]): Promise<void>;
 
@@ -76,7 +79,6 @@ export interface IAccountingRepository {
     journalEntry: CreateQuickBooksJournalEntryParams[],
     companyId: number,
   ): Promise<QuickBooksJournalEntry[]>;
-  getJournalEntryById(id: number): Promise<QuickBooksJournalEntry | undefined>;
   getJournalEntriesByCompanyId(
     companyId: number,
   ): Promise<QuickBooksJournalEntry[]>;
