@@ -6,6 +6,7 @@ export const env = createEnv({
     NODE_ENV: z.enum(["development", "production"]),
     CLERK_SECRET_KEY: z.string(),
     SENTRY_AUTH_TOKEN: z.string(),
+    SENTRY_ENVIRONMENT: z.enum(["development", "staging", "production"]),
   },
   client: {
     NEXT_PUBLIC_BACKEND_URL: z.string().url(),

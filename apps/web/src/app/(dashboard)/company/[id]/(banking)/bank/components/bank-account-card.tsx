@@ -9,15 +9,17 @@ import {
 import { Badge } from "@fundlevel/ui/components/badge";
 import { AlertCircle, ArrowUpDown, DollarSign } from "lucide-react";
 import type { ComponentPropsWithoutRef } from "react";
-import { PlaidBankAccount } from "@fundlevel/db/types";
+import type { PlaidBankAccount } from "@fundlevel/db/types";
 import { cn } from "@fundlevel/ui/lib/utils";
-
+import { useAuth } from "@fundlevel/web/components/providers/auth-provider";
+import { useQuery } from "@tanstack/react-query";
+import { client } from "@fundlevel/sdk";
+import { env } from "@fundlevel/web/env";
+import { Skeleton } from "@fundlevel/ui/components/skeleton";
+import { Button } from "@fundlevel/ui/components/button";
+import { RefreshCcw } from "lucide-react";
 interface BankAccountCardProps extends ComponentPropsWithoutRef<typeof Card> {
-  account: PlaidBankAccount & {
-    inFundlevel: number;
-    unReconciled: number;
-    totalTransactionVolume: number;
-  };
+  account: PlaidBankAccount
 }
 
 export function BankAccountCard({
@@ -25,21 +27,33 @@ export function BankAccountCard({
   className,
   ...props
 }: BankAccountCardProps) {
-  const formattedBalance = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: account.isoCurrencyCode || "USD",
-  }).format(account.currentBalance || 0);
+  const { authToken } = useAuth();
+  if (!authToken) {
+    throw new Error("No auth token found");
+  }
 
-  const classificationPercentage =
-    Math.round(
-      ((account.totalTransactionVolume - account.unReconciled) /
-        account.totalTransactionVolume) *
-        100,
-    ) || 0;
+  const { data: details, isPending, refetch, isRefetching } = useQuery({
+    queryKey: ["bank-account-transaction-details", account.remoteId],
+    queryFn: async () => {
+      const resp = await client(env.NEXT_PUBLIC_BACKEND_URL, authToken).accounting["bank-accounts"][":bankAccountId"]["transaction-details"].$get({ param: { bankAccountId: account.remoteId } });
+      if (!resp.ok) {
+        throw new Error("Failed to fetch bank account transaction details");
+      }
+
+      return await resp.json();
+    },
+    staleTime: Number.POSITIVE_INFINITY,
+  });
+
+  const unaccountedPercentage = details?.unaccountedPercentage || 0;
+  const unaccountedAmount = details?.unaccountedAmount || 0;
+  const totalVolume = details?.totalVolume || 0;
+  const accountedAmount = details?.accountedAmount || 0;
+  const isLoading = isPending || isRefetching;
 
   return (
-    <Card className={cn("overflow-hidden", className)} {...props}>
-      <CardHeader className="pb-2">
+    <Card className={cn("overflow-hidden relative", className)} {...props}>
+      <CardHeader>
         <div className="flex items-start justify-between">
           <div>
             <CardTitle className="text-xl font-bold">{account.name}</CardTitle>
@@ -48,106 +62,119 @@ export function BankAccountCard({
               {account.mask ? `••••${account.mask}` : ""}
             </CardDescription>
           </div>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => refetch()}
+            disabled={isLoading}
+          >
+            <RefreshCcw className={cn("h-4 w-4", isLoading && "animate-spin")} />
+          </Button>
         </div>
       </CardHeader>
-      <CardContent>
-        <div className="flex flex-col space-y-4">
-          <div>
-            <div className="text-sm text-muted-foreground">Current Balance</div>
-            <div className="text-2xl font-bold">{formattedBalance}</div>
-            <div className="text-xs text-muted-foreground mt-1">
-              Last updated:{" "}
-              {account.updatedAt
-                ? new Date(account.updatedAt).toLocaleString()
-                : "N/A"}
+      <CardContent className="mb-12 h-full flex flex-col justify-between gap-8">
+        <div>
+          <div className="text-sm text-muted-foreground">Current Balance</div>
+          <div className="text-2xl font-bold">{Intl.NumberFormat("en-US", {
+            style: "currency",
+            currency: account.isoCurrencyCode || "USD",
+          }).format(account.currentBalance || 0)}</div>
+          <div className="text-xs text-muted-foreground mt-1">
+            Last updated:{" "}
+            {account.updatedAt
+              ? new Date(account.updatedAt).toLocaleString()
+              : "N/A"}
+          </div>
+        </div>
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <ArrowUpDown className="h-4 w-16 text-muted-foreground" />
+              <span className="text-sm">Total Transaction Volume</span>
             </div>
+            {isLoading ? (
+              <Skeleton className="h-4 w-16" />
+            ) : (
+              <Badge variant="outline" className="font-mono">
+                {new Intl.NumberFormat("en-US", {
+                  style: "currency",
+                  currency: account.isoCurrencyCode || "USD",
+                }).format(totalVolume)}
+              </Badge>
+            )}
           </div>
 
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <ArrowUpDown className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm">Total Transaction Volume</span>
-              </div>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <DollarSign className="h-4 w-16 text-muted-foreground" />
+              <span className="text-sm">In Fundlevel</span>
+            </div>
+            {isLoading ? (
+              <Skeleton className="h-4 w-16" />
+            ) : (
               <Badge variant="outline" className="font-mono">
                 {new Intl.NumberFormat("en-US", {
                   style: "currency",
                   currency: account.isoCurrencyCode || "USD",
-                }).format(account.totalTransactionVolume)}
+                }).format(accountedAmount)}
               </Badge>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <DollarSign className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm">In Fundlevel</span>
-              </div>
-              <Badge variant="outline" className="font-mono">
-                {new Intl.NumberFormat("en-US", {
-                  style: "currency",
-                  currency: account.isoCurrencyCode || "USD",
-                }).format(account.inFundlevel)}
-              </Badge>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <AlertCircle className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm">Unreconciled</span>
-              </div>
-              <Badge variant="outline" className="font-mono">
-                {new Intl.NumberFormat("en-US", {
-                  style: "currency",
-                  currency: account.isoCurrencyCode || "USD",
-                }).format(account.unReconciled)}
-              </Badge>
-            </div>
+            )}
           </div>
 
-          <div>
-            <div className="flex items-center justify-between mb-1">
-              <span className="text-sm">Reconciliation Progress</span>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <AlertCircle className="h-4 w-16 text-muted-foreground" />
+              <span className="text-sm">Unreconciled</span>
+            </div>
+            {isLoading ? (
+              <Skeleton className="h-4 w-16" />
+            ) : (
+              <Badge variant="outline" className="font-mono">
+                {new Intl.NumberFormat("en-US", {
+                  style: "currency",
+                  currency: account.isoCurrencyCode || "USD",
+                }).format(unaccountedAmount)}
+              </Badge>
+            )}
+          </div>
+        </div>
+        <div>
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-sm">Reconciliation Progress</span>
+            {isLoading ? (
+              <Skeleton className="h-4 w-4" />
+            ) : (
               <span className="text-xs font-medium">
-                {classificationPercentage}%
+                {unaccountedPercentage}%
               </span>
-            </div>
-            <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
+            )}
+          </div>
+          <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
+            {isLoading ? (
+              <Skeleton className="h-2 w-full" />
+            ) : (
               <div
                 className={cn(
                   "h-full rounded-full",
-                  classificationPercentage < 50
+                  unaccountedPercentage < 50
                     ? "bg-destructive"
-                    : classificationPercentage < 80
+                    : unaccountedPercentage < 80
                       ? "bg-amber-500"
                       : "bg-emerald-500",
                 )}
-                style={{ width: `${classificationPercentage}%` }}
+                style={{ width: `${unaccountedPercentage}%` }}
               />
-            </div>
-            {account.unReconciled > 0 && (
-              <div className="flex items-center gap-1 mt-2 text-xs text-destructive">
-                <AlertCircle className="h-3 w-3" />
-                <span>
-                  {new Intl.NumberFormat("en-US", {
-                    currency: account.isoCurrencyCode || "USD",
-                    style: "currency",
-                  }).format(account.unReconciled)}{" "}
-                  needs reconciliation
-                </span>
-              </div>
             )}
           </div>
         </div>
       </CardContent>
-      <CardFooter className="border-t bg-muted/50 px-6 py-3">
-        <div className="flex items-center justify-between w-full">
-          <span className="text-xs text-muted-foreground">
-            Account Type: {account.type}
-          </span>
-          <span className="text-xs font-medium">
-            Subtype: {account.subtype}
-          </span>
-        </div>
+      <CardFooter className="borde r-t bg-muted/50 px-6 py-3 absolute bottom-0 w-full h-12 flex items-center justify-between">
+        <span className="text-xs text-muted-foreground">
+          Account Type: {account.type}
+        </span>
+        <span className="text-xs font-medium">
+          Subtype: {account.subtype}
+        </span>
       </CardFooter>
     </Card>
   );

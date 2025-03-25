@@ -33,6 +33,7 @@ export class Server {
         PLAID_WEBHOOK_URL: string;
         PLAID_ENVIRONMENT: "sandbox" | "production";
         SENTRY_DSN: string;
+        SENTRY_ENVIRONMENT: "development" | "staging" | "production";
       };
     }>({
       defaultHook: (result, c) => {
@@ -56,7 +57,7 @@ export class Server {
       .use("*", secureHeaders())
       .use(
         cors({
-          origin: ["http://localhost:3000", "https://app.fundlevel.co", "*"],
+          origin: [env(c).WEB_URL, env(c).APP_URL],
           allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
           allowHeaders: ["Content-Type", "Authorization", "x-is-superjson"],
           credentials: true,
