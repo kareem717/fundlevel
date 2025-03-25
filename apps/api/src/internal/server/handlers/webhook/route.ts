@@ -6,7 +6,7 @@ export const plaidWebhookRoute = createRoute({
   operationId: "handlePlaidWebhook",
   tags: ["webhooks"],
   method: "post",
-  path: "/webhooks/plaid",
+  path: "/plaid",
   request: {
     body: {
       content: {
@@ -55,7 +55,7 @@ export const quickBooksWebhookRoute = createRoute({
   operationId: "handleQuickBooksWebhook",
   tags: ["webhooks"],
   method: "post",
-  path: "/webhooks/quick-books",
+  path: "/quick-books",
   request: {
     headers: z.object({
       "intuit-signature": z.string().openapi({

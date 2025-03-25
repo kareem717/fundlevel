@@ -83,7 +83,7 @@ export class Server {
 
     this.routes = app
       .route("/auth", authHandler)
-      .route("/webhook", webhookHandler)
+      .route("/webhooks", webhookHandler)
       .route("/company", companyHandler)
       .route("/accounting", accountingHandler);
 
