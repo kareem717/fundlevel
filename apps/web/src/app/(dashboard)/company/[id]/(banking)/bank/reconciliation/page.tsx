@@ -13,10 +13,12 @@ export default async function ReconciliationPage({
 
   const token = await getTokenCached();
   if (!token) {
-    return redirect(redirects.auth.login)
+    return redirect(redirects.auth.login);
   }
 
-  const req = await client(env.NEXT_PUBLIC_BACKEND_URL, token).accounting["bank-accounts"].company[":companyId"].$get({ param: { companyId } });
+  const req = await client(env.NEXT_PUBLIC_BACKEND_URL, token).accounting[
+    "bank-accounts"
+  ].company[":companyId"].$get({ param: { companyId } });
   if (!req.ok) {
     throw new Error("Failed to fetch bank accounts");
   }

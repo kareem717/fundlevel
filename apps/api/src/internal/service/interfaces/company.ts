@@ -19,7 +19,7 @@ export interface ICompanyService {
   }: {
     companyId: number;
   }): Promise<string>;
-  createPlaidCredentials(params: {
+  swapPlaidPublicToken(params: {
     companyId: number;
     publicToken: string;
   }): Promise<PlaidCredential>;

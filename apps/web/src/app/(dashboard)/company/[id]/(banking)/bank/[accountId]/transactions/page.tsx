@@ -8,13 +8,17 @@ export default async function BankAccountTransactionsPage({
   params,
 }: { params: Promise<{ id: string; accountId: string }> }) {
   const { accountId } = await params;
-  
-  const token = await getTokenCached()
+
+  const token = await getTokenCached();
   if (!token) {
-    return redirect(redirects.auth.login)
+    return redirect(redirects.auth.login);
   }
 
-  const req = await client(env.NEXT_PUBLIC_BACKEND_URL, token).accounting["bank-accounts"][":bankAccountId"].transactions.$get({ param: { bankAccountId: accountId } });
+  const req = await client(env.NEXT_PUBLIC_BACKEND_URL, token).accounting[
+    "bank-accounts"
+  ][":bankAccountId"].transactions.$get({
+    param: { bankAccountId: accountId },
+  });
   if (!req.ok) {
     throw new Error("Failed to fetch transactions");
   }

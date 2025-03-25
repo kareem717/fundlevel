@@ -2,6 +2,7 @@ import { z, createRoute } from "@hono/zod-openapi";
 import {
   unauthorizedResponse,
   forbiddenResponse,
+  notFoundResponse,
 } from "@fundlevel/api/internal/server/types/errors";
 import { bearerAuthSchema } from "@fundlevel/api/internal/server/types/security";
 import {
@@ -153,5 +154,65 @@ export const getCompanyByIdRoute = createRoute({
     },
     ...unauthorizedResponse,
     ...forbiddenResponse,
+  },
+});
+
+export const createPlaidLinkTokenRoute = createRoute({
+  summary: "Create a Plaid link token",
+  operationId: "createPlaidLinkToken",
+  tags: ["Company"],
+  security: [bearerAuthSchema],
+  method: "post",
+  path: "/:companyId/plaid/link-token",
+  request: {
+    params: z.object({
+      companyId: intIdSchema.describe("The ID of the company"),
+    }),
+  },
+  responses: {
+    200: {
+      description: "Plaid link token created successfully",
+      content: {
+        "application/json": {
+          schema: z.object({
+            linkToken: z.string(),
+          }),
+        },
+      },
+    },
+    ...unauthorizedResponse,
+    ...forbiddenResponse,
+    ...notFoundResponse,
+  },
+});
+
+export const swapPlaidPublicTokenRoute = createRoute({
+  summary: "Swap a Plaid public token",
+  operationId: "swapPlaidPublicToken",
+  tags: ["Company"],
+  security: [bearerAuthSchema],
+  method: "post",
+  path: "/:companyId/plaid/public-token",
+  request: {
+    params: z.object({
+      companyId: intIdSchema.describe("The ID of the company"),
+    }),
+    body: {
+      content: {
+        "application/json": {
+          schema: z.object({
+            publicToken: z.string().describe("The Plaid public token"),
+          }),
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: "Plaid public token swapped successfully",
+    },
+    ...unauthorizedResponse,
+    ...forbiddenResponse,
+    ...notFoundResponse,
   },
 });

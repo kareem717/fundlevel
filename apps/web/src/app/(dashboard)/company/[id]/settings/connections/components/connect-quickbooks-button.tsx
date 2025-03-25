@@ -11,21 +11,22 @@ import { client } from "@fundlevel/sdk";
 import { useAuth } from "@fundlevel/web/components/providers/auth-provider";
 import { redirects } from "@fundlevel/web/lib/config/redirects";
 import { env } from "@fundlevel/web/env";
+import { QuickBooksIcon } from "@fundlevel/web/components/icons";
 
-interface LinkQuickBooksButtonProps
+interface ConnectQuickBooksButtonProps
   extends ComponentPropsWithoutRef<typeof Button> {
   companyId: number;
 }
 
-export function LinkQuickBooksButton({
+export function ConnectQuickBooksButton({
   className,
   companyId,
   ...props
-}: LinkQuickBooksButtonProps) {
+}: ConnectQuickBooksButtonProps) {
   const router = useRouter();
   const { authToken } = useAuth();
   if (!authToken) {
-    throw new Error("LinkQuickBooksButton: No bearer token found");
+    throw new Error("ConnectQuickBooksButton: No bearer token found");
   }
 
   const { mutate, isPending } = useMutation({
@@ -43,7 +44,7 @@ export function LinkQuickBooksButton({
       });
       if (resp.status !== 200) {
         throw new Error(
-          "LinkQuickBooksButton: Failed to connect QuickBooks, status: " +
+          "ConnectQuickBooksButton: Failed to connect QuickBooks, status: " +
             resp.status,
         );
       }
@@ -62,9 +63,12 @@ export function LinkQuickBooksButton({
   });
 
   return (
-    <Button className={cn(className)} onClick={() => mutate()} {...props}>
-      {isPending && <Loader2 className="mr-2 animate-spin" />}
-      Link QuickBooks
+    <Button
+      className={cn(className, isPending && "animate-pulse")}
+      onClick={() => mutate()}
+      {...props}
+    >
+      <QuickBooksIcon className="size-25" />
     </Button>
   );
 }

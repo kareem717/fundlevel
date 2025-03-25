@@ -109,7 +109,7 @@ export class CompanyService implements ICompanyService {
     return resp.data.link_token;
   }
 
-  async createPlaidCredentials(params: {
+  async swapPlaidPublicToken(params: {
     companyId: number;
     publicToken: string;
   }) {
@@ -617,12 +617,20 @@ export class CompanyService implements ICompanyService {
 
     // Process the accounts
     const accounts = accountsResponse.data.accounts;
+    // TODO: add properties to the account object
     const bankAccountParams = accounts.map((account) => ({
       name: account.name,
-      type: account.type as any,
+      type: account.type,
       plaidAccountId: account.account_id,
       remoteId: account.account_id,
       remainingRemoteContent: JSON.stringify(account),
+      isoCurrencyCode: account.balances.iso_currency_code,
+      unofficialCurrencyCode: account.balances.unofficial_currency_code,
+      mask: account.mask,
+      subtype: account.subtype,
+      officialName: account.official_name,
+      availableBalance: account.balances.available,
+      currentBalance: account.balances.current,
     }));
 
     // Store in database
