@@ -1,7 +1,6 @@
 import { logger } from "hono/logger";
 import { prettyJSON } from "hono/pretty-json";
 import { secureHeaders } from "hono/secure-headers";
-import { cors } from "hono/cors";
 import { OpenAPIHono } from "@hono/zod-openapi";
 import { createFiberplane } from "@fiberplane/hono";
 import authHandler from "./handlers/auth";
@@ -11,6 +10,8 @@ import companyHandler from "./handlers/company";
 import accountingHandler from "./handlers/accounting";
 import { withAuth } from "./middleware/with-auth";
 import { withSentry } from "./middleware/with-sentry";
+import { withCors } from "./middleware/with-cors";
+
 export class Server {
   public readonly routes;
 
@@ -51,19 +52,11 @@ export class Server {
     });
 
     app
-      .use("*", withSentry())
       .use("*", logger())
       .use("*", prettyJSON())
       .use("*", secureHeaders())
-      .use(
-        cors({
-          origin: [env(c).WEB_URL, env(c).APP_URL],
-          allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
-          allowHeaders: ["Content-Type", "Authorization", "x-is-superjson"],
-          credentials: true,
-          exposeHeaders: ["*"],
-        }),
-      )
+      .use("*", withCors())
+      .use("*", withSentry())
       .use("*", withService())
       .use("*", withAuth());
 

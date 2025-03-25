@@ -1,4 +1,4 @@
-import { Account } from "@fundlevel/db/types";
+import type { Account } from "@fundlevel/db/types";
 import type { Context, MiddlewareHandler } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { createClerkClient, verifyToken } from "@clerk/backend";
