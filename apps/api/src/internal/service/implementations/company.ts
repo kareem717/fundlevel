@@ -14,16 +14,14 @@ import type {
   Company,
   CreatePlaidTransactionParams,
   QuickBooksOauthCredential,
-  UpdateQuickBooksOauthCredentialParams,
-  CreateQuickBooksOauthCredentialParams,
   PlaidCredential,
 } from "@fundlevel/db/types";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
-import { IDB } from "@fundlevel/api/internal/storage";
-import { CompanyRepository } from "@fundlevel/api/internal/storage/implementaions";
+import type { IDB } from "@fundlevel/api/internal/storage";
+import { CompanyRepository } from "@fundlevel/api/internal/storage/implementations";
 import { SyncJobType } from "@fundlevel/api/internal/storage/interfaces/company";
-import { ICompanyService } from "@fundlevel/api/internal/service/interfaces/company";
+import type { ICompanyService } from "@fundlevel/api/internal/service/interfaces/company";
 
 export type QuickBooksConfig = {
   clientId: string;
@@ -710,12 +708,12 @@ export class CompanyService implements ICompanyService {
         bankAccountId: account_id,
         personalFinanceCategoryConfidenceLevel:
           personal_finance_category?.confidence_level as
-            | "VERY_HIGH"
-            | "HIGH"
-            | "MEDIUM"
-            | "LOW"
-            | "UNKNOWN"
-            | undefined,
+          | "VERY_HIGH"
+          | "HIGH"
+          | "MEDIUM"
+          | "LOW"
+          | "UNKNOWN"
+          | undefined,
         personalFinanceCategoryPrimary: personal_finance_category?.primary,
         personalFinanceCategoryDetailed: personal_finance_category?.detailed,
         remainingRemoteContent: remaining_remote_content,

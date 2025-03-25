@@ -7,7 +7,7 @@ import {
   CompanyRepository,
   AccountRepository,
   AccountingRepository,
-} from "./implementaions";
+} from "./implementations";
 import type { DB, Transaction } from "@fundlevel/db";
 
 export type IDB = DB | Transaction;
