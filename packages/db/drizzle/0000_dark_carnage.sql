@@ -171,6 +171,24 @@ CREATE TABLE "quick_books_vendor_credits" (
 	CONSTRAINT "quick_books_vendor_credits_remote_id_key" UNIQUE("remote_id")
 );
 --> statement-breakpoint
+CREATE TABLE "transaction_relationships" (
+	"plaid_transaction_id" text PRIMARY KEY NOT NULL,
+	"transaction_id" serial NOT NULL,
+	"invoice_id" serial NOT NULL,
+	"journal_entry_id" serial NOT NULL,
+	"vendor_credit_id" serial NOT NULL,
+	"credit_note_id" serial NOT NULL,
+	"payment_id" serial NOT NULL,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"updated_at" timestamp with time zone,
+	CONSTRAINT "at_least_one_relationship" CHECK ("transaction_relationships"."invoice_id" IS NOT NULL OR 
+          "transaction_relationships"."journal_entry_id" IS NOT NULL OR 
+          "transaction_relationships"."vendor_credit_id" IS NOT NULL OR 
+          "transaction_relationships"."credit_note_id" IS NOT NULL OR 
+          "transaction_relationships"."payment_id" IS NOT NULL OR
+          "transaction_relationships"."transaction_id" IS NOT NULL)
+);
+--> statement-breakpoint
 ALTER TABLE "companies" ADD CONSTRAINT "companies_owner_id_fkey" FOREIGN KEY ("owner_id") REFERENCES "public"."accounts"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
 ALTER TABLE "plaid_bank_accounts" ADD CONSTRAINT "plaid_bank_accounts_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "public"."companies"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
 ALTER TABLE "plaid_credentials" ADD CONSTRAINT "plaid_credentials_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "public"."companies"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
@@ -184,5 +202,12 @@ ALTER TABLE "quick_books_oauth_states" ADD CONSTRAINT "quick_books_oauth_states_
 ALTER TABLE "quick_books_payments" ADD CONSTRAINT "quick_books_payments_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "public"."companies"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
 ALTER TABLE "quick_books_transactions" ADD CONSTRAINT "quick_books_transactions_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "public"."companies"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
 ALTER TABLE "quick_books_vendor_credits" ADD CONSTRAINT "quick_books_vendor_credits_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "public"."companies"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "transaction_relationships" ADD CONSTRAINT "transaction_relationships_plaid_transaction_id_plaid_transactions_remote_id_fk" FOREIGN KEY ("plaid_transaction_id") REFERENCES "public"."plaid_transactions"("remote_id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "transaction_relationships" ADD CONSTRAINT "transaction_relationships_transaction_id_quick_books_transactions_id_fk" FOREIGN KEY ("transaction_id") REFERENCES "public"."quick_books_transactions"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "transaction_relationships" ADD CONSTRAINT "transaction_relationships_invoice_id_quick_books_invoices_id_fk" FOREIGN KEY ("invoice_id") REFERENCES "public"."quick_books_invoices"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "transaction_relationships" ADD CONSTRAINT "transaction_relationships_journal_entry_id_quick_books_journal_entries_id_fk" FOREIGN KEY ("journal_entry_id") REFERENCES "public"."quick_books_journal_entries"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "transaction_relationships" ADD CONSTRAINT "transaction_relationships_vendor_credit_id_quick_books_vendor_credits_id_fk" FOREIGN KEY ("vendor_credit_id") REFERENCES "public"."quick_books_vendor_credits"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "transaction_relationships" ADD CONSTRAINT "transaction_relationships_credit_note_id_quick_books_credit_notes_id_fk" FOREIGN KEY ("credit_note_id") REFERENCES "public"."quick_books_credit_notes"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "transaction_relationships" ADD CONSTRAINT "transaction_relationships_payment_id_quick_books_payments_id_fk" FOREIGN KEY ("payment_id") REFERENCES "public"."quick_books_payments"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
 CREATE INDEX "accounts_user_id_idx" ON "accounts" USING btree ("user_id");--> statement-breakpoint
 CREATE INDEX "plaid_transactions_bank_account_id_idx" ON "plaid_transactions" USING btree ("bank_account_id" text_ops);

@@ -562,3 +562,55 @@ export const quickBooksAccounts = pgTable(
     unique("quick_books_accounts_remote_id_key").on(table.remoteId),
   ],
 );
+
+export const transactionRelationships = pgTable(
+  "transaction_relationships",
+  {
+    plaidTransactionId: text("plaid_transaction_id").primaryKey().notNull().references(() => plaidTransactions.remoteId, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
+    transactionId: serial("transaction_id").references(() => quickBooksTransactions.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
+    invoiceId: serial("invoice_id").references(() => quickBooksInvoices.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
+    journalEntryId: serial("journal_entry_id").references(() => quickBooksJournalEntries.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
+    vendorCreditId: serial("vendor_credit_id").references(() => quickBooksVendorCredits.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
+    creditNoteId: serial("credit_note_id").references(() => quickBooksCreditNotes.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
+    paymentId: serial("payment_id").references(() => quickBooksPayments.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
+    createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", {
+      withTimezone: true,
+      mode: "string",
+    }).$onUpdateFn(() => new Date().toISOString()),
+  },
+  (table) => [
+    check(
+      "at_least_one_relationship",
+      sql`${table.invoiceId} IS NOT NULL OR 
+          ${table.journalEntryId} IS NOT NULL OR 
+          ${table.vendorCreditId} IS NOT NULL OR 
+          ${table.creditNoteId} IS NOT NULL OR 
+          ${table.paymentId} IS NOT NULL OR
+          ${table.transactionId} IS NOT NULL`
+    )
+  ],
+);

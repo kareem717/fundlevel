@@ -14,6 +14,7 @@ import type {
   quickBooksJournalEntries,
   quickBooksVendorCredits,
   quickBooksTransactions,
+  transactionRelationships,
 } from "./schema";
 
 export type Company = InferSelectModel<typeof companies>;
@@ -144,6 +145,14 @@ export type CreateQuickBooksTransactionParams = Omit<
 >;
 export type UpdateQuickBooksTransactionParams =
   Partial<CreateQuickBooksTransactionParams>;
+
+export type TransactionRelationship = InferSelectModel<
+  typeof transactionRelationships
+>;
+export type CreateTransactionRelationshipParams = Omit<
+  OmitEntityFields<InferInsertModel<typeof transactionRelationships>>,
+  "plaidTransactionId"
+>;
 
 // utils
 type TimeStampFields = {
