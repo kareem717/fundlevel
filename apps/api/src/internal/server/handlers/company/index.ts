@@ -11,7 +11,17 @@ import {
 import { getAccount } from "../../middleware/with-auth";
 import { getService } from "../../middleware/with-service-layer";
 import { tasks, idempotencyKeys } from "@trigger.dev/sdk/v3";
-import type { syncBankAccountsTask, syncBankTransactionsTask } from "@fundlevel/api/internal/jobs";
+import type {
+  syncBankAccountsTask,
+  syncBankTransactionsTask,
+  syncAccountingAccountsTask,
+  syncAccountingTransactionsTask,
+  syncInvoicesTask,
+  syncJournalEntriesTask,
+  syncPaymentsTask,
+  syncVendorCreditsTask,
+  syncCreditNotesTask,
+} from "@fundlevel/api/internal/jobs";
 
 const companyHandler = new OpenAPIHono()
   .openapi(createCompanyRoute, async (c) => {
@@ -78,13 +88,88 @@ const companyHandler = new OpenAPIHono()
       );
     }
 
-    const { redirect_url } = await getService(
+    const { redirect_url, company_id } = await getService(
       c,
     ).company.completeQuickBooksOAuthFlow({
       realmId,
       code,
       state,
     });
+
+    await tasks.trigger<typeof syncAccountingAccountsTask>(
+      "sync-accounting-accounts",
+      {
+        companyId: company_id,
+      },
+      {
+        idempotencyKey: await idempotencyKeys.create(
+          `sync-accounting-accounts-${company_id}`,
+        ),
+      },
+    );
+
+    await tasks.trigger<typeof syncAccountingTransactionsTask>(
+      "sync-accounting-transactions",
+      {
+        companyId: company_id,
+      },
+      {
+        idempotencyKey: await idempotencyKeys.create(
+          `sync-accounting-transactions-${company_id}`,
+        ),
+      },
+    );
+
+    await tasks.trigger<typeof syncInvoicesTask>(
+      "sync-invoices",
+      {
+        companyId: company_id,
+      },
+      {
+        idempotencyKey: await idempotencyKeys.create(
+          `sync-invoices-${company_id}`,
+        ),
+      },
+    );
+
+    await tasks.trigger<typeof syncJournalEntriesTask>(
+      "sync-journal-entries",
+      {
+        companyId: company_id,
+      },
+      {
+        idempotencyKey: await idempotencyKeys.create(
+          `sync-journal-entries-${company_id}`,
+        ),
+      },
+    );
+
+    await tasks.trigger<typeof syncPaymentsTask>("sync-payments", {
+      companyId: company_id,
+    }, {
+      idempotencyKey: await idempotencyKeys.create(`sync-payments-${company_id}`)
+    });
+
+    await tasks.trigger<typeof syncVendorCreditsTask>(
+      "sync-vendor-credits",
+      {
+        companyId: company_id,
+      },
+      {
+        idempotencyKey: await idempotencyKeys.create(
+          `sync-vendor-credits-${company_id}`,
+        ),
+      },
+    );
+
+    await tasks.trigger<typeof syncCreditNotesTask>("sync-credit-notes", {
+      companyId: company_id,
+    }, {
+        idempotencyKey: await idempotencyKeys.create(
+          `sync-credit-notes-${company_id}`,
+        ),
+      },
+    );
 
     return c.redirect(redirect_url);
   })

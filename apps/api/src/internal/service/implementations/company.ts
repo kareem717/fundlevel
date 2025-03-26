@@ -290,31 +290,6 @@ export class CompanyService implements ICompanyService {
       await companyRepo.deleteQuickBooksOauthStates(companyId);
     });
 
-    // Execute sync operations asynchronously without blocking
-    Promise.all([
-      this.syncAccountingAccounts(companyId).catch((err) =>
-        console.error("Error syncing accounts:", err),
-      ),
-      this.syncAccountingTransactions(companyId).catch((err) =>
-        console.error("Error syncing transactions:", err),
-      ),
-      this.syncInvoices(companyId).catch((err) =>
-        console.error("Error syncing invoices:", err),
-      ),
-      this.syncJournalEntries(companyId).catch((err) =>
-        console.error("Error syncing journal entries:", err),
-      ),
-      this.syncPayments(companyId).catch((err) =>
-        console.error("Error syncing payments:", err),
-      ),
-      this.syncVendorCredits(companyId).catch((err) =>
-        console.error("Error syncing vendor credits:", err),
-      ),
-      this.syncCreditNotes(companyId).catch((err) =>
-        console.error("Error syncing credit notes:", err),
-      ),
-    ]);
-
     return {
       redirect_url: redirectUrl,
       company_id: companyId,

@@ -1,6 +1,6 @@
 "use client";
 
-import { PlaidBankAccount } from "@fundlevel/db/types";
+import type { PlaidBankAccount } from "@fundlevel/db/types";
 import type { ComponentPropsWithoutRef } from "react";
 import {
   Table,
@@ -21,7 +21,7 @@ import {
   DropdownMenuTrigger,
 } from "@fundlevel/ui/components/dropdown-menu";
 import {
-  ColumnDef,
+  type ColumnDef,
   flexRender,
   getCoreRowModel,
   useReactTable,
@@ -151,7 +151,7 @@ export function BankAccountTable({
       accessorKey: "availableBalance",
       header: () => <div className="text-right">Available Balance</div>,
       cell: ({ row }) => {
-        const amount = parseFloat(row.getValue("availableBalance") || "0");
+        const amount = Number.parseFloat(row.getValue("availableBalance") || "0");
         const formatted = new Intl.NumberFormat("en-US", {
           style: "currency",
           currency: "USD",
@@ -164,7 +164,7 @@ export function BankAccountTable({
       accessorKey: "currentBalance",
       header: () => <div className="text-right">Current Balance</div>,
       cell: ({ row }) => {
-        const amount = parseFloat(row.getValue("currentBalance") || "0");
+        const amount = Number.parseFloat(row.getValue("currentBalance") || "0");
         const formatted = new Intl.NumberFormat("en-US", {
           style: "currency",
           currency: "USD",

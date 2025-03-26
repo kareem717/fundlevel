@@ -1,10 +1,16 @@
 import { OpenAPIHono } from "@hono/zod-openapi";
 import { Configuration, PlaidApi, PlaidEnvironments } from "plaid";
 import * as jose from "jose";
-import { createHash, createHmac } from "crypto";
+import { createHash, createHmac } from "node:crypto";
 import { getService } from "../../middleware/with-service-layer";
 import { plaidWebhookRoute, quickBooksWebhookRoute } from "./route";
 import { env } from "hono/adapter";
+import { tasks, idempotencyKeys } from "@trigger.dev/sdk/v3";
+import type {
+  syncBankAccountsTask,
+  syncBankTransactionsTask,
+  syncInvoicesTask,
+} from "@fundlevel/api/internal/jobs";
 
 /**
  * Verifies a Plaid webhook JWT signature
@@ -116,13 +122,26 @@ const webhookHandler = new OpenAPIHono()
       switch (webhookType) {
         case "ITEM": {
           if (webhookCode === "NEW_ACCOUNTS_AVAILABLE") {
-            await getService(c).company.syncBankAccounts(payload.item_id);
+            await tasks.trigger<typeof syncBankAccountsTask>("sync-bank-accounts", {
+                companyId: payload.item_id,
+              },
+              {
+                idempotencyKey: await idempotencyKeys.create(
+                  `sync-bank-accounts-${payload.item_id}`,
+                ),
+              },
+            );
           }
           break;
         }
         case "TRANSACTIONS": {
           if (webhookCode === "SYNC_UPDATES_AVAILABLE") {
-            await getService(c).company.syncBankTransactions(payload.item_id);
+            await tasks.trigger<typeof syncBankTransactionsTask>(
+              "sync-bank-transactions",
+              {
+                companyId: payload.item_id,
+              },
+            );
           }
           break;
         }
@@ -189,7 +208,12 @@ const webhookHandler = new OpenAPIHono()
               continue;
             }
 
-            await getService(c).company.syncInvoices(company.id);
+            await tasks.trigger<typeof syncInvoicesTask>(
+              "sync-invoices",
+              {
+                companyId: company.id,
+              },
+            );
             console.log(
               `Successfully synced invoices for company ${company.id}`,
             );
