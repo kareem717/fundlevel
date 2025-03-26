@@ -38,14 +38,13 @@ export function ConnectQuickBooksButton({
         json: {
           companyId,
           redirectUrl:
-            process.env.NEXT_PUBLIC_APP_URL +
+            env.NEXT_PUBLIC_WEB_URL +
             redirects.app.company(companyId).settings.connections,
         },
       });
       if (resp.status !== 200) {
         throw new Error(
-          "ConnectQuickBooksButton: Failed to connect QuickBooks, status: " +
-            resp.status,
+          `ConnectQuickBooksButton: Failed to connect QuickBooks, status: ${resp.status}`,
         );
       }
 
