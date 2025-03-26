@@ -13,58 +13,73 @@ import {
   quickBooksOauthCredentials,
   quickBooksOauthStates,
 } from "@fundlevel/db/schema";
-import { and, eq, like } from "drizzle-orm";
+import { and, eq, like, sql } from "drizzle-orm";
 import { SyncJobType } from "../interfaces";
 import type { IDB } from "../index";
 
 export class CompanyRepository implements ICompanyRepository {
-  constructor(private readonly db: IDB) {}
+  constructor(private readonly db: IDB) { }
 
   async updateLastSyncedAt(
     type: SyncJobType,
     companyId: number,
   ): Promise<Company> {
-    let column: string;
+    let column: { [key: string]: string };
 
+    // TOOD: this is embarassing but it works
     switch (type) {
       case SyncJobType.QUICKBOOKS_INVOICES:
-        column = companies.invoicesLastSyncedAt.name;
+        column = {
+          invoicesLastSyncedAt: new Date().toISOString(),
+        }
         break;
       case SyncJobType.QUICKBOOKS_ACCOUNTS:
-        column = companies.bankAccountsLastSyncedAt.name;
+        column = {
+          bankAccountsLastSyncedAt: new Date().toISOString(),
+        }
         break;
       case SyncJobType.QUICKBOOKS_TRANSACTIONS:
-        column = companies.transactionsLastSyncedAt.name;
+        column = {
+          transactionsLastSyncedAt: new Date().toISOString(),
+        }
         break;
       case SyncJobType.QUICKBOOKS_CREDIT_NOTES:
-        column = companies.creditNotesLastSyncedAt.name;
+        column = {
+          creditNotesLastSyncedAt: new Date().toISOString(),
+        }
         break;
       case SyncJobType.QUICKBOOKS_JOURNAL_ENTRIES:
-        column = companies.journalEntriesLastSyncedAt.name;
+        column = {
+          journalEntriesLastSyncedAt: new Date().toISOString(),
+        }
         break;
       case SyncJobType.QUICKBOOKS_PAYMENTS:
-        column = companies.paymentsLastSyncedAt.name;
+        column = {
+          paymentsLastSyncedAt: new Date().toISOString(),
+        }
         break;
       case SyncJobType.QUICKBOOKS_VENDOR_CREDITS:
-        column = companies.vendorCreditsLastSyncedAt.name;
+        column = {
+          vendorCreditsLastSyncedAt: new Date().toISOString(),
+        }
         break;
       case SyncJobType.PLAID_BANK_ACCOUNTS:
-        column = companies.bankAccountsLastSyncedAt.name;
+        column = {
+          bankAccountsLastSyncedAt: new Date().toISOString(),
+        }
         break;
       case SyncJobType.PLAID_TRANSACTIONS:
-        column = companies.transactionsLastSyncedAt.name;
+        column = {
+          transactionsLastSyncedAt: new Date().toISOString(),
+        }
         break;
       default:
         throw new Error(`Unknown sync job type: ${type}`);
     }
 
-    console.log(
-      `Updating ${column} for company ${companyId} to ${new Date().toISOString()}`,
-    );
-
     const [data] = await this.db
       .update(companies)
-      .set({ [column]: new Date().toISOString() })
+      .set(column)
       .where(eq(companies.id, companyId))
       .returning();
 
