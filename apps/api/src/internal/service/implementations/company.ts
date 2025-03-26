@@ -135,6 +135,10 @@ export class CompanyService implements ICompanyService {
     return creds;
   }
 
+  async getPlaidCredentialsByItemId(itemId: string): Promise<PlaidCredential> {
+    return this.repo.company.getPlaidCredentialsByItemId(itemId);
+  }
+
   async getById(id: number) {
     return this.repo.company.getById(id);
   }

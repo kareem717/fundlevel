@@ -4,27 +4,10 @@ import { unauthorizedResponse } from "../../types/errors";
 export const plaidWebhookRoute = createRoute({
   summary: "Handle Plaid webhook",
   operationId: "handlePlaidWebhook",
-  tags: ["webhooks"],
+  tags: ["Webhooks"],
   method: "post",
   path: "/plaid",
-  request: {
-    body: {
-      content: {
-        "application/json": {
-          schema: z.object({
-            webhook_type: z.string(),
-            webhook_code: z.string(),
-            item_id: z.string().optional(),
-          }),
-        },
-      },
-    },
-    headers: z.object({
-      "plaid-verification": z.string().openapi({
-        description: "JWT signature for webhook verification",
-      }),
-    }),
-  },
+  hide: true,
   responses: {
     200: {
       description: "Webhook processed successfully",
@@ -53,16 +36,10 @@ export const plaidWebhookRoute = createRoute({
 export const quickBooksWebhookRoute = createRoute({
   summary: "Handle QuickBooks webhook",
   operationId: "handleQuickBooksWebhook",
-  tags: ["webhooks"],
+  tags: ["Webhooks"],
   method: "post",
   path: "/quick-books",
-  request: {
-    headers: z.object({
-      "intuit-signature": z.string().openapi({
-        description: "HMAC-SHA256 signature for webhook verification",
-      }),
-    }),
-  },
+  hide: true,
   responses: {
     200: {
       description: "Webhook processed successfully",

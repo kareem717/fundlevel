@@ -30,7 +30,8 @@ export interface ICompanyService {
    * @returns Array of Plaid credentials
    */
   getPlaidCredentials(companyId: number): Promise<PlaidCredential>;
-
+  getPlaidCredentialsByItemId(itemId: string): Promise<PlaidCredential>;
+  
   startQuickBooksOAuthFlow(
     companyId: number,
     redirectUrl: string,

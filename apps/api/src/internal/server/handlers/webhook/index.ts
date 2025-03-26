@@ -95,8 +95,15 @@ const webhookHandler = new OpenAPIHono()
     const plaid = new PlaidApi(plaidConfig);
     const plaidVerification = c.req.header("plaid-verification");
 
+    // Read the raw body once
+    const rawBody = await c.req.raw.clone().text();
+    let payload: {
+      webhook_type: string;
+      webhook_code: string;
+      item_id: string;
+    };
+
     if (plaidVerification) {
-      const rawBody = await c.req.raw.clone().text();
       const isVerified = await verifyPlaidWebhook(
         plaidVerification,
         rawBody,
@@ -109,7 +116,14 @@ const webhookHandler = new OpenAPIHono()
       }
     }
 
-    const payload = await c.req.json();
+    // Parse the rawBody instead of reading the request stream again
+    try {
+      payload = JSON.parse(rawBody);
+    } catch (error) {
+      console.error("Failed to parse webhook payload", error);
+      return c.json({ error: "Invalid JSON payload" }, 400);
+    }
+
     const webhookType = payload.webhook_type as string | undefined;
     const webhookCode = payload.webhook_code as string | undefined;
 
@@ -118,13 +132,16 @@ const webhookHandler = new OpenAPIHono()
       return c.json({ error: "Missing webhook type or code" }, 400);
     }
 
+
+    const { companyId } = await getService(c).company.getPlaidCredentialsByItemId(payload.item_id);
+
     try {
       switch (webhookType) {
         case "ITEM": {
           if (webhookCode === "NEW_ACCOUNTS_AVAILABLE") {
             await tasks.trigger<typeof syncBankAccountsTask>("sync-bank-accounts", {
-                companyId: payload.item_id,
-              },
+              companyId,
+            },
               {
                 idempotencyKey: await idempotencyKeys.create(
                   `sync-bank-accounts-${payload.item_id}`,
@@ -139,7 +156,7 @@ const webhookHandler = new OpenAPIHono()
             await tasks.trigger<typeof syncBankTransactionsTask>(
               "sync-bank-transactions",
               {
-                companyId: payload.item_id,
+                companyId,
               },
             );
           }
