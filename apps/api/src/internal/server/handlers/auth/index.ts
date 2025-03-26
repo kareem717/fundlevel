@@ -3,7 +3,7 @@ import { createAccountRoute } from "./routes";
 import { getAccountRoute } from "./routes";
 import { getAccount, getUserId } from "../../middleware/with-auth";
 import { getService } from "../../middleware/with-service-layer";
-
+  
 const authHandler = new OpenAPIHono()
   .openapi(getAccountRoute, async (c) => {
     const account = getAccount(c);
@@ -15,6 +15,7 @@ const authHandler = new OpenAPIHono()
         404,
       );
     }
+
 
     return c.json(account, 200);
   })

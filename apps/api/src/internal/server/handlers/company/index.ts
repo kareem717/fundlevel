@@ -10,6 +10,8 @@ import {
 } from "./route";
 import { getAccount } from "../../middleware/with-auth";
 import { getService } from "../../middleware/with-service-layer";
+import { tasks, idempotencyKeys } from "@trigger.dev/sdk/v3";
+import type { syncBankAccountsTask, syncBankTransactionsTask } from "@fundlevel/api/internal/jobs";
 
 const companyHandler = new OpenAPIHono()
   .openapi(createCompanyRoute, async (c) => {
@@ -182,13 +184,17 @@ const companyHandler = new OpenAPIHono()
       publicToken,
     });
 
-    try {
-      await companyService.syncBankAccounts(companyId);
-      await companyService.syncBankTransactions(companyId);
-    } catch (error) {
-      console.error(error);
-      return c.json({ error: "Failed to sync bank accounts" }, 500);
-    }
+    await tasks.trigger<typeof syncBankAccountsTask>("sync-bank-accounts", {
+      companyId,
+    }, {
+      idempotencyKey: await idempotencyKeys.create(`sync-bank-accounts-${companyId}`)
+    });
+
+    await tasks.trigger<typeof syncBankTransactionsTask>("sync-bank-transactions", {
+      companyId,
+    }, {
+      idempotencyKey: await idempotencyKeys.create(`sync-bank-transactions-${companyId}`)
+    });
 
     return c.json(creds, 200);
   });

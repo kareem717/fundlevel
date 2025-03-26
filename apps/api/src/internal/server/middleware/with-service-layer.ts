@@ -20,22 +20,22 @@ export const getService = (c: Context) => {
 export const withService = (): MiddlewareHandler => async (c, next) => {
   const storage = new Storage(db(env(c).DATABASE_URL));
 
-  const service = new Service(
+  const service = new Service({
     storage,
-    {
+    qbConfig: {
       clientId: env(c).QUICK_BOOKS_CLIENT_ID,
       clientSecret: env(c).QUICK_BOOKS_CLIENT_SECRET,
       redirectUri: env(c).QUICK_BOOKS_REDIRECT_URI,
       environment: env(c).QUICK_BOOKS_ENVIRONMENT,
     },
-    {
+    plaidConfig: {
       clientId: env(c).PLAID_CLIENT_ID,
       secret: env(c).PLAID_SECRET,
       webhookUrl: env(c).PLAID_WEBHOOK_URL,
       environment: env(c).PLAID_ENVIRONMENT,
     },
-    env(c).CLERK_PUBLISHABLE_KEY,
-  );
+    openaiKey: env(c).OPENAI_API_KEY,
+  });
 
   c.set("service", service);
 

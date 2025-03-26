@@ -2,7 +2,9 @@
   "name": "@fundlevel/api",
   "scripts": {
     "dev": "sh copy_env.sh && wrangler dev",
+    "dev:tasks": "pnpm dlx trigger.dev@latest dev",
     "deploy": "wrangler deploy",
+    "deploy:tasks": "pnpm dlx trigger.dev@latest deploy",
     "clean": "rm -rf node_modules",
     "lint": "biome lint .",
     "format": "biome format .",
@@ -16,6 +18,7 @@
     "@fundlevel/db": "workspace:*",
     "@hono/sentry": "^1.2.0",
     "@hono/zod-openapi": "^0.19.2",
+    "@trigger.dev/sdk": "^3.3.17",
     "ai": "^4.2.0",
     "axios": "^1.8.4",
     "drizzle-orm": "^0.41.0",
@@ -29,6 +32,7 @@
     "@biomejs/biome": "^1.5.3",
     "@cloudflare/workers-types": "^4.20250214.0",
     "@fundlevel/typescript-config": "workspace:*",
+    "@trigger.dev/build": "^3.3.17",
     "wrangler": "^3.109.2"
   },
   "exports": {

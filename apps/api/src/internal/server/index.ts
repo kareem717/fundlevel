@@ -4,13 +4,16 @@ import { secureHeaders } from "hono/secure-headers";
 import { OpenAPIHono } from "@hono/zod-openapi";
 import { createFiberplane } from "@fiberplane/hono";
 import authHandler from "./handlers/auth";
-import { withService } from "./middleware/with-service-layer";
 import webhookHandler from "./handlers/webhook";
 import companyHandler from "./handlers/company";
 import accountingHandler from "./handlers/accounting";
-import { withAuth } from "./middleware/with-auth";
-import { withSentry } from "./middleware/with-sentry";
-import { withCors } from "./middleware/with-cors";
+import {
+  withAuth,
+  withCors,
+  withSentry,
+  withTriggerDev,
+  withService,
+} from "./middleware";
 
 export class Server {
   public readonly routes;
@@ -35,6 +38,7 @@ export class Server {
         PLAID_ENVIRONMENT: "sandbox" | "production";
         SENTRY_DSN: string;
         SENTRY_ENVIRONMENT: "development" | "staging" | "production";
+        TRIGGER_SECRET_KEY: string;
       };
     }>({
       defaultHook: (result, c) => {
@@ -57,6 +61,7 @@ export class Server {
       .use("*", secureHeaders())
       .use("*", withCors())
       .use("*", withSentry())
+      .use("*", withTriggerDev())
       .use("*", withService())
       .use("*", withAuth());
 

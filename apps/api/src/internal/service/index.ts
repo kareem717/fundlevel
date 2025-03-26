@@ -13,29 +13,35 @@ import type {
 } from "./interfaces";
 import type { QuickBooksConfig, PlaidConfig } from "./implementations/company";
 
+type ServiceConfig = {
+  storage: Storage;
+  qbConfig: QuickBooksConfig;
+  plaidConfig: PlaidConfig;
+  openaiKey: string;
+};
+
 export class Service {
   readonly auth: IAuthService;
   readonly company: ICompanyService;
   readonly ai: IAIService;
   readonly accounting: IAccountingService;
 
-  constructor(
-    storage: Storage,
-    qbConfig: QuickBooksConfig,
-    plaidConfig: PlaidConfig,
-    openaiKey: string,
-  ) {
-    const company = new CompanyService(storage, plaidConfig, qbConfig);
+  constructor(config: ServiceConfig) {
+    const company = new CompanyService(
+      config.storage,
+      config.plaidConfig,
+      config.qbConfig,
+    );
     const accounting = new AccountingService(
-      storage.accounting,
+      config.storage.accounting,
       company,
-      qbConfig.environment,
+      config.qbConfig.environment,
     );
 
-    this.auth = new AuthService(storage.account);
+    this.auth = new AuthService(config.storage.account);
     this.company = company;
     this.accounting = accounting;
-    this.ai = new AIService(accounting, openaiKey);
+    this.ai = new AIService(accounting, config.openaiKey);
   }
 }
 
