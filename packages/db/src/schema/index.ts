@@ -17,7 +17,7 @@ import {
   pgEnum,
 } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
-import { quickBooksInvoices } from "./invoice";
+import { invoices } from "./invoice";
 
 export const plaidAccountSubtype = pgEnum("plaid_account_subtype", [
   "401a",
@@ -91,6 +91,7 @@ export const plaidAccountSubtype = pgEnum("plaid_account_subtype", [
   "utma",
   "variable annuity",
 ]);
+
 export const plaidAccountType = pgEnum("plaid_account_type", [
   "investment",
   "credit",
@@ -554,7 +555,7 @@ export const transactionRelationships = pgTable(
         onUpdate: "cascade",
       },
     ),
-    invoiceId: serial("invoice_id").references(() => quickBooksInvoices.id, {
+    invoiceId: serial("invoice_id").references(() => invoices.id, {
       onDelete: "cascade",
       onUpdate: "cascade",
     }),
@@ -605,3 +606,4 @@ export const transactionRelationships = pgTable(
 );
 
 export * from "./invoice";
+export * from "./shared";

@@ -3,15 +3,15 @@ import {
   createUpdateSchema,
   createInsertSchema,
 } from "drizzle-zod";
-import { quickBooksInvoices, invoiceLines } from "../schema";
+import { invoices, invoiceLines } from "../schema";
 
 // QuickBooks Invoice schemas
-export const QuickBooksInvoiceSchema = createSelectSchema(quickBooksInvoices);
-export const CreateQuickBooksInvoiceParamsSchema = createInsertSchema(
-  quickBooksInvoices,
+export const InvoiceSchema = createSelectSchema(invoices);
+export const CreateInvoiceParamsSchema = createInsertSchema(
+  invoices,
 ).omit({ id: true, createdAt: true, updatedAt: true, companyId: true });
-export const UpdateQuickBooksInvoiceParamsSchema = createUpdateSchema(
-  quickBooksInvoices,
+export const UpdateInvoiceParamsSchema = createUpdateSchema(
+  invoices,
 ).omit({ id: true, createdAt: true, updatedAt: true, companyId: true });
 
 // Invoice Line schemas

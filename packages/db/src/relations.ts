@@ -7,7 +7,7 @@ import {
   plaidTransactions,
   quickBooksOauthCredentials,
   quickBooksOauthStates,
-  quickBooksInvoices,
+  invoices,
 } from "./schema";
 
 export const accountsRelations = relations(accounts, ({ one, many }) => ({
@@ -24,7 +24,7 @@ export const companiesRelations = relations(companies, ({ one, many }) => ({
   plaidTransactions: many(plaidTransactions),
   quickBooksOauthCredentials: many(quickBooksOauthCredentials),
   quickBooksOauthStates: many(quickBooksOauthStates),
-  quickBooksInvoices: many(quickBooksInvoices),
+  invoices: many(invoices),
 }));
 
 export const plaidCredentialsRelations = relations(
@@ -77,11 +77,11 @@ export const quickBooksOauthStatesRelations = relations(
   }),
 );
 
-export const quickBooksInvoicesRelations = relations(
-  quickBooksInvoices,
+export const invoicesRelations = relations(
+  invoices,
   ({ one }) => ({
     company: one(companies, {
-      fields: [quickBooksInvoices.companyId],
+      fields: [invoices.companyId],
       references: [companies.id],
     }),
   }),

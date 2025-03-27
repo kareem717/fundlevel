@@ -16,8 +16,8 @@ import {
   quickBooksCreditNotes,
   quickBooksPayments,
   quickBooksAccounts,
-  quickBooksTransactions,
-} from "../schema";
+  quickBooksTransactions
+} from "@fundlevel/db/schema";
 
 // Account schemas
 export const AccountSchema = createSelectSchema(accounts);

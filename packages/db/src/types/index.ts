@@ -15,7 +15,7 @@ import type {
   quickBooksVendorCredits,
   quickBooksTransactions,
   transactionRelationships,
-} from "../schema";
+} from "@fundlevel/db/schema";
 
 export type Company = InferSelectModel<typeof companies>;
 export type CreateCompanyParams = Omit<

@@ -1,15 +1,15 @@
 import type {
-  quickBooksInvoices,
+  invoices,
   invoiceLines,
   invoiceLineTypes,
-} from "../schema";
+} from "@fundlevel/db/schema";
 import type { InferSelectModel, InferInsertModel } from "drizzle-orm";
 import type { OmitEntityFields } from "./utils";
 
 // QuickBooks Invoice types
-export type QuickBooksInvoice = InferSelectModel<typeof quickBooksInvoices>;
+export type QuickBooksInvoice = InferSelectModel<typeof invoices>;
 export type CreateQuickBooksInvoiceParams = Omit<
-  OmitEntityFields<InferInsertModel<typeof quickBooksInvoices>>,
+  OmitEntityFields<InferInsertModel<typeof invoices>>,
   "companyId"
 >;
 export type UpdateQuickBooksInvoiceParams =

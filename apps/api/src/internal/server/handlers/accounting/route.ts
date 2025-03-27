@@ -9,7 +9,7 @@ import {
   PlaidTransactionSchema,
   QuickBooksAccountSchema,
   QuickBooksCreditNoteSchema,
-  QuickBooksInvoiceSchema,
+  InvoiceSchema,
   QuickBooksJournalEntrySchema,
   QuickBooksPaymentSchema,
   QuickBooksTransactionSchema,
@@ -145,7 +145,7 @@ export const getInvoiceRoute = createRoute({
       description: "Successful fetch",
       content: {
         "application/json": {
-          schema: QuickBooksInvoiceSchema.openapi("Invoice"),
+          schema: InvoiceSchema.openapi("Invoice"),
         },
       },
     },
@@ -171,7 +171,7 @@ export const getInvoicesByCompanyIdRoute = createRoute({
       description: "Successful fetch",
       content: {
         "application/json": {
-          schema: z.array(QuickBooksInvoiceSchema.openapi("Invoice")),
+          schema: z.array(InvoiceSchema.openapi("Invoice")),
         },
       },
     },

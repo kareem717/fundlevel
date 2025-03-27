@@ -4,7 +4,6 @@ import type {
   PlaidTransaction,
   CreatePlaidTransactionParams,
   QuickBooksInvoice,
-  CreateQuickBooksInvoiceParams,
   QuickBooksAccount,
   CreateQuickBooksAccountParams,
   QuickBooksCreditNote,
@@ -17,13 +16,12 @@ import type {
   CreateQuickBooksTransactionParams,
   QuickBooksVendorCredit,
   CreateQuickBooksVendorCreditParams,
-  InvoiceLine,
 } from "@fundlevel/db/types";
 import type { IAccountingRepository } from "../interfaces/accounting";
 import {
   plaidBankAccounts,
   plaidTransactions,
-  quickBooksInvoices,
+  invoices,
   quickBooksAccounts,
   quickBooksCreditNotes,
   quickBooksJournalEntries,
@@ -31,12 +29,11 @@ import {
   quickBooksTransactions,
   quickBooksVendorCredits,
   transactionRelationships,
-  invoiceLines,
 } from "@fundlevel/db/schema";
 import type { DB, Transaction } from "@fundlevel/db";
 import { eq, inArray, sql } from "drizzle-orm";
 export class AccountingRepository implements IAccountingRepository {
-  constructor(private db: DB | Transaction) {}
+  constructor(private db: DB | Transaction) { }
 
   async upsertBankAccount(
     bankAccounts: CreatePlaidBankAccountParams[],
@@ -175,55 +172,6 @@ export class AccountingRepository implements IAccountingRepository {
       .delete(plaidTransactions)
       .where(
         inArray(plaidTransactions.remoteId, Array.isArray(id) ? id : [id]),
-      );
-  }
-
-  async upsertInvoice(
-    invoices: CreateQuickBooksInvoiceParams[],
-    companyId: number,
-  ): Promise<QuickBooksInvoice[]> {
-    if (invoices.length === 0) {
-      return [];
-    }
-
-    const data = await this.db
-      .insert(quickBooksInvoices)
-      .values(invoices.map((invoice) => ({ ...invoice, companyId })))
-      .onConflictDoUpdate({
-        target: [quickBooksInvoices.remoteId],
-        set: {
-          remoteId: sql.raw(`excluded.${quickBooksInvoices.remoteId.name}`),
-          content: sql.raw(`excluded.${quickBooksInvoices.content.name}`),
-        },
-      })
-      .returning();
-
-    if (!data.length) {
-      throw new Error("Failed to create/update invoices");
-    }
-
-    return data;
-  }
-
-  async getInvoicesByCompanyId(
-    companyId: number,
-  ): Promise<QuickBooksInvoice[]> {
-    const data = await this.db
-      .select()
-      .from(quickBooksInvoices)
-      .where(eq(quickBooksInvoices.companyId, companyId));
-
-    return data;
-  }
-
-  async deleteInvoiceByRemoteId(remoteId: string | string[]): Promise<void> {
-    await this.db
-      .delete(quickBooksInvoices)
-      .where(
-        inArray(
-          quickBooksInvoices.remoteId,
-          Array.isArray(remoteId) ? remoteId : [remoteId],
-        ),
       );
   }
 
@@ -600,8 +548,8 @@ export class AccountingRepository implements IAccountingRepository {
   async getInvoice(id: number): Promise<QuickBooksInvoice | undefined> {
     const [data] = await this.db
       .select()
-      .from(quickBooksInvoices)
-      .where(eq(quickBooksInvoices.id, id))
+      .from(invoices)
+      .where(eq(invoices.id, id))
       .limit(1);
 
     return data;

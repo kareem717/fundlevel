@@ -2,7 +2,6 @@
   "name": "@fundlevel/db",
   "type": "module",
   "version": "0.0.0",
-  "main": "./dist/index.js",
   "scripts": {
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
@@ -28,7 +27,7 @@
     "typescript": "~5.7.2"
   },
   "exports": {
-    ".": "./src/client.ts",
+    ".": "./src/index.ts",
     "./types": "./src/types/index.ts",
     "./validators": "./src/validators/index.ts",
     "./schema": "./src/schema/index.ts"

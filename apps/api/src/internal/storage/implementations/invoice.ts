@@ -5,46 +5,46 @@ import type {
   CreateInvoiceLineParams,
 } from "@fundlevel/db/types";
 import type { IInvoiceRepository } from "../interfaces/invoice";
-import { quickBooksInvoices, invoiceLines } from "@fundlevel/db/schema";
+import { invoices, invoiceLines } from "@fundlevel/db/schema";
 import { eq, inArray, sql } from "drizzle-orm";
 import type { IDB } from "@fundlevel/api/internal/storage";
 
 export class InvoiceRepository implements IInvoiceRepository {
-  constructor(private db: IDB) {}
+  constructor(private db: IDB) { }
 
   async upsert(
-    invoices: CreateQuickBooksInvoiceParams[],
+    invoiceParams: CreateQuickBooksInvoiceParams[],
     companyId: number,
   ): Promise<QuickBooksInvoice[]> {
-    if (invoices.length === 0) {
+    if (invoiceParams.length === 0) {
       return [];
     }
 
     const data = await this.db
-      .insert(quickBooksInvoices)
-      .values(invoices.map((invoice) => ({ ...invoice, companyId })))
+      .insert(invoices)
+      .values(invoiceParams.map((invoice) => ({ ...invoice, companyId })))
       .onConflictDoUpdate({
-        target: [quickBooksInvoices.remoteId],
+        target: [invoices.remoteId],
         set: {
-          remoteId: sql.raw(`excluded.${quickBooksInvoices.remoteId.name}`),
+          remoteId: sql.raw(`excluded.${invoices.remoteId.name}`),
           remainingRemoteContent: sql.raw(
-            `excluded.${quickBooksInvoices.remainingRemoteContent.name}`,
+            `excluded.${invoices.remainingRemoteContent.name}`,
           ),
-          syncToken: sql.raw(`excluded.${quickBooksInvoices.syncToken.name}`),
+          syncToken: sql.raw(`excluded.${invoices.syncToken.name}`),
           totalAmount: sql.raw(
-            `excluded.${quickBooksInvoices.totalAmount.name}`,
+            `excluded.${invoices.totalAmount.name}`,
           ),
           depositMade: sql.raw(
-            `excluded.${quickBooksInvoices.depositMade.name}`,
+            `excluded.${invoices.depositMade.name}`,
           ),
           balanceRemaining: sql.raw(
-            `excluded.${quickBooksInvoices.balanceRemaining.name}`,
+            `excluded.${invoices.balanceRemaining.name}`,
           ),
-          dueDate: sql.raw(`excluded.${quickBooksInvoices.dueDate.name}`),
+          dueDate: sql.raw(`excluded.${invoices.dueDate.name}`),
           depositToAccountReferenceValue: sql.raw(
-            `excluded.${quickBooksInvoices.depositToAccountReferenceValue.name}`,
+            `excluded.${invoices.depositToAccountReferenceValue.name}`,
           ),
-          currency: sql.raw(`excluded.${quickBooksInvoices.currency.name}`),
+          currency: sql.raw(`excluded.${invoices.currency.name}`),
         },
       })
       .returning();
@@ -59,18 +59,18 @@ export class InvoiceRepository implements IInvoiceRepository {
   async getByCompanyId(companyId: number): Promise<QuickBooksInvoice[]> {
     const data = await this.db
       .select()
-      .from(quickBooksInvoices)
-      .where(eq(quickBooksInvoices.companyId, companyId));
+      .from(invoices)
+      .where(eq(invoices.companyId, companyId));
 
     return data;
   }
 
   async deleteByRemoteId(remoteId: string | string[]): Promise<void> {
     await this.db
-      .delete(quickBooksInvoices)
+      .delete(invoices)
       .where(
         inArray(
-          quickBooksInvoices.remoteId,
+          invoices.remoteId,
           Array.isArray(remoteId) ? remoteId : [remoteId],
         ),
       );
@@ -81,8 +81,8 @@ export class InvoiceRepository implements IInvoiceRepository {
   ): Promise<QuickBooksInvoice | undefined> {
     const [data] = await this.db
       .select()
-      .from(quickBooksInvoices)
-      .where(eq(quickBooksInvoices.remoteId, remoteId))
+      .from(invoices)
+      .where(eq(invoices.remoteId, remoteId))
       .limit(1);
 
     return data;
@@ -91,8 +91,8 @@ export class InvoiceRepository implements IInvoiceRepository {
   async getById(id: number): Promise<QuickBooksInvoice | undefined> {
     const [data] = await this.db
       .select()
-      .from(quickBooksInvoices)
-      .where(eq(quickBooksInvoices.id, id))
+      .from(invoices)
+      .where(eq(invoices.id, id))
       .limit(1);
 
     return data;

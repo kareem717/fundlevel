@@ -405,6 +405,7 @@ export class CompanyService implements ICompanyService {
               syncToken: SyncToken,
               totalAmount: TotalAmt,
               remainingRemoteContent: JSON.stringify(invoice),
+              dataProvider: "quickbooks",
             },
           ],
           companyId,
@@ -748,12 +749,12 @@ export class CompanyService implements ICompanyService {
         bankAccountId: account_id,
         personalFinanceCategoryConfidenceLevel:
           personal_finance_category?.confidence_level as
-            | "VERY_HIGH"
-            | "HIGH"
-            | "MEDIUM"
-            | "LOW"
-            | "UNKNOWN"
-            | undefined,
+          | "VERY_HIGH"
+          | "HIGH"
+          | "MEDIUM"
+          | "LOW"
+          | "UNKNOWN"
+          | undefined,
         personalFinanceCategoryPrimary: personal_finance_category?.primary,
         personalFinanceCategoryDetailed: personal_finance_category?.detailed,
         remainingRemoteContent: remaining_remote_content,

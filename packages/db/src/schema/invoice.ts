@@ -13,9 +13,10 @@ import {
   pgEnum,
 } from "drizzle-orm/pg-core";
 import { companies } from ".";
+import { dataProvider } from "./shared";
 
-export const quickBooksInvoices = pgTable(
-  "quick_books_invoices",
+export const invoices = pgTable(
+  "invoices",
   {
     id: serial().primaryKey().notNull(),
     companyId: integer("company_id").notNull(),
@@ -28,6 +29,7 @@ export const quickBooksInvoices = pgTable(
     dueDate: date("due_date"),
     depositToAccountReferenceValue: text("deposit_to_account_reference_value"),
     remainingRemoteContent: jsonb("remaining_remote_content").notNull(),
+    dataProvider: dataProvider("data_provider").notNull(),
     createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
       .defaultNow()
       .notNull(),
@@ -40,11 +42,11 @@ export const quickBooksInvoices = pgTable(
     foreignKey({
       columns: [table.companyId],
       foreignColumns: [companies.id],
-      name: "quick_books_invoices_company_id_fkey",
+      name: "invoices_company_id_fkey",
     })
       .onDelete("cascade")
       .onUpdate("cascade"),
-    unique("quick_books_invoices_remote_id_key").on(table.remoteId),
+    unique("invoices_remote_id_key").on(table.remoteId),
   ],
 );
 
@@ -64,7 +66,7 @@ export const invoiceLines = pgTable(
     remoteId: text("remote_id").default("").notNull(),
     invoiceId: integer("invoice_id")
       .notNull()
-      .references(() => quickBooksInvoices.id, {
+      .references(() => invoices.id, {
         onDelete: "cascade",
         onUpdate: "cascade",
       }),

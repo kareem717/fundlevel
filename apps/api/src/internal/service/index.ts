@@ -33,7 +33,7 @@ export class Service {
       config.qbConfig,
     );
     const accounting = new AccountingService(
-      config.storage.accounting,
+      config.storage,
       company,
       config.qbConfig.environment,
     );
