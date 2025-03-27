@@ -132,16 +132,19 @@ const webhookHandler = new OpenAPIHono()
       return c.json({ error: "Missing webhook type or code" }, 400);
     }
 
-
-    const { companyId } = await getService(c).company.getPlaidCredentialsByItemId(payload.item_id);
+    const { companyId } = await getService(
+      c,
+    ).company.getPlaidCredentialsByItemId(payload.item_id);
 
     try {
       switch (webhookType) {
         case "ITEM": {
           if (webhookCode === "NEW_ACCOUNTS_AVAILABLE") {
-            await tasks.trigger<typeof syncBankAccountsTask>("sync-bank-accounts", {
-              companyId,
-            },
+            await tasks.trigger<typeof syncBankAccountsTask>(
+              "sync-bank-accounts",
+              {
+                companyId,
+              },
               {
                 idempotencyKey: await idempotencyKeys.create(
                   `sync-bank-accounts-${payload.item_id}`,
@@ -225,12 +228,9 @@ const webhookHandler = new OpenAPIHono()
               continue;
             }
 
-            await tasks.trigger<typeof syncInvoicesTask>(
-              "sync-invoices",
-              {
-                companyId: company.id,
-              },
-            );
+            await tasks.trigger<typeof syncInvoicesTask>("sync-invoices", {
+              companyId: company.id,
+            });
             console.log(
               `Successfully synced invoices for company ${company.id}`,
             );

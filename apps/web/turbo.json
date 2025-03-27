@@ -2,7 +2,11 @@
   "extends": ["//"],
   "tasks": {
     "build": {
-      "passThroughEnv": ["CLERK_SECRET_KEY", "SENTRY_AUTH_TOKEN", "SENTRY_ENVIRONMENT"]
+      "passThroughEnv": [
+        "CLERK_SECRET_KEY",
+        "SENTRY_AUTH_TOKEN",
+        "SENTRY_ENVIRONMENT"
+      ]
     }
   }
 }

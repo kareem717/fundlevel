@@ -17,6 +17,7 @@ import {
   pgEnum,
 } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
+import { quickBooksInvoices } from "./invoice";
 
 export const plaidAccountSubtype = pgEnum("plaid_account_subtype", [
   "401a",
@@ -374,33 +375,6 @@ export const quickBooksOauthStates = pgTable(
   ],
 );
 
-export const quickBooksInvoices = pgTable(
-  "quick_books_invoices",
-  {
-    id: serial().primaryKey().notNull(),
-    companyId: integer("company_id").notNull(),
-    remoteId: text("remote_id").notNull(),
-    content: jsonb().notNull(),
-    createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
-      .defaultNow()
-      .notNull(),
-    updatedAt: timestamp("updated_at", {
-      withTimezone: true,
-      mode: "string",
-    }).$onUpdateFn(() => new Date().toISOString()),
-  },
-  (table) => [
-    foreignKey({
-      columns: [table.companyId],
-      foreignColumns: [companies.id],
-      name: "quick_books_invoices_company_id_fkey",
-    })
-      .onDelete("cascade")
-      .onUpdate("cascade"),
-    unique("quick_books_invoices_remote_id_key").on(table.remoteId),
-  ],
-);
-
 export const quickBooksTransactions = pgTable(
   "quick_books_transactions",
   {
@@ -566,30 +540,45 @@ export const quickBooksAccounts = pgTable(
 export const transactionRelationships = pgTable(
   "transaction_relationships",
   {
-    plaidTransactionId: text("plaid_transaction_id").primaryKey().notNull().references(() => plaidTransactions.remoteId, {
-      onDelete: "cascade",
-      onUpdate: "cascade",
-    }),
-    transactionId: serial("transaction_id").references(() => quickBooksTransactions.id, {
-      onDelete: "cascade",
-      onUpdate: "cascade",
-    }),
+    plaidTransactionId: text("plaid_transaction_id")
+      .primaryKey()
+      .notNull()
+      .references(() => plaidTransactions.remoteId, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    transactionId: serial("transaction_id").references(
+      () => quickBooksTransactions.id,
+      {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      },
+    ),
     invoiceId: serial("invoice_id").references(() => quickBooksInvoices.id, {
       onDelete: "cascade",
       onUpdate: "cascade",
     }),
-    journalEntryId: serial("journal_entry_id").references(() => quickBooksJournalEntries.id, {
-      onDelete: "cascade",
-      onUpdate: "cascade",
-    }),
-    vendorCreditId: serial("vendor_credit_id").references(() => quickBooksVendorCredits.id, {
-      onDelete: "cascade",
-      onUpdate: "cascade",
-    }),
-    creditNoteId: serial("credit_note_id").references(() => quickBooksCreditNotes.id, {
-      onDelete: "cascade",
-      onUpdate: "cascade",
-    }),
+    journalEntryId: serial("journal_entry_id").references(
+      () => quickBooksJournalEntries.id,
+      {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      },
+    ),
+    vendorCreditId: serial("vendor_credit_id").references(
+      () => quickBooksVendorCredits.id,
+      {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      },
+    ),
+    creditNoteId: serial("credit_note_id").references(
+      () => quickBooksCreditNotes.id,
+      {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      },
+    ),
     paymentId: serial("payment_id").references(() => quickBooksPayments.id, {
       onDelete: "cascade",
       onUpdate: "cascade",
@@ -610,7 +599,9 @@ export const transactionRelationships = pgTable(
           ${table.vendorCreditId} IS NOT NULL OR 
           ${table.creditNoteId} IS NOT NULL OR 
           ${table.paymentId} IS NOT NULL OR
-          ${table.transactionId} IS NOT NULL`
-    )
+          ${table.transactionId} IS NOT NULL`,
+    ),
   ],
 );
+
+export * from "./invoice";

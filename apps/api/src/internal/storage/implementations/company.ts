@@ -18,7 +18,7 @@ import { SyncJobType } from "../interfaces";
 import type { IDB } from "../index";
 
 export class CompanyRepository implements ICompanyRepository {
-  constructor(private readonly db: IDB) { }
+  constructor(private readonly db: IDB) {}
 
   async updateLastSyncedAt(
     type: SyncJobType,
@@ -31,47 +31,47 @@ export class CompanyRepository implements ICompanyRepository {
       case SyncJobType.QUICKBOOKS_INVOICES:
         column = {
           invoicesLastSyncedAt: new Date().toISOString(),
-        }
+        };
         break;
       case SyncJobType.QUICKBOOKS_ACCOUNTS:
         column = {
           bankAccountsLastSyncedAt: new Date().toISOString(),
-        }
+        };
         break;
       case SyncJobType.QUICKBOOKS_TRANSACTIONS:
         column = {
           transactionsLastSyncedAt: new Date().toISOString(),
-        }
+        };
         break;
       case SyncJobType.QUICKBOOKS_CREDIT_NOTES:
         column = {
           creditNotesLastSyncedAt: new Date().toISOString(),
-        }
+        };
         break;
       case SyncJobType.QUICKBOOKS_JOURNAL_ENTRIES:
         column = {
           journalEntriesLastSyncedAt: new Date().toISOString(),
-        }
+        };
         break;
       case SyncJobType.QUICKBOOKS_PAYMENTS:
         column = {
           paymentsLastSyncedAt: new Date().toISOString(),
-        }
+        };
         break;
       case SyncJobType.QUICKBOOKS_VENDOR_CREDITS:
         column = {
           vendorCreditsLastSyncedAt: new Date().toISOString(),
-        }
+        };
         break;
       case SyncJobType.PLAID_BANK_ACCOUNTS:
         column = {
           bankAccountsLastSyncedAt: new Date().toISOString(),
-        }
+        };
         break;
       case SyncJobType.PLAID_TRANSACTIONS:
         column = {
           transactionsLastSyncedAt: new Date().toISOString(),
-        }
+        };
         break;
       default:
         throw new Error(`Unknown sync job type: ${type}`);

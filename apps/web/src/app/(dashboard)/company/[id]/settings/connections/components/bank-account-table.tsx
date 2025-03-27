@@ -151,7 +151,9 @@ export function BankAccountTable({
       accessorKey: "availableBalance",
       header: () => <div className="text-right">Available Balance</div>,
       cell: ({ row }) => {
-        const amount = Number.parseFloat(row.getValue("availableBalance") || "0");
+        const amount = Number.parseFloat(
+          row.getValue("availableBalance") || "0",
+        );
         const formatted = new Intl.NumberFormat("en-US", {
           style: "currency",
           currency: "USD",

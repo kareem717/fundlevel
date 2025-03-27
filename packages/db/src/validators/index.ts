@@ -11,14 +11,13 @@ import {
   plaidTransactions,
   quickBooksOauthCredentials,
   quickBooksOauthStates,
-  quickBooksInvoices,
   quickBooksJournalEntries,
   quickBooksVendorCredits,
   quickBooksCreditNotes,
   quickBooksPayments,
   quickBooksAccounts,
   quickBooksTransactions,
-} from "./schema";
+} from "../schema";
 
 // Account schemas
 export const AccountSchema = createSelectSchema(accounts);
@@ -99,15 +98,6 @@ export const UpdateQuickBooksOauthStateParamsSchema = createUpdateSchema(
   quickBooksOauthStates,
 ).omit({ companyId: true });
 
-// QuickBooksInvoice schemas
-export const QuickBooksInvoiceSchema = createSelectSchema(quickBooksInvoices);
-export const CreateQuickBooksInvoiceParamsSchema = createInsertSchema(
-  quickBooksInvoices,
-).omit({ id: true, createdAt: true, updatedAt: true, companyId: true });
-export const UpdateQuickBooksInvoiceParamsSchema = createUpdateSchema(
-  quickBooksInvoices,
-).omit({ id: true, createdAt: true, updatedAt: true, companyId: true });
-
 // QuickBooksJournalEntry schemas
 export const QuickBooksJournalEntrySchema = createSelectSchema(
   quickBooksJournalEntries,
@@ -169,3 +159,5 @@ export const CreateQuickBooksTransactionParamsSchema = createInsertSchema(
 export const UpdateQuickBooksTransactionParamsSchema = createUpdateSchema(
   quickBooksTransactions,
 ).omit({ id: true, createdAt: true, updatedAt: true, companyId: true });
+
+export * from "./invoice";

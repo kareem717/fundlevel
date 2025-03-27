@@ -1,3 +1,4 @@
+import type { OmitEntityFields, OmitTimeStampFields } from "./utils";
 import type { InferInsertModel, InferSelectModel } from "drizzle-orm";
 import type {
   accounts,
@@ -7,7 +8,6 @@ import type {
   plaidTransactions,
   quickBooksOauthCredentials,
   quickBooksOauthStates,
-  quickBooksInvoices,
   quickBooksCreditNotes,
   quickBooksPayments,
   quickBooksAccounts,
@@ -15,7 +15,7 @@ import type {
   quickBooksVendorCredits,
   quickBooksTransactions,
   transactionRelationships,
-} from "./schema";
+} from "../schema";
 
 export type Company = InferSelectModel<typeof companies>;
 export type CreateCompanyParams = Omit<
@@ -82,14 +82,6 @@ export type CreateQuickBooksOauthStateParams = Omit<
 export type UpdateQuickBooksOauthStateParams =
   Partial<CreateQuickBooksOauthStateParams>;
 
-export type QuickBooksInvoice = InferSelectModel<typeof quickBooksInvoices>;
-export type CreateQuickBooksInvoiceParams = Omit<
-  OmitEntityFields<InferInsertModel<typeof quickBooksInvoices>>,
-  "companyId"
->;
-export type UpdateQuickBooksInvoiceParams =
-  Partial<CreateQuickBooksInvoiceParams>;
-
 export type QuickBooksCreditNote = InferSelectModel<
   typeof quickBooksCreditNotes
 >;
@@ -154,21 +146,4 @@ export type CreateTransactionRelationshipParams = Omit<
   "plaidTransactionId"
 >;
 
-// utils
-type TimeStampFields = {
-  createdAt: string | Date;
-  updatedAt: string | Date | null;
-};
-
-type EntityFields = TimeStampFields & {
-  id: string | number;
-};
-
-type OmitTimeStampFields<T extends Partial<TimeStampFields>> = Omit<
-  T,
-  "createdAt" | "updatedAt"
->;
-type OmitEntityFields<T extends Partial<EntityFields>> = Omit<
-  T,
-  "id" | "createdAt" | "updatedAt"
->;
+export * from "./invoice";

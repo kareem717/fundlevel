@@ -548,7 +548,10 @@ const accountingHandler = new OpenAPIHono()
 
     const { bankAccountId } = c.req.valid("param");
 
-    const details = await getService(c).accounting.getBankAccountTransactionDetails(bankAccountId);
+    const details =
+      await getService(c).accounting.getBankAccountTransactionDetails(
+        bankAccountId,
+      );
 
     return c.json(details, 200);
   });

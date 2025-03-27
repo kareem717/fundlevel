@@ -19,7 +19,7 @@ import { Skeleton } from "@fundlevel/ui/components/skeleton";
 import { Button } from "@fundlevel/ui/components/button";
 import { RefreshCcw } from "lucide-react";
 interface BankAccountCardProps extends ComponentPropsWithoutRef<typeof Card> {
-  account: PlaidBankAccount
+  account: PlaidBankAccount;
 }
 
 export function BankAccountCard({
@@ -32,10 +32,20 @@ export function BankAccountCard({
     throw new Error("No auth token found");
   }
 
-  const { data: details, isPending, refetch, isRefetching } = useQuery({
+  const {
+    data: details,
+    isPending,
+    refetch,
+    isRefetching,
+  } = useQuery({
     queryKey: ["bank-account-transaction-details", account.remoteId],
     queryFn: async () => {
-      const resp = await client(env.NEXT_PUBLIC_BACKEND_URL, authToken).accounting["bank-accounts"][":bankAccountId"]["transaction-details"].$get({ param: { bankAccountId: account.remoteId } });
+      const resp = await client(
+        env.NEXT_PUBLIC_BACKEND_URL,
+        authToken,
+      ).accounting["bank-accounts"][":bankAccountId"][
+        "transaction-details"
+      ].$get({ param: { bankAccountId: account.remoteId } });
       if (!resp.ok) {
         throw new Error("Failed to fetch bank account transaction details");
       }
@@ -68,17 +78,21 @@ export function BankAccountCard({
             onClick={() => refetch()}
             disabled={isLoading}
           >
-            <RefreshCcw className={cn("h-4 w-4", isLoading && "animate-spin")} />
+            <RefreshCcw
+              className={cn("h-4 w-4", isLoading && "animate-spin")}
+            />
           </Button>
         </div>
       </CardHeader>
       <CardContent className="mb-12 h-full flex flex-col justify-between gap-8">
         <div>
           <div className="text-sm text-muted-foreground">Current Balance</div>
-          <div className="text-2xl font-bold">{Intl.NumberFormat("en-US", {
-            style: "currency",
-            currency: account.isoCurrencyCode || "USD",
-          }).format(account.currentBalance || 0)}</div>
+          <div className="text-2xl font-bold">
+            {Intl.NumberFormat("en-US", {
+              style: "currency",
+              currency: account.isoCurrencyCode || "USD",
+            }).format(account.currentBalance || 0)}
+          </div>
           <div className="text-xs text-muted-foreground mt-1">
             Last updated:{" "}
             {account.updatedAt
@@ -172,9 +186,7 @@ export function BankAccountCard({
         <span className="text-xs text-muted-foreground">
           Account Type: {account.type}
         </span>
-        <span className="text-xs font-medium">
-          Subtype: {account.subtype}
-        </span>
+        <span className="text-xs font-medium">Subtype: {account.subtype}</span>
       </CardFooter>
     </Card>
   );

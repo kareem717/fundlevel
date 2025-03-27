@@ -15,6 +15,7 @@ import type {
   CreatePlaidTransactionParams,
   QuickBooksOauthCredential,
   PlaidCredential,
+  CreateInvoiceLineParams,
 } from "@fundlevel/db/types";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
@@ -379,25 +380,85 @@ export class CompanyService implements ICompanyService {
     await this.repo.company.deleteQuickBooksOAuthCredentials(companyId);
   }
 
-  async syncInvoices(companyId: number): Promise<void> {
+  async syncInvoices(companyId: number) {
     const response = await this.queryQuickbooks(
       companyId,
       "SELECT * FROM Invoice",
     );
-    const invoices = response.Invoice || [];
 
-    // Map to our format
-    const invoiceParams = invoices.map((invoice: any) => ({
-      remoteId: invoice.Id,
-      content: invoice,
-    }));
+    const invoices = response.Invoice || [];
+    if (!invoices.length) {
+      return;
+    }
 
     // Store in database
     await this.repo.runInTransaction(async (db: IDB) => {
       const repo = new Storage(db);
-      if (invoiceParams.length > 0) {
-        await repo.accounting.upsertInvoice(invoiceParams, companyId);
-      }
+
+      invoices.map(async (unparsedInvoice: any) => {
+        const { Id, SyncToken, TotalAmt, ...invoice } = unparsedInvoice;
+
+        const [newInvoice] = await repo.invoice.upsert(
+          [
+            {
+              remoteId: Id,
+              syncToken: SyncToken,
+              totalAmount: TotalAmt,
+              remainingRemoteContent: JSON.stringify(invoice),
+            },
+          ],
+          companyId,
+        );
+
+        if (!newInvoice) {
+          console.error("No invoice found for invoice", unparsedInvoice);
+          throw new Error("No invoice found for invoice");
+        }
+
+        const lineParams: CreateInvoiceLineParams[] = invoice.Line.map(
+          (line: any) => {
+            let lineType: any;
+
+            switch (line.DetailType) {
+              case "SalesItemLineDetail":
+                lineType = "sales_item";
+                break;
+              case "GroupLineDetail":
+                lineType = "group";
+                break;
+              case "DescriptionOnly":
+                lineType = "description_only";
+                break;
+              case "DiscountLineDetail":
+                lineType = "discount";
+                break;
+              case "SubTotalLineDetail":
+                lineType = "sub_total";
+                break;
+              default:
+                throw new Error(`Unknown line type: ${line.DetailType}`);
+            }
+
+            return {
+              amount: line.Amount,
+              detailType: lineType,
+              description: line.Description,
+              details: line[line.DetailType],
+              lineNumber: line.LineNum,
+              remoteId: line.Id,
+              invoiceId: newInvoice.id,
+            };
+          },
+        );
+
+        try {
+          await repo.invoice.upsertLine(lineParams);
+        } catch (error) {
+          console.error(error);
+          throw new Error(`Error upserting line: ${error}`);
+        }
+      });
+
       await repo.company.updateLastSyncedAt(
         SyncJobType.QUICKBOOKS_INVOICES,
         companyId,
@@ -687,12 +748,12 @@ export class CompanyService implements ICompanyService {
         bankAccountId: account_id,
         personalFinanceCategoryConfidenceLevel:
           personal_finance_category?.confidence_level as
-          | "VERY_HIGH"
-          | "HIGH"
-          | "MEDIUM"
-          | "LOW"
-          | "UNKNOWN"
-          | undefined,
+            | "VERY_HIGH"
+            | "HIGH"
+            | "MEDIUM"
+            | "LOW"
+            | "UNKNOWN"
+            | undefined,
         personalFinanceCategoryPrimary: personal_finance_category?.primary,
         personalFinanceCategoryDetailed: personal_finance_category?.detailed,
         remainingRemoteContent: remaining_remote_content,

@@ -144,11 +144,17 @@ const companyHandler = new OpenAPIHono()
       },
     );
 
-    await tasks.trigger<typeof syncPaymentsTask>("sync-payments", {
-      companyId: company_id,
-    }, {
-      idempotencyKey: await idempotencyKeys.create(`sync-payments-${company_id}`)
-    });
+    await tasks.trigger<typeof syncPaymentsTask>(
+      "sync-payments",
+      {
+        companyId: company_id,
+      },
+      {
+        idempotencyKey: await idempotencyKeys.create(
+          `sync-payments-${company_id}`,
+        ),
+      },
+    );
 
     await tasks.trigger<typeof syncVendorCreditsTask>(
       "sync-vendor-credits",
@@ -162,9 +168,12 @@ const companyHandler = new OpenAPIHono()
       },
     );
 
-    await tasks.trigger<typeof syncCreditNotesTask>("sync-credit-notes", {
-      companyId: company_id,
-    }, {
+    await tasks.trigger<typeof syncCreditNotesTask>(
+      "sync-credit-notes",
+      {
+        companyId: company_id,
+      },
+      {
         idempotencyKey: await idempotencyKeys.create(
           `sync-credit-notes-${company_id}`,
         ),
@@ -269,17 +278,29 @@ const companyHandler = new OpenAPIHono()
       publicToken,
     });
 
-    await tasks.trigger<typeof syncBankAccountsTask>("sync-bank-accounts", {
-      companyId,
-    }, {
-      idempotencyKey: await idempotencyKeys.create(`sync-bank-accounts-${companyId}`)
-    });
+    await tasks.trigger<typeof syncBankAccountsTask>(
+      "sync-bank-accounts",
+      {
+        companyId,
+      },
+      {
+        idempotencyKey: await idempotencyKeys.create(
+          `sync-bank-accounts-${companyId}`,
+        ),
+      },
+    );
 
-    await tasks.trigger<typeof syncBankTransactionsTask>("sync-bank-transactions", {
-      companyId,
-    }, {
-      idempotencyKey: await idempotencyKeys.create(`sync-bank-transactions-${companyId}`)
-    });
+    await tasks.trigger<typeof syncBankTransactionsTask>(
+      "sync-bank-transactions",
+      {
+        companyId,
+      },
+      {
+        idempotencyKey: await idempotencyKeys.create(
+          `sync-bank-transactions-${companyId}`,
+        ),
+      },
+    );
 
     return c.json(creds, 200);
   });

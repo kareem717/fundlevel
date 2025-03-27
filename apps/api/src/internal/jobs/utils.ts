@@ -28,7 +28,9 @@ export function getService() {
         clientId: getEnvVar("QUICK_BOOKS_CLIENT_ID"),
         clientSecret: getEnvVar("QUICK_BOOKS_CLIENT_SECRET"),
         redirectUri: getEnvVar("QUICK_BOOKS_REDIRECT_URI"),
-        environment: getEnvVar("QUICK_BOOKS_ENVIRONMENT") as "sandbox" | "production",
+        environment: getEnvVar("QUICK_BOOKS_ENVIRONMENT") as
+          | "sandbox"
+          | "production",
       },
       plaidConfig: {
         clientId: getEnvVar("PLAID_CLIENT_ID"),

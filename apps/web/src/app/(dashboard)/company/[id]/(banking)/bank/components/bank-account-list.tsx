@@ -34,14 +34,14 @@ export function BankAccountList({ companyId }: { companyId: number }) {
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
       {isPending ? (
         Array.from({ length: 9 }).map((_, index) => (
-          <Skeleton key={`bank-account-skeleton-${crypto.randomUUID()}`} className="h-96 w-full" />
+          <Skeleton
+            key={`bank-account-skeleton-${crypto.randomUUID()}`}
+            className="h-96 w-full"
+          />
         ))
       ) : bankAccounts && bankAccounts.length > 0 ? (
         bankAccounts.map((account) => (
-          <BankAccountCard
-            key={account.remoteId}
-            account={account}
-          />
+          <BankAccountCard key={account.remoteId} account={account} />
         ))
       ) : (
         <p className="text-muted-foreground">No bank accounts found</p>

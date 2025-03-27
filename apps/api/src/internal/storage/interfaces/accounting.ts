@@ -3,8 +3,6 @@ import type {
   CreatePlaidBankAccountParams,
   CreatePlaidTransactionParams,
   PlaidTransaction,
-  CreateQuickBooksInvoiceParams,
-  QuickBooksInvoice,
   QuickBooksAccount,
   CreateQuickBooksAccountParams,
   QuickBooksCreditNote,
@@ -35,7 +33,10 @@ export interface IAccountingRepository {
   deleteBankAccount(remoteId: string): Promise<void>;
   getBankAccountTransactionDetails(
     bankAccountId: string,
-  ): Promise<Omit<BankAccountTransactionDetails, "unaccountedPercentage"> | null>;
+  ): Promise<Omit<
+    BankAccountTransactionDetails,
+    "unaccountedPercentage"
+  > | null>;
 
   // Plaid Transaction methods
   upsertTransaction(
@@ -47,14 +48,6 @@ export interface IAccountingRepository {
     bankAccountId: string,
   ): Promise<PlaidTransaction[]>;
   deleteTransaction(id: string | string[]): Promise<void>;
-
-  // QuickBooks Invoice methods
-  upsertInvoice(
-    invoice: CreateQuickBooksInvoiceParams[],
-    companyId: number,
-  ): Promise<QuickBooksInvoice[]>;
-  getInvoicesByCompanyId(companyId: number): Promise<QuickBooksInvoice[]>;
-  deleteInvoiceByRemoteId(remoteId: string | string[]): Promise<void>;
 
   // QuickBooks Account methods
   upsertAccount(
@@ -114,9 +107,6 @@ export interface IAccountingRepository {
     companyId: number,
   ): Promise<QuickBooksVendorCredit[]>;
   deleteVendorCreditByRemoteId(remoteId: string | string[]): Promise<void>;
-
-  getInvoice(id: number): Promise<QuickBooksInvoice | undefined>;
-  getInvoicesByCompanyId(companyId: number): Promise<QuickBooksInvoice[]>;
 
   getJournalEntry(id: number): Promise<QuickBooksJournalEntry | undefined>;
   getJournalEntriesByCompanyId(

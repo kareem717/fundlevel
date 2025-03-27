@@ -29,8 +29,8 @@
   },
   "exports": {
     ".": "./src/client.ts",
-    "./types": "./src/types.ts",
-    "./validators": "./src/validators.ts",
-    "./schema": "./src/schema.ts"
+    "./types": "./src/types/index.ts",
+    "./validators": "./src/validators/index.ts",
+    "./schema": "./src/schema/index.ts"
   }
 }

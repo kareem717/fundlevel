@@ -17,6 +17,7 @@ import type {
   CreateQuickBooksTransactionParams,
   QuickBooksVendorCredit,
   CreateQuickBooksVendorCreditParams,
+  InvoiceLine,
 } from "@fundlevel/db/types";
 import type { IAccountingRepository } from "../interfaces/accounting";
 import {
@@ -30,11 +31,12 @@ import {
   quickBooksTransactions,
   quickBooksVendorCredits,
   transactionRelationships,
+  invoiceLines,
 } from "@fundlevel/db/schema";
 import type { DB, Transaction } from "@fundlevel/db";
 import { eq, inArray, sql } from "drizzle-orm";
 export class AccountingRepository implements IAccountingRepository {
-  constructor(private db: DB | Transaction) { }
+  constructor(private db: DB | Transaction) {}
 
   async upsertBankAccount(
     bankAccounts: CreatePlaidBankAccountParams[],
@@ -461,7 +463,6 @@ export class AccountingRepository implements IAccountingRepository {
         ),
       );
   }
-
   // QuickBooks Transaction methods
   async upsertQbTransaction(
     transactions: CreateQuickBooksTransactionParams[],
@@ -618,9 +619,7 @@ export class AccountingRepository implements IAccountingRepository {
     return data;
   }
 
-  async getBankAccountTransactionDetails(
-    bankAccountId: string,
-  ) {
+  async getBankAccountTransactionDetails(bankAccountId: string) {
     const [transactions] = await this.db
       .select({
         totalVolume: sql<number>`sum(${plaidTransactions.amount})`,
@@ -628,7 +627,13 @@ export class AccountingRepository implements IAccountingRepository {
         unaccountedAmount: sql<number>`sum(${plaidTransactions.amount}) filter (where ${transactionRelationships.transactionId} is null)`,
       })
       .from(plaidTransactions)
-      .leftJoin(transactionRelationships, eq(plaidTransactions.remoteId, transactionRelationships.plaidTransactionId))
+      .leftJoin(
+        transactionRelationships,
+        eq(
+          plaidTransactions.remoteId,
+          transactionRelationships.plaidTransactionId,
+        ),
+      )
       .where(eq(plaidTransactions.bankAccountId, bankAccountId))
       .groupBy(plaidTransactions.bankAccountId);
 

@@ -18,6 +18,7 @@ import {
 } from "@fundlevel/ui/components/tabs";
 import type { PlaidBankAccount } from "@fundlevel/db/types";
 import { toast } from "@fundlevel/ui/components/sonner";
+import { useQueryState, parseAsString } from "nuqs";
 
 interface ReconciliationResult {
   matches: Array<{
@@ -44,9 +45,11 @@ interface ReconciliationClientProps {
 export function ReconciliationClient({
   bankAccounts,
 }: ReconciliationClientProps) {
-  const [selectedAccountId, setSelectedAccountId] = useState<
-    string | undefined
-  >();
+  const [selectedAccountId, setSelectedAccountId] = useQueryState(
+    "selectedAccountId",
+    parseAsString.withDefault(""),
+  );
+
   const [results, setResults] = useState<{
     matches: Array<{
       transactionId: string;
@@ -70,11 +73,14 @@ export function ReconciliationClient({
   };
 
   const handleAccountSelection = (accountId: string) => {
+    console.log("accountId", accountId);
     if (accountId === selectedAccountId) {
-      setSelectedAccountId(undefined);
+      setSelectedAccountId("");
     } else {
       setSelectedAccountId(accountId);
     }
+
+    console.log("selectedAccountId", accountId);
   };
 
   return (
@@ -133,7 +139,6 @@ export function ReconciliationClient({
               </div>
             )}
           </div>
-
           <div className="mt-6 flex justify-end">
             <Button
               onClick={handleReconcile}
@@ -145,138 +150,6 @@ export function ReconciliationClient({
           </div>
         </CardContent>
       </Card>
-
-      {results && (
-        <Tabs defaultValue="matches">
-          <TabsList className="mb-4">
-            <TabsTrigger
-              value="matches"
-              disabled={results.matches.length === 0}
-            >
-              Matches ({results.matches.length})
-            </TabsTrigger>
-            <TabsTrigger
-              value="unmatched"
-              disabled={results.unmatchedTransactions.length === 0}
-            >
-              Unmatched Items ({results.unmatchedTransactions.length})
-            </TabsTrigger>
-          </TabsList>
-          <TabsContent value="matches">
-            <Card>
-              <CardHeader>
-                <CardTitle>Matched Transactions</CardTitle>
-                <CardDescription>
-                  Transactions that have been matched to invoices
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {results.matches.map((match) => (
-                    <div
-                      key={match.transactionId}
-                      className="p-4 border rounded-lg flex flex-col sm:flex-row sm:items-center justify-between gap-4"
-                    >
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium">
-                            Transaction: {match.transactionId}
-                          </span>
-                          {match.needsReview && (
-                            <Badge variant="outline" className="bg-yellow-100">
-                              Needs Review
-                            </Badge>
-                          )}
-                        </div>
-                        {match.invoiceId && (
-                          <div className="text-sm text-muted-foreground">
-                            Matched to Invoice: {match.invoiceId}
-                          </div>
-                        )}
-                        <div className="text-sm mt-1">{match.matchReason}</div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Badge
-                          className={
-                            match.confidence > 80
-                              ? "bg-green-100 text-green-800"
-                              : match.confidence > 50
-                                ? "bg-yellow-100 text-yellow-800"
-                                : "bg-red-100 text-red-800"
-                          }
-                        >
-                          Confidence: {match.confidence}%
-                        </Badge>
-                      </div>
-                    </div>
-                  ))}
-
-                  {results.matches.length === 0 && (
-                    <div className="text-center py-8 text-muted-foreground">
-                      No matched transactions found
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="unmatched">
-            <div className="grid gap-6 sm:grid-cols-2">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Unmatched Transactions</CardTitle>
-                  <CardDescription>
-                    Transactions with no matching invoices
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
-                    {results.unmatchedTransactions.map((transactionId) => (
-                      <div
-                        key={transactionId}
-                        className="p-3 border rounded-lg"
-                      >
-                        {transactionId}
-                      </div>
-                    ))}
-
-                    {results.unmatchedTransactions.length === 0 && (
-                      <div className="text-center py-6 text-muted-foreground">
-                        No unmatched transactions
-                      </div>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Unmatched Invoices</CardTitle>
-                  <CardDescription>
-                    Invoices with no matching transactions
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
-                    {results.unmatchedInvoices.map((invoiceId) => (
-                      <div key={invoiceId} className="p-3 border rounded-lg">
-                        {invoiceId}
-                      </div>
-                    ))}
-
-                    {results.unmatchedInvoices.length === 0 && (
-                      <div className="text-center py-6 text-muted-foreground">
-                        No unmatched invoices
-                      </div>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-        </Tabs>
-      )}
     </>
   );
 }

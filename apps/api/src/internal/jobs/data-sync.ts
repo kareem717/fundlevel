@@ -74,10 +74,13 @@ export const syncAccountingTransactionsTask = schemaTask({
   }),
   maxDuration: 300,
   run: async (payload, { ctx }) => {
-    logger.log(`Syncing accounting transactions for company ${payload.companyId}`, {
-      payload,
-      ctx,
-    });
+    logger.log(
+      `Syncing accounting transactions for company ${payload.companyId}`,
+      {
+        payload,
+        ctx,
+      },
+    );
 
     const service = getService();
     await service.company.syncAccountingTransactions(payload.companyId);

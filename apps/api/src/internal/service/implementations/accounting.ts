@@ -17,7 +17,7 @@ import type {
 } from "../interfaces/accounting";
 import axios from "axios";
 import type { ICompanyService } from "../interfaces";
-import type { IAccountingRepository } from "@fundlevel/api/internal/storage/interfaces";
+import type { Storage } from "@fundlevel/api/internal/storage";
 
 // Define types for QuickBooks report structures (moved from quickbooks.ts)
 interface QBReport {
@@ -52,16 +52,16 @@ interface QBRow {
  * and QuickBooks financial reports
  */
 export class AccountingService implements IAccountingService {
-  private accountingRepo: IAccountingRepository;
+  private repo: Storage;
   private companyService: ICompanyService;
   private qbApiBaseUrl: string;
 
   constructor(
-    accountingRepo: IAccountingRepository,
+    repo: Storage,
     companyService: ICompanyService,
     qbEnv: "sandbox" | "production",
   ) {
-    this.accountingRepo = accountingRepo;
+    this.repo = repo;
     this.companyService = companyService;
     // Set the appropriate base URLs based on environment
     switch (qbEnv) {
@@ -78,7 +78,7 @@ export class AccountingService implements IAccountingService {
    * Fetch bank accounts for a company
    */
   async getBankAccountsForCompany(companyId: number): Promise<BankAccount[]> {
-    return await this.accountingRepo.getBankAccountsByCompanyId(companyId);
+    return await this.repo.accounting.getBankAccountsByCompanyId(companyId);
   }
 
   /**
@@ -87,7 +87,7 @@ export class AccountingService implements IAccountingService {
   async getTransactionsByBankAccountId(
     bankAccountId: string,
   ): Promise<BankTransaction[]> {
-    return await this.accountingRepo.getTransactionsByBankAccountId(
+    return await this.repo.accounting.getTransactionsByBankAccountId(
       bankAccountId,
     );
   }
@@ -96,7 +96,7 @@ export class AccountingService implements IAccountingService {
    * Fetch bank account details
    */
   async getBankAccountDetails(remoteId: string): Promise<BankAccount> {
-    const result = await this.accountingRepo.getBankAccountByRemoteId(remoteId);
+    const result = await this.repo.accounting.getBankAccountByRemoteId(remoteId);
     if (!result) {
       throw new Error(`Bank account not found: ${remoteId}`);
     }
@@ -107,7 +107,7 @@ export class AccountingService implements IAccountingService {
    * Fetch invoices for a company
    */
   async getInvoicesForCompany(companyId: number): Promise<Invoice[]> {
-    return await this.accountingRepo.getInvoicesByCompanyId(companyId);
+    return await this.repo.invoice.getByCompanyId(companyId);
   }
 
   /**
@@ -441,7 +441,7 @@ export class AccountingService implements IAccountingService {
     }
   }
   async getInvoice(invoiceId: number): Promise<Invoice> {
-    const invoice = await this.accountingRepo.getInvoice(invoiceId);
+    const invoice = await this.repo.invoice.getById(invoiceId);
     if (!invoice) {
       throw new Error(`Invoice not found: ${invoiceId}`);
     }
@@ -449,11 +449,11 @@ export class AccountingService implements IAccountingService {
   }
 
   async getInvoicesByCompanyId(companyId: number): Promise<Invoice[]> {
-    return await this.accountingRepo.getInvoicesByCompanyId(companyId);
+    return await this.repo.invoice.getByCompanyId(companyId);
   }
 
   async getAccountingAccount(id: number): Promise<QuickBooksAccount> {
-    const account = await this.accountingRepo.getAccountById(id);
+    const account = await this.repo.accounting.getAccountById(id);
     if (!account) {
       throw new Error(`Account not found: ${id}`);
     }
@@ -463,11 +463,11 @@ export class AccountingService implements IAccountingService {
   async getAccountingAccountsByCompanyId(
     companyId: number,
   ): Promise<QuickBooksAccount[]> {
-    return await this.accountingRepo.getAccountsByCompanyId(companyId);
+    return await this.repo.accounting.getAccountsByCompanyId(companyId);
   }
 
   async getAccountingTransaction(id: number): Promise<QuickBooksTransaction> {
-    const transaction = await this.accountingRepo.getQbTransactionById(id);
+    const transaction = await this.repo.accounting.getQbTransactionById(id);
     if (!transaction) {
       throw new Error(`Transaction not found: ${id}`);
     }
@@ -477,11 +477,11 @@ export class AccountingService implements IAccountingService {
   async getAccountingTransactionsByCompanyId(
     companyId: number,
   ): Promise<QuickBooksTransaction[]> {
-    return await this.accountingRepo.getQbTransactionsByCompanyId(companyId);
+    return await this.repo.accounting.getQbTransactionsByCompanyId(companyId);
   }
 
   async getJournalEntry(id: number): Promise<QuickBooksJournalEntry> {
-    const journalEntry = await this.accountingRepo.getJournalEntry(id);
+    const journalEntry = await this.repo.accounting.getJournalEntry(id);
     if (!journalEntry) {
       throw new Error(`Journal entry not found: ${id}`);
     }
@@ -491,11 +491,11 @@ export class AccountingService implements IAccountingService {
   async getJournalEntriesByCompanyId(
     companyId: number,
   ): Promise<QuickBooksJournalEntry[]> {
-    return await this.accountingRepo.getJournalEntriesByCompanyId(companyId);
+    return await this.repo.accounting.getJournalEntriesByCompanyId(companyId);
   }
 
   async getVendorCredit(id: number): Promise<QuickBooksVendorCredit> {
-    const vendorCredit = await this.accountingRepo.getVendorCreditById(id);
+    const vendorCredit = await this.repo.accounting.getVendorCreditById(id);
     if (!vendorCredit) {
       throw new Error(`Vendor credit not found: ${id}`);
     }
@@ -505,11 +505,11 @@ export class AccountingService implements IAccountingService {
   async getVendorCreditsByCompanyId(
     companyId: number,
   ): Promise<QuickBooksVendorCredit[]> {
-    return await this.accountingRepo.getVendorCreditsByCompanyId(companyId);
+    return await this.repo.accounting.getVendorCreditsByCompanyId(companyId);
   }
 
   async getCreditNote(id: number): Promise<QuickBooksCreditNote> {
-    const creditNote = await this.accountingRepo.getCreditNoteById(id);
+    const creditNote = await this.repo.accounting.getCreditNoteById(id);
     if (!creditNote) {
       throw new Error(`Credit note not found: ${id}`);
     }
@@ -519,11 +519,11 @@ export class AccountingService implements IAccountingService {
   async getCreditNotesByCompanyId(
     companyId: number,
   ): Promise<QuickBooksCreditNote[]> {
-    return await this.accountingRepo.getCreditNotesByCompanyId(companyId);
+    return await this.repo.accounting.getCreditNotesByCompanyId(companyId);
   }
 
   async getPayment(id: number): Promise<QuickBooksPayment> {
-    const payment = await this.accountingRepo.getPaymentById(id);
+    const payment = await this.repo.accounting.getPaymentById(id);
     if (!payment) {
       throw new Error(`Payment not found: ${id}`);
     }
@@ -533,13 +533,12 @@ export class AccountingService implements IAccountingService {
   async getPaymentsByCompanyId(
     companyId: number,
   ): Promise<QuickBooksPayment[]> {
-    return await this.accountingRepo.getPaymentsByCompanyId(companyId);
+    return await this.repo.accounting.getPaymentsByCompanyId(companyId);
   }
 
-  async getBankAccountTransactionDetails(
-    bankAccountId: string,
-  ) {
-    const details = await this.accountingRepo.getBankAccountTransactionDetails(bankAccountId);
+  async getBankAccountTransactionDetails(bankAccountId: string) {
+    const details =
+      await this.repo.accounting.getBankAccountTransactionDetails(bankAccountId);
 
     if (!details) {
       console.log(`No details found for bank account ${bankAccountId}`);
@@ -553,7 +552,11 @@ export class AccountingService implements IAccountingService {
 
     return {
       ...details,
-      unaccountedPercentage: Math.round(((details.totalVolume - details.unaccountedAmount) / details.totalVolume) * 100),
+      unaccountedPercentage: Math.round(
+        ((details.totalVolume - details.unaccountedAmount) /
+          details.totalVolume) *
+          100,
+      ),
     };
   }
 }
