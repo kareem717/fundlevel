@@ -15,6 +15,10 @@ import {
   QuickBooksTransactionSchema,
   QuickBooksVendorCreditSchema,
 } from "@fundlevel/db/validators";
+import {
+  cursorPaginationParamsSchema,
+  cursorPaginationResultSchema,
+} from "@fundlevel/api/internal/server/types/params";
 
 const intIdSchema = z.coerce.number().int().positive();
 const stringIdSchema = z.string().min(1);
@@ -165,13 +169,17 @@ export const getInvoicesByCompanyIdRoute = createRoute({
     params: z.object({
       companyId: intIdSchema.describe("The ID of the company"),
     }),
+    query: cursorPaginationParamsSchema
   },
   responses: {
     200: {
       description: "Successful fetch",
       content: {
         "application/json": {
-          schema: z.array(InvoiceSchema.openapi("Invoice")),
+          schema: z.object({
+            invoices: z.array(InvoiceSchema.openapi("Invoice")),
+            ...cursorPaginationResultSchema.shape,
+          }),
         },
       },
     },

@@ -17,7 +17,7 @@ import { Loader2 } from "lucide-react";
 import { CreateAccountParamsSchema } from "@fundlevel/db/validators";
 import { redirect, useRouter } from "next/navigation";
 import { redirects } from "@fundlevel/web/lib/config/redirects";
-import { z } from "zod";
+import type { z } from "zod";
 import { useMutation } from "@tanstack/react-query";
 import { client } from "@fundlevel/sdk";
 import { toast } from "@fundlevel/ui/components/sonner";

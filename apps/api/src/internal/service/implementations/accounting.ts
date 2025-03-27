@@ -18,6 +18,8 @@ import type {
 import axios from "axios";
 import type { ICompanyService } from "../interfaces";
 import type { Storage } from "@fundlevel/api/internal/storage";
+import type { GetManyInvoicesFilter, GetOneInvoiceFilter } from "@fundlevel/api/internal/storage/interfaces";
+import type{ CursorPaginationResult } from "@fundlevel/api/internal/entities";
 
 // Define types for QuickBooks report structures (moved from quickbooks.ts)
 interface QBReport {
@@ -101,13 +103,6 @@ export class AccountingService implements IAccountingService {
       throw new Error(`Bank account not found: ${remoteId}`);
     }
     return result;
-  }
-
-  /**
-   * Fetch invoices for a company
-   */
-  async getInvoicesForCompany(companyId: number): Promise<Invoice[]> {
-    return await this.repo.invoice.getByCompanyId(companyId);
   }
 
   /**
@@ -440,16 +435,17 @@ export class AccountingService implements IAccountingService {
       return 0;
     }
   }
-  async getInvoice(invoiceId: number): Promise<Invoice> {
-    const invoice = await this.repo.invoice.getById(invoiceId);
+  async getInvoice(filter: GetOneInvoiceFilter): Promise<Invoice> {
+    const invoice = await this.repo.invoice.get(filter);
     if (!invoice) {
-      throw new Error(`Invoice not found: ${invoiceId}`);
+      throw new Error(`Invoice not found: ${filter}`);
     }
+
     return invoice;
   }
 
-  async getInvoicesByCompanyId(companyId: number): Promise<Invoice[]> {
-    return await this.repo.invoice.getByCompanyId(companyId);
+  async getManyInvoices(filter: GetManyInvoicesFilter): Promise<CursorPaginationResult<Invoice, number>> {
+    return await this.repo.invoice.getMany(filter);
   }
 
   async getAccountingAccount(id: number): Promise<QuickBooksAccount> {

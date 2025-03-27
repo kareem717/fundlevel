@@ -32,6 +32,7 @@ import {
 } from "@fundlevel/db/schema";
 import type { DB, Transaction } from "@fundlevel/db";
 import { eq, inArray, sql } from "drizzle-orm";
+
 export class AccountingRepository implements IAccountingRepository {
   constructor(private db: DB | Transaction) { }
 

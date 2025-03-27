@@ -10,7 +10,8 @@ import type {
   QuickBooksJournalEntry,
 } from "@fundlevel/db/types";
 import type { BankAccountTransactionDetails } from "@fundlevel/api/internal/entities";
-
+import type { GetManyInvoicesFilter, GetOneInvoiceFilter } from "@fundlevel/api/internal/storage/interfaces";
+import type { CursorPaginationResult } from "@fundlevel/api/internal/entities";
 /**
  * Report header information
  */
@@ -117,11 +118,6 @@ export interface IAccountingService {
   getBankAccountDetails(remoteId: string): Promise<BankAccount>;
 
   /**
-   * Fetch invoices for a company
-   */
-  getInvoicesForCompany(companyId: number): Promise<Invoice[]>;
-
-  /**
    * Fetch the balance sheet report from QuickBooks
    */
   getBalanceSheet(
@@ -145,9 +141,6 @@ export interface IAccountingService {
     params: { start_date: string; end_date: string },
   ): Promise<CashFlowReport>;
 
-  getInvoice(invoiceId: number): Promise<Invoice>;
-  getInvoicesByCompanyId(companyId: number): Promise<Invoice[]>;
-
   getAccountingAccountsByCompanyId(
     companyId: number,
   ): Promise<QuickBooksAccount[]>;
@@ -158,8 +151,8 @@ export interface IAccountingService {
   ): Promise<QuickBooksTransaction[]>;
   getAccountingTransaction(id: number): Promise<QuickBooksTransaction>;
 
-  getInvoicesByCompanyId(companyId: number): Promise<Invoice[]>;
-  getInvoice(id: number): Promise<Invoice>;
+  getManyInvoices(filter: GetManyInvoicesFilter): Promise<CursorPaginationResult<Invoice, number>>;
+  getInvoice(filter: GetOneInvoiceFilter): Promise<Invoice>;
 
   getJournalEntriesByCompanyId(
     companyId: number,
