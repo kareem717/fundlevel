@@ -13,6 +13,8 @@
     "lib": ["ESNext"],
     "types": ["@cloudflare/workers-types/2023-07-01"],
     "jsx": "react-jsx",
-    "jsxImportSource": "hono/jsx"
+    "jsxImportSource": "hono/jsx",
+    "declaration": false,
+    "declarationMap": false
   }
 }

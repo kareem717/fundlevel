@@ -3,9 +3,18 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@fundlevel/ui/*": ["./src/*"]
-    }
+      "@fundlevel/ui/*": [
+        "./src/*"
+      ]
+    },
+    "declaration": false,
+    "declarationMap": false
   },
-  "include": ["."],
-  "exclude": ["node_modules", "dist"]
+  "include": [
+    "."
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }

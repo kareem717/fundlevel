@@ -4,7 +4,9 @@
     "baseUrl": ".",
     "paths": {
       "@fundlevel/db/*": ["./src/*"]
-    }
+    },
+    "declaration": false,
+    "declarationMap": false
   },
   "include": ["**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules", "dist", "build"]

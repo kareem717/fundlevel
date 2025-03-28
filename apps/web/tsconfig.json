@@ -3,15 +3,23 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@fundlevel/web/*": ["./src/*"],
-      "@fundlevel/ui/*": ["../../packages/ui/src/*"],
-      "@fundlevel/api/*": ["../../apps/api/src/*"]
+      "@fundlevel/web/*": [
+        "./src/*"
+      ],
+      "@fundlevel/ui/*": [
+        "../../packages/ui/src/*"
+      ],
+      "@fundlevel/api/*": [
+        "../../apps/api/src/*"
+      ]
     },
     "plugins": [
       {
         "name": "next"
       }
-    ]
+    ],
+    "declaration": false,
+    "declarationMap": false
   },
   "include": [
     "src/**/*.ts",
@@ -20,5 +28,7 @@
     "next.config.js",
     ".next/types/**/*.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules"
+  ]
 }
