@@ -1,4 +1,4 @@
-import { notFound, redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 import { redirects } from "@fundlevel/web/lib/config/redirects";
 import { getTokenCached } from "@fundlevel/web/actions/auth";
 import { client } from "@fundlevel/sdk";
@@ -6,9 +6,9 @@ import { env } from "@fundlevel/web/env";
 
 export default async function CompanyPage({
   params,
-}: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
-  const parsedId = Number.parseInt(id, 10);
+}: { params: Promise<{ companyId: string }> }) {
+  const { companyId } = await params;
+  const parsedId = Number.parseInt(companyId, 10);
 
   const token = await getTokenCached();
   if (!token) {
@@ -20,7 +20,7 @@ export default async function CompanyPage({
   ].$get({ param: { companyId: parsedId } });
 
   if (resp.status !== 200) {
-    throw new Error("Failed to fetch company, status: " + resp.status);
+    throw new Error(`Failed to fetch company, status: ${resp.status}`);
   }
 
   const company = await resp.json();

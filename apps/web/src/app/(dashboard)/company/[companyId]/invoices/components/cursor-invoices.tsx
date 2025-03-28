@@ -97,7 +97,7 @@ export function CursorInvoices({
                 <Link
                   href={redirects.app
                     .company(companyId)
-                    .accounting.invoice(invoice.id.toString())}
+                    .invoices.show(invoice.id.toString())}
                   className={cn(buttonVariants({ variant: "outline" }))}
                 >
                   View Invoice

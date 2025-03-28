@@ -1,7 +1,7 @@
 import { AuthProvider } from "@fundlevel/web/components/providers/auth-provider";
 import { redirects } from "@fundlevel/web/lib/config/redirects";
 import { redirect } from "next/navigation";
-import { Account } from "@fundlevel/db/types";
+import type { Account } from "@fundlevel/db/types";
 import { getTokenCached, getAccountCached } from "../../actions/auth";
 
 export default async function DashboardLayout({

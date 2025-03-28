@@ -6,7 +6,7 @@ import { env } from "@fundlevel/web/env";
 
 export default async function AccountingInvoicePage({
   params,
-}: { params: Promise<{ id: string; invoiceId: string }> }) {
+}: { params: Promise<{ companyId: string; invoiceId: string }> }) {
   const { invoiceId } = await params;
 
   const token = await getTokenCached();
@@ -14,9 +14,7 @@ export default async function AccountingInvoicePage({
     return redirect(redirects.auth.login);
   }
 
-  const req = await client(env.NEXT_PUBLIC_BACKEND_URL, token).accounting[
-    "invoices"
-  ][":invoiceId"].$get({ param: { invoiceId: parseInt(invoiceId) } });
+  const req = await client(env.NEXT_PUBLIC_BACKEND_URL, token).accounting.invoices[":invoiceId"].$get({ param: { invoiceId: Number.parseInt(invoiceId) } });
   if (!req.ok) {
     throw new Error("Failed to get invoice");
   }

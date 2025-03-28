@@ -25,34 +25,15 @@ export const redirects = {
   app: {
     company: (id: number) => ({
       root: companyPrefix(id),
-      bank: {
-        root: companyPrefix(id, "bank"),
-        reconciliation: companyPrefix(id, "bank/reconciliation"),
-        transactions: (accountId: string) =>
-          companyPrefix(id, `bank/${accountId}/transactions`),
+      bankAccounts: {
+        index: companyPrefix(id, "bank-accounts"),
+        show: (accountId: string) =>
+          companyPrefix(id, `bank-accounts/${accountId}`),
       },
-      accounting: {
-        invoices: companyPrefix(id, "invoices"),
-        invoice: (invoiceId: string) =>
+      invoices: {
+        index: companyPrefix(id, "invoices"),
+        show: (invoiceId: string) =>
           companyPrefix(id, `invoices/${invoiceId}`),
-        accounts: companyPrefix(id, "accounts"),
-        account: (accountId: string) =>
-          companyPrefix(id, `accounts/${accountId}`),
-        transactions: companyPrefix(id, "transactions"),
-        transaction: (transactionId: string) =>
-          companyPrefix(id, `transactions/${transactionId}`),
-        journalEntries: companyPrefix(id, "journal-entries"),
-        journalEntry: (journalEntryId: string) =>
-          companyPrefix(id, `journal-entries/${journalEntryId}`),
-        vendorCredits: companyPrefix(id, "vendor-credits"),
-        vendorCredit: (vendorCreditId: string) =>
-          companyPrefix(id, `vendor-credits/${vendorCreditId}`),
-        creditNotes: companyPrefix(id, "credit-notes"),
-        creditNote: (creditNoteId: string) =>
-          companyPrefix(id, `credit-notes/${creditNoteId}`),
-        payments: companyPrefix(id, "payments"),
-        payment: (paymentId: string) =>
-          companyPrefix(id, `payments/${paymentId}`),
       },
       settings: {
         root: companyPrefix(id, "settings"),

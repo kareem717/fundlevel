@@ -14,12 +14,12 @@ import { Companieswitcher } from "./company-switcher";
 
 export interface CompaniesidebarProps
   extends ComponentPropsWithoutRef<typeof Sidebar> {
-  accountId: number;
+  companyId: number;
 }
 
 //TODO: this doesn't have to be a client component
-export function Companiesidebar({ accountId, ...props }: CompaniesidebarProps) {
-  const sidebarConfig = sidebar.companyDashboard(accountId);
+export function Companiesidebar({ companyId, ...props }: CompaniesidebarProps) {
+  const sidebarConfig = sidebar.companyDashboard(companyId);
 
   return (
     <Sidebar variant="inset" {...props}>

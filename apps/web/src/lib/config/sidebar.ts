@@ -3,33 +3,26 @@ import {
   LogOut,
   Plug,
   Receipt,
-  BookOpen,
-  ReceiptText,
-  CreditCard,
-  FileText,
-  ArrowDownUp,
-  Wallet,
   Landmark,
-  Check,
 } from "lucide-react";
 import { redirects } from "./redirects";
 import type { ElementType } from "react";
 
 export type NavigationItem =
   | {
+    title: string;
+    url: string;
+    icon?: ElementType;
+  }
+  | {
+    title: string;
+    root: string;
+    icon?: ElementType;
+    items: {
       title: string;
       url: string;
-      icon?: ElementType;
-    }
-  | {
-      title: string;
-      root: string;
-      icon?: ElementType;
-      items: {
-        title: string;
-        url: string;
-      }[];
-    };
+    }[];
+  };
 
 export type NavigationMenu = {
   name: string;
@@ -82,13 +75,8 @@ const companyDashboard = (id: number): NavigationMenu[] => [
     items: [
       {
         title: "Bank Accounts",
-        url: redirects.app.company(id).bank.root,
+        url: redirects.app.company(id).bankAccounts.index,
         icon: Landmark,
-      },
-      {
-        title: "Reconcile Transactions",
-        url: redirects.app.company(id).bank.reconciliation,
-        icon: Check,
       },
     ],
   },
@@ -98,38 +86,8 @@ const companyDashboard = (id: number): NavigationMenu[] => [
     items: [
       {
         title: "Invoices",
-        url: redirects.app.company(id).accounting.invoices,
+        url: redirects.app.company(id).invoices.index,
         icon: Receipt,
-      },
-      {
-        title: "Accounts",
-        url: redirects.app.company(id).accounting.accounts,
-        icon: BookOpen,
-      },
-      {
-        title: "Transactions",
-        url: redirects.app.company(id).accounting.transactions,
-        icon: ArrowDownUp,
-      },
-      {
-        title: "Journal Entries",
-        url: redirects.app.company(id).accounting.journalEntries,
-        icon: FileText,
-      },
-      {
-        title: "Vendor Credits",
-        url: redirects.app.company(id).accounting.vendorCredits,
-        icon: ReceiptText,
-      },
-      {
-        title: "Credit Notes",
-        url: redirects.app.company(id).accounting.creditNotes,
-        icon: CreditCard,
-      },
-      {
-        title: "Payments",
-        url: redirects.app.company(id).accounting.payments,
-        icon: Wallet,
       },
     ],
   },

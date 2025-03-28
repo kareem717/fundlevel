@@ -2,9 +2,9 @@ import { BankAccountList } from "./components/bank-account-list";
 
 export default async function BankAccountsPage({
   params,
-}: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
-  const companyId = Number.parseInt(id, 10);
+}: { params: Promise<{ companyId: string }> }) {
+  const { companyId } = await params;
+  const parsedId = Number.parseInt(companyId, 10);
 
   return (
     <div className="space-y-6">
@@ -14,7 +14,7 @@ export default async function BankAccountsPage({
           Manage your linked account and view financial data
         </p>
       </div>
-      <BankAccountList companyId={companyId} />
+      <BankAccountList companyId={parsedId} />
     </div>
   );
 }

@@ -13,21 +13,24 @@ import { redirect } from "next/navigation";
 import { redirects } from "@fundlevel/web/lib/config/redirects";
 import { getTokenCached } from "@fundlevel/web/actions/auth";
 import { env } from "@fundlevel/web/env";
+import type { Company } from "@fundlevel/db/types";
 
 export default async function CompanyLayout({
   children,
   params,
 }: {
   children: ReactNode;
-  params: Promise<{ id: string }>;
+  params: Promise<{ companyId: string }>;
 }) {
   const token = await getTokenCached();
   if (!token) {
     return redirect(redirects.auth.login);
   }
 
-  const { id } = await params;
-  const parsedId = Number.parseInt(id, 10);
+  const { companyId } = await params;
+  const parsedId = Number.parseInt(companyId, 10);
+
+  console.log("companyId", companyId);
 
   if (Number.isNaN(parsedId)) {
     return notFound();
@@ -36,7 +39,7 @@ export default async function CompanyLayout({
   const resp = await client(env.NEXT_PUBLIC_BACKEND_URL, token).company.$get();
 
   if (resp.status !== 200) {
-    throw new Error("Failed to fetch companies, status: " + resp.status);
+    throw new Error(`Failed to fetch companies, status: ${resp.status}`);
   }
 
   const companies = await resp.json();
@@ -44,7 +47,7 @@ export default async function CompanyLayout({
     return notFound();
   }
 
-  const current = companies.find((account) => account.id === parsedId);
+  const current = companies.find((company: Company) => company.id === parsedId);
   if (!current) {
     return notFound();
   }
@@ -52,7 +55,7 @@ export default async function CompanyLayout({
   return (
     <CompanyProvider accounts={companies} defaultAccount={current}>
       <SidebarProvider>
-        <Companiesidebar accountId={current.id} />
+        <Companiesidebar companyId={current.id} />
         <SidebarInset>
           {/* {alertComponent} */}
           <header className="flex h-16 shrink-0 items-center gap-2">
