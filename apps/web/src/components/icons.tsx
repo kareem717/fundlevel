@@ -115,7 +115,7 @@ export function XeroIcon(props: ComponentPropsWithoutRef<"svg">) {
       y="0px"
       width="100%"
       viewBox="0 0 1183 1183"
-      enable-background="new 0 0 1183 1183"
+      enableBackground="new 0 0 1183 1183"
       {...props}
     >
       <path
