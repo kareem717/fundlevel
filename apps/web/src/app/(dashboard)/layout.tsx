@@ -3,6 +3,7 @@ import { redirects } from "@fundlevel/web/lib/config/redirects";
 import { redirect } from "next/navigation";
 import type { Account } from "@fundlevel/db/types";
 import { getTokenCached, getAccountCached } from "../../actions/auth";
+import { env } from "@fundlevel/web/env";
 
 export default async function DashboardLayout({
   children,
@@ -10,6 +11,10 @@ export default async function DashboardLayout({
   const token = await getTokenCached();
   if (!token) {
     redirect(redirects.auth.login);
+  }
+
+  if (env.NODE_ENV === "development") {
+    console.log("Token", token);
   }
 
   let account: Account | null = null;

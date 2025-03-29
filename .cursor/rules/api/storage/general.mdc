@@ -10,4 +10,4 @@ alwaysApply: false
 * Exports implementations of the repository interfaces in [index.ts](mdc:apps/api/src/internal/storage/implementaions/index.ts)
     * Rules for implementing interfaces in [implementations.mdc](mdc:.cursor/rules/api/storage/implementations.mdc)
 * Use Dizzle ORM for the implementations, via a package in [client.ts](mdc:packages/db/src/client.ts)
-
+* One repository per domain.

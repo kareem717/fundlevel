@@ -10,8 +10,8 @@ import type {
   QuickBooksJournalEntry,
 } from "@fundlevel/db/types";
 import type { BankAccountTransactionDetails } from "@fundlevel/api/internal/entities";
-import type { GetManyInvoicesFilter, GetOneInvoiceFilter } from "@fundlevel/api/internal/storage/interfaces";
-import type { CursorPaginationResult } from "@fundlevel/api/internal/entities";
+import type { GetManyInvoicesFilter } from "@fundlevel/api/internal/storage/interfaces";
+import type { OffsetPaginationResult } from "@fundlevel/api/internal/entities";
 /**
  * Report header information
  */
@@ -151,8 +151,10 @@ export interface IAccountingService {
   ): Promise<QuickBooksTransaction[]>;
   getAccountingTransaction(id: number): Promise<QuickBooksTransaction>;
 
-  getManyInvoices(filter: GetManyInvoicesFilter): Promise<CursorPaginationResult<Invoice, number>>;
-  getInvoice(filter: GetOneInvoiceFilter): Promise<Invoice>;
+  getManyInvoices(
+    filter: GetManyInvoicesFilter,
+  ): Promise<OffsetPaginationResult<Invoice>>;
+  getInvoice(filter: { id: number } | { remoteId: string }): Promise<Invoice>;
 
   getJournalEntriesByCompanyId(
     companyId: number,

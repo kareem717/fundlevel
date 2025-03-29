@@ -5,8 +5,8 @@ import type {
   CreateInvoiceLineParams,
 } from "@fundlevel/db/types";
 import type {
-  CursorPaginationParams,
-  CursorPaginationResult
+  OffsetPaginationParams,
+  OffsetPaginationResult,
 } from "@fundlevel/api/internal/entities";
 
 type InvoiceFilterProperties = {
@@ -15,14 +15,14 @@ type InvoiceFilterProperties = {
   minDueDate?: string;
   maxDueDate?: string;
   companyIds?: number[];
-}
+};
 
 // At least one property is required
-export type GetManyInvoicesFilter = (Partial<InvoiceFilterProperties> & {
-  [K in keyof InvoiceFilterProperties]: Record<K, InvoiceFilterProperties[K]>
-}[keyof InvoiceFilterProperties]) & CursorPaginationParams<number>;
-
-export type GetOneInvoiceFilter = { id: number } | { remoteId: string };
+export type GetManyInvoicesFilter = (Partial<InvoiceFilterProperties> &
+  {
+    [K in keyof InvoiceFilterProperties]: Record<K, InvoiceFilterProperties[K]>;
+  }[keyof InvoiceFilterProperties]) &
+  OffsetPaginationParams;
 
 export interface IInvoiceRepository {
   upsert(
@@ -30,8 +30,12 @@ export interface IInvoiceRepository {
     companyId: number,
   ): Promise<QuickBooksInvoice[]>;
   deleteByRemoteId(remoteId: string | string[]): Promise<void>;
-  getMany(filter: GetManyInvoicesFilter): Promise<CursorPaginationResult<QuickBooksInvoice, number>>;
-  get(filter: GetOneInvoiceFilter): Promise<QuickBooksInvoice | undefined>;
+  getMany(
+    filter: GetManyInvoicesFilter,
+  ): Promise<OffsetPaginationResult<QuickBooksInvoice>>;
+  get(
+    filter: { id: number } | { remoteId: string },
+  ): Promise<QuickBooksInvoice | undefined>;
 
   upsertLine(lines: CreateInvoiceLineParams[]): Promise<InvoiceLine[]>;
 }

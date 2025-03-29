@@ -278,6 +278,7 @@ const companyHandler = new OpenAPIHono()
       publicToken,
     });
 
+    console.log("triggering sync-bank-accounts");
     await tasks.trigger<typeof syncBankAccountsTask>(
       "sync-bank-accounts",
       {
@@ -290,6 +291,7 @@ const companyHandler = new OpenAPIHono()
       },
     );
 
+    console.log("triggering sync-bank-transactions");
     await tasks.trigger<typeof syncBankTransactionsTask>(
       "sync-bank-transactions",
       {

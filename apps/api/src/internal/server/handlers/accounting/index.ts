@@ -131,7 +131,9 @@ const accountingHandler = new OpenAPIHono()
 
     const { invoiceId } = c.req.valid("param");
 
-    const invoice = await getService(c).accounting.getInvoice({ id: invoiceId });
+    const invoice = await getService(c).accounting.getInvoice({
+      id: invoiceId,
+    });
     const company = await getService(c).company.getById(invoice.companyId);
 
     if (company.ownerId !== account.id) {
@@ -159,7 +161,7 @@ const accountingHandler = new OpenAPIHono()
 
     const { companyId } = c.req.valid("param");
     const paginationParams = c.req.valid("query");
-    
+
     const company = await getService(c).company.getById(companyId);
 
     if (company.ownerId !== account.id) {
@@ -170,16 +172,18 @@ const accountingHandler = new OpenAPIHono()
         403,
       );
     }
-    const invoices =
-      await getService(c).accounting.getManyInvoices({
-        companyIds: [companyId],
-        ...paginationParams,
-      });
+    const invoices = await getService(c).accounting.getManyInvoices({
+      companyIds: [companyId],
+      ...paginationParams,
+    });
 
-    return c.json({
-      invoices: invoices.data,
-      nextCursor: invoices.nextCursor,
-    }, 200);
+    return c.json(
+      {
+        invoices: invoices.data,
+        nextCursor: invoices.nextCursor,
+      },
+      200,
+    );
   })
   .openapi(getAccountingAccountRoute, async (c) => {
     const account = getAccount(c);

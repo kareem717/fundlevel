@@ -16,7 +16,7 @@ import {
   quickBooksCreditNotes,
   quickBooksPayments,
   quickBooksAccounts,
-  quickBooksTransactions
+  quickBooksTransactions,
 } from "@fundlevel/db/schema";
 
 // Account schemas
@@ -88,9 +88,7 @@ const UpdateQuickBooksOauthCredentialParamsSchema = createUpdateSchema(
 ).omit({ createdAt: true, updatedAt: true, companyId: true, realmId: true });
 
 // QuickBooksOauthState schemas
-const QuickBooksOauthStateSchema = createSelectSchema(
-  quickBooksOauthStates,
-);
+const QuickBooksOauthStateSchema = createSelectSchema(quickBooksOauthStates);
 const CreateQuickBooksOauthStateParamsSchema = createInsertSchema(
   quickBooksOauthStates,
 ).omit({ companyId: true });
@@ -121,9 +119,7 @@ const UpdateQuickBooksVendorCreditParamsSchema = createUpdateSchema(
 ).omit({ id: true, createdAt: true, updatedAt: true, companyId: true });
 
 // QuickBooksCreditNote schemas
-const QuickBooksCreditNoteSchema = createSelectSchema(
-  quickBooksCreditNotes,
-);
+const QuickBooksCreditNoteSchema = createSelectSchema(quickBooksCreditNotes);
 const CreateQuickBooksCreditNoteParamsSchema = createInsertSchema(
   quickBooksCreditNotes,
 ).omit({ id: true, createdAt: true, updatedAt: true, companyId: true });
@@ -150,9 +146,7 @@ const UpdateQuickBooksAccountParamsSchema = createUpdateSchema(
 ).omit({ id: true, createdAt: true, updatedAt: true, companyId: true });
 
 // QuickBooksTransaction schemas
-const QuickBooksTransactionSchema = createSelectSchema(
-  quickBooksTransactions,
-);
+const QuickBooksTransactionSchema = createSelectSchema(quickBooksTransactions);
 const CreateQuickBooksTransactionParamsSchema = createInsertSchema(
   quickBooksTransactions,
 ).omit({ id: true, createdAt: true, updatedAt: true, companyId: true });

@@ -77,12 +77,9 @@ export const quickBooksOauthStatesRelations = relations(
   }),
 );
 
-export const invoicesRelations = relations(
-  invoices,
-  ({ one }) => ({
-    company: one(companies, {
-      fields: [invoices.companyId],
-      references: [companies.id],
-    }),
+export const invoicesRelations = relations(invoices, ({ one }) => ({
+  company: one(companies, {
+    fields: [invoices.companyId],
+    references: [companies.id],
   }),
-);
+}));

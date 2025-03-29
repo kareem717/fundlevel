@@ -1,15 +1,23 @@
-import { CursorInvoices } from "./components/cursor-invoices";
+import { InvoiceTable } from "./components/invoice-table";
 
-export default async function InvoicesPage({
-  params,
-}: { params: Promise<{ companyId: string }> }) {
+interface InvoicesPageProps {
+  params: Promise<{
+    companyId: string;
+  }>;
+}
+
+export default async function InvoicesPage({ params }: InvoicesPageProps) {
   const { companyId } = await params;
-  const parsedId = Number.parseInt(companyId, 10);
+
+  const parsedCompanyId = Number.parseInt(companyId, 10);
+  if (Number.isNaN(parsedCompanyId)) {
+    throw new Error("Invalid company ID");
+  }
 
   return (
     <div>
-      <h1>Invoices</h1>
-      <CursorInvoices companyId={parsedId} />
+      <h1 className="text-2xl font-bold mb-6">Invoices</h1>
+      <InvoiceTable companyId={parsedCompanyId} />
     </div>
   );
 }

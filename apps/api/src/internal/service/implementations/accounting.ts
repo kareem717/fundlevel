@@ -18,8 +18,8 @@ import type {
 import axios from "axios";
 import type { ICompanyService } from "../interfaces";
 import type { Storage } from "@fundlevel/api/internal/storage";
-import type { GetManyInvoicesFilter, GetOneInvoiceFilter } from "@fundlevel/api/internal/storage/interfaces";
-import type{ CursorPaginationResult } from "@fundlevel/api/internal/entities";
+import type { GetManyInvoicesFilter } from "@fundlevel/api/internal/storage/interfaces";
+import type { OffsetPaginationResult } from "@fundlevel/api/internal/entities";
 
 // Define types for QuickBooks report structures (moved from quickbooks.ts)
 interface QBReport {
@@ -98,7 +98,8 @@ export class AccountingService implements IAccountingService {
    * Fetch bank account details
    */
   async getBankAccountDetails(remoteId: string): Promise<BankAccount> {
-    const result = await this.repo.accounting.getBankAccountByRemoteId(remoteId);
+    const result =
+      await this.repo.accounting.getBankAccountByRemoteId(remoteId);
     if (!result) {
       throw new Error(`Bank account not found: ${remoteId}`);
     }
@@ -435,7 +436,9 @@ export class AccountingService implements IAccountingService {
       return 0;
     }
   }
-  async getInvoice(filter: GetOneInvoiceFilter): Promise<Invoice> {
+  async getInvoice(
+    filter: { id: number } | { remoteId: string },
+  ): Promise<Invoice> {
     const invoice = await this.repo.invoice.get(filter);
     if (!invoice) {
       throw new Error(`Invoice not found: ${filter}`);
@@ -444,7 +447,9 @@ export class AccountingService implements IAccountingService {
     return invoice;
   }
 
-  async getManyInvoices(filter: GetManyInvoicesFilter): Promise<CursorPaginationResult<Invoice, number>> {
+  async getManyInvoices(
+    filter: GetManyInvoicesFilter,
+  ): Promise<OffsetPaginationResult<Invoice>> {
     return await this.repo.invoice.getMany(filter);
   }
 
@@ -534,7 +539,9 @@ export class AccountingService implements IAccountingService {
 
   async getBankAccountTransactionDetails(bankAccountId: string) {
     const details =
-      await this.repo.accounting.getBankAccountTransactionDetails(bankAccountId);
+      await this.repo.accounting.getBankAccountTransactionDetails(
+        bankAccountId,
+      );
 
     if (!details) {
       console.log(`No details found for bank account ${bankAccountId}`);

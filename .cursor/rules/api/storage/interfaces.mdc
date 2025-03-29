@@ -6,6 +6,7 @@ alwaysApply: false
 # General
 * Should not define private methods
 * Should always include doc strings
+* Interfaces should be broken up by domain/logical sections
 
 # Docstrings
 * Should be kept minimal

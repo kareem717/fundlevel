@@ -34,7 +34,7 @@ import type { DB, Transaction } from "@fundlevel/db";
 import { eq, inArray, sql } from "drizzle-orm";
 
 export class AccountingRepository implements IAccountingRepository {
-  constructor(private db: DB | Transaction) { }
+  constructor(private db: DB | Transaction) {}
 
   async upsertBankAccount(
     bankAccounts: CreatePlaidBankAccountParams[],

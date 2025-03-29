@@ -6,7 +6,9 @@ export default async function BankAccountPage({
 
   return (
     <div>
-      <h1>Bank Account {accountId} for company {companyId}</h1>
+      <h1>
+        Bank Account {accountId} for company {companyId}
+      </h1>
     </div>
   );
 }

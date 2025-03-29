@@ -4,14 +4,17 @@ import type {
   InvoiceLine,
   CreateInvoiceLineParams,
 } from "@fundlevel/db/types";
-import type { GetManyInvoicesFilter, GetOneInvoiceFilter, IInvoiceRepository } from "../interfaces/invoice";
+import type {
+  GetManyInvoicesFilter,
+  IInvoiceRepository,
+} from "../interfaces/invoice";
 import { invoices, invoiceLines } from "@fundlevel/db/schema";
-import { eq, inArray, sql, gte, lte, asc, desc } from "drizzle-orm";
+import { eq, inArray, sql, gte, lte, asc, desc, count } from "drizzle-orm";
 import type { IDB } from "@fundlevel/api/internal/storage";
-import type { CursorPaginationResult } from "@fundlevel/api/internal/entities";
+import type { OffsetPaginationResult } from "@fundlevel/api/internal/entities";
 
 export class InvoiceRepository implements IInvoiceRepository {
-  constructor(private db: IDB) { }
+  constructor(private db: IDB) {}
 
   async upsert(
     invoiceParams: CreateQuickBooksInvoiceParams[],
@@ -32,19 +35,11 @@ export class InvoiceRepository implements IInvoiceRepository {
             `excluded.${invoices.remainingRemoteContent.name}`,
           ),
           syncToken: sql.raw(`excluded.${invoices.syncToken.name}`),
-          totalAmount: sql.raw(
-            `excluded.${invoices.totalAmount.name}`,
-          ),
-          depositMade: sql.raw(
-            `excluded.${invoices.depositMade.name}`,
-          ),
+          totalAmount: sql.raw(`excluded.${invoices.totalAmount.name}`),
           balanceRemaining: sql.raw(
             `excluded.${invoices.balanceRemaining.name}`,
           ),
           dueDate: sql.raw(`excluded.${invoices.dueDate.name}`),
-          depositToAccountReferenceValue: sql.raw(
-            `excluded.${invoices.depositToAccountReferenceValue.name}`,
-          ),
           currency: sql.raw(`excluded.${invoices.currency.name}`),
         },
       })
@@ -57,65 +52,81 @@ export class InvoiceRepository implements IInvoiceRepository {
     return data;
   }
 
-  async getMany(filter: GetManyInvoicesFilter): Promise<CursorPaginationResult<QuickBooksInvoice, number>> {
-    let qb = this.db
-      .select()
-      .from(invoices).$dynamic();
+  async getMany<T extends GetManyInvoicesFilter>(
+    filter: T,
+  ): Promise<OffsetPaginationResult<QuickBooksInvoice>> {
+    let qb = this.db.select().from(invoices).groupBy(invoices.id).$dynamic();
+
+    let countQb = this.db
+      .select({
+        total: count(),
+      })
+      .from(invoices)
+      .$dynamic();
 
     if (filter.minTotal) {
       qb = qb.where(gte(invoices.totalAmount, filter.minTotal));
+      countQb = countQb.where(gte(invoices.totalAmount, filter.minTotal));
     }
 
     if (filter.maxTotal) {
       qb = qb.where(lte(invoices.totalAmount, filter.maxTotal));
+      countQb = countQb.where(lte(invoices.totalAmount, filter.maxTotal));
     }
 
     if (filter.minDueDate) {
       qb = qb.where(gte(invoices.dueDate, filter.minDueDate));
+      countQb = countQb.where(gte(invoices.dueDate, filter.minDueDate));
     }
 
     if (filter.maxDueDate) {
       qb = qb.where(lte(invoices.dueDate, filter.maxDueDate));
+      countQb = countQb.where(lte(invoices.dueDate, filter.maxDueDate));
     }
 
     if (filter.companyIds) {
       qb = qb.where(inArray(invoices.companyId, filter.companyIds));
+      countQb = countQb.where(inArray(invoices.companyId, filter.companyIds));
     }
 
-    if (filter.cursor) {
-      switch (filter.order) {
-        case "asc":
-          qb = qb.where(gte(invoices.id, filter.cursor));
-          break;
-        case "desc":
-          qb = qb.where(lte(invoices.id, filter.cursor));
-          break;
-      }
-    }
+    const { offset, limit, order } = filter;
 
-    const data = await qb
-      .limit(filter.limit + 1)
-      .orderBy(filter.order === "asc" ? asc(invoices.id) : desc(invoices.id));
+    qb = qb
+      .limit(limit)
+      .offset(offset)
+      .orderBy(order === "asc" ? asc(invoices.id) : desc(invoices.id));
 
-    if (!data) {
+    const [data, total] = await Promise.all([qb, countQb]);
+
+    if (!data || !total) {
       throw new Error("Failed to get invoices");
     }
 
-    let nextCursor: number | null = null;
-    if (data.length > filter.limit) {
-      nextCursor = (data.pop())!.id;
+    if (data.length === 0) {
+      return {
+        data: [],
+        totalPages: 0,
+        totalRecords: 0,
+        hasNextPage: false,
+        hasPreviousPage: false,
+        currentPage: 0,
+      };
     }
 
     return {
-      data,
-      nextCursor,
-    }
-  };
+      data: data,
+      totalPages: Math.ceil(total[0]!.total / limit),
+      totalRecords: total[0]!.total,
+      hasNextPage: total[0]!.total > offset + limit,
+      hasPreviousPage: offset > 0,
+      currentPage: Math.floor(offset / limit) + 1,
+    };
+  }
 
-  async get(filter: GetOneInvoiceFilter): Promise<QuickBooksInvoice | undefined> {
-    const qb = this.db
-      .select()
-      .from(invoices)
+  async get(
+    filter: { id: number } | { remoteId: string },
+  ): Promise<QuickBooksInvoice | undefined> {
+    const qb = this.db.select().from(invoices);
 
     if ("id" in filter) {
       qb.where(eq(invoices.id, filter.id));
@@ -125,11 +136,10 @@ export class InvoiceRepository implements IInvoiceRepository {
       qb.where(eq(invoices.remoteId, filter.remoteId));
     }
 
-    const [data] = await qb
-      .limit(1);
+    const [data] = await qb.limit(1);
 
     return data;
-  };
+  }
 
   // async getByCompanyId(companyId: number): Promise<QuickBooksInvoice[]> {
   //   const data = await this.db

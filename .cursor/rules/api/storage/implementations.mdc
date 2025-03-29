@@ -19,3 +19,6 @@ class CompanyRepository implements ICompanyRepository {}
 
 # Outputs
 * If trying to return a object on a mutation (create, update, or delete) - we should do a null/undefined check within the method, throwing a error if it is.
+
+# Constructors
+* Each repository should utilze the `IDB` interface located in the [index.ts](mdc:apps/api/src/internal/storage/index.ts) file.

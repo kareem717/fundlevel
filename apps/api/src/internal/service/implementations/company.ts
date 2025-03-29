@@ -396,7 +396,15 @@ export class CompanyService implements ICompanyService {
       const repo = new Storage(db);
 
       invoices.map(async (unparsedInvoice: any) => {
-        const { Id, SyncToken, TotalAmt, ...invoice } = unparsedInvoice;
+        const {
+          Id,
+          SyncToken,
+          TotalAmt,
+          Balance,
+          DueDate,
+          CurrencyRef: { value: currencyCode, ...currencyRef } = {},
+          ...invoice
+        } = unparsedInvoice;
 
         const [newInvoice] = await repo.invoice.upsert(
           [
@@ -404,7 +412,13 @@ export class CompanyService implements ICompanyService {
               remoteId: Id,
               syncToken: SyncToken,
               totalAmount: TotalAmt,
-              remainingRemoteContent: JSON.stringify(invoice),
+              balanceRemaining: Balance,
+              dueDate: DueDate,
+              currency: currencyCode,
+              remainingRemoteContent: JSON.stringify({
+                ...invoice,
+                CurrencyRef: currencyRef,
+              }),
               dataProvider: "quickbooks",
             },
           ],
@@ -749,12 +763,12 @@ export class CompanyService implements ICompanyService {
         bankAccountId: account_id,
         personalFinanceCategoryConfidenceLevel:
           personal_finance_category?.confidence_level as
-          | "VERY_HIGH"
-          | "HIGH"
-          | "MEDIUM"
-          | "LOW"
-          | "UNKNOWN"
-          | undefined,
+            | "VERY_HIGH"
+            | "HIGH"
+            | "MEDIUM"
+            | "LOW"
+            | "UNKNOWN"
+            | undefined,
         personalFinanceCategoryPrimary: personal_finance_category?.primary,
         personalFinanceCategoryDetailed: personal_finance_category?.detailed,
         remainingRemoteContent: remaining_remote_content,

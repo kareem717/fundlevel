@@ -10,13 +10,13 @@ export default defineConfig({
   format: ["esm", "cjs"],
   dts: {
     entry: {
-      "index": "src/index.ts",
+      index: "src/index.ts",
       "types/index": "src/types/index.ts",
       "schema/index": "src/schema/index.ts",
-      "validators/index": "src/validators/index.ts"
-    }
+      "validators/index": "src/validators/index.ts",
+    },
   },
   splitting: false,
   sourcemap: true,
   clean: true,
-}); 
+});

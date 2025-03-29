@@ -1,0 +1,27 @@
+---
+description: Implementing fetch filters at the storage layer
+globs: 
+alwaysApply: false
+---
+# Filter type definitions
+* Should be as strict as possible
+* When one of two or more filters will leave the remaining reduntant, we should not allow the user to input them all at once
+    * For example here, both input filters are unique, thus we do not allow fetching by both of them as it would result in redundancy
+    ```js
+    export type GetOneEntityFilter = { primaryKey: number } | { secondaryUniqueKey: string };
+    ```
+* Unless prompted otherwise, we can assume that all `GetMany` filters requires at least ONE input property to be defined. In these scenarios, we can utilize the following technique to create the right type definition:
+    *   ```js
+        type EntityFilterProperties = {
+            minNumberColumnValue?: number;
+            maxNumberColumnValue?: number;
+            minStringColumnValue?: string;
+            maxStringColumnValue?: string;
+            uniqueForeignKeyColumn?: number[];
+        }
+
+        // At least one property is required
+        export type GetManyEntiyiesFilter = (Partial<EntityFilterProperties> & {
+        [K in keyof EntityFilterProperties]: Record<K, EntityFilterProperties[K]>
+        }[keyof EntityFilterProperties]) & CursorPaginationParams<number>;
+        ```

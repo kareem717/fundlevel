@@ -4,20 +4,12 @@
     "baseUrl": ".",
     "rootDir": "src",
     "paths": {
-      "@fundlevel/sdk/*": [
-        "./src/*"
-      ]
+      "@fundlevel/sdk/*": ["./src/*"]
     },
     "outDir": "./dist",
     "declaration": true,
     "declarationMap": true
   },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "exclude": ["node_modules", "dist"]
 }

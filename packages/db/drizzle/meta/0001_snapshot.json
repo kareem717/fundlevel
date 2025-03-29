@@ -160,12 +160,8 @@
           "name": "companies_owner_id_fkey",
           "tableFrom": "companies",
           "tableTo": "accounts",
-          "columnsFrom": [
-            "owner_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["owner_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -274,12 +270,8 @@
           "name": "plaid_bank_accounts_company_id_fkey",
           "tableFrom": "plaid_bank_accounts",
           "tableTo": "companies",
-          "columnsFrom": [
-            "company_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["company_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -343,12 +335,8 @@
           "name": "plaid_credentials_company_id_fkey",
           "tableFrom": "plaid_credentials",
           "tableTo": "companies",
-          "columnsFrom": [
-            "company_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["company_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -529,12 +517,8 @@
           "name": "plaid_transactions_company_id_fkey",
           "tableFrom": "plaid_transactions",
           "tableTo": "companies",
-          "columnsFrom": [
-            "company_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["company_id"],
+          "columnsTo": ["id"],
           "onDelete": "restrict",
           "onUpdate": "cascade"
         }
@@ -598,12 +582,8 @@
           "name": "quick_books_accounts_company_id_fkey",
           "tableFrom": "quick_books_accounts",
           "tableTo": "companies",
-          "columnsFrom": [
-            "company_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["company_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -613,9 +593,7 @@
         "quick_books_accounts_remote_id_key": {
           "name": "quick_books_accounts_remote_id_key",
           "nullsNotDistinct": false,
-          "columns": [
-            "remote_id"
-          ]
+          "columns": ["remote_id"]
         }
       },
       "policies": {},
@@ -670,12 +648,8 @@
           "name": "quick_books_credit_notes_company_id_fkey",
           "tableFrom": "quick_books_credit_notes",
           "tableTo": "companies",
-          "columnsFrom": [
-            "company_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["company_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -685,9 +659,7 @@
         "quick_books_credit_notes_remote_id_key": {
           "name": "quick_books_credit_notes_remote_id_key",
           "nullsNotDistinct": false,
-          "columns": [
-            "remote_id"
-          ]
+          "columns": ["remote_id"]
         }
       },
       "policies": {},
@@ -742,12 +714,8 @@
           "name": "quick_books_journal_entries_company_id_fkey",
           "tableFrom": "quick_books_journal_entries",
           "tableTo": "companies",
-          "columnsFrom": [
-            "company_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["company_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -757,9 +725,7 @@
         "quick_books_journal_entries_remote_id_key": {
           "name": "quick_books_journal_entries_remote_id_key",
           "nullsNotDistinct": false,
-          "columns": [
-            "remote_id"
-          ]
+          "columns": ["remote_id"]
         }
       },
       "policies": {},
@@ -826,12 +792,8 @@
           "name": "quick_books_oauth_credentials_company_id_fkey",
           "tableFrom": "quick_books_oauth_credentials",
           "tableTo": "companies",
-          "columnsFrom": [
-            "company_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["company_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -883,12 +845,8 @@
           "name": "quick_books_oauth_states_company_id_fkey",
           "tableFrom": "quick_books_oauth_states",
           "tableTo": "companies",
-          "columnsFrom": [
-            "company_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["company_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -947,12 +905,8 @@
           "name": "quick_books_payments_company_id_fkey",
           "tableFrom": "quick_books_payments",
           "tableTo": "companies",
-          "columnsFrom": [
-            "company_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["company_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -962,9 +916,7 @@
         "quick_books_payments_remote_id_key": {
           "name": "quick_books_payments_remote_id_key",
           "nullsNotDistinct": false,
-          "columns": [
-            "remote_id"
-          ]
+          "columns": ["remote_id"]
         }
       },
       "policies": {},
@@ -1019,12 +971,8 @@
           "name": "quick_books_transactions_company_id_fkey",
           "tableFrom": "quick_books_transactions",
           "tableTo": "companies",
-          "columnsFrom": [
-            "company_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["company_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -1034,9 +982,7 @@
         "quick_books_transactions_remote_id_key": {
           "name": "quick_books_transactions_remote_id_key",
           "nullsNotDistinct": false,
-          "columns": [
-            "remote_id"
-          ]
+          "columns": ["remote_id"]
         }
       },
       "policies": {},
@@ -1091,12 +1037,8 @@
           "name": "quick_books_vendor_credits_company_id_fkey",
           "tableFrom": "quick_books_vendor_credits",
           "tableTo": "companies",
-          "columnsFrom": [
-            "company_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["company_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -1106,9 +1048,7 @@
         "quick_books_vendor_credits_remote_id_key": {
           "name": "quick_books_vendor_credits_remote_id_key",
           "nullsNotDistinct": false,
-          "columns": [
-            "remote_id"
-          ]
+          "columns": ["remote_id"]
         }
       },
       "policies": {},
@@ -1181,12 +1121,8 @@
           "name": "transaction_relationships_plaid_transaction_id_plaid_transactions_remote_id_fk",
           "tableFrom": "transaction_relationships",
           "tableTo": "plaid_transactions",
-          "columnsFrom": [
-            "plaid_transaction_id"
-          ],
-          "columnsTo": [
-            "remote_id"
-          ],
+          "columnsFrom": ["plaid_transaction_id"],
+          "columnsTo": ["remote_id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -1194,12 +1130,8 @@
           "name": "transaction_relationships_transaction_id_quick_books_transactions_id_fk",
           "tableFrom": "transaction_relationships",
           "tableTo": "quick_books_transactions",
-          "columnsFrom": [
-            "transaction_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["transaction_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -1207,12 +1139,8 @@
           "name": "transaction_relationships_invoice_id_invoices_id_fk",
           "tableFrom": "transaction_relationships",
           "tableTo": "invoices",
-          "columnsFrom": [
-            "invoice_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["invoice_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -1220,12 +1148,8 @@
           "name": "transaction_relationships_journal_entry_id_quick_books_journal_entries_id_fk",
           "tableFrom": "transaction_relationships",
           "tableTo": "quick_books_journal_entries",
-          "columnsFrom": [
-            "journal_entry_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["journal_entry_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -1233,12 +1157,8 @@
           "name": "transaction_relationships_vendor_credit_id_quick_books_vendor_credits_id_fk",
           "tableFrom": "transaction_relationships",
           "tableTo": "quick_books_vendor_credits",
-          "columnsFrom": [
-            "vendor_credit_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["vendor_credit_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -1246,12 +1166,8 @@
           "name": "transaction_relationships_credit_note_id_quick_books_credit_notes_id_fk",
           "tableFrom": "transaction_relationships",
           "tableTo": "quick_books_credit_notes",
-          "columnsFrom": [
-            "credit_note_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["credit_note_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -1259,12 +1175,8 @@
           "name": "transaction_relationships_payment_id_quick_books_payments_id_fk",
           "tableFrom": "transaction_relationships",
           "tableTo": "quick_books_payments",
-          "columnsFrom": [
-            "payment_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["payment_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -1354,12 +1266,8 @@
           "name": "invoice_lines_invoice_id_invoices_id_fk",
           "tableFrom": "invoice_lines",
           "tableTo": "invoices",
-          "columnsFrom": [
-            "invoice_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["invoice_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -1369,11 +1277,7 @@
         "invoice_lines_remote_id_invoice_id_detail_type_key": {
           "name": "invoice_lines_remote_id_invoice_id_detail_type_key",
           "nullsNotDistinct": false,
-          "columns": [
-            "remote_id",
-            "invoice_id",
-            "detail_type"
-          ]
+          "columns": ["remote_id", "invoice_id", "detail_type"]
         }
       },
       "policies": {},
@@ -1477,12 +1381,8 @@
           "name": "invoices_company_id_fkey",
           "tableFrom": "invoices",
           "tableTo": "companies",
-          "columnsFrom": [
-            "company_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["company_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -1492,9 +1392,7 @@
         "invoices_remote_id_key": {
           "name": "invoices_remote_id_key",
           "nullsNotDistinct": false,
-          "columns": [
-            "remote_id"
-          ]
+          "columns": ["remote_id"]
         }
       },
       "policies": {},
@@ -1594,13 +1492,7 @@
     "public.plaid_confidence_level": {
       "name": "plaid_confidence_level",
       "schema": "public",
-      "values": [
-        "VERY_HIGH",
-        "HIGH",
-        "MEDIUM",
-        "LOW",
-        "UNKNOWN"
-      ]
+      "values": ["VERY_HIGH", "HIGH", "MEDIUM", "LOW", "UNKNOWN"]
     },
     "public.plaid_transaction_code": {
       "name": "plaid_transaction_code",
@@ -1624,11 +1516,7 @@
     "public.plaid_transaction_payment_channel": {
       "name": "plaid_transaction_payment_channel",
       "schema": "public",
-      "values": [
-        "online",
-        "in store",
-        "other"
-      ]
+      "values": ["online", "in store", "other"]
     },
     "public.invoice_line_type": {
       "name": "invoice_line_type",
@@ -1644,10 +1532,7 @@
     "public.data_provider": {
       "name": "data_provider",
       "schema": "public",
-      "values": [
-        "quickbooks",
-        "plaid"
-      ]
+      "values": ["quickbooks", "plaid"]
     }
   },
   "schemas": {},

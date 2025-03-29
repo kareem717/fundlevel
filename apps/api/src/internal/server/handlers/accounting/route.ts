@@ -169,7 +169,7 @@ export const getInvoicesByCompanyIdRoute = createRoute({
     params: z.object({
       companyId: intIdSchema.describe("The ID of the company"),
     }),
-    query: cursorPaginationParamsSchema
+    query: cursorPaginationParamsSchema,
   },
   responses: {
     200: {

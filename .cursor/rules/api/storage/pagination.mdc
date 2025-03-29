@@ -1,0 +1,12 @@
+---
+description: Implementing pagination at the storage layer
+globs: 
+alwaysApply: false
+---
+# General
+* Utilize generics for type definitions
+* Parameters located in [types.ts](mdc:apps/api/src/internal/entities/types.ts)
+
+# Deriving nextPageParam
+* We add 1 to the input `limit` parameter, and use the resulting length to determine: a) the next cursor value, b) if there is a next page.
+* We only ever return <= the input `limit` parameter, even though we potentially fetch 1 extra record, meaning we should pop the last record if `len(result) > input.limit`
