@@ -3,20 +3,46 @@
   "ui": "tui",
   "tasks": {
     "build": {
-      "passThroughEnv": ["CLERK_SECRET_KEY"],
-      "dependsOn": ["^build"],
-      "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": [".next/**", "!.next/cache/**"]
+      "dependsOn": [
+        "^build"
+      ],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        ".env*"
+      ],
+      "outputs": [
+        ".next/**",
+        "!.next/cache/**"
+      ]
+    },
+    "@fundlevel/web#build": {
+      "dependsOn": [
+        "@fundlevel/sdk#build"
+      ]
+    },
+    "@fundlevel/sdk#build": {
+      "dependsOn": [
+        "@fundlevel/api#build"
+      ]
+    },
+    "@fundlevel/api#build": {
+      "dependsOn": [
+        "@fundlevel/db#build"
+      ]
     },
     "start": {
       "cache": false,
       "persistent": true
     },
     "lint": {
-      "dependsOn": ["^lint"]
+      "dependsOn": [
+        "^lint"
+      ]
     },
     "check-types": {
-      "dependsOn": ["^check-types"]
+      "dependsOn": [
+        "^check-types"
+      ]
     },
     "dev": {
       "cache": false,
@@ -26,7 +52,9 @@
       "cache": false
     },
     "format": {
-      "dependsOn": ["^format"]
+      "dependsOn": [
+        "^format"
+      ]
     }
   }
 }

@@ -20,14 +20,14 @@ import {
 } from "@fundlevel/db/schema";
 
 // Account schemas
-export const AccountSchema = createSelectSchema(accounts);
-export const CreateAccountParamsSchema = createInsertSchema(accounts).omit({
+const AccountSchema = createSelectSchema(accounts);
+const CreateAccountParamsSchema = createInsertSchema(accounts).omit({
   id: true,
   createdAt: true,
   updatedAt: true,
   userId: true,
 });
-export const UpdateAccountParamsSchema = createUpdateSchema(accounts).omit({
+const UpdateAccountParamsSchema = createUpdateSchema(accounts).omit({
   id: true,
   createdAt: true,
   updatedAt: true,
@@ -35,14 +35,14 @@ export const UpdateAccountParamsSchema = createUpdateSchema(accounts).omit({
 });
 
 // Company schemas
-export const CompanySchema = createSelectSchema(companies);
-export const CreateCompanyParamsSchema = createInsertSchema(companies).omit({
+const CompanySchema = createSelectSchema(companies);
+const CreateCompanyParamsSchema = createInsertSchema(companies).omit({
   id: true,
   createdAt: true,
   updatedAt: true,
   ownerId: true,
 });
-export const UpdateCompanyParamsSchema = createUpdateSchema(companies).omit({
+const UpdateCompanyParamsSchema = createUpdateSchema(companies).omit({
   id: true,
   createdAt: true,
   updatedAt: true,
@@ -50,114 +50,154 @@ export const UpdateCompanyParamsSchema = createUpdateSchema(companies).omit({
 });
 
 // PlaidCredential schemas
-export const PlaidCredentialSchema = createSelectSchema(plaidCredentials);
-export const CreatePlaidCredentialParamsSchema = createInsertSchema(
+const PlaidCredentialSchema = createSelectSchema(plaidCredentials);
+const CreatePlaidCredentialParamsSchema = createInsertSchema(
   plaidCredentials,
 ).omit({ createdAt: true, updatedAt: true, companyId: true });
-export const UpdatePlaidCredentialParamsSchema = createUpdateSchema(
+const UpdatePlaidCredentialParamsSchema = createUpdateSchema(
   plaidCredentials,
 ).omit({ createdAt: true, updatedAt: true, companyId: true });
 
 // PlaidBankAccount schemas
-export const PlaidBankAccountSchema = createSelectSchema(plaidBankAccounts);
-export const CreatePlaidBankAccountParamsSchema = createInsertSchema(
+const PlaidBankAccountSchema = createSelectSchema(plaidBankAccounts);
+const CreatePlaidBankAccountParamsSchema = createInsertSchema(
   plaidBankAccounts,
 ).omit({ createdAt: true, updatedAt: true, companyId: true });
-export const UpdatePlaidBankAccountParamsSchema = createUpdateSchema(
+const UpdatePlaidBankAccountParamsSchema = createUpdateSchema(
   plaidBankAccounts,
 ).omit({ createdAt: true, updatedAt: true, companyId: true });
 
 // PlaidTransaction schemas
-export const PlaidTransactionSchema = createSelectSchema(plaidTransactions);
-export const CreatePlaidTransactionParamsSchema = createInsertSchema(
+const PlaidTransactionSchema = createSelectSchema(plaidTransactions);
+const CreatePlaidTransactionParamsSchema = createInsertSchema(
   plaidTransactions,
 ).omit({ createdAt: true, updatedAt: true, companyId: true });
-export const UpdatePlaidTransactionParamsSchema = createUpdateSchema(
+const UpdatePlaidTransactionParamsSchema = createUpdateSchema(
   plaidTransactions,
 ).omit({ createdAt: true, updatedAt: true, companyId: true });
 
 // QuickBooksOauthCredential schemas
-export const QuickBooksOauthCredentialSchema = createSelectSchema(
+const QuickBooksOauthCredentialSchema = createSelectSchema(
   quickBooksOauthCredentials,
 );
-export const CreateQuickBooksOauthCredentialParamsSchema = createInsertSchema(
+const CreateQuickBooksOauthCredentialParamsSchema = createInsertSchema(
   quickBooksOauthCredentials,
 ).omit({ createdAt: true, updatedAt: true, companyId: true });
-export const UpdateQuickBooksOauthCredentialParamsSchema = createUpdateSchema(
+const UpdateQuickBooksOauthCredentialParamsSchema = createUpdateSchema(
   quickBooksOauthCredentials,
 ).omit({ createdAt: true, updatedAt: true, companyId: true, realmId: true });
 
 // QuickBooksOauthState schemas
-export const QuickBooksOauthStateSchema = createSelectSchema(
+const QuickBooksOauthStateSchema = createSelectSchema(
   quickBooksOauthStates,
 );
-export const CreateQuickBooksOauthStateParamsSchema = createInsertSchema(
+const CreateQuickBooksOauthStateParamsSchema = createInsertSchema(
   quickBooksOauthStates,
 ).omit({ companyId: true });
-export const UpdateQuickBooksOauthStateParamsSchema = createUpdateSchema(
+const UpdateQuickBooksOauthStateParamsSchema = createUpdateSchema(
   quickBooksOauthStates,
 ).omit({ companyId: true });
 
 // QuickBooksJournalEntry schemas
-export const QuickBooksJournalEntrySchema = createSelectSchema(
+const QuickBooksJournalEntrySchema = createSelectSchema(
   quickBooksJournalEntries,
 );
-export const CreateQuickBooksJournalEntryParamsSchema = createInsertSchema(
+const CreateQuickBooksJournalEntryParamsSchema = createInsertSchema(
   quickBooksJournalEntries,
 ).omit({ id: true, createdAt: true, updatedAt: true, companyId: true });
-export const UpdateQuickBooksJournalEntryParamsSchema = createUpdateSchema(
+const UpdateQuickBooksJournalEntryParamsSchema = createUpdateSchema(
   quickBooksJournalEntries,
 ).omit({ id: true, createdAt: true, updatedAt: true, companyId: true });
 
 // QuickBooksVendorCredit schemas
-export const QuickBooksVendorCreditSchema = createSelectSchema(
+const QuickBooksVendorCreditSchema = createSelectSchema(
   quickBooksVendorCredits,
 );
-export const CreateQuickBooksVendorCreditParamsSchema = createInsertSchema(
+const CreateQuickBooksVendorCreditParamsSchema = createInsertSchema(
   quickBooksVendorCredits,
 ).omit({ id: true, createdAt: true, updatedAt: true, companyId: true });
-export const UpdateQuickBooksVendorCreditParamsSchema = createUpdateSchema(
+const UpdateQuickBooksVendorCreditParamsSchema = createUpdateSchema(
   quickBooksVendorCredits,
 ).omit({ id: true, createdAt: true, updatedAt: true, companyId: true });
 
 // QuickBooksCreditNote schemas
-export const QuickBooksCreditNoteSchema = createSelectSchema(
+const QuickBooksCreditNoteSchema = createSelectSchema(
   quickBooksCreditNotes,
 );
-export const CreateQuickBooksCreditNoteParamsSchema = createInsertSchema(
+const CreateQuickBooksCreditNoteParamsSchema = createInsertSchema(
   quickBooksCreditNotes,
 ).omit({ id: true, createdAt: true, updatedAt: true, companyId: true });
-export const UpdateQuickBooksCreditNoteParamsSchema = createUpdateSchema(
+const UpdateQuickBooksCreditNoteParamsSchema = createUpdateSchema(
   quickBooksCreditNotes,
 ).omit({ id: true, createdAt: true, updatedAt: true, companyId: true });
 
 // QuickBooksPayment schemas
-export const QuickBooksPaymentSchema = createSelectSchema(quickBooksPayments);
-export const CreateQuickBooksPaymentParamsSchema = createInsertSchema(
+const QuickBooksPaymentSchema = createSelectSchema(quickBooksPayments);
+const CreateQuickBooksPaymentParamsSchema = createInsertSchema(
   quickBooksPayments,
 ).omit({ id: true, createdAt: true, updatedAt: true, companyId: true });
-export const UpdateQuickBooksPaymentParamsSchema = createUpdateSchema(
+const UpdateQuickBooksPaymentParamsSchema = createUpdateSchema(
   quickBooksPayments,
 ).omit({ id: true, createdAt: true, updatedAt: true, companyId: true });
 
 // QuickBooksAccount schemas
-export const QuickBooksAccountSchema = createSelectSchema(quickBooksAccounts);
-export const CreateQuickBooksAccountParamsSchema = createInsertSchema(
+const QuickBooksAccountSchema = createSelectSchema(quickBooksAccounts);
+const CreateQuickBooksAccountParamsSchema = createInsertSchema(
   quickBooksAccounts,
 ).omit({ id: true, createdAt: true, updatedAt: true, companyId: true });
-export const UpdateQuickBooksAccountParamsSchema = createUpdateSchema(
+const UpdateQuickBooksAccountParamsSchema = createUpdateSchema(
   quickBooksAccounts,
 ).omit({ id: true, createdAt: true, updatedAt: true, companyId: true });
 
 // QuickBooksTransaction schemas
-export const QuickBooksTransactionSchema = createSelectSchema(
+const QuickBooksTransactionSchema = createSelectSchema(
   quickBooksTransactions,
 );
-export const CreateQuickBooksTransactionParamsSchema = createInsertSchema(
+const CreateQuickBooksTransactionParamsSchema = createInsertSchema(
   quickBooksTransactions,
 ).omit({ id: true, createdAt: true, updatedAt: true, companyId: true });
-export const UpdateQuickBooksTransactionParamsSchema = createUpdateSchema(
+const UpdateQuickBooksTransactionParamsSchema = createUpdateSchema(
   quickBooksTransactions,
 ).omit({ id: true, createdAt: true, updatedAt: true, companyId: true });
 
 export * from "./invoice";
+export {
+  AccountSchema,
+  CreateAccountParamsSchema,
+  UpdateAccountParamsSchema,
+  CompanySchema,
+  CreateCompanyParamsSchema,
+  UpdateCompanyParamsSchema,
+  PlaidCredentialSchema,
+  CreatePlaidCredentialParamsSchema,
+  UpdatePlaidCredentialParamsSchema,
+  PlaidBankAccountSchema,
+  CreatePlaidBankAccountParamsSchema,
+  PlaidTransactionSchema,
+  CreatePlaidTransactionParamsSchema,
+  UpdatePlaidTransactionParamsSchema,
+  QuickBooksOauthCredentialSchema,
+  CreateQuickBooksOauthCredentialParamsSchema,
+  UpdateQuickBooksOauthCredentialParamsSchema,
+  QuickBooksOauthStateSchema,
+  CreateQuickBooksOauthStateParamsSchema,
+  UpdateQuickBooksOauthStateParamsSchema,
+  QuickBooksJournalEntrySchema,
+  CreateQuickBooksJournalEntryParamsSchema,
+  UpdateQuickBooksJournalEntryParamsSchema,
+  QuickBooksVendorCreditSchema,
+  CreateQuickBooksVendorCreditParamsSchema,
+  UpdateQuickBooksVendorCreditParamsSchema,
+  QuickBooksCreditNoteSchema,
+  CreateQuickBooksCreditNoteParamsSchema,
+  UpdateQuickBooksCreditNoteParamsSchema,
+  QuickBooksPaymentSchema,
+  CreateQuickBooksPaymentParamsSchema,
+  UpdateQuickBooksPaymentParamsSchema,
+  QuickBooksAccountSchema,
+  CreateQuickBooksAccountParamsSchema,
+  UpdateQuickBooksAccountParamsSchema,
+  QuickBooksTransactionSchema,
+  CreateQuickBooksTransactionParamsSchema,
+  UpdateQuickBooksTransactionParamsSchema,
+};

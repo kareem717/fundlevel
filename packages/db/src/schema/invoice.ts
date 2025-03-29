@@ -24,10 +24,8 @@ export const invoices = pgTable(
     syncToken: text("sync_token").notNull(),
     currency: varchar("currency", { length: 3 }),
     totalAmount: doublePrecision("total_amount").notNull(),
-    depositMade: doublePrecision("deposit_made"),
     balanceRemaining: doublePrecision("balance_remaining"),
     dueDate: date("due_date"),
-    depositToAccountReferenceValue: text("deposit_to_account_reference_value"),
     remainingRemoteContent: jsonb("remaining_remote_content").notNull(),
     dataProvider: dataProvider("data_provider").notNull(),
     createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })

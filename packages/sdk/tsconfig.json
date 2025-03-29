@@ -2,22 +2,22 @@
   "extends": "@fundlevel/typescript-config/nextjs.json",
   "compilerOptions": {
     "baseUrl": ".",
+    "rootDir": "src",
     "paths": {
-      "@fundlevel/db/*": [
+      "@fundlevel/sdk/*": [
         "./src/*"
       ]
     },
     "outDir": "./dist",
-    "declaration": false,
-    "declarationMap": false
+    "declaration": true,
+    "declarationMap": true
   },
   "include": [
-    "**/*.ts",
-    "**/*.tsx"
+    "src/**/*.ts",
+    "src/**/*.tsx"
   ],
   "exclude": [
     "node_modules",
-    "dist",
-    "build"
+    "dist"
   ]
 }
