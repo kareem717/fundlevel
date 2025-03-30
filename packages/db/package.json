@@ -7,6 +7,8 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
+    "db:start": "docker compose -f ../../docker-compose.yml up postgres",
+    "db:stop": "docker compose -f ../../docker-compose.yml down postgres",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",

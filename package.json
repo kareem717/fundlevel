@@ -11,6 +11,8 @@
     "db:migrate": "pnpm --filter @fundlevel/db db:migrate",
     "db:push": "pnpm --filter @fundlevel/db db:push",
     "db:studio": "pnpm --filter @fundlevel/db db:studio",
+    "db:start": "pnpm --filter @fundlevel/db db:start",
+    "db:stop": "pnpm --filter @fundlevel/db db:stop",
     "dev": "turbo dev",
     "lint": "turbo lint",
     "format": "biome format --write ."
