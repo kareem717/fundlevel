@@ -3,10 +3,9 @@ import { prettyJSON } from "hono/pretty-json";
 import { secureHeaders } from "hono/secure-headers";
 import { OpenAPIHono } from "@hono/zod-openapi";
 import { createFiberplane } from "@fiberplane/hono";
-import authHandler from "./handlers/auth";
+import accountHandler from "./handlers/account";
 import webhookHandler from "./handlers/webhook";
 import companyHandler from "./handlers/company";
-import accountingHandler from "./handlers/accounting";
 import invoiceHandler from "./handlers/invoice";
 import bankingHandler from "./handlers/banking";
 import {
@@ -82,10 +81,9 @@ export class Server {
     });
 
     this.routes = app
-      .route("/auth", authHandler)
+      .route("/account", accountHandler)
       .route("/webhooks", webhookHandler)
       .route("/company", companyHandler)
-      .route("/accounting", accountingHandler)
       .route("/invoice", invoiceHandler)
       .route("/banking", bankingHandler);
 

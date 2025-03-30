@@ -154,6 +154,7 @@ export const getCompanyByIdRoute = createRoute({
     },
     ...unauthorizedResponse,
     ...forbiddenResponse,
+    ...notFoundResponse,
   },
 });
 

@@ -112,8 +112,8 @@ export const withAuth = (): MiddlewareHandler => {
     if (userId) {
       try {
         const service = getService(c);
-        const account = await service.auth.getAccountByUserId(userId);
-        c.set("account", account);
+        const account = await service.account.get({ userId });
+        c.set("account", account || null);
       } catch (error) {
         c.get("sentry").setContext("account", {
           userId: userId,

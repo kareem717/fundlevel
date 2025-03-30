@@ -44,12 +44,12 @@ export type CreateCompanyParams = Omit<
 >;
 export type UpdateCompanyParams = Partial<CreateCompanyParams>;
 
-export type CompanyPlaidCredential = InferSelectModel<typeof companyPlaidCredentials>;
-export type CreateCompanyPlaidCredentialParams = Omit<
+export type CompanyPlaidCredentials = InferSelectModel<typeof companyPlaidCredentials>;
+export type CreateCompanyPlaidCredentialsParams = Omit<
   OmitTimeStampFields<InferInsertModel<typeof companyPlaidCredentials>>,
   "companyId"
 >;
-export type UpdateCompanyPlaidCredentialParams = Partial<CreateCompanyPlaidCredentialParams>;
+export type UpdateCompanyPlaidCredentialsParams = Partial<CreateCompanyPlaidCredentialsParams>;
 
 export type CompanySyncStatus = InferSelectModel<typeof companySyncStatus>;
 export type CreateCompanySyncStatusParams = Omit<

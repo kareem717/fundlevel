@@ -1,6 +1,6 @@
 import type {
-  CreateQuickBooksInvoiceParams,
-  QuickBooksInvoice,
+  CreateInvoiceParams,
+  Invoice,
   InvoiceLine,
   CreateInvoiceLineParams,
 } from "@fundlevel/db/types";
@@ -19,16 +19,16 @@ export type GetManyInvoicesFilter = {
 
 export interface IInvoiceRepository {
   upsert(
-    invoice: CreateQuickBooksInvoiceParams[],
+    invoice: CreateInvoiceParams[],
     companyId: number,
-  ): Promise<QuickBooksInvoice[]>;
+  ): Promise<Invoice[]>;
   deleteByRemoteId(remoteId: string | string[]): Promise<void>;
   getMany(
     filter: GetManyInvoicesFilter,
-  ): Promise<OffsetPaginationResult<QuickBooksInvoice>>;
+  ): Promise<OffsetPaginationResult<Invoice>>;
   get(
     filter: { id: number } | { remoteId: string },
-  ): Promise<QuickBooksInvoice | undefined>;
+  ): Promise<Invoice | undefined>;
 
   upsertLine(lines: CreateInvoiceLineParams[]): Promise<InvoiceLine[]>;
 }

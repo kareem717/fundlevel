@@ -12,15 +12,8 @@ import { getAccount } from "../../middleware/with-auth";
 import { getService } from "../../middleware/with-service-layer";
 import { tasks, idempotencyKeys } from "@trigger.dev/sdk/v3";
 import type {
-  syncBankAccountsTask,
-  syncBankTransactionsTask,
-  syncAccountingAccountsTask,
-  syncAccountingTransactionsTask,
-  syncInvoicesTask,
-  syncJournalEntriesTask,
-  syncPaymentsTask,
-  syncVendorCreditsTask,
-  syncCreditNotesTask,
+  syncCompanyBankingDataTask,
+  syncCompanyInvoicesTask,
 } from "@fundlevel/api/internal/jobs";
 
 const companyHandler = new OpenAPIHono()
@@ -53,8 +46,9 @@ const companyHandler = new OpenAPIHono()
       );
     }
 
-    const companies = await getService(c).company.getByAccountId(account.id);
-    return c.json(companies, 200);
+    const companies = await getService(c).company.getMany({ ownerId: account.id });
+
+    return c.json(companies || [], 200);
   })
   .openapi(connectQuickBooksRoute, async (c) => {
     const account = getAccount(c);
@@ -90,92 +84,16 @@ const companyHandler = new OpenAPIHono()
 
     const { redirect_url, company_id } = await getService(
       c,
-    ).company.completeQuickBooksOAuthFlow({
-      realmId,
-      code,
-      state,
-    });
+    ).company.completeQuickBooksOAuthFlow(code, state, realmId);
 
-    await tasks.trigger<typeof syncAccountingAccountsTask>(
-      "sync-accounting-accounts",
+    await tasks.trigger<typeof syncCompanyInvoicesTask>(
+      "sync-company-invoices",
       {
         companyId: company_id,
       },
       {
         idempotencyKey: await idempotencyKeys.create(
-          `sync-accounting-accounts-${company_id}`,
-        ),
-      },
-    );
-
-    await tasks.trigger<typeof syncAccountingTransactionsTask>(
-      "sync-accounting-transactions",
-      {
-        companyId: company_id,
-      },
-      {
-        idempotencyKey: await idempotencyKeys.create(
-          `sync-accounting-transactions-${company_id}`,
-        ),
-      },
-    );
-
-    await tasks.trigger<typeof syncInvoicesTask>(
-      "sync-invoices",
-      {
-        companyId: company_id,
-      },
-      {
-        idempotencyKey: await idempotencyKeys.create(
-          `sync-invoices-${company_id}`,
-        ),
-      },
-    );
-
-    await tasks.trigger<typeof syncJournalEntriesTask>(
-      "sync-journal-entries",
-      {
-        companyId: company_id,
-      },
-      {
-        idempotencyKey: await idempotencyKeys.create(
-          `sync-journal-entries-${company_id}`,
-        ),
-      },
-    );
-
-    await tasks.trigger<typeof syncPaymentsTask>(
-      "sync-payments",
-      {
-        companyId: company_id,
-      },
-      {
-        idempotencyKey: await idempotencyKeys.create(
-          `sync-payments-${company_id}`,
-        ),
-      },
-    );
-
-    await tasks.trigger<typeof syncVendorCreditsTask>(
-      "sync-vendor-credits",
-      {
-        companyId: company_id,
-      },
-      {
-        idempotencyKey: await idempotencyKeys.create(
-          `sync-vendor-credits-${company_id}`,
-        ),
-      },
-    );
-
-    await tasks.trigger<typeof syncCreditNotesTask>(
-      "sync-credit-notes",
-      {
-        companyId: company_id,
-      },
-      {
-        idempotencyKey: await idempotencyKeys.create(
-          `sync-credit-notes-${company_id}`,
+          `sync-company-invoices-${company_id}`,
         ),
       },
     );
@@ -195,7 +113,16 @@ const companyHandler = new OpenAPIHono()
     }
 
     const { companyId } = c.req.valid("param");
-    const company = await getService(c).company.getById(companyId);
+    const company = await getService(c).company.get(companyId);
+
+    if (!company) {
+      return c.json(
+        {
+          error: "Company not found.",
+        },
+        404,
+      );
+    }
 
     if (company.ownerId !== account.id) {
       return c.json(
@@ -221,7 +148,7 @@ const companyHandler = new OpenAPIHono()
     }
 
     const { companyId } = c.req.valid("param");
-    const company = await getService(c).company.getById(companyId);
+    const company = await getService(c).company.get(companyId);
 
     if (!company) {
       return c.json({ error: "Company not found." }, 404);
@@ -236,9 +163,7 @@ const companyHandler = new OpenAPIHono()
       );
     }
 
-    const linkToken = await getService(c).company.createPlaidLinkToken({
-      companyId,
-    });
+    const linkToken = await getService(c).company.createPlaidLinkToken(companyId);
 
     return c.json({ linkToken }, 200);
   })
@@ -256,7 +181,7 @@ const companyHandler = new OpenAPIHono()
 
     const { companyId } = c.req.valid("param");
     const { publicToken } = c.req.valid("json");
-    const company = await getService(c).company.getById(companyId);
+    const company = await getService(c).company.get(companyId);
 
     if (!company) {
       return c.json({ error: "Company not found." }, 404);
@@ -273,33 +198,16 @@ const companyHandler = new OpenAPIHono()
 
     const companyService = getService(c).company;
 
-    const creds = await companyService.swapPlaidPublicToken({
-      companyId,
-      publicToken,
-    });
+    const creds = await companyService.swapPlaidPublicToken(companyId, publicToken);
 
-    console.log("triggering sync-bank-accounts");
-    await tasks.trigger<typeof syncBankAccountsTask>(
-      "sync-bank-accounts",
+    await tasks.trigger<typeof syncCompanyBankingDataTask>(
+      "sync-company-banking-data",
       {
         companyId,
       },
       {
         idempotencyKey: await idempotencyKeys.create(
-          `sync-bank-accounts-${companyId}`,
-        ),
-      },
-    );
-
-    console.log("triggering sync-bank-transactions");
-    await tasks.trigger<typeof syncBankTransactionsTask>(
-      "sync-bank-transactions",
-      {
-        companyId,
-      },
-      {
-        idempotencyKey: await idempotencyKeys.create(
-          `sync-bank-transactions-${companyId}`,
+          `sync-company-banking-data-${companyId}`,
         ),
       },
     );

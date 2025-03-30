@@ -17,7 +17,7 @@ export default async function AccountingInvoicePage({
   const req = await client(
     env.NEXT_PUBLIC_BACKEND_URL,
     token,
-  ).accounting.invoices[":invoiceId"].$get({
+  ).invoice[":invoiceId"].$get({
     param: { invoiceId: Number.parseInt(invoiceId) },
   });
   if (!req.ok) {

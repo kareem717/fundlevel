@@ -61,3 +61,29 @@ export const getManyRoute = createRoute({
     ...unauthorizedResponse,
   },
 });
+
+export const getRoute = createRoute({
+  summary: "Get invoice",
+  operationId: "getInvoice",
+  tags: ["Invoice"],
+  security: [bearerAuthSchema],
+  method: "get",
+  path: "/:invoiceId",
+  request: {
+    params: z.object({
+      invoiceId: z.coerce.number(),
+    }),
+  },
+  responses: {
+    200: {
+      description: "Successful fetch",
+      content: {
+        "application/json": {
+          schema: InvoiceSchema.openapi("Invoice"),
+        },
+      },
+    },
+    ...notFoundResponse,
+    ...unauthorizedResponse,
+  },
+});

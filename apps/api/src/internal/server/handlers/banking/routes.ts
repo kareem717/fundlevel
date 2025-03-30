@@ -7,8 +7,8 @@ import {
 import { bearerAuthSchema } from "@fundlevel/api/internal/server/types/security";
 import { z } from "zod";
 import {
-  PlaidTransactionSchema,
-  PlaidBankAccountSchema,
+  BankAccountTransactionSchema,
+  BankAccountSchema,
 } from "@fundlevel/db/validators";
 import {
   offsetPaginationParamsSchema,
@@ -41,7 +41,7 @@ export const getManyCompanyTransactionsRoute = createRoute({
       content: {
         "application/json": {
           schema: z.object({
-            data: z.array(PlaidTransactionSchema.openapi("BankTransaction")),
+            data: z.array(BankAccountTransactionSchema.openapi("BankAccountTransaction")),
             ...offsetPaginationResultSchema.shape,
           }),
         },
@@ -77,7 +77,7 @@ export const getManyBankAccountTransactionsRoute = createRoute({
       content: {
         "application/json": {
           schema: z.object({
-            data: z.array(PlaidTransactionSchema.openapi("PlaidTransaction")),
+            data: z.array(BankAccountTransactionSchema.openapi("BankAccountTransaction")),
             ...offsetPaginationResultSchema.shape,
           }),
         },
@@ -105,12 +105,44 @@ export const getBankAccountDetailsRoute = createRoute({
       description: "Successful fetch",
       content: {
         "application/json": {
-          schema: PlaidBankAccountSchema.openapi("BankAccount"),
+          schema: BankAccountSchema.openapi("BankAccount"),
         },
       },
     },
     ...notFoundResponse,
     ...unauthorizedResponse,
     ...forbiddenResponse,
+  },
+});
+
+export const getCompanyBankAccountsRoute = createRoute({
+  summary: "Get company bank accounts",
+  operationId: "getCompanyBankAccounts",
+  tags: ["Banking"],
+  security: [bearerAuthSchema],
+  method: "get",
+  path: "/company/:companyId/bank-accounts",
+  request: {
+    query: z.object({
+      ...offsetPaginationParamsSchema.shape,
+    }),
+    params: z.object({
+      companyId: z.coerce.number(),
+    }),
+  },
+  responses: {
+    200: {
+      description: "Successful fetch",
+      content: {
+        "application/json": {
+          schema: z.object({
+            data: z.array(BankAccountSchema.openapi("BankAccount")),
+            ...offsetPaginationResultSchema.shape,
+          }),
+        },
+      },
+    },
+    ...notFoundResponse,
+    ...unauthorizedResponse,
   },
 });

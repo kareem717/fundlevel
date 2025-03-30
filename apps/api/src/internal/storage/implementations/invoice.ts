@@ -1,6 +1,6 @@
 import type {
-  QuickBooksInvoice,
-  CreateQuickBooksInvoiceParams,
+  Invoice,
+  CreateInvoiceParams,
   InvoiceLine,
   CreateInvoiceLineParams,
 } from "@fundlevel/db/types";
@@ -14,12 +14,12 @@ import type { IDB } from "@fundlevel/api/internal/storage";
 import type { OffsetPaginationResult } from "@fundlevel/api/internal/entities";
 
 export class InvoiceRepository implements IInvoiceRepository {
-  constructor(private db: IDB) {}
+  constructor(private db: IDB) { }
 
   async upsert(
-    invoiceParams: CreateQuickBooksInvoiceParams[],
+    invoiceParams: CreateInvoiceParams[],
     companyId: number,
-  ): Promise<QuickBooksInvoice[]> {
+  ): Promise<Invoice[]> {
     if (invoiceParams.length === 0) {
       return [];
     }
@@ -54,7 +54,7 @@ export class InvoiceRepository implements IInvoiceRepository {
 
   async getMany<T extends GetManyInvoicesFilter>(
     filter: T,
-  ): Promise<OffsetPaginationResult<QuickBooksInvoice>> {
+  ): Promise<OffsetPaginationResult<Invoice>> {
     let qb = this.db.select().from(invoices).groupBy(invoices.id).$dynamic();
 
     let countQb = this.db
@@ -89,11 +89,11 @@ export class InvoiceRepository implements IInvoiceRepository {
       countQb = countQb.where(inArray(invoices.companyId, filter.companyIds));
     }
 
-    const { offset, limit, order } = filter;
+    const { page, pageSize, order } = filter;
 
     qb = qb
-      .limit(limit)
-      .offset(offset)
+      .limit(pageSize)
+      .offset(page * pageSize)
       .orderBy(order === "asc" ? asc(invoices.id) : desc(invoices.id));
 
     const [data, total] = await Promise.all([qb, countQb]);
@@ -115,17 +115,17 @@ export class InvoiceRepository implements IInvoiceRepository {
 
     return {
       data: data,
-      totalPages: Math.ceil(total[0]!.total / limit),
+      totalPages: Math.ceil(total[0]!.total / pageSize),
       totalRecords: total[0]!.total,
-      hasNextPage: total[0]!.total > offset + limit,
-      hasPreviousPage: offset > 0,
-      currentPage: Math.floor(offset / limit) + 1,
+      hasNextPage: total[0]!.total > page * pageSize + pageSize,
+      hasPreviousPage: page > 0,
+      currentPage: page + 1,
     };
   }
 
   async get(
     filter: { id: number } | { remoteId: string },
-  ): Promise<QuickBooksInvoice | undefined> {
+  ): Promise<Invoice | undefined> {
     const qb = this.db.select().from(invoices);
 
     if ("id" in filter) {
@@ -141,15 +141,6 @@ export class InvoiceRepository implements IInvoiceRepository {
     return data;
   }
 
-  // async getByCompanyId(companyId: number): Promise<QuickBooksInvoice[]> {
-  //   const data = await this.db
-  //     .select()
-  //     .from(invoices)
-  //     .where(eq(invoices.companyId, companyId));
-
-  //   return data;
-  // }
-
   async deleteByRemoteId(remoteId: string | string[]): Promise<void> {
     await this.db
       .delete(invoices)
@@ -160,28 +151,6 @@ export class InvoiceRepository implements IInvoiceRepository {
         ),
       );
   }
-
-  // async getByRemoteId(
-  //   remoteId: string,
-  // ): Promise<QuickBooksInvoice | undefined> {
-  //   const [data] = await this.db
-  //     .select()
-  //     .from(invoices)
-  //     .where(eq(invoices.remoteId, remoteId))
-  //     .limit(1);
-
-  //   return data;
-  // }
-
-  // async getById(id: number): Promise<QuickBooksInvoice | undefined> {
-  //   const [data] = await this.db
-  //     .select()
-  //     .from(invoices)
-  //     .where(eq(invoices.id, id))
-  //     .limit(1);
-
-  //   return data;
-  // }
 
   async upsertLine(lines: CreateInvoiceLineParams[]): Promise<InvoiceLine[]> {
     return await this.db

@@ -140,6 +140,7 @@ CREATE TABLE "invoices" (
 	CONSTRAINT "invoices_remote_id_key" UNIQUE("remote_id")
 );
 --> statement-breakpoint
+ALTER TABLE "bank_account_transactions" ADD CONSTRAINT "bank_account_transactions_bank_account_id_bank_accounts_remote_id_fk" FOREIGN KEY ("bank_account_id") REFERENCES "public"."bank_accounts"("remote_id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "bank_account_transactions" ADD CONSTRAINT "plaid_transactions_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "public"."companies"("id") ON DELETE restrict ON UPDATE cascade;--> statement-breakpoint
 ALTER TABLE "bank_accounts" ADD CONSTRAINT "plaid_bank_accounts_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "public"."companies"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
 ALTER TABLE "companies" ADD CONSTRAINT "companies_owner_id_accounts_id_fk" FOREIGN KEY ("owner_id") REFERENCES "public"."accounts"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint

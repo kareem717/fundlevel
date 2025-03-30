@@ -34,13 +34,13 @@ async function BankAccountDetails({ accountId }: { accountId: string }) {
             <div className="space-y-1">
               <p className="text-sm text-muted-foreground">Available Balance</p>
               <p className="text-2xl font-bold">
-                ${Intl.NumberFormat("en-US", { style: "currency", currency: account.isoCurrencyCode || "USD" }).format(account.availableBalance || 0)}
+                {Intl.NumberFormat("en-US", { style: "currency", currency: account.isoCurrencyCode || "USD" }).format(account.availableBalance || 0)}
               </p>
             </div>
             <div className="space-y-1">
               <p className="text-sm text-muted-foreground">Current Balance</p>
               <p className="text-2xl font-bold">
-                ${Intl.NumberFormat("en-US", { style: "currency", currency: account.isoCurrencyCode || "USD" }).format(account.currentBalance || 0)}
+                {Intl.NumberFormat("en-US", { style: "currency", currency: account.isoCurrencyCode || "USD" }).format(account.currentBalance || 0)}
               </p>
             </div>
           </div>

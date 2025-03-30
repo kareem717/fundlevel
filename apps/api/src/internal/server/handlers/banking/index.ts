@@ -3,6 +3,7 @@ import {
   getManyCompanyTransactionsRoute,
   getManyBankAccountTransactionsRoute,
   getBankAccountDetailsRoute,
+  getCompanyBankAccountsRoute,
 } from "./routes";
 import { getAccount } from "../../middleware/with-auth";
 import { getService } from "../../middleware/with-service-layer";
@@ -21,9 +22,10 @@ const bankingHandler = new OpenAPIHono()
 
     const { companyId } = c.req.valid("param");
 
-    const result = await getService(c).banking.getManyTransactions({
+    const result = await getService(c).banking.getManyBankAccountTransactions({
       ...c.req.valid("query"),
       companyIds: [companyId],
+      
     });
 
     return c.json(result, 200);
@@ -40,7 +42,7 @@ const bankingHandler = new OpenAPIHono()
     console.log(c.req.valid("param"));
     const { bankAccountId } = c.req.valid("param");
 
-    const result = await getService(c).banking.getManyTransactions({
+    const result = await getService(c).banking.getManyBankAccountTransactions({
       ...c.req.valid("query"),
       bankAccountIds: [bankAccountId],
     });
@@ -67,7 +69,7 @@ const bankingHandler = new OpenAPIHono()
       );
     }
 
-    const company = await getService(c).company.getById(result.companyId);
+    const company = await getService(c).company.get(result.companyId);
     if (!company) {
       return c.json(
         { error: "Company not found." },
@@ -81,6 +83,22 @@ const bankingHandler = new OpenAPIHono()
         403,
       );
     }
+
+    return c.json(result, 200);
+  })
+  .openapi(getCompanyBankAccountsRoute, async (c) => {
+    const account = getAccount(c);
+    if (!account) {
+      return c.json(
+        { error: "Account not found, please create an account." },
+        404,
+      );
+    }
+
+    const result = await getService(c).banking.getManyBankAccounts({
+      ...c.req.valid("query"),
+      companyIds: [c.req.valid("param").companyId],
+    });
 
     return c.json(result, 200);
   });

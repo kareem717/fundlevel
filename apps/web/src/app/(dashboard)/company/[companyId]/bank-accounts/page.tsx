@@ -1,5 +1,6 @@
 import { BankAccountList } from "./components/bank-account-list";
 
+
 export default async function BankAccountsPage({
   params,
 }: { params: Promise<{ companyId: string }> }) {

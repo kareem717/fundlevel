@@ -19,7 +19,7 @@ export default defineConfig({
     },
   },
   build: {
-    external: ["pg"],
+    external: ["postgres"],
   },
   dirs: ["src/internal/jobs"],
 });

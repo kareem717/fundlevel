@@ -5,13 +5,23 @@ import { accounts } from "@fundlevel/db/schema";
 import { eq } from "drizzle-orm";
 
 export class AccountRepository implements IAccountRepository {
-  constructor(private readonly db: IDB) {}
+  constructor(private readonly db: IDB) { }
 
-  async getByUserId(id: string): Promise<Account | undefined> {
-    const [data] = await this.db
+  async get(filters: { id: number } | { userId: string }): Promise<Account | undefined> {
+    const qb = this.db
       .select()
       .from(accounts)
-      .where(eq(accounts.userId, id));
+      .$dynamic();
+
+    if ("id" in filters) {
+      qb.where(eq(accounts.id, filters.id));
+    } else if ("userId" in filters) {
+      qb.where(eq(accounts.userId, filters.userId));
+    } else {
+      throw new Error("Invalid filters");
+    }
+
+    const [data] = await qb;
 
     if (!data) {
       return undefined;
@@ -25,19 +35,6 @@ export class AccountRepository implements IAccountRepository {
 
     if (!data) {
       throw new Error("Failed to create account");
-    }
-
-    return data;
-  }
-
-  async getById(id: number): Promise<Account | undefined> {
-    const [data] = await this.db
-      .select()
-      .from(accounts)
-      .where(eq(accounts.id, id));
-
-    if (!data) {
-      return undefined;
     }
 
     return data;

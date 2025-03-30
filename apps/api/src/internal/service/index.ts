@@ -1,17 +1,17 @@
 import type { Storage } from "@fundlevel/api/internal/storage";
 import {
-  AuthService,
+  AccountService,
   CompanyService,
-  AccountingService,
   ReconciliationService,
   BankingService,
+  InvoiceService,
 } from "./implementations";
 import type {
-  IAuthService,
+  IAccountService,
   ICompanyService,
-  IAccountingService,
   IReconciliationService,
   IBankingService,
+  IInvoiceService,
 } from "./interfaces";
 import type { QuickBooksConfig, PlaidConfig } from "./implementations/company";
 
@@ -23,11 +23,11 @@ type ServiceConfig = {
 };
 
 export class Service {
-  readonly auth: IAuthService;
+  readonly account: IAccountService;
   readonly company: ICompanyService;
-  readonly accounting: IAccountingService;
   readonly reconciliation: IReconciliationService;
   readonly banking: IBankingService;
+  readonly invoice: IInvoiceService;
 
   constructor(config: ServiceConfig) {
     const company = new CompanyService(
@@ -35,10 +35,8 @@ export class Service {
       config.plaidConfig,
       config.qbConfig,
     );
-    const accounting = new AccountingService(
-      config.storage,
-      company,
-      config.qbConfig.environment,
+    const account = new AccountService(
+      config.storage.account
     );
 
     this.reconciliation = new ReconciliationService(
@@ -46,10 +44,10 @@ export class Service {
       config.storage.invoice,
       config.openaiKey,
     );
-    this.auth = new AuthService(config.storage.account);
+    this.account = account;
     this.company = company;
-    this.accounting = accounting;
     this.banking = new BankingService(config.storage.banking);
+    this.invoice = new InvoiceService(config.storage.invoice);
   }
 }
 

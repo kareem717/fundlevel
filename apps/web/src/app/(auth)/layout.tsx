@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { FormPageLayout } from "@fundlevel/web/components/layouts/form-page-layout";
 import { LogoDiv } from "@fundlevel/web/components/logo-div";
 

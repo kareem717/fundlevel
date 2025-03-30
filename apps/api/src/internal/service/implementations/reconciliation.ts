@@ -2,7 +2,6 @@ import type { IReconciliationService } from "../interfaces";
 import type {
   IBankingRepository,
   IInvoiceRepository,
-  GetManyTransactionsFilter,
 } from "@fundlevel/api/internal/storage/interfaces";
 import { createOpenAI } from "@ai-sdk/openai";
 import { generateObject } from "ai";
@@ -67,27 +66,35 @@ export class ReconciliationService implements IReconciliationService {
     // Step 2: Analyze filtered transactions to find matches
     const { remainingRemoteContent, ...invoice } = invoiceRecord;
 
-    let cursor: string | null = null;
+    const PAGE_SIZE = 5;
+    let pageNumber = 1;
+    const initialTransactions = await this.bankRepo.getManyBankAccountTransactions({
+      // ...filterParams.object,
+      // minAmount: 0,
+      companyIds: [invoiceRecord.companyId],
+      pageSize: PAGE_SIZE,
+      order: "asc",
+      page: pageNumber,
+      bankAccountIds: undefined,
+    });
+
     const transactionJobs = [];
-    while (cursor !== null) {
+    while (pageNumber <= initialTransactions.totalPages) {
+      pageNumber++;
+
       // Get transactions using the AI-suggested filters
-      const transactionResult = await this.bankRepo.getManyTransactions({
+      const transactionResult = await this.bankRepo.getManyBankAccountTransactions({
         // ...filterParams.object,
         // minAmount: 0,
         companyIds: [invoiceRecord.companyId],
-        limit: 5,
+        pageSize: PAGE_SIZE,
         order: "asc",
-        cursor,
+        page: pageNumber,
         bankAccountIds: undefined,
       });
 
-      console.log("transactionResult.data", transactionResult.data);
-
       transactionJobs.push(transactionResult.data);
-      cursor = transactionResult.nextCursor;
     }
-
-    console.log("transactionJobs", transactionJobs);
 
     const result = await Promise.all(
       transactionJobs.map(async (transactionJob) => {

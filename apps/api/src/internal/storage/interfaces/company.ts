@@ -1,62 +1,50 @@
 import type {
   Company,
   CreateCompanyParams,
-  CreatePlaidCredentialParams,
-  PlaidCredential,
-  QuickBooksOauthCredential,
-  CreateQuickBooksOauthStateParams,
+  CreateCompanyPlaidCredentialsParams,
+  CompanyPlaidCredentials,
+  CreateCompanyQuickBooksOauthCredentialParams,
+  UpdateCompanyQuickBooksOauthCredentialParams,
+  CompanyQuickBooksOauthCredential,
   QuickBooksOauthState,
-  UpdateQuickBooksOauthCredentialParams,
-  CreateQuickBooksOauthCredentialParams,
+  UpdateCompanySyncStatusParams,
+  CreateQuickBooksOauthStateParams
 } from "@fundlevel/db/types";
 
-export enum SyncJobType {
-  QUICKBOOKS_INVOICES = "QUICKBOOKS_INVOICES",
-  QUICKBOOKS_ACCOUNTS = "QUICKBOOKS_ACCOUNTS",
-  QUICKBOOKS_CREDIT_NOTES = "QUICKBOOKS_CREDIT_NOTES",
-  QUICKBOOKS_JOURNAL_ENTRIES = "QUICKBOOKS_JOURNAL_ENTRIES",
-  QUICKBOOKS_PAYMENTS = "QUICKBOOKS_PAYMENTS",
-  QUICKBOOKS_TRANSACTIONS = "QUICKBOOKS_TRANSACTIONS",
-  QUICKBOOKS_VENDOR_CREDITS = "QUICKBOOKS_VENDOR_CREDITS",
-  PLAID_BANK_ACCOUNTS = "PLAID_BANK_ACCOUNTS",
-  PLAID_TRANSACTIONS = "PLAID_TRANSACTIONS",
-}
 
 export interface ICompanyRepository {
   create(account: CreateCompanyParams, ownerId: number): Promise<Company>;
-  getById(id: number): Promise<Company>;
-  getByAccountId(accountId: number): Promise<Company[]>;
-  searchCompanies(query: string, accountId: number): Promise<Company[]>;
-  updateLastSyncedAt(type: SyncJobType, companyId: number): Promise<Company>;
+  get(id: number): Promise<Company | undefined>;
+  getMany(filter: { ids: number[] } | { ownerId: number }): Promise<Company[]>;
 
   createPlaidCredentials(
-    params: CreatePlaidCredentialParams,
+    params: CreateCompanyPlaidCredentialsParams,
     companyId: number,
-  ): Promise<PlaidCredential>;
-  deletePlaidCredentials(companyId: number): Promise<void>;
-  getPlaidCredentialsByItemId(itemId: string): Promise<PlaidCredential>;
-  getPlaidCredentialsByCompanyId(companyId: number): Promise<PlaidCredential>;
-  updateTransactionCursor(companyId: number, cursor: string): Promise<void>;
-  deleteCompany(id: number): Promise<void>;
+  ): Promise<CompanyPlaidCredentials>;
+  getPlaidCredentials(filter: { itemId: string } | { companyId: number }): Promise<CompanyPlaidCredentials | undefined>;
+  updatePlaidTransactionCursor(companyId: number, cursor: string): Promise<void>;
 
   getQuickBooksOAuthCredentials(
-    companyId: number,
-  ): Promise<QuickBooksOauthCredential>;
-  getCompanyByQuickBooksRealmId(realmId: string): Promise<Company | undefined>;
+    filter: { companyId: number } | { realmId: string }
+  ): Promise<CompanyQuickBooksOauthCredential | undefined>;
   updateQuickBooksOAuthCredentials(
-    params: UpdateQuickBooksOauthCredentialParams,
+    params: UpdateCompanyQuickBooksOauthCredentialParams,
     companyId: number,
-  ): Promise<QuickBooksOauthCredential>;
-  deleteQuickBooksOAuthCredentials(companyId: number): Promise<void>;
+  ): Promise<CompanyQuickBooksOauthCredential>;
   createQuickBooksOAuthCredentials(
-    params: CreateQuickBooksOauthCredentialParams,
+    params: CreateCompanyQuickBooksOauthCredentialParams,
     companyId: number,
-  ): Promise<QuickBooksOauthCredential>;
+  ): Promise<CompanyQuickBooksOauthCredential>;
 
   getQuickBooksOauthState(state: string): Promise<QuickBooksOauthState>;
   deleteQuickBooksOauthStates(companyId: number): Promise<void>;
   createQuickBooksOauthState(
     params: CreateQuickBooksOauthStateParams,
+    companyId: number,
+  ): Promise<void>;
+
+  updateSyncStatus(
+    params: UpdateCompanySyncStatusParams,
     companyId: number,
   ): Promise<void>;
 }

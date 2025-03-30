@@ -1,96 +1,30 @@
 import type {
   CreateCompanyParams,
-  CreatePlaidCredentialParams,
-  CreateQuickBooksOauthCredentialParams,
-  CreateQuickBooksOauthStateParams,
+  CreateCompanyPlaidCredentialsParams,
+  CreateCompanyQuickBooksOauthCredentialParams,
   Company,
-  UpdateQuickBooksOauthCredentialParams,
+  UpdateCompanyQuickBooksOauthCredentialParams,
+  CompanyPlaidCredentials,
+  CompanyQuickBooksOauthCredential,
+  QuickBooksOauthState,
+  UpdateCompanySyncStatusParams,
+  CreateQuickBooksOauthStateParams
 } from "@fundlevel/db/types";
 import type { ICompanyRepository } from "../interfaces/company";
 import {
   companies,
-  plaidCredentials,
-  quickBooksOauthCredentials,
+  companyPlaidCredentials,
+  companyQuickBooksOauthCredentials,
   quickBooksOauthStates,
+  companySyncStatus
 } from "@fundlevel/db/schema";
-import { and, eq, like, sql } from "drizzle-orm";
-import { SyncJobType } from "../interfaces";
+import { and, eq, inArray, like } from "drizzle-orm";
 import type { IDB } from "../index";
 
 export class CompanyRepository implements ICompanyRepository {
-  constructor(private readonly db: IDB) {}
+  constructor(private readonly db: IDB) { }
 
-  async updateLastSyncedAt(
-    type: SyncJobType,
-    companyId: number,
-  ): Promise<Company> {
-    let column: { [key: string]: string };
-
-    // TOOD: this is embarassing but it works
-    switch (type) {
-      case SyncJobType.QUICKBOOKS_INVOICES:
-        column = {
-          invoicesLastSyncedAt: new Date().toISOString(),
-        };
-        break;
-      case SyncJobType.QUICKBOOKS_ACCOUNTS:
-        column = {
-          bankAccountsLastSyncedAt: new Date().toISOString(),
-        };
-        break;
-      case SyncJobType.QUICKBOOKS_TRANSACTIONS:
-        column = {
-          transactionsLastSyncedAt: new Date().toISOString(),
-        };
-        break;
-      case SyncJobType.QUICKBOOKS_CREDIT_NOTES:
-        column = {
-          creditNotesLastSyncedAt: new Date().toISOString(),
-        };
-        break;
-      case SyncJobType.QUICKBOOKS_JOURNAL_ENTRIES:
-        column = {
-          journalEntriesLastSyncedAt: new Date().toISOString(),
-        };
-        break;
-      case SyncJobType.QUICKBOOKS_PAYMENTS:
-        column = {
-          paymentsLastSyncedAt: new Date().toISOString(),
-        };
-        break;
-      case SyncJobType.QUICKBOOKS_VENDOR_CREDITS:
-        column = {
-          vendorCreditsLastSyncedAt: new Date().toISOString(),
-        };
-        break;
-      case SyncJobType.PLAID_BANK_ACCOUNTS:
-        column = {
-          bankAccountsLastSyncedAt: new Date().toISOString(),
-        };
-        break;
-      case SyncJobType.PLAID_TRANSACTIONS:
-        column = {
-          transactionsLastSyncedAt: new Date().toISOString(),
-        };
-        break;
-      default:
-        throw new Error(`Unknown sync job type: ${type}`);
-    }
-
-    const [data] = await this.db
-      .update(companies)
-      .set(column)
-      .where(eq(companies.id, companyId))
-      .returning();
-
-    if (!data) {
-      throw new Error("Failed to update company");
-    }
-
-    return data;
-  }
-
-  async create(params: CreateCompanyParams, ownerId: number) {
+  async create(params: CreateCompanyParams, ownerId: number): Promise<Company> {
     const [data] = await this.db
       .insert(companies)
       .values({ ...params, ownerId })
@@ -103,18 +37,22 @@ export class CompanyRepository implements ICompanyRepository {
     return data;
   }
 
-  async getById(id: number): Promise<Company> {
+  async get(id: number): Promise<Company | undefined> {
     const [data] = await this.db
       .select()
       .from(companies)
       .where(eq(companies.id, id))
       .limit(1);
 
-    if (!data) {
-      throw new Error("Company not found");
+    return data;
+  }
+
+  async getMany(filter: { ids: number[] } | { ownerId: number }): Promise<Company[]> {
+    if ('ids' in filter) {
+      return await this.db.select().from(companies).where(inArray(companies.id, filter.ids));
     }
 
-    return data;
+    return await this.db.select().from(companies).where(eq(companies.ownerId, filter.ownerId));
   }
 
   async getByAccountId(accountId: number): Promise<Company[]> {
@@ -142,11 +80,11 @@ export class CompanyRepository implements ICompanyRepository {
   }
 
   async createPlaidCredentials(
-    params: CreatePlaidCredentialParams,
+    params: CreateCompanyPlaidCredentialsParams,
     companyId: number,
   ) {
     const [data] = await this.db
-      .insert(plaidCredentials)
+      .insert(companyPlaidCredentials)
       .values({ ...params, companyId })
       .returning();
 
@@ -157,10 +95,32 @@ export class CompanyRepository implements ICompanyRepository {
     return data;
   }
 
+  async getPlaidCredentials(
+    filter: { itemId: string } | { companyId: number }
+  ): Promise<CompanyPlaidCredentials | undefined> {
+    if ('itemId' in filter) {
+      const [data] = await this.db
+        .select()
+        .from(companyPlaidCredentials)
+        .where(eq(companyPlaidCredentials.itemId, filter.itemId))
+        .limit(1);
+
+      return data;
+    }
+
+    const [data] = await this.db
+      .select()
+      .from(companyPlaidCredentials)
+      .where(eq(companyPlaidCredentials.companyId, filter.companyId))
+      .limit(1);
+
+    return data;
+  }
+
   async deletePlaidCredentials(companyId: number): Promise<void> {
     await this.db
-      .delete(plaidCredentials)
-      .where(eq(plaidCredentials.companyId, companyId));
+      .delete(companyPlaidCredentials)
+      .where(eq(companyPlaidCredentials.companyId, companyId));
   }
 
   async deleteCompany(id: number): Promise<void> {
@@ -175,56 +135,48 @@ export class CompanyRepository implements ICompanyRepository {
     await this.db.delete(companies).where(eq(companies.id, id));
   }
 
-  async getPlaidCredentialsByItemId(itemId: string) {
+  async updatePlaidTransactionCursor(companyId: number, cursor: string): Promise<void> {
     const [data] = await this.db
-      .select()
-      .from(plaidCredentials)
-      .where(eq(plaidCredentials.itemId, itemId))
-      .limit(1);
+      .update(companyPlaidCredentials)
+      .set({ transactionCursor: cursor })
+      .where(eq(companyPlaidCredentials.companyId, companyId))
+      .returning();
 
     if (!data) {
-      throw new Error("Failed to get Plaid credentials");
+      throw new Error("Failed to update transaction cursor");
     }
-
-    return data;
   }
 
-  async getPlaidCredentialsByCompanyId(companyId: number) {
-    const [data] = await this.db
-      .select()
-      .from(plaidCredentials)
-      .where(eq(plaidCredentials.companyId, companyId))
-      .limit(1);
+  async getQuickBooksOAuthCredentials(
+    filter: { companyId: number } | { realmId: string }
+  ): Promise<CompanyQuickBooksOauthCredential | undefined> {
+    if ('companyId' in filter) {
+      const [data] = await this.db
+        .select()
+        .from(companyQuickBooksOauthCredentials)
+        .where(eq(companyQuickBooksOauthCredentials.companyId, filter.companyId))
+        .limit(1);
 
-    if (!data) {
-      throw new Error("Failed to get Plaid credentials");
+      return data;
     }
 
-    return data;
-  }
-
-  async getQuickBooksOAuthCredentials(companyId: number) {
     const [data] = await this.db
       .select()
-      .from(quickBooksOauthCredentials)
-      .where(eq(quickBooksOauthCredentials.companyId, companyId))
+      .from(companyQuickBooksOauthCredentials)
+      .where(eq(companyQuickBooksOauthCredentials.realmId, filter.realmId))
       .limit(1);
-
-    if (!data) {
-      throw new Error("Failed to get QuickBooks OAuth credentials");
-    }
 
     return data;
   }
 
   async updateQuickBooksOAuthCredentials(
-    params: UpdateQuickBooksOauthCredentialParams,
+    params: UpdateCompanyQuickBooksOauthCredentialParams,
     companyId: number,
-  ) {
+  ): Promise<CompanyQuickBooksOauthCredential> {
     const [data] = await this.db
-      .update(quickBooksOauthCredentials)
+      .update(companyQuickBooksOauthCredentials)
       .set(params)
-      .where(eq(quickBooksOauthCredentials.companyId, companyId))
+      .where(eq(companyQuickBooksOauthCredentials.companyId, companyId))
       .returning();
 
     if (!data) {
@@ -235,11 +187,11 @@ export class CompanyRepository implements ICompanyRepository {
   }
 
   async createQuickBooksOAuthCredentials(
-    params: CreateQuickBooksOauthCredentialParams,
+    params: CreateCompanyQuickBooksOauthCredentialParams,
     companyId: number,
-  ) {
+  ): Promise<CompanyQuickBooksOauthCredential> {
     const [data] = await this.db
-      .insert(quickBooksOauthCredentials)
+      .insert(companyQuickBooksOauthCredentials)
       .values({
         ...params,
         companyId,
@@ -253,28 +205,13 @@ export class CompanyRepository implements ICompanyRepository {
     return data;
   }
 
-  async updateTransactionCursor(
-    companyId: number,
-    cursor: string,
-  ): Promise<void> {
-    const [data] = await this.db
-      .update(plaidCredentials)
-      .set({ transactionCursor: cursor })
-      .where(eq(plaidCredentials.companyId, companyId))
-      .returning();
-
-    if (!data) {
-      throw new Error("Failed to update transaction cursor");
-    }
-  }
-
-  async deleteQuickBooksOAuthCredentials(companyId: number) {
+  async deleteQuickBooksOAuthCredentials(companyId: number): Promise<void> {
     await this.db
-      .delete(quickBooksOauthCredentials)
-      .where(eq(quickBooksOauthCredentials.companyId, companyId));
+      .delete(companyQuickBooksOauthCredentials)
+      .where(eq(companyQuickBooksOauthCredentials.companyId, companyId));
   }
 
-  async getQuickBooksOauthState(state: string) {
+  async getQuickBooksOauthState(state: string): Promise<QuickBooksOauthState> {
     const [data] = await this.db
       .select()
       .from(quickBooksOauthStates)
@@ -288,7 +225,7 @@ export class CompanyRepository implements ICompanyRepository {
     return data;
   }
 
-  async deleteQuickBooksOauthStates(companyId: number) {
+  async deleteQuickBooksOauthStates(companyId: number): Promise<void> {
     await this.db
       .delete(quickBooksOauthStates)
       .where(eq(quickBooksOauthStates.companyId, companyId));
@@ -311,26 +248,13 @@ export class CompanyRepository implements ICompanyRepository {
     }
   }
 
-  async getCompanyByQuickBooksRealmId(
-    realmId: string,
-  ): Promise<Company | undefined> {
-    const [data] = await this.db
-      .select()
-      .from(quickBooksOauthCredentials)
-      .where(eq(quickBooksOauthCredentials.realmId, realmId))
-      .limit(1);
-
-    if (!data) {
-      return undefined;
-    }
-
-    // Get the company using the company_id from the credentials
-    const [company] = await this.db
-      .select()
-      .from(companies)
-      .where(eq(companies.id, data.companyId))
-      .limit(1);
-
-    return company;
+  async updateSyncStatus(
+    params: UpdateCompanySyncStatusParams,
+    companyId: number,
+  ): Promise<void> {
+    await this.db
+      .update(companySyncStatus)
+      .set(params)
+      .where(eq(companySyncStatus.companyId, companyId))
   }
 }

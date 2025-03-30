@@ -10,8 +10,8 @@ export type CursorPaginationResult<D, C = string | number> = {
 };
 
 export type OffsetPaginationParams = {
-  offset: number;
-  limit: number;
+  page: number;
+  pageSize: number;
   order: "asc" | "desc";
 };
 

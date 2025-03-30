@@ -168,7 +168,7 @@ export const bankAccountTransactions = pgTable(
   {
     remoteId: text("remote_id").primaryKey().notNull(),
     companyId: integer("company_id").notNull(),
-    bankAccountId: text("bank_account_id").notNull(),
+    bankAccountId: text("bank_account_id").references(() => bankAccounts.remoteId).notNull(),
     isoCurrencyCode: varchar("iso_currency_code", { length: 3 }),
     unofficialCurrencyCode: varchar("unofficial_currency_code", { length: 3 }),
     checkNumber: text("check_number"),

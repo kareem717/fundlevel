@@ -7,13 +7,13 @@ import type { InferSelectModel, InferInsertModel } from "drizzle-orm";
 import type { OmitEntityFields } from "./utils";
 
 // QuickBooks Invoice types
-export type QuickBooksInvoice = InferSelectModel<typeof invoices>;
-export type CreateQuickBooksInvoiceParams = Omit<
+export type Invoice = InferSelectModel<typeof invoices>;
+export type CreateInvoiceParams = Omit<
   OmitEntityFields<InferInsertModel<typeof invoices>>,
   "companyId"
 >;
-export type UpdateQuickBooksInvoiceParams =
-  Partial<CreateQuickBooksInvoiceParams>;
+export type UpdateInvoiceParams =
+  Partial<CreateInvoiceParams>;
 
 // Invoice Line types
 export type InvoiceLine = InferSelectModel<typeof invoiceLines>;

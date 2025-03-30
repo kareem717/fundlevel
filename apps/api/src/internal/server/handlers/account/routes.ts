@@ -12,7 +12,7 @@ import {
 export const getAccountRoute = createRoute({
   summary: "Get account",
   operationId: "getAccount",
-  tags: ["Accounts"],
+  tags: ["Account"],
   security: [bearerAuthSchema],
   method: "get",
   path: "/",
@@ -33,7 +33,7 @@ export const getAccountRoute = createRoute({
 export const createAccountRoute = createRoute({
   summary: "Create account",
   operationId: "createAccount",
-  tags: ["Accounts"],
+  tags: ["Account"],
   security: [bearerAuthSchema],
   method: "post",
   path: "/",

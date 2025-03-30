@@ -26,7 +26,7 @@ import {
 import { CreateCompanyParamsSchema } from "@fundlevel/db/validators";
 import { useRouter } from "next/navigation";
 import { redirects } from "@fundlevel/web/lib/config/redirects";
-import { z } from "zod";
+import type { z } from "zod";  
 import { useMutation } from "@tanstack/react-query";
 import { client } from "@fundlevel/sdk";
 import { useAuth } from "@fundlevel/web/components/providers/auth-provider";

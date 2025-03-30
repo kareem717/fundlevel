@@ -30,8 +30,6 @@ export default async function CompanyLayout({
   const { companyId } = await params;
   const parsedId = Number.parseInt(companyId, 10);
 
-  console.log("companyId", companyId);
-
   if (Number.isNaN(parsedId)) {
     return notFound();
   }
@@ -43,6 +41,7 @@ export default async function CompanyLayout({
   }
 
   const companies = await resp.json();
+  console.log("companies", companies);
   if (!companies.length) {
     return notFound();
   }

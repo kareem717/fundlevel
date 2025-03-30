@@ -55,7 +55,7 @@ export function CreateAccountForm({
       const result = await client(
         env.NEXT_PUBLIC_BACKEND_URL,
         token,
-      ).auth.$post({ json: values });
+      ).account.$post({ json: values });
 
       if (!result.ok) {
         throw new Error("Failed to create account");

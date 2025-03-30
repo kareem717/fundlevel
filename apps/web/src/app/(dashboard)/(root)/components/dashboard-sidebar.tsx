@@ -11,7 +11,6 @@ import type { ComponentPropsWithoutRef } from "react";
 import { SidebarUser } from "@fundlevel/web/components/sidebar/sidebar-user";
 import { sidebar } from "@fundlevel/web/lib/config/sidebar";
 import { SidebarNotification } from "@fundlevel/web/components/sidebar/sidebar-notification";
-import { SidebarLogo } from "@fundlevel/web/components/sidebar/sidebar-logo";
 
 //TODO: this doesn't have to be a client component
 export function DashboardSidebar({

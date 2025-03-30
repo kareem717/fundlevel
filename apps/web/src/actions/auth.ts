@@ -13,7 +13,7 @@ export const getTokenCached = cache(async () => {
 });
 
 export const getAccountCached = cache(async (token: string) => {
-  const resp = await client(env.NEXT_PUBLIC_BACKEND_URL, token).auth.$get();
+  const resp = await client(env.NEXT_PUBLIC_BACKEND_URL, token).account.$get();
   const status = resp.status;
 
   switch (status) {

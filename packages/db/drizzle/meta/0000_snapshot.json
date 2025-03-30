@@ -1,5 +1,5 @@
 {
-  "id": "6a22567b-a8b8-4ccd-a348-681137619802",
+  "id": "137866a0-995e-47a1-80e4-644b146cba9e",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -242,6 +242,19 @@
         }
       },
       "foreignKeys": {
+        "bank_account_transactions_bank_account_id_bank_accounts_remote_id_fk": {
+          "name": "bank_account_transactions_bank_account_id_bank_accounts_remote_id_fk",
+          "tableFrom": "bank_account_transactions",
+          "tableTo": "bank_accounts",
+          "columnsFrom": [
+            "bank_account_id"
+          ],
+          "columnsTo": [
+            "remote_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
         "plaid_transactions_company_id_fkey": {
           "name": "plaid_transactions_company_id_fkey",
           "tableFrom": "bank_account_transactions",
