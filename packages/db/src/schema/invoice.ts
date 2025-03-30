@@ -14,6 +14,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { companies } from ".";
 import { dataProvider } from "./shared";
+import { bankAccountTransactions } from "./banking";
 
 export const invoices = pgTable(
   "invoices",
@@ -89,3 +90,20 @@ export const invoiceLines = pgTable(
     ),
   ],
 );
+
+export const invoiceTransactions = pgTable("invoice_transactions", {
+  id: serial("id").primaryKey().notNull(),
+  invoiceId: integer("invoice_id")
+    .notNull()
+    .references(() => invoices.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
+  transactionId: text("transaction_id").references(() => bankAccountTransactions.remoteId, {
+    onDelete: "cascade",
+    onUpdate: "cascade",
+  }),
+  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
+    .defaultNow()
+    .notNull(),
+}); 
