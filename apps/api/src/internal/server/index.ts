@@ -8,6 +8,7 @@ import webhookHandler from "./handlers/webhook";
 import companyHandler from "./handlers/company";
 import accountingHandler from "./handlers/accounting";
 import invoiceHandler from "./handlers/invoice";
+import bankingHandler from "./handlers/banking";
 import {
   withAuth,
   withCors,
@@ -85,7 +86,8 @@ export class Server {
       .route("/webhooks", webhookHandler)
       .route("/company", companyHandler)
       .route("/accounting", accountingHandler)
-      .route("/invoice", invoiceHandler);
+      .route("/invoice", invoiceHandler)
+      .route("/banking", bankingHandler);
 
     //! It is important to mount Fiberplane's middleware after all of your route definitions.
     app.use(

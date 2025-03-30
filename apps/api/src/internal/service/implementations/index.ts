@@ -3,3 +3,4 @@ export * from "./company";
 export * from "./ai";
 export * from "./accounting";
 export * from "./reconciliation";
+export * from "./banking";

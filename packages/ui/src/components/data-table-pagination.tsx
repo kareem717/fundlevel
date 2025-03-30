@@ -26,6 +26,10 @@ interface DataTablePaginationProps<TData>
   showSelectedRowCount?: boolean;
   showPageSizeSelector?: boolean;
   paginationButtons?: "default" | "compact";
+  // Props for infinite scroll
+  hasNextPage?: boolean;
+  isFetchingNextPage?: boolean;
+  fetchNextPage?: () => void;
 }
 
 export function DataTablePagination<TData>({
@@ -35,8 +39,30 @@ export function DataTablePagination<TData>({
   showSelectedRowCount = true,
   showPageSizeSelector = true,
   paginationButtons = "default",
+  // Destructure infinite scroll props
+  hasNextPage,
+  isFetchingNextPage,
+  fetchNextPage,
   ...props
 }: DataTablePaginationProps<TData>) {
+  // Determine if standard pagination or infinite scroll is used
+  const isInfinite = fetchNextPage !== undefined;
+
+  const handleNextPageClick = () => {
+    if (isInfinite && fetchNextPage) {
+      fetchNextPage();
+    } else {
+      table.nextPage();
+    }
+  };
+
+  const canGoNext = isInfinite ? hasNextPage : table.getCanNextPage();
+  // Use isFetchingNextPage when in infinite mode
+  const isFetching = isInfinite ? isFetchingNextPage : false; // Default to false if not infinite mode
+
+  // For infinite scroll, previous/first/last page buttons are typically disabled
+  const canGoPrevious = isInfinite ? false : table.getCanPreviousPage();
+
   return (
     <div
       className={cn(
@@ -61,6 +87,8 @@ export function DataTablePagination<TData>({
               onValueChange={(value) => {
                 table.setPageSize(Number(value));
               }}
+              // Disable page size selector when fetching next page in infinite mode
+              disabled={isInfinite && isFetching}
             >
               <SelectTrigger className="h-8 w-[70px]">
                 <SelectValue
@@ -77,7 +105,7 @@ export function DataTablePagination<TData>({
             </Select>
           </div>
         )}
-        {showPageCount && (
+        {showPageCount && !isInfinite && (
           <div className="flex w-[100px] items-center justify-center text-sm font-medium">
             Page {table.getState().pagination.pageIndex + 1} of{" "}
             {table.getPageCount()}
@@ -89,7 +117,7 @@ export function DataTablePagination<TData>({
               variant="outline"
               className="hidden h-8 w-8 p-0 lg:flex"
               onClick={() => table.setPageIndex(0)}
-              disabled={!table.getCanPreviousPage()}
+              disabled={!canGoPrevious || isInfinite}
             >
               <span className="sr-only">Go to first page</span>
               <ChevronsLeft className="h-4 w-4" />
@@ -99,7 +127,7 @@ export function DataTablePagination<TData>({
             variant="outline"
             className="h-8 w-8 p-0"
             onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
+            disabled={!canGoPrevious || isInfinite}
           >
             <span className="sr-only">Go to previous page</span>
             <ChevronLeft className="h-4 w-4" />
@@ -107,8 +135,8 @@ export function DataTablePagination<TData>({
           <Button
             variant="outline"
             className="h-8 w-8 p-0"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
+            onClick={handleNextPageClick}
+            disabled={!canGoNext || isFetching}
           >
             <span className="sr-only">Go to next page</span>
             <ChevronRight className="h-4 w-4" />
@@ -118,7 +146,7 @@ export function DataTablePagination<TData>({
               variant="outline"
               className="hidden h-8 w-8 p-0 lg:flex"
               onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-              disabled={!table.getCanNextPage()}
+              disabled={!canGoNext || isInfinite}
             >
               <span className="sr-only">Go to last page</span>
               <ChevronsRight className="h-4 w-4" />

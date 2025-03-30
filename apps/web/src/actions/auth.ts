@@ -25,6 +25,6 @@ export const getAccountCached = cache(async (token: string) => {
       return null;
     default:
       console.error(resp);
-      throw new Error("Failed to fetch account, status: " + status);
+      throw new Error(`Failed to fetch account, status: ${status}`);
   }
 });

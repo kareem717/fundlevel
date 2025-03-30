@@ -16,8 +16,10 @@ import { useQuery } from "@tanstack/react-query";
 import { client } from "@fundlevel/sdk";
 import { env } from "@fundlevel/web/env";
 import { Skeleton } from "@fundlevel/ui/components/skeleton";
-import { Button } from "@fundlevel/ui/components/button";
+import { Button, buttonVariants } from "@fundlevel/ui/components/button";
 import { RefreshCcw } from "lucide-react";
+import Link from "next/link";
+import { redirects } from "@fundlevel/web/lib/config/redirects";
 interface BankAccountCardProps extends ComponentPropsWithoutRef<typeof Card> {
   account: PlaidBankAccount;
 }
@@ -72,16 +74,29 @@ export function BankAccountCard({
               {account.mask ? `••••${account.mask}` : ""}
             </CardDescription>
           </div>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => refetch()}
-            disabled={isLoading}
-          >
-            <RefreshCcw
-              className={cn("h-4 w-4", isLoading && "animate-spin")}
-            />
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => refetch()}
+              disabled={isLoading}
+            >
+              <RefreshCcw
+                className={cn("h-4 w-4", isLoading && "animate-spin")}
+              />
+            </Button>
+            <Link
+              href={redirects.app
+                .company(account.companyId)
+                .bankAccounts.show(account.remoteId)}
+              prefetch={true}
+              className={buttonVariants({
+                size: "sm",
+              })}
+            >
+              View
+            </Link>
+          </div>
         </div>
       </CardHeader>
       <CardContent className="mb-12 h-full flex flex-col justify-between gap-8">

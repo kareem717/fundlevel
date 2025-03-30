@@ -1,25 +1,35 @@
 import type { IBankingRepository } from "../interfaces";
 import type { IDB } from "@fundlevel/api/internal/storage";
 import type { GetManyTransactionsFilter } from "../interfaces/banking";
-import type { PlaidTransaction } from "@fundlevel/db/types";
-import type { CursorPaginationResult } from "@fundlevel/api/internal/entities";
-import { plaidTransactions } from "@fundlevel/db/schema";
-import { eq, inArray, gte, lte, asc, desc } from "drizzle-orm";
+import type { PlaidTransaction, PlaidBankAccount } from "@fundlevel/db/types";
+import type { OffsetPaginationResult } from "@fundlevel/api/internal/entities";
+import { plaidTransactions, plaidBankAccounts } from "@fundlevel/db/schema";
+import { inArray, gte, lte, asc, desc, count, eq } from "drizzle-orm";
 
 export class BankingRepository implements IBankingRepository {
-  constructor(private db: IDB) {}
+  constructor(private db: IDB) { }
 
   async getManyTransactions(
     filter: GetManyTransactionsFilter,
-  ): Promise<CursorPaginationResult<PlaidTransaction, string>> {
+  ): Promise<OffsetPaginationResult<PlaidTransaction>> {
     let qb = this.db
       .select()
       .from(plaidTransactions)
-      .where(inArray(plaidTransactions.companyId, filter.companyIds))
+      .groupBy(plaidTransactions.remoteId)
+      .$dynamic();
+
+    let countQb = this.db
+      .select({
+        total: count(),
+      })
+      .from(plaidTransactions)
       .$dynamic();
 
     if (filter.minAuthorizedAt) {
       qb = qb.where(
+        gte(plaidTransactions.authorizedAt, filter.minAuthorizedAt),
+      );
+      countQb = countQb.where(
         gte(plaidTransactions.authorizedAt, filter.minAuthorizedAt),
       );
     }
@@ -28,55 +38,78 @@ export class BankingRepository implements IBankingRepository {
       qb = qb.where(
         lte(plaidTransactions.authorizedAt, filter.maxAuthorizedAt),
       );
+      countQb = countQb.where(
+        lte(plaidTransactions.authorizedAt, filter.maxAuthorizedAt),
+      );
     }
 
     if (filter.minAmount) {
       qb = qb.where(gte(plaidTransactions.amount, filter.minAmount));
+      countQb = countQb.where(gte(plaidTransactions.amount, filter.minAmount));
     }
 
     if (filter.maxAmount) {
       qb = qb.where(lte(plaidTransactions.amount, filter.maxAmount));
+      countQb = countQb.where(lte(plaidTransactions.amount, filter.maxAmount));
     }
 
     if (filter.bankAccountIds) {
       qb = qb.where(
         inArray(plaidTransactions.bankAccountId, filter.bankAccountIds),
       );
+      countQb = countQb.where(
+        inArray(plaidTransactions.bankAccountId, filter.bankAccountIds),
+      );
     }
 
-    // Handle cursor pagination
-    if (filter.cursor) {
-      switch (filter.order) {
-        case "asc":
-          qb = qb.where(gte(plaidTransactions.remoteId, filter.cursor));
-          break;
-        case "desc":
-          qb = qb.where(lte(plaidTransactions.remoteId, filter.cursor));
-          break;
-      }
+    if (filter.companyIds) {
+      qb = qb.where(inArray(plaidTransactions.companyId, filter.companyIds));
+      countQb = countQb.where(
+        inArray(plaidTransactions.companyId, filter.companyIds),
+      );
     }
 
-    // Fetch one extra record to determine if there's a next page
-    const data = await qb
-      .limit(filter.limit + 1)
+    const { offset, limit, order } = filter;
+
+    qb = qb
+      .limit(limit)
+      .offset(offset)
       .orderBy(
-        filter.order === "asc"
+        order === "asc"
           ? asc(plaidTransactions.remoteId)
           : desc(plaidTransactions.remoteId),
       );
 
-    if (!data) {
+    const [data, total] = await Promise.all([qb, countQb]);
+
+    if (!data || !total) {
       throw new Error("Failed to get transactions");
     }
 
-    let nextCursor: string | null = null;
-    if (data.length > filter.limit) {
-      nextCursor = data.pop()!.remoteId;
+    if (data.length === 0) {
+      return {
+        data: [],
+        totalPages: 0,
+        totalRecords: 0,
+        hasNextPage: false,
+        hasPreviousPage: false,
+        currentPage: 0,
+      };
     }
 
     return {
       data,
-      nextCursor,
+      totalPages: Math.ceil(total[0]!.total / limit),
+      totalRecords: total[0]!.total,
+      hasNextPage: total[0]!.total > offset + limit,
+      hasPreviousPage: offset > 0,
+      currentPage: Math.floor(offset / limit) + 1,
     };
+  }
+
+  async getBankAccount(bankAccountId: string) {
+    const [data] = await this.db.select().from(plaidBankAccounts).where(eq(plaidBankAccounts.remoteId, bankAccountId));
+
+    return data;
   }
 }

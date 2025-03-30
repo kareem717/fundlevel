@@ -9,16 +9,11 @@ import {
   PlaidTransactionSchema,
   QuickBooksAccountSchema,
   QuickBooksCreditNoteSchema,
-  InvoiceSchema,
   QuickBooksJournalEntrySchema,
   QuickBooksPaymentSchema,
   QuickBooksTransactionSchema,
   QuickBooksVendorCreditSchema,
 } from "@fundlevel/db/validators";
-import {
-  cursorPaginationParamsSchema,
-  cursorPaginationResultSchema,
-} from "@fundlevel/api/internal/server/types/params";
 
 const intIdSchema = z.coerce.number().int().positive();
 const stringIdSchema = z.string().min(1);
@@ -124,62 +119,6 @@ export const getTransactionsByBankAccountIdRoute = createRoute({
       content: {
         "application/json": {
           schema: z.array(PlaidTransactionSchema.openapi("Transaction")),
-        },
-      },
-    },
-    ...unauthorizedResponse,
-    ...forbiddenResponse,
-  },
-});
-
-export const getInvoiceRoute = createRoute({
-  summary: "Get invoice details",
-  operationId: "getInvoice",
-  tags: ["Accounting"],
-  security: [bearerAuthSchema],
-  method: "get",
-  path: "/invoices/:invoiceId",
-  request: {
-    params: z.object({
-      invoiceId: intIdSchema.describe("The ID of the invoice"),
-    }),
-  },
-  responses: {
-    200: {
-      description: "Successful fetch",
-      content: {
-        "application/json": {
-          schema: InvoiceSchema.openapi("Invoice"),
-        },
-      },
-    },
-    ...unauthorizedResponse,
-    ...forbiddenResponse,
-  },
-});
-
-export const getInvoicesByCompanyIdRoute = createRoute({
-  summary: "Get invoices by company ID",
-  operationId: "getInvoicesByCompanyId",
-  tags: ["Accounting"],
-  security: [bearerAuthSchema],
-  method: "get",
-  path: "/companies/:companyId/invoices",
-  request: {
-    params: z.object({
-      companyId: intIdSchema.describe("The ID of the company"),
-    }),
-    query: cursorPaginationParamsSchema,
-  },
-  responses: {
-    200: {
-      description: "Successful fetch",
-      content: {
-        "application/json": {
-          schema: z.object({
-            invoices: z.array(InvoiceSchema.openapi("Invoice")),
-            ...cursorPaginationResultSchema.shape,
-          }),
         },
       },
     },

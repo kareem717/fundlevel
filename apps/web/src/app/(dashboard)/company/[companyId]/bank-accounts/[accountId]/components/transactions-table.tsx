@@ -22,21 +22,21 @@ import { DataTablePagination } from "@fundlevel/ui/components/data-table-paginat
 import { toast } from "@fundlevel/ui/components/sonner";
 import { parseAsInteger, useQueryState } from "nuqs";
 import { Skeleton } from "@fundlevel/ui/components/skeleton";
-import { useRef, useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { generate } from "shortid";
 import { getTokenCached } from "@fundlevel/web/actions/auth";
 import type { ComponentPropsWithoutRef } from "react";
 import { cn } from "@fundlevel/ui/lib/utils";
 
-interface InvoiceTableProps extends ComponentPropsWithoutRef<"div"> {
-  companyId: number;
+interface TransactionsTableProps extends ComponentPropsWithoutRef<"div"> {
+  bankAccountId: string;
 }
 
-export function InvoiceTable({
-  companyId,
+export function TransactionsTable({
+  bankAccountId,
   className,
   ...props
-}: InvoiceTableProps) {
+}: TransactionsTableProps) {
   const [pageIndex, setPageIndex] = useQueryState(
     "page",
     parseAsInteger.withDefault(0),
@@ -49,8 +49,8 @@ export function InvoiceTable({
   // Keep track of the last known page count
   const lastPageCount = useRef<number>(0);
 
-  const { data: invoices, isLoading } = useQuery({
-    queryKey: ["invoices", companyId, pageIndex, pageSize],
+  const { data, isLoading } = useQuery({
+    queryKey: ["transactions", bankAccountId, pageIndex, pageSize],
     queryFn: async () => {
       const authToken = await getTokenCached();
       if (!authToken) {
@@ -59,14 +59,17 @@ export function InvoiceTable({
 
       const sdk = client(env.NEXT_PUBLIC_BACKEND_URL, authToken);
 
-      const response = await sdk.invoice.company[":companyId"].$get({
-        param: { companyId },
+      const response = await sdk.banking["bank-account"][
+        ":bankAccountId"
+      ].transactions.$get({
+        param: { bankAccountId },
         query: {
           offset: pageIndex * pageSize,
           limit: pageSize,
           order: "asc",
         },
       });
+
       const body = await response.json();
 
       if ("error" in body) {
@@ -86,15 +89,8 @@ export function InvoiceTable({
     staleTime: 1000 * 60 * 2,
   });
 
-  // Update the last known page count whenever we get new data
-  useEffect(() => {
-    if (invoices?.totalPages !== undefined) {
-      lastPageCount.current = invoices.totalPages;
-    }
-  }, [invoices?.totalPages]);
-
   const table = useReactTable({
-    data: invoices?.data ?? [],
+    data: data?.data ?? [],
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -111,7 +107,7 @@ export function InvoiceTable({
         setPageSize(updater.pageSize);
       }
     },
-    pageCount: isLoading ? lastPageCount.current : (invoices?.totalPages ?? 0),
+    pageCount: isLoading ? lastPageCount.current : (data?.totalPages ?? 0),
     state: {
       pagination: {
         pageIndex,
@@ -120,6 +116,13 @@ export function InvoiceTable({
     },
     manualPagination: true,
   });
+
+  // Update the last known page count whenever we get new data
+  useEffect(() => {
+    if (data?.totalPages !== undefined) {
+      lastPageCount.current = data.totalPages;
+    }
+  }, [data?.totalPages]);
 
   return (
     <div className={cn("space-y-4", className)} {...props}>

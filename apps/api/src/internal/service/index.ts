@@ -4,12 +4,14 @@ import {
   CompanyService,
   AccountingService,
   ReconciliationService,
+  BankingService,
 } from "./implementations";
 import type {
   IAuthService,
   ICompanyService,
   IAccountingService,
   IReconciliationService,
+  IBankingService,
 } from "./interfaces";
 import type { QuickBooksConfig, PlaidConfig } from "./implementations/company";
 
@@ -25,6 +27,7 @@ export class Service {
   readonly company: ICompanyService;
   readonly accounting: IAccountingService;
   readonly reconciliation: IReconciliationService;
+  readonly banking: IBankingService;
 
   constructor(config: ServiceConfig) {
     const company = new CompanyService(
@@ -46,6 +49,7 @@ export class Service {
     this.auth = new AuthService(config.storage.account);
     this.company = company;
     this.accounting = accounting;
+    this.banking = new BankingService(config.storage.banking);
   }
 }
 

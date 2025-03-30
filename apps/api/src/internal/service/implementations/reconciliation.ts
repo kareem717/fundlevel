@@ -72,7 +72,8 @@ export class ReconciliationService implements IReconciliationService {
     while (cursor !== null) {
       // Get transactions using the AI-suggested filters
       const transactionResult = await this.bankRepo.getManyTransactions({
-        ...filterParams.object,
+        // ...filterParams.object,
+        // minAmount: 0,
         companyIds: [invoiceRecord.companyId],
         limit: 5,
         order: "asc",
@@ -80,11 +81,13 @@ export class ReconciliationService implements IReconciliationService {
         bankAccountIds: undefined,
       });
 
+      console.log("transactionResult.data", transactionResult.data);
+
       transactionJobs.push(transactionResult.data);
       cursor = transactionResult.nextCursor;
     }
 
-    console.log(transactionJobs);
+    console.log("transactionJobs", transactionJobs);
 
     const result = await Promise.all(
       transactionJobs.map(async (transactionJob) => {

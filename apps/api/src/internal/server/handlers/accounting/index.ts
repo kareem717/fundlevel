@@ -3,8 +3,6 @@ import {
   getCompanyBankAccountsRoute,
   getBankAccountRoute,
   getTransactionsByBankAccountIdRoute,
-  getInvoiceRoute,
-  getInvoicesByCompanyIdRoute,
   getAccountingAccountRoute,
   getAccountingAccountsByCompanyIdRoute,
   getAccountingTransactionRoute,
@@ -116,74 +114,6 @@ const accountingHandler = new OpenAPIHono()
       );
 
     return c.json(transactions, 200);
-  })
-  .openapi(getInvoiceRoute, async (c) => {
-    const account = getAccount(c);
-
-    if (!account) {
-      return c.json(
-        {
-          error: "Account not found.",
-        },
-        401,
-      );
-    }
-
-    const { invoiceId } = c.req.valid("param");
-
-    const invoice = await getService(c).accounting.getInvoice({
-      id: invoiceId,
-    });
-    const company = await getService(c).company.getById(invoice.companyId);
-
-    if (company.ownerId !== account.id) {
-      return c.json(
-        {
-          error: "Forbidden from managing this account",
-        },
-        403,
-      );
-    }
-
-    return c.json(invoice, 200);
-  })
-  .openapi(getInvoicesByCompanyIdRoute, async (c) => {
-    const account = getAccount(c);
-
-    if (!account) {
-      return c.json(
-        {
-          error: "Account not found.",
-        },
-        401,
-      );
-    }
-
-    const { companyId } = c.req.valid("param");
-    const paginationParams = c.req.valid("query");
-
-    const company = await getService(c).company.getById(companyId);
-
-    if (company.ownerId !== account.id) {
-      return c.json(
-        {
-          error: "Forbidden from managing this account",
-        },
-        403,
-      );
-    }
-    const invoices = await getService(c).accounting.getManyInvoices({
-      companyIds: [companyId],
-      ...paginationParams,
-    });
-
-    return c.json(
-      {
-        invoices: invoices.data,
-        nextCursor: invoices.nextCursor,
-      },
-      200,
-    );
   })
   .openapi(getAccountingAccountRoute, async (c) => {
     const account = getAccount(c);

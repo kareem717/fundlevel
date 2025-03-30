@@ -24,6 +24,7 @@ export interface IAccountingRepository {
     bankAccount: CreatePlaidBankAccountParams[],
     companyId: number,
   ): Promise<PlaidBankAccount[]>;
+
   getBankAccountByRemoteId(id: string): Promise<PlaidBankAccount>;
   getBankAccountsByCompanyId(companyId: number): Promise<PlaidBankAccount[]>;
   updateBankAccount(

@@ -2,3 +2,4 @@ export * from "./auth";
 export * from "./company";
 export * from "./accounting";
 export * from "./reconciliation";
+export * from "./banking";

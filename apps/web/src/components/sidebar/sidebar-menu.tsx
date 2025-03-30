@@ -1,7 +1,7 @@
 "use client";
 
-import { NavigationMenu } from "@fundlevel/web/lib/config/sidebar";
-import { ComponentPropsWithoutRef } from "react";
+import type { NavigationMenu } from "@fundlevel/web/lib/config/sidebar";
+import type { ComponentPropsWithoutRef } from "react";
 import {
   Collapsible,
   CollapsibleContent,
@@ -48,7 +48,7 @@ export function SidebarMenu({ config, ...props }: SidebarMenuProps) {
                     {item.items.map((subItem) => (
                       <SidebarMenuSubItem key={subItem.title}>
                         <SidebarMenuSubButton asChild>
-                          <Link href={subItem.url}>
+                          <Link href={subItem.url} prefetch={true}>
                             <span>{subItem.title}</span>
                           </Link>
                         </SidebarMenuSubButton>
@@ -61,7 +61,7 @@ export function SidebarMenu({ config, ...props }: SidebarMenuProps) {
           ) : (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton tooltip={item.title} asChild>
-                <Link href={item.url}>
+                <Link href={item.url} prefetch={true}>
                   {item.icon && <item.icon />}
                   <span>{item.title}</span>
                 </Link>

@@ -8,7 +8,7 @@ import { Toaster } from "@fundlevel/ui/components/sonner";
 import { ClerkProvider } from "@clerk/nextjs";
 import { QueryClientProvider } from "@fundlevel/web/components/providers/query-client-provider";
 import { env } from "../env";
-
+import { ReactScan } from "@fundlevel/web/components/react-scan";
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_WEB_URL),
   title: {
@@ -69,6 +69,7 @@ export default async function RootLayout({
               disableTransitionOnChange={true}
             >
               <NuqsAdapter>
+                <ReactScan />
                 {children}
                 <Toaster />
               </NuqsAdapter>

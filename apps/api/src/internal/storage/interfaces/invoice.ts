@@ -9,20 +9,13 @@ import type {
   OffsetPaginationResult,
 } from "@fundlevel/api/internal/entities";
 
-type InvoiceFilterProperties = {
+export type GetManyInvoicesFilter = {
   minTotal?: number;
   maxTotal?: number;
   minDueDate?: string;
   maxDueDate?: string;
-  companyIds?: number[];
-};
-
-// At least one property is required
-export type GetManyInvoicesFilter = (Partial<InvoiceFilterProperties> &
-  {
-    [K in keyof InvoiceFilterProperties]: Record<K, InvoiceFilterProperties[K]>;
-  }[keyof InvoiceFilterProperties]) &
-  OffsetPaginationParams;
+  companyIds: number[];
+} & OffsetPaginationParams;
 
 export interface IInvoiceRepository {
   upsert(

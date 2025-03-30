@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build": "turbo build",
+    "build:pkgs": "turbo build --filter=./packages/*",
     "start": "turbo start",
     "clean": "turbo clean && rm -rf node_modules && rm -rf pnpm-lock.yaml",
     "db:generate": "pnpm --filter @fundlevel/db db:generate",

@@ -76,7 +76,17 @@ export const columns: ColumnDef<QuickBooksInvoice>[] = [
                   .invoices.show(invoice.id)}
                 prefetch={true}
               >
-                View Invoice
+                View
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link
+                href={redirects.app
+                  .company(invoice.companyId)
+                  .invoices.reconcile(invoice.id)}
+                prefetch={true}
+              >
+                Reconcile
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem
