@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import type { Account } from "@fundlevel/db/types";
 import { getTokenCached, getAccountCached } from "../../actions/auth";
 import { env } from "@fundlevel/web/env";
+import { Badge } from "@fundlevel/ui/components/badge";
 
 export default async function DashboardLayout({
   children,
@@ -31,9 +32,14 @@ export default async function DashboardLayout({
 
   return (
     <AuthProvider account={account} authToken={token}>
-      {/* // <NotificationProvider notifications={notifications}> */}
-      {children}
-      {/* // </NotificationProvider> */}
+      <div className="relative">
+        <Badge className="absolute top-6 right-6 z-1000">
+          BETA
+        </Badge>
+        {/* // <NotificationProvider notifications={notifications}> */}
+        {children}
+        {/* // </NotificationProvider> */}
+      </div>
     </AuthProvider>
   );
 }
