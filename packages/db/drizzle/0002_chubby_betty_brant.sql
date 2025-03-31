@@ -1,0 +1,1 @@
+ALTER TABLE "bank_account_transaction_relationships" DROP CONSTRAINT "bank_account_transaction_relationships_bank_account_transaction_id_bank_account_transactions_remote_id_fk";

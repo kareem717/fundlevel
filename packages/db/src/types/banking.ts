@@ -3,6 +3,7 @@ import type { InferInsertModel, InferSelectModel } from "drizzle-orm";
 import type {
   bankAccounts,
   bankAccountTransactions,
+  bankAccountTransactionRelationships,
 } from "@fundlevel/db/schema";
 
 export type BankAccount = InferSelectModel<typeof bankAccounts>;
@@ -20,3 +21,10 @@ export type CreateBankAccountTransactionParams = Omit<
 >;
 export type UpdateBankAccountTransactionParams =
   Partial<CreateBankAccountTransactionParams>;
+
+export type BankAccountTransactionRelationship = InferSelectModel<
+  typeof bankAccountTransactionRelationships
+>;
+export type CreateBankAccountTransactionRelationshipParams = OmitTimeStampFields<
+  InferInsertModel<typeof bankAccountTransactionRelationships>
+>;

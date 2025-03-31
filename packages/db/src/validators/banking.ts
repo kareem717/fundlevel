@@ -6,6 +6,7 @@ import {
 import {
   bankAccounts,
   bankAccountTransactions,
+  bankAccountTransactionRelationships,
 } from "@fundlevel/db/schema";
 
 export const BankAccountSchema = createSelectSchema(bankAccounts);
@@ -23,3 +24,20 @@ export const CreateBankAccountTransactionParamsSchema = createInsertSchema(
 export const UpdateBankAccountTransactionParamsSchema = createUpdateSchema(
   bankAccountTransactions,
 ).omit({ createdAt: true, updatedAt: true, companyId: true });
+
+export const BankAccountTransactionRelationshipSchema = createSelectSchema(
+  bankAccountTransactionRelationships,
+);
+export const CreateBankAccountTransactionRelationshipParamsSchema =
+  createInsertSchema(bankAccountTransactionRelationships).omit({
+    createdAt: true,
+    updatedAt: true,
+  });
+export const UpdateBankAccountTransactionRelationshipParamsSchema =
+  createUpdateSchema(bankAccountTransactionRelationships).omit({
+    createdAt: true,
+    updatedAt: true,
+    bankAccountTransactionId: true,
+    entityId: true,
+    entityType: true,
+  });

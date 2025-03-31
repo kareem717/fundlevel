@@ -12,6 +12,9 @@ import {
   date,
   boolean,
   pgEnum,
+  serial,
+  primaryKey,
+  uniqueIndex,
 } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 import { companies } from ".";
@@ -123,10 +126,14 @@ export const plaidTransactionPaymentChannel = pgEnum(
   "plaid_transaction_payment_channel",
   ["online", "in store", "other"],
 );
-;
+
+export const bankAccountTransactionRelationshipEntityType = pgEnum(
+  "bank_account_transaction_relationship_entity_type",
+  ["invoice"],
+);
 
 export const bankAccounts = pgTable(
-  "bank_accounts",  
+  "bank_accounts",
   {
     remoteId: text("remote_id").primaryKey().notNull(),
     companyId: integer("company_id").notNull(),
@@ -215,6 +222,44 @@ export const bankAccountTransactions = pgTable(
     check(
       "plaid_transactions_check",
       sql`((personal_finance_category_primary IS NULL) AND (personal_finance_category_detailed IS NULL)) OR ((personal_finance_category_primary IS NOT NULL) AND (personal_finance_category_detailed IS NOT NULL))`,
+    ),
+  ],
+);
+
+export const bankAccountTransactionRelationships = pgTable(
+  "bank_account_transaction_relationships",
+  {
+    bankAccountTransactionId: text("bank_account_transaction_id")
+      .notNull(),
+    entityId: integer("entity_id").notNull(),
+    entityType: bankAccountTransactionRelationshipEntityType(
+      "entity_type",
+    ).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", {
+      withTimezone: true,
+      mode: "string",
+    }).$onUpdateFn(() => new Date().toISOString()),
+  },
+  (table) => [
+    primaryKey({
+      columns: [table.bankAccountTransactionId, table.entityId, table.entityType],
+      name: "batr_pkey"
+    }),
+    foreignKey({
+      columns: [table.bankAccountTransactionId],
+      foreignColumns: [bankAccountTransactions.remoteId],
+      name: "batr_transaction_id_fkey"
+    })
+      .onDelete("cascade")
+      .onUpdate("cascade"),
+    uniqueIndex("batr_unique_transaction_id_idx").on(
+      table.bankAccountTransactionId,
+    ),
+    index("batr_transaction_id_idx").on(
+      table.bankAccountTransactionId,
     ),
   ],
 );
