@@ -62,7 +62,7 @@ export default async function CompanyPage({
           <div className="flex items-center gap-2">
             <h1 className="text-3xl font-bold">{company.name}</h1>
             <Badge variant="outline" className="ml-2 h-6">
-              {company.type || "Business"}
+              {"Business"}
             </Badge>
           </div>
           <p className="text-muted-foreground mt-2">
@@ -227,8 +227,8 @@ export default async function CompanyPage({
                   <div key={activity.id} className="px-4 py-3 flex items-start justify-between hover:bg-muted/50 transition-colors">
                     <div className="flex items-start gap-3">
                       <div className={`p-2 rounded-full mt-0.5 ${activity.type === 'invoice' ? 'bg-purple-100 dark:bg-purple-950' :
-                          activity.type === 'payment' ? 'bg-green-100 dark:bg-green-950' :
-                            'bg-blue-100 dark:bg-blue-950'
+                        activity.type === 'payment' ? 'bg-green-100 dark:bg-green-950' :
+                          'bg-blue-100 dark:bg-blue-950'
                         }`}>
                         {activity.type === 'invoice' ? <FileText className="h-3 w-3 text-purple-600 dark:text-purple-400" /> :
                           activity.type === 'payment' ? <DollarSign className="h-3 w-3 text-green-600 dark:text-green-400" /> :
@@ -244,7 +244,7 @@ export default async function CompanyPage({
                       <p className={`text-sm font-medium ${activity.amount < 0 ? 'text-red-500' : 'text-green-500'}`}>
                         {activity.amount < 0 ? '-' : '+'}{formatCurrency(Math.abs(activity.amount))}
                       </p>
-                      <Badge variant="outline" className="text-xs mt-1" size="sm">
+                      <Badge variant="outline" className="text-xs mt-1">
                         {activity.status}
                       </Badge>
                     </div>

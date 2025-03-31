@@ -6,7 +6,7 @@ import type { ExtractTablesWithRelations } from "drizzle-orm";
 
 export const db = (url: string) => {
   const db = drizzle({
-    client: postgres(url),
+    client: postgres(url, { prepare: false }),
     schema,
     logger: true
   });

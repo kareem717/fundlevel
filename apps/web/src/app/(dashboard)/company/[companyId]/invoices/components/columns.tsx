@@ -9,10 +9,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@fundlevel/ui/components/dropdown-menu";
-import type { QuickBooksInvoice } from "@fundlevel/db/types";
+import type { Invoice } from "@fundlevel/db/types";
 import Link from "next/link";
 import { redirects } from "@fundlevel/web/lib/config/redirects";
-export const columns: ColumnDef<QuickBooksInvoice>[] = [
+export const columns: ColumnDef<Invoice>[] = [
   {
     accessorKey: "remoteId",
     header: "Invoice ID",
