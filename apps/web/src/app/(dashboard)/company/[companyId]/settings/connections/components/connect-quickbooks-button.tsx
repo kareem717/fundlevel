@@ -16,11 +16,13 @@ import { QuickBooksIcon } from "@fundlevel/web/components/icons";
 interface ConnectQuickBooksButtonProps
   extends ComponentPropsWithoutRef<typeof Button> {
   companyId: number;
+  showText?: boolean;
 }
 
 export function ConnectQuickBooksButton({
   className,
   companyId,
+  showText = false,
   ...props
 }: ConnectQuickBooksButtonProps) {
   const router = useRouter();
@@ -63,11 +65,24 @@ export function ConnectQuickBooksButton({
 
   return (
     <Button
-      className={cn(className, isPending && "animate-pulse")}
+      className={cn(
+        className,
+        "relative flex items-center justify-center",
+        isPending && "bg-opacity-90"
+      )}
       onClick={() => mutate()}
+      disabled={isPending}
       {...props}
     >
-      <QuickBooksIcon className="size-25" />
+      {isPending ? (
+        <span className="absolute inset-0 flex items-center justify-center bg-background bg-opacity-20 backdrop-blur-sm rounded-md">
+          <Loader2 className="h-6 w-6 animate-spin" />
+        </span>
+      ) : null}
+      <div className="flex items-center justify-center">
+        <QuickBooksIcon className={cn("h-9 w-9", showText && "mr-2")} />
+        {showText && <span>Connect QuickBooks</span>}
+      </div>
     </Button>
   );
 }
