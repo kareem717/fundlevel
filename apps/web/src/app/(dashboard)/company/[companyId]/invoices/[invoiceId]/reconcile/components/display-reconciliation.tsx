@@ -7,13 +7,8 @@ import { Skeleton } from "@fundlevel/ui/components/skeleton";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@fundlevel/ui/components/card";
 import { Badge } from "@fundlevel/ui/components/badge";
 import { Separator } from "@fundlevel/ui/components/separator";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@fundlevel/ui/components/accordion";
 import { TransactionCard } from "./transaction-card";
+import { Loader2, CircleX, AlertCircle } from "lucide-react";
 
 interface DisplayReconciliationProps
   extends ComponentPropsWithoutRef<"div"> {
@@ -45,6 +40,7 @@ export function DisplayReconciliation({
     );
   }
 
+
   return (
     <Card className={cn("", className)} {...props}>
       <CardHeader className="pb-2">
@@ -53,49 +49,60 @@ export function DisplayReconciliation({
             <CardTitle className="text-xl">Reconciliation Results</CardTitle>
             <CardDescription>Processing invoice transactions</CardDescription>
           </div>
-          <div className="flex items-center gap-2">
-            <Badge variant={status === "COMPLETED" ? "default" : status === "EXECUTING" ? "outline" : "secondary"}>
-              {status}
-            </Badge>
-            <Badge variant="outline" className="text-xs">
-              Run: {id.substring(0, 10)}...
-            </Badge>
-          </div>
+          <Badge variant={status === "COMPLETED" ? "default" : status === "EXECUTING" ? "outline" : "secondary"}>
+            {status}
+          </Badge>
         </div>
       </CardHeader>
       <Separator />
       <CardContent className="pt-6">
-        <div className="grid gap-4">
-          {output?.result && output.result.length > 0 ? (
-            output.result.map((r: any) => (
-              <TransactionCard
-                key={r.transactionId}
-                transactionId={r.transactionId}
-                confidence={r.confidence}
-                matchReason={r.matchReason}
-              />
-            ))
-          ) : (
-            <div className="text-center p-6 bg-muted rounded-md">
-              <p className="text-muted-foreground">No matching transactions found</p>
-            </div>
-          )}
-        </div>
-      </CardContent>
-      <CardFooter className="pt-0">
-        <Accordion type="single" collapsible className="w-full">
-          <AccordionItem value="metadata" className="border-0">
-            <AccordionTrigger className="text-sm">Run Metadata</AccordionTrigger>
-            <AccordionContent>
-              <div className="text-xs mt-2 p-3 bg-muted rounded-md overflow-x-auto">
-                <pre className="whitespace-pre-wrap break-words">
-                  {JSON.stringify(rest, null, 2)}
-                </pre>
+        {status === "COMPLETED" ? (
+          <div className="grid gap-4">
+            {output?.result && output.result.length > 0 ? (
+              output.result.map((r: any) => (
+                <TransactionCard
+                  key={r.transactionId}
+                  transactionId={r.transactionId}
+                  confidence={r.confidence}
+                  matchReason={r.matchReason}
+                />
+              ))
+            ) : (
+              <div className="text-center p-6 bg-muted rounded-md">
+                <p className="text-muted-foreground">No matching transactions found</p>
               </div>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-      </CardFooter>
+            )}
+          </div>
+        ) : (
+          <div className="text-center p-6 bg-muted rounded-md flex justify-center items-center gap-2">
+            {status === "QUEUED" ? (
+              <>
+                <Loader2 className="animate-spin text-muted-foreground size-4" />
+                <p className="text-muted-foreground">Getting ready...</p>
+              </>
+            ) : status === "EXECUTING" ? (
+              <>
+                <Loader2 className="animate-spin text-muted-foreground size-4" />
+                <p className="text-muted-foreground">Processing...</p>
+              </>
+            ) : status === "FAILED" ? (
+              <>
+                <AlertCircle className="text-muted-foreground size-4" />
+                <p className="text-muted-foreground">Something went wrong</p>
+              </>
+            ) : status === "CANCELED" ? (
+              <>
+                <CircleX className="text-muted-foreground size-4" />
+                <p className="text-muted-foreground">Cancelled</p>
+              </>
+            ) : (
+              <>
+                <CircleX className="text-muted-foreground size-4" />
+                <p className="text-muted-foreground">Unknown status</p>
+              </>
+            )}
+          </div>)}
+      </CardContent>
     </Card>
   );
 } 
