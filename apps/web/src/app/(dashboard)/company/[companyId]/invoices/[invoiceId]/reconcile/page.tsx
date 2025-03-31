@@ -1,4 +1,4 @@
-import { ReconcilationClient } from "./components/reconcilation-client";
+import { ReconcileClient } from "./components/reconcilation-client";
 
 export default async function ReconcileInvoicePage({
   params,
@@ -16,7 +16,7 @@ export default async function ReconcileInvoicePage({
 
   return (
     <div>
-      <ReconcilationClient invoiceId={parsedInvoiceId} />
+      <ReconcileClient invoiceId={parsedInvoiceId} />
     </div>
   );
 }

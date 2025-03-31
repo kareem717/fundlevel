@@ -4,74 +4,62 @@ import type { GetManyTransactionsFilter, GetManyBankAccountsFilter } from "../in
 import type { BankAccountTransaction, CreateBankAccountParams, CreateBankAccountTransactionParams } from "@fundlevel/db/types";
 import type { OffsetPaginationResult } from "@fundlevel/api/internal/entities";
 import { bankAccountTransactions, bankAccounts } from "@fundlevel/db/schema";
-import { inArray, gte, lte, asc, desc, count, eq, sql } from "drizzle-orm";
+import { inArray, gte, lte, asc, desc, count, eq, sql, and } from "drizzle-orm";
 
 export class BankingRepository implements IBankingRepository {
   constructor(private db: DB) { }
 
-  async getManyBankAccountTransactions(
+  async getManyTransactions(
     filter: GetManyTransactionsFilter,
   ): Promise<OffsetPaginationResult<BankAccountTransaction>> {
-    let qb = this.db
-      .select()
-      .from(bankAccountTransactions)
-      .groupBy(bankAccountTransactions.remoteId)
-      .$dynamic();
+    const whereClauses = []
 
-    let countQb = this.db
-      .select({
-        total: count(),
-      })
-      .from(bankAccountTransactions)
-      .$dynamic();
-
-    if (filter.minAuthorizedAt) {
-      qb = qb.where(
-        gte(bankAccountTransactions.authorizedAt, filter.minAuthorizedAt),
-      );
-      countQb = countQb.where(
-        gte(bankAccountTransactions.authorizedAt, filter.minAuthorizedAt),
+    if (filter.minDate) {
+      whereClauses.push(
+        gte(bankAccountTransactions.date, filter.minDate),
       );
     }
 
-    if (filter.maxAuthorizedAt) {
-      qb = qb.where(
-        lte(bankAccountTransactions.authorizedAt, filter.maxAuthorizedAt),
-      );
-      countQb = countQb.where(
-        lte(bankAccountTransactions.authorizedAt, filter.maxAuthorizedAt),
+    if (filter.maxDate) {
+      whereClauses.push(
+        lte(bankAccountTransactions.date, filter.maxDate),
       );
     }
 
     if (filter.minAmount) {
-      qb = qb.where(gte(bankAccountTransactions.amount, filter.minAmount));
-      countQb = countQb.where(gte(bankAccountTransactions.amount, filter.minAmount));
+      whereClauses.push(gte(bankAccountTransactions.amount, filter.minAmount));
     }
 
     if (filter.maxAmount) {
-      qb = qb.where(lte(bankAccountTransactions.amount, filter.maxAmount));
-      countQb = countQb.where(lte(bankAccountTransactions.amount, filter.maxAmount));
+      whereClauses.push(lte(bankAccountTransactions.amount, filter.maxAmount));
     }
 
     if (filter.bankAccountIds) {
-      qb = qb.where(
-        inArray(bankAccountTransactions.bankAccountId, filter.bankAccountIds),
-      );
-      countQb = countQb.where(
+      whereClauses.push(
         inArray(bankAccountTransactions.bankAccountId, filter.bankAccountIds),
       );
     }
 
     if (filter.companyIds) {
-      qb = qb.where(inArray(bankAccountTransactions.companyId, filter.companyIds));
-      countQb = countQb.where(
+      whereClauses.push(
         inArray(bankAccountTransactions.companyId, filter.companyIds),
       );
     }
 
-    const { page, pageSize, order } = filter;
 
-    qb = qb
+    const countQb = this.db
+      .select({
+        total: count(),
+      })
+      .from(bankAccountTransactions)
+      .where(and(...whereClauses))
+
+    const { page, pageSize, order } = filter;
+    const qb = this.db
+      .select()
+      .from(bankAccountTransactions)
+      .where(and(...whereClauses))
+      .groupBy(bankAccountTransactions.remoteId)
       .limit(pageSize)
       .offset(page * pageSize)
       .orderBy(
@@ -234,4 +222,11 @@ export class BankingRepository implements IBankingRepository {
   async deleteTransactions(remoteIds: string[]) {
     await this.db.delete(bankAccountTransactions).where(inArray(bankAccountTransactions.remoteId, remoteIds));
   }
+
+  async getTransaction(remoteId: string): Promise<BankAccountTransaction | undefined> {
+    const [tx] = await this.db.select().from(bankAccountTransactions).where(eq(bankAccountTransactions.remoteId, remoteId));
+    return tx
+  }
+
 }
+

@@ -9,12 +9,15 @@ export interface IBankingService {
   /**
    * Get transactions based on filter criteria
    */
-  getManyBankAccountTransactions(
+  getManyTransactions(
     filter: GetManyTransactionsFilter,
   ): Promise<OffsetPaginationResult<BankAccountTransaction>>;
+  getTransaction(transactionId: string): Promise<BankAccountTransaction | undefined>;
 
   getBankAccount(bankAccountId: string): Promise<BankAccount | undefined>;
   getManyBankAccounts(
     filter: GetManyBankAccountsFilter,
   ): Promise<OffsetPaginationResult<BankAccount>>;
+
+
 }

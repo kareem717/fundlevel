@@ -8,6 +8,7 @@ export const db = (url: string) => {
   const db = drizzle({
     client: postgres(url),
     schema,
+    logger: true
   });
 
   return db;

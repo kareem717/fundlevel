@@ -4,8 +4,8 @@ import type {
   OffsetPaginationResult,
 } from "@fundlevel/api/internal/entities";
 export type GetManyTransactionsFilter = {
-  minAuthorizedAt?: string;
-  maxAuthorizedAt?: string;
+  minDate?: string;
+  maxDate?: string;
   minAmount?: number;
   maxAmount?: number;
 } & (
@@ -25,9 +25,6 @@ export type GetManyBankAccountsFilter = {
 } & OffsetPaginationParams;
 
 export interface IBankingRepository {
-  getManyBankAccountTransactions(
-    filter: GetManyTransactionsFilter,
-  ): Promise<OffsetPaginationResult<BankAccountTransaction>>;
 
   getManyBankAccounts(
     filter: GetManyBankAccountsFilter,
@@ -38,10 +35,14 @@ export interface IBankingRepository {
     companyId: number,
   ): Promise<BankAccount[]>;
 
+  getManyTransactions(
+    filter: GetManyTransactionsFilter,
+  ): Promise<OffsetPaginationResult<BankAccountTransaction>>;
   upsertTransactions(
     params: CreateBankAccountTransactionParams[],
     companyId: number,
   ): Promise<void>;
+  getTransaction(remoteId: string): Promise<BankAccountTransaction | undefined>
   deleteTransactions(
     remoteIds: string[],
   ): Promise<void>;

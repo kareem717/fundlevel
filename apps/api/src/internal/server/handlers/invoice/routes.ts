@@ -26,6 +26,14 @@ export const reconcileRoute = createRoute({
   responses: {
     200: {
       description: "Successful reconcile",
+      content: {
+        "application/json": {
+          schema: z.object({
+            taskId: z.string(),
+            publicAccessToken: z.string()
+          }),
+        },
+      },
     },
     ...notFoundResponse,
     ...unauthorizedResponse,

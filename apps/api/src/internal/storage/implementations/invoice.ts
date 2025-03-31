@@ -12,6 +12,7 @@ import { invoices, invoiceLines } from "@fundlevel/db/schema";
 import { eq, inArray, sql, gte, lte, asc, desc, count } from "drizzle-orm";
 import type { IDB } from "@fundlevel/api/internal/storage";
 import type { OffsetPaginationResult } from "@fundlevel/api/internal/entities";
+import { logger } from "@trigger.dev/sdk/v3";
 
 export class InvoiceRepository implements IInvoiceRepository {
   constructor(private db: IDB) { }
@@ -95,6 +96,7 @@ export class InvoiceRepository implements IInvoiceRepository {
       .limit(pageSize)
       .offset(page * pageSize)
       .orderBy(order === "asc" ? asc(invoices.id) : desc(invoices.id));
+
 
     const [data, total] = await Promise.all([qb, countQb]);
 

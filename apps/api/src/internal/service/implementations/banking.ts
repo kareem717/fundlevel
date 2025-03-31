@@ -3,10 +3,10 @@ import type { IBankingRepository } from "@fundlevel/api/internal/storage/interfa
 import type { GetManyTransactionsFilter, GetManyBankAccountsFilter } from "@fundlevel/api/internal/storage/interfaces";
 
 export class BankingService implements IBankingService {
-  constructor(private bankingRepository: IBankingRepository) {}
+  constructor(private bankingRepository: IBankingRepository) { }
 
-  async getManyBankAccountTransactions(filter: GetManyTransactionsFilter) {
-    return await this.bankingRepository.getManyBankAccountTransactions(filter);
+  async getManyTransactions(filter: GetManyTransactionsFilter) {
+    return await this.bankingRepository.getManyTransactions(filter);
   }
 
   async getBankAccount(bankAccountId: string) {
@@ -15,5 +15,9 @@ export class BankingService implements IBankingService {
 
   async getManyBankAccounts(filter: GetManyBankAccountsFilter) {
     return await this.bankingRepository.getManyBankAccounts(filter);
+  }
+
+  async getTransaction(transactionId: string) {
+    return await this.bankingRepository.getTransaction(transactionId);
   }
 }

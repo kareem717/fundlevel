@@ -1,48 +1,44 @@
 "use client";
 
 import type { ComponentPropsWithoutRef } from "react";
-import { useMutation } from "@tanstack/react-query";
-import { client } from "@fundlevel/sdk";
-import { env } from "@fundlevel/web/env";
-import { useAuth } from "@fundlevel/web/components/providers/auth-provider";
 import { cn } from "@fundlevel/ui/lib/utils";
-import { Button } from "@fundlevel/ui/components/button";
+import { parseAsString, useQueryStates } from "nuqs";
+import { ReconcileForm } from "./reconcile-form";
+import { DisplayReconciliation } from "./display-reconciliation";
 
-export interface ReconcilationClientProps
+export interface ReconcileClientProps
   extends ComponentPropsWithoutRef<"div"> {
   invoiceId: number;
 }
 
-export function ReconcilationClient({
+export function ReconcileClient({
   invoiceId,
   className,
   ...props
-}: ReconcilationClientProps) {
-  const { authToken } = useAuth();
-  if (!authToken) {
-    throw new Error("Component must be used within a <AuthProvider>");
-  }
-  const sdk = client(env.NEXT_PUBLIC_BACKEND_URL, authToken);
-
-  const { mutate: reconcileInvoice, isPending } = useMutation({
-    mutationKey: ["reconcile-invoice", invoiceId],
-    mutationFn: async () => {
-      return sdk.invoice[":invoiceId"].reconcile.$post({
-        param: { invoiceId },
-      });
+}: ReconcileClientProps) {
+  const [{ taskId, publicAccessToken }, setTask] = useQueryStates(
+    {
+      taskId: parseAsString.withOptions({ history: 'push' }).withDefault(""),
+      publicAccessToken: parseAsString.withOptions({ history: 'push' }).withDefault("")
     },
-  });
+    {
+      urlKeys: {
+        taskId: 't',
+        publicAccessToken: 'a',
+      }
+    }
+  )
 
   return (
-    <div className={cn("space-y-4", className)} {...props}>
-      <Button
-        type="button"
-        onClick={() => reconcileInvoice()}
-        disabled={isPending}
-        className="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md"
-      >
-        {isPending ? "Reconciling..." : "Reconcile Invoice"}
-      </Button>
+    <div className={cn("space-y-6", className)} {...props}>
+      <ReconcileForm
+        invoiceId={invoiceId}
+        onReconcileSuccess={setTask}
+      />
+
+      {(taskId && publicAccessToken) && (
+        <DisplayReconciliation taskId={taskId} publicAccessToken={publicAccessToken} />
+      )}
     </div>
   );
 }

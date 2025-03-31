@@ -20,7 +20,7 @@ export interface ICompanyService {
     redirectUrl: string,
   ): Promise<string>;
   getQuickBooksOAuthCredentials(
-    companyId: number,
+    filter: { companyId: number } | { realmId: string },
   ): Promise<CompanyQuickBooksOauthCredential>;
   completeQuickBooksOAuthFlow(code: string, state: string, realmId: string): Promise<{
     redirect_url: string;

@@ -255,13 +255,13 @@ export class CompanyService implements ICompanyService {
   }
 
   async getQuickBooksOAuthCredentials(
-    companyId: number,
+    filter: { companyId: number } | { realmId: string },
   ): Promise<CompanyQuickBooksOauthCredential> {
     const creds =
-      await this.repo.company.getQuickBooksOAuthCredentials({ companyId });
+      await this.repo.company.getQuickBooksOAuthCredentials(filter);
 
     if (!creds) {
-      throw new Error(`No QuickBooks OAuth credentials found for company ${companyId}`);
+      throw new Error(`No QuickBooks OAuth credentials found for company ${filter}`);
     }
 
     // Check if token is expired or about to expire in the next 5 minutes
@@ -304,7 +304,7 @@ export class CompanyService implements ICompanyService {
             accessTokenExpiry,
             refreshTokenExpiry,
           },
-          companyId,
+          creds.companyId,
         );
 
       // Update the return object with fresh data
@@ -465,7 +465,7 @@ export class CompanyService implements ICompanyService {
           throw new Error(`Error upserting bank accounts: ${error}`);
         }
       }
-      
+
       try {
         await repo.company.updateSyncStatus(
           {
@@ -593,7 +593,7 @@ export class CompanyService implements ICompanyService {
   }
 
   private async queryQuickbooks(companyId: number, query: string) {
-    const credentials = await this.getQuickBooksOAuthCredentials(companyId);
+    const credentials = await this.getQuickBooksOAuthCredentials({ companyId });
 
     const response = await axios.get(
       `${this.qbApiBaseUrl}/v3/company/${credentials.realmId}/query`,

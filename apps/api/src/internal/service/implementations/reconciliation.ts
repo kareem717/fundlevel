@@ -36,7 +36,8 @@ export class ReconciliationService implements IReconciliationService {
         Consider the invoice amount, date, and other relevant details to create an optimal filter.
 
         Remember that:
-        - Invoices can be paid in
+        - Invoices can be paid in installments, so the amount is not always the same
+        - Positive amounts are debits, negative amounts are credits
       `,
       prompt: `
         Analyze this invoice and suggest filter parameters to find matching bank transactions:
@@ -46,16 +47,16 @@ export class ReconciliationService implements IReconciliationService {
         minAmount: z
           .number()
           .optional()
-          .describe("The minimum amount of the transaction"),
+          .describe("The minimum credit amount of the transaction"),
         maxAmount: z
           .number()
           .optional()
-          .describe("The maximum amount of the transaction"),
-        minAuthorizedAt: z
+          .describe("The maximum credit amount of the transaction"),
+        minDate: z
           .string()
           .optional()
           .describe("The minimum date of the transaction"),
-        maxAuthorizedAt: z
+        maxDate: z
           .string()
           .optional()
           .describe("The maximum date of the transaction"),
@@ -68,9 +69,8 @@ export class ReconciliationService implements IReconciliationService {
 
     const PAGE_SIZE = 5;
     let pageNumber = 1;
-    const initialTransactions = await this.bankRepo.getManyBankAccountTransactions({
-      // ...filterParams.object,
-      // minAmount: 0,
+    const initialTransactions = await this.bankRepo.getManyTransactions({
+      ...filterParams.object,
       companyIds: [invoiceRecord.companyId],
       pageSize: PAGE_SIZE,
       order: "asc",
@@ -83,9 +83,8 @@ export class ReconciliationService implements IReconciliationService {
       pageNumber++;
 
       // Get transactions using the AI-suggested filters
-      const transactionResult = await this.bankRepo.getManyBankAccountTransactions({
-        // ...filterParams.object,
-        // minAmount: 0,
+      const transactionResult = await this.bankRepo.getManyTransactions({
+        ...filterParams.object,
         companyIds: [invoiceRecord.companyId],
         pageSize: PAGE_SIZE,
         order: "asc",
@@ -96,6 +95,8 @@ export class ReconciliationService implements IReconciliationService {
       transactionJobs.push(transactionResult.data);
     }
 
+    console.log("Job count:", transactionJobs);
+
     const result = await Promise.all(
       transactionJobs.map(async (transactionJob) => {
         return await generateObject({
@@ -104,6 +105,12 @@ export class ReconciliationService implements IReconciliationService {
           You are a financial data processor specialized in matching banking transactions to invoices.
           Your task is to analyze the filtered bank transactions and identify which ones are most likely to match the given invoice.
           Consider transaction amounts, dates, merchant names, and descriptions to find the best matches.
+
+          DO NOT return any transactions that do not match the invoice.
+          
+          Remember that:
+          - Invoices can be paid in installments
+          - Positive amounts are debits, negative amounts are credits
         `,
           prompt: `
           Find the best matching transactions for this invoice:
@@ -132,8 +139,6 @@ export class ReconciliationService implements IReconciliationService {
     );
 
     const suggestedTransactions = result.flatMap((r) => r.object.transactions);
-
-    console.log(suggestedTransactions);
 
     return suggestedTransactions;
   }

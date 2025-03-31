@@ -146,3 +146,30 @@ export const getCompanyBankAccountsRoute = createRoute({
     ...unauthorizedResponse,
   },
 });
+
+export const getTransactionRoute = createRoute({
+  summary: "Get bank account transaction",
+  operationId: "getTransaction",
+  tags: ["Banking"],
+  security: [bearerAuthSchema],
+  method: "get",
+  path: "/transaction/:transactionId",
+  request: {
+    params: z.object({
+      transactionId: z.string(),
+    }),
+  },
+  responses: {
+    200: {
+      description: "Successful fetch",
+      content: {
+        "application/json": {
+          schema: BankAccountTransactionSchema.openapi("BankAccountTransaction"),
+        },
+      },
+    },
+    ...notFoundResponse,
+    ...unauthorizedResponse,
+    ...forbiddenResponse,
+  },
+});

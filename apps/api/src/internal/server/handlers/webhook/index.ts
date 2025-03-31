@@ -7,9 +7,9 @@ import { plaidWebhookRoute, quickBooksWebhookRoute } from "./route";
 import { env } from "hono/adapter";
 import { tasks, idempotencyKeys } from "@trigger.dev/sdk/v3";
 import type {
-  syncBankAccountsTask,
-  syncBankTransactionsTask,
-  syncInvoicesTask,
+  syncCompanyBankAccountsTask,
+  syncCompanyBankTransactionsTask,
+  syncCompanyInvoicesTask,
 } from "@fundlevel/api/internal/jobs";
 
 /**
@@ -132,22 +132,30 @@ const webhookHandler = new OpenAPIHono()
       return c.json({ error: "Missing webhook type or code" }, 400);
     }
 
-    const { companyId } = await getService(
+    const credentials = await getService(
       c,
-    ).company.getPlaidCredentialsByItemId(payload.item_id);
+    ).company.getPlaidCredentials({ itemId: payload.item_id });
 
+    if (!credentials) {
+      console.error("No credentials found for itemId", payload.item_id);
+      return c.json({ error: "No credentials found" }, 400);
+    }
+
+    const { companyId } = credentials;
+
+    //todo:
     try {
       switch (webhookType) {
         case "ITEM": {
           if (webhookCode === "NEW_ACCOUNTS_AVAILABLE") {
-            await tasks.trigger<typeof syncBankAccountsTask>(
-              "sync-bank-accounts",
+            await tasks.trigger<typeof syncCompanyBankAccountsTask>(
+              "sync-company-bank-accounts",
               {
                 companyId,
               },
               {
                 idempotencyKey: await idempotencyKeys.create(
-                  `sync-bank-accounts-${payload.item_id}`,
+                  `sync-company-bank-accounts-${payload.item_id}`,
                 ),
               },
             );
@@ -156,8 +164,8 @@ const webhookHandler = new OpenAPIHono()
         }
         case "TRANSACTIONS": {
           if (webhookCode === "SYNC_UPDATES_AVAILABLE") {
-            await tasks.trigger<typeof syncBankTransactionsTask>(
-              "sync-bank-transactions",
+            await tasks.trigger<typeof syncCompanyBankTransactionsTask>(
+              "sync-company-bank-transactions",
               {
                 companyId,
               },
@@ -218,21 +226,16 @@ const webhookHandler = new OpenAPIHono()
         for (const entity of dataChangeEvent.entities) {
           if (entity.name === "Invoice") {
             console.log(`Processing Invoice event for realmId: ${realmId}`);
-            const company =
-              await getService(c).company.getCompanyByQuickBooksRealmId(
+            const { companyId } =
+              await getService(c).company.getQuickBooksOAuthCredentials({
                 realmId,
-              );
+              });
 
-            if (!company) {
-              console.error(`No company found with realmId: ${realmId}`);
-              continue;
-            }
-
-            await tasks.trigger<typeof syncInvoicesTask>("sync-invoices", {
-              companyId: company.id,
+            await tasks.trigger<typeof syncCompanyInvoicesTask>("sync-company-invoices", {
+              companyId,
             });
             console.log(
-              `Successfully synced invoices for company ${company.id}`,
+              `Successfully synced invoices for company ${companyId}`,
             );
           }
         }
