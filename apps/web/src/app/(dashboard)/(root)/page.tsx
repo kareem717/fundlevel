@@ -39,6 +39,7 @@ export default async function DashboardPage() {
             <Link
               key={company.id}
               href={redirects.app.company(company.id).root}
+              prefetch={true}
             >
               <Card className="flex flex-col h-full">
                 <CardHeader>
