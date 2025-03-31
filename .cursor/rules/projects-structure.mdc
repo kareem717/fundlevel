@@ -1,0 +1,18 @@
+---
+description: Project strucure of the repository
+globs: 
+alwaysApply: false
+---
+# Overview (only the main project directories, other files/dirs hidden)
+```bash
+.
+├── apps
+│   ├── api # More details: [api-project-structure.mdc](mdc:.cursor/rules/api/api-project-structure.mdc)
+│   ├── landing
+│   └── web
+├── packages
+│   ├── db
+│   ├── sdk
+│   ├── typescript-config
+│   └── ui
+```
