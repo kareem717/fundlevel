@@ -95,8 +95,6 @@ export class ReconciliationService implements IReconciliationService {
       transactionJobs.push(transactionResult.data);
     }
 
-    console.log("Job count:", transactionJobs);
-
     const result = await Promise.all(
       transactionJobs.map(async (transactionJob) => {
         return await generateObject({
@@ -110,13 +108,17 @@ export class ReconciliationService implements IReconciliationService {
           
           Remember that:
           - Invoices can be paid in installments
-          - Positive amounts are debits, negative amounts are credits
+          - Positive amounts are debits, negative amounts are credits.
         `,
           prompt: `
           Find the best matching transactions for this invoice:
           
           Invoice:
-          ${JSON.stringify(invoice, null, 2)}
+          ${JSON.stringify({
+            ...invoice,
+            // We need to negate the amount to make it a credit
+            amount: invoice.totalAmount * -1,
+          }, null, 2)}
 
           Available Transactions:
           ${JSON.stringify(transactionJob, null, 2)}
