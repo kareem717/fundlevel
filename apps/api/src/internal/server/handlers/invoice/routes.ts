@@ -9,7 +9,7 @@ import {
   offsetPaginationParamsSchema,
   offsetPaginationResultSchema,
 } from "@fundlevel/api/internal/server/types/params";
-import { InvoiceSchema } from "@fundlevel/db/validators";
+import { InvoiceSchema, InvoiceLineSchema } from "@fundlevel/db/validators";
 
 export const reconcileRoute = createRoute({
   summary: "Reconcile invoice",
@@ -93,5 +93,32 @@ export const getRoute = createRoute({
     },
     ...notFoundResponse,
     ...unauthorizedResponse,
+  },
+});
+
+export const getLineItemsRoute = createRoute({
+  summary: "Get invoice line items",
+  operationId: "getInvoiceLineItems",
+  tags: ["Invoice"],
+  security: [bearerAuthSchema],
+  method: "get",
+  path: "/:invoiceId/line-items",
+  request: {
+    params: z.object({
+      invoiceId: z.coerce.number(),
+    }),
+  },
+  responses: {
+    200: {
+      description: "Successful fetch",
+      content: {
+        "application/json": {
+          schema: z.array(InvoiceLineSchema.openapi("InvoiceLine")),
+        },
+      },
+    },
+    ...notFoundResponse,
+    ...unauthorizedResponse,
+    
   },
 });

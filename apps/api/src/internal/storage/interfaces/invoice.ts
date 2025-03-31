@@ -29,6 +29,6 @@ export interface IInvoiceRepository {
   get(
     filter: { id: number } | { remoteId: string },
   ): Promise<Invoice | undefined>;
-
+  getManyLines(filter: { invoiceId: number } | { ids: number[] }): Promise<InvoiceLine[]>;
   upsertLine(lines: CreateInvoiceLineParams[]): Promise<InvoiceLine[]>;
 }

@@ -16,7 +16,11 @@ export class InvoiceService implements IInvoiceService {
     if (!invoice) {
       throw new Error("Invoice not found");
     }
-    
+
     return invoice;
+  }
+
+  async getManyLines(filter: { invoiceId: number } | { ids: number[] }) {
+    return this.repo.getManyLines(filter);
   }
 } 

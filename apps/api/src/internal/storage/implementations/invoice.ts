@@ -174,4 +174,18 @@ export class InvoiceRepository implements IInvoiceRepository {
       })
       .returning();
   }
+
+  async getManyLines(filter: { invoiceId: number } | { ids: number[] }): Promise<InvoiceLine[]> {
+    const qb = this.db.select().from(invoiceLines);
+
+    if ("invoiceId" in filter) {
+      qb.where(eq(invoiceLines.invoiceId, filter.invoiceId));
+    }
+
+    if ("ids" in filter) {
+      qb.where(inArray(invoiceLines.id, filter.ids));
+    }
+
+    return await qb;
+  }
 }

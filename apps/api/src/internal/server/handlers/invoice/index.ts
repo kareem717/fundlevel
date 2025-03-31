@@ -1,5 +1,5 @@
 import { OpenAPIHono } from "@hono/zod-openapi";
-import { reconcileRoute, getManyRoute, getRoute } from "./routes";
+import { reconcileRoute, getManyRoute, getRoute, getLineItemsRoute } from "./routes";
 import { getAccount } from "../../middleware/with-auth";
 import { tasks, idempotencyKeys } from "@trigger.dev/sdk/v3";
 import type { reconcileInvoiceTask } from "@fundlevel/api/internal/jobs/reconciliation";
@@ -78,6 +78,23 @@ const invoiceHandler = new OpenAPIHono()
     const { invoiceId } = c.req.valid("param");
 
     const result = await getService(c).invoice.get(invoiceId);
+
+    return c.json(result, 200);
+  })
+  .openapi(getLineItemsRoute, async (c) => {
+    const account = getAccount(c);
+    if (!account) {
+      return c.json(
+        {
+          error: "Account not found, please create an account.",
+        },
+        404,
+      );
+    }
+
+    const { invoiceId } = c.req.valid("param");
+
+    const result = await getService(c).invoice.getManyLines({ invoiceId });
 
     return c.json(result, 200);
   });
