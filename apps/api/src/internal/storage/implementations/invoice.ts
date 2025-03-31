@@ -9,10 +9,9 @@ import type {
   GetManyInvoicesFilter,
 } from "../interfaces/invoice";
 import { invoices, invoiceLines } from "@fundlevel/db/schema";
-import { eq, inArray, sql, gte, lte, asc, desc, count } from "drizzle-orm";
+import { eq, inArray, sql, gte, lte, asc, desc, count, and } from "drizzle-orm";
 import type { IDB } from "@fundlevel/api/internal/storage";
 import type { OffsetPaginationResult } from "@fundlevel/api/internal/entities";
-import { logger } from "@trigger.dev/sdk/v3";
 
 export class InvoiceRepository implements IInvoiceRepository {
   constructor(private db: IDB) { }
@@ -56,47 +55,28 @@ export class InvoiceRepository implements IInvoiceRepository {
   async getMany<T extends GetManyInvoicesFilter>(
     filter: T,
   ): Promise<OffsetPaginationResult<Invoice>> {
-    let qb = this.db.select().from(invoices).groupBy(invoices.id).$dynamic();
+    const whereCondition = and(
+      filter.minTotal ? gte(invoices.totalAmount, filter.minTotal) : undefined,
+      filter.maxTotal ? lte(invoices.totalAmount, filter.maxTotal) : undefined,
+      filter.companyIds ? inArray(invoices.companyId, filter.companyIds) : undefined,
+      filter.minDueDate ? gte(invoices.dueDate, filter.minDueDate) : undefined,
+      filter.maxDueDate ? lte(invoices.dueDate, filter.maxDueDate) : undefined,
+    );
 
-    let countQb = this.db
-      .select({
-        total: count(),
-      })
-      .from(invoices)
-      .$dynamic();
-
-    if (filter.minTotal) {
-      qb = qb.where(gte(invoices.totalAmount, filter.minTotal));
-      countQb = countQb.where(gte(invoices.totalAmount, filter.minTotal));
-    }
-
-    if (filter.maxTotal) {
-      qb = qb.where(lte(invoices.totalAmount, filter.maxTotal));
-      countQb = countQb.where(lte(invoices.totalAmount, filter.maxTotal));
-    }
-
-    if (filter.minDueDate) {
-      qb = qb.where(gte(invoices.dueDate, filter.minDueDate));
-      countQb = countQb.where(gte(invoices.dueDate, filter.minDueDate));
-    }
-
-    if (filter.maxDueDate) {
-      qb = qb.where(lte(invoices.dueDate, filter.maxDueDate));
-      countQb = countQb.where(lte(invoices.dueDate, filter.maxDueDate));
-    }
-
-    if (filter.companyIds) {
-      qb = qb.where(inArray(invoices.companyId, filter.companyIds));
-      countQb = countQb.where(inArray(invoices.companyId, filter.companyIds));
-    }
 
     const { page, pageSize, order } = filter;
-
-    qb = qb
+    const qb = this.db.select().from(invoices).groupBy(invoices.id)
+      .where(whereCondition)
       .limit(pageSize)
       .offset(page * pageSize)
       .orderBy(order === "asc" ? asc(invoices.id) : desc(invoices.id));
 
+    const countQb = this.db
+      .select({
+        total: count(),
+      })
+      .from(invoices)
+      .where(whereCondition);
 
     const [data, total] = await Promise.all([qb, countQb]);
 

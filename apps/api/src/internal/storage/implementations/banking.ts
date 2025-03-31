@@ -12,53 +12,27 @@ export class BankingRepository implements IBankingRepository {
   async getManyTransactions(
     filter: GetManyTransactionsFilter,
   ): Promise<OffsetPaginationResult<BankAccountTransaction>> {
-    const whereClauses = []
-
-    if (filter.minDate) {
-      whereClauses.push(
-        gte(bankAccountTransactions.date, filter.minDate),
-      );
-    }
-
-    if (filter.maxDate) {
-      whereClauses.push(
-        lte(bankAccountTransactions.date, filter.maxDate),
-      );
-    }
-
-    if (filter.minAmount) {
-      whereClauses.push(gte(bankAccountTransactions.amount, filter.minAmount));
-    }
-
-    if (filter.maxAmount) {
-      whereClauses.push(lte(bankAccountTransactions.amount, filter.maxAmount));
-    }
-
-    if (filter.bankAccountIds) {
-      whereClauses.push(
-        inArray(bankAccountTransactions.bankAccountId, filter.bankAccountIds),
-      );
-    }
-
-    if (filter.companyIds) {
-      whereClauses.push(
-        inArray(bankAccountTransactions.companyId, filter.companyIds),
-      );
-    }
-
+    const whereCondition = and(
+      filter.minDate ? gte(bankAccountTransactions.date, filter.minDate) : undefined,
+      filter.maxDate ? lte(bankAccountTransactions.date, filter.maxDate) : undefined,
+      filter.minAmount !== undefined ? gte(bankAccountTransactions.amount, filter.minAmount) : undefined,
+      filter.maxAmount !== undefined ? lte(bankAccountTransactions.amount, filter.maxAmount) : undefined,
+      filter.bankAccountIds ? inArray(bankAccountTransactions.bankAccountId, filter.bankAccountIds) : undefined,
+      filter.companyIds ? inArray(bankAccountTransactions.companyId, filter.companyIds) : undefined
+    );
 
     const countQb = this.db
       .select({
         total: count(),
       })
       .from(bankAccountTransactions)
-      .where(and(...whereClauses))
+      .where(whereCondition);
 
     const { page, pageSize, order } = filter;
     const qb = this.db
       .select()
       .from(bankAccountTransactions)
-      .where(and(...whereClauses))
+      .where(whereCondition)
       .groupBy(bankAccountTransactions.remoteId)
       .limit(pageSize)
       .offset(page * pageSize)
@@ -68,6 +42,7 @@ export class BankingRepository implements IBankingRepository {
           : desc(bankAccountTransactions.remoteId),
       );
 
+    // ... rest of the function remains the same
     const [data, total] = await Promise.all([qb, countQb]);
 
     if (!data || !total) {
@@ -94,7 +69,6 @@ export class BankingRepository implements IBankingRepository {
       currentPage: page + 1,
     };
   }
-
   async getBankAccount(bankAccountId: string) {
     const [data] = await this.db.select().from(bankAccounts).where(eq(bankAccounts.remoteId, bankAccountId));
 
@@ -104,17 +78,16 @@ export class BankingRepository implements IBankingRepository {
   async getManyBankAccounts(filter: GetManyBankAccountsFilter) {
     const { page, pageSize, order } = filter;
 
-    let qb = this.db.select().from(bankAccounts).groupBy(bankAccounts.remoteId).$dynamic();
-    let countQb = this.db.select({
+    const whereCondition = and(
+      filter.companyIds ? inArray(bankAccounts.companyId, filter.companyIds) : undefined
+    );
+
+    const qb = this.db.select().from(bankAccounts)
+      .groupBy(bankAccounts.remoteId).where(whereCondition).limit(pageSize).offset(page * pageSize).orderBy(order === "asc" ? asc(bankAccounts.remoteId) : desc(bankAccounts.remoteId));
+
+    const countQb = this.db.select({
       total: count(),
-    }).from(bankAccounts).$dynamic();
-
-    if (filter.companyIds) {
-      qb = qb.where(inArray(bankAccounts.companyId, filter.companyIds));
-      countQb = countQb.where(inArray(bankAccounts.companyId, filter.companyIds));
-    }
-
-    qb = qb.limit(pageSize).offset(page * pageSize).orderBy(order === "asc" ? asc(bankAccounts.remoteId) : desc(bankAccounts.remoteId));
+    }).from(bankAccounts).where(whereCondition);
 
     const [data, total] = await Promise.all([qb, countQb]);
 

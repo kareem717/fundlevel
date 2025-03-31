@@ -41,7 +41,11 @@ export class ReconciliationService implements IReconciliationService {
       `,
       prompt: `
         Analyze this invoice and suggest filter parameters to find matching bank transactions:
-        ${JSON.stringify(invoiceRecord, null, 2)}
+        ${JSON.stringify({
+          ...invoiceRecord,
+          // We need to negate the amount to make it a credit
+          amount: invoiceRecord.totalAmount * -1,
+        }, null, 2)}
       `,
       schema: z.object({
         minAmount: z
