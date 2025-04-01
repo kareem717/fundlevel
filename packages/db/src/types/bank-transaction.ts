@@ -1,7 +1,8 @@
 import type { InferInsertModel, InferSelectModel } from "drizzle-orm";
 import type {
   bankTransactions,
-  bankTransactionRelationships
+  bankTransactionRelationships,
+  bankTransactionRelationshipEntityType
 } from "../schema/bank-transaction";
 import type { OmitTimeStampFields } from "./utils";
 
@@ -24,3 +25,5 @@ export type CreateBankTransactionRelationshipParams = Omit<
   OmitTimeStampFields<InferInsertModel<typeof bankTransactionRelationships>>,
   "bankTransactionId"
 >;
+
+export type BankTransactionRelationshipType = (typeof bankTransactionRelationshipEntityType.enumValues)[number];
