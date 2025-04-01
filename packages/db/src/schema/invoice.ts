@@ -12,9 +12,8 @@ import {
   unique,
   pgEnum,
 } from "drizzle-orm/pg-core";
-import { companies } from ".";
+import { bankTransactions, companies } from ".";
 import { dataProvider } from "./shared";
-import { bankAccountTransactions } from "./banking";
 
 export const invoices = pgTable(
   "invoices",
@@ -99,7 +98,7 @@ export const invoiceTransactions = pgTable("invoice_transactions", {
       onDelete: "cascade",
       onUpdate: "cascade",
     }),
-  transactionId: text("transaction_id").references(() => bankAccountTransactions.remoteId, {
+  transactionId: text("transaction_id").references(() => bankTransactions.remoteId, {
     onDelete: "cascade",
     onUpdate: "cascade",
   }),
