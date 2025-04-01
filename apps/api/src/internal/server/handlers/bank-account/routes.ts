@@ -52,6 +52,7 @@ export const getCompanyBankAccountsRoute = createRoute({
   request: {
     query: z.object({
       ...offsetPaginationParamsSchema.shape,
+      sortBy: z.enum(["transactions", "id"]),
     }),
     params: z.object({
       companyId: pathIdParamSchema,
