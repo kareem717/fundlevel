@@ -18,11 +18,9 @@ import {
   Clock,
   Download,
   FileText,
-  LinkIcon,
   MoreHorizontal,
   Printer,
   RefreshCw,
-  Send,
 } from "lucide-react";
 import { Separator } from "@fundlevel/ui/components/separator";
 import Link from "next/link";
@@ -37,9 +35,9 @@ import {
   DropdownMenuTrigger,
 } from "@fundlevel/ui/components/dropdown-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@fundlevel/ui/components/tabs";
-import { Suspense } from "react";
-import { Skeleton } from "@fundlevel/ui/components/skeleton";
-import { generate } from "shortid";
+import { LineItemsTable } from "./components/line-items-table";
+import { TransactionsTable } from "./components/transactions-table";
+
 // Helper function to format currency
 const formatCurrency = (amount: number, currency = "USD") => {
   return new Intl.NumberFormat("en-US", {
@@ -47,63 +45,6 @@ const formatCurrency = (amount: number, currency = "USD") => {
     currency,
   }).format(amount);
 };
-
-async function LineItems({ invoiceId }: { invoiceId: number }) {
-  const token = await getTokenCached();
-  if (!token) {
-    return redirect(redirects.auth.login);
-  }
-
-
-  try {
-    const req = await client(
-      env.NEXT_PUBLIC_BACKEND_URL,
-      token,
-    ).invoice[":invoiceId"]["line-items"].$get({
-      param: { invoiceId },
-    });
-    if (!req.ok) {
-      throw new Error("Failed to get invoice line items");
-    }
-
-    const lines = await req.json();
-
-    return (
-      lines.length > 0 ? (
-        <div className="rounded-md border">
-          <table className="min-w-full divide-y divide-border">
-            <thead>
-              <tr className="bg-muted/50">
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Description</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Quantity</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Amount</th>
-              </tr>
-            </thead>
-            <tbody className="bg-background divide-y divide-border">
-              {lines.map((item: any) => (
-                <tr key={item.id || item.lineNum || `line-${item.description}`}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm">{item.description || "No description"}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm">{item.details?.[0]?.Qty || 1}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">{formatCurrency(item.amount)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ) : (
-        <div className="py-4 text-center text-muted-foreground">
-          No line items available for this invoice
-        </div>
-      )
-    );
-  } catch (error) {
-    return (
-      <div className="py-4 text-center text-muted-foreground">
-        Error loading line items
-      </div>
-    );
-  }
-}
 
 export default async function AccountingInvoicePage({
   params,
@@ -260,30 +201,20 @@ export default async function AccountingInvoicePage({
                   <CardDescription>Details of products or services included in this invoice</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Suspense fallback={
-                    <div className="space-y-2">
-                      {Array.from({ length: 4 }).map((_) => (
-                        <Skeleton key={generate()} className="h-10 w-full" />
-                      ))}
-                    </div>
-                  }>
-                    <LineItems invoiceId={invoiceId} />
-                  </Suspense>
+                  <LineItemsTable invoiceId={invoiceId} />
                 </CardContent>
               </Card>
             </TabsContent>
             <TabsContent value="transactions" className="mt-4">
-              <Card>
+              <Card className="relative">
                 <CardHeader>
                   <CardTitle>Related Transactions</CardTitle>
                   <CardDescription>Banking transactions that may be related to this invoice</CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <div className="py-4 text-center text-muted-foreground">
-                    No transactions have been reconciled with this invoice yet
-                  </div>
+                <CardContent className="mb-20">
+                  <TransactionsTable invoiceId={invoiceId} />
                 </CardContent>
-                <CardFooter className="flex justify-center border-t bg-muted/50 py-4">
+                <CardFooter className="flex justify-center border-t bg-muted/50 py-4 absolute bottom-0 left-0 w-full">
                   <Link
                     href={redirects.app.company(Number(companyId)).invoices.reconcile(Number(invoiceId))}
                   >
