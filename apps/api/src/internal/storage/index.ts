@@ -3,7 +3,8 @@ import type {
   ICompanyRepository,
   IInvoiceRepository,
   IBankAccountRepository,
-  IBankTransactionRepository
+  IBankTransactionRepository,
+  IBillRepository
 } from "./interfaces";
 import {
   CompanyRepository,
@@ -11,6 +12,7 @@ import {
   InvoiceRepository,
   BankAccountRepository,
   BankTransactionRepository,
+  BillRepository
 } from "./implementations";
 import type { DB, Transaction } from "@fundlevel/db";
 
@@ -22,6 +24,7 @@ export class Storage {
   public readonly invoice: IInvoiceRepository;
   public readonly bankAccount: IBankAccountRepository;
   public readonly bankTransaction: IBankTransactionRepository;
+  public readonly bill: IBillRepository;
   private readonly db: IDB;
 
   constructor(db: IDB) {
@@ -32,6 +35,7 @@ export class Storage {
     this.invoice = new InvoiceRepository(this.db);
     this.bankAccount = new BankAccountRepository(this.db);
     this.bankTransaction = new BankTransactionRepository(this.db);
+    this.bill = new BillRepository(this.db);
   }
 
   async runInTransaction<T>(fn: (db: IDB) => Promise<T>): Promise<T> {
