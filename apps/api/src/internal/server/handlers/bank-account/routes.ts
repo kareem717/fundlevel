@@ -74,3 +74,33 @@ export const getCompanyBankAccountsRoute = createRoute({
     ...unauthorizedResponse,
   },
 });
+
+export const getCompanyBalanceRoute = createRoute({
+  summary: "Get company balance",
+  operationId: "getCompanyBalance",
+  tags: ["Bank Account"],
+  security: [bearerAuthSchema],
+  method: "get",
+  path: "/company/:companyId/balance",
+  request: {
+    params: z.object({
+      companyId: pathIdParamSchema,
+    }),
+  },
+  responses: {
+    200: {
+      description: "Successful fetch",
+      content: {
+        "application/json": {
+          schema: z.object({
+            availableBalance: z.number(),
+            currentBalance: z.number(),
+          }),
+        },
+      },
+    },
+    ...notFoundResponse,
+    ...unauthorizedResponse,
+    ...forbiddenResponse,
+  },
+});

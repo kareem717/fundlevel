@@ -12,4 +12,8 @@ export class BankAccountService implements IBankAccountService {
   async getMany(filter: GetManyBankAccountsFilter) {
     return await this.bankAccountRepository.getMany(filter);
   }
+
+  async getCompanyBalance(companyId: number) {
+    return await this.bankAccountRepository.getCompanyBalance(companyId);
+  }
 } 

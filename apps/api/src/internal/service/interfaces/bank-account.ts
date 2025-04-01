@@ -16,4 +16,12 @@ export interface IBankAccountService {
   getMany(
     filter: GetManyBankAccountsFilter,
   ): Promise<OffsetPaginationResult<Omit<BankAccount, "remainingRemoteContent">>>;
+
+  /**
+   * Get the balance of a company
+   */
+  getCompanyBalance(companyId: number): Promise<{
+    availableBalance: number;
+    currentBalance: number;
+  }>;
 } 

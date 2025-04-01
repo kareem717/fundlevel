@@ -109,10 +109,14 @@ export class BankAccountRepository implements IBankAccountRepository {
 
   async getCompanyBalance(companyId: number) {
     const [data] = await this.db.select({
-      balance: sum(bankTransactions.amount),
-    }).from(bankTransactions).where(eq(bankTransactions.companyId, companyId));
+      availableBalance: sum(bankAccounts.availableBalance),
+      currentBalance: sum(bankAccounts.currentBalance),
+    }).from(bankAccounts).where(eq(bankAccounts.companyId, companyId));
 
 
-    return Number.parseFloat(data?.balance || "0");
+    return {
+      availableBalance: Number.parseFloat(data?.availableBalance || "0"),
+      currentBalance: Number.parseFloat(data?.currentBalance || "0"),
+    };
   }
 } 

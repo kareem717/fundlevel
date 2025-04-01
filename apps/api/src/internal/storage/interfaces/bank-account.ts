@@ -34,5 +34,8 @@ export interface IBankAccountRepository {
   /**
    * Get the balance of a company
    */
-  getCompanyBalance(companyId: number): Promise<number>;
+  getCompanyBalance(companyId: number): Promise<{
+    availableBalance: number;
+    currentBalance: number;
+  }>;
 } 
