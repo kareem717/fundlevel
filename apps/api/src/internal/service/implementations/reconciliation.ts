@@ -1,6 +1,6 @@
 import type { IReconciliationService } from "../interfaces";
 import type {
-  IBankingRepository,
+  IBankTransactionRepository,
   IInvoiceRepository,
 } from "@fundlevel/api/internal/storage/interfaces";
 import { createOpenAI } from "@ai-sdk/openai";
@@ -9,10 +9,10 @@ import { z } from "zod";
 
 export class ReconciliationService implements IReconciliationService {
   constructor(
-    private bankRepo: IBankingRepository,
+    private bankTxRepo: IBankTransactionRepository,
     private invoiceRepo: IInvoiceRepository,
     private readonly openAiKey: string,
-  ) {}
+  ) { }
 
   async reconcileInvoice(invoiceId: number) {
     const invoiceRecord = await this.invoiceRepo.get({
@@ -42,10 +42,10 @@ export class ReconciliationService implements IReconciliationService {
       prompt: `
         Analyze this invoice and suggest filter parameters to find matching bank transactions:
         ${JSON.stringify({
-          ...invoiceRecord,
-          // We need to negate the amount to make it a credit
-          amount: invoiceRecord.totalAmount * -1,
-        }, null, 2)}
+        ...invoiceRecord,
+        // We need to negate the amount to make it a credit
+        amount: invoiceRecord.totalAmount * -1,
+      }, null, 2)}
       `,
       schema: z.object({
         minAmount: z
@@ -73,13 +73,12 @@ export class ReconciliationService implements IReconciliationService {
 
     const PAGE_SIZE = 5;
     let pageIdx = 0;
-    const initialTransactions = await this.bankRepo.getManyTransactions({
+    const initialTransactions = await this.bankTxRepo.getMany({
       ...filterParams.object,
       companyIds: [invoiceRecord.companyId],
       pageSize: PAGE_SIZE,
       order: "asc",
       page: pageIdx,
-      bankAccountIds: undefined,
     });
 
     const transactionJobs = initialTransactions.data;
@@ -87,13 +86,12 @@ export class ReconciliationService implements IReconciliationService {
       pageIdx++;
 
       // Get transactions using the AI-suggested filters
-      const transactionResult = await this.bankRepo.getManyTransactions({
+      const transactionResult = await this.bankTxRepo.getMany({
         ...filterParams.object,
         companyIds: [invoiceRecord.companyId],
         pageSize: PAGE_SIZE,
         order: "asc",
         page: pageIdx,
-        bankAccountIds: undefined,
       });
 
       transactionJobs.push(...transactionResult.data);
@@ -132,8 +130,8 @@ export class ReconciliationService implements IReconciliationService {
           schema: z.object({
             transactions: z.array(
               z.object({
-                transactionId: z.string(),
-                confidence: z.enum(["low", "medium", "high"]),
+                transactionId: z.number().min(1).describe("The ID of the transaction"),
+                confidence: z.enum(["low", "medium", "high"]).describe("The confidence level of the match"),
                 matchReason: z
                   .string()
                   .describe(
@@ -148,9 +146,6 @@ export class ReconciliationService implements IReconciliationService {
 
     const suggestedTransactions = result.flatMap((r) => r.object.transactions);
 
-    return {
-      suggestedTransactions,
-      evaluatedTransactions: transactionJobs.flatMap((tx) => tx.remoteId)
-    };
+    return suggestedTransactions;
   }
 }

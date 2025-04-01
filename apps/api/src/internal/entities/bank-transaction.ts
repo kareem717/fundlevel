@@ -8,11 +8,11 @@ export type GetManyBankTransactionsFilter = {
 } & (
     | {
       companyIds: number[];
-      bankAccountIds?: string[];
+      bankAccountIds?: number[];
     }
     | {
       companyIds?: number[];
-      bankAccountIds: string[];
+      bankAccountIds: number[];
     }
   ) & OffsetPaginationParams;
 

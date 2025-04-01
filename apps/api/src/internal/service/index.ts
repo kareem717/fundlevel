@@ -43,14 +43,14 @@ export class Service {
     );
 
     this.reconciliation = new ReconciliationService(
-      config.storage.banking,
+      config.storage.bankTransaction,
       config.storage.invoice,
       config.openaiKey,
     );
     this.account = account;
     this.company = company;
-    this.bankAccount = new BankAccountService(config.storage.banking);
-    this.bankTransaction = new BankTransactionService(config.storage.banking);
+    this.bankAccount = new BankAccountService(config.storage.bankAccount);
+    this.bankTransaction = new BankTransactionService(config.storage.bankTransaction);
     this.invoice = new InvoiceService(config.storage.invoice);
   }
 }

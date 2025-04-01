@@ -8,12 +8,12 @@ export interface IBankAccountService {
   /**
    * Get a single bank account by its ID
    */
-  get(bankAccountId: string): Promise<BankAccount | undefined>;
+  get(filter: { id: number } | { remoteId: string }): Promise<Omit<BankAccount, "remainingRemoteContent"> | undefined>;
 
   /**
    * Get multiple bank accounts based on filter criteria
    */
   getMany(
     filter: GetManyBankAccountsFilter,
-  ): Promise<OffsetPaginationResult<BankAccount>>;
+  ): Promise<OffsetPaginationResult<Omit<BankAccount, "remainingRemoteContent">>>;
 } 

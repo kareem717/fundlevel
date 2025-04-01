@@ -7,7 +7,7 @@ import type {
 import type {
   IInvoiceRepository,
 } from "../interfaces/invoice";
-import { invoices, invoiceLines } from "@fundlevel/db/schema";
+import { invoices, invoiceLines, bankTransactionRelationships } from "@fundlevel/db/schema";
 import { eq, inArray, sql, gte, lte, asc, desc, count, and } from "drizzle-orm";
 import type { IDB } from "@fundlevel/api/internal/storage";
 import type { OffsetPaginationResult, GetManyInvoicesFilter } from "@fundlevel/api/internal/entities";
@@ -122,15 +122,34 @@ export class InvoiceRepository implements IInvoiceRepository {
     return data;
   }
 
-  async deleteByRemoteId(remoteId: string | string[]): Promise<void> {
+  async delete(filter: { id: number } | { remoteId: string }): Promise<void> {
     await this.db
       .delete(invoices)
       .where(
-        inArray(
-          invoices.remoteId,
-          Array.isArray(remoteId) ? remoteId : [remoteId],
-        ),
+        "id" in filter ? eq(invoices.id, filter.id) : eq(invoices.remoteId, filter.remoteId),
       );
+  }
+
+  async deleteMany(filter: { id: number[] } | { remoteId: string[] }): Promise<void> {
+    await this.db.transaction(async (tx) => {
+
+
+      const invoiceIds = await tx
+        .delete(invoices)
+        .where(
+          "id" in filter ? inArray(invoices.id, filter.id) : inArray(invoices.remoteId, filter.remoteId),
+        ).returning({
+          id: invoices.id,
+        });
+
+      await tx.delete(bankTransactionRelationships)
+        .where(
+          and(
+            eq(bankTransactionRelationships.entityType, "invoice"),
+            inArray(bankTransactionRelationships.entityId, invoiceIds.map((invoice) => invoice.id)),
+          )
+        )
+    });
   }
 
   async upsertLine(lines: CreateInvoiceLineParams[]): Promise<InvoiceLine[]> {

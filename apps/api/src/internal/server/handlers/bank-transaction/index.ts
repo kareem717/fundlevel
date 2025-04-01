@@ -52,9 +52,9 @@ const bankingHandler = new OpenAPIHono()
       return c.json({ error: "Account not found, please create an account." }, 404);
     }
 
-    const { transactionId } = c.req.valid("param");
+    const { id } = c.req.valid("param");
 
-    const result = await getService(c).bankTransaction.get(transactionId);
+    const result = await getService(c).bankTransaction.get({ id });
 
     if (!result) {
       return c.json({ error: "Transaction not found." }, 404);

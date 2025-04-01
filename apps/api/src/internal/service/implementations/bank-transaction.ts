@@ -5,8 +5,8 @@ import type { GetManyBankTransactionsFilter } from "@fundlevel/api/internal/enti
 export class BankTransactionService implements IBankTransactionService {
   constructor(private bankTransactionRepository: IBankTransactionRepository) { }
 
-  async get(transactionId: string) {
-    return await this.bankTransactionRepository.get(transactionId);
+  async get(filter: { id: number } | { remoteId: string }) {
+    return await this.bankTransactionRepository.get(filter);
   }
 
   async getMany(filter: GetManyBankTransactionsFilter) {

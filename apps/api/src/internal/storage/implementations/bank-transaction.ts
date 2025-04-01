@@ -1,35 +1,35 @@
 import type { IBankTransactionRepository } from "../interfaces/bank-transaction";
-import type { DB } from "@fundlevel/db";
-import type { GetManyTransactionsFilter } from "../interfaces/bank-transaction";
+import type { GetManyBankTransactionsFilter } from "@fundlevel/api/internal/entities";
 import type { CreateBankTransactionParams } from "@fundlevel/db/types";
-import { bankTransactions } from "@fundlevel/db/schema";
+import { bankTransactions, bankAccounts } from "@fundlevel/db/schema";
 import { inArray, gte, lte, asc, desc, count, eq, sql, and, getTableColumns } from "drizzle-orm";
+import type { IDB } from "../index";
 
 export class BankTransactionRepository implements IBankTransactionRepository {
-  constructor(private db: DB) { }
+  constructor(private db: IDB) { }
 
   async getMany(
-    filter: GetManyTransactionsFilter,
+    filter: GetManyBankTransactionsFilter,
   ) {
     const whereCondition = and(
       filter.minDate ? gte(bankTransactions.date, filter.minDate) : undefined,
       filter.maxDate ? lte(bankTransactions.date, filter.maxDate) : undefined,
       filter.minAmount !== undefined ? gte(bankTransactions.amount, filter.minAmount) : undefined,
       filter.maxAmount !== undefined ? lte(bankTransactions.amount, filter.maxAmount) : undefined,
-      filter.bankAccountIds ? inArray(bankTransactions.bankAccountId, filter.bankAccountIds) : undefined,
       filter.companyIds ? inArray(bankTransactions.companyId, filter.companyIds) : undefined
     );
 
-    const countQb = this.db
+    let countQb = this.db
       .select({
         total: count(),
       })
       .from(bankTransactions)
-      .where(whereCondition);
+      .where(whereCondition)
+      .$dynamic();
 
     const { page, pageSize, order } = filter;
     const { remainingRemoteContent, ...bat } = getTableColumns(bankTransactions);
-    const qb = this.db
+    let qb = this.db
       .select(bat)
       .from(bankTransactions)
       .where(whereCondition)
@@ -40,7 +40,19 @@ export class BankTransactionRepository implements IBankTransactionRepository {
         order === "asc"
           ? asc(bankTransactions.remoteId)
           : desc(bankTransactions.remoteId),
-      );
+      ).$dynamic();
+
+    if (filter.bankAccountIds) {
+      qb = qb.innerJoin(bankAccounts, and(
+        eq(bankTransactions.bankAccountRemoteId, bankAccounts.remoteId),
+        inArray(bankAccounts.id, filter.bankAccountIds)
+      ));
+
+      countQb = countQb.innerJoin(bankAccounts, and(
+        eq(bankTransactions.bankAccountRemoteId, bankAccounts.remoteId),
+        inArray(bankAccounts.id, filter.bankAccountIds)
+      ));
+    }
 
     const [data, total] = await Promise.all([qb, countQb]);
 
@@ -69,10 +81,12 @@ export class BankTransactionRepository implements IBankTransactionRepository {
     };
   }
 
-  async get(remoteId: string) {
+  async get(filter: { id: number } | { remoteId: string }) {
     const { remainingRemoteContent, ...tx } = getTableColumns(bankTransactions)
-    const [data] = await this.db.select(tx).from(bankTransactions).where(eq(bankTransactions.remoteId, remoteId));
-    return data || null;
+    const [data] = await this.db.select(tx).from(bankTransactions).where(
+      "id" in filter ? eq(bankTransactions.id, filter.id) : eq(bankTransactions.remoteId, filter.remoteId)
+    );
+    return data;
   }
 
   async upsertMany(

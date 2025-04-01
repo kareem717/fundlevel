@@ -1,12 +1,12 @@
-export type CursorPaginationParams<C = string | number> = {
-  cursor: C | null;
+export type CursorPaginationParams = {
+  cursor: number | undefined;
   limit: number;
   order: "asc" | "desc";
 };
 
-export type CursorPaginationResult<D, C = string | number> = {
+export type CursorPaginationResult<D> = {
   data: D[];
-  nextCursor: C | null;
+  nextCursor: number | null;
 };
 
 export type OffsetPaginationParams = {

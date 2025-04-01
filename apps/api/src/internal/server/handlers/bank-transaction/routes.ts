@@ -7,13 +7,13 @@ import {
 import { bearerAuthSchema } from "@fundlevel/api/internal/server/types/security";
 import { z } from "zod";
 import {
-  BankTransactionSchema,
-  BankAccountSchema,
+  BankTransactionSchema
 } from "@fundlevel/db/validators";
 import {
   offsetPaginationParamsSchema,
   offsetPaginationResultSchema,
 } from "@fundlevel/api/internal/server/types/params";
+import { pathIdParamSchema } from "@fundlevel/api/internal/server/types/params";
 
 export const getCompanyTransactionsRoute = createRoute({
   summary: "Get company transactions",
@@ -29,10 +29,10 @@ export const getCompanyTransactionsRoute = createRoute({
       maxAuthorizedAt: z.string().optional(),
       minAmount: z.number().optional(),
       maxAmount: z.number().optional(),
-      bankAccountIds: z.array(z.string()).optional(),
+      bankAccountIds: z.array(pathIdParamSchema).optional(),
     }),
     params: z.object({
-      companyId: z.coerce.number(),
+      companyId: pathIdParamSchema,
     }),
   },
   responses: {
@@ -41,7 +41,7 @@ export const getCompanyTransactionsRoute = createRoute({
       content: {
         "application/json": {
           schema: z.object({
-            data: z.array(BankTransactionSchema.openapi("BankTransaction")),
+            data: z.array(BankTransactionSchema.omit({ remainingRemoteContent: true }).openapi("BankTransaction")),
             ...offsetPaginationResultSchema.shape,
           }),
         },
@@ -68,7 +68,7 @@ export const getBankAccountTransactionsRoute = createRoute({
       maxAmount: z.number().optional(),
     }),
     params: z.object({
-      bankAccountId: z.string(),
+      bankAccountId: pathIdParamSchema,
     }),
   },
   responses: {
@@ -77,7 +77,7 @@ export const getBankAccountTransactionsRoute = createRoute({
       content: {
         "application/json": {
           schema: z.object({
-            data: z.array(BankTransactionSchema.openapi("BankTransaction")),
+            data: z.array(BankTransactionSchema.omit({ remainingRemoteContent: true }).openapi("BankTransaction")),
             ...offsetPaginationResultSchema.shape,
           }),
         },
@@ -97,7 +97,7 @@ export const getTransactionRoute = createRoute({
   path: "/:id",
   request: {
     params: z.object({
-      transactionId: z.string(),
+      id: pathIdParamSchema,
     }),
   },
   responses: {
@@ -105,7 +105,7 @@ export const getTransactionRoute = createRoute({
       description: "Successful fetch",
       content: {
         "application/json": {
-          schema: BankTransactionSchema.openapi("BankTransaction"),
+          schema: BankTransactionSchema.omit({ remainingRemoteContent: true }).openapi("BankTransaction"),
         },
       },
     },

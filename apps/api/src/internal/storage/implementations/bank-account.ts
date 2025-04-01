@@ -1,12 +1,12 @@
 import type { IBankAccountRepository } from "../interfaces/bank-account";
-import type { DB } from "@fundlevel/db";
 import type { CreateBankAccountParams } from "@fundlevel/db/types";
 import { bankAccounts } from "@fundlevel/db/schema";
 import { inArray, asc, desc, count, eq, sql, and, getTableColumns } from "drizzle-orm";
 import type { GetManyBankAccountsFilter } from "@fundlevel/api/internal/entities";
+import type { IDB } from "../index";
 
 export class BankAccountRepository implements IBankAccountRepository {
-  constructor(private db: DB) { }
+  constructor(private db: IDB) { }
 
   async getMany(filter: GetManyBankAccountsFilter) {
     const { page, pageSize, order } = filter;
@@ -39,9 +39,14 @@ export class BankAccountRepository implements IBankAccountRepository {
     };
   }
 
-  async get(bankAccountId: string) {
-    const [data] = await this.db.select().from(bankAccounts).where(eq(bankAccounts.remoteId, bankAccountId));
-    return data || null;
+  async get(filter: { id: number } | { remoteId: string }) {
+    const { remainingRemoteContent, ...ba } = getTableColumns(bankAccounts)
+
+    const [data] = await this.db.select(ba).from(bankAccounts).where(
+      "id" in filter ? eq(bankAccounts.id, filter.id) : eq(bankAccounts.remoteId, filter.remoteId)
+    );
+
+    return data;
   }
 
   async upsertMany(

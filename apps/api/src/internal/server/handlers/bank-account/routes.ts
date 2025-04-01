@@ -7,13 +7,13 @@ import {
 import { bearerAuthSchema } from "@fundlevel/api/internal/server/types/security";
 import { z } from "zod";
 import {
-  BankTransactionSchema,
   BankAccountSchema,
 } from "@fundlevel/db/validators";
 import {
   offsetPaginationParamsSchema,
   offsetPaginationResultSchema,
 } from "@fundlevel/api/internal/server/types/params";
+import { pathIdParamSchema } from "@fundlevel/api/internal/server/types/params";
 
 export const getBankAccountDetailsRoute = createRoute({
   summary: "Get bank account details",
@@ -24,7 +24,7 @@ export const getBankAccountDetailsRoute = createRoute({
   path: "/:id",
   request: {
     params: z.object({
-      id: z.string(),
+      id: pathIdParamSchema,
     }),
   },
   responses: {
@@ -32,7 +32,7 @@ export const getBankAccountDetailsRoute = createRoute({
       description: "Successful fetch",
       content: {
         "application/json": {
-          schema: BankAccountSchema.openapi("BankAccount"),
+          schema: BankAccountSchema.omit({ remainingRemoteContent: true }).openapi("BankAccount"),
         },
       },
     },
@@ -54,7 +54,7 @@ export const getCompanyBankAccountsRoute = createRoute({
       ...offsetPaginationParamsSchema.shape,
     }),
     params: z.object({
-      companyId: z.coerce.number(),
+      companyId: pathIdParamSchema,
     }),
   },
   responses: {
@@ -63,7 +63,7 @@ export const getCompanyBankAccountsRoute = createRoute({
       content: {
         "application/json": {
           schema: z.object({
-            data: z.array(BankAccountSchema.openapi("BankAccount")),
+            data: z.array(BankAccountSchema.omit({ remainingRemoteContent: true }).openapi("BankAccount")),
             ...offsetPaginationResultSchema.shape,
           }),
         },

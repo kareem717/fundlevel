@@ -18,7 +18,7 @@ const bankAccountHandler = new OpenAPIHono()
 
     const { id } = c.req.valid("param");
 
-    const result = await getService(c).bankAccount.get(id);
+    const result = await getService(c).bankAccount.get({ id });
 
     if (!result) {
       return c.json(

@@ -14,7 +14,9 @@ export interface IInvoiceRepository {
     invoice: CreateInvoiceParams[],
     companyId: number,
   ): Promise<Invoice[]>;
-  deleteByRemoteId(remoteId: string | string[]): Promise<void>;
+  delete(filter: { id: number } | { remoteId: string }): Promise<void>;
+  deleteMany(filter: { id: number[] } | { remoteId: string[] }): Promise<void>;
+
   getMany(
     filter: GetManyInvoicesFilter,
   ): Promise<OffsetPaginationResult<Invoice>>;

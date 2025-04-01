@@ -15,7 +15,13 @@ export interface IBankAccountRepository {
   /**
    * Get a single bank account by its ID
    */
-  get(bankAccountId: string): Promise<Omit<BankAccount, "remainingRemoteContent"> | null>;
+  get(
+    filter: {
+      id: number;
+    } | {
+      remoteId: string;
+    }
+  ): Promise<Omit<BankAccount, "remainingRemoteContent"> | undefined>;
 
   /**
    * Create or update multiple bank accounts for a company

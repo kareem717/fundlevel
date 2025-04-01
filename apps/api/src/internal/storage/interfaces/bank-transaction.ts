@@ -16,7 +16,13 @@ export interface IBankTransactionRepository {
   /**
    * Get a single transaction by its remote ID
    */
-  get(remoteId: string): Promise<Omit<BankTransaction, "remainingRemoteContent"> | null>;
+  get(
+    filter: {
+      id: number;
+    } | {
+      remoteId: string;
+    }
+  ): Promise<Omit<BankTransaction, "remainingRemoteContent"> | undefined>;
 
   /**
    * Create or update multiple transactions for a company

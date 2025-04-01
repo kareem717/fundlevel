@@ -459,7 +459,7 @@ export class CompanyService implements ICompanyService {
       const repo = new Storage(db);
       if (bankAccountParams.length > 0) {
         try {
-          await repo.banking.upsertBankAccounts(bankAccountParams, companyId);
+          await repo.bankAccount.upsertMany(bankAccountParams, companyId);
         } catch (error) {
           console.error(error);
           throw new Error(`Error upserting bank accounts: ${error}`);
@@ -541,7 +541,7 @@ export class CompanyService implements ICompanyService {
       });
       return {
         remoteId: transaction_id,
-        bankAccountId: account_id,
+        bankAccountRemoteId: account_id,
         personalFinanceCategoryConfidenceLevel:
           personal_finance_category?.confidence_level as
           | "VERY_HIGH"
@@ -573,11 +573,11 @@ export class CompanyService implements ICompanyService {
     await this.repo.runInTransaction(async (db: IDB) => {
       const repo = new Storage(db);
       if (convertedUpsert.length > 0) {
-        await repo.banking.upsertTransactions(convertedUpsert, companyId);
+        await repo.bankTransaction.upsertMany(convertedUpsert, companyId);
       }
 
       if (remove.length > 0) {
-        await repo.banking.deleteTransactions(
+        await repo.bankTransaction.deleteMany(
           remove.map((r) => r.transaction_id),
         );
       }
