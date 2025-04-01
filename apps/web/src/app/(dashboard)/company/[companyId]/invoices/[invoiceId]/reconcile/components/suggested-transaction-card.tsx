@@ -34,7 +34,7 @@ export function SuggestedTransactionCard({
         throw new Error("No token")
       }
 
-      const resp = await client(env.NEXT_PUBLIC_BACKEND_URL, token).banking.transaction[":transactionId"].$get({
+      const resp = await client(env.NEXT_PUBLIC_BACKEND_URL, token)["bank-transaction"][":id"].$get({
         param: {
           transactionId
         }

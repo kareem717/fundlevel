@@ -13,8 +13,8 @@ async function BankAccountDetails({ accountId }: { accountId: string }) {
   if (!token) {
     throw new Error("No token found");
   }
-  const resp = await client(env.NEXT_PUBLIC_BACKEND_URL, token).banking["bank-account"][":bankAccountId"].$get({
-    param: { bankAccountId: accountId },
+  const resp = await client(env.NEXT_PUBLIC_BACKEND_URL, token)["bank-account"][":id"].$get({
+    param: { id: accountId },
   });
 
   const account = await resp.json();

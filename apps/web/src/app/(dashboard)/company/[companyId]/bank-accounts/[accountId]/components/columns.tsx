@@ -1,6 +1,6 @@
 "use client";
 
-import type { BankAccountTransaction } from "@fundlevel/db/types";
+import type { BankTransaction } from "@fundlevel/db/types";
 import { Button } from "@fundlevel/ui/components/button";
 import {
   DropdownMenu,
@@ -12,7 +12,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { MoreHorizontal } from "lucide-react";
 
-export const columns: ColumnDef<BankAccountTransaction>[] = [
+export const columns: ColumnDef<BankTransaction>[] = [
   {
     accessorKey: "name",
     header: "Name",

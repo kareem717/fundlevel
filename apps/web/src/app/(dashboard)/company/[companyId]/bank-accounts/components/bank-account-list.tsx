@@ -48,7 +48,7 @@ export function BankAccountList({
         return redirect(redirects.auth.login);
       }
 
-      const req = await client(env.NEXT_PUBLIC_BACKEND_URL, token).banking.company[":companyId"]["bank-accounts"].$get({
+      const req = await client(env.NEXT_PUBLIC_BACKEND_URL, token)["bank-account"].company[":companyId"].$get({
         query: {
           page: pageIndex,
           pageSize,

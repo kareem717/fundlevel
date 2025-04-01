@@ -59,9 +59,9 @@ export function TransactionsTable({
 
       const sdk = client(env.NEXT_PUBLIC_BACKEND_URL, authToken);
 
-      const response = await sdk.banking["bank-account"][
+      const response = await sdk["bank-transaction"]["bank-account"][
         ":bankAccountId"
-      ].transactions.$get({
+      ].$get({
         param: { bankAccountId },
         query: {
           page: pageIndex,
