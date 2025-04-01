@@ -9,6 +9,7 @@ import companyHandler from "./handlers/company";
 import invoiceHandler from "./handlers/invoice";
 import bankAccountHandler from "./handlers/bank-account";
 import bankTransactionHandler from "./handlers/bank-transaction";
+import billHandler from "./handlers/bill";
 
 import {
   withAuth,
@@ -87,6 +88,7 @@ export class Server {
       .route("/webhooks", webhookHandler)
       .route("/company", companyHandler)
       .route("/invoice", invoiceHandler)
+      .route("/bill", billHandler)
       .route("/bank-account", bankAccountHandler)
       .route("/bank-transaction", bankTransactionHandler);
 
