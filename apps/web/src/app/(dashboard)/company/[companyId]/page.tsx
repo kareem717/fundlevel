@@ -4,7 +4,7 @@ import { getTokenCached } from "@fundlevel/web/actions/auth";
 import { client } from "@fundlevel/sdk";
 import { env } from "@fundlevel/web/env";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@fundlevel/ui/components/card";
-import { Button } from "@fundlevel/ui/components/button";
+import { Button, buttonVariants } from "@fundlevel/ui/components/button";
 import { Building, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@fundlevel/ui/components/badge";
@@ -21,6 +21,7 @@ import {
   TableHeader,
   TableRow,
 } from "@fundlevel/ui/components/table"
+import { cn } from "@fundlevel/ui/lib/utils";
 
 async function BankBalance({ companyId }: { companyId: number }) {
   const token = await getTokenCached();
@@ -168,12 +169,10 @@ export default async function CompanyPage({
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button size="sm" asChild>
-            <Link href={redirects.app.company(parsedId).settings.connections}>
-              <Building className="h-4 w-4 mr-1" />
-              Connections
-            </Link>
-          </Button>
+          <Link href={redirects.app.company(parsedId).settings.connections} className={buttonVariants({ variant: "outline", size: "sm" })} prefetch={true}>
+            <Building className="h-4 w-4 mr-1" />
+            Connections
+          </Link>
         </div>
       </div>
 
@@ -214,11 +213,9 @@ export default async function CompanyPage({
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium flex items-center justify-between">
               Bank Accounts
-              <Link href={redirects.app.company(parsedId).bankAccounts.index}>
-                <Button variant="outline" size="sm">
-                  <Building className="h-4 w-4 mr-1" />
-                  View All
-                </Button>
+              <Link href={redirects.app.company(parsedId).bankAccounts.index} className={buttonVariants({ variant: "outline", size: "sm" })} prefetch={true}>
+                <Building className="h-4 w-4 mr-1" />
+                View All
               </Link>
             </CardTitle>
             <CardDescription>Banking & credit cards</CardDescription>
@@ -251,12 +248,10 @@ export default async function CompanyPage({
             </Table>
           </CardContent>
           <CardFooter>
-            <Button variant="outline" className="mt-2 w-full" asChild>
-              <Link href={redirects.app.company(parsedId).settings.connections}>
-                <Building className="h-4 w-4 mr-2" />
-                Connect more accounts
-              </Link>
-            </Button>
+            <Link href={redirects.app.company(parsedId).settings.connections} className={cn(buttonVariants({ size: "sm" }), "w-full")} prefetch={true}>
+              <Building className="h-4 w-4 mr-2" />
+              Connect more accounts
+            </Link>
           </CardFooter>
         </Card>
         <Card>

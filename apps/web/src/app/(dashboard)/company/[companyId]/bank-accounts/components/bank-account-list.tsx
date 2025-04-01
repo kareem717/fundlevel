@@ -34,7 +34,7 @@ export function BankAccountList({
   );
   const [pageSize, setPageSize] = useQueryState(
     "limit",
-    parseAsInteger.withDefault(9)
+    parseAsInteger.withDefault(10)
   );
 
   // Keep track of the last known page count
