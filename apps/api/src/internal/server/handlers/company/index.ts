@@ -91,11 +91,11 @@ const companyHandler = new OpenAPIHono()
       {
         companyId: company_id,
       },
-      {
-        idempotencyKey: await idempotencyKeys.create(
-          `sync-company-invoices-${company_id}`,
-        ),
-      },
+      // {
+      //   idempotencyKey: await idempotencyKeys.create(
+      //     `sync-company-invoices-${company_id}`,
+      //   ),
+      // },
     );
 
     return c.redirect(redirect_url);
@@ -205,11 +205,11 @@ const companyHandler = new OpenAPIHono()
       {
         companyId,
       },
-      {
-        idempotencyKey: await idempotencyKeys.create(
-          `sync-company-banking-data-${companyId}`,
-        ),
-      },
+      // {
+      //   idempotencyKey: await idempotencyKeys.create(
+      //     `sync-company-banking-data-${companyId}`,
+      //   ),
+      // },
     );
 
     return c.json(creds, 200);

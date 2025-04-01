@@ -25,11 +25,11 @@ const invoiceHandler = new OpenAPIHono()
         {
           invoiceId,
         },
-        {
-          idempotencyKey: await idempotencyKeys.create(
-            `reconcile-invoice-${invoiceId}`,
-          ),
-        },
+        // {
+        //   idempotencyKey: await idempotencyKeys.create(
+        //     `reconcile-invoice-${invoiceId}`,
+        //   ),
+        // },
       );
 
       return c.json({

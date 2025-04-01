@@ -1,4 +1,4 @@
-import { logger, schemaTask, idempotencyKeys } from "@trigger.dev/sdk/v3";
+import { logger, schemaTask } from "@trigger.dev/sdk/v3";
 import { z } from "zod";
 import { getService } from "./utils";
 
@@ -80,11 +80,11 @@ export const syncCompanyBankingDataTask = schemaTask({
       logger.log(`Syncing bank account transactions for company ${payload.companyId}`);
       await syncCompanyBankAccountsTask.trigger(
         { companyId: payload.companyId },
-        {
-          idempotencyKey: await idempotencyKeys.create(
-            `sync-company-bank-accounts-${payload.companyId}`,
-          ),
-        },
+        // {
+        //   idempotencyKey: await idempotencyKeys.create(
+        //     `sync-company-bank-accounts-${payload.companyId}`,
+        //   ),
+        // },
       );
     } catch (error) {
       logger.error(`Error syncing bank account transactions for company ${payload.companyId}`, {
@@ -97,11 +97,11 @@ export const syncCompanyBankingDataTask = schemaTask({
       logger.log(`Syncing bank account transactions for company ${payload.companyId}`);
       await syncCompanyBankTransactionsTask.trigger(
         { companyId: payload.companyId },
-        {
-          idempotencyKey: await idempotencyKeys.create(
-            `sync-company-bank-transactions-${payload.companyId}`,
-          ),
-        },
+        // {
+        //   idempotencyKey: await idempotencyKeys.create(
+        //     `sync-company-bank-transactions-${payload.companyId}`,
+        //   ),
+        // },
       );
     } catch (error) {
       logger.error(`Error syncing bank account transactions for company ${payload.companyId}`, {

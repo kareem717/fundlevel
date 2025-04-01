@@ -153,11 +153,11 @@ const webhookHandler = new OpenAPIHono()
               {
                 companyId,
               },
-              {
-                idempotencyKey: await idempotencyKeys.create(
-                  `sync-company-bank-accounts-${payload.item_id}`,
-                ),
-              },
+              // {
+              //   idempotencyKey: await idempotencyKeys.create(
+              //     `sync-company-bank-accounts-${payload.item_id}`,
+              //   ),
+              // },
             );
           }
           break;
