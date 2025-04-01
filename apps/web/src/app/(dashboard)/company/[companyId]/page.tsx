@@ -12,6 +12,7 @@ import { Badge } from "@fundlevel/ui/components/badge";
 import { formatCurrency } from "@fundlevel/web/lib/utils";
 import { Suspense } from "react";
 import { Skeleton } from "@fundlevel/ui/components/skeleton";
+import { generate } from "shortid";
 
 async function BankBalance({ companyId }: { companyId: number }) {
   const token = await getTokenCached();
@@ -33,6 +34,50 @@ async function BankBalance({ companyId }: { companyId: number }) {
       <div className="text-3xl font-bold">{formatCurrency(data.availableBalance)}</div>
       <div className="text-sm text-muted-foreground">Current Balance</div>
       <div className="text-3xl font-bold">{formatCurrency(data.currentBalance)}</div>
+    </div>
+  )
+}
+
+async function RecentTransactions({ companyId }: { companyId: number }) {
+  const token = await getTokenCached();
+  if (!token) {
+    return redirect(redirects.auth.login);
+  }
+
+  const resp = await client(env.NEXT_PUBLIC_BACKEND_URL, token)["bank-transaction"].company[":companyId"].$get({
+    param: { companyId },
+    query: {
+      page: 0,
+      pageSize: 5,
+      order: "desc",
+      sortBy: "date"
+    }
+  });
+
+  if (resp.status !== 200) {
+    throw new Error(`Failed to fetch company, status: ${resp.status}`);
+  }
+
+  const { data } = await resp.json();
+
+  return (
+    <div className="divide-y">
+      {data.map(activity => (
+        <div key={activity.id} className="px-4 py-3 flex items-start justify-between hover:bg-muted/50 transition-colors">
+          <div className="flex items-start gap-3">
+            <p className="text-sm font-medium">{activity.name}</p>
+            <p className="text-xs text-muted-foreground">{format(activity.date, 'MMM d, yyyy')}</p>
+          </div>
+          <div className="text-right">
+            <p className={`text-sm font-medium ${activity.amount < 0 ? 'text-red-500' : 'text-green-500'}`}>
+              {activity.amount < 0 ? '-' : '+'}{formatCurrency(Math.abs(activity.amount))}
+            </p>
+            <Badge variant="outline" className="text-xs mt-1">
+              {activity.code}
+            </Badge>
+          </div>
+        </div>
+      ))}
     </div>
   )
 }
@@ -239,35 +284,16 @@ export default async function CompanyPage({
           <h2 className="text-xl font-semibold mb-4">Recent Activity</h2>
           <Card>
             <CardContent className="p-0">
-              <div className="divide-y">
-                {recentActivity.map(activity => (
-                  <div key={activity.id} className="px-4 py-3 flex items-start justify-between hover:bg-muted/50 transition-colors">
-                    <div className="flex items-start gap-3">
-                      <div className={`p-2 rounded-full mt-0.5 ${activity.type === 'invoice' ? 'bg-purple-100 dark:bg-purple-950' :
-                        activity.type === 'payment' ? 'bg-green-100 dark:bg-green-950' :
-                          'bg-blue-100 dark:bg-blue-950'
-                        }`}>
-                        {activity.type === 'invoice' ? <FileText className="h-3 w-3 text-purple-600 dark:text-purple-400" /> :
-                          activity.type === 'payment' ? <DollarSign className="h-3 w-3 text-green-600 dark:text-green-400" /> :
-                            <Building className="h-3 w-3 text-blue-600 dark:text-blue-400" />
-                        }
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium">{activity.title}</p>
-                        <p className="text-xs text-muted-foreground">{format(activity.date, 'MMM d, yyyy')}</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <p className={`text-sm font-medium ${activity.amount < 0 ? 'text-red-500' : 'text-green-500'}`}>
-                        {activity.amount < 0 ? '-' : '+'}{formatCurrency(Math.abs(activity.amount))}
-                      </p>
-                      <Badge variant="outline" className="text-xs mt-1">
-                        {activity.status}
-                      </Badge>
-                    </div>
-                  </div>
-                ))}
-              </div>
+
+              <Suspense fallback={
+                <div className="divide-y space-y-2 px-2">
+                  {Array.from({ length: 5 }).map(() => (
+                    <Skeleton key={generate()} className="h-10 w-full" />
+                  ))}
+                </div>
+              }>
+                <RecentTransactions companyId={parsedId} />
+              </Suspense>
             </CardContent>
           </Card>
 
