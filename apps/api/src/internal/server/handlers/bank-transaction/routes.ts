@@ -21,7 +21,7 @@ import {
 export const getCompanyTransactionsRoute = createRoute({
   summary: "Get company transactions",
   operationId: "getCompanyTransactions",
-  tags: ["Banking"],
+  tags: ["Bank Transaction"],
   security: [bearerAuthSchema],
   method: "get",
   path: "/company/:companyId",
@@ -58,7 +58,7 @@ export const getCompanyTransactionsRoute = createRoute({
 export const getBankAccountTransactionsRoute = createRoute({
   summary: "Get bank account transactions",
   operationId: "getBankTransactions",
-  tags: ["Banking"],
+  tags: ["Bank Transaction"],
   security: [bearerAuthSchema],
   method: "get",
   path: "/bank-account/:bankAccountId",
@@ -94,7 +94,7 @@ export const getBankAccountTransactionsRoute = createRoute({
 export const getTransactionRoute = createRoute({
   summary: "Get bank account transaction",
   operationId: "getTransaction",
-  tags: ["Banking"],
+  tags: ["Bank Transaction"],
   security: [bearerAuthSchema],
   method: "get",
   path: "/:id",
@@ -121,7 +121,7 @@ export const getTransactionRoute = createRoute({
 export const createTransactionRelationshipRoute = createRoute({
   summary: "Create a relationship between a bank transaction and an invoice",
   operationId: "createTransactionRelationship",
-  tags: ["Banking"],
+  tags: ["Bank Transaction"],
   security: [bearerAuthSchema],
   method: "post",
   path: "/:id/relationships",
@@ -144,5 +144,36 @@ export const createTransactionRelationshipRoute = createRoute({
     ...notFoundResponse,
     ...unauthorizedResponse,
     ...forbiddenResponse,
+  },
+});
+
+export const getInvoiceTransactionsRoute = createRoute({
+  summary: "Get invoice transactions",
+  operationId: "getInvoiceTransactions",
+  tags: ["Bank Transaction"],
+  security: [bearerAuthSchema],
+  method: "get",
+  path: "/invoice/:invoiceId",
+  request: {
+    params: z.object({
+      invoiceId: pathIdParamSchema,
+    }),
+    query: z.object({
+      ...offsetPaginationParamsSchema.shape,
+    }),
+  },
+  responses: {
+    200: {
+      description: "Successful fetch",
+      content: {
+        "application/json": {
+          schema: z.object({
+            data: z.array(BankTransactionSchema.omit({ remainingRemoteContent: true }).openapi("BankTransaction")),
+            ...offsetPaginationResultSchema.shape,
+          }),
+        },
+      },
+    },
+    ...unauthorizedResponse,
   },
 });

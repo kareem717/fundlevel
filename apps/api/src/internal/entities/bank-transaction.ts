@@ -1,19 +1,26 @@
 import type { OffsetPaginationParams } from "./pagination";
-
+import type { BankTransactionRelationshipType } from "@fundlevel/db/types";
 export type GetManyBankTransactionsFilter = {
   minDate?: string;
   maxDate?: string;
   minAmount?: number;
   maxAmount?: number;
 } & (
-    | {
-      companyIds: number[];
-      bankAccountIds?: number[];
-    }
-    | {
+    {
       companyIds?: number[];
-      bankAccountIds: number[];
-    }
+      bankAccountIds?: number[];
+      relationships?: {
+        type: BankTransactionRelationshipType;
+        ids: number[];
+      }[];
+    } & (
+      | { companyIds: number[] }
+      | { bankAccountIds: number[] }
+      | { relationships: {
+        type: BankTransactionRelationshipType;
+        ids: number[];
+      }[] }
+    )
   ) & OffsetPaginationParams;
 
 export type BankTransactionDetails = {

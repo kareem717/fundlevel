@@ -54,6 +54,18 @@ export class BankTransactionRepository implements IBankTransactionRepository {
       ));
     }
 
+    if (filter.relationships) {
+      qb = qb.innerJoin(bankTransactionRelationships, and(
+        eq(bankTransactions.id, bankTransactionRelationships.bankTransactionId),
+        inArray(bankTransactionRelationships.entityId, filter.relationships.flatMap((r) => r.ids))
+      ));
+
+      countQb = countQb.innerJoin(bankTransactionRelationships, and(
+        eq(bankTransactions.id, bankTransactionRelationships.bankTransactionId),
+        inArray(bankTransactionRelationships.entityId, filter.relationships.flatMap((r) => r.ids))
+      ));
+    }
+
     const [data, total] = await Promise.all([qb, countQb]);
 
     if (!data || !total) {
