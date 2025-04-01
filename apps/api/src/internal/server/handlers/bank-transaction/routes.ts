@@ -33,7 +33,7 @@ export const getCompanyTransactionsRoute = createRoute({
       minAmount: z.number().optional(),
       maxAmount: z.number().optional(),
       bankAccountIds: z.array(pathIdParamSchema).optional(),
-      sortBy: z.enum(["date", "id"]),
+      sortBy: z.enum(["date", "id"]).optional().default("id"),
     }),
     params: z.object({
       companyId: pathIdParamSchema,
@@ -70,7 +70,7 @@ export const getBankAccountTransactionsRoute = createRoute({
       maxAuthorizedAt: z.string().optional(),
       minAmount: z.number().optional(),
       maxAmount: z.number().optional(),
-      sortBy: z.enum(["date", "id"]),
+      sortBy: z.enum(["date", "id"]).optional().default("id"),
     }),
     params: z.object({
       bankAccountId: pathIdParamSchema,
@@ -162,7 +162,7 @@ export const getInvoiceTransactionsRoute = createRoute({
       }),
     query: z.object({
       ...offsetPaginationParamsSchema.shape,
-      sortBy: z.enum(["date", "id"]),
+      sortBy: z.enum(["date", "id"]).optional().default("id"),
     }),
   },
   responses: {
