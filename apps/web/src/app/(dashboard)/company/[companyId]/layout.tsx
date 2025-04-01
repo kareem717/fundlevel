@@ -64,7 +64,7 @@ export default async function CompanyLayout({
               {/* <BusinessBreadcrumb /> */}
             </div>
           </header>
-          <div className="flex flex-1 flex-col gap-4 px-4 container mx-auto py-12">
+          <div className="flex flex-1 flex-col gap-4 px-4 container mx-auto pt-4 pb-12">
             {children}
           </div>
         </SidebarInset>
