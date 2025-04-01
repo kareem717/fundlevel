@@ -1,0 +1,2 @@
+ALTER TYPE "public"."bank_account_transaction_relationship_entity_type" ADD VALUE 'bill';--> statement-breakpoint
+ALTER TABLE "company_sync_status" ADD COLUMN "bills_last_synced_at" timestamp with time zone NOT NULL;

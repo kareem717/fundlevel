@@ -38,6 +38,7 @@ export const companySyncStatus = pgTable(
     invoicesLastSyncedAt: timestamp("invoices_last_synced_at", { withTimezone: true, mode: "string" }).notNull(),
     transactionsLastSyncedAt: timestamp("transactions_last_synced_at", { withTimezone: true, mode: "string" }).notNull(),
     bankAccountsLastSyncedAt: timestamp("bank_accounts_last_synced_at", { withTimezone: true, mode: "string" }).notNull(),
+    billsLastSyncedAt: timestamp("bills_last_synced_at", { withTimezone: true, mode: "string" }).notNull(),
   },
 );
 
