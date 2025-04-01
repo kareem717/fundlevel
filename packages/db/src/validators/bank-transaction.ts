@@ -19,6 +19,7 @@ export const BankTransactionSchema = createSelectSchema(bankTransactions);
 export const CreateBankTransactionParamsSchema = createInsertSchema(
   bankTransactions,
 ).omit({
+  id: true,
   createdAt: true,
   updatedAt: true,
   companyId: true,
@@ -27,6 +28,7 @@ export const CreateBankTransactionParamsSchema = createInsertSchema(
 export const UpdateBankTransactionParamsSchema = createUpdateSchema(
   bankTransactions,
 ).omit({
+  id: true,
   createdAt: true,
   updatedAt: true,
   companyId: true,
@@ -42,12 +44,3 @@ export const CreateBankTransactionRelationshipParamsSchema =
     createdAt: true,
     updatedAt: true,
   });
-
-export const UpdateBankTransactionRelationshipParamsSchema =
-  createUpdateSchema(bankTransactionRelationships).omit({
-    createdAt: true,
-    updatedAt: true,
-    bankTransactionId: true,
-    entityId: true,
-    entityType: true,
-  }); 

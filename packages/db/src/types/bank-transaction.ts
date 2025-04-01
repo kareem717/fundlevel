@@ -10,7 +10,7 @@ export type BankTransaction = InferSelectModel<typeof bankTransactions>;
 
 export type CreateBankTransactionParams = Omit<
   OmitTimeStampFields<InferInsertModel<typeof bankTransactions>>,
-  "companyId"
+  "companyId" | "id"
 >;
 
 export type UpdateBankTransactionParams = Partial<CreateBankTransactionParams>;
@@ -22,11 +22,4 @@ export type BankTransactionRelationship = InferSelectModel<
 
 export type CreateBankTransactionRelationshipParams = OmitTimeStampFields<
   InferInsertModel<typeof bankTransactionRelationships>
->;
-
-export type UpdateBankTransactionRelationshipParams = Partial<
-  Omit<
-    CreateBankTransactionRelationshipParams,
-    "bankTransactionId" | "entityId" | "entityType"
-  >
 >;

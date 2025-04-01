@@ -11,6 +11,7 @@ import {
   date,
   primaryKey,
   jsonb,
+  serial,
 } from "drizzle-orm/pg-core";
 import { companies } from ".";
 import { bankAccounts } from "./bank-account";
@@ -52,9 +53,10 @@ export const bankTransactionRelationshipEntityType = pgEnum(
 export const bankTransactions = pgTable(
   "bank_account_transactions",
   {
-    remoteId: text("remote_id").primaryKey().notNull(),
+    id: serial("id").primaryKey().notNull(),
+    remoteId: text("remote_id").notNull(),
     companyId: integer("company_id").notNull(),
-    bankAccountId: text("bank_account_id").references(() => bankAccounts.remoteId).notNull(),
+    bankAccountRemoteId: text("bank_account_remote_id").references(() => bankAccounts.remoteId).notNull(),
     isoCurrencyCode: varchar("iso_currency_code", { length: 3 }),
     unofficialCurrencyCode: varchar("unofficial_currency_code", { length: 3 }),
     checkNumber: text("check_number"),
@@ -100,10 +102,8 @@ export const bankTransactions = pgTable(
 export const bankTransactionRelationships = pgTable(
   "bank_account_transaction_relationships",
   {
-    bankTransactionId: text("bank_account_transaction_id")
-      .references(() => bankTransactions.remoteId)
-      .notNull(),
-    entityId: text("entity_id").notNull(),
+    bankTransactionId: integer("bank_account_transaction_id").notNull(),
+    entityId: integer("entity_id").notNull(),
     entityType: bankTransactionRelationshipEntityType("entity_type").notNull(),
     createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
       .defaultNow()
@@ -116,6 +116,11 @@ export const bankTransactionRelationships = pgTable(
   (table) => [
     primaryKey({
       columns: [table.bankTransactionId, table.entityId, table.entityType],
+    }),
+    foreignKey({
+      columns: [table.bankTransactionId],
+      foreignColumns: [bankTransactions.id],
+      name: "bat_rels_bt_id_fkey",
     }),
   ],
 );

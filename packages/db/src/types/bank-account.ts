@@ -6,7 +6,7 @@ export type BankAccount = InferSelectModel<typeof bankAccounts>;
 
 export type CreateBankAccountParams = Omit<
   OmitTimeStampFields<InferInsertModel<typeof bankAccounts>>,
-  "companyId"
+  "companyId" | "id"
 >;
 
 export type UpdateBankAccountParams = Partial<CreateBankAccountParams>; 

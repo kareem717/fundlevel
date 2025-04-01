@@ -12,6 +12,7 @@ export const BankAccountSchema = createSelectSchema(bankAccounts);
 export const CreateBankAccountParamsSchema = createInsertSchema(
   bankAccounts,
 ).omit({
+  id: true,
   createdAt: true,
   updatedAt: true,
   companyId: true,
@@ -20,6 +21,7 @@ export const CreateBankAccountParamsSchema = createInsertSchema(
 export const UpdateBankAccountParamsSchema = createUpdateSchema(
   bankAccounts,
 ).omit({
+  id: true,
   createdAt: true,
   updatedAt: true,
   companyId: true,

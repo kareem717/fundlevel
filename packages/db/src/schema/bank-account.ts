@@ -9,6 +9,7 @@ import {
   doublePrecision,
   jsonb,
   pgEnum,
+  serial,
 } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 import { companies } from ".";
@@ -40,7 +41,8 @@ export const plaidAccountType = pgEnum("plaid_account_type", [
 export const bankAccounts = pgTable(
   "bank_accounts",
   {
-    remoteId: text("remote_id").primaryKey().notNull(),
+    id: serial("id").primaryKey().notNull(),
+    remoteId: text("remote_id").notNull().unique(),
     companyId: integer("company_id").notNull(),
     availableBalance: doublePrecision("available_balance"),
     currentBalance: doublePrecision("current_balance"),
