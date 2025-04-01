@@ -14,7 +14,7 @@ import Link from "next/link";
 import { redirects } from "@fundlevel/web/lib/config/redirects";
 
 interface BankAccountCardProps extends ComponentPropsWithoutRef<typeof Card> {
-  account: BankAccount;
+  account: Omit<BankAccount, "remainingRemoteContent">;
 }
 
 export function BankAccountCard({

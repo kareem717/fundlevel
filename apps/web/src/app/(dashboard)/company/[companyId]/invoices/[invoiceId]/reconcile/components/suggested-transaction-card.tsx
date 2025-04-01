@@ -14,7 +14,7 @@ import { Button } from "@fundlevel/ui/components/button";
 
 interface SuggestedTransactionCardProps
   extends ComponentPropsWithoutRef<"div"> {
-  transactionId: string;
+  transactionId: number;
   confidence: "low" | "medium" | "high";
   matchReason: string;
 }
@@ -36,7 +36,7 @@ export function SuggestedTransactionCard({
 
       const resp = await client(env.NEXT_PUBLIC_BACKEND_URL, token)["bank-transaction"][":id"].$get({
         param: {
-          transactionId
+          id: transactionId
         }
       })
 

@@ -58,11 +58,11 @@ export function DisplayReconciliation({
         <div className="grid gap-4">
           {status === "COMPLETED" ? (
             <>
-              {output?.result?.suggestedTransactions && output.result.suggestedTransactions.length > 0 && (
+              {output?.result && output.result.length > 0 && (
                 <div className="flex flex-col gap-2">
                   <p className="text-muted-foreground">Suggested transactions</p>
                   <div className="grid gap-2">
-                    {output.result.suggestedTransactions.map((r: any) => (
+                    {output.result.map((r: any) => (
                       <SuggestedTransactionCard
                         key={r.transactionId}
                         transactionId={r.transactionId}
@@ -73,9 +73,8 @@ export function DisplayReconciliation({
                   </div>
                 </div>
               )}
-              {(!output?.result?.suggestedTransactions || output.result.suggestedTransactions.length === 0) &&
-                (!output?.result?.evaluatedTransactions || output.result.evaluatedTransactions.length === 0) && (
-                  <div className="text-center p-6 bg-muted rounded-md">
+              {(!output?.result || output.result.length === 0) && (
+                <div className="text-center p-6 bg-muted rounded-md">
                     <p className="text-muted-foreground">No matching transactions found</p>
                   </div>
                 )}
