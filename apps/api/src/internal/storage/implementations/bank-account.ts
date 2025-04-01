@@ -16,8 +16,23 @@ export class BankAccountRepository implements IBankAccountRepository {
     );
 
     const { remainingRemoteContent, ...ba } = getTableColumns(bankAccounts)
-    const qb = this.db.select(ba).from(bankAccounts)
-      .groupBy(bankAccounts.id).where(whereCondition).limit(pageSize).offset(page * pageSize).orderBy(order === "asc" ? asc(bankAccounts.id) : desc(bankAccounts.id));
+    let qb = this.db.select(ba).from(bankAccounts)
+      .groupBy(bankAccounts.id).where(whereCondition).limit(pageSize).offset(page * pageSize).$dynamic();
+
+    switch (filter.sortBy) {
+      case "transactions":
+        qb = qb.leftJoin(bankTransactions, eq(bankTransactions.bankAccountRemoteId, bankAccounts.remoteId))
+          .groupBy(bankAccounts.id)
+          .orderBy(
+            filter.order === "asc" ? asc(count(bankTransactions.id)) : desc(count(bankTransactions.id))
+          );
+        break;
+      case "id":
+        qb = qb.orderBy(
+          filter.order === "asc" ? asc(bankAccounts.id) : desc(bankAccounts.id)
+        );
+        break;
+    }
 
     const countQb = this.db.select({
       total: count(),

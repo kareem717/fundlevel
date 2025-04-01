@@ -36,11 +36,7 @@ export class BankTransactionRepository implements IBankTransactionRepository {
       .groupBy(bankTransactions.id)
       .limit(pageSize)
       .offset(page * pageSize)
-      .orderBy(
-        order === "asc"
-          ? asc(bankTransactions.id)
-          : desc(bankTransactions.id),
-      ).$dynamic();
+      .$dynamic();
 
     if (filter.bankAccountIds) {
       qb = qb.innerJoin(bankAccounts, and(
@@ -64,6 +60,19 @@ export class BankTransactionRepository implements IBankTransactionRepository {
         eq(bankTransactions.id, bankTransactionRelationships.bankTransactionId),
         inArray(bankTransactionRelationships.entityId, filter.relationships.flatMap((r) => r.ids))
       ));
+    }
+
+    switch (filter.sortBy) {
+      case "date":
+        qb = qb.orderBy(
+          filter.order === "asc" ? asc(bankTransactions.date) : desc(bankTransactions.date)
+        );
+        break;
+      case "id":
+        qb = qb.orderBy(
+          filter.order === "asc" ? asc(bankTransactions.id) : desc(bankTransactions.id)
+        );
+        break;
     }
 
     const [data, total] = await Promise.all([qb, countQb]);

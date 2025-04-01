@@ -1,10 +1,12 @@
 import type { OffsetPaginationParams } from "./pagination";
 import type { BankTransactionRelationshipType } from "@fundlevel/db/types";
+
 export type GetManyBankTransactionsFilter = {
   minDate?: string;
   maxDate?: string;
   minAmount?: number;
   maxAmount?: number;
+  sortBy: "date" | "id";
 } & (
     {
       companyIds?: number[];
