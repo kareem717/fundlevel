@@ -25,11 +25,11 @@ const invoiceHandler = new OpenAPIHono()
         {
           invoiceId,
         },
-        // {
-        //   idempotencyKey: await idempotencyKeys.create(
-        //     `reconcile-invoice-${invoiceId}`,
-        //   ),
-        // },
+        {
+          idempotencyKey: await idempotencyKeys.create(
+            `reconcile-invoice-${invoiceId}`,
+          ),
+        },
       );
 
       return c.json({
@@ -39,7 +39,7 @@ const invoiceHandler = new OpenAPIHono()
     } catch {
       throw new Error("Something went wrong")
     }
-    
+
   })
   .openapi(getManyRoute, async (c) => {
     const account = getAccount(c);

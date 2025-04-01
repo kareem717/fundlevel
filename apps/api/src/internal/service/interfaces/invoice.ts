@@ -7,4 +7,12 @@ export interface IInvoiceService {
   get(invoiceId: number): Promise<Invoice>;
 
   getManyLines(filter: { invoiceId: number } | { ids: number[] }): Promise<InvoiceLine[]>;
+  
+  reconcile(invoiceId: number): Promise<
+    {
+      transactionId: number;
+      confidence: "low" | "medium" | "high";
+      matchReason: string;
+    }[]
+  >;
 }
