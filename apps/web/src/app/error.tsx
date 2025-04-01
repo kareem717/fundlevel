@@ -9,7 +9,7 @@ import Link from "next/link";
 import { useEffect } from "react";
 import * as Sentry from "@sentry/nextjs";
 
-export default function Error({
+export default function ErrorPage({
   error,
   reset,
 }: {
