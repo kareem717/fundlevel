@@ -14,11 +14,13 @@ interface DisplayReconciliationProps
   extends ComponentPropsWithoutRef<"div"> {
   taskId: string
   publicAccessToken: string
+  invoiceId: number
 }
 
 export function DisplayReconciliation({
   taskId,
   publicAccessToken,
+  invoiceId,
   className,
   ...props
 }: DisplayReconciliationProps) {
@@ -66,6 +68,7 @@ export function DisplayReconciliation({
                       <SuggestedTransactionCard
                         key={r.transactionId}
                         transactionId={r.transactionId}
+                        invoiceId={invoiceId}
                         confidence={r.confidence}
                         matchReason={r.matchReason}
                       />

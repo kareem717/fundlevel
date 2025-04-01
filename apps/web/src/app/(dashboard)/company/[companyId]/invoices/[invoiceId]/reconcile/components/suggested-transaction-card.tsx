@@ -1,32 +1,35 @@
 "use client";
 
 import type { ComponentPropsWithoutRef } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { client } from "@fundlevel/sdk";
 import { env } from "@fundlevel/web/env";
 import { cn } from "@fundlevel/ui/lib/utils";
 import { getTokenCached } from "@fundlevel/web/actions/auth";
 import { Skeleton } from "@fundlevel/ui/components/skeleton";
-import { Calendar, CreditCard, DollarSign, Info } from "lucide-react";
+import { Calendar, CreditCard, DollarSign, Info, Loader2 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@fundlevel/ui/components/card";
 import { Badge } from "@fundlevel/ui/components/badge";
 import { Button } from "@fundlevel/ui/components/button";
+import { toast } from "@fundlevel/ui/components/sonner";
 
 interface SuggestedTransactionCardProps
   extends ComponentPropsWithoutRef<"div"> {
   transactionId: number;
+  invoiceId: number;
   confidence: "low" | "medium" | "high";
   matchReason: string;
 }
 
 export function SuggestedTransactionCard({
   transactionId,
+  invoiceId,
   confidence,
   matchReason,
   className,
   ...props
 }: SuggestedTransactionCardProps) {
-  const { data, isPending, error } = useQuery({
+  const { data, isPending } = useQuery({
     queryKey: ["transaction", transactionId],
     queryFn: async () => {
       const token = await getTokenCached();
@@ -49,15 +52,50 @@ export function SuggestedTransactionCard({
     },
   });
 
+  const { mutateAsync: createRelationship, isPending: isCreatingRelationship } = useMutation({
+    mutationFn: async () => {
+      const token = await getTokenCached();
+      if (!token) {
+        throw new Error("No token")
+      }
+
+      const resp = await client(env.NEXT_PUBLIC_BACKEND_URL, token)["bank-transaction"][":id"].relationships.$post({
+        param: {
+          id: transactionId
+        },
+        json: {
+          entityId: invoiceId,
+          entityType: "invoice"
+        }
+      })
+
+      if (!resp.ok) {
+        const body = await resp.json()
+        console.error(body)
+        toast.error("Failed to create relationship")
+      }
+
+      return await resp.json()
+    },
+    onSuccess: () => {
+      toast.success("Relationship created")
+    },
+    onError: () => {
+      toast.error("Failed to create relationship")
+    }
+  });
+
   if (isPending) {
     return (
       <Skeleton className="w-full h-32" />
     )
   }
 
+  //TODO: Handle error
   if (!data) {
     return null;
   }
+
 
   const confidenceColor = {
     low: "bg-amber-100 text-amber-800 hover:bg-amber-200",
@@ -79,7 +117,8 @@ export function SuggestedTransactionCard({
                 {confidence.charAt(0).toUpperCase() + confidence.slice(1)} Confidence
               </Badge>
             )}
-            <Button size="sm">
+            <Button size="sm" onClick={() => createRelationship()} disabled={isCreatingRelationship}>
+              {isCreatingRelationship && <Loader2 className="animate-spin text-muted-foreground size-4" />}
               Pair to invoice
             </Button>
           </div>

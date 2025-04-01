@@ -37,7 +37,7 @@ export function ReconcileClient({
       />
 
       {(taskId && publicAccessToken) && (
-        <DisplayReconciliation taskId={taskId} publicAccessToken={publicAccessToken} />
+        <DisplayReconciliation taskId={taskId} publicAccessToken={publicAccessToken} invoiceId={invoiceId} />
       )}
     </div>
   );
