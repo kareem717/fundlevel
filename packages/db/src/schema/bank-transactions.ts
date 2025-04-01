@@ -13,7 +13,7 @@ import {
   jsonb,
 } from "drizzle-orm/pg-core";
 import { companies } from ".";
-import { bankAccounts } from "./bank-accounts";
+import { bankAccounts } from "./bank-account";
 
 export const plaidConfidenceLevel = pgEnum("plaid_confidence_level", [
   "VERY_HIGH",
