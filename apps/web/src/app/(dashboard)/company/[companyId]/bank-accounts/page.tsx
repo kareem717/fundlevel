@@ -23,7 +23,7 @@ export default async function BankAccountsPage({
             View your linked bank accounts and financial transactions
           </p>
         </div>
-        <Link href={redirects.app.company(parsedId).settings.connections} className={buttonVariants({ size: "sm" })} prefetch={true}>
+        <Link href={redirects.app.company(parsedId).connections.banking} className={buttonVariants({ size: "sm" })} prefetch={true}>
           <Plus className="mr-2 h-4 w-4" />
           Link Account
         </Link>

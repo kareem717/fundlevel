@@ -29,7 +29,7 @@ export type NavigationMenu = {
  */
 const dashboard: NavigationMenu[] = [
   {
-    name: "Linked Accounts",
+    name: "Companies",
     path: redirects.app.root,
     items: [
       {
@@ -86,13 +86,18 @@ const companyDashboard = (id: number): NavigationMenu[] => [
     ],
   },
   {
-    name: "Settings",
-    path: redirects.app.company(id).settings.root,
+    name: "Connections",
+    path: redirects.app.company(id).connections.root,
     items: [
       {
-        title: "Connections",
-        url: redirects.app.company(id).settings.connections,
+        title: "Banking",
+        url: redirects.app.company(id).connections.banking,
         icon: Plug,
+      },
+      {
+        title: "Accounting",
+        url: redirects.app.company(id).connections.accounting,
+        icon: Receipt,
       },
     ],
   },

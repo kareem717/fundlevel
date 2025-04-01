@@ -36,10 +36,10 @@ export const redirects = {
         reconcile: (invoiceId: number) =>
           companyPrefix(id, `invoices/${invoiceId}/reconcile`),
       },
-      settings: {
-        root: companyPrefix(id, "settings"),
-        general: companyPrefix(id, "settings/general"),
-        connections: companyPrefix(id, "settings/connections"),
+      connections: {
+        root: companyPrefix(id, "connections"),
+        accounting: companyPrefix(id, "connections/accounting"),
+        banking: companyPrefix(id, "connections/banking"),
       },
     }),
     root: appRoot,

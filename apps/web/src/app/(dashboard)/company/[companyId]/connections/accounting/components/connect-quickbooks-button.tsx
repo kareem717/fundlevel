@@ -41,7 +41,7 @@ export function ConnectQuickBooksButton({
           companyId,
           redirectUrl:
             env.NEXT_PUBLIC_WEB_URL +
-            redirects.app.company(companyId).settings.connections,
+            redirects.app.company(companyId).root,
         },
       });
       if (resp.status !== 200) {
@@ -80,7 +80,7 @@ export function ConnectQuickBooksButton({
         </span>
       ) : null}
       <div className="flex items-center justify-center">
-        <QuickBooksIcon className={cn("h-9 w-9", showText && "mr-2")} />
+        <QuickBooksIcon className={cn("size-9 border border-current rounded-full bg-current", showText && "mr-2")} />
         {showText && <span>Connect QuickBooks</span>}
       </div>
     </Button>

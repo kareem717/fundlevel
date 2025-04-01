@@ -109,14 +109,13 @@ export function QuickBooksIcon(props: ComponentPropsWithoutRef<"svg">) {
 export function XeroIcon(props: ComponentPropsWithoutRef<"svg">) {
   return (
     <svg
+      {...props}
       xmlns="http://www.w3.org/2000/svg"
       id="Layer_1"
       x="0px"
       y="0px"
       width="100%"
       viewBox="0 0 1183 1183"
-      enableBackground="new 0 0 1183 1183"
-      {...props}
     >
       <path
         fill="#000000"

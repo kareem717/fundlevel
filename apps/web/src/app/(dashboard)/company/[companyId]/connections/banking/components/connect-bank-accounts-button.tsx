@@ -10,6 +10,8 @@ import { useMutation } from "@tanstack/react-query";
 import { client } from "@fundlevel/sdk";
 import { useAuth } from "@fundlevel/web/components/providers/auth-provider";
 import { env } from "@fundlevel/web/env";
+import { redirects } from "@fundlevel/web/lib/config/redirects";
+import { useRouter } from "next/navigation";
 
 interface ConnectBankAccountButtonProps
   extends ComponentPropsWithoutRef<typeof Button> {
@@ -25,6 +27,7 @@ export function ConnectBankAccountButton({
   const [publicToken, setPublicToken] = useState<string>("");
   const { authToken } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   if (!authToken) {
     throw new Error("ConnectBankAccountButton: No bearer token found");
@@ -87,6 +90,7 @@ export function ConnectBankAccountButton({
       toast.success("Done!", {
         description: "Your financial accounts were linked successfully.",
       });
+      router.push(redirects.app.company(companyId).bankAccounts.index);
     },
     onError: () => {
       toast.error("Uh oh!", {
@@ -128,7 +132,7 @@ export function ConnectBankAccountButton({
       {...props}
     >
       {isLoading && <Loader2 className="mr-2 animate-spin" />}
-      Link Plaid
+      Link via Plaid
     </Button>
   );
 }

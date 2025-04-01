@@ -156,24 +156,16 @@ export default async function CompanyPage({
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-3xl font-bold">{company.name}</h1>
-            <Badge variant="outline" className="ml-2 h-6">
-              {"Business"}
-            </Badge>
-          </div>
-          <p className="text-muted-foreground mt-2">
-            Dashboard overview and financial summary
-          </p>
-        </div>
+      <div>
         <div className="flex items-center gap-2">
-          <Link href={redirects.app.company(parsedId).settings.connections} className={buttonVariants({ variant: "outline", size: "sm" })} prefetch={true}>
-            <Building className="h-4 w-4 mr-1" />
-            Connections
-          </Link>
+          <h1 className="text-3xl font-bold">{company.name}</h1>
+          <Badge variant="outline" className="ml-2 h-6">
+            {"Business"}
+          </Badge>
         </div>
+        <p className="text-muted-foreground mt-2">
+          Dashboard overview and financial summary
+        </p>
       </div>
 
       <Card className="w-full">
@@ -248,7 +240,7 @@ export default async function CompanyPage({
             </Table>
           </CardContent>
           <CardFooter>
-            <Link href={redirects.app.company(parsedId).settings.connections} className={cn(buttonVariants({ size: "sm" }), "w-full")} prefetch={true}>
+            <Link href={redirects.app.company(parsedId).connections.banking} className={cn(buttonVariants({ size: "sm" }), "w-full")} prefetch={true}>
               <Building className="h-4 w-4 mr-2" />
               Connect more accounts
             </Link>
