@@ -1,7 +1,7 @@
 import { OpenAPIHono } from "@hono/zod-openapi";
 import {
   getManyCompanyTransactionsRoute,
-  getManyBankAccountTransactionsRoute,
+  getManyBankTransactionsRoute,
   getBankAccountDetailsRoute,
   getCompanyBankAccountsRoute,
   getTransactionRoute,
@@ -26,12 +26,12 @@ const bankingHandler = new OpenAPIHono()
     const result = await getService(c).banking.getManyTransactions({
       ...c.req.valid("query"),
       companyIds: [companyId],
-      
+
     });
 
     return c.json(result, 200);
   })
-  .openapi(getManyBankAccountTransactionsRoute, async (c) => {
+  .openapi(getManyBankTransactionsRoute, async (c) => {
     const account = getAccount(c);
     if (!account) {
       return c.json(

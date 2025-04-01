@@ -21,7 +21,7 @@ import axios from "axios";
 import type { IDB } from "@fundlevel/api/internal/storage";
 import { CompanyRepository } from "@fundlevel/api/internal/storage/implementations";
 import type { ICompanyService } from "@fundlevel/api/internal/service/interfaces/company";
-import type { CreateBankAccountTransactionParams } from "@fundlevel/db/types";
+import type { CreateBankTransactionParams } from "@fundlevel/db/types";
 
 export type QuickBooksConfig = {
   clientId: string;
@@ -480,7 +480,7 @@ export class CompanyService implements ICompanyService {
     });
   }
 
-  async syncBankAccountTransactions(companyId: number): Promise<void> {
+  async syncBankTransactions(companyId: number): Promise<void> {
     const creds =
       await this.repo.company.getPlaidCredentials({ companyId });
     if (!creds) {
@@ -514,7 +514,7 @@ export class CompanyService implements ICompanyService {
       cursor = data.next_cursor;
     }
 
-    const convertedUpsert: CreateBankAccountTransactionParams[] = upsert.map((t) => {
+    const convertedUpsert: CreateBankTransactionParams[] = upsert.map((t) => {
       const {
         transaction_id,
         account_id,

@@ -1,7 +1,6 @@
 import type { OffsetPaginationResult } from "@fundlevel/api/internal/entities";
 import type { Invoice, InvoiceLine } from "@fundlevel/db/types";
-import type { GetManyInvoicesFilter } from "@fundlevel/api/internal/storage/interfaces";
-
+import type { GetManyInvoicesFilter } from "@fundlevel/api/internal/entities";
 
 export interface IInvoiceService {
   getMany(filter: GetManyInvoicesFilter): Promise<OffsetPaginationResult<Invoice>>;

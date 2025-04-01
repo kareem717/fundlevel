@@ -5,17 +5,9 @@ import type {
   CreateInvoiceLineParams,
 } from "@fundlevel/db/types";
 import type {
-  OffsetPaginationParams,
+  GetManyInvoicesFilter,
   OffsetPaginationResult,
 } from "@fundlevel/api/internal/entities";
-
-export type GetManyInvoicesFilter = {
-  minTotal?: number;
-  maxTotal?: number;
-  minDueDate?: string;
-  maxDueDate?: string;
-  companyIds: number[];
-} & OffsetPaginationParams;
 
 export interface IInvoiceRepository {
   upsert(

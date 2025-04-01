@@ -6,12 +6,11 @@ import type {
 } from "@fundlevel/db/types";
 import type {
   IInvoiceRepository,
-  GetManyInvoicesFilter,
 } from "../interfaces/invoice";
 import { invoices, invoiceLines } from "@fundlevel/db/schema";
 import { eq, inArray, sql, gte, lte, asc, desc, count, and } from "drizzle-orm";
 import type { IDB } from "@fundlevel/api/internal/storage";
-import type { OffsetPaginationResult } from "@fundlevel/api/internal/entities";
+import type { OffsetPaginationResult, GetManyInvoicesFilter } from "@fundlevel/api/internal/entities";
 
 export class InvoiceRepository implements IInvoiceRepository {
   constructor(private db: IDB) { }

@@ -3,14 +3,16 @@ import {
   AccountService,
   CompanyService,
   ReconciliationService,
-  BankingService,
+  BankAccountService,
+  BankTransactionService,
   InvoiceService,
 } from "./implementations";
 import type {
   IAccountService,
   ICompanyService,
   IReconciliationService,
-  IBankingService,
+  IBankAccountService,
+  IBankTransactionService,
   IInvoiceService,
 } from "./interfaces";
 import type { QuickBooksConfig, PlaidConfig } from "./implementations/company";
@@ -26,7 +28,8 @@ export class Service {
   readonly account: IAccountService;
   readonly company: ICompanyService;
   readonly reconciliation: IReconciliationService;
-  readonly banking: IBankingService;
+  readonly bankAccount: IBankAccountService;
+  readonly bankTransaction: IBankTransactionService;
   readonly invoice: IInvoiceService;
 
   constructor(config: ServiceConfig) {
@@ -46,7 +49,8 @@ export class Service {
     );
     this.account = account;
     this.company = company;
-    this.banking = new BankingService(config.storage.banking);
+    this.bankAccount = new BankAccountService(config.storage.banking);
+    this.bankTransaction = new BankTransactionService(config.storage.banking);
     this.invoice = new InvoiceService(config.storage.invoice);
   }
 }

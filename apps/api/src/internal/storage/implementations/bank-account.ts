@@ -1,0 +1,89 @@
+import type { IBankAccountRepository } from "../interfaces/bank-account";
+import type { DB } from "@fundlevel/db";
+import type { CreateBankAccountParams } from "@fundlevel/db/types";
+import { bankAccounts } from "@fundlevel/db/schema";
+import { inArray, asc, desc, count, eq, sql, and, getTableColumns } from "drizzle-orm";
+import type { GetManyBankAccountsFilter } from "@fundlevel/api/internal/entities";
+
+export class BankAccountRepository implements IBankAccountRepository {
+  constructor(private db: DB) { }
+
+  async getMany(filter: GetManyBankAccountsFilter) {
+    const { page, pageSize, order } = filter;
+
+    const whereCondition = and(
+      filter.companyIds ? inArray(bankAccounts.companyId, filter.companyIds) : undefined
+    );
+
+    const { remainingRemoteContent, ...ba } = getTableColumns(bankAccounts)
+    const qb = this.db.select(ba).from(bankAccounts)
+      .groupBy(bankAccounts.remoteId).where(whereCondition).limit(pageSize).offset(page * pageSize).orderBy(order === "asc" ? asc(bankAccounts.remoteId) : desc(bankAccounts.remoteId));
+
+    const countQb = this.db.select({
+      total: count(),
+    }).from(bankAccounts).where(whereCondition);
+
+    const [data, total] = await Promise.all([qb, countQb]);
+
+    if (!data || !total) {
+      throw new Error("Failed to get bank accounts");
+    }
+
+    return {
+      data,
+      totalPages: Math.ceil(total[0]!.total / pageSize),
+      totalRecords: total[0]!.total,
+      hasNextPage: total[0]!.total > page * pageSize + pageSize,
+      hasPreviousPage: page > 0,
+      currentPage: page + 1,
+    };
+  }
+
+  async get(bankAccountId: string) {
+    const [data] = await this.db.select().from(bankAccounts).where(eq(bankAccounts.remoteId, bankAccountId));
+    return data || null;
+  }
+
+  async upsertMany(
+    params: CreateBankAccountParams[],
+    companyId: number,
+  ) {
+    if (params.length === 0) {
+      return;
+    }
+
+    await this.db
+      .insert(bankAccounts)
+      .values(
+        params.map((bankAccount) => ({ ...bankAccount, companyId })),
+      )
+      .onConflictDoUpdate({
+        target: [bankAccounts.remoteId],
+        set: {
+          remoteId: sql.raw(`excluded.${bankAccounts.remoteId.name}`),
+          name: sql.raw(`excluded.${bankAccounts.name.name}`),
+          type: sql.raw(`excluded.${bankAccounts.type.name}`),
+          subtype: sql.raw(`excluded.${bankAccounts.subtype.name}`),
+          mask: sql.raw(`excluded.${bankAccounts.mask.name}`),
+          currentBalance: sql.raw(
+            `excluded.${bankAccounts.currentBalance.name}`,
+          ),
+          availableBalance: sql.raw(
+            `excluded.${bankAccounts.availableBalance.name}`,
+          ),
+          isoCurrencyCode: sql.raw(
+            `excluded.${bankAccounts.isoCurrencyCode.name}`,
+          ),
+          unofficialCurrencyCode: sql.raw(
+            `excluded.${bankAccounts.unofficialCurrencyCode.name}`,
+          ),
+          officialName: sql.raw(
+            `excluded.${bankAccounts.officialName.name}`,
+          ),
+          remainingRemoteContent: sql.raw(
+            `excluded.${bankAccounts.remainingRemoteContent.name}`,
+          )
+        },
+      })
+  }
+} 

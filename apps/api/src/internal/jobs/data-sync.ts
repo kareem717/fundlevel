@@ -50,7 +50,7 @@ export const syncCompanyBankTransactionsTask = schemaTask({
 
     try {
       logger.log(`Syncing bank account transactions for company ${payload.companyId}`);
-      await service.company.syncBankAccountTransactions(payload.companyId);
+      await service.company.syncBankTransactions(payload.companyId);
     } catch (error) {
       logger.error(`Error syncing bank account transactions for company ${payload.companyId}`, {
         error,

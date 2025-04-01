@@ -28,6 +28,6 @@ export interface ICompanyService {
   }>;
 
   syncBankAccounts(companyId: number): Promise<void>;
-  syncBankAccountTransactions(companyId: number): Promise<void>;
+  syncBankTransactions(companyId: number): Promise<void>;
   syncInvoices(companyId: number): Promise<void>;
 }
