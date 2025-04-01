@@ -1,7 +1,7 @@
 import type { IBankTransactionRepository } from "../interfaces/bank-transaction";
 import type { GetManyBankTransactionsFilter } from "@fundlevel/api/internal/entities";
-import type { CreateBankTransactionParams } from "@fundlevel/db/types";
-import { bankTransactions, bankAccounts } from "@fundlevel/db/schema";
+import type { CreateBankTransactionParams, CreateBankTransactionRelationshipParams } from "@fundlevel/db/types";
+import { bankTransactions, bankAccounts, bankTransactionRelationships, companies } from "@fundlevel/db/schema";
 import { inArray, gte, lte, asc, desc, count, eq, sql, and, getTableColumns } from "drizzle-orm";
 import type { IDB } from "../index";
 
@@ -129,4 +129,18 @@ export class BankTransactionRepository implements IBankTransactionRepository {
   async deleteMany(remoteIds: string[]) {
     await this.db.delete(bankTransactions).where(inArray(bankTransactions.remoteId, remoteIds));
   }
-} 
+
+  async createRelationship(params: CreateBankTransactionRelationshipParams, bankTransactionId: number) {
+    await this.db.insert(bankTransactionRelationships).values({ ...params, bankTransactionId });
+  }
+
+  async validateOwnership(bankTransactionId: number, accountId: number) {
+    const [data] = await this.db.select({
+      ownerId: companies.ownerId,
+    }).from(bankTransactions)
+      .innerJoin(companies, eq(bankTransactions.companyId, companies.id))
+      .where(eq(bankTransactions.id, bankTransactionId));
+
+    return data?.ownerId === accountId;
+  }
+}   

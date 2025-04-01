@@ -3,6 +3,7 @@ import {
   getCompanyTransactionsRoute,
   getBankAccountTransactionsRoute,
   getTransactionRoute,
+  createTransactionRelationshipRoute,
 } from "./routes";
 import { getAccount } from "../../middleware/with-auth";
 import { getService } from "../../middleware/with-service-layer";
@@ -70,6 +71,24 @@ const bankingHandler = new OpenAPIHono()
     }
 
     return c.json(result, 200);
+  })
+  .openapi(createTransactionRelationshipRoute, async (c) => {
+    const account = getAccount(c);
+    if (!account) {
+      return c.json({ error: "Account not found, please create an account." }, 404);
+    }
+
+    const { id } = c.req.valid("param");
+    const params = c.req.valid("json");
+
+    const isValid = await getService(c).bankTransaction.validateOwnership(id, account.id);
+    if (!isValid) {
+      return c.json({ error: "You are not authorized to access this transaction." }, 403);
+    }
+
+    await getService(c).bankTransaction.createRelationship(params, id);
+
+    return c.json({ message: "Relationship created." }, 200);
   });
 
 export default bankingHandler;

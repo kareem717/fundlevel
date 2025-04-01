@@ -1,4 +1,4 @@
-import type { BankTransaction } from "@fundlevel/db/types";
+import type { BankTransaction, CreateBankTransactionRelationshipParams } from "@fundlevel/db/types";
 import type { OffsetPaginationResult } from "@fundlevel/api/internal/entities";
 import type { GetManyBankTransactionsFilter } from "@fundlevel/api/internal/entities";
 
@@ -17,4 +17,14 @@ export interface IBankTransactionService {
   getMany(
     filter: GetManyBankTransactionsFilter,
   ): Promise<OffsetPaginationResult<Omit<BankTransaction, "remainingRemoteContent">>>;
+
+  /**
+   * Create a relationship between a bank transaction and an invoice
+   */
+  createRelationship(params: CreateBankTransactionRelationshipParams, bankTransactionId: number): Promise<void>;
+
+  /**
+   * Validate ownership of a bank transaction
+   */
+  validateOwnership(bankTransactionId: number, accountId: number): Promise<boolean>;
 } 

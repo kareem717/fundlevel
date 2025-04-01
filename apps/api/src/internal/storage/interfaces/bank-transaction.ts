@@ -1,4 +1,4 @@
-import type { BankTransaction, CreateBankTransactionParams } from "@fundlevel/db/types";
+import type { BankTransaction, CreateBankTransactionParams, CreateBankTransactionRelationshipParams } from "@fundlevel/db/types";
 import type {
   OffsetPaginationResult,
   GetManyBankTransactionsFilter
@@ -38,4 +38,20 @@ export interface IBankTransactionRepository {
   deleteMany(
     remoteIds: string[],
   ): Promise<void>;
+
+  /**
+   * Create a relationship between a bank transaction and an invoice
+   */
+  createRelationship(
+    params: CreateBankTransactionRelationshipParams,
+    bankTransactionId: number,
+  ): Promise<void>;
+
+  /**
+   * Validate ownership of a bank transaction
+   */
+  validateOwnership(
+    bankTransactionId: number,
+    accountId: number,
+  ): Promise<boolean>;
 } 

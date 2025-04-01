@@ -14,6 +14,9 @@ import {
   offsetPaginationResultSchema,
 } from "@fundlevel/api/internal/server/types/params";
 import { pathIdParamSchema } from "@fundlevel/api/internal/server/types/params";
+import {
+  CreateBankTransactionRelationshipParamsSchema
+} from "@fundlevel/db/validators";
 
 export const getCompanyTransactionsRoute = createRoute({
   summary: "Get company transactions",
@@ -108,6 +111,35 @@ export const getTransactionRoute = createRoute({
           schema: BankTransactionSchema.omit({ remainingRemoteContent: true }).openapi("BankTransaction"),
         },
       },
+    },
+    ...notFoundResponse,
+    ...unauthorizedResponse,
+    ...forbiddenResponse,
+  },
+});
+
+export const createTransactionRelationshipRoute = createRoute({
+  summary: "Create a relationship between a bank transaction and an invoice",
+  operationId: "createTransactionRelationship",
+  tags: ["Banking"],
+  security: [bearerAuthSchema],
+  method: "post",
+  path: "/:id/relationships",
+  request: {
+    params: z.object({
+      id: pathIdParamSchema,
+    }),
+    body: {
+      content: {
+        "application/json": {
+          schema: CreateBankTransactionRelationshipParamsSchema.openapi("CreateBankTransactionRelationshipParams"),
+        },
+      },
+    }
+  },
+  responses: {
+    200: {
+      description: "Successful create",
     },
     ...notFoundResponse,
     ...unauthorizedResponse,
