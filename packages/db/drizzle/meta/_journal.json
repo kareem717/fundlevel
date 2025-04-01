@@ -8,6 +8,13 @@
       "when": 1743479810001,
       "tag": "0000_gigantic_night_nurse",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1743509642783,
+      "tag": "0001_clammy_giant_girl",
+      "breakpoints": true
     }
   ]
 }
