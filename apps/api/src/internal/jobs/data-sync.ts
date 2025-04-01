@@ -136,3 +136,25 @@ export const syncCompanyInvoicesTask = schemaTask({
     };
   },
 });
+
+
+export const syncCompanyBillsTask = schemaTask({
+  id: "sync-company-bills",
+  schema: z.object({
+    companyId: z.number(),
+  }),
+  maxDuration: 300,
+  run: async (payload, { ctx }) => {
+    logger.log(`Syncing bills for company ${payload.companyId}`, {
+      payload,
+      ctx,
+    });
+
+    const service = getService();
+    await service.company.syncBills(payload.companyId);
+
+    return {
+      message: "Successfully synced bills",
+    };
+  },
+});
