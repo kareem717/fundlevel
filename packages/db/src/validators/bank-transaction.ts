@@ -43,4 +43,5 @@ export const CreateBankTransactionRelationshipParamsSchema =
   createInsertSchema(bankTransactionRelationships).omit({
     createdAt: true,
     updatedAt: true,
+    bankTransactionId: true,
   });

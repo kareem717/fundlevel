@@ -20,6 +20,7 @@ export type BankTransactionRelationship = InferSelectModel<
   typeof bankTransactionRelationships
 >;
 
-export type CreateBankTransactionRelationshipParams = OmitTimeStampFields<
-  InferInsertModel<typeof bankTransactionRelationships>
+export type CreateBankTransactionRelationshipParams = Omit<
+  OmitTimeStampFields<InferInsertModel<typeof bankTransactionRelationships>>,
+  "bankTransactionId"
 >;
