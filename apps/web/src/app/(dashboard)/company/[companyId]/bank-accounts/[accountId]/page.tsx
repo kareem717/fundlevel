@@ -8,15 +8,14 @@ import { Label } from "@fundlevel/ui/components/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@fundlevel/ui/components/card";
 import { format } from "date-fns";
 
-async function BankAccountDetails({ accountId }: { accountId: string }) {
+async function BankAccountDetails({ accountId }: { accountId: number }) {
   const token = await getTokenCached();
   if (!token) {
     throw new Error("No token found");
   }
 
-  const bankAccountId = Number.parseInt(accountId);
   const resp = await client(env.NEXT_PUBLIC_BACKEND_URL, token)["bank-account"][":id"].$get({
-    param: { id: bankAccountId },
+    param: { id: accountId },
   });
 
   const account = await resp.json();
@@ -88,6 +87,7 @@ export default async function BankAccountPage({
   params,
 }: { params: Promise<{ accountId: string }> }) {
   const { accountId } = await params;
+  const bankAccountId = Number.parseInt(accountId);
 
   return (
     <div className="space-y-4">
@@ -97,11 +97,11 @@ export default async function BankAccountPage({
           <Skeleton className="h-40 w-full md:w-1/3" />
         </div>
       }  >
-        <BankAccountDetails accountId={accountId} />
+        <BankAccountDetails accountId={bankAccountId} />
       </Suspense>
       <div className="space-y-4">
         <Label className="text-lg font-bold">Transactions</Label>
-        <TransactionsTable bankAccountId={accountId} />
+        <TransactionsTable bankAccountId={bankAccountId} />
       </div>
     </div>
   );

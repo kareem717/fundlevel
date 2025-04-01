@@ -27,7 +27,7 @@ export const redirects = {
       root: companyPrefix(id),
       bankAccounts: {
         index: companyPrefix(id, "bank-accounts"),
-        show: (accountId: string) =>
+        show: (accountId: number) =>
           companyPrefix(id, `bank-accounts/${accountId}`),
       },
       invoices: {

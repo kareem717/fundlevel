@@ -37,7 +37,7 @@ export function BankAccountCard({
             <Link
               href={redirects.app
                 .company(account.companyId)
-                .bankAccounts.show(account.remoteId)}
+                .bankAccounts.show(account.id)}
               prefetch={true}
               className={buttonVariants({
                 size: "sm",

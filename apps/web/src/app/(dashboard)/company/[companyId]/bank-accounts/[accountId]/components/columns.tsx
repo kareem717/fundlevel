@@ -12,7 +12,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { MoreHorizontal } from "lucide-react";
 
-export const columns: ColumnDef<BankTransaction>[] = [
+export const columns: ColumnDef<Omit<BankTransaction, "remainingRemoteContent">>[] = [
   {
     accessorKey: "name",
     header: "Name",

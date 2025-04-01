@@ -29,7 +29,7 @@ import type { ComponentPropsWithoutRef } from "react";
 import { cn } from "@fundlevel/ui/lib/utils";
 
 interface TransactionsTableProps extends ComponentPropsWithoutRef<"div"> {
-  bankAccountId: string;
+  bankAccountId: number;
 }
 
 export function TransactionsTable({

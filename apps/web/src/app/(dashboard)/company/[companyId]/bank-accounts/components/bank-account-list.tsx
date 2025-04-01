@@ -128,7 +128,7 @@ export function BankAccountList({
           ))
         ) : bankAccounts && "data" in bankAccounts ? (
           bankAccounts.data.map((account) => (
-            <BankAccountCard key={account.remoteId} account={account} />
+            <BankAccountCard key={account.id} account={account} />
           ))
         ) : (
           <p className="text-muted-foreground">No bank accounts found</p>
