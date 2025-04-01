@@ -5,6 +5,7 @@ import {
   BankAccountService,
   BankTransactionService,
   InvoiceService,
+  BillService,
 } from "./implementations";
 import type {
   IAccountService,
@@ -12,6 +13,7 @@ import type {
   IBankAccountService,
   IBankTransactionService,
   IInvoiceService,
+  IBillService,
 } from "./interfaces";
 import type { QuickBooksConfig, PlaidConfig } from "./implementations/company";
 
@@ -28,7 +30,7 @@ export class Service {
   readonly bankAccount: IBankAccountService;
   readonly bankTransaction: IBankTransactionService;
   readonly invoice: IInvoiceService;
-
+  readonly bill: IBillService;
   constructor(config: ServiceConfig) {
 
     const { storage, plaidConfig, qbConfig, openaiKey } = config;
@@ -47,6 +49,11 @@ export class Service {
     this.bankTransaction = new BankTransactionService(storage.bankTransaction);
     this.invoice = new InvoiceService(
       storage.invoice,
+      storage.bankTransaction,
+      openaiKey,
+    );
+    this.bill = new BillService(
+      storage.bill,
       storage.bankTransaction,
       openaiKey,
     );

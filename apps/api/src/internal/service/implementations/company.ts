@@ -15,6 +15,7 @@ import type {
   CreateInvoiceLineParams,
   CompanyQuickBooksOauthCredential,
   CompanyPlaidCredentials,
+  CreateBillLineParams,
 } from "@fundlevel/db/types";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
@@ -411,6 +412,111 @@ export class CompanyService implements ICompanyService {
       await repo.company.updateSyncStatus(
         {
           invoicesLastSyncedAt: new Date().toISOString(),
+        },
+        companyId,
+      );
+    });
+  }
+
+  async syncBills(companyId: number) {
+    const response = await this.queryQuickbooks(
+      companyId,
+      "SELECT * FROM Bill",
+    );
+
+    const bills = response.Bill || [];
+    if (!bills.length) {
+      return;
+    }
+
+    // Store in database
+    await this.repo.runInTransaction(async (db: IDB) => {
+      const repo = new Storage(db);
+
+      bills.map(async (unparsedBill: any) => {
+        const {
+          Id,
+          SyncToken,
+          TotalAmt,
+          Balance,
+          DueDate,
+          CurrencyRef: { value: currencyCode, ...currencyRef } = {},
+          VendorRef: { name: vendorName, ...vendorRef } = {},
+          TxnDate: transactionDate,
+          ...bill
+        } = unparsedBill;
+
+        const [newBill] = await repo.bill.upsert(
+          [
+            {
+              remoteId: Id,
+              syncToken: SyncToken,
+              totalAmount: TotalAmt,
+              remainingBalance: Balance,
+              dueDate: DueDate,
+              currency: currencyCode,
+              vendorName: vendorName,
+              transactionDate: transactionDate,
+              remainingRemoteContent: JSON.stringify({
+                ...bill,
+                CurrencyRef: currencyRef,
+                VendorRef: vendorRef,
+              }),
+              
+              dataProvider: "quickbooks",
+            },
+          ],
+          companyId,
+        );
+
+        if (!newBill) {
+          console.error("No bill found for bill", unparsedBill);
+          throw new Error("No bill found for bill");
+        }
+
+        const lineParams: CreateBillLineParams[] = bill.Line.map(
+          (line: any) => {
+            let lineType: any;
+
+            switch (line.DetailType) {
+              case "SalesItemLineDetail":
+                lineType = "sales_item";
+                break;
+              case "GroupLineDetail":
+                lineType = "group";
+                break;
+              case "DescriptionOnly":
+                lineType = "description_only";
+                break;
+              case "DiscountLineDetail":
+                lineType = "discount";
+                break;
+              case "SubTotalLineDetail":
+                lineType = "sub_total";
+                break;
+              default:
+                throw new Error(`Unknown line type: ${line.DetailType}`);
+            }
+
+            return {
+              amount: line.Amount,
+              description: line.Description,
+              remainingRemoteContent: JSON.stringify(line),
+            };
+          },
+        );
+
+        try {
+          await repo.bill.upsertLine(lineParams);
+        } catch (error) {
+          console.error(error);
+          throw new Error(`Error upserting line: ${error}`);
+        }
+      });
+
+      await repo.company.updateSyncStatus(
+        {
+          billsLastSyncedAt: new Date().toISOString(),
         },
         companyId,
       );

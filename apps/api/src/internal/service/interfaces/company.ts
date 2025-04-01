@@ -30,4 +30,5 @@ export interface ICompanyService {
   syncBankAccounts(companyId: number): Promise<void>;
   syncBankTransactions(companyId: number): Promise<void>;
   syncInvoices(companyId: number): Promise<void>;
+  syncBills(companyId: number): Promise<void>;
 }
