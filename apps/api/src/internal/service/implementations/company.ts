@@ -572,18 +572,34 @@ export class CompanyService implements ICompanyService {
 
     await this.repo.runInTransaction(async (db: IDB) => {
       const repo = new Storage(db);
+
       if (convertedUpsert.length > 0) {
-        await repo.bankTransaction.upsertMany(convertedUpsert, companyId);
+        try {
+          await repo.bankTransaction.upsertMany(convertedUpsert, companyId);
+        } catch (error) {
+          console.error(error);
+          throw new Error(`Error upserting bank transactions: ${error}`);
+        }
       }
 
       if (remove.length > 0) {
-        await repo.bankTransaction.deleteMany(
-          remove.map((r) => r.transaction_id),
-        );
+        try {
+          await repo.bankTransaction.deleteMany(
+            remove.map((r) => r.transaction_id),
+          );
+        } catch (error) {
+          console.error(error);
+          throw new Error(`Error deleting bank transactions: ${error}`);
+        }
       }
 
       if (cursor) {
-        await repo.company.updatePlaidTransactionCursor(companyId, cursor);
+        try {
+          await repo.company.updatePlaidTransactionCursor(companyId, cursor);
+        } catch (error) {
+          console.error(error);
+          throw new Error(`Error updating plaid transaction cursor: ${error}`);
+        }
       }
     });
   }

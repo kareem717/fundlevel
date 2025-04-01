@@ -33,13 +33,13 @@ export class BankTransactionRepository implements IBankTransactionRepository {
       .select(bat)
       .from(bankTransactions)
       .where(whereCondition)
-      .groupBy(bankTransactions.remoteId)
+      .groupBy(bankTransactions.id)
       .limit(pageSize)
       .offset(page * pageSize)
       .orderBy(
         order === "asc"
-          ? asc(bankTransactions.remoteId)
-          : desc(bankTransactions.remoteId),
+          ? asc(bankTransactions.id)
+          : desc(bankTransactions.id),
       ).$dynamic();
 
     if (filter.bankAccountIds) {
@@ -115,7 +115,7 @@ export class BankTransactionRepository implements IBankTransactionRepository {
       .onConflictDoUpdate({
         target: [bankTransactions.remoteId],
         set: {
-          remoteId: sql.raw(`excluded.${bankTransactions.remoteId.name}`),
+          // remoteId: sql.raw(`excluded.${bankTransactions.remoteId.name}`),
           amount: sql.raw(`excluded.${bankTransactions.amount.name}`),
           authorizedAt: sql.raw(`excluded.${bankTransactions.authorizedAt.name}`),
           isoCurrencyCode: sql.raw(`excluded.${bankTransactions.isoCurrencyCode.name}`),

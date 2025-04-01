@@ -36,10 +36,10 @@ const invoiceHandler = new OpenAPIHono()
         taskId: id,
         publicAccessToken,
       }, 200);
-    } catch {
+    } catch (error) {
+      console.error(error);
       throw new Error("Something went wrong")
     }
-
   })
   .openapi(getManyRoute, async (c) => {
     const account = getAccount(c);

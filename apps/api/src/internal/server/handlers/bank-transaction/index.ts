@@ -9,7 +9,7 @@ import {
 import { getAccount } from "../../middleware/with-auth";
 import { getService } from "../../middleware/with-service-layer";
 
-const bankingHandler = new OpenAPIHono()
+const bankTransactionHandler = new OpenAPIHono()
   .openapi(getCompanyTransactionsRoute, async (c) => {
     const account = getAccount(c);
     if (!account) {
@@ -107,4 +107,4 @@ const bankingHandler = new OpenAPIHono()
     return c.json(result, 200);
   });
 
-export default bankingHandler;
+export default bankTransactionHandler;
