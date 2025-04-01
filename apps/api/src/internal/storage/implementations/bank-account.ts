@@ -17,7 +17,7 @@ export class BankAccountRepository implements IBankAccountRepository {
 
     const { remainingRemoteContent, ...ba } = getTableColumns(bankAccounts)
     const qb = this.db.select(ba).from(bankAccounts)
-      .groupBy(bankAccounts.remoteId).where(whereCondition).limit(pageSize).offset(page * pageSize).orderBy(order === "asc" ? asc(bankAccounts.remoteId) : desc(bankAccounts.remoteId));
+      .groupBy(bankAccounts.id).where(whereCondition).limit(pageSize).offset(page * pageSize).orderBy(order === "asc" ? asc(bankAccounts.id) : desc(bankAccounts.id));
 
     const countQb = this.db.select({
       total: count(),
