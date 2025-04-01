@@ -47,7 +47,7 @@ export const plaidTransactionPaymentChannel = pgEnum(
 
 export const bankTransactionRelationshipEntityType = pgEnum(
   "bank_account_transaction_relationship_entity_type",
-  ["invoice"],
+  ["invoice", "bill"],
 );
 
 export const bankTransactions = pgTable(
