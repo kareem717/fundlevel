@@ -30,4 +30,9 @@ export interface IBankAccountRepository {
     params: CreateBankAccountParams[],
     companyId: number,
   ): Promise<void>;
+
+  /**
+   * Get the balance of a company
+   */
+  getCompanyBalance(companyId: number): Promise<number>;
 } 

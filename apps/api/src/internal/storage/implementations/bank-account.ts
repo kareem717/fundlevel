@@ -1,10 +1,10 @@
 import type { IBankAccountRepository } from "../interfaces/bank-account";
 import type { CreateBankAccountParams } from "@fundlevel/db/types";
 import { bankAccounts } from "@fundlevel/db/schema";
-import { inArray, asc, desc, count, eq, sql, and, getTableColumns } from "drizzle-orm";
+import { inArray, asc, desc, count, eq, sql, and, getTableColumns, sum } from "drizzle-orm";
 import type { GetManyBankAccountsFilter } from "@fundlevel/api/internal/entities";
 import type { IDB } from "../index";
-
+import { bankTransactions } from "@fundlevel/db/schema";
 export class BankAccountRepository implements IBankAccountRepository {
   constructor(private db: IDB) { }
 
@@ -90,5 +90,14 @@ export class BankAccountRepository implements IBankAccountRepository {
           )
         },
       })
+  }
+
+  async getCompanyBalance(companyId: number) {
+    const [data] = await this.db.select({
+      balance: sum(bankTransactions.amount),
+    }).from(bankTransactions).where(eq(bankTransactions.companyId, companyId));
+
+
+    return Number.parseFloat(data?.balance || "0");
   }
 } 
