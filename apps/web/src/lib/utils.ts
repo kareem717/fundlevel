@@ -13,3 +13,12 @@ export function stringToGradient(str: string) {
   // Return a linear gradient
   return `linear-gradient(135deg, ${color1}, ${color2}, ${color3})`;
 }
+
+export function formatCurrency(amount: number, currency = "USD", locale = "en-US") {
+  return new Intl.NumberFormat(locale, {
+    style: "currency",
+    currency: currency,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(amount);
+};

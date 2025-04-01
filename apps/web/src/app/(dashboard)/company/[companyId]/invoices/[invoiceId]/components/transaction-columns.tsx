@@ -2,15 +2,7 @@
 
 import type { ColumnDef } from "@tanstack/react-table";
 import type { BankTransaction } from "@fundlevel/db/types";
-
-// Helper function to format currency
-const formatCurrency = (amount: number, currency = "USD") => {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency,
-  }).format(amount);
-};
-
+import { formatCurrency } from "@fundlevel/web/lib/utils";
 
 export const transactionColumns: ColumnDef<Omit<BankTransaction, "remainingRemoteContent">>[] = [
   {

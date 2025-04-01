@@ -8,6 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@fundlevel/ui/components/dropdown-menu";
+import { formatCurrency } from "@fundlevel/web/lib/utils";
 import type { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { MoreHorizontal } from "lucide-react";
@@ -22,13 +23,7 @@ export const columns: ColumnDef<Omit<BankTransaction, "remainingRemoteContent">>
     accessorKey: "totalAmount",
     header: "Amount",
     cell: ({ row: { original: tx } }) => {
-      const amount = tx.amount;
-      const currency = tx.isoCurrencyCode || "USD";
-      return new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency,
-        // "Positive values when money moves out of the account; negative values when money moves in."
-      }).format(-amount);
+      return formatCurrency(tx.amount )
     },
   },
   {

@@ -12,6 +12,7 @@ import { cn } from "@fundlevel/ui/lib/utils";
 import { buttonVariants } from "@fundlevel/ui/components/button";
 import Link from "next/link";
 import { redirects } from "@fundlevel/web/lib/config/redirects";
+import { formatCurrency } from "@fundlevel/web/lib/utils";
 
 interface BankAccountCardProps extends ComponentPropsWithoutRef<typeof Card> {
   account: Omit<BankAccount, "remainingRemoteContent">;
@@ -52,10 +53,7 @@ export function BankAccountCard({
         <div>
           <div className="text-sm text-muted-foreground">Current Balance</div>
           <div className="text-2xl font-bold">
-            {Intl.NumberFormat("en-US", {
-              style: "currency",
-              currency: account.isoCurrencyCode || "USD",
-            }).format(account.currentBalance || 0)}
+            {formatCurrency(account.currentBalance || 0, account.isoCurrencyCode ?? undefined)}
           </div>
           <div className="text-xs text-muted-foreground mt-1">
             Last updated:{" "}

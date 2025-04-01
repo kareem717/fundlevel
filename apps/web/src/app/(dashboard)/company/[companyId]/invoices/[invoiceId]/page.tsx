@@ -37,14 +37,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@fundlevel/ui/components/tabs";
 import { LineItemsTable } from "./components/line-items-table";
 import { TransactionsTable } from "./components/transactions-table";
-
-// Helper function to format currency
-const formatCurrency = (amount: number, currency = "USD") => {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency,
-  }).format(amount);
-};
+import { formatCurrency } from "@fundlevel/web/lib/utils";
 
 export default async function AccountingInvoicePage({
   params,

@@ -12,6 +12,8 @@ import {
 import type { Invoice } from "@fundlevel/db/types";
 import Link from "next/link";
 import { redirects } from "@fundlevel/web/lib/config/redirects";
+import { formatCurrency } from "@fundlevel/web/lib/utils";
+
 export const columns: ColumnDef<Invoice>[] = [
   {
     accessorKey: "remoteId",
@@ -20,26 +22,12 @@ export const columns: ColumnDef<Invoice>[] = [
   {
     accessorKey: "totalAmount",
     header: "Amount",
-    cell: ({ row }) => {
-      const amount = row.getValue("totalAmount") as number;
-      const currency = row.original.currency || "USD";
-      return new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency,
-      }).format(amount);
-    },
+    cell: ({ row }) => formatCurrency(row.original.totalAmount, row.original.currency || undefined)
   },
   {
     accessorKey: "balanceRemaining",
     header: "Balance",
-    cell: ({ row }) => {
-      const balance = (row.getValue("balanceRemaining") as number) || 0;
-      const currency = row.original.currency || "USD";
-      return new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency,
-      }).format(balance);
-    },
+    cell: ({ row }) => formatCurrency(row.original.balanceRemaining || 0, row.original.currency || undefined)
   },
   {
     accessorKey: "dueDate",

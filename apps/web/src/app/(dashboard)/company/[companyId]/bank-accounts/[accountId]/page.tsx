@@ -7,6 +7,7 @@ import { getTokenCached } from "@fundlevel/web/actions/auth";
 import { Label } from "@fundlevel/ui/components/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@fundlevel/ui/components/card";
 import { format } from "date-fns";
+import { formatCurrency } from "@fundlevel/web/lib/utils";
 
 async function BankAccountDetails({ accountId }: { accountId: number }) {
   const token = await getTokenCached();
@@ -35,13 +36,13 @@ async function BankAccountDetails({ accountId }: { accountId: number }) {
             <div className="space-y-1">
               <p className="text-sm text-muted-foreground">Available Balance</p>
               <p className="text-2xl font-bold">
-                {Intl.NumberFormat("en-US", { style: "currency", currency: account.isoCurrencyCode || "USD" }).format(account.availableBalance || 0)}
+                {formatCurrency(account.availableBalance || 0)}
               </p>
             </div>
             <div className="space-y-1">
               <p className="text-sm text-muted-foreground">Current Balance</p>
               <p className="text-2xl font-bold">
-                {Intl.NumberFormat("en-US", { style: "currency", currency: account.isoCurrencyCode || "USD" }).format(account.currentBalance || 0)}
+                {formatCurrency(account.currentBalance || 0)}
               </p>
             </div>
           </div>

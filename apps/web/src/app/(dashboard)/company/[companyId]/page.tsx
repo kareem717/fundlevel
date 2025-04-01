@@ -4,12 +4,12 @@ import { getTokenCached } from "@fundlevel/web/actions/auth";
 import { client } from "@fundlevel/sdk";
 import { env } from "@fundlevel/web/env";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@fundlevel/ui/components/card";
-import { Separator } from "@fundlevel/ui/components/separator";
 import { Button } from "@fundlevel/ui/components/button";
 import { ArrowUpRight, Building, ChevronRight, CreditCard, DollarSign, FileText, MoreHorizontal, PiggyBank, Wallet } from "lucide-react";
 import Link from "next/link";
 import { format } from "date-fns";
 import { Badge } from "@fundlevel/ui/components/badge";
+import { formatCurrency } from "@fundlevel/web/lib/utils";
 
 export default async function CompanyPage({
   params,
@@ -31,16 +31,6 @@ export default async function CompanyPage({
   }
 
   const company = await resp.json();
-
-  // Format currency helper function
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount);
-  };
 
   // Mock data for demo - would be replaced with real API data
   const accountsData = {
