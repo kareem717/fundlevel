@@ -10,27 +10,22 @@ import { Skeleton } from "@fundlevel/ui/components/skeleton";
 import { Calendar, CreditCard, DollarSign, Info } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@fundlevel/ui/components/card";
 import { Badge } from "@fundlevel/ui/components/badge";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@fundlevel/ui/components/accordion";
+import { Button } from "@fundlevel/ui/components/button";
 
-interface TransactionCardProps
+interface SuggestedTransactionCardProps
   extends ComponentPropsWithoutRef<"div"> {
   transactionId: string;
   confidence: "low" | "medium" | "high";
   matchReason: string;
 }
 
-export function TransactionCard({
+export function SuggestedTransactionCard({
   transactionId,
   confidence,
   matchReason,
   className,
   ...props
-}: TransactionCardProps) {
+}: SuggestedTransactionCardProps) {
   const { data, isPending, error } = useQuery({
     queryKey: ["transaction", transactionId],
     queryFn: async () => {
@@ -68,7 +63,7 @@ export function TransactionCard({
     low: "bg-amber-100 text-amber-800 hover:bg-amber-200",
     medium: "bg-blue-100 text-blue-800 hover:bg-blue-200",
     high: "bg-green-100 text-green-800 hover:bg-green-200"
-  }[confidence];
+  }[confidence ?? "low"];
 
   return (
     <Card className={cn("mb-4 overflow-hidden", className)} {...props}>
@@ -78,12 +73,19 @@ export function TransactionCard({
             <CardTitle className="text-lg font-medium">{data.name}</CardTitle>
             <CardDescription className="text-sm text-muted-foreground">{data.date}</CardDescription>
           </div>
-          <Badge className={confidenceColor}>
-            {confidence.charAt(0).toUpperCase() + confidence.slice(1)} Confidence
-          </Badge>
+          <div className="flex items-center gap-2">
+            {confidence && (
+              <Badge className={confidenceColor}>
+                {confidence.charAt(0).toUpperCase() + confidence.slice(1)} Confidence
+              </Badge>
+            )}
+            <Button size="sm">
+              Pair to invoice
+            </Button>
+          </div>
         </div>
       </CardHeader>
-      <CardContent className="pb-3">
+      <CardContent>
         <div className="flex items-center gap-4 mb-3">
           <div className="flex items-center gap-2">
             <DollarSign className="h-4 w-4 text-muted-foreground" />
@@ -103,27 +105,11 @@ export function TransactionCard({
             <span className="text-sm text-muted-foreground">{data.date}</span>
           </div>
         </div>
-
-        <div className="bg-muted p-3 rounded-md mb-3">
-          <div className="flex gap-2 items-start">
-            <Info className="h-4 w-4 text-muted-foreground mt-0.5" />
-            <p className="text-sm">{matchReason}</p>
-          </div>
+        <div className="bg-muted p-3 rounded-md mb-3 flex gap-2 items-start">
+          <Info className="h-4 w-4 text-muted-foreground mt-0.5" />
+          <p className="text-sm">{matchReason}</p>
         </div>
-
-        <Accordion type="single" collapsible>
-          <AccordionItem value="details" className="border-0">
-            <AccordionTrigger className="py-0 text-sm">Transaction Details</AccordionTrigger>
-            <AccordionContent>
-              <div className="text-xs mt-2 p-3 bg-muted rounded-md overflow-x-auto">
-                <pre className="whitespace-pre-wrap break-words">
-                  {JSON.stringify(data, null, 2)}
-                </pre>
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
       </CardContent>
-    </Card>
+    </Card >
   );
 } 

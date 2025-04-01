@@ -28,21 +28,21 @@ export interface IBankingRepository {
 
   getManyBankAccounts(
     filter: GetManyBankAccountsFilter,
-  ): Promise<OffsetPaginationResult<BankAccount>>;
-  getBankAccount(bankAccountId: string): Promise<BankAccount | undefined>;
+  ): Promise<OffsetPaginationResult<Omit<BankAccount, "remainingRemoteContent">>>;
+  getBankAccount(bankAccountId: string): Promise<Omit<BankAccount, "remainingRemoteContent"> | undefined>;
   upsertBankAccounts(
     params: CreateBankAccountParams[],
     companyId: number,
-  ): Promise<BankAccount[]>;
+  ): Promise<void>;
 
   getManyTransactions(
     filter: GetManyTransactionsFilter,
-  ): Promise<OffsetPaginationResult<BankAccountTransaction>>;
+  ): Promise<OffsetPaginationResult<Omit<BankAccountTransaction, "remainingRemoteContent">>>;
   upsertTransactions(
     params: CreateBankAccountTransactionParams[],
     companyId: number,
   ): Promise<void>;
-  getTransaction(remoteId: string): Promise<BankAccountTransaction | undefined>
+  getTransaction(remoteId: string): Promise<Omit<BankAccountTransaction, "remainingRemoteContent"> | undefined>
   deleteTransactions(
     remoteIds: string[],
   ): Promise<void>;

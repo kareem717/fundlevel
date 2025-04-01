@@ -72,19 +72,19 @@ export class ReconciliationService implements IReconciliationService {
     const { remainingRemoteContent, ...invoice } = invoiceRecord;
 
     const PAGE_SIZE = 5;
-    let pageNumber = 1;
+    let pageIdx = 0;
     const initialTransactions = await this.bankRepo.getManyTransactions({
       ...filterParams.object,
       companyIds: [invoiceRecord.companyId],
       pageSize: PAGE_SIZE,
       order: "asc",
-      page: pageNumber,
+      page: pageIdx,
       bankAccountIds: undefined,
     });
 
-    const transactionJobs = [];
-    while (pageNumber <= initialTransactions.totalPages) {
-      pageNumber++;
+    const transactionJobs = initialTransactions.data;
+    while (pageIdx < initialTransactions.totalPages) {
+      pageIdx++;
 
       // Get transactions using the AI-suggested filters
       const transactionResult = await this.bankRepo.getManyTransactions({
@@ -92,12 +92,14 @@ export class ReconciliationService implements IReconciliationService {
         companyIds: [invoiceRecord.companyId],
         pageSize: PAGE_SIZE,
         order: "asc",
-        page: pageNumber,
+        page: pageIdx,
         bankAccountIds: undefined,
       });
 
-      transactionJobs.push(transactionResult.data);
+      transactionJobs.push(...transactionResult.data);
     }
+
+    console.log("transactionJobs", transactionJobs);
 
     const result = await Promise.all(
       transactionJobs.map(async (transactionJob) => {
@@ -146,6 +148,9 @@ export class ReconciliationService implements IReconciliationService {
 
     const suggestedTransactions = result.flatMap((r) => r.object.transactions);
 
-    return suggestedTransactions;
+    return {
+      suggestedTransactions,
+      evaluatedTransactions: transactionJobs.flatMap((tx) => tx.remoteId)
+    };
   }
 }

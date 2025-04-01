@@ -2,16 +2,15 @@ import type { IBankingRepository } from "../interfaces";
 import type { DB } from "@fundlevel/db";
 import type { GetManyTransactionsFilter, GetManyBankAccountsFilter } from "../interfaces/banking";
 import type { BankAccountTransaction, CreateBankAccountParams, CreateBankAccountTransactionParams } from "@fundlevel/db/types";
-import type { OffsetPaginationResult } from "@fundlevel/api/internal/entities";
 import { bankAccountTransactions, bankAccounts } from "@fundlevel/db/schema";
-import { inArray, gte, lte, asc, desc, count, eq, sql, and } from "drizzle-orm";
+import { inArray, gte, lte, asc, desc, count, eq, sql, and, getTableColumns } from "drizzle-orm";
 
 export class BankingRepository implements IBankingRepository {
   constructor(private db: DB) { }
 
   async getManyTransactions(
     filter: GetManyTransactionsFilter,
-  ): Promise<OffsetPaginationResult<BankAccountTransaction>> {
+  ) {
     const whereCondition = and(
       filter.minDate ? gte(bankAccountTransactions.date, filter.minDate) : undefined,
       filter.maxDate ? lte(bankAccountTransactions.date, filter.maxDate) : undefined,
@@ -29,8 +28,9 @@ export class BankingRepository implements IBankingRepository {
       .where(whereCondition);
 
     const { page, pageSize, order } = filter;
+    const { remainingRemoteContent, ...bat } = getTableColumns(bankAccountTransactions);
     const qb = this.db
-      .select()
+      .select(bat)
       .from(bankAccountTransactions)
       .where(whereCondition)
       .groupBy(bankAccountTransactions.remoteId)
@@ -82,7 +82,8 @@ export class BankingRepository implements IBankingRepository {
       filter.companyIds ? inArray(bankAccounts.companyId, filter.companyIds) : undefined
     );
 
-    const qb = this.db.select().from(bankAccounts)
+    const { remainingRemoteContent, ...ba } = getTableColumns(bankAccounts)
+    const qb = this.db.select(ba).from(bankAccounts)
       .groupBy(bankAccounts.remoteId).where(whereCondition).limit(pageSize).offset(page * pageSize).orderBy(order === "asc" ? asc(bankAccounts.remoteId) : desc(bankAccounts.remoteId));
 
     const countQb = this.db.select({
@@ -110,10 +111,10 @@ export class BankingRepository implements IBankingRepository {
     companyId: number,
   ) {
     if (params.length === 0) {
-      return [];
+      return;
     }
 
-    const data = await this.db
+    await this.db
       .insert(bankAccounts)
       .values(
         params.map((bankAccount) => ({ ...bankAccount, companyId })),
@@ -146,13 +147,6 @@ export class BankingRepository implements IBankingRepository {
           )
         },
       })
-      .returning();
-
-    if (!data.length) {
-      throw new Error("Failed to create bank accounts");
-    }
-
-    return data;
   }
 
   async upsertTransactions(
@@ -196,9 +190,10 @@ export class BankingRepository implements IBankingRepository {
     await this.db.delete(bankAccountTransactions).where(inArray(bankAccountTransactions.remoteId, remoteIds));
   }
 
-  async getTransaction(remoteId: string): Promise<BankAccountTransaction | undefined> {
-    const [tx] = await this.db.select().from(bankAccountTransactions).where(eq(bankAccountTransactions.remoteId, remoteId));
-    return tx
+  async getTransaction(remoteId: string) {
+    const { remainingRemoteContent, ...tx } = getTableColumns(bankAccountTransactions)
+    const [data] = await this.db.select(tx).from(bankAccountTransactions).where(eq(bankAccountTransactions.remoteId, remoteId));
+    return data;
   }
 
 }
