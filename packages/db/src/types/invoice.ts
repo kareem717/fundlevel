@@ -9,7 +9,7 @@ import type { OmitEntityFields } from "./utils";
 // QuickBooks Invoice types
 export type Invoice = InferSelectModel<typeof invoices>;
 export type CreateInvoiceParams = Omit<
-  OmitEntityFields<InferInsertModel<typeof invoices>>,
+  OmitEntityFields<Invoice>,
   "companyId"
 >;
 export type UpdateInvoiceParams =
@@ -17,9 +17,7 @@ export type UpdateInvoiceParams =
 
 // Invoice Line types
 export type InvoiceLine = InferSelectModel<typeof invoiceLines>;
-export type CreateInvoiceLineParams = OmitEntityFields<
-  InferInsertModel<typeof invoiceLines>
->;
+export type CreateInvoiceLineParams = OmitEntityFields<InvoiceLine>;
 export type UpdateInvoiceLineParams = Partial<
   Omit<CreateInvoiceLineParams, "id" | "invoiceId">
 >;

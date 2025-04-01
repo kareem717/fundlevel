@@ -15,6 +15,13 @@
       "when": 1743509642783,
       "tag": "0001_clammy_giant_girl",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1743534588195,
+      "tag": "0002_round_leo",
+      "breakpoints": true
     }
   ]
 }
