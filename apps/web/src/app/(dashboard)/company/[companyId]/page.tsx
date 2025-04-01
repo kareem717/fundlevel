@@ -3,16 +3,24 @@ import { redirects } from "@fundlevel/web/lib/config/redirects";
 import { getTokenCached } from "@fundlevel/web/actions/auth";
 import { client } from "@fundlevel/sdk";
 import { env } from "@fundlevel/web/env";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@fundlevel/ui/components/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@fundlevel/ui/components/card";
 import { Button } from "@fundlevel/ui/components/button";
-import { Building, ChevronRight, CreditCard, DollarSign, FileText, MoreHorizontal, PiggyBank, Wallet } from "lucide-react";
+import { Building, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
-import { format } from "date-fns";
 import { Badge } from "@fundlevel/ui/components/badge";
 import { formatCurrency } from "@fundlevel/web/lib/utils";
 import { Suspense } from "react";
 import { Skeleton } from "@fundlevel/ui/components/skeleton";
 import { generate } from "shortid";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@fundlevel/ui/components/table"
 
 async function BankBalance({ companyId }: { companyId: number }) {
   const token = await getTokenCached();
@@ -29,11 +37,25 @@ async function BankBalance({ companyId }: { companyId: number }) {
   const data = await resp.json();
 
   return (
-    <div className="flex flex-col gap-2">
-      <div className="text-sm text-muted-foreground">Available Balance</div>
-      <div className="text-3xl font-bold">{formatCurrency(data.availableBalance)}</div>
-      <div className="text-sm text-muted-foreground">Current Balance</div>
-      <div className="text-3xl font-bold">{formatCurrency(data.currentBalance)}</div>
+    <div className="grid grid-cols-3 [&>*]:flex [&>*]:flex-col">
+      <div>
+        <span className="text-sm text-muted-foreground">
+          Available Balance
+        </span>
+        <div className="text-3xl font-bold">{formatCurrency(data.availableBalance)}</div>
+      </div>
+      <div>
+        <span className="text-sm text-muted-foreground">
+          Current Balance
+        </span>
+        <div className="text-3xl font-bold">{formatCurrency(data.currentBalance)}</div>
+      </div>
+      <div>
+        <span className="text-sm text-muted-foreground">
+          Ratio
+        </span>
+        <div className="text-3xl font-bold">{Math.round(data.availableBalance / data.currentBalance * 100)}%</div>
+      </div>
     </div>
   )
 }
@@ -61,24 +83,52 @@ async function RecentTransactions({ companyId }: { companyId: number }) {
   const { data } = await resp.json();
 
   return (
-    <div className="divide-y">
-      {data.map(activity => (
-        <div key={activity.id} className="px-4 py-3 flex items-start justify-between hover:bg-muted/50 transition-colors">
-          <div className="flex items-start gap-3">
-            <p className="text-sm font-medium">{activity.name}</p>
-            <p className="text-xs text-muted-foreground">{format(activity.date, 'MMM d, yyyy')}</p>
-          </div>
-          <div className="text-right">
-            <p className={`text-sm font-medium ${activity.amount < 0 ? 'text-red-500' : 'text-green-500'}`}>
-              {activity.amount < 0 ? '-' : '+'}{formatCurrency(Math.abs(activity.amount))}
-            </p>
-            <Badge variant="outline" className="text-xs mt-1">
-              {activity.code}
-            </Badge>
-          </div>
-        </div>
+    <>
+      {data.map((transaction) => (
+        <TableRow key={transaction.id}>
+          <TableCell className="font-medium">{transaction.date}</TableCell>
+          <TableCell>{transaction.code}</TableCell>
+          <TableCell>{transaction.name}</TableCell>
+          <TableCell className="text-right">{formatCurrency(transaction.amount, transaction.isoCurrencyCode || undefined)}</TableCell>
+        </TableRow>
       ))}
-    </div>
+    </>
+  )
+}
+
+async function BankAccounts({ companyId }: { companyId: number }) {
+  const token = await getTokenCached();
+  if (!token) {
+    return redirect(redirects.auth.login);
+  }
+
+  const resp = await client(env.NEXT_PUBLIC_BACKEND_URL, token)["bank-account"].company[":companyId"].$get({
+    param: { companyId },
+    query: {
+      page: 0,
+      pageSize: 3,
+      order: "desc",
+      sortBy: "transactions"
+    }
+  });
+
+  if (resp.status !== 200) {
+    throw new Error(`Failed to fetch company, status: ${resp.status}`);
+  }
+
+  const { data } = await resp.json();
+
+  return (
+    <>
+      {data.map((account) => (
+        <TableRow key={account.id}>
+          <TableCell className="font-medium">{account.name}</TableCell>
+          <TableCell>{account.type}</TableCell>
+          <TableCell>{account.subtype}</TableCell>
+          <TableCell className="text-right">{formatCurrency(account.currentBalance || 0, account.isoCurrencyCode || undefined)}</TableCell>
+        </TableRow>
+      ))}
+    </>
   )
 }
 
@@ -103,19 +153,6 @@ export default async function CompanyPage({
 
   const company = await resp.json();
 
-  // Mock data for demo - would be replaced with real API data
-  const accountsData = {
-    checking: { balance: 42500, transactions: 23, reconciled: 21 },
-    savings: { balance: 125000, transactions: 5, reconciled: 5 },
-    credit: { balance: -3200, transactions: 17, reconciled: 14 }
-  };
-
-  const recentActivity = [
-    { id: 1, type: 'invoice', title: 'New invoice created', amount: 1200, date: new Date(), status: 'pending' },
-    { id: 2, type: 'payment', title: 'Payment received', amount: 3500, date: new Date(Date.now() - 86400000), status: 'completed' },
-    { id: 3, type: 'transaction', title: 'Bank transaction imported', amount: -850, date: new Date(Date.now() - 172800000), status: 'reconciled' }
-  ];
-
   return (
     <div className="space-y-8">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
@@ -131,10 +168,6 @@ export default async function CompanyPage({
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm">
-            <MoreHorizontal className="h-4 w-4 mr-1" />
-            Actions
-          </Button>
           <Button size="sm" asChild>
             <Link href={redirects.app.company(parsedId).settings.connections}>
               <Building className="h-4 w-4 mr-1" />
@@ -144,182 +177,122 @@ export default async function CompanyPage({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Total Balance</CardTitle>
-            <CardDescription>Across all accounts</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Suspense fallback={
+      <Card className="w-full">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm font-medium">Total Balance</CardTitle>
+          <CardDescription>Across all accounts</CardDescription>
+        </CardHeader>
+        <CardContent >
+          <Suspense fallback={
+            <div className="grid grid-cols-3 divide-x">
               <div className="flex flex-col gap-2">
-                <div className="text-sm text-muted-foreground">Available Balance</div>
-                <div className="text-3xl font-bold"><Skeleton className="h-10 w-24" /></div>
-                <div className="text-sm text-muted-foreground">Current Balance</div>
+                <span className="text-sm text-muted-foreground">
+                  Available Balance
+                </span>
                 <div className="text-3xl font-bold"><Skeleton className="h-10 w-24" /></div>
               </div>
-            }>
-              <BankBalance companyId={parsedId} />
-            </Suspense>
-          </CardContent>
-        </Card>
+              <div className="flex flex-col gap-2">
+                <span className="text-sm text-muted-foreground">
+                  Current Balance
+                </span>
+                <div className="text-3xl font-bold"><Skeleton className="h-10 w-24" /></div>
+              </div>
+              <div className="flex flex-col gap-2">
+                <span className="text-sm text-muted-foreground">
+                  Current Balance
+                </span>
+                <div className="text-3xl font-bold"><Skeleton className="h-10 w-24" /></div>
+              </div>
+            </div>
+          }>
+            <BankBalance companyId={parsedId} />
+          </Suspense>
+        </CardContent>
+      </Card>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Linked Accounts</CardTitle>
+            <CardTitle className="text-sm font-medium flex items-center justify-between">
+              Bank Accounts
+              <Link href={redirects.app.company(parsedId).bankAccounts.index}>
+                <Button variant="outline" size="sm">
+                  <Building className="h-4 w-4 mr-1" />
+                  View All
+                </Button>
+              </Link>
+            </CardTitle>
             <CardDescription>Banking & credit cards</CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">3</div>
-            <div className="flex items-center mt-2 text-sm">
-              <span className="text-muted-foreground">
-                {accountsData.checking.transactions + accountsData.savings.transactions + accountsData.credit.transactions} transactions this month
-              </span>
-            </div>
+          <CardContent className="h-full">
+            <Table className="w-full h-full">
+              <TableCaption>Banking & credit cards</TableCaption>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Type</TableHead>
+                  <TableHead>Subtype</TableHead>
+                  <TableHead className="text-right">Current Balance</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody className="h-full">
+                <Suspense fallback={
+                  Array.from({ length: 3 }).map(() => (
+                    <TableRow key={generate()}>
+                      <TableCell className="font-medium"><Skeleton className="h-5 w-full" /></TableCell>
+                      <TableCell><Skeleton className="h-5 w-full" /></TableCell>
+                      <TableCell><Skeleton className="h-5 w-full" /></TableCell>
+                      <TableCell className="text-right"><Skeleton className="h-5 w-full" /></TableCell>
+                    </TableRow>
+                  ))
+                } >
+                  <BankAccounts companyId={parsedId} />
+                </Suspense>
+              </TableBody>
+            </Table>
           </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Reconciliation</CardTitle>
-            <CardDescription>Transaction matching status</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">
-              {Math.round(((accountsData.checking.reconciled + accountsData.savings.reconciled + accountsData.credit.reconciled) /
-                (accountsData.checking.transactions + accountsData.savings.transactions + accountsData.credit.transactions)) * 100)}%
-            </div>
-            <div className="flex items-center mt-2 text-sm">
-              <span className="text-muted-foreground">
-                {(accountsData.checking.transactions + accountsData.savings.transactions + accountsData.credit.transactions) -
-                  (accountsData.checking.reconciled + accountsData.savings.reconciled + accountsData.credit.reconciled)} transactions need review
-              </span>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
-          <h2 className="text-xl font-semibold mb-4">Linked Accounts</h2>
-          <div className="grid gap-4">
-            <Card className="overflow-hidden">
-              <div className="border-l-4 border-blue-500 pl-4 py-4 pr-6 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="bg-blue-100 dark:bg-blue-950 p-2 rounded-full">
-                    <Wallet className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                  </div>
-                  <div>
-                    <h3 className="font-medium">Main Checking</h3>
-                    <p className="text-sm text-muted-foreground">Bank of America</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <div className="font-semibold">{formatCurrency(accountsData.checking.balance)}</div>
-                  <div className="text-sm text-muted-foreground">{accountsData.checking.transactions} transactions</div>
-                </div>
-                <Button variant="ghost" size="icon" asChild>
-                  <Link href={`/company/${parsedId}/bank-accounts/1`}>
-                    <ChevronRight className="h-4 w-4" />
-                  </Link>
-                </Button>
-              </div>
-            </Card>
-
-            <Card className="overflow-hidden">
-              <div className="border-l-4 border-green-500 pl-4 py-4 pr-6 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="bg-green-100 dark:bg-green-950 p-2 rounded-full">
-                    <PiggyBank className="h-5 w-5 text-green-600 dark:text-green-400" />
-                  </div>
-                  <div>
-                    <h3 className="font-medium">Business Savings</h3>
-                    <p className="text-sm text-muted-foreground">Bank of America</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <div className="font-semibold">{formatCurrency(accountsData.savings.balance)}</div>
-                  <div className="text-sm text-muted-foreground">{accountsData.savings.transactions} transactions</div>
-                </div>
-                <Button variant="ghost" size="icon" asChild>
-                  <Link href={`/company/${parsedId}/bank-accounts/2`}>
-                    <ChevronRight className="h-4 w-4" />
-                  </Link>
-                </Button>
-              </div>
-            </Card>
-
-            <Card className="overflow-hidden">
-              <div className="border-l-4 border-red-500 pl-4 py-4 pr-6 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="bg-red-100 dark:bg-red-950 p-2 rounded-full">
-                    <CreditCard className="h-5 w-5 text-red-600 dark:text-red-400" />
-                  </div>
-                  <div>
-                    <h3 className="font-medium">Business Credit Card</h3>
-                    <p className="text-sm text-muted-foreground">American Express</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <div className="font-semibold text-red-500">-{formatCurrency(Math.abs(accountsData.credit.balance))}</div>
-                  <div className="text-sm text-muted-foreground">{accountsData.credit.transactions} transactions</div>
-                </div>
-                <Button variant="ghost" size="icon" asChild>
-                  <Link href={`/company/${parsedId}/bank-accounts/3`}>
-                    <ChevronRight className="h-4 w-4" />
-                  </Link>
-                </Button>
-              </div>
-            </Card>
-
-            <Button variant="outline" className="mt-2" asChild>
+          <CardFooter>
+            <Button variant="outline" className="mt-2 w-full" asChild>
               <Link href={redirects.app.company(parsedId).settings.connections}>
                 <Building className="h-4 w-4 mr-2" />
                 Connect more accounts
               </Link>
             </Button>
-          </div>
-        </div>
-
-        <div>
-          <h2 className="text-xl font-semibold mb-4">Recent Activity</h2>
-          <Card>
-            <CardContent className="p-0">
-
-              <Suspense fallback={
-                <div className="divide-y space-y-2 px-2">
-                  {Array.from({ length: 5 }).map(() => (
-                    <Skeleton key={generate()} className="h-10 w-full" />
-                  ))}
-                </div>
-              }>
-                <RecentTransactions companyId={parsedId} />
-              </Suspense>
-            </CardContent>
-          </Card>
-
-          <div className="mt-4">
-            <h2 className="text-xl font-semibold mb-4">Quick Actions</h2>
-            <div className="grid grid-cols-2 gap-3">
-              <Button variant="outline" size="sm" className="justify-start">
-                <FileText className="h-4 w-4 mr-2" />
-                View Invoices
-              </Button>
-              <Button variant="outline" size="sm" className="justify-start">
-                <Building className="h-4 w-4 mr-2" />
-                Bank Connections
-              </Button>
-              <Button variant="outline" size="sm" className="justify-start">
-                <DollarSign className="h-4 w-4 mr-2" />
-                Payments
-              </Button>
-              <Button variant="outline" size="sm" className="justify-start">
-                <CreditCard className="h-4 w-4 mr-2" />
-                Expenses
-              </Button>
-            </div>
-          </div>
-        </div>
+          </CardFooter>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium">Recent Transactions</CardTitle>
+            <CardDescription>Recent transactions from all accounts</CardDescription>
+          </CardHeader>
+          <CardContent className="h-full">
+            <Table className="w-full h-full">
+              <TableCaption>A list of your recent transactions.</TableCaption>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[100px]">Date</TableHead>
+                  <TableHead>Code</TableHead>
+                  <TableHead>Name</TableHead>
+                  <TableHead className="text-right">Amount</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody className="h-full">
+                <Suspense fallback={
+                  Array.from({ length: 3 }).map(() => (
+                    <TableRow key={generate()}>
+                      <TableCell className="font-medium"><Skeleton className="h-5 w-full" /></TableCell>
+                      <TableCell><Skeleton className="h-5 w-full" /></TableCell>
+                      <TableCell><Skeleton className="h-5 w-full" /></TableCell>
+                      <TableCell className="text-right"><Skeleton className="h-5 w-full" /></TableCell>
+                    </TableRow>
+                  ))
+                } >
+                  <RecentTransactions companyId={parsedId} />
+                </Suspense>
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
       </div>
-    </div>
+    </div >
   );
 }
