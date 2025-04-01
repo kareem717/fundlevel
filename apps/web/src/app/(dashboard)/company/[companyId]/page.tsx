@@ -5,11 +5,37 @@ import { client } from "@fundlevel/sdk";
 import { env } from "@fundlevel/web/env";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@fundlevel/ui/components/card";
 import { Button } from "@fundlevel/ui/components/button";
-import { ArrowUpRight, Building, ChevronRight, CreditCard, DollarSign, FileText, MoreHorizontal, PiggyBank, Wallet } from "lucide-react";
+import { Building, ChevronRight, CreditCard, DollarSign, FileText, MoreHorizontal, PiggyBank, Wallet } from "lucide-react";
 import Link from "next/link";
 import { format } from "date-fns";
 import { Badge } from "@fundlevel/ui/components/badge";
 import { formatCurrency } from "@fundlevel/web/lib/utils";
+import { Suspense } from "react";
+import { Skeleton } from "@fundlevel/ui/components/skeleton";
+
+async function BankBalance({ companyId }: { companyId: number }) {
+  const token = await getTokenCached();
+  if (!token) {
+    return redirect(redirects.auth.login);
+  }
+
+  const resp = await client(env.NEXT_PUBLIC_BACKEND_URL, token)["bank-account"].company[":companyId"].balance.$get({ param: { companyId } });
+
+  if (resp.status !== 200) {
+    throw new Error(`Failed to fetch company, status: ${resp.status}`);
+  }
+
+  const data = await resp.json();
+
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="text-sm text-muted-foreground">Available Balance</div>
+      <div className="text-3xl font-bold">{formatCurrency(data.availableBalance)}</div>
+      <div className="text-sm text-muted-foreground">Current Balance</div>
+      <div className="text-3xl font-bold">{formatCurrency(data.currentBalance)}</div>
+    </div>
+  )
+}
 
 export default async function CompanyPage({
   params,
@@ -80,17 +106,18 @@ export default async function CompanyPage({
             <CardDescription>Across all accounts</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">{formatCurrency(accountsData.checking.balance + accountsData.savings.balance - Math.abs(accountsData.credit.balance))}</div>
-            <div className="flex items-center gap-2 mt-2 text-sm">
-              <span className="text-green-500 flex items-center">
-                <ArrowUpRight className="h-3 w-3 mr-1" />
-                8.2%
-              </span>
-              <span className="text-muted-foreground">vs last month</span>
-            </div>
+            <Suspense fallback={
+              <div className="flex flex-col gap-2">
+                <div className="text-sm text-muted-foreground">Available Balance</div>
+                <div className="text-3xl font-bold"><Skeleton className="h-10 w-24" /></div>
+                <div className="text-sm text-muted-foreground">Current Balance</div>
+                <div className="text-3xl font-bold"><Skeleton className="h-10 w-24" /></div>
+              </div>
+            }>
+              <BankBalance companyId={parsedId} />
+            </Suspense>
           </CardContent>
         </Card>
-
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium">Linked Accounts</CardTitle>
