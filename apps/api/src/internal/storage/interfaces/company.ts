@@ -8,9 +8,8 @@ import type {
   CompanyQuickBooksOauthCredential,
   QuickBooksOauthState,
   UpdateCompanySyncStatusParams,
-  CreateQuickBooksOauthStateParams
+  CreateQuickBooksOauthStateParams,
 } from "@fundlevel/db/types";
-
 
 export interface ICompanyRepository {
   create(account: CreateCompanyParams, ownerId: number): Promise<Company>;
@@ -21,11 +20,16 @@ export interface ICompanyRepository {
     params: CreateCompanyPlaidCredentialsParams,
     companyId: number,
   ): Promise<CompanyPlaidCredentials>;
-  getPlaidCredentials(filter: { itemId: string } | { companyId: number }): Promise<CompanyPlaidCredentials | undefined>;
-  updatePlaidTransactionCursor(companyId: number, cursor: string): Promise<void>;
+  getPlaidCredentials(
+    filter: { itemId: string } | { companyId: number },
+  ): Promise<CompanyPlaidCredentials | undefined>;
+  updatePlaidTransactionCursor(
+    companyId: number,
+    cursor: string,
+  ): Promise<void>;
 
   getQuickBooksOAuthCredentials(
-    filter: { companyId: number } | { realmId: string }
+    filter: { companyId: number } | { realmId: string },
   ): Promise<CompanyQuickBooksOauthCredential | undefined>;
   updateQuickBooksOAuthCredentials(
     params: UpdateCompanyQuickBooksOauthCredentialParams,

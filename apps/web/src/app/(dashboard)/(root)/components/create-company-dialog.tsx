@@ -64,7 +64,7 @@ export function CreateCompanyDialog({
   const { mutate, isPending } = useMutation({
     mutationFn: async (values: CreateCompanyFormValues) => {
       const payload = {
-        name: values.name || ""
+        name: values.name || "",
       };
 
       const result = await client(
@@ -111,7 +111,7 @@ export function CreateCompanyDialog({
   function onSubmit(values: CreateCompanyFormValues) {
     // Ensure name is required before passing to the API
     const payload = {
-      name: values.name || ""
+      name: values.name || "",
     };
     mutate(payload);
   }

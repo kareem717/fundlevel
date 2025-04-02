@@ -4,17 +4,23 @@ import type { ComponentPropsWithoutRef } from "react";
 import { useRealtimeRun } from "@trigger.dev/react-hooks";
 import { cn } from "@fundlevel/ui/lib/utils";
 import { Skeleton } from "@fundlevel/ui/components/skeleton";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@fundlevel/ui/components/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@fundlevel/ui/components/card";
 import { Badge } from "@fundlevel/ui/components/badge";
 import { Separator } from "@fundlevel/ui/components/separator";
 import { SuggestedTransactionCard } from "./suggested-transaction-card";
 import { Loader2, CircleX, AlertCircle } from "lucide-react";
 
-interface DisplayReconciliationProps
-  extends ComponentPropsWithoutRef<"div"> {
-  taskId: string
-  publicAccessToken: string
-  invoiceId: number
+interface DisplayReconciliationProps extends ComponentPropsWithoutRef<"div"> {
+  taskId: string;
+  publicAccessToken: string;
+  invoiceId: number;
 }
 
 export function DisplayReconciliation({
@@ -29,10 +35,14 @@ export function DisplayReconciliation({
   });
 
   if (!run) {
-    return <Card className="p-6"><Skeleton className="h-12 w-full" /></Card>
+    return (
+      <Card className="p-6">
+        <Skeleton className="h-12 w-full" />
+      </Card>
+    );
   }
 
-  const { output, status, id, ...rest } = run
+  const { output, status, id, ...rest } = run;
 
   if (error) {
     return (
@@ -41,7 +51,7 @@ export function DisplayReconciliation({
       </Card>
     );
   }
-  console.log(output)
+  console.log(output);
   return (
     <Card className={cn("", className)} {...props}>
       <CardHeader className="pb-2">
@@ -50,7 +60,15 @@ export function DisplayReconciliation({
             <CardTitle className="text-xl">Reconciliation Results</CardTitle>
             <CardDescription>Processing invoice transactions</CardDescription>
           </div>
-          <Badge variant={status === "COMPLETED" ? "default" : status === "EXECUTING" ? "outline" : "secondary"}>
+          <Badge
+            variant={
+              status === "COMPLETED"
+                ? "default"
+                : status === "EXECUTING"
+                  ? "outline"
+                  : "secondary"
+            }
+          >
             {status}
           </Badge>
         </div>
@@ -62,7 +80,9 @@ export function DisplayReconciliation({
             <>
               {output?.result && output.result.length > 0 && (
                 <div className="flex flex-col gap-2">
-                  <p className="text-muted-foreground">Suggested transactions</p>
+                  <p className="text-muted-foreground">
+                    Suggested transactions
+                  </p>
                   <div className="grid gap-2">
                     {output.result.map((r: any) => (
                       <SuggestedTransactionCard
@@ -78,9 +98,11 @@ export function DisplayReconciliation({
               )}
               {(!output?.result || output.result.length === 0) && (
                 <div className="text-center p-6 bg-muted rounded-md">
-                    <p className="text-muted-foreground">No matching transactions found</p>
-                  </div>
-                )}
+                  <p className="text-muted-foreground">
+                    No matching transactions found
+                  </p>
+                </div>
+              )}
             </>
           ) : (
             <div className="text-center p-6 bg-muted rounded-md flex justify-center items-center gap-2">
@@ -108,16 +130,19 @@ export function DisplayReconciliation({
                   <p className="text-muted-foreground">Cancelled</p>
                 </>
               )}
-              {status !== "QUEUED" && status !== "EXECUTING" && status !== "FAILED" && status !== "CANCELED" && (
-                <>
-                  <CircleX className="text-muted-foreground size-4" />
-                  <p className="text-muted-foreground">Unknown status</p>
-                </>
-              )}
+              {status !== "QUEUED" &&
+                status !== "EXECUTING" &&
+                status !== "FAILED" &&
+                status !== "CANCELED" && (
+                  <>
+                    <CircleX className="text-muted-foreground size-4" />
+                    <p className="text-muted-foreground">Unknown status</p>
+                  </>
+                )}
             </div>
           )}
         </div>
       </CardContent>
     </Card>
   );
-} 
+}

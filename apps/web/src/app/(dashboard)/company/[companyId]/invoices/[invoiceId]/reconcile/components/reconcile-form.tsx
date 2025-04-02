@@ -10,10 +10,12 @@ import { toast } from "@fundlevel/ui/components/sonner";
 import { getTokenCached } from "@fundlevel/web/actions/auth";
 import { Card } from "@fundlevel/ui/components/card";
 
-interface ReconcileFormProps
-  extends ComponentPropsWithoutRef<"div"> {
+interface ReconcileFormProps extends ComponentPropsWithoutRef<"div"> {
   invoiceId: number;
-  onReconcileSuccess: (data: { taskId: string, publicAccessToken: string }) => void;
+  onReconcileSuccess: (data: {
+    taskId: string;
+    publicAccessToken: string;
+  }) => void;
 }
 
 export function ReconcileForm({
@@ -27,23 +29,25 @@ export function ReconcileForm({
     mutationFn: async () => {
       const token = await getTokenCached();
       if (!token) {
-        throw new Error("No token")
+        throw new Error("No token");
       }
 
-      const resp = await client(env.NEXT_PUBLIC_BACKEND_URL, token).invoice[":invoiceId"].reconcile.$post({
+      const resp = await client(env.NEXT_PUBLIC_BACKEND_URL, token).invoice[
+        ":invoiceId"
+      ].reconcile.$post({
         param: { invoiceId },
       });
 
-      const respBody = await resp.json()
+      const respBody = await resp.json();
       if ("error" in respBody) {
         return toast.error("Uh oh!", {
-          description: respBody.error
-        })
+          description: respBody.error,
+        });
       }
 
       toast.info("Started!", {
-        description: "Reconciliation process initiated successfully"
-      })
+        description: "Reconciliation process initiated successfully",
+      });
 
       onReconcileSuccess(respBody);
     },
@@ -54,7 +58,9 @@ export function ReconcileForm({
       <div className="flex flex-col sm:flex-row items-center gap-4 justify-between">
         <div className="space-y-1">
           <h3 className="text-lg font-medium">Invoice Reconciliation</h3>
-          <p className="text-sm text-muted-foreground">Match this invoice with banking transactions</p>
+          <p className="text-sm text-muted-foreground">
+            Match this invoice with banking transactions
+          </p>
         </div>
         <Button
           type="button"
@@ -68,4 +74,4 @@ export function ReconcileForm({
       </div>
     </Card>
   );
-} 
+}

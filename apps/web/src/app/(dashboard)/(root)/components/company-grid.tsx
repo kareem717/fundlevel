@@ -5,16 +5,19 @@ import { redirects } from "@fundlevel/web/lib/config/redirects";
 import Link from "next/link";
 import { useUserCompanies } from "@fundlevel/web/hooks/use-user-companies";
 import { CreateCompanyDialog } from "./create-company-dialog";
-import { Card, CardHeader, CardTitle, CardDescription } from "@fundlevel/ui/components/card";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@fundlevel/ui/components/card";
 import { format } from "date-fns";
 import { StoreIcon } from "lucide-react";
 import { Skeleton } from "@fundlevel/ui/components/skeleton";
 import { useIsMobile } from "@fundlevel/ui/hooks/use-mobile";
 import { generate } from "shortid";
 
-export function CompanyGrid({
-  ...props
-}: ComponentPropsWithoutRef<"div">) {
+export function CompanyGrid({ ...props }: ComponentPropsWithoutRef<"div">) {
   const { data, isFetching } = useUserCompanies();
   const isMobile = useIsMobile();
 

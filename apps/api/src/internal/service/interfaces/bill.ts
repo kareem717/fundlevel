@@ -6,7 +6,9 @@ export interface IBillService {
   getMany(filter: GetManyBillsFilter): Promise<OffsetPaginationResult<Bill>>;
   get(billId: number): Promise<Bill>;
 
-  getManyLines(filter: { billId: number } | { ids: number[] }): Promise<BillLine[]>;
+  getManyLines(
+    filter: { billId: number } | { ids: number[] },
+  ): Promise<BillLine[]>;
 
   reconcile(billId: number): Promise<
     {

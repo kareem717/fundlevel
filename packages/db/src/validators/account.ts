@@ -3,9 +3,7 @@ import {
   createUpdateSchema,
   createInsertSchema,
 } from "drizzle-zod";
-import {
-  accounts,
-} from "@fundlevel/db/schema";
+import { accounts } from "@fundlevel/db/schema";
 
 export const AccountSchema = createSelectSchema(accounts);
 

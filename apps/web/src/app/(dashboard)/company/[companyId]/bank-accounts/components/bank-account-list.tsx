@@ -30,11 +30,11 @@ export function BankAccountList({
 }: BankAccountListProps) {
   const [pageIndex, setPageIndex] = useQueryState(
     "page",
-    parseAsInteger.withDefault(0)
+    parseAsInteger.withDefault(0),
   );
   const [pageSize, setPageSize] = useQueryState(
     "limit",
-    parseAsInteger.withDefault(10)
+    parseAsInteger.withDefault(10),
   );
 
   // Keep track of the last known page count
@@ -48,7 +48,9 @@ export function BankAccountList({
         return redirect(redirects.auth.login);
       }
 
-      const req = await client(env.NEXT_PUBLIC_BACKEND_URL, token)["bank-account"].company[":companyId"].$get({
+      const req = await client(env.NEXT_PUBLIC_BACKEND_URL, token)[
+        "bank-account"
+      ].company[":companyId"].$get({
         query: {
           page: pageIndex,
           pageSize,
@@ -106,7 +108,9 @@ export function BankAccountList({
         setPageSize(updater.pageSize);
       }
     },
-    pageCount: isPending ? lastPageCount.current : (bankAccounts?.totalPages ?? 0),
+    pageCount: isPending
+      ? lastPageCount.current
+      : (bankAccounts?.totalPages ?? 0),
     state: {
       pagination: {
         pageIndex,

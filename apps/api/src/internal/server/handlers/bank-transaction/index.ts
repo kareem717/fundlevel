@@ -51,7 +51,10 @@ const bankTransactionHandler = new OpenAPIHono()
   .openapi(getTransactionRoute, async (c) => {
     const account = getAccount(c);
     if (!account) {
-      return c.json({ error: "Account not found, please create an account." }, 404);
+      return c.json(
+        { error: "Account not found, please create an account." },
+        404,
+      );
     }
 
     const { id } = c.req.valid("param");
@@ -68,7 +71,10 @@ const bankTransactionHandler = new OpenAPIHono()
     }
 
     if (company.ownerId !== account.id) {
-      return c.json({ error: "You are not authorized to access this transaction." }, 403);
+      return c.json(
+        { error: "You are not authorized to access this transaction." },
+        403,
+      );
     }
 
     return c.json(result, 200);
@@ -76,15 +82,24 @@ const bankTransactionHandler = new OpenAPIHono()
   .openapi(createTransactionRelationshipRoute, async (c) => {
     const account = getAccount(c);
     if (!account) {
-      return c.json({ error: "Account not found, please create an account." }, 404);
+      return c.json(
+        { error: "Account not found, please create an account." },
+        404,
+      );
     }
 
     const { id } = c.req.valid("param");
     const params = c.req.valid("json");
 
-    const isValid = await getService(c).bankTransaction.validateOwnership(id, account.id);
+    const isValid = await getService(c).bankTransaction.validateOwnership(
+      id,
+      account.id,
+    );
     if (!isValid) {
-      return c.json({ error: "You are not authorized to access this transaction." }, 403);
+      return c.json(
+        { error: "You are not authorized to access this transaction." },
+        403,
+      );
     }
 
     await getService(c).bankTransaction.createRelationship(params, id);
@@ -94,7 +109,10 @@ const bankTransactionHandler = new OpenAPIHono()
   .openapi(getInvoiceTransactionsRoute, async (c) => {
     const account = getAccount(c);
     if (!account) {
-      return c.json({ error: "Account not found, please create an account." }, 401);
+      return c.json(
+        { error: "Account not found, please create an account." },
+        401,
+      );
     }
 
     const { invoiceId } = c.req.valid("param");

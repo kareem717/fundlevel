@@ -22,12 +22,20 @@ export const columns: ColumnDef<Invoice>[] = [
   {
     accessorKey: "totalAmount",
     header: "Amount",
-    cell: ({ row }) => formatCurrency(row.original.totalAmount, row.original.currency || undefined)
+    cell: ({ row }) =>
+      formatCurrency(
+        row.original.totalAmount,
+        row.original.currency || undefined,
+      ),
   },
   {
     accessorKey: "balanceRemaining",
     header: "Balance",
-    cell: ({ row }) => formatCurrency(row.original.balanceRemaining || 0, row.original.currency || undefined)
+    cell: ({ row }) =>
+      formatCurrency(
+        row.original.balanceRemaining || 0,
+        row.original.currency || undefined,
+      ),
   },
   {
     accessorKey: "dueDate",

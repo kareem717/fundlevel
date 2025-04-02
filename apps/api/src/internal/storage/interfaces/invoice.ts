@@ -10,10 +10,7 @@ import type {
 } from "@fundlevel/api/internal/entities";
 
 export interface IInvoiceRepository {
-  upsert(
-    invoice: CreateInvoiceParams[],
-    companyId: number,
-  ): Promise<Invoice[]>;
+  upsert(invoice: CreateInvoiceParams[], companyId: number): Promise<Invoice[]>;
   delete(filter: { id: number } | { remoteId: string }): Promise<void>;
   deleteMany(filter: { id: number[] } | { remoteId: string[] }): Promise<void>;
 
@@ -23,6 +20,8 @@ export interface IInvoiceRepository {
   get(
     filter: { id: number } | { remoteId: string },
   ): Promise<Invoice | undefined>;
-  getManyLines(filter: { invoiceId: number } | { ids: number[] }): Promise<InvoiceLine[]>;
+  getManyLines(
+    filter: { invoiceId: number } | { ids: number[] },
+  ): Promise<InvoiceLine[]>;
   upsertLine(lines: CreateInvoiceLineParams[]): Promise<InvoiceLine[]>;
 }

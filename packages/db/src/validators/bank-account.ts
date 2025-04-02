@@ -25,4 +25,4 @@ export const UpdateBankAccountParamsSchema = createUpdateSchema(
   createdAt: true,
   updatedAt: true,
   companyId: true,
-}); 
+});

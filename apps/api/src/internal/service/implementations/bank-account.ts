@@ -3,7 +3,7 @@ import type { IBankAccountRepository } from "@fundlevel/api/internal/storage/int
 import type { GetManyBankAccountsFilter } from "@fundlevel/api/internal/entities";
 
 export class BankAccountService implements IBankAccountService {
-  constructor(private bankAccountRepository: IBankAccountRepository) { }
+  constructor(private bankAccountRepository: IBankAccountRepository) {}
 
   async get(filter: { id: number } | { remoteId: string }) {
     return await this.bankAccountRepository.get(filter);
@@ -16,4 +16,4 @@ export class BankAccountService implements IBankAccountService {
   async getCompanyBalance(companyId: number) {
     return await this.bankAccountRepository.getCompanyBalance(companyId);
   }
-} 
+}

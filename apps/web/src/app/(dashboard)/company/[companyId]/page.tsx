@@ -3,7 +3,14 @@ import { redirects } from "@fundlevel/web/lib/config/redirects";
 import { getTokenCached } from "@fundlevel/web/actions/auth";
 import { client } from "@fundlevel/sdk";
 import { env } from "@fundlevel/web/env";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@fundlevel/ui/components/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@fundlevel/ui/components/card";
 import { Button, buttonVariants } from "@fundlevel/ui/components/button";
 import { Building, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
@@ -20,7 +27,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@fundlevel/ui/components/table"
+} from "@fundlevel/ui/components/table";
 import { cn } from "@fundlevel/ui/lib/utils";
 
 async function BankBalance({ companyId }: { companyId: number }) {
@@ -29,7 +36,9 @@ async function BankBalance({ companyId }: { companyId: number }) {
     return redirect(redirects.auth.login);
   }
 
-  const resp = await client(env.NEXT_PUBLIC_BACKEND_URL, token)["bank-account"].company[":companyId"].balance.$get({ param: { companyId } });
+  const resp = await client(env.NEXT_PUBLIC_BACKEND_URL, token)[
+    "bank-account"
+  ].company[":companyId"].balance.$get({ param: { companyId } });
 
   if (resp.status !== 200) {
     throw new Error(`Failed to fetch company, status: ${resp.status}`);
@@ -40,25 +49,25 @@ async function BankBalance({ companyId }: { companyId: number }) {
   return (
     <div className="grid grid-cols-3 [&>*]:flex [&>*]:flex-col">
       <div>
-        <span className="text-sm text-muted-foreground">
-          Available Balance
-        </span>
-        <div className="text-3xl font-bold">{formatCurrency(data.availableBalance)}</div>
+        <span className="text-sm text-muted-foreground">Available Balance</span>
+        <div className="text-3xl font-bold">
+          {formatCurrency(data.availableBalance)}
+        </div>
       </div>
       <div>
-        <span className="text-sm text-muted-foreground">
-          Current Balance
-        </span>
-        <div className="text-3xl font-bold">{formatCurrency(data.currentBalance)}</div>
+        <span className="text-sm text-muted-foreground">Current Balance</span>
+        <div className="text-3xl font-bold">
+          {formatCurrency(data.currentBalance)}
+        </div>
       </div>
       <div>
-        <span className="text-sm text-muted-foreground">
-          Ratio
-        </span>
-        <div className="text-3xl font-bold">{Math.round(data.availableBalance / data.currentBalance * 100)}%</div>
+        <span className="text-sm text-muted-foreground">Ratio</span>
+        <div className="text-3xl font-bold">
+          {Math.round((data.availableBalance / data.currentBalance) * 100)}%
+        </div>
       </div>
     </div>
-  )
+  );
 }
 
 async function RecentTransactions({ companyId }: { companyId: number }) {
@@ -67,14 +76,16 @@ async function RecentTransactions({ companyId }: { companyId: number }) {
     return redirect(redirects.auth.login);
   }
 
-  const resp = await client(env.NEXT_PUBLIC_BACKEND_URL, token)["bank-transaction"].company[":companyId"].$get({
+  const resp = await client(env.NEXT_PUBLIC_BACKEND_URL, token)[
+    "bank-transaction"
+  ].company[":companyId"].$get({
     param: { companyId },
     query: {
       page: 0,
       pageSize: 5,
       order: "desc",
-      sortBy: "date"
-    }
+      sortBy: "date",
+    },
   });
 
   if (resp.status !== 200) {
@@ -90,11 +101,16 @@ async function RecentTransactions({ companyId }: { companyId: number }) {
           <TableCell className="font-medium">{transaction.date}</TableCell>
           <TableCell>{transaction.code}</TableCell>
           <TableCell>{transaction.name}</TableCell>
-          <TableCell className="text-right">{formatCurrency(transaction.amount, transaction.isoCurrencyCode || undefined)}</TableCell>
+          <TableCell className="text-right">
+            {formatCurrency(
+              transaction.amount,
+              transaction.isoCurrencyCode || undefined,
+            )}
+          </TableCell>
         </TableRow>
       ))}
     </>
-  )
+  );
 }
 
 async function BankAccounts({ companyId }: { companyId: number }) {
@@ -103,14 +119,16 @@ async function BankAccounts({ companyId }: { companyId: number }) {
     return redirect(redirects.auth.login);
   }
 
-  const resp = await client(env.NEXT_PUBLIC_BACKEND_URL, token)["bank-account"].company[":companyId"].$get({
+  const resp = await client(env.NEXT_PUBLIC_BACKEND_URL, token)[
+    "bank-account"
+  ].company[":companyId"].$get({
     param: { companyId },
     query: {
       page: 0,
       pageSize: 3,
       order: "desc",
-      sortBy: "transactions"
-    }
+      sortBy: "transactions",
+    },
   });
 
   if (resp.status !== 200) {
@@ -126,11 +144,16 @@ async function BankAccounts({ companyId }: { companyId: number }) {
           <TableCell className="font-medium">{account.name}</TableCell>
           <TableCell>{account.type}</TableCell>
           <TableCell>{account.subtype}</TableCell>
-          <TableCell className="text-right">{formatCurrency(account.currentBalance || 0, account.isoCurrencyCode || undefined)}</TableCell>
+          <TableCell className="text-right">
+            {formatCurrency(
+              account.currentBalance || 0,
+              account.isoCurrencyCode || undefined,
+            )}
+          </TableCell>
         </TableRow>
       ))}
     </>
-  )
+  );
 }
 
 export default async function CompanyPage({
@@ -173,29 +196,37 @@ export default async function CompanyPage({
           <CardTitle className="text-sm font-medium">Total Balance</CardTitle>
           <CardDescription>Across all accounts</CardDescription>
         </CardHeader>
-        <CardContent >
-          <Suspense fallback={
-            <div className="grid grid-cols-3 divide-x">
-              <div className="flex flex-col gap-2">
-                <span className="text-sm text-muted-foreground">
-                  Available Balance
-                </span>
-                <div className="text-3xl font-bold"><Skeleton className="h-10 w-24" /></div>
+        <CardContent>
+          <Suspense
+            fallback={
+              <div className="grid grid-cols-3 divide-x">
+                <div className="flex flex-col gap-2">
+                  <span className="text-sm text-muted-foreground">
+                    Available Balance
+                  </span>
+                  <div className="text-3xl font-bold">
+                    <Skeleton className="h-10 w-24" />
+                  </div>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <span className="text-sm text-muted-foreground">
+                    Current Balance
+                  </span>
+                  <div className="text-3xl font-bold">
+                    <Skeleton className="h-10 w-24" />
+                  </div>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <span className="text-sm text-muted-foreground">
+                    Current Balance
+                  </span>
+                  <div className="text-3xl font-bold">
+                    <Skeleton className="h-10 w-24" />
+                  </div>
+                </div>
               </div>
-              <div className="flex flex-col gap-2">
-                <span className="text-sm text-muted-foreground">
-                  Current Balance
-                </span>
-                <div className="text-3xl font-bold"><Skeleton className="h-10 w-24" /></div>
-              </div>
-              <div className="flex flex-col gap-2">
-                <span className="text-sm text-muted-foreground">
-                  Current Balance
-                </span>
-                <div className="text-3xl font-bold"><Skeleton className="h-10 w-24" /></div>
-              </div>
-            </div>
-          }>
+            }
+          >
             <BankBalance companyId={parsedId} />
           </Suspense>
         </CardContent>
@@ -205,7 +236,11 @@ export default async function CompanyPage({
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium flex items-center justify-between">
               Bank Accounts
-              <Link href={redirects.app.company(parsedId).bankAccounts.index} className={buttonVariants({ variant: "outline", size: "sm" })} prefetch={true}>
+              <Link
+                href={redirects.app.company(parsedId).bankAccounts.index}
+                className={buttonVariants({ variant: "outline", size: "sm" })}
+                prefetch={true}
+              >
                 <Building className="h-4 w-4 mr-1" />
                 View All
               </Link>
@@ -224,23 +259,35 @@ export default async function CompanyPage({
                 </TableRow>
               </TableHeader>
               <TableBody className="h-full">
-                <Suspense fallback={
-                  Array.from({ length: 3 }).map(() => (
+                <Suspense
+                  fallback={Array.from({ length: 3 }).map(() => (
                     <TableRow key={generate()}>
-                      <TableCell className="font-medium"><Skeleton className="h-5 w-full" /></TableCell>
-                      <TableCell><Skeleton className="h-5 w-full" /></TableCell>
-                      <TableCell><Skeleton className="h-5 w-full" /></TableCell>
-                      <TableCell className="text-right"><Skeleton className="h-5 w-full" /></TableCell>
+                      <TableCell className="font-medium">
+                        <Skeleton className="h-5 w-full" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-5 w-full" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-5 w-full" />
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Skeleton className="h-5 w-full" />
+                      </TableCell>
                     </TableRow>
-                  ))
-                } >
+                  ))}
+                >
                   <BankAccounts companyId={parsedId} />
                 </Suspense>
               </TableBody>
             </Table>
           </CardContent>
           <CardFooter>
-            <Link href={redirects.app.company(parsedId).connections.banking} className={cn(buttonVariants({ size: "sm" }), "w-full")} prefetch={true}>
+            <Link
+              href={redirects.app.company(parsedId).connections.banking}
+              className={cn(buttonVariants({ size: "sm" }), "w-full")}
+              prefetch={true}
+            >
               <Building className="h-4 w-4 mr-2" />
               Connect more accounts
             </Link>
@@ -248,8 +295,12 @@ export default async function CompanyPage({
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Recent Transactions</CardTitle>
-            <CardDescription>Recent transactions from all accounts</CardDescription>
+            <CardTitle className="text-sm font-medium">
+              Recent Transactions
+            </CardTitle>
+            <CardDescription>
+              Recent transactions from all accounts
+            </CardDescription>
           </CardHeader>
           <CardContent className="h-full">
             <Table className="w-full h-full">
@@ -263,16 +314,24 @@ export default async function CompanyPage({
                 </TableRow>
               </TableHeader>
               <TableBody className="h-full">
-                <Suspense fallback={
-                  Array.from({ length: 3 }).map(() => (
+                <Suspense
+                  fallback={Array.from({ length: 3 }).map(() => (
                     <TableRow key={generate()}>
-                      <TableCell className="font-medium"><Skeleton className="h-5 w-full" /></TableCell>
-                      <TableCell><Skeleton className="h-5 w-full" /></TableCell>
-                      <TableCell><Skeleton className="h-5 w-full" /></TableCell>
-                      <TableCell className="text-right"><Skeleton className="h-5 w-full" /></TableCell>
+                      <TableCell className="font-medium">
+                        <Skeleton className="h-5 w-full" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-5 w-full" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-5 w-full" />
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Skeleton className="h-5 w-full" />
+                      </TableCell>
                     </TableRow>
-                  ))
-                } >
+                  ))}
+                >
                   <RecentTransactions companyId={parsedId} />
                 </Suspense>
               </TableBody>
@@ -280,6 +339,6 @@ export default async function CompanyPage({
           </CardContent>
         </Card>
       </div>
-    </div >
+    </div>
   );
 }

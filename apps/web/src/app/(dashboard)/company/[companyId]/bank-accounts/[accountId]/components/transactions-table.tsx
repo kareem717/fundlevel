@@ -136,9 +136,9 @@ export function TransactionsTable({
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext(),
-                      )}
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -169,10 +169,10 @@ export function TransactionsTable({
                     <TableCell key={cell.id}>
                       {typeof cell.column.columnDef.cell === "function"
                         ? cell.column.columnDef.cell({
-                          ...cell,
-                          cell,
-                          table,
-                        })
+                            ...cell,
+                            cell,
+                            table,
+                          })
                         : (cell.getValue() as string)}
                     </TableCell>
                   ))}

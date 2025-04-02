@@ -33,9 +33,7 @@ export default async function DashboardLayout({
   return (
     <AuthProvider account={account} authToken={token}>
       <div className="relative">
-        <Badge className="absolute top-6 right-6 z-1000">
-          BETA
-        </Badge>
+        <Badge className="absolute top-6 right-6 z-1000">BETA</Badge>
         {/* // <NotificationProvider notifications={notifications}> */}
         {children}
         {/* // </NotificationProvider> */}

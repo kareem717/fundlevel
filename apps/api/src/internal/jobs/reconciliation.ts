@@ -16,9 +16,7 @@ export const reconcileInvoiceTask = schemaTask({
     });
 
     const service = getService();
-    const result = await service.invoice.reconcile(
-      payload.invoiceId,
-    );
+    const result = await service.invoice.reconcile(payload.invoiceId);
 
     return {
       message: "Successfully reconciled invoice",
@@ -41,9 +39,7 @@ export const reconcileBillTask = schemaTask({
     });
 
     const service = getService();
-    const result = await service.bill.reconcile(
-      payload.billId,
-    );
+    const result = await service.bill.reconcile(payload.billId);
 
     return {
       message: "Successfully reconciled bill",

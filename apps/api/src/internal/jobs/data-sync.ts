@@ -21,9 +21,12 @@ export const syncCompanyBankAccountsTask = schemaTask({
       logger.log(`Syncing bank accounts for company ${payload.companyId}`);
       await service.company.syncBankAccounts(payload.companyId);
     } catch (error) {
-      logger.error(`Error syncing bank accounts for company ${payload.companyId}`, {
-        error,
-      });
+      logger.error(
+        `Error syncing bank accounts for company ${payload.companyId}`,
+        {
+          error,
+        },
+      );
     }
 
     return {
@@ -31,7 +34,6 @@ export const syncCompanyBankAccountsTask = schemaTask({
     };
   },
 });
-
 
 export const syncCompanyBankTransactionsTask = schemaTask({
   id: "sync-company-bank-transactions",
@@ -49,12 +51,17 @@ export const syncCompanyBankTransactionsTask = schemaTask({
     const service = getService();
 
     try {
-      logger.log(`Syncing bank account transactions for company ${payload.companyId}`);
+      logger.log(
+        `Syncing bank account transactions for company ${payload.companyId}`,
+      );
       await service.company.syncBankTransactions(payload.companyId);
     } catch (error) {
-      logger.error(`Error syncing bank account transactions for company ${payload.companyId}`, {
-        error,
-      });
+      logger.error(
+        `Error syncing bank account transactions for company ${payload.companyId}`,
+        {
+          error,
+        },
+      );
     }
 
     return {
@@ -77,7 +84,9 @@ export const syncCompanyBankingDataTask = schemaTask({
     });
 
     try {
-      logger.log(`Syncing bank account transactions for company ${payload.companyId}`);
+      logger.log(
+        `Syncing bank account transactions for company ${payload.companyId}`,
+      );
       await syncCompanyBankAccountsTask.trigger(
         { companyId: payload.companyId },
         // {
@@ -87,14 +96,19 @@ export const syncCompanyBankingDataTask = schemaTask({
         // },
       );
     } catch (error) {
-      logger.error(`Error syncing bank account transactions for company ${payload.companyId}`, {
-        error,
-      });
+      logger.error(
+        `Error syncing bank account transactions for company ${payload.companyId}`,
+        {
+          error,
+        },
+      );
       throw error;
     }
 
     try {
-      logger.log(`Syncing bank account transactions for company ${payload.companyId}`);
+      logger.log(
+        `Syncing bank account transactions for company ${payload.companyId}`,
+      );
       await syncCompanyBankTransactionsTask.trigger(
         { companyId: payload.companyId },
         // {
@@ -104,9 +118,12 @@ export const syncCompanyBankingDataTask = schemaTask({
         // },
       );
     } catch (error) {
-      logger.error(`Error syncing bank account transactions for company ${payload.companyId}`, {
-        error,
-      });
+      logger.error(
+        `Error syncing bank account transactions for company ${payload.companyId}`,
+        {
+          error,
+        },
+      );
       throw error;
     }
 
@@ -136,7 +153,6 @@ export const syncCompanyInvoicesTask = schemaTask({
     };
   },
 });
-
 
 export const syncCompanyBillsTask = schemaTask({
   id: "sync-company-bills",

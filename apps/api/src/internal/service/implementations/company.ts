@@ -120,10 +120,11 @@ export class CompanyService implements ICompanyService {
     return creds;
   }
 
-  async getPlaidCredentials(filter: { companyId: number } | { itemId: string }): Promise<CompanyPlaidCredentials | undefined> {
+  async getPlaidCredentials(
+    filter: { companyId: number } | { itemId: string },
+  ): Promise<CompanyPlaidCredentials | undefined> {
     // Get company and check for Plaid item id
-    const creds =
-      await this.repo.company.getPlaidCredentials(filter);
+    const creds = await this.repo.company.getPlaidCredentials(filter);
     return creds;
   }
 
@@ -171,7 +172,11 @@ export class CompanyService implements ICompanyService {
     return auth_url;
   }
 
-  async completeQuickBooksOAuthFlow(code: string, state: string, realmId: string) {
+  async completeQuickBooksOAuthFlow(
+    code: string,
+    state: string,
+    realmId: string,
+  ) {
     const { companyId, redirectUrl } =
       await this.repo.company.getQuickBooksOauthState(state);
 
@@ -258,11 +263,12 @@ export class CompanyService implements ICompanyService {
   async getQuickBooksOAuthCredentials(
     filter: { companyId: number } | { realmId: string },
   ): Promise<CompanyQuickBooksOauthCredential> {
-    const creds =
-      await this.repo.company.getQuickBooksOAuthCredentials(filter);
+    const creds = await this.repo.company.getQuickBooksOAuthCredentials(filter);
 
     if (!creds) {
-      throw new Error(`No QuickBooks OAuth credentials found for company ${filter}`);
+      throw new Error(
+        `No QuickBooks OAuth credentials found for company ${filter}`,
+      );
     }
 
     // Check if token is expired or about to expire in the next 5 minutes
@@ -462,7 +468,7 @@ export class CompanyService implements ICompanyService {
                 CurrencyRef: currencyRef,
                 VendorRef: vendorRef,
               }),
-              
+
               dataProvider: "quickbooks",
             },
           ],
@@ -525,8 +531,7 @@ export class CompanyService implements ICompanyService {
 
   async syncBankAccounts(companyId: number): Promise<void> {
     // Get all Plaid items for this company
-    const creds =
-      await this.repo.company.getPlaidCredentials({ companyId });
+    const creds = await this.repo.company.getPlaidCredentials({ companyId });
     if (!creds) {
       throw new Error(
         `Plaid credentials with companyId ${companyId} not found`,
@@ -587,8 +592,7 @@ export class CompanyService implements ICompanyService {
   }
 
   async syncBankTransactions(companyId: number): Promise<void> {
-    const creds =
-      await this.repo.company.getPlaidCredentials({ companyId });
+    const creds = await this.repo.company.getPlaidCredentials({ companyId });
     if (!creds) {
       throw new Error(
         `Plaid credentials with companyId ${companyId} not found`,
@@ -650,12 +654,12 @@ export class CompanyService implements ICompanyService {
         bankAccountRemoteId: account_id,
         personalFinanceCategoryConfidenceLevel:
           personal_finance_category?.confidence_level as
-          | "VERY_HIGH"
-          | "HIGH"
-          | "MEDIUM"
-          | "LOW"
-          | "UNKNOWN"
-          | undefined,
+            | "VERY_HIGH"
+            | "HIGH"
+            | "MEDIUM"
+            | "LOW"
+            | "UNKNOWN"
+            | undefined,
         personalFinanceCategoryPrimary: personal_finance_category?.primary,
         personalFinanceCategoryDetailed: personal_finance_category?.detailed,
         remainingRemoteContent: remaining_remote_content,
@@ -710,7 +714,9 @@ export class CompanyService implements ICompanyService {
     });
   }
 
-  async getMany(filter: { ids: number[] } | { ownerId: number }): Promise<Company[]> {
+  async getMany(
+    filter: { ids: number[] } | { ownerId: number },
+  ): Promise<Company[]> {
     return this.repo.company.getMany(filter);
   }
 

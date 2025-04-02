@@ -12,7 +12,9 @@ export type CompanyQuickBooksOauthCredential = InferSelectModel<
   typeof companyQuickBooksOauthCredentials
 >;
 export type CreateCompanyQuickBooksOauthCredentialParams = Omit<
-  OmitTimeStampFields<InferInsertModel<typeof companyQuickBooksOauthCredentials>>,
+  OmitTimeStampFields<
+    InferInsertModel<typeof companyQuickBooksOauthCredentials>
+  >,
   "companyId"
 >;
 export type UpdateCompanyQuickBooksOauthCredentialParams = Omit<
@@ -44,16 +46,20 @@ export type CreateCompanyParams = Omit<
 >;
 export type UpdateCompanyParams = Partial<CreateCompanyParams>;
 
-export type CompanyPlaidCredentials = InferSelectModel<typeof companyPlaidCredentials>;
+export type CompanyPlaidCredentials = InferSelectModel<
+  typeof companyPlaidCredentials
+>;
 export type CreateCompanyPlaidCredentialsParams = Omit<
   OmitTimeStampFields<InferInsertModel<typeof companyPlaidCredentials>>,
   "companyId"
 >;
-export type UpdateCompanyPlaidCredentialsParams = Partial<CreateCompanyPlaidCredentialsParams>;
+export type UpdateCompanyPlaidCredentialsParams =
+  Partial<CreateCompanyPlaidCredentialsParams>;
 
 export type CompanySyncStatus = InferSelectModel<typeof companySyncStatus>;
 export type CreateCompanySyncStatusParams = Omit<
   InferInsertModel<typeof companySyncStatus>,
   "companyId"
 >;
-export type UpdateCompanySyncStatusParams = Partial<CreateCompanySyncStatusParams>;
+export type UpdateCompanySyncStatusParams =
+  Partial<CreateCompanySyncStatusParams>;

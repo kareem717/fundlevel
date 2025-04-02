@@ -22,18 +22,12 @@ const bankAccountHandler = new OpenAPIHono()
     const result = await getService(c).bankAccount.get({ id });
 
     if (!result) {
-      return c.json(
-        { error: "Bank account not found." },
-        404,
-      );
+      return c.json({ error: "Bank account not found." }, 404);
     }
 
     const company = await getService(c).company.get(result.companyId);
     if (!company) {
-      return c.json(
-        { error: "Company not found." },
-        404,
-      );
+      return c.json({ error: "Company not found." }, 404);
     }
 
     if (company.ownerId !== account.id) {
@@ -74,10 +68,7 @@ const bankAccountHandler = new OpenAPIHono()
 
     const company = await getService(c).company.get(companyId);
     if (!company) {
-      return c.json(
-        { error: "Company not found." },
-        404,
-      );
+      return c.json({ error: "Company not found." }, 404);
     }
 
     if (company.ownerId !== account.id) {

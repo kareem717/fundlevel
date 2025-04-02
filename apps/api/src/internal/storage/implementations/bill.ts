@@ -4,16 +4,21 @@ import type {
   BillLine,
   CreateBillLineParams,
 } from "@fundlevel/db/types";
-import type {
-  IBillRepository,
-} from "../interfaces";
-import { bills, billLines, bankTransactionRelationships } from "@fundlevel/db/schema";
+import type { IBillRepository } from "../interfaces";
+import {
+  bills,
+  billLines,
+  bankTransactionRelationships,
+} from "@fundlevel/db/schema";
 import { eq, inArray, sql, gte, lte, asc, desc, count, and } from "drizzle-orm";
 import type { IDB } from "@fundlevel/api/internal/storage";
-import type { OffsetPaginationResult, GetManyBillsFilter } from "@fundlevel/api/internal/entities";
+import type {
+  OffsetPaginationResult,
+  GetManyBillsFilter,
+} from "@fundlevel/api/internal/entities";
 
 export class BillRepository implements IBillRepository {
-  constructor(private db: IDB) { }
+  constructor(private db: IDB) {}
 
   async upsert(
     billParams: CreateBillParams[],
@@ -35,9 +40,7 @@ export class BillRepository implements IBillRepository {
           ),
           syncToken: sql.raw(`excluded.${bills.syncToken.name}`),
           totalAmount: sql.raw(`excluded.${bills.totalAmount.name}`),
-          remainingBalance: sql.raw(
-            `excluded.${bills.remainingBalance.name}`,
-          ),
+          remainingBalance: sql.raw(`excluded.${bills.remainingBalance.name}`),
           dueDate: sql.raw(`excluded.${bills.dueDate.name}`),
           currency: sql.raw(`excluded.${bills.currency.name}`),
         },
@@ -57,13 +60,18 @@ export class BillRepository implements IBillRepository {
     const whereCondition = and(
       filter.minTotal ? gte(bills.totalAmount, filter.minTotal) : undefined,
       filter.maxTotal ? lte(bills.totalAmount, filter.maxTotal) : undefined,
-      filter.companyIds ? inArray(bills.companyId, filter.companyIds) : undefined,
+      filter.companyIds
+        ? inArray(bills.companyId, filter.companyIds)
+        : undefined,
       filter.minDueDate ? gte(bills.dueDate, filter.minDueDate) : undefined,
       filter.maxDueDate ? lte(bills.dueDate, filter.maxDueDate) : undefined,
     );
 
     const { page, pageSize, order } = filter;
-    const qb = this.db.select().from(bills).groupBy(bills.id)
+    const qb = this.db
+      .select()
+      .from(bills)
+      .groupBy(bills.id)
       .where(whereCondition)
       .limit(pageSize)
       .offset(page * pageSize)
@@ -125,27 +133,36 @@ export class BillRepository implements IBillRepository {
     await this.db
       .delete(bills)
       .where(
-        "id" in filter ? eq(bills.id, filter.id) : eq(bills.remoteId, filter.remoteId),
+        "id" in filter
+          ? eq(bills.id, filter.id)
+          : eq(bills.remoteId, filter.remoteId),
       );
   }
 
-  async deleteMany(filter: { id: number[] } | { remoteId: string[] }): Promise<void> {
+  async deleteMany(
+    filter: { id: number[] } | { remoteId: string[] },
+  ): Promise<void> {
     await this.db.transaction(async (tx) => {
       const billIds = await tx
         .delete(bills)
         .where(
-          "id" in filter ? inArray(bills.id, filter.id) : inArray(bills.remoteId, filter.remoteId),
-        ).returning({
+          "id" in filter
+            ? inArray(bills.id, filter.id)
+            : inArray(bills.remoteId, filter.remoteId),
+        )
+        .returning({
           id: bills.id,
         });
 
-      await tx.delete(bankTransactionRelationships)
-        .where(
-          and( 
-            eq(bankTransactionRelationships.entityType, "bill"),
-            inArray(bankTransactionRelationships.entityId, billIds.map((bill) => bill.id)),
-          )
-        )
+      await tx.delete(bankTransactionRelationships).where(
+        and(
+          eq(bankTransactionRelationships.entityType, "bill"),
+          inArray(
+            bankTransactionRelationships.entityId,
+            billIds.map((bill) => bill.id),
+          ),
+        ),
+      );
     });
   }
 
@@ -154,19 +171,21 @@ export class BillRepository implements IBillRepository {
       .insert(billLines)
       .values(lines)
       .onConflictDoUpdate({
-        target: [
-          billLines.remoteId
-        ],
+        target: [billLines.remoteId],
         set: {
           description: sql.raw(`excluded.${billLines.description.name}`),
           amount: sql.raw(`excluded.${billLines.amount.name}`),
-          remainingRemoteContent: sql.raw(`excluded.${billLines.remainingRemoteContent.name}`),
+          remainingRemoteContent: sql.raw(
+            `excluded.${billLines.remainingRemoteContent.name}`,
+          ),
         },
       })
       .returning();
   }
 
-  async getManyLines(filter: { billId: number } | { ids: number[] }): Promise<BillLine[]> {
+  async getManyLines(
+    filter: { billId: number } | { ids: number[] },
+  ): Promise<BillLine[]> {
     const qb = this.db.select().from(billLines);
 
     if ("billId" in filter) {

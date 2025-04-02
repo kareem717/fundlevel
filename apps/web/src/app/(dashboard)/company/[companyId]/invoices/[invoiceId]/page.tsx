@@ -34,7 +34,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@fundlevel/ui/components/dropdown-menu";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@fundlevel/ui/components/tabs";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@fundlevel/ui/components/tabs";
 import { LineItemsTable } from "./components/line-items-table";
 import { TransactionsTable } from "./components/transactions-table";
 import { formatCurrency } from "@fundlevel/web/lib/utils";
@@ -51,10 +56,9 @@ export default async function AccountingInvoicePage({
     return redirect(redirects.auth.login);
   }
 
-  const req = await client(
-    env.NEXT_PUBLIC_BACKEND_URL,
-    token,
-  ).invoice[":invoiceId"].$get({
+  const req = await client(env.NEXT_PUBLIC_BACKEND_URL, token).invoice[
+    ":invoiceId"
+  ].$get({
     param: { invoiceId },
   });
   if (!req.ok) {
@@ -110,7 +114,9 @@ export default async function AccountingInvoicePage({
             </DropdownMenuContent>
           </DropdownMenu>
           <Link
-            href={redirects.app.company(Number(companyId)).invoices.reconcile(Number(invoiceId))}
+            href={redirects.app
+              .company(Number(companyId))
+              .invoices.reconcile(Number(invoiceId))}
           >
             <Button>
               <RefreshCw className="h-4 w-4 mr-2" />
@@ -126,7 +132,9 @@ export default async function AccountingInvoicePage({
             <CardHeader className="pb-4">
               <div className="flex items-start justify-between">
                 <div>
-                  <CardTitle className="text-2xl font-bold">Invoice #{invoice.id}</CardTitle>
+                  <CardTitle className="text-2xl font-bold">
+                    Invoice #{invoice.id}
+                  </CardTitle>
                   <CardDescription className="mt-1">
                     {invoice.remoteId && (
                       <span className="flex items-center text-sm text-muted-foreground">
@@ -146,16 +154,26 @@ export default async function AccountingInvoicePage({
               <div className="grid gap-6 md:grid-cols-2">
                 <div className="space-y-4">
                   <div>
-                    <h3 className="text-sm font-medium text-muted-foreground">Invoice Amount</h3>
+                    <h3 className="text-sm font-medium text-muted-foreground">
+                      Invoice Amount
+                    </h3>
                     <div className="mt-1 flex items-baseline">
                       <span className="text-2xl font-bold">
-                        {formatCurrency(invoice.totalAmount, invoice.currency || undefined)}
+                        {formatCurrency(
+                          invoice.totalAmount,
+                          invoice.currency || undefined,
+                        )}
                       </span>
-                      {invoice.balanceRemaining !== null && invoice.balanceRemaining > 0 && (
-                        <span className="ml-2 text-sm text-muted-foreground">
-                          {formatCurrency(invoice.balanceRemaining, invoice.currency || undefined)} remaining
-                        </span>
-                      )}
+                      {invoice.balanceRemaining !== null &&
+                        invoice.balanceRemaining > 0 && (
+                          <span className="ml-2 text-sm text-muted-foreground">
+                            {formatCurrency(
+                              invoice.balanceRemaining,
+                              invoice.currency || undefined,
+                            )}{" "}
+                            remaining
+                          </span>
+                        )}
                     </div>
                   </div>
                 </div>
@@ -163,17 +181,23 @@ export default async function AccountingInvoicePage({
                 <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <h3 className="text-sm font-medium text-muted-foreground">Created</h3>
+                      <h3 className="text-sm font-medium text-muted-foreground">
+                        Created
+                      </h3>
                       <p className="mt-1 flex items-center">
                         <Calendar className="mr-1 h-4 w-4 text-muted-foreground" />
                         {format(new Date(invoice.createdAt), "MMM d, yyyy")}
                       </p>
                     </div>
                     <div>
-                      <h3 className="text-sm font-medium text-muted-foreground">Due Date</h3>
+                      <h3 className="text-sm font-medium text-muted-foreground">
+                        Due Date
+                      </h3>
                       <p className="mt-1 flex items-center">
                         <Clock className="mr-1 h-4 w-4 text-muted-foreground" />
-                        {invoice.dueDate ? format(new Date(invoice.dueDate), "MMM d, yyyy") : "N/A"}
+                        {invoice.dueDate
+                          ? format(new Date(invoice.dueDate), "MMM d, yyyy")
+                          : "N/A"}
                       </p>
                     </div>
                   </div>
@@ -191,7 +215,9 @@ export default async function AccountingInvoicePage({
               <Card>
                 <CardHeader>
                   <CardTitle>Invoice Line Items</CardTitle>
-                  <CardDescription>Details of products or services included in this invoice</CardDescription>
+                  <CardDescription>
+                    Details of products or services included in this invoice
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <LineItemsTable invoiceId={invoiceId} />
@@ -202,14 +228,18 @@ export default async function AccountingInvoicePage({
               <Card className="relative">
                 <CardHeader>
                   <CardTitle>Related Transactions</CardTitle>
-                  <CardDescription>Banking transactions that may be related to this invoice</CardDescription>
+                  <CardDescription>
+                    Banking transactions that may be related to this invoice
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="mb-20">
                   <TransactionsTable invoiceId={invoiceId} />
                 </CardContent>
                 <CardFooter className="flex justify-center border-t bg-muted/50 py-4 absolute bottom-0 left-0 w-full">
                   <Link
-                    href={redirects.app.company(Number(companyId)).invoices.reconcile(Number(invoiceId))}
+                    href={redirects.app
+                      .company(Number(companyId))
+                      .invoices.reconcile(Number(invoiceId))}
                   >
                     <Button variant="outline">
                       <RefreshCw className="h-4 w-4 mr-2" />
@@ -232,23 +262,42 @@ export default async function AccountingInvoicePage({
               <div className="space-y-4">
                 <div>
                   <p className="text-sm text-muted-foreground">Total Amount</p>
-                  <p className="text-lg font-medium">{formatCurrency(invoice.totalAmount, invoice.currency || undefined)}</p>
+                  <p className="text-lg font-medium">
+                    {formatCurrency(
+                      invoice.totalAmount,
+                      invoice.currency || undefined,
+                    )}
+                  </p>
                 </div>
                 <Separator />
                 <div>
                   <p className="text-sm text-muted-foreground">Amount Paid</p>
-                  <p className="text-lg font-medium">{formatCurrency(invoice.totalAmount - (invoice.balanceRemaining || 0), invoice.currency || undefined)}</p>
+                  <p className="text-lg font-medium">
+                    {formatCurrency(
+                      invoice.totalAmount - (invoice.balanceRemaining || 0),
+                      invoice.currency || undefined,
+                    )}
+                  </p>
                 </div>
                 <Separator />
                 <div>
-                  <p className="text-sm text-muted-foreground">Balance Remaining</p>
-                  <p className="text-lg font-bold">{formatCurrency(invoice.balanceRemaining || 0, invoice.currency || undefined)}</p>
+                  <p className="text-sm text-muted-foreground">
+                    Balance Remaining
+                  </p>
+                  <p className="text-lg font-bold">
+                    {formatCurrency(
+                      invoice.balanceRemaining || 0,
+                      invoice.currency || undefined,
+                    )}
+                  </p>
                 </div>
               </div>
             </CardContent>
             <CardFooter className="bg-muted/50 flex flex-col items-stretch gap-2">
               <Link
-                href={redirects.app.company(Number(companyId)).invoices.reconcile(Number(invoiceId))}
+                href={redirects.app
+                  .company(Number(companyId))
+                  .invoices.reconcile(Number(invoiceId))}
                 className="w-full"
               >
                 <Button variant="outline" className="w-full">
@@ -270,7 +319,10 @@ export default async function AccountingInvoicePage({
                   <div>
                     <p className="text-sm font-medium">Created</p>
                     <p className="text-xs text-muted-foreground">
-                      {format(new Date(invoice.createdAt), "MMM d, yyyy 'at' h:mm a")}
+                      {format(
+                        new Date(invoice.createdAt),
+                        "MMM d, yyyy 'at' h:mm a",
+                      )}
                     </p>
                   </div>
                 </div>
@@ -279,7 +331,10 @@ export default async function AccountingInvoicePage({
                     <div>
                       <p className="text-sm font-medium">Last Modified</p>
                       <p className="text-xs text-muted-foreground">
-                        {format(new Date(invoice.updatedAt), "MMM d, yyyy 'at' h:mm a")}
+                        {format(
+                          new Date(invoice.updatedAt),
+                          "MMM d, yyyy 'at' h:mm a",
+                        )}
                       </p>
                     </div>
                   </div>

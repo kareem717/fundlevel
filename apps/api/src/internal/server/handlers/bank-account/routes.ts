@@ -6,9 +6,7 @@ import {
 } from "@fundlevel/api/internal/server/types/errors";
 import { bearerAuthSchema } from "@fundlevel/api/internal/server/types/security";
 import { z } from "zod";
-import {
-  BankAccountSchema,
-} from "@fundlevel/db/validators";
+import { BankAccountSchema } from "@fundlevel/db/validators";
 import {
   offsetPaginationParamsSchema,
   offsetPaginationResultSchema,
@@ -32,7 +30,9 @@ export const getBankAccountDetailsRoute = createRoute({
       description: "Successful fetch",
       content: {
         "application/json": {
-          schema: BankAccountSchema.omit({ remainingRemoteContent: true }).openapi("BankAccount"),
+          schema: BankAccountSchema.omit({
+            remainingRemoteContent: true,
+          }).openapi("BankAccount"),
         },
       },
     },
@@ -64,7 +64,11 @@ export const getCompanyBankAccountsRoute = createRoute({
       content: {
         "application/json": {
           schema: z.object({
-            data: z.array(BankAccountSchema.omit({ remainingRemoteContent: true }).openapi("BankAccount")),
+            data: z.array(
+              BankAccountSchema.omit({ remainingRemoteContent: true }).openapi(
+                "BankAccount",
+              ),
+            ),
             ...offsetPaginationResultSchema.shape,
           }),
         },
