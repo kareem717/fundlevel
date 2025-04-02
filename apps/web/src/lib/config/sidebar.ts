@@ -1,4 +1,4 @@
-import { LayoutGrid, LogOut, Plug, Receipt, Landmark } from "lucide-react";
+import { LayoutGrid, LogOut, Plug, Receipt, Landmark, Plus } from "lucide-react";
 import { redirects } from "./redirects";
 import type { ElementType } from "react";
 
@@ -28,16 +28,6 @@ export type NavigationMenu = {
  * An array of navigation items for the dashboard sidebar.
  */
 const dashboard: NavigationMenu[] = [
-  {
-    name: "Companies",
-    path: redirects.app.root,
-    items: [
-      {
-        title: "View All",
-        url: redirects.app.root,
-      },
-    ],
-  },
   {
     name: "Account",
     path: redirects.app.root,

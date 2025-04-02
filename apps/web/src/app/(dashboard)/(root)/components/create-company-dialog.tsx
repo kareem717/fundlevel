@@ -12,7 +12,7 @@ import {
   FormMessage,
 } from "@fundlevel/ui/components/form";
 import { Input } from "@fundlevel/ui/components/input";
-import { useState, type ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithoutRef } from "react";
 import { cn } from "@fundlevel/ui/lib/utils";
 import { Loader2 } from "lucide-react";
 import {
@@ -26,12 +26,14 @@ import {
 import { CreateCompanyParamsSchema } from "@fundlevel/db/validators";
 import { useRouter } from "next/navigation";
 import { redirects } from "@fundlevel/web/lib/config/redirects";
-import type { z } from "zod";  
-import { useMutation } from "@tanstack/react-query";
+import type { z } from "zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { client } from "@fundlevel/sdk";
 import { useAuth } from "@fundlevel/web/components/providers/auth-provider";
 import { toast } from "@fundlevel/ui/components/sonner";
 import { env } from "@fundlevel/web/env";
+import { parseAsBoolean, useQueryState } from "nuqs";
+import { QUERY_KEYS } from "@fundlevel/web/lib/config/query-keys";
 
 interface CreateCompanyDialogProps
   extends Omit<ComponentPropsWithoutRef<"form">, "onSubmit"> {
@@ -46,7 +48,14 @@ export function CreateCompanyDialog({
   ...props
 }: CreateCompanyDialogProps) {
   const router = useRouter();
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const queryClient = useQueryClient();
+  const [dialogOpen, setDialogOpen] = useQueryState(
+    "create",
+    parseAsBoolean.withDefault(false).withOptions({
+      history: "push",
+    }),
+  );
+
   const { authToken } = useAuth();
   if (!authToken) {
     throw new Error("CreateCompanyDialog: No bearer token found");
@@ -54,10 +63,14 @@ export function CreateCompanyDialog({
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (values: CreateCompanyFormValues) => {
+      const payload = {
+        name: values.name || ""
+      };
+
       const result = await client(
         env.NEXT_PUBLIC_BACKEND_URL,
         authToken,
-      ).company.$post({ json: values });
+      ).company.$post({ json: payload });
 
       if (!result.ok) {
         throw new Error("Failed to create company");
@@ -73,6 +86,10 @@ export function CreateCompanyDialog({
         description:
           "Account linked successfully. We're redirecting you to the dashboard.",
       });
+
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.USER_COMPANIES] });
+
+      router.refresh();
 
       router.push(redirects.app.company(result.id).root);
     },
@@ -92,7 +109,11 @@ export function CreateCompanyDialog({
 
   // 2. Define a submit handler.
   function onSubmit(values: CreateCompanyFormValues) {
-    mutate(values);
+    // Ensure name is required before passing to the API
+    const payload = {
+      name: values.name || ""
+    };
+    mutate(payload);
   }
 
   return (

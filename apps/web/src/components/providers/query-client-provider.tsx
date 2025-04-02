@@ -6,7 +6,7 @@ import {
   QueryClientProvider as BaseQueryClientProvider,
 } from "@tanstack/react-query";
 import { HTTPException } from "hono/http-exception";
-import { PropsWithChildren, useState } from "react";
+import { type PropsWithChildren, useState } from "react";
 
 export function QueryClientProvider({ children }: PropsWithChildren) {
   const [queryClient] = useState(

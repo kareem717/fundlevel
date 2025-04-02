@@ -43,5 +43,6 @@ export const redirects = {
       },
     }),
     root: appRoot,
+    createCompany: `${appRoot}?create=true`,
   },
 };
