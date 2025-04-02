@@ -23,7 +23,7 @@ export function CompanyGrid({
       {isFetching ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {Array.from({ length: isMobile ? 3 : 6 }).map(() => (
-            <Skeleton key={generate()} className="w-full h-full" />
+            <Skeleton key={generate()} className="w-full h-full aspect-[2]" />
           ))}
         </div>
       ) : data.length > 0 ? (
@@ -34,7 +34,7 @@ export function CompanyGrid({
               href={redirects.app.company(company.id).root}
               prefetch={true}
             >
-              <Card className="flex flex-col h-full">
+              <Card className="flex flex-col h-full aspect-[2]">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     {company.name}
