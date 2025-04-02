@@ -1,4 +1,11 @@
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@fundlevel/ui/components/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@fundlevel/ui/components/card";
 import { Building, HelpCircle, Coins, FileText } from "lucide-react";
 import { ConnectBankAccountButton } from "./components/connect-bank-accounts-button";
 
@@ -12,7 +19,9 @@ export default async function ConnectionsSettingsPage({
     <Card className="overflow-hidden border relative">
       <CardHeader>
         <CardTitle>Banking Software</CardTitle>
-        <CardDescription>Connect your banking software to automatically import transactions</CardDescription>
+        <CardDescription>
+          Connect your banking software to automatically import transactions
+        </CardDescription>
       </CardHeader>
       <CardContent className="mb-16">
         <div className="grid gap-6">
@@ -22,8 +31,12 @@ export default async function ConnectionsSettingsPage({
                 <Coins className="h-5 w-5 text-primary" />
               </div>
               <div className="space-y-1">
-                <h3 className="text-base font-medium">Real-time banking data</h3>
-                <p className="text-sm text-muted-foreground">Connect to view all your transactions in one place</p>
+                <h3 className="text-base font-medium">
+                  Real-time banking data
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  Connect to view all your transactions in one place
+                </p>
               </div>
             </div>
 
@@ -32,8 +45,12 @@ export default async function ConnectionsSettingsPage({
                 <FileText className="h-5 w-5 text-primary" />
               </div>
               <div className="space-y-1">
-                <h3 className="text-base font-medium">Automated reconciliation</h3>
-                <p className="text-sm text-muted-foreground">Match transactions with invoices to keep your books accurate</p>
+                <h3 className="text-base font-medium">
+                  Automated reconciliation
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  Match transactions with invoices to keep your books accurate
+                </p>
               </div>
             </div>
           </div>

@@ -1,10 +1,12 @@
-import type { IInvoiceRepository, IBankTransactionRepository } from "@fundlevel/api/internal/storage/interfaces";
+import type {
+  IInvoiceRepository,
+  IBankTransactionRepository,
+} from "@fundlevel/api/internal/storage/interfaces";
 import type { GetManyInvoicesFilter } from "@fundlevel/api/internal/entities";
 import type { Invoice } from "@fundlevel/db/types";
 import type { OffsetPaginationResult } from "@fundlevel/api/internal/entities";
 import type { IInvoiceService } from "../interfaces";
-import type {
-} from "@fundlevel/api/internal/storage/interfaces";
+import type {} from "@fundlevel/api/internal/storage/interfaces";
 import { createOpenAI } from "@ai-sdk/openai";
 import { generateObject } from "ai";
 import { z } from "zod";
@@ -14,9 +16,11 @@ export class InvoiceService implements IInvoiceService {
     private readonly invoiceRepo: IInvoiceRepository,
     private readonly bankTxRepo: IBankTransactionRepository,
     private readonly openAiKey: string,
-  ) { }
+  ) {}
 
-  async getMany(filter: GetManyInvoicesFilter): Promise<OffsetPaginationResult<Invoice>> {
+  async getMany(
+    filter: GetManyInvoicesFilter,
+  ): Promise<OffsetPaginationResult<Invoice>> {
     return this.invoiceRepo.getMany(filter);
   }
 
@@ -60,11 +64,15 @@ export class InvoiceService implements IInvoiceService {
       `,
       prompt: `
         Analyze this invoice and suggest filter parameters to find matching bank transactions:
-        ${JSON.stringify({
-        ...invoiceRecord,
-        // We need to negate the amount to make it a credit
-        amount: invoiceRecord.totalAmount * -1,
-      }, null, 2)}
+        ${JSON.stringify(
+          {
+            ...invoiceRecord,
+            // We need to negate the amount to make it a credit
+            amount: invoiceRecord.totalAmount * -1,
+          },
+          null,
+          2,
+        )}
       `,
       schema: z.object({
         minAmount: z
@@ -137,11 +145,15 @@ export class InvoiceService implements IInvoiceService {
           Find the best matching transactions for this invoice:
           
           Invoice:
-          ${JSON.stringify({
-            ...invoice,
-            // We need to negate the amount to make it a credit
-            amount: invoice.totalAmount * -1,
-          }, null, 2)}
+          ${JSON.stringify(
+            {
+              ...invoice,
+              // We need to negate the amount to make it a credit
+              amount: invoice.totalAmount * -1,
+            },
+            null,
+            2,
+          )}
 
           Available Transactions:
           ${JSON.stringify(transactionJob, null, 2)}
@@ -149,8 +161,13 @@ export class InvoiceService implements IInvoiceService {
           schema: z.object({
             transactions: z.array(
               z.object({
-                transactionId: z.number().min(1).describe("The ID of the transaction"),
-                confidence: z.enum(["low", "medium", "high"]).describe("The confidence level of the match"),
+                transactionId: z
+                  .number()
+                  .min(1)
+                  .describe("The ID of the transaction"),
+                confidence: z
+                  .enum(["low", "medium", "high"])
+                  .describe("The confidence level of the match"),
                 matchReason: z
                   .string()
                   .describe(
@@ -167,4 +184,4 @@ export class InvoiceService implements IInvoiceService {
 
     return suggestedTransactions;
   }
-} 
+}

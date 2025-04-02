@@ -4,7 +4,9 @@ import type { ColumnDef } from "@tanstack/react-table";
 import type { BankTransaction } from "@fundlevel/db/types";
 import { formatCurrency } from "@fundlevel/web/lib/utils";
 
-export const transactionColumns: ColumnDef<Omit<BankTransaction, "remainingRemoteContent">>[] = [
+export const transactionColumns: ColumnDef<
+  Omit<BankTransaction, "remainingRemoteContent">
+>[] = [
   {
     accessorKey: "name",
     header: "Description",
@@ -21,4 +23,4 @@ export const transactionColumns: ColumnDef<Omit<BankTransaction, "remainingRemot
       return formatCurrency(amount);
     },
   },
-]; 
+];

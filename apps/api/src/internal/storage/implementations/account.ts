@@ -5,13 +5,12 @@ import { accounts } from "@fundlevel/db/schema";
 import { eq } from "drizzle-orm";
 
 export class AccountRepository implements IAccountRepository {
-  constructor(private readonly db: IDB) { }
+  constructor(private readonly db: IDB) {}
 
-  async get(filters: { id: number } | { userId: string }): Promise<Account | undefined> {
-    const qb = this.db
-      .select()
-      .from(accounts)
-      .$dynamic();
+  async get(
+    filters: { id: number } | { userId: string },
+  ): Promise<Account | undefined> {
+    const qb = this.db.select().from(accounts).$dynamic();
 
     if ("id" in filters) {
       qb.where(eq(accounts.id, filters.id));

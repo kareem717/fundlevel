@@ -5,7 +5,13 @@ import { client } from "@fundlevel/sdk";
 import { env } from "@fundlevel/web/env";
 import { getTokenCached } from "@fundlevel/web/actions/auth";
 import { Label } from "@fundlevel/ui/components/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@fundlevel/ui/components/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@fundlevel/ui/components/card";
 import { format } from "date-fns";
 import { formatCurrency } from "@fundlevel/web/lib/utils";
 
@@ -15,7 +21,9 @@ async function BankAccountDetails({ accountId }: { accountId: number }) {
     throw new Error("No token found");
   }
 
-  const resp = await client(env.NEXT_PUBLIC_BACKEND_URL, token)["bank-account"][":id"].$get({
+  const resp = await client(env.NEXT_PUBLIC_BACKEND_URL, token)["bank-account"][
+    ":id"
+  ].$get({
     param: { id: accountId },
   });
 
@@ -68,12 +76,16 @@ async function BankAccountDetails({ accountId }: { accountId: number }) {
           </div>
           <div className="grid grid-cols-2 gap-1">
             <p className="text-sm text-muted-foreground">Currency</p>
-            <p className="text-sm text-right">{account.isoCurrencyCode || "USD"}</p>
+            <p className="text-sm text-right">
+              {account.isoCurrencyCode || "USD"}
+            </p>
           </div>
           <div className="grid grid-cols-2 gap-1">
             <p className="text-sm text-muted-foreground">Last Updated</p>
             {account.updatedAt ? (
-              <p className="text-sm text-right">{format(account.updatedAt, "MM/dd/yyyy")}</p>
+              <p className="text-sm text-right">
+                {format(account.updatedAt, "MM/dd/yyyy")}
+              </p>
             ) : (
               <p className="text-sm text-right">N/A</p>
             )}
@@ -92,12 +104,14 @@ export default async function BankAccountPage({
 
   return (
     <div className="space-y-4">
-      <Suspense fallback={
-        <div className="flex flex-col md:flex-row gap-4 w-full">
-          <Skeleton className="h-40 w-full md:w-2/3" />
-          <Skeleton className="h-40 w-full md:w-1/3" />
-        </div>
-      }  >
+      <Suspense
+        fallback={
+          <div className="flex flex-col md:flex-row gap-4 w-full">
+            <Skeleton className="h-40 w-full md:w-2/3" />
+            <Skeleton className="h-40 w-full md:w-1/3" />
+          </div>
+        }
+      >
         <BankAccountDetails accountId={bankAccountId} />
       </Suspense>
       <div className="space-y-4">

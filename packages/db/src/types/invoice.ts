@@ -8,12 +8,8 @@ import type { OmitEntityFields } from "./utils";
 
 // QuickBooks Invoice types
 export type Invoice = InferSelectModel<typeof invoices>;
-export type CreateInvoiceParams = Omit<
-  OmitEntityFields<Invoice>,
-  "companyId"
->;
-export type UpdateInvoiceParams =
-  Partial<CreateInvoiceParams>;
+export type CreateInvoiceParams = Omit<OmitEntityFields<Invoice>, "companyId">;
+export type UpdateInvoiceParams = Partial<CreateInvoiceParams>;
 
 // Invoice Line types
 export type InvoiceLine = InferSelectModel<typeof invoiceLines>;

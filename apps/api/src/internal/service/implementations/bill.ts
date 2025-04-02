@@ -1,4 +1,7 @@
-import type { IBankTransactionRepository, IBillRepository } from "@fundlevel/api/internal/storage/interfaces";
+import type {
+  IBankTransactionRepository,
+  IBillRepository,
+} from "@fundlevel/api/internal/storage/interfaces";
 import type { GetManyBillsFilter } from "@fundlevel/api/internal/entities";
 import type { Bill } from "@fundlevel/db/types";
 import type { OffsetPaginationResult } from "@fundlevel/api/internal/entities";
@@ -12,9 +15,11 @@ export class BillService implements IBillService {
     private readonly billRepo: IBillRepository,
     private readonly bankTxRepo: IBankTransactionRepository,
     private readonly openAiKey: string,
-  ) { }
+  ) {}
 
-  async getMany(filter: GetManyBillsFilter): Promise<OffsetPaginationResult<Bill>> {
+  async getMany(
+    filter: GetManyBillsFilter,
+  ): Promise<OffsetPaginationResult<Bill>> {
     return this.billRepo.getMany(filter);
   }
 
@@ -58,11 +63,15 @@ export class BillService implements IBillService {
       `,
       prompt: `
         Analyze this invoice and suggest filter parameters to find matching bank transactions:
-        ${JSON.stringify({
-        ...billRecord,
-        // We need to negate the amount to make it a credit
-        amount: (billRecord.totalAmount ?? 0) * -1,
-      }, null, 2)}
+        ${JSON.stringify(
+          {
+            ...billRecord,
+            // We need to negate the amount to make it a credit
+            amount: (billRecord.totalAmount ?? 0) * -1,
+          },
+          null,
+          2,
+        )}
       `,
       schema: z.object({
         minAmount: z
@@ -137,11 +146,15 @@ export class BillService implements IBillService {
           Find the best matching transactions for this invoice:
           
           Invoice:
-          ${JSON.stringify({
-            ...bill,
-            // We need to negate the amount to make it a credit
-            amount: (bill.totalAmount ?? 0) * -1,
-          }, null, 2)}
+          ${JSON.stringify(
+            {
+              ...bill,
+              // We need to negate the amount to make it a credit
+              amount: (bill.totalAmount ?? 0) * -1,
+            },
+            null,
+            2,
+          )}
 
           Available Transactions:
           ${JSON.stringify(transactionJob, null, 2)}
@@ -149,8 +162,13 @@ export class BillService implements IBillService {
           schema: z.object({
             transactions: z.array(
               z.object({
-                transactionId: z.number().min(1).describe("The ID of the transaction"),
-                confidence: z.enum(["low", "medium", "high"]).describe("The confidence level of the match"),
+                transactionId: z
+                  .number()
+                  .min(1)
+                  .describe("The ID of the transaction"),
+                confidence: z
+                  .enum(["low", "medium", "high"])
+                  .describe("The confidence level of the match"),
                 matchReason: z
                   .string()
                   .describe(
@@ -167,4 +185,4 @@ export class BillService implements IBillService {
 
     return suggestedTransactions;
   }
-} 
+}

@@ -8,7 +8,7 @@ import type {
   CompanyQuickBooksOauthCredential,
   QuickBooksOauthState,
   UpdateCompanySyncStatusParams,
-  CreateQuickBooksOauthStateParams
+  CreateQuickBooksOauthStateParams,
 } from "@fundlevel/db/types";
 import type { ICompanyRepository } from "../interfaces/company";
 import {
@@ -16,13 +16,13 @@ import {
   companyPlaidCredentials,
   companyQuickBooksOauthCredentials,
   quickBooksOauthStates,
-  companySyncStatus
+  companySyncStatus,
 } from "@fundlevel/db/schema";
 import { and, eq, inArray, like } from "drizzle-orm";
 import type { IDB } from "../index";
 
 export class CompanyRepository implements ICompanyRepository {
-  constructor(private readonly db: IDB) { }
+  constructor(private readonly db: IDB) {}
 
   async create(params: CreateCompanyParams, ownerId: number): Promise<Company> {
     const [data] = await this.db
@@ -47,12 +47,20 @@ export class CompanyRepository implements ICompanyRepository {
     return data;
   }
 
-  async getMany(filter: { ids: number[] } | { ownerId: number }): Promise<Company[]> {
-    if ('ids' in filter) {
-      return await this.db.select().from(companies).where(inArray(companies.id, filter.ids));
+  async getMany(
+    filter: { ids: number[] } | { ownerId: number },
+  ): Promise<Company[]> {
+    if ("ids" in filter) {
+      return await this.db
+        .select()
+        .from(companies)
+        .where(inArray(companies.id, filter.ids));
     }
 
-    return await this.db.select().from(companies).where(eq(companies.ownerId, filter.ownerId));
+    return await this.db
+      .select()
+      .from(companies)
+      .where(eq(companies.ownerId, filter.ownerId));
   }
 
   async getByAccountId(accountId: number): Promise<Company[]> {
@@ -96,9 +104,9 @@ export class CompanyRepository implements ICompanyRepository {
   }
 
   async getPlaidCredentials(
-    filter: { itemId: string } | { companyId: number }
+    filter: { itemId: string } | { companyId: number },
   ): Promise<CompanyPlaidCredentials | undefined> {
-    if ('itemId' in filter) {
+    if ("itemId" in filter) {
       const [data] = await this.db
         .select()
         .from(companyPlaidCredentials)
@@ -135,7 +143,10 @@ export class CompanyRepository implements ICompanyRepository {
     await this.db.delete(companies).where(eq(companies.id, id));
   }
 
-  async updatePlaidTransactionCursor(companyId: number, cursor: string): Promise<void> {
+  async updatePlaidTransactionCursor(
+    companyId: number,
+    cursor: string,
+  ): Promise<void> {
     const [data] = await this.db
       .update(companyPlaidCredentials)
       .set({ transactionCursor: cursor })
@@ -148,13 +159,15 @@ export class CompanyRepository implements ICompanyRepository {
   }
 
   async getQuickBooksOAuthCredentials(
-    filter: { companyId: number } | { realmId: string }
+    filter: { companyId: number } | { realmId: string },
   ): Promise<CompanyQuickBooksOauthCredential | undefined> {
-    if ('companyId' in filter) {
+    if ("companyId" in filter) {
       const [data] = await this.db
         .select()
         .from(companyQuickBooksOauthCredentials)
-        .where(eq(companyQuickBooksOauthCredentials.companyId, filter.companyId))
+        .where(
+          eq(companyQuickBooksOauthCredentials.companyId, filter.companyId),
+        )
         .limit(1);
 
       return data;
@@ -255,6 +268,6 @@ export class CompanyRepository implements ICompanyRepository {
     await this.db
       .update(companySyncStatus)
       .set(params)
-      .where(eq(companySyncStatus.companyId, companyId))
+      .where(eq(companySyncStatus.companyId, companyId));
   }
 }

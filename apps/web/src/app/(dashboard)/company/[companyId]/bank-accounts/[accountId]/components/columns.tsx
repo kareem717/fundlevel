@@ -13,7 +13,9 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { MoreHorizontal } from "lucide-react";
 
-export const columns: ColumnDef<Omit<BankTransaction, "remainingRemoteContent">>[] = [
+export const columns: ColumnDef<
+  Omit<BankTransaction, "remainingRemoteContent">
+>[] = [
   {
     accessorKey: "name",
     header: "Name",
@@ -23,7 +25,7 @@ export const columns: ColumnDef<Omit<BankTransaction, "remainingRemoteContent">>
     accessorKey: "totalAmount",
     header: "Amount",
     cell: ({ row: { original: tx } }) => {
-      return formatCurrency(tx.amount )
+      return formatCurrency(tx.amount);
     },
   },
   {

@@ -180,12 +180,8 @@
           "name": "plaid_bank_accounts_company_id_fkey",
           "tableFrom": "bank_accounts",
           "tableTo": "companies",
-          "columnsFrom": [
-            "company_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["company_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -195,9 +191,7 @@
         "bank_accounts_remote_id_unique": {
           "name": "bank_accounts_remote_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "remote_id"
-          ]
+          "columns": ["remote_id"]
         }
       },
       "policies": {},
@@ -252,12 +246,8 @@
           "name": "bat_rels_bt_id_fkey",
           "tableFrom": "bank_account_transaction_relationships",
           "tableTo": "bank_account_transactions",
-          "columnsFrom": [
-            "bank_account_transaction_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["bank_account_transaction_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -265,11 +255,7 @@
       "compositePrimaryKeys": {
         "bank_account_transaction_relationships_bank_account_transaction_id_entity_id_entity_type_pk": {
           "name": "bank_account_transaction_relationships_bank_account_transaction_id_entity_id_entity_type_pk",
-          "columns": [
-            "bank_account_transaction_id",
-            "entity_id",
-            "entity_type"
-          ]
+          "columns": ["bank_account_transaction_id", "entity_id", "entity_type"]
         }
       },
       "uniqueConstraints": {},
@@ -436,12 +422,8 @@
           "name": "bank_account_transactions_bank_account_remote_id_bank_accounts_remote_id_fk",
           "tableFrom": "bank_account_transactions",
           "tableTo": "bank_accounts",
-          "columnsFrom": [
-            "bank_account_remote_id"
-          ],
-          "columnsTo": [
-            "remote_id"
-          ],
+          "columnsFrom": ["bank_account_remote_id"],
+          "columnsTo": ["remote_id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -449,12 +431,8 @@
           "name": "bank_account_transactions_company_id_fkey",
           "tableFrom": "bank_account_transactions",
           "tableTo": "companies",
-          "columnsFrom": [
-            "company_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["company_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -464,9 +442,7 @@
         "bank_account_transactions_remote_id_unique": {
           "name": "bank_account_transactions_remote_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "remote_id"
-          ]
+          "columns": ["remote_id"]
         }
       },
       "policies": {},
@@ -533,12 +509,8 @@
           "name": "bill_lines_bill_id_bills_id_fk",
           "tableFrom": "bill_lines",
           "tableTo": "bills",
-          "columnsFrom": [
-            "bill_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["bill_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -548,9 +520,7 @@
         "bill_lines_remote_id_unique": {
           "name": "bill_lines_remote_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "remote_id"
-          ]
+          "columns": ["remote_id"]
         }
       },
       "policies": {},
@@ -654,12 +624,8 @@
           "name": "bills_company_id_companies_id_fk",
           "tableFrom": "bills",
           "tableTo": "companies",
-          "columnsFrom": [
-            "company_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["company_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -669,9 +635,7 @@
         "bills_remote_id_unique": {
           "name": "bills_remote_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "remote_id"
-          ]
+          "columns": ["remote_id"]
         }
       },
       "policies": {},
@@ -720,12 +684,8 @@
           "name": "companies_owner_id_accounts_id_fk",
           "tableFrom": "companies",
           "tableTo": "accounts",
-          "columnsFrom": [
-            "owner_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["owner_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -784,12 +744,8 @@
           "name": "plaid_credentials_company_id_fkey",
           "tableFrom": "company_plaid_credentials",
           "tableTo": "companies",
-          "columnsFrom": [
-            "company_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["company_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -860,12 +816,8 @@
           "name": "quick_books_oauth_credentials_company_id_fkey",
           "tableFrom": "company_quick_books_oauth_credentials",
           "tableTo": "companies",
-          "columnsFrom": [
-            "company_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["company_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -911,12 +863,8 @@
           "name": "company_sync_status_company_id_companies_id_fk",
           "tableFrom": "company_sync_status",
           "tableTo": "companies",
-          "columnsFrom": [
-            "company_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["company_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -968,12 +916,8 @@
           "name": "quick_books_oauth_states_company_id_fkey",
           "tableFrom": "quick_books_oauth_states",
           "tableTo": "companies",
-          "columnsFrom": [
-            "company_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["company_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -1058,12 +1002,8 @@
           "name": "invoice_lines_invoice_id_invoices_id_fk",
           "tableFrom": "invoice_lines",
           "tableTo": "invoices",
-          "columnsFrom": [
-            "invoice_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["invoice_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -1073,11 +1013,7 @@
         "invoice_lines_remote_id_invoice_id_detail_type_key": {
           "name": "invoice_lines_remote_id_invoice_id_detail_type_key",
           "nullsNotDistinct": false,
-          "columns": [
-            "remote_id",
-            "invoice_id",
-            "detail_type"
-          ]
+          "columns": ["remote_id", "invoice_id", "detail_type"]
         }
       },
       "policies": {},
@@ -1169,12 +1105,8 @@
           "name": "invoices_company_id_fkey",
           "tableFrom": "invoices",
           "tableTo": "companies",
-          "columnsFrom": [
-            "company_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["company_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -1184,9 +1116,7 @@
         "invoices_remote_id_key": {
           "name": "invoices_remote_id_key",
           "nullsNotDistinct": false,
-          "columns": [
-            "remote_id"
-          ]
+          "columns": ["remote_id"]
         }
       },
       "policies": {},
@@ -1286,20 +1216,12 @@
     "public.bank_account_transaction_relationship_entity_type": {
       "name": "bank_account_transaction_relationship_entity_type",
       "schema": "public",
-      "values": [
-        "invoice"
-      ]
+      "values": ["invoice"]
     },
     "public.plaid_confidence_level": {
       "name": "plaid_confidence_level",
       "schema": "public",
-      "values": [
-        "VERY_HIGH",
-        "HIGH",
-        "MEDIUM",
-        "LOW",
-        "UNKNOWN"
-      ]
+      "values": ["VERY_HIGH", "HIGH", "MEDIUM", "LOW", "UNKNOWN"]
     },
     "public.plaid_transaction_code": {
       "name": "plaid_transaction_code",
@@ -1323,11 +1245,7 @@
     "public.plaid_transaction_payment_channel": {
       "name": "plaid_transaction_payment_channel",
       "schema": "public",
-      "values": [
-        "online",
-        "in store",
-        "other"
-      ]
+      "values": ["online", "in store", "other"]
     },
     "public.invoice_line_type": {
       "name": "invoice_line_type",
@@ -1343,10 +1261,7 @@
     "public.data_provider": {
       "name": "data_provider",
       "schema": "public",
-      "values": [
-        "quickbooks",
-        "plaid"
-      ]
+      "values": ["quickbooks", "plaid"]
     }
   },
   "schemas": {},

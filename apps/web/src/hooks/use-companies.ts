@@ -12,17 +12,15 @@ const EMPTY_RESULT = {
   hasNextPage: false,
   hasPreviousPage: false,
   currentPage: 0,
-}
+};
 
-export function useCompanies(
-  query: {
-    searchQuery?: string,
-    page?: number,
-    pageSize?: number,
-    sortBy?: "createdAt" | "id",
-    order?: "asc" | "desc"
-  }
-) {
+export function useCompanies(query: {
+  searchQuery?: string;
+  page?: number;
+  pageSize?: number;
+  sortBy?: "createdAt" | "id";
+  order?: "asc" | "desc";
+}) {
   return useQuery({
     queryKey: [QUERY_KEYS.USER_COMPANIES, ...Object.values(query)],
     initialData: EMPTY_RESULT,
@@ -34,7 +32,7 @@ export function useCompanies(
 
       const sdk = client(env.NEXT_PUBLIC_BACKEND_URL, authToken);
       const req = await sdk.company.$get({
-        query
+        query,
       });
 
       const body = await req.json();

@@ -10,17 +10,21 @@ export interface IBankAccountRepository {
    */
   getMany(
     filter: GetManyBankAccountsFilter,
-  ): Promise<OffsetPaginationResult<Omit<BankAccount, "remainingRemoteContent">>>;
+  ): Promise<
+    OffsetPaginationResult<Omit<BankAccount, "remainingRemoteContent">>
+  >;
 
   /**
    * Get a single bank account by its ID
    */
   get(
-    filter: {
-      id: number;
-    } | {
-      remoteId: string;
-    }
+    filter:
+      | {
+          id: number;
+        }
+      | {
+          remoteId: string;
+        },
   ): Promise<Omit<BankAccount, "remainingRemoteContent"> | undefined>;
 
   /**
@@ -38,4 +42,4 @@ export interface IBankAccountRepository {
     availableBalance: number;
     currentBalance: number;
   }>;
-} 
+}

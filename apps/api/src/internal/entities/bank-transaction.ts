@@ -7,23 +7,24 @@ export type GetManyBankTransactionsFilter = {
   minAmount?: number;
   maxAmount?: number;
   sortBy: "date" | "id";
+} & ({
+  companyIds?: number[];
+  bankAccountIds?: number[];
+  relationships?: {
+    type: BankTransactionRelationshipType;
+    ids: number[];
+  }[];
 } & (
-    {
-      companyIds?: number[];
-      bankAccountIds?: number[];
-      relationships?: {
+  | { companyIds: number[] }
+  | { bankAccountIds: number[] }
+  | {
+      relationships: {
         type: BankTransactionRelationshipType;
         ids: number[];
       }[];
-    } & (
-      | { companyIds: number[] }
-      | { bankAccountIds: number[] }
-      | { relationships: {
-        type: BankTransactionRelationshipType;
-        ids: number[];
-      }[] }
-    )
-  ) & OffsetPaginationParams;
+    }
+)) &
+  OffsetPaginationParams;
 
 export type BankTransactionDetails = {
   totalVolume: number;

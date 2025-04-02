@@ -1,5 +1,12 @@
 import { Badge } from "@fundlevel/ui/components/badge";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@fundlevel/ui/components/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@fundlevel/ui/components/card";
 import { BookOpen, Sparkles } from "lucide-react";
 import { AlertCircle } from "lucide-react";
 import { Button } from "@fundlevel/ui/components/button";
@@ -14,16 +21,21 @@ export default async function ConnectionsSettingsPage({
 
   return (
     <Card className="overflow-hidden border relative">
-      <CardHeader >
+      <CardHeader>
         <CardTitle>Accounting Software</CardTitle>
-        <CardDescription>Connect your accounting software to automatically import invoices and transactions</CardDescription>
+        <CardDescription>
+          Connect your accounting software to automatically import invoices and
+          transactions
+        </CardDescription>
       </CardHeader>
       <CardContent className="mb-16">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="flex flex-col h-full border-2 border-primary/20 hover:border-primary/50 transition-colors rounded-lg shadow-sm overflow-hidden">
             <div className="bg-muted/30 px-4 py-3">
               <h3 className="font-medium">QuickBooks Online</h3>
-              <p className="text-xs text-muted-foreground">Import invoices and transactions</p>
+              <p className="text-xs text-muted-foreground">
+                Import invoices and transactions
+              </p>
             </div>
             <div className="p-6 flex-1 flex items-center justify-center">
               <ConnectQuickBooksButton
@@ -38,7 +50,9 @@ export default async function ConnectionsSettingsPage({
             <div className="bg-muted/30 px-4 py-3 flex items-center justify-between">
               <div>
                 <h3 className="font-medium">Xero</h3>
-                <p className="text-xs text-muted-foreground">Connect to Xero accounting</p>
+                <p className="text-xs text-muted-foreground">
+                  Connect to Xero accounting
+                </p>
               </div>
               <Badge variant={"secondary"} className="h-5">
                 <Sparkles className="h-3 w-3 mr-1" />

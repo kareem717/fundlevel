@@ -46,7 +46,9 @@ const companyHandler = new OpenAPIHono()
       );
     }
 
-    const companies = await getService(c).company.getMany({ ownerId: account.id });
+    const companies = await getService(c).company.getMany({
+      ownerId: account.id,
+    });
 
     return c.json(companies || [], 200);
   })
@@ -163,7 +165,8 @@ const companyHandler = new OpenAPIHono()
       );
     }
 
-    const linkToken = await getService(c).company.createPlaidLinkToken(companyId);
+    const linkToken =
+      await getService(c).company.createPlaidLinkToken(companyId);
 
     return c.json({ linkToken }, 200);
   })
@@ -198,7 +201,10 @@ const companyHandler = new OpenAPIHono()
 
     const companyService = getService(c).company;
 
-    const creds = await companyService.swapPlaidPublicToken(companyId, publicToken);
+    const creds = await companyService.swapPlaidPublicToken(
+      companyId,
+      publicToken,
+    );
 
     await tasks.trigger<typeof syncCompanyBankingDataTask>(
       "sync-company-banking-data",

@@ -48,10 +48,9 @@ export function TransactionsTable({
         throw new Error("No authentication token found");
       }
 
-      const req = await client(
-        env.NEXT_PUBLIC_BACKEND_URL,
-        token,
-      )["bank-transaction"].invoice[":invoiceId"].$get({
+      const req = await client(env.NEXT_PUBLIC_BACKEND_URL, token)[
+        "bank-transaction"
+      ].invoice[":invoiceId"].$get({
         param: { invoiceId },
         query: {
           page: pagination.pageIndex,
@@ -65,7 +64,6 @@ export function TransactionsTable({
       }
 
       return await req.json();
-
     },
   });
 
@@ -94,9 +92,9 @@ export function TransactionsTable({
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext(),
-                      )}
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -126,7 +124,10 @@ export function TransactionsTable({
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
                     </TableCell>
                   ))}
                 </TableRow>
@@ -149,4 +150,4 @@ export function TransactionsTable({
       )}
     </div>
   );
-} 
+}

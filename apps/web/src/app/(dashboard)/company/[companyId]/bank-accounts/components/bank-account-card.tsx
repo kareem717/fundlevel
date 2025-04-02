@@ -53,7 +53,10 @@ export function BankAccountCard({
         <div>
           <div className="text-sm text-muted-foreground">Current Balance</div>
           <div className="text-2xl font-bold">
-            {formatCurrency(account.currentBalance || 0, account.isoCurrencyCode ?? undefined)}
+            {formatCurrency(
+              account.currentBalance || 0,
+              account.isoCurrencyCode ?? undefined,
+            )}
           </div>
           <div className="text-xs text-muted-foreground mt-1">
             Last updated:{" "}

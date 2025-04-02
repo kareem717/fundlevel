@@ -27,7 +27,7 @@ export function useUserCompanies() {
           });
         }
 
-        return []
+        return [];
       }
 
       //TODO: use pageSize when implemented

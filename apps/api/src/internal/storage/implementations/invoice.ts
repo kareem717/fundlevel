@@ -4,16 +4,21 @@ import type {
   InvoiceLine,
   CreateInvoiceLineParams,
 } from "@fundlevel/db/types";
-import type {
-  IInvoiceRepository,
-} from "../interfaces/invoice";
-import { invoices, invoiceLines, bankTransactionRelationships } from "@fundlevel/db/schema";
+import type { IInvoiceRepository } from "../interfaces/invoice";
+import {
+  invoices,
+  invoiceLines,
+  bankTransactionRelationships,
+} from "@fundlevel/db/schema";
 import { eq, inArray, sql, gte, lte, asc, desc, count, and } from "drizzle-orm";
 import type { IDB } from "@fundlevel/api/internal/storage";
-import type { OffsetPaginationResult, GetManyInvoicesFilter } from "@fundlevel/api/internal/entities";
+import type {
+  OffsetPaginationResult,
+  GetManyInvoicesFilter,
+} from "@fundlevel/api/internal/entities";
 
 export class InvoiceRepository implements IInvoiceRepository {
-  constructor(private db: IDB) { }
+  constructor(private db: IDB) {}
 
   async upsert(
     invoiceParams: CreateInvoiceParams[],
@@ -57,14 +62,18 @@ export class InvoiceRepository implements IInvoiceRepository {
     const whereCondition = and(
       filter.minTotal ? gte(invoices.totalAmount, filter.minTotal) : undefined,
       filter.maxTotal ? lte(invoices.totalAmount, filter.maxTotal) : undefined,
-      filter.companyIds ? inArray(invoices.companyId, filter.companyIds) : undefined,
+      filter.companyIds
+        ? inArray(invoices.companyId, filter.companyIds)
+        : undefined,
       filter.minDueDate ? gte(invoices.dueDate, filter.minDueDate) : undefined,
       filter.maxDueDate ? lte(invoices.dueDate, filter.maxDueDate) : undefined,
     );
 
-
     const { page, pageSize, order } = filter;
-    const qb = this.db.select().from(invoices).groupBy(invoices.id)
+    const qb = this.db
+      .select()
+      .from(invoices)
+      .groupBy(invoices.id)
       .where(whereCondition)
       .limit(pageSize)
       .offset(page * pageSize)
@@ -126,29 +135,36 @@ export class InvoiceRepository implements IInvoiceRepository {
     await this.db
       .delete(invoices)
       .where(
-        "id" in filter ? eq(invoices.id, filter.id) : eq(invoices.remoteId, filter.remoteId),
+        "id" in filter
+          ? eq(invoices.id, filter.id)
+          : eq(invoices.remoteId, filter.remoteId),
       );
   }
 
-  async deleteMany(filter: { id: number[] } | { remoteId: string[] }): Promise<void> {
+  async deleteMany(
+    filter: { id: number[] } | { remoteId: string[] },
+  ): Promise<void> {
     await this.db.transaction(async (tx) => {
-
-
       const invoiceIds = await tx
         .delete(invoices)
         .where(
-          "id" in filter ? inArray(invoices.id, filter.id) : inArray(invoices.remoteId, filter.remoteId),
-        ).returning({
+          "id" in filter
+            ? inArray(invoices.id, filter.id)
+            : inArray(invoices.remoteId, filter.remoteId),
+        )
+        .returning({
           id: invoices.id,
         });
 
-      await tx.delete(bankTransactionRelationships)
-        .where(
-          and(
-            eq(bankTransactionRelationships.entityType, "invoice"),
-            inArray(bankTransactionRelationships.entityId, invoiceIds.map((invoice) => invoice.id)),
-          )
-        )
+      await tx.delete(bankTransactionRelationships).where(
+        and(
+          eq(bankTransactionRelationships.entityType, "invoice"),
+          inArray(
+            bankTransactionRelationships.entityId,
+            invoiceIds.map((invoice) => invoice.id),
+          ),
+        ),
+      );
     });
   }
 
@@ -173,7 +189,9 @@ export class InvoiceRepository implements IInvoiceRepository {
       .returning();
   }
 
-  async getManyLines(filter: { invoiceId: number } | { ids: number[] }): Promise<InvoiceLine[]> {
+  async getManyLines(
+    filter: { invoiceId: number } | { ids: number[] },
+  ): Promise<InvoiceLine[]> {
     const qb = this.db.select().from(invoiceLines);
 
     if ("invoiceId" in filter) {

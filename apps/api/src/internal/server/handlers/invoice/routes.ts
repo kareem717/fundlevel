@@ -30,7 +30,7 @@ export const reconcileRoute = createRoute({
         "application/json": {
           schema: z.object({
             taskId: z.string(),
-            publicAccessToken: z.string()
+            publicAccessToken: z.string(),
           }),
         },
       },
@@ -119,6 +119,5 @@ export const getLineItemsRoute = createRoute({
     },
     ...notFoundResponse,
     ...unauthorizedResponse,
-    
   },
 });

@@ -6,11 +6,11 @@ import {
 } from "drizzle-zod";
 import {
   bankTransactions,
-  bankTransactionRelationships
+  bankTransactionRelationships,
 } from "../schema/bank-transaction";
 
 export const BankTransactionRelationshipEntityTypeSchema = z.enum([
-  "invoice"
+  "invoice",
 ] as const);
 
 // Create schemas for transactions
@@ -39,9 +39,10 @@ export const BankTransactionRelationshipSchema = createSelectSchema(
   bankTransactionRelationships,
 );
 
-export const CreateBankTransactionRelationshipParamsSchema =
-  createInsertSchema(bankTransactionRelationships).omit({
-    createdAt: true,
-    updatedAt: true,
-    bankTransactionId: true,
-  });
+export const CreateBankTransactionRelationshipParamsSchema = createInsertSchema(
+  bankTransactionRelationships,
+).omit({
+  createdAt: true,
+  updatedAt: true,
+  bankTransactionId: true,
+});

@@ -4,7 +4,7 @@ import type {
   IInvoiceRepository,
   IBankAccountRepository,
   IBankTransactionRepository,
-  IBillRepository
+  IBillRepository,
 } from "./interfaces";
 import {
   CompanyRepository,
@@ -12,7 +12,7 @@ import {
   InvoiceRepository,
   BankAccountRepository,
   BankTransactionRepository,
-  BillRepository
+  BillRepository,
 } from "./implementations";
 import type { DB, Transaction } from "@fundlevel/db";
 

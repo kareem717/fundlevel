@@ -132,9 +132,9 @@ const webhookHandler = new OpenAPIHono()
       return c.json({ error: "Missing webhook type or code" }, 400);
     }
 
-    const credentials = await getService(
-      c,
-    ).company.getPlaidCredentials({ itemId: payload.item_id });
+    const credentials = await getService(c).company.getPlaidCredentials({
+      itemId: payload.item_id,
+    });
 
     if (!credentials) {
       console.error("No credentials found for itemId", payload.item_id);
@@ -226,14 +226,18 @@ const webhookHandler = new OpenAPIHono()
         for (const entity of dataChangeEvent.entities) {
           if (entity.name === "Invoice") {
             console.log(`Processing Invoice event for realmId: ${realmId}`);
-            const { companyId } =
-              await getService(c).company.getQuickBooksOAuthCredentials({
-                realmId,
-              });
-
-            await tasks.trigger<typeof syncCompanyInvoicesTask>("sync-company-invoices", {
-              companyId,
+            const { companyId } = await getService(
+              c,
+            ).company.getQuickBooksOAuthCredentials({
+              realmId,
             });
+
+            await tasks.trigger<typeof syncCompanyInvoicesTask>(
+              "sync-company-invoices",
+              {
+                companyId,
+              },
+            );
             console.log(
               `Successfully synced invoices for company ${companyId}`,
             );

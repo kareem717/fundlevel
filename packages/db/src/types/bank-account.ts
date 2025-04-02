@@ -9,4 +9,4 @@ export type CreateBankAccountParams = Omit<
   "companyId" | "id"
 >;
 
-export type UpdateBankAccountParams = Partial<CreateBankAccountParams>; 
+export type UpdateBankAccountParams = Partial<CreateBankAccountParams>;

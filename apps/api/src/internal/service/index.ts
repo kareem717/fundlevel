@@ -32,16 +32,9 @@ export class Service {
   readonly invoice: IInvoiceService;
   readonly bill: IBillService;
   constructor(config: ServiceConfig) {
-
     const { storage, plaidConfig, qbConfig, openaiKey } = config;
-    const company = new CompanyService(
-      storage,
-      plaidConfig,
-      qbConfig,
-    );
-    const account = new AccountService(
-      storage.account
-    );
+    const company = new CompanyService(storage, plaidConfig, qbConfig);
+    const account = new AccountService(storage.account);
 
     this.account = account;
     this.company = company;

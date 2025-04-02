@@ -3,7 +3,13 @@ import {
   createUpdateSchema,
   createInsertSchema,
 } from "drizzle-zod";
-import { companies, companyPlaidCredentials, companyQuickBooksOauthCredentials, companySyncStatus, quickBooksOauthStates } from "@fundlevel/db/schema";
+import {
+  companies,
+  companyPlaidCredentials,
+  companyQuickBooksOauthCredentials,
+  companySyncStatus,
+  quickBooksOauthStates,
+} from "@fundlevel/db/schema";
 
 export const CompanySchema = createSelectSchema(companies);
 
@@ -21,7 +27,9 @@ export const UpdateCompanyParamsSchema = createUpdateSchema(companies).omit({
   ownerId: true,
 });
 
-export const PlaidCredentialSchema = createSelectSchema(companyPlaidCredentials);
+export const PlaidCredentialSchema = createSelectSchema(
+  companyPlaidCredentials,
+);
 
 export const CreatePlaidCredentialParamsSchema = createInsertSchema(
   companyPlaidCredentials,
@@ -43,7 +51,9 @@ export const UpdateQuickBooksOauthCredentialParamsSchema = createUpdateSchema(
   companyQuickBooksOauthCredentials,
 ).omit({ createdAt: true, updatedAt: true, companyId: true, realmId: true });
 
-export const QuickBooksOauthStateSchema = createSelectSchema(quickBooksOauthStates);
+export const QuickBooksOauthStateSchema = createSelectSchema(
+  quickBooksOauthStates,
+);
 
 export const CreateQuickBooksOauthStateParamsSchema = createInsertSchema(
   quickBooksOauthStates,

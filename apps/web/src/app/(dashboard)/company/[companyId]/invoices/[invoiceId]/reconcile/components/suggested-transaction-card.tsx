@@ -8,7 +8,13 @@ import { cn } from "@fundlevel/ui/lib/utils";
 import { getTokenCached } from "@fundlevel/web/actions/auth";
 import { Skeleton } from "@fundlevel/ui/components/skeleton";
 import { Calendar, CreditCard, DollarSign, Info, Loader2 } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@fundlevel/ui/components/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@fundlevel/ui/components/card";
 import { Badge } from "@fundlevel/ui/components/badge";
 import { Button } from "@fundlevel/ui/components/button";
 import { toast } from "@fundlevel/ui/components/sonner";
@@ -34,61 +40,64 @@ export function SuggestedTransactionCard({
     queryFn: async () => {
       const token = await getTokenCached();
       if (!token) {
-        throw new Error("No token")
+        throw new Error("No token");
       }
 
-      const resp = await client(env.NEXT_PUBLIC_BACKEND_URL, token)["bank-transaction"][":id"].$get({
+      const resp = await client(env.NEXT_PUBLIC_BACKEND_URL, token)[
+        "bank-transaction"
+      ][":id"].$get({
         param: {
-          id: transactionId
-        }
-      })
-
-      const respBody = await resp.json()
-      if ("error" in respBody) {
-        throw new Error(respBody.error)
-      }
-
-      return respBody
-    },
-  });
-
-  const { mutateAsync: createRelationship, isPending: isCreatingRelationship } = useMutation({
-    mutationFn: async () => {
-      const token = await getTokenCached();
-      if (!token) {
-        throw new Error("No token")
-      }
-
-      const resp = await client(env.NEXT_PUBLIC_BACKEND_URL, token)["bank-transaction"][":id"].relationships.$post({
-        param: {
-          id: transactionId
+          id: transactionId,
         },
-        json: {
-          entityId: invoiceId,
-          entityType: "invoice"
-        }
-      })
+      });
 
-      if (!resp.ok) {
-        const body = await resp.json()
-        console.error(body)
-        toast.error("Failed to create relationship")
+      const respBody = await resp.json();
+      if ("error" in respBody) {
+        throw new Error(respBody.error);
       }
 
-      return await resp.json()
+      return respBody;
     },
-    onSuccess: () => {
-      toast.success("Relationship created")
-    },
-    onError: () => {
-      toast.error("Failed to create relationship")
-    }
   });
+
+  const { mutateAsync: createRelationship, isPending: isCreatingRelationship } =
+    useMutation({
+      mutationFn: async () => {
+        const token = await getTokenCached();
+        if (!token) {
+          throw new Error("No token");
+        }
+
+        const resp = await client(env.NEXT_PUBLIC_BACKEND_URL, token)[
+          "bank-transaction"
+        ][":id"].relationships.$post({
+          param: {
+            id: transactionId,
+          },
+          json: {
+            entityId: invoiceId,
+            entityType: "invoice",
+          },
+        });
+
+        if (!resp.ok) {
+          const body = await resp.json();
+          console.error(body);
+          toast.error("Failed to create relationship");
+        }
+
+        return await resp.json();
+      },
+      onSuccess: () => {
+        toast.success("Relationship created");
+      },
+      onError: () => {
+        toast.error("Failed to create relationship");
+      },
+    });
 
   if (isPending) {
-    return (
-      <Skeleton className="w-full h-32" />
-    )
+    return <Skeleton className="w-full h-32" />;
   }
 
   //TODO: Handle error
@@ -96,11 +105,10 @@ export function SuggestedTransactionCard({
     return null;
   }
 
-
   const confidenceColor = {
     low: "bg-amber-100 text-amber-800 hover:bg-amber-200",
     medium: "bg-blue-100 text-blue-800 hover:bg-blue-200",
-    high: "bg-green-100 text-green-800 hover:bg-green-200"
+    high: "bg-green-100 text-green-800 hover:bg-green-200",
   }[confidence ?? "low"];
 
   return (
@@ -109,16 +117,25 @@ export function SuggestedTransactionCard({
         <div className="flex items-start justify-between">
           <div>
             <CardTitle className="text-lg font-medium">{data.name}</CardTitle>
-            <CardDescription className="text-sm text-muted-foreground">{data.date}</CardDescription>
+            <CardDescription className="text-sm text-muted-foreground">
+              {data.date}
+            </CardDescription>
           </div>
           <div className="flex items-center gap-2">
             {confidence && (
               <Badge className={confidenceColor}>
-                {confidence.charAt(0).toUpperCase() + confidence.slice(1)} Confidence
+                {confidence.charAt(0).toUpperCase() + confidence.slice(1)}{" "}
+                Confidence
               </Badge>
             )}
-            <Button size="sm" onClick={() => createRelationship()} disabled={isCreatingRelationship}>
-              {isCreatingRelationship && <Loader2 className="animate-spin text-muted-foreground size-4" />}
+            <Button
+              size="sm"
+              onClick={() => createRelationship()}
+              disabled={isCreatingRelationship}
+            >
+              {isCreatingRelationship && (
+                <Loader2 className="animate-spin text-muted-foreground size-4" />
+              )}
               Pair to invoice
             </Button>
           </div>
@@ -128,7 +145,12 @@ export function SuggestedTransactionCard({
         <div className="flex items-center gap-4 mb-3">
           <div className="flex items-center gap-2">
             <DollarSign className="h-4 w-4 text-muted-foreground" />
-            <span className={cn("font-medium", data.amount > 0 ? "text-red-600" : "text-green-600")}>
+            <span
+              className={cn(
+                "font-medium",
+                data.amount > 0 ? "text-red-600" : "text-green-600",
+              )}
+            >
               {Math.abs(data.amount)} {data.isoCurrencyCode}
               <span className="ml-1 text-xs font-normal">
                 {data.amount > 0 ? "(Debit)" : "(Credit)"}
@@ -137,7 +159,9 @@ export function SuggestedTransactionCard({
           </div>
           <div className="flex items-center gap-2">
             <CreditCard className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm text-muted-foreground">{data.paymentChannel}</span>
+            <span className="text-sm text-muted-foreground">
+              {data.paymentChannel}
+            </span>
           </div>
           <div className="flex items-center gap-2">
             <Calendar className="h-4 w-4 text-muted-foreground" />
@@ -149,6 +173,6 @@ export function SuggestedTransactionCard({
           <p className="text-sm">{matchReason}</p>
         </div>
       </CardContent>
-    </Card >
+    </Card>
   );
-} 
+}

@@ -40,8 +40,7 @@ export function ConnectQuickBooksButton({
         json: {
           companyId,
           redirectUrl:
-            env.NEXT_PUBLIC_WEB_URL +
-            redirects.app.company(companyId).root,
+            env.NEXT_PUBLIC_WEB_URL + redirects.app.company(companyId).root,
         },
       });
       if (resp.status !== 200) {
@@ -68,7 +67,7 @@ export function ConnectQuickBooksButton({
       className={cn(
         className,
         "relative flex items-center justify-center",
-        isPending && "bg-opacity-90"
+        isPending && "bg-opacity-90",
       )}
       onClick={() => mutate()}
       disabled={isPending}
@@ -80,7 +79,12 @@ export function ConnectQuickBooksButton({
         </span>
       ) : null}
       <div className="flex items-center justify-center">
-        <QuickBooksIcon className={cn("size-9 border border-current rounded-full bg-current", showText && "mr-2")} />
+        <QuickBooksIcon
+          className={cn(
+            "size-9 border border-current rounded-full bg-current",
+            showText && "mr-2",
+          )}
+        />
         {showText && <span>Connect QuickBooks</span>}
       </div>
     </Button>

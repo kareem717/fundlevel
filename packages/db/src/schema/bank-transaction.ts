@@ -56,7 +56,9 @@ export const bankTransactions = pgTable(
     id: serial("id").primaryKey().notNull(),
     remoteId: text("remote_id").notNull().unique(),
     companyId: integer("company_id").notNull(),
-    bankAccountRemoteId: text("bank_account_remote_id").references(() => bankAccounts.remoteId).notNull(),
+    bankAccountRemoteId: text("bank_account_remote_id")
+      .references(() => bankAccounts.remoteId)
+      .notNull(),
     isoCurrencyCode: varchar("iso_currency_code", { length: 3 }),
     unofficialCurrencyCode: varchar("unofficial_currency_code", { length: 3 }),
     checkNumber: text("check_number"),
@@ -124,4 +126,3 @@ export const bankTransactionRelationships = pgTable(
     }),
   ],
 );
-

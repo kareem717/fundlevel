@@ -1,5 +1,10 @@
 import { OpenAPIHono } from "@hono/zod-openapi";
-import { reconcileRoute, getManyRoute, getRoute, getLineItemsRoute } from "./routes";
+import {
+  reconcileRoute,
+  getManyRoute,
+  getRoute,
+  getLineItemsRoute,
+} from "./routes";
 import { getAccount } from "../../middleware/with-auth";
 import { tasks, idempotencyKeys } from "@trigger.dev/sdk/v3";
 import type { reconcileInvoiceTask } from "@fundlevel/api/internal/jobs/reconciliation";
@@ -20,7 +25,9 @@ const invoiceHandler = new OpenAPIHono()
     const { invoiceId } = c.req.valid("param");
 
     try {
-      const { id, publicAccessToken } = await tasks.trigger<typeof reconcileInvoiceTask>(
+      const { id, publicAccessToken } = await tasks.trigger<
+        typeof reconcileInvoiceTask
+      >(
         "reconcile-invoice",
         {
           invoiceId,
@@ -32,13 +39,16 @@ const invoiceHandler = new OpenAPIHono()
         // },
       );
 
-      return c.json({
-        taskId: id,
-        publicAccessToken,
-      }, 200);
+      return c.json(
+        {
+          taskId: id,
+          publicAccessToken,
+        },
+        200,
+      );
     } catch (error) {
       console.error(error);
-      throw new Error("Something went wrong")
+      throw new Error("Something went wrong");
     }
   })
   .openapi(getManyRoute, async (c) => {

@@ -21,7 +21,9 @@ export const accounts = pgTable(
     updatedAt: timestamp("updated_at", {
       withTimezone: true,
       mode: "string",
-    }).notNull().$onUpdateFn(() => new Date().toISOString()),
+    })
+      .notNull()
+      .$onUpdateFn(() => new Date().toISOString()),
   },
   (table) => [index("accounts_user_id_idx").on(table.userId)],
 );

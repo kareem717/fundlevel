@@ -41,10 +41,9 @@ export function LineItemsTable({
         throw new Error("No authentication token found");
       }
 
-      const req = await client(
-        env.NEXT_PUBLIC_BACKEND_URL,
-        token,
-      ).invoice[":invoiceId"]["line-items"].$get({
+      const req = await client(env.NEXT_PUBLIC_BACKEND_URL, token).invoice[
+        ":invoiceId"
+      ]["line-items"].$get({
         param: { invoiceId },
       });
 
@@ -73,9 +72,9 @@ export function LineItemsTable({
                   {header.isPlaceholder
                     ? null
                     : flexRender(
-                      header.column.columnDef.header,
-                      header.getContext(),
-                    )}
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )}
                 </TableHead>
               ))}
             </TableRow>
@@ -124,4 +123,4 @@ export function LineItemsTable({
       </Table>
     </div>
   );
-} 
+}

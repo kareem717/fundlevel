@@ -4,7 +4,6 @@ import type { ColumnDef } from "@tanstack/react-table";
 import type { InvoiceLine } from "@fundlevel/db/types";
 import { formatCurrency } from "@fundlevel/web/lib/utils";
 
-
 export const lineItemsColumns: ColumnDef<InvoiceLine>[] = [
   {
     accessorKey: "description",
@@ -28,4 +27,4 @@ export const lineItemsColumns: ColumnDef<InvoiceLine>[] = [
       return formatCurrency(row.original.amount);
     },
   },
-]; 
+];

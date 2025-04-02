@@ -11,9 +11,14 @@ export interface ICompanyService {
   create(params: CreateCompanyParams, ownerId: number): Promise<Company>;
 
   createPlaidLinkToken(companyId: number): Promise<string>;
-  swapPlaidPublicToken(companyId: number, publicToken: string): Promise<CompanyPlaidCredentials>;
+  swapPlaidPublicToken(
+    companyId: number,
+    publicToken: string,
+  ): Promise<CompanyPlaidCredentials>;
 
-  getPlaidCredentials(filter: { companyId: number } | { itemId: string }): Promise<CompanyPlaidCredentials | undefined>;
+  getPlaidCredentials(
+    filter: { companyId: number } | { itemId: string },
+  ): Promise<CompanyPlaidCredentials | undefined>;
 
   startQuickBooksOAuthFlow(
     companyId: number,
@@ -22,7 +27,11 @@ export interface ICompanyService {
   getQuickBooksOAuthCredentials(
     filter: { companyId: number } | { realmId: string },
   ): Promise<CompanyQuickBooksOauthCredential>;
-  completeQuickBooksOAuthFlow(code: string, state: string, realmId: string): Promise<{
+  completeQuickBooksOAuthFlow(
+    code: string,
+    state: string,
+    realmId: string,
+  ): Promise<{
     redirect_url: string;
     company_id: number;
   }>;

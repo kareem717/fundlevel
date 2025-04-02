@@ -9,38 +9,51 @@ import {
 } from "drizzle-orm/pg-core";
 import { accounts } from "./account";
 
-export const companies = pgTable(
-  "companies",
-  {
-    id: serial().primaryKey().notNull(),
-    ownerId: integer("owner_id").notNull().references(() => accounts.id, {
+export const companies = pgTable("companies", {
+  id: serial().primaryKey().notNull(),
+  ownerId: integer("owner_id")
+    .notNull()
+    .references(() => accounts.id, {
       onDelete: "cascade",
       onUpdate: "cascade",
     }),
-    name: text().notNull(),
-    createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
-      .defaultNow()
-      .notNull(),
-    updatedAt: timestamp("updated_at", {
-      withTimezone: true,
-      mode: "string",
-    }).notNull().$onUpdateFn(() => new Date().toISOString()),
-  },
-);
+  name: text().notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
+    .defaultNow()
+    .notNull(),
+  updatedAt: timestamp("updated_at", {
+    withTimezone: true,
+    mode: "string",
+  })
+    .notNull()
+    .$onUpdateFn(() => new Date().toISOString()),
+});
 
-export const companySyncStatus = pgTable(
-  "company_sync_status",
-  {
-    companyId: integer("company_id").primaryKey().notNull().references(() => companies.id, {
+export const companySyncStatus = pgTable("company_sync_status", {
+  companyId: integer("company_id")
+    .primaryKey()
+    .notNull()
+    .references(() => companies.id, {
       onDelete: "cascade",
       onUpdate: "cascade",
     }),
-    invoicesLastSyncedAt: timestamp("invoices_last_synced_at", { withTimezone: true, mode: "string" }).notNull(),
-    transactionsLastSyncedAt: timestamp("transactions_last_synced_at", { withTimezone: true, mode: "string" }).notNull(),
-    bankAccountsLastSyncedAt: timestamp("bank_accounts_last_synced_at", { withTimezone: true, mode: "string" }).notNull(),
-    billsLastSyncedAt: timestamp("bills_last_synced_at", { withTimezone: true, mode: "string" }).notNull(),
-  },
-);
+  invoicesLastSyncedAt: timestamp("invoices_last_synced_at", {
+    withTimezone: true,
+    mode: "string",
+  }).notNull(),
+  transactionsLastSyncedAt: timestamp("transactions_last_synced_at", {
+    withTimezone: true,
+    mode: "string",
+  }).notNull(),
+  bankAccountsLastSyncedAt: timestamp("bank_accounts_last_synced_at", {
+    withTimezone: true,
+    mode: "string",
+  }).notNull(),
+  billsLastSyncedAt: timestamp("bills_last_synced_at", {
+    withTimezone: true,
+    mode: "string",
+  }).notNull(),
+});
 
 export const companyPlaidCredentials = pgTable(
   "company_plaid_credentials",
@@ -55,7 +68,9 @@ export const companyPlaidCredentials = pgTable(
     updatedAt: timestamp("updated_at", {
       withTimezone: true,
       mode: "string",
-    }).notNull().$onUpdateFn(() => new Date().toISOString()),
+    })
+      .notNull()
+      .$onUpdateFn(() => new Date().toISOString()),
   },
   (table) => [
     foreignKey({
@@ -89,7 +104,9 @@ export const companyQuickBooksOauthCredentials = pgTable(
     updatedAt: timestamp("updated_at", {
       withTimezone: true,
       mode: "string",
-    }).notNull().$onUpdateFn(() => new Date().toISOString()),
+    })
+      .notNull()
+      .$onUpdateFn(() => new Date().toISOString()),
   },
   (table) => [
     foreignKey({

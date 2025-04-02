@@ -1,4 +1,11 @@
-import { LayoutGrid, LogOut, Plug, Receipt, Landmark, Plus } from "lucide-react";
+import {
+  LayoutGrid,
+  LogOut,
+  Plug,
+  Receipt,
+  Landmark,
+  Plus,
+} from "lucide-react";
 import { redirects } from "./redirects";
 import type { ElementType } from "react";
 

@@ -1,22 +1,45 @@
 import type { IBankTransactionRepository } from "../interfaces/bank-transaction";
 import type { GetManyBankTransactionsFilter } from "@fundlevel/api/internal/entities";
-import type { CreateBankTransactionParams, CreateBankTransactionRelationshipParams } from "@fundlevel/db/types";
-import { bankTransactions, bankAccounts, bankTransactionRelationships, companies } from "@fundlevel/db/schema";
-import { inArray, gte, lte, asc, desc, count, eq, sql, and, getTableColumns } from "drizzle-orm";
+import type {
+  CreateBankTransactionParams,
+  CreateBankTransactionRelationshipParams,
+} from "@fundlevel/db/types";
+import {
+  bankTransactions,
+  bankAccounts,
+  bankTransactionRelationships,
+  companies,
+} from "@fundlevel/db/schema";
+import {
+  inArray,
+  gte,
+  lte,
+  asc,
+  desc,
+  count,
+  eq,
+  sql,
+  and,
+  getTableColumns,
+} from "drizzle-orm";
 import type { IDB } from "../index";
 
 export class BankTransactionRepository implements IBankTransactionRepository {
-  constructor(private db: IDB) { }
+  constructor(private db: IDB) {}
 
-  async getMany(
-    filter: GetManyBankTransactionsFilter,
-  ) {
+  async getMany(filter: GetManyBankTransactionsFilter) {
     const whereCondition = and(
       filter.minDate ? gte(bankTransactions.date, filter.minDate) : undefined,
       filter.maxDate ? lte(bankTransactions.date, filter.maxDate) : undefined,
-      filter.minAmount !== undefined ? gte(bankTransactions.amount, filter.minAmount) : undefined,
-      filter.maxAmount !== undefined ? lte(bankTransactions.amount, filter.maxAmount) : undefined,
-      filter.companyIds ? inArray(bankTransactions.companyId, filter.companyIds) : undefined
+      filter.minAmount !== undefined
+        ? gte(bankTransactions.amount, filter.minAmount)
+        : undefined,
+      filter.maxAmount !== undefined
+        ? lte(bankTransactions.amount, filter.maxAmount)
+        : undefined,
+      filter.companyIds
+        ? inArray(bankTransactions.companyId, filter.companyIds)
+        : undefined,
     );
 
     let countQb = this.db
@@ -28,7 +51,8 @@ export class BankTransactionRepository implements IBankTransactionRepository {
       .$dynamic();
 
     const { page, pageSize, order } = filter;
-    const { remainingRemoteContent, ...bat } = getTableColumns(bankTransactions);
+    const { remainingRemoteContent, ...bat } =
+      getTableColumns(bankTransactions);
     let qb = this.db
       .select(bat)
       .from(bankTransactions)
@@ -39,38 +63,66 @@ export class BankTransactionRepository implements IBankTransactionRepository {
       .$dynamic();
 
     if (filter.bankAccountIds) {
-      qb = qb.innerJoin(bankAccounts, and(
-        eq(bankTransactions.bankAccountRemoteId, bankAccounts.remoteId),
-        inArray(bankAccounts.id, filter.bankAccountIds)
-      ));
+      qb = qb.innerJoin(
+        bankAccounts,
+        and(
+          eq(bankTransactions.bankAccountRemoteId, bankAccounts.remoteId),
+          inArray(bankAccounts.id, filter.bankAccountIds),
+        ),
+      );
 
-      countQb = countQb.innerJoin(bankAccounts, and(
-        eq(bankTransactions.bankAccountRemoteId, bankAccounts.remoteId),
-        inArray(bankAccounts.id, filter.bankAccountIds)
-      ));
+      countQb = countQb.innerJoin(
+        bankAccounts,
+        and(
+          eq(bankTransactions.bankAccountRemoteId, bankAccounts.remoteId),
+          inArray(bankAccounts.id, filter.bankAccountIds),
+        ),
+      );
     }
 
     if (filter.relationships) {
-      qb = qb.innerJoin(bankTransactionRelationships, and(
-        eq(bankTransactions.id, bankTransactionRelationships.bankTransactionId),
-        inArray(bankTransactionRelationships.entityId, filter.relationships.flatMap((r) => r.ids))
-      ));
+      qb = qb.innerJoin(
+        bankTransactionRelationships,
+        and(
+          eq(
+            bankTransactions.id,
+            bankTransactionRelationships.bankTransactionId,
+          ),
+          inArray(
+            bankTransactionRelationships.entityId,
+            filter.relationships.flatMap((r) => r.ids),
+          ),
+        ),
+      );
 
-      countQb = countQb.innerJoin(bankTransactionRelationships, and(
-        eq(bankTransactions.id, bankTransactionRelationships.bankTransactionId),
-        inArray(bankTransactionRelationships.entityId, filter.relationships.flatMap((r) => r.ids))
-      ));
+      countQb = countQb.innerJoin(
+        bankTransactionRelationships,
+        and(
+          eq(
+            bankTransactions.id,
+            bankTransactionRelationships.bankTransactionId,
+          ),
+          inArray(
+            bankTransactionRelationships.entityId,
+            filter.relationships.flatMap((r) => r.ids),
+          ),
+        ),
+      );
     }
 
     switch (filter.sortBy) {
       case "date":
         qb = qb.orderBy(
-          filter.order === "asc" ? asc(bankTransactions.date) : desc(bankTransactions.date)
+          filter.order === "asc"
+            ? asc(bankTransactions.date)
+            : desc(bankTransactions.date),
         );
         break;
       case "id":
         qb = qb.orderBy(
-          filter.order === "asc" ? asc(bankTransactions.id) : desc(bankTransactions.id)
+          filter.order === "asc"
+            ? asc(bankTransactions.id)
+            : desc(bankTransactions.id),
         );
         break;
     }
@@ -103,10 +155,15 @@ export class BankTransactionRepository implements IBankTransactionRepository {
   }
 
   async get(filter: { id: number } | { remoteId: string }) {
-    const { remainingRemoteContent, ...tx } = getTableColumns(bankTransactions)
-    const [data] = await this.db.select(tx).from(bankTransactions).where(
-      "id" in filter ? eq(bankTransactions.id, filter.id) : eq(bankTransactions.remoteId, filter.remoteId)
-    );
+    const { remainingRemoteContent, ...tx } = getTableColumns(bankTransactions);
+    const [data] = await this.db
+      .select(tx)
+      .from(bankTransactions)
+      .where(
+        "id" in filter
+          ? eq(bankTransactions.id, filter.id)
+          : eq(bankTransactions.remoteId, filter.remoteId),
+      );
     return data;
   }
 
@@ -126,42 +183,71 @@ export class BankTransactionRepository implements IBankTransactionRepository {
         set: {
           // remoteId: sql.raw(`excluded.${bankTransactions.remoteId.name}`),
           amount: sql.raw(`excluded.${bankTransactions.amount.name}`),
-          authorizedAt: sql.raw(`excluded.${bankTransactions.authorizedAt.name}`),
-          isoCurrencyCode: sql.raw(`excluded.${bankTransactions.isoCurrencyCode.name}`),
-          unofficialCurrencyCode: sql.raw(`excluded.${bankTransactions.unofficialCurrencyCode.name}`),
+          authorizedAt: sql.raw(
+            `excluded.${bankTransactions.authorizedAt.name}`,
+          ),
+          isoCurrencyCode: sql.raw(
+            `excluded.${bankTransactions.isoCurrencyCode.name}`,
+          ),
+          unofficialCurrencyCode: sql.raw(
+            `excluded.${bankTransactions.unofficialCurrencyCode.name}`,
+          ),
           checkNumber: sql.raw(`excluded.${bankTransactions.checkNumber.name}`),
           date: sql.raw(`excluded.${bankTransactions.date.name}`),
           datetime: sql.raw(`excluded.${bankTransactions.datetime.name}`),
           name: sql.raw(`excluded.${bankTransactions.name.name}`),
-          merchantName: sql.raw(`excluded.${bankTransactions.merchantName.name}`),
-          originalDescription: sql.raw(`excluded.${bankTransactions.originalDescription.name}`),
+          merchantName: sql.raw(
+            `excluded.${bankTransactions.merchantName.name}`,
+          ),
+          originalDescription: sql.raw(
+            `excluded.${bankTransactions.originalDescription.name}`,
+          ),
           pending: sql.raw(`excluded.${bankTransactions.pending.name}`),
           website: sql.raw(`excluded.${bankTransactions.website.name}`),
-          paymentChannel: sql.raw(`excluded.${bankTransactions.paymentChannel.name}`),
-          personalFinanceCategoryPrimary: sql.raw(`excluded.${bankTransactions.personalFinanceCategoryPrimary.name}`),
-          personalFinanceCategoryDetailed: sql.raw(`excluded.${bankTransactions.personalFinanceCategoryDetailed.name}`),
-          personalFinanceCategoryConfidenceLevel: sql.raw(`excluded.${bankTransactions.personalFinanceCategoryConfidenceLevel.name}`),
+          paymentChannel: sql.raw(
+            `excluded.${bankTransactions.paymentChannel.name}`,
+          ),
+          personalFinanceCategoryPrimary: sql.raw(
+            `excluded.${bankTransactions.personalFinanceCategoryPrimary.name}`,
+          ),
+          personalFinanceCategoryDetailed: sql.raw(
+            `excluded.${bankTransactions.personalFinanceCategoryDetailed.name}`,
+          ),
+          personalFinanceCategoryConfidenceLevel: sql.raw(
+            `excluded.${bankTransactions.personalFinanceCategoryConfidenceLevel.name}`,
+          ),
           code: sql.raw(`excluded.${bankTransactions.code.name}`),
-          remainingRemoteContent: sql.raw(`excluded.${bankTransactions.remainingRemoteContent.name}`),
+          remainingRemoteContent: sql.raw(
+            `excluded.${bankTransactions.remainingRemoteContent.name}`,
+          ),
         },
       });
   }
 
   async deleteMany(remoteIds: string[]) {
-    await this.db.delete(bankTransactions).where(inArray(bankTransactions.remoteId, remoteIds));
+    await this.db
+      .delete(bankTransactions)
+      .where(inArray(bankTransactions.remoteId, remoteIds));
   }
 
-  async createRelationship(params: CreateBankTransactionRelationshipParams, bankTransactionId: number) {
-    await this.db.insert(bankTransactionRelationships).values({ ...params, bankTransactionId });
+  async createRelationship(
+    params: CreateBankTransactionRelationshipParams,
+    bankTransactionId: number,
+  ) {
+    await this.db
+      .insert(bankTransactionRelationships)
+      .values({ ...params, bankTransactionId });
   }
 
   async validateOwnership(bankTransactionId: number, accountId: number) {
-    const [data] = await this.db.select({
-      ownerId: companies.ownerId,
-    }).from(bankTransactions)
+    const [data] = await this.db
+      .select({
+        ownerId: companies.ownerId,
+      })
+      .from(bankTransactions)
       .innerJoin(companies, eq(bankTransactions.companyId, companies.id))
       .where(eq(bankTransactions.id, bankTransactionId));
 
     return data?.ownerId === accountId;
   }
-}   
+}

@@ -22,13 +22,17 @@ export const UpdateInvoiceParamsSchema = createUpdateSchema(invoices).omit({
 
 // Invoice Line schemas
 export const InvoiceLineSchema = createSelectSchema(invoiceLines);
-export const CreateInvoiceLineParamsSchema = createInsertSchema(invoiceLines).omit({
+export const CreateInvoiceLineParamsSchema = createInsertSchema(
+  invoiceLines,
+).omit({
   createdAt: true,
   updatedAt: true,
   id: true,
   invoiceId: true,
 });
-export const UpdateInvoiceLineParamsSchema = createUpdateSchema(invoiceLines).omit({
+export const UpdateInvoiceLineParamsSchema = createUpdateSchema(
+  invoiceLines,
+).omit({
   createdAt: true,
   updatedAt: true,
   id: true,
