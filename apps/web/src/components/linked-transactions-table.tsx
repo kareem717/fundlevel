@@ -1,5 +1,8 @@
 "use client";
 
+import type { ColumnDef } from "@tanstack/react-table";
+import type { BankTransaction } from "@fundlevel/db/types";
+import { formatCurrency } from "@fundlevel/web/lib/utils";
 import { useEffect, useState } from "react";
 import {
   Table,
@@ -15,23 +18,43 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { client } from "@fundlevel/sdk";
-import { env } from "@fundlevel/web/env";
-import { transactionColumns } from "./transaction-columns";
 import { Skeleton } from "@fundlevel/ui/components/skeleton";
 import { generate } from "shortid";
 import { cn } from "@fundlevel/ui/lib/utils";
 import { DataTablePagination } from "@fundlevel/ui/components/data-table-pagination";
 import type { ComponentPropsWithoutRef } from "react";
-import { getTokenCached } from "@fundlevel/web/actions/auth";
-import { useQuery } from "@tanstack/react-query";
+import { useLinkedTransactions } from "@fundlevel/web/hooks/use-linked-transactions";
+
+export const transactionColumns: ColumnDef<
+  Omit<BankTransaction, "remainingRemoteContent">
+>[] = [
+    {
+      accessorKey: "name",
+      header: "Description",
+      cell: ({ row }) => {
+        const name = row.getValue("name") as string;
+        return name || "No description";
+      },
+    },
+    {
+      accessorKey: "amount",
+      header: "Amount",
+      cell: ({ row }) => {
+        const amount = row.getValue("amount") as number;
+        return formatCurrency(amount);
+      },
+    },
+  ];
+
 
 interface TransactionsTableProps extends ComponentPropsWithoutRef<"div"> {
-  invoiceId: number;
+  entityType: "invoice" | "bill";
+  entityId: number;
 }
 
 export function TransactionsTable({
-  invoiceId,
+  entityType,
+  entityId,
   className,
   ...props
 }: TransactionsTableProps) {
@@ -40,32 +63,12 @@ export function TransactionsTable({
     pageSize: 10,
   });
 
-  const { data, isPending } = useQuery({
-    queryKey: ["transactions", invoiceId],
-    queryFn: async () => {
-      const token = await getTokenCached();
-      if (!token) {
-        throw new Error("No authentication token found");
-      }
-
-      const req = await client(env.NEXT_PUBLIC_BACKEND_URL, token)[
-        "bank-transaction"
-      ].invoice[":invoiceId"].$get({
-        param: { invoiceId },
-        query: {
-          page: pagination.pageIndex,
-          pageSize: pagination.pageSize,
-          order: "asc",
-        },
-      });
-
-      if (!req.ok) {
-        throw new Error("Failed to get related transactions");
-      }
-
-      return await req.json();
-    },
-  });
+  const { data, isPending } = useLinkedTransactions(entityType, entityId, {
+    page: pagination.pageIndex,
+    pageSize: pagination.pageSize,
+    order: "desc",
+    sortBy: "date",
+  });  
 
   const table = useReactTable({
     data: data?.data || [],
@@ -92,9 +95,9 @@ export function TransactionsTable({
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )}
                   </TableHead>
                 ))}
               </TableRow>
