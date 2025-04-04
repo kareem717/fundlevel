@@ -14,6 +14,7 @@ import { tasks, idempotencyKeys } from "@trigger.dev/sdk/v3";
 import type {
   syncCompanyBankingDataTask,
   syncCompanyInvoicesTask,
+  syncCompanyBillsTask,
 } from "@fundlevel/api/internal/jobs";
 
 const companyHandler = new OpenAPIHono()
@@ -88,7 +89,8 @@ const companyHandler = new OpenAPIHono()
       c,
     ).company.completeQuickBooksOAuthFlow(code, state, realmId);
 
-    await tasks.trigger<typeof syncCompanyInvoicesTask>(
+    const jobs: Promise<any>[] = [];
+    jobs.push(tasks.trigger<typeof syncCompanyInvoicesTask>(
       "sync-company-invoices",
       {
         companyId: company_id,
@@ -98,7 +100,20 @@ const companyHandler = new OpenAPIHono()
       //     `sync-company-invoices-${company_id}`,
       //   ),
       // },
-    );
+    ));
+    jobs.push(tasks.trigger<typeof syncCompanyBillsTask>(
+      "sync-company-bills",
+      {
+        companyId: company_id,
+      },
+      // {
+      //   idempotencyKey: await idempotencyKeys.create(
+      //     `sync-company-invoices-${company_id}`,
+      //   ),
+      // },
+    ));
+
+    await Promise.all(jobs);
 
     return c.redirect(redirect_url);
   })
