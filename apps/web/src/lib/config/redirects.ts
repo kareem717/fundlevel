@@ -36,6 +36,12 @@ export const redirects = {
         reconcile: (invoiceId: number) =>
           companyPrefix(id, `invoices/${invoiceId}/reconcile`),
       },
+      bills: {
+        index: companyPrefix(id, "bills"),
+        show: (billId: number) => companyPrefix(id, `bills/${billId}`),
+        reconcile: (billId: number) =>
+          companyPrefix(id, `bills/${billId}/reconcile`),
+      },
       connections: {
         root: companyPrefix(id, "connections"),
         accounting: companyPrefix(id, "connections/accounting"),

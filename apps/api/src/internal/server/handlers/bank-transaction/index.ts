@@ -5,6 +5,7 @@ import {
   getTransactionRoute,
   createTransactionRelationshipRoute,
   getInvoiceTransactionsRoute,
+  getBillTransactionsRoute,
 } from "./routes";
 import { getAccount } from "../../middleware/with-auth";
 import { getService } from "../../middleware/with-service-layer";
@@ -123,6 +124,24 @@ const bankTransactionHandler = new OpenAPIHono()
     });
 
     return c.json(result, 200);
-  });
+  })
+  .openapi(getBillTransactionsRoute, async (c) => {
+    const account = getAccount(c);
+    if (!account) {
+      return c.json(
+        { error: "Account not found, please create an account." },
+        401,
+      );
+    }
+
+    const { billId } = c.req.valid("param");
+
+    const result = await getService(c).bankTransaction.getMany({
+      ...c.req.valid("query"),
+      relationships: [{ type: "bill", ids: [billId] }],
+    });
+
+    return c.json(result, 200);
+  })
 
 export default bankTransactionHandler;

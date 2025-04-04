@@ -4,7 +4,7 @@ import {
   Plug,
   Receipt,
   Landmark,
-  Plus,
+  Clipboard,
 } from "lucide-react";
 import { redirects } from "./redirects";
 import type { ElementType } from "react";
@@ -78,6 +78,11 @@ const companyDashboard = (id: number): NavigationMenu[] => [
       {
         title: "Invoices",
         url: redirects.app.company(id).invoices.index,
+        icon: Clipboard,
+      },
+      {
+        title: "Bills",
+        url: redirects.app.company(id).bills.index,
         icon: Receipt,
       },
     ],

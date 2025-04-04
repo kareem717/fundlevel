@@ -192,3 +192,39 @@ export const getInvoiceTransactionsRoute = createRoute({
     ...unauthorizedResponse,
   },
 });
+
+export const getBillTransactionsRoute = createRoute({
+  summary: "Get bill transactions",
+  operationId: "getBillTransactions",
+  tags: ["Bank Transaction"],
+  security: [bearerAuthSchema],
+  method: "get",
+  path: "/bill/:billId",
+  request: {
+    params: z.object({
+      billId: pathIdParamSchema,
+    }),
+    query: z.object({
+      ...offsetPaginationParamsSchema.shape,
+      sortBy: z.enum(["date", "id"]).optional().default("id"),
+    }),
+  },
+  responses: {
+    200: {
+      description: "Successful fetch",
+      content: {
+        "application/json": {
+          schema: z.object({
+            data: z.array(
+              BankTransactionSchema.omit({
+                remainingRemoteContent: true,
+              }).openapi("BankTransaction"),
+            ),
+            ...offsetPaginationResultSchema.shape,
+          }),
+        },
+      },
+    },
+    ...unauthorizedResponse,
+  },
+});

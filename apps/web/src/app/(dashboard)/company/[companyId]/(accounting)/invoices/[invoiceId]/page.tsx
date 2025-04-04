@@ -41,9 +41,8 @@ import {
   TabsTrigger,
 } from "@fundlevel/ui/components/tabs";
 import { LineItemsTable } from "./components/line-items-table";
-import { TransactionsTable } from "./components/transactions-table";
 import { formatCurrency } from "@fundlevel/web/lib/utils";
-
+import { TransactionsTable } from "@fundlevel/web/components/linked-transactions-table";
 export default async function AccountingInvoicePage({
   params,
 }: { params: Promise<{ companyId: string; invoiceId: string }> }) {
@@ -233,7 +232,7 @@ export default async function AccountingInvoicePage({
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="mb-20">
-                  <TransactionsTable invoiceId={invoiceId} />
+                  <TransactionsTable entityType="invoice" entityId={invoiceId} />
                 </CardContent>
                 <CardFooter className="flex justify-center border-t bg-muted/50 py-4 absolute bottom-0 left-0 w-full">
                   <Link
