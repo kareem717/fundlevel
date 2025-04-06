@@ -154,7 +154,7 @@ export class CompanyService implements ICompanyService {
       state,
     });
 
-    const auth_url = `${CompanyService.QUICK_BOOKS_OAUTH_BASE_URL}/authorize?${params.toString()}`;
+    const auth_url = `${CompanyService.QUICK_BOOKS_OAUTH_BASE_URL}${this.qbConfig.environment === "sandbox" ? "/authorize" : ""}?${params.toString()}`;
 
     // Save the state in the session
     await this.repo.company.createQuickBooksOauthState(
@@ -656,12 +656,12 @@ export class CompanyService implements ICompanyService {
         bankAccountRemoteId: account_id,
         personalFinanceCategoryConfidenceLevel:
           personal_finance_category?.confidence_level as
-            | "VERY_HIGH"
-            | "HIGH"
-            | "MEDIUM"
-            | "LOW"
-            | "UNKNOWN"
-            | undefined,
+          | "VERY_HIGH"
+          | "HIGH"
+          | "MEDIUM"
+          | "LOW"
+          | "UNKNOWN"
+          | undefined,
         personalFinanceCategoryPrimary: personal_finance_category?.primary,
         personalFinanceCategoryDetailed: personal_finance_category?.detailed,
         remainingRemoteContent: remaining_remote_content,
