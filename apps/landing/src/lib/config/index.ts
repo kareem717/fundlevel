@@ -1,5 +1,6 @@
 import { meta } from "./meta";
-import { contact, business } from "./company";
+import { socials } from "./socials";
 import { redirects } from "./redirects";
+import { copy } from "./copy"
 
-export { meta, contact, business, redirects };
+export { meta, socials, redirects, copy };

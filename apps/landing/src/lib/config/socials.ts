@@ -11,7 +11,7 @@ type Social = {
 /**
  * Configuration for all social media links for the app.
  */
-const socials: Social[] = [
+export const socials: Social[] = [
   {
     label: "X",
     link: "https://x.com/fundlevel",
@@ -23,19 +23,3 @@ const socials: Social[] = [
     icon: Linkedin,
   },
 ];
-
-/**
- * Configuration for all contact information for the app.
- */
-export const contact = {
-  email: "admin@fundlevel.co",
-  socials,
-};
-
-/**
- * Configuration for all business information for the app.
- */
-export const business = {
-  name: "Fundlevel",
-  copyright: `© ${new Date().getFullYear()} Fundlevel. All rights reserved.`,
-};

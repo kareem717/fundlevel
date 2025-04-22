@@ -3,6 +3,7 @@ import { cn } from "@fundlevel/ui/lib/utils";
 import Link from "next/link";
 import { redirects } from "@fundlevel/landing/lib/config";
 import { LogoIcon, SmallLogoIcon } from "@fundlevel/landing/components/icons";
+
 interface LogoDivProps
   extends Omit<ComponentPropsWithoutRef<typeof Link>, "href"> {
   href?: string;

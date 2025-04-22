@@ -10,9 +10,11 @@ export const env = createEnv({
   client: {
     NEXT_PUBLIC_LANDING_URL: z.string().url(),
     NEXT_PUBLIC_CALENDAR_LINK: z.string().url(),
+    NEXT_PUBLIC_WEB_URL: z.string().url()
   },
   experimental__runtimeEnv: {
     NEXT_PUBLIC_LANDING_URL: process.env.NEXT_PUBLIC_LANDING_URL,
     NEXT_PUBLIC_CALENDAR_LINK: process.env.NEXT_PUBLIC_CALENDAR_LINK,
+    NEXT_PUBLIC_WEB_URL: process.env.NEXT_PUBLIC_WEB_URL
   }
 });

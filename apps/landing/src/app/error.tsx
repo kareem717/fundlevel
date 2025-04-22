@@ -27,7 +27,7 @@ export default function ErrorPage({
       <h2 className="text-2xl font-semibold">
         {error.message || "Something went wrong!"}{" "}
       </h2>
-      <div className="flex gap-4 w-full md:w-1/3 max-w-md min-w-[200px]">
+      <div className="flex gap-4 w-full md:w-1/5 max-w-md justify-center">
         <Button
           onClick={() => reset()}
           className="w-full"
