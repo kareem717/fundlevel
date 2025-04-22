@@ -28,8 +28,7 @@ const socials: Social[] = [
  * Configuration for all contact information for the app.
  */
 export const contact = {
-  email: "admin@fundlevel.app",
-  calendly: "https://calendly.com/fundlevel/30min",
+  email: "admin@fundlevel.co",
   socials,
 };
 
@@ -38,5 +37,5 @@ export const contact = {
  */
 export const business = {
   name: "Fundlevel",
-  copyright: "© 2024 Fundlevel. All rights reserved.",
+  copyright: `© ${new Date().getFullYear()} Fundlevel. All rights reserved.`,
 };

@@ -1,12 +1,8 @@
 import "@fundlevel/ui/globals.css";
 
 import { Providers } from "@fundlevel/landing/components/providers";
-
-import { navigationConfig } from "@fundlevel/landing/lib/config/navigation";
-import { Header } from "@fundlevel/landing/components/header";
 import { Geist, Geist_Mono } from "next/font/google";
 import { meta } from "@fundlevel/landing/lib/config";
-import { Footer } from "@fundlevel/landing/components/footer";
 
 const fontSans = Geist({
   subsets: ["latin"],
@@ -18,7 +14,7 @@ const fontMono = Geist_Mono({
   variable: "--font-mono",
 });
 
-export const metadata = meta.root;
+export const metadata = meta.root || null;
 
 //TODO: refactor
 export default async function RootLayout({
@@ -29,7 +25,7 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className="scroll-smooth">
       <body
-        className={`${fontSans.variable} ${fontMono.variable} font-sans scroll-smooth antialiased focus:scroll-auto max-w-screen-xl mx-auto pb-8`}
+        className={`${fontSans.variable} ${fontMono.variable} font-sans scroll-smooth antialiased focus:scroll-auto`}
       >
         <Providers
           themeProps={{
@@ -38,13 +34,7 @@ export default async function RootLayout({
             disableTransitionOnChange: true,
           }}
         >
-          <Header
-            config={navigationConfig}
-            currentPath={"/"}
-            className="w-[calc(100%-16px)] max-w-screen-xl"
-          />
-          <main className="px-4">{children}</main>
-          <Footer className="mt-20 md:mt-28 w-[calc(100%-16px)] mx-auto" />
+          {children}
         </Providers>
       </body>
     </html>
