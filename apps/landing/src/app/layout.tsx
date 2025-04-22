@@ -3,6 +3,7 @@ import "@fundlevel/ui/globals.css";
 import { Providers } from "@fundlevel/landing/components/providers";
 import { Geist, Geist_Mono } from "next/font/google";
 import { meta } from "@fundlevel/landing/lib/config";
+import Head from "next/head";
 
 const fontSans = Geist({
   subsets: ["latin"],
@@ -24,6 +25,9 @@ export default async function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning className="scroll-smooth">
+      <Head>
+        <script id="vtag-ai-js" async src="https://r2.leadsy.ai/tag.js" data-pid="qfD8hkAG1NlHjHdU" data-version="062024" />
+      </Head>
       <body
         className={`${fontSans.variable} ${fontMono.variable} font-sans scroll-smooth antialiased focus:scroll-auto container mx-auto`}
       >
