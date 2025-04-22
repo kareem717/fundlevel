@@ -46,13 +46,13 @@ export function NavMenu({
             key={item.label}
             href={item.href}
             onClick={onClick}
-            legacyBehavior
+
             passHref
             prefetch
             className={cn(
               "block",
               direction === "column" &&
-                "w-full py-2 px-4 hover:bg-accent rounded-md",
+              "w-full py-2 px-4 hover:bg-accent rounded-md",
             )}
           >
             {item.label}

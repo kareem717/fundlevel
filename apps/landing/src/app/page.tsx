@@ -99,7 +99,7 @@ const faqs = [
             click here to get started
           </Link>
           &nbsp; or reach out to us at:&nbsp;
-          <Link href={`mailto:${contact.email}`} aria-label="Email us at">
+          <Link href={`mailto:${contact.email}`} aria-label="Email us at" >
             {contact.email}
           </Link>
         </p>
