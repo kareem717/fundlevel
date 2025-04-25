@@ -28,6 +28,12 @@ const root: Metadata = {
   },
   description: "AI tool suite for finance teams",
   keywords: [
+    "real estate developer",
+    "real estate development",
+    "real estate development software",
+    "real estate development ai",
+    "commercial real estate",
+    "commercial real estate software",
     "funding",
     "fundlevel",
     "fund level",
@@ -38,6 +44,8 @@ const root: Metadata = {
     "finance tools",
     "ai cfo",
     "finance",
+    "real estate",
+    "development",
   ],
   twitter: {
     card: "summary_large_image",
