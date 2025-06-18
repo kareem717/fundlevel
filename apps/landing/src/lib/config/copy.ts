@@ -1,6 +1,6 @@
 export const copy = {
   hero: {
-    main: "Modern solutions for real estate teams",
-    subheading: "AI tooling made to increase the throughput of real estate developers. Empowering your team, not replacing them."
+    main: "Automated AI workflows for finance teams",
+    subheading: "AI automation designed to streamline accounting workflows and financial operations. Empowering your team, not replacing them."
   }
 }
