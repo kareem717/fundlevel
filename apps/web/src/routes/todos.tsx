@@ -6,16 +6,16 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMutation } from "convex/react";
 import { Trash2 } from "lucide-react";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@fundlevel/ui/components/button";
 import {
 	Card,
 	CardContent,
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
+} from "@fundlevel/ui/components/card";
+import { Checkbox } from "@fundlevel/ui/components/checkbox";
+import { Input } from "@fundlevel/ui/components/input";
 
 export const Route = createFileRoute("/todos")({
 	component: TodosRoute,

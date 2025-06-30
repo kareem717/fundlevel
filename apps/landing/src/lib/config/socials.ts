@@ -1,5 +1,5 @@
 import type { ElementType } from "react";
-import { LinkedinIcon, XIcon } from "@/components/icons";
+import { LinkedinIcon, XIcon } from "@fundlevel/ui/components/custom/icons";
 
 type Social = {
 	label: string;

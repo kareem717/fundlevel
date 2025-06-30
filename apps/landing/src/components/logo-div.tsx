@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import type { ComponentPropsWithoutRef, FC } from "react";
-import { LogoIcon, SmallLogoIcon } from "@/components/icons";
-import { cn } from "@/lib/utils";
+import { LogoIcon, SmallLogoIcon } from "@fundlevel/ui/components/custom/icons";
+import { cn } from "@fundlevel/ui/lib/utils";
 
 interface LogoDivProps
 	extends Omit<ComponentPropsWithoutRef<typeof Link>, "href"> {

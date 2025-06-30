@@ -5,17 +5,17 @@
 	"tsx": true,
 	"tailwind": {
 		"config": "",
-		"css": "src/index.css",
-		"baseColor": "neutral",
+		"css": "../../packages/ui/src/styles/globals.css",
+		"baseColor": "zinc",
 		"cssVariables": true,
 		"prefix": ""
 	},
+	"iconLibrary": "lucide",
 	"aliases": {
-		"components": "@/components",
-		"utils": "@/lib/utils",
-		"ui": "@/components/ui",
-		"lib": "@/lib",
-		"hooks": "@/hooks"
-	},
-	"iconLibrary": "lucide"
+		"components": "@fundlevel/desktop/components",
+		"hooks": "@fundlevel/desktop/hooks",
+		"lib": "@fundlevel/desktop/lib",
+		"utils": "@fundlevel/ui/lib/utils",
+		"ui": "@fundlevel/ui/components"
+	}
 }

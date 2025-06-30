@@ -22,7 +22,8 @@
 		"noUncheckedSideEffectImports": true,
 		"baseUrl": ".",
 		"paths": {
-			"@/*": ["./src/*"]
+			"@/*": ["./src/*"],
+			"@fundlevel/ui/*": ["../../packages/ui/src/*"]
 		}
 	}
 }

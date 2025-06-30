@@ -5,7 +5,7 @@ import { routerWithQueryClient } from "@tanstack/react-router-with-query";
 import { ConvexProvider } from "convex/react";
 import Loader from "./components/loader";
 import { routeTree } from "./routeTree.gen";
-import "./index.css";
+import "@fundlevel/ui/styles/globals.css";
 
 export function createRouter() {
 	const CONVEX_URL = (import.meta as any).env.VITE_CONVEX_URL!;
