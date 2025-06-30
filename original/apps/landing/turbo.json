@@ -1,8 +1,0 @@
-{
-  "extends": ["//"],
-  "tasks": {
-    "build": {
-      "passThroughEnv": ["BEEHIIV_API_KEY", "BEEHIIV_PUBLICATION_ID"]
-    }
-  }
-}

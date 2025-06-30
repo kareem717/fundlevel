@@ -1,1 +1,0 @@
-ALTER TABLE "bank_account_transactions" ADD CONSTRAINT "bank_account_transactions_remote_id_unique" UNIQUE("remote_id");

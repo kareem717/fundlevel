@@ -1,0 +1,25 @@
+{
+	"name": "pivot",
+	"private": true,
+	"workspaces": [
+		"apps/*",
+		"packages/*"
+	],
+	"scripts": {
+		"check": "biome check --write .",
+		"dev": "turbo dev",
+		"build": "turbo build",
+		"check-types": "turbo check-types",
+		"dev:native": "turbo -F native dev",
+		"dev:web": "turbo -F web dev",
+		"dev:landing": "turbo -F landing dev",
+		"dev:server": "turbo -F @fundlevel/backend dev",
+		"dev:setup": "turbo -F @fundlevel/backend dev:setup"
+	},
+	"dependencies": {},
+	"devDependencies": {
+		"@biomejs/biome": "^2.0.6",
+		"turbo": "^2.5.4"
+	},
+	"packageManager": "pnpm@10.12.4"
+}
