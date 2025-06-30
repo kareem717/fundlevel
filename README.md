@@ -1,31 +1,61 @@
-# shadcn/ui monorepo template
+# pivot
 
-This template is for creating a monorepo with shadcn/ui.
+This project was created with [Better-T-Stack](https://github.com/AmanVarshney01/create-better-t-stack), a modern TypeScript stack that combines React, TanStack Start, Convex, and more.
 
-## Usage
+## Features
+
+- **TypeScript** - For type safety and improved developer experience
+- **TanStack Start** - SSR framework with TanStack Router
+- **TailwindCSS** - Utility-first CSS for rapid UI development
+- **shadcn/ui** - Reusable UI components
+- **Convex** - Reactive backend-as-a-service platform
+- **Turborepo** - Optimized monorepo build system
+- **Biome** - Linting and formatting
+
+## Getting Started
+
+First, install the dependencies:
 
 ```bash
-pnpm dlx shadcn@latest init
+pnpm install
 ```
 
-## Adding components
+## Convex Setup
 
-To add components to your app, run the following command at the root of your `web` app:
+This project uses Convex as a backend. You'll need to set up Convex before running the app:
 
 ```bash
-pnpm dlx shadcn@latest add button -c apps/web
+pnpm dev:setup
 ```
 
-This will place the ui components in the `packages/ui/src/components` directory.
+Follow the prompts to create a new Convex project and connect it to your application.
 
-## Tailwind
+Then, run the development server:
 
-Your `tailwind.config.ts` and `globals.css` are already set up to use the components from the `ui` package.
-
-## Using components
-
-To use the components in your app, import them from the `ui` package.
-
-```tsx
-import { Button } from "@fundlevel/ui/components/button"
+```bash
+pnpm dev
 ```
+
+Open [http://localhost:3001](http://localhost:3001) in your browser to see the web application.
+Your app will connect to the Convex cloud backend automatically.
+
+
+
+## Project Structure
+
+```
+pivot/
+├── apps/
+│   ├── web/         # Frontend application (React + TanStack Start)
+├── packages/
+│   └── backend/     # Convex backend functions and schema
+```
+
+## Available Scripts
+
+- `pnpm dev`: Start all applications in development mode
+- `pnpm build`: Build all applications
+- `pnpm dev:web`: Start only the web application
+- `pnpm dev:setup`: Setup and configure your Convex project
+- `pnpm check-types`: Check TypeScript types across all apps
+- `pnpm check`: Run Biome formatting and linting

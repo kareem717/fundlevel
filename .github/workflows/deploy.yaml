@@ -1,0 +1,85 @@
+name: Deploy Web Apps
+
+on:
+  push:
+    branches:
+      - main
+    paths: 
+        # TODO: add web app
+      - 'apps/landing/**'
+  workflow_dispatch:
+    inputs:
+      bypass_change_checks:
+        description: 'Bypass change checks and force deploy'
+        required: false
+        default: false
+        type: boolean
+      deploy_landing_only:
+        description: 'Deploy only the Landing page (ignores bypass_change_checks if true)'
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  check-changes:
+    name: Check for Changed Files
+    runs-on: ubuntu-latest
+    outputs:
+      api_changed: ${{ steps.check_api.outputs.changed }}
+      landing_changed: ${{ steps.check_landing.outputs.changed }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check Landing changes (including workspace deps) 
+        id: check_landing
+        uses: tj-actions/changed-files@v44
+        with:
+          files: |
+            apps/landing/**
+            packages/ui/**
+
+  deploy-landing:
+    name: Deploy Landing Page to Cloudflare Workers
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: production # Add this to access environment variables
+    needs: check-changes # Depends on the check-changes job
+    if: |
+      needs.check-changes.outputs.landing_changed == 'true' || 
+      inputs.bypass_change_checks == true || 
+      inputs.deploy_landing_only == true
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: latest
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install Landing App Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Landing Page
+        env:
+          NODE_ENV: production
+        run: |
+          cd apps/landing
+          pnpm run build
+
+      - name: Deploy to Cloudflare Workers
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: 'apps/landing'
+          command: deploy --minify --env production --config wrangler.jsonc
