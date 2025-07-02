@@ -1,5 +1,5 @@
 import { Toaster } from "@fundlevel/ui/components/sonner";
-import appCss from "@fundlevel/ui/globals.css?url";
+import appCss from "@fundlevel/ui/styles/globals.css?url";
 import type { QueryClient } from "@tanstack/react-query";
 import {
 	createRootRouteWithContext,

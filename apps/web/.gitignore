@@ -19,6 +19,7 @@
 .vinxi
 .output
 .react-router/
+.nitro/
 
 # Deployment
 .vercel
@@ -31,6 +32,7 @@
 .DS_Store
 *.pem
 *.local
+.dev.vars
 
 # Logs
 npm-debug.log*
