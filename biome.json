@@ -19,15 +19,20 @@
 			"!**/src-tauri",
 			"!**/.nuxt",
 			"!bts.jsonc",
-			"!**/worker-configuration.d.ts",
-			"!**/node_modules"
+			"!**/worker-configuration.d.ts"
 		]
 	},
 	"formatter": {
 		"enabled": true,
 		"indentStyle": "tab"
 	},
-	"assist": { "actions": { "source": { "organizeImports": "on" } } },
+	"assist": {
+		"actions": {
+			"source": {
+				"organizeImports": "on"
+			}
+		}
+	},
 	"linter": {
 		"enabled": true,
 		"rules": {
