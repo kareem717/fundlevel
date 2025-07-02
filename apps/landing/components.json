@@ -12,9 +12,9 @@
 	},
 	"iconLibrary": "lucide",
 	"aliases": {
-		"components": "@fundlevel/desktop/components",
-		"hooks": "@fundlevel/desktop/hooks",
-		"lib": "@fundlevel/desktop/lib",
+		"components": "@fundlevel/ui/components",
+		"hooks": "@fundlevel/ui/hooks",
+		"lib": "@fundlevel/ui/lib",
 		"utils": "@fundlevel/ui/lib/utils",
 		"ui": "@fundlevel/ui/components"
 	}

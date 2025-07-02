@@ -1,6 +1,6 @@
-# pivot
+# new
 
-This project was created with [Better-T-Stack](https://github.com/AmanVarshney01/create-better-t-stack), a modern TypeScript stack that combines React, TanStack Start, Convex, and more.
+This project was created with [Better-T-Stack](https://github.com/AmanVarshney01/create-better-t-stack), a modern TypeScript stack that combines React, TanStack Start, Hono, ORPC, and more.
 
 ## Features
 
@@ -8,9 +8,16 @@ This project was created with [Better-T-Stack](https://github.com/AmanVarshney01
 - **TanStack Start** - SSR framework with TanStack Router
 - **TailwindCSS** - Utility-first CSS for rapid UI development
 - **shadcn/ui** - Reusable UI components
-- **Convex** - Reactive backend-as-a-service platform
+- **Hono** - Lightweight, performant server framework
+- **oRPC** - End-to-end type-safe APIs with OpenAPI integration
+- **workers** - Runtime environment
+- **Drizzle** - TypeScript-first ORM
+- **PostgreSQL** - Database engine
+- **Authentication** - Email & password authentication with Better Auth
 - **Turborepo** - Optimized monorepo build system
+- **Starlight** - Documentation site with Astro
 - **Biome** - Linting and formatting
+- **Husky** - Git hooks for code quality
 
 ## Getting Started
 
@@ -19,16 +26,18 @@ First, install the dependencies:
 ```bash
 pnpm install
 ```
+## Database Setup
 
-## Convex Setup
+This project uses PostgreSQL with Drizzle ORM.
 
-This project uses Convex as a backend. You'll need to set up Convex before running the app:
+1. Make sure you have a PostgreSQL database set up.
+2. Update your `apps/server/.env` file with your PostgreSQL connection details.
 
+3. Apply the schema to your database:
 ```bash
-pnpm dev:setup
+pnpm db:push
 ```
 
-Follow the prompts to create a new Convex project and connect it to your application.
 
 Then, run the development server:
 
@@ -37,18 +46,18 @@ pnpm dev
 ```
 
 Open [http://localhost:3001](http://localhost:3001) in your browser to see the web application.
-Your app will connect to the Convex cloud backend automatically.
+The API is running at [http://localhost:3000](http://localhost:3000).
 
 
 
 ## Project Structure
 
 ```
-pivot/
+new/
 ├── apps/
 │   ├── web/         # Frontend application (React + TanStack Start)
-├── packages/
-│   └── backend/     # Convex backend functions and schema
+│   ├── docs/        # Documentation site (Astro Starlight)
+│   └── server/      # Backend API (Hono, ORPC)
 ```
 
 ## Available Scripts
@@ -56,6 +65,10 @@ pivot/
 - `pnpm dev`: Start all applications in development mode
 - `pnpm build`: Build all applications
 - `pnpm dev:web`: Start only the web application
-- `pnpm dev:setup`: Setup and configure your Convex project
+- `pnpm dev:server`: Start only the server
 - `pnpm check-types`: Check TypeScript types across all apps
+- `pnpm db:push`: Push schema changes to database
+- `pnpm db:studio`: Open database studio UI
 - `pnpm check`: Run Biome formatting and linting
+- `cd apps/docs && pnpm dev`: Start documentation site
+- `cd apps/docs && pnpm build`: Build documentation site

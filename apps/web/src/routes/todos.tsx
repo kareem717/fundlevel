@@ -1,11 +1,3 @@
-import { convexQuery } from "@convex-dev/react-query";
-import { api } from "@fundlevel/backend/convex/_generated/api";
-import type { Id } from "@fundlevel/backend/convex/_generated/dataModel";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
-import { useMutation } from "convex/react";
-import { Trash2 } from "lucide-react";
-import { useState } from "react";
 import { Button } from "@fundlevel/ui/components/button";
 import {
 	Card,
@@ -16,6 +8,11 @@ import {
 } from "@fundlevel/ui/components/card";
 import { Checkbox } from "@fundlevel/ui/components/checkbox";
 import { Input } from "@fundlevel/ui/components/input";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { createFileRoute } from "@tanstack/react-router";
+import { Loader2, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { orpc } from "@/utils/orpc";
 
 export const Route = createFileRoute("/todos")({
 	component: TodosRoute,
@@ -24,48 +21,50 @@ export const Route = createFileRoute("/todos")({
 function TodosRoute() {
 	const [newTodoText, setNewTodoText] = useState("");
 
-	const todosQuery = useSuspenseQuery(convexQuery(api.todos.getAll, {}));
-	const todos = todosQuery.data;
+	const todos = useQuery(orpc.todo.getAll.queryOptions());
+	const createMutation = useMutation(
+		orpc.todo.create.mutationOptions({
+			onSuccess: () => {
+				todos.refetch();
+				setNewTodoText("");
+			},
+		}),
+	);
+	const toggleMutation = useMutation(
+		orpc.todo.toggle.mutationOptions({
+			onSuccess: () => {
+				todos.refetch();
+			},
+		}),
+	);
+	const deleteMutation = useMutation(
+		orpc.todo.delete.mutationOptions({
+			onSuccess: () => {
+				todos.refetch();
+			},
+		}),
+	);
 
-	const createTodo = useMutation(api.todos.create);
-	const toggleTodo = useMutation(api.todos.toggle);
-	const removeTodo = useMutation(api.todos.deleteTodo);
-
-	const handleAddTodo = async (e: React.FormEvent) => {
+	const handleAddTodo = (e: React.FormEvent) => {
 		e.preventDefault();
-		const text = newTodoText.trim();
-		if (text) {
-			setNewTodoText("");
-			try {
-				await createTodo({ text });
-			} catch (error) {
-				console.error("Failed to add todo:", error);
-				setNewTodoText(text);
-			}
+		if (newTodoText.trim()) {
+			createMutation.mutate({ text: newTodoText });
 		}
 	};
 
-	const handleToggleTodo = async (id: Id<"todos">, completed: boolean) => {
-		try {
-			await toggleTodo({ id, completed: !completed });
-		} catch (error) {
-			console.error("Failed to toggle todo:", error);
-		}
+	const handleToggleTodo = (id: number, completed: boolean) => {
+		toggleMutation.mutate({ id, completed: !completed });
 	};
 
-	const handleDeleteTodo = async (id: Id<"todos">) => {
-		try {
-			await removeTodo({ id });
-		} catch (error) {
-			console.error("Failed to delete todo:", error);
-		}
+	const handleDeleteTodo = (id: number) => {
+		deleteMutation.mutate({ id });
 	};
 
 	return (
 		<div className="mx-auto w-full max-w-md py-10">
 			<Card>
 				<CardHeader>
-					<CardTitle>Todo List (Convex)</CardTitle>
+					<CardTitle>Todo List</CardTitle>
 					<CardDescription>Manage your tasks efficiently</CardDescription>
 				</CardHeader>
 				<CardContent>
@@ -77,36 +76,44 @@ function TodosRoute() {
 							value={newTodoText}
 							onChange={(e) => setNewTodoText(e.target.value)}
 							placeholder="Add a new task..."
+							disabled={createMutation.isPending}
 						/>
-						<Button type="submit" disabled={!newTodoText.trim()}>
-							Add
+						<Button
+							type="submit"
+							disabled={createMutation.isPending || !newTodoText.trim()}
+						>
+							{createMutation.isPending ? (
+								<Loader2 className="h-4 w-4 animate-spin" />
+							) : (
+								"Add"
+							)}
 						</Button>
 					</form>
 
-					{todos?.length === 0 ? (
+					{todos.isLoading ? (
+						<div className="flex justify-center py-4">
+							<Loader2 className="h-6 w-6 animate-spin" />
+						</div>
+					) : todos.data?.length === 0 ? (
 						<p className="py-4 text-center">No todos yet. Add one above!</p>
 					) : (
 						<ul className="space-y-2">
-							{todos?.map((todo) => (
+							{todos.data?.map((todo) => (
 								<li
-									key={todo._id}
+									key={todo.id}
 									className="flex items-center justify-between rounded-md border p-2"
 								>
 									<div className="flex items-center space-x-2">
 										<Checkbox
 											checked={todo.completed}
 											onCheckedChange={() =>
-												handleToggleTodo(todo._id, todo.completed)
+												handleToggleTodo(todo.id, todo.completed)
 											}
-											id={`todo-${todo._id}`}
+											id={`todo-${todo.id}`}
 										/>
 										<label
-											htmlFor={`todo-${todo._id}`}
-											className={`${
-												todo.completed
-													? "text-muted-foreground line-through"
-													: ""
-											}`}
+											htmlFor={`todo-${todo.id}`}
+											className={`${todo.completed ? "line-through" : ""}`}
 										>
 											{todo.text}
 										</label>
@@ -114,7 +121,7 @@ function TodosRoute() {
 									<Button
 										variant="ghost"
 										size="icon"
-										onClick={() => handleDeleteTodo(todo._id)}
+										onClick={() => handleDeleteTodo(todo.id)}
 										aria-label="Delete todo"
 									>
 										<Trash2 className="h-4 w-4" />

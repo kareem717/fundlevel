@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { LogoDiv } from "@/components/logo-div";
-import { copy } from "@/lib/config/copy";
-import { socials } from "@/lib/config/socials";
+import { LogoDiv } from "../components/logo-div";
+import { copy } from "../lib/config/copy";
+import { socials } from "../lib/config/socials";
 
 export const Route = createFileRoute("/")({
 	component: HomeComponent,

@@ -4,23 +4,25 @@
 {
   "$schema": "https://better-t-stack.dev/schema.json",
   "version": "2.22.10",
-  "createdAt": "2025-06-30T15:25:57.484Z",
-  "database": "none",
-  "orm": "none",
-  "backend": "convex",
-  "runtime": "none",
+  "createdAt": "2025-07-02T02:44:35.225Z",
+  "database": "postgres",
+  "orm": "drizzle",
+  "backend": "hono",
+  "runtime": "workers",
   "frontend": [
     "tanstack-start"
   ],
   "addons": [
     "turborepo",
-    "biome"
+    "starlight",
+    "biome",
+    "husky"
   ],
   "examples": [
     "todo"
   ],
-  "auth": false,
+  "auth": true,
   "packageManager": "pnpm",
-  "dbSetup": "none",
-  "api": "none"
+  "dbSetup": "supabase",
+  "api": "orpc"
 }

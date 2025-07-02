@@ -6,11 +6,10 @@
 		"build": "vite build",
 		"serve": "vite preview",
 		"dev": "vite dev --port=3000",
-		"deploy": "pnpm dlx wrangler deploy",
+		"deploy": "wrangler deploy",
 		"cf-typegen": "wrangler types --env-interface CloudflareBindings"
 	},
 	"dependencies": {
-		"@fundlevel/backend": "workspace:*",
 		"@fundlevel/ui": "workspace:*",
 		"@tailwindcss/vite": "^4.1.8",
 		"@tanstack/react-form": "^1.0.5",

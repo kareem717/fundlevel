@@ -1,46 +1,24 @@
-import { ConvexQueryClient } from "@convex-dev/react-query";
-import { QueryClient } from "@tanstack/react-query";
 import { createRouter as createTanStackRouter } from "@tanstack/react-router";
-import { routerWithQueryClient } from "@tanstack/react-router-with-query";
-import { ConvexProvider } from "convex/react";
 import Loader from "./components/loader";
+import "@fundlevel/ui/globals.css";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { routeTree } from "./routeTree.gen";
-import "@fundlevel/ui/styles/globals.css";
+import { orpc, queryClient } from "./utils/orpc";
 
-export function createRouter() {
-	const CONVEX_URL = (import.meta as any).env.VITE_CONVEX_URL!;
-	if (!CONVEX_URL) {
-		console.error("missing envar VITE_CONVEX_URL");
-	}
-	const convexQueryClient = new ConvexQueryClient(CONVEX_URL);
-
-	const queryClient: QueryClient = new QueryClient({
-		defaultOptions: {
-			queries: {
-				queryKeyHashFn: convexQueryClient.hashFn(),
-				queryFn: convexQueryClient.queryFn(),
-			},
-		},
+export const createRouter = () => {
+	const router = createTanStackRouter({
+		routeTree,
+		scrollRestoration: true,
+		defaultPreloadStaleTime: 0,
+		context: { orpc, queryClient },
+		defaultPendingComponent: () => <Loader />,
+		defaultNotFoundComponent: () => <div>Not Found</div>,
+		Wrap: ({ children }) => (
+			<QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+		),
 	});
-	convexQueryClient.connect(queryClient);
-
-	const router = routerWithQueryClient(
-		createTanStackRouter({
-			routeTree,
-			defaultPreload: "intent",
-			defaultPendingComponent: () => <Loader />,
-			defaultNotFoundComponent: () => <div>Not Found</div>,
-			context: { queryClient },
-			Wrap: ({ children }) => (
-				<ConvexProvider client={convexQueryClient.convexClient}>
-					{children}
-				</ConvexProvider>
-			),
-		}),
-		queryClient,
-	);
 	return router;
-}
+};
 
 declare module "@tanstack/react-router" {
 	interface Register {

@@ -1,0 +1,33 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "fundlevel-web",
+	"compatibility_flags": ["nodejs_compat"],
+	"compatibility_date": "2025-06-30",
+	"main": ".output/server/index.mjs",
+	"minify": true,
+	"env": {
+		"production": {
+			"routes": [
+				{
+					"pattern": "app.fundlevel.co",
+					"custom_domain": true
+				}
+			],
+			"name": "fundlevel-web",
+			"vars": {
+				"BASE_URL": "https://app.fundlevel.co",
+				"SERVER_URL": "https://api.fundlevel.co"
+			}
+		}
+	},
+	"assets": {
+		"directory": "./.output/public"
+	},
+	"observability": {
+		"enabled": true
+	},
+	"vars": {
+		"BASE_URL": "http://localhost:3002",
+		"SERVER_URL": "http://localhost:3000"
+	}
+}
