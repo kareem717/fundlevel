@@ -1,5 +1,5 @@
 {
-	"$schema": "https://biomejs.dev/schemas/2.0.0/schema.json",
+	"$schema": "https://biomejs.dev/schemas/2.0.6/schema.json",
 	"vcs": {
 		"enabled": false,
 		"clientKind": "git",
@@ -18,7 +18,8 @@
 			"!**/routeTree.gen.ts",
 			"!**/src-tauri",
 			"!**/.nuxt",
-			"!bts.jsonc"
+			"!bts.jsonc",
+			"!**/worker-configuration.d.ts"
 		]
 	},
 	"formatter": {
