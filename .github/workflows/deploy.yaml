@@ -5,8 +5,10 @@ on:
     branches:
       - main
     paths: 
-        # TODO: add web app
       - 'apps/landing/**'
+      - 'apps/web/**'
+      - 'apps/docs/**'
+      - 'apps/server/**'
   workflow_dispatch:
     inputs:
       bypass_change_checks:
@@ -19,14 +21,31 @@ on:
         required: false
         default: false
         type: boolean
+      deploy_web_only:
+        description: 'Deploy only the Web app (ignores bypass_change_checks if true)'
+        required: false
+        default: false
+        type: boolean
+      deploy_docs_only:
+        description: 'Deploy only the Docs app (ignores bypass_change_checks if true)'
+        required: false
+        default: false
+        type: boolean
+      deploy_server_only:
+        description: 'Deploy only the Server app (ignores bypass_change_checks if true)'
+        required: false
+        default: false
+        type: boolean
 
 jobs:
   check-changes:
     name: Check for Changed Files
     runs-on: ubuntu-latest
     outputs:
-      api_changed: ${{ steps.check_api.outputs.changed }}
       landing_changed: ${{ steps.check_landing.outputs.changed }}
+      web_changed: ${{ steps.check_web.outputs.changed }}
+      docs_changed: ${{ steps.check_docs.outputs.changed }}
+      server_changed: ${{ steps.check_server.outputs.changed }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -40,6 +59,28 @@ jobs:
           files: |
             apps/landing/**
             packages/ui/**
+
+      - name: Check Web changes (including workspace deps)
+        id: check_web
+        uses: tj-actions/changed-files@v44
+        with:
+          files: |
+            apps/web/**
+            packages/ui/**
+
+      - name: Check Docs changes
+        id: check_docs
+        uses: tj-actions/changed-files@v44
+        with:
+          files: |
+            apps/docs/**
+
+      - name: Check Server changes
+        id: check_server
+        uses: tj-actions/changed-files@v44
+        with:
+          files: |
+            apps/server/**
 
   deploy-landing:
     name: Deploy Landing Page to Cloudflare Workers
@@ -82,4 +123,126 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: 'apps/landing'
+          command: deploy --minify --env production --config wrangler.jsonc
+
+  deploy-web:
+    name: Deploy Web App to Cloudflare Workers
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: production
+    needs: check-changes
+    if: |
+      needs.check-changes.outputs.web_changed == 'true' || 
+      inputs.bypass_change_checks == true || 
+      inputs.deploy_web_only == true
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: latest
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install Web App Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Web App
+        env:
+          NODE_ENV: production
+        run: |
+          cd apps/web
+          pnpm run build
+
+      - name: Deploy to Cloudflare Workers
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: 'apps/web'
+          command: deploy --minify --env production --config wrangler.jsonc
+
+  deploy-docs:
+    name: Deploy Docs to Cloudflare Workers
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: production
+    needs: check-changes
+    if: |
+      needs.check-changes.outputs.docs_changed == 'true' || 
+      inputs.bypass_change_checks == true || 
+      inputs.deploy_docs_only == true
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: latest
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install Docs Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Docs
+        env:
+          NODE_ENV: production
+        run: |
+          cd apps/docs
+          pnpm run build
+
+      - name: Deploy to Cloudflare Workers
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: 'apps/docs'
+          command: deploy --minify --env production --config wrangler.jsonc
+
+  deploy-server:
+    name: Deploy Server to Cloudflare Workers
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: production
+    needs: check-changes
+    if: |
+      needs.check-changes.outputs.server_changed == 'true' || 
+      inputs.bypass_change_checks == true || 
+      inputs.deploy_server_only == true
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: latest
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install Server Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Deploy to Cloudflare Workers
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: 'apps/server'
           command: deploy --minify --env production --config wrangler.jsonc
