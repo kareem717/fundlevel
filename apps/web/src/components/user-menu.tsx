@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Button } from "@fundlevel/ui/components/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -6,10 +6,10 @@ import {
 	DropdownMenuLabel,
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@fundlevel/ui/components/dropdown-menu";
+import { Skeleton } from "@fundlevel/ui/components/skeleton";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { authClient } from "@/lib/auth-client";
-import { Button } from "./ui/button";
-import { Skeleton } from "./ui/skeleton";
 
 export default function UserMenu() {
 	const navigate = useNavigate();
@@ -22,7 +22,7 @@ export default function UserMenu() {
 	if (!session) {
 		return (
 			<Button variant="outline" asChild>
-				<Link to="/login">Sign In</Link>
+				<Link to="/sign-in">Sign In</Link>
 			</Button>
 		);
 	}

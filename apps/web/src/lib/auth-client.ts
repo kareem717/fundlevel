@@ -1,5 +1,7 @@
-import { createAuthClient } from "better-auth/react";
+import { createClient } from "@fundlevel/auth/client";
 
-export const authClient = createAuthClient({
-	baseURL: import.meta.env.VITE_SERVER_URL,
+export const authClient = createClient({
+	//TODO: remove this
+	baseURL: "http://localhost:3000",
+	basePath: "/auth",
 });

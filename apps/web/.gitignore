@@ -19,7 +19,8 @@
 .vinxi
 .output
 .react-router/
-.nitro/
+/.nitro/
+vite.config.timestamp_*.js
 
 # Deployment
 .vercel

@@ -1,8 +1,7 @@
+import { Toaster } from "@fundlevel/ui/components/sonner";
 import appCss from "@fundlevel/ui/globals.css?url";
 import type { QueryClient } from "@tanstack/react-query";
-
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-
 import {
 	createRootRouteWithContext,
 	HeadContent,
@@ -12,7 +11,6 @@ import {
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import Loader from "@/components/loader";
-import { Toaster } from "@/components/ui/sonner";
 import type { orpc } from "@/utils/orpc";
 import Header from "../components/header";
 export interface RouterAppContext {

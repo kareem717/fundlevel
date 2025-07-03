@@ -1,0 +1,39 @@
+{
+	"name": "@fundlevel/db",
+	"module": "index.ts",
+	"type": "module",
+	"private": true,
+	"scripts": {
+		"db:push": "drizzle-kit push",
+		"db:studio": "drizzle-kit studio",
+		"db:generate": "drizzle-kit generate",
+		"db:migrate": "drizzle-kit migrate",
+		"db:start": "pnpm dlx supabase start",
+		"db:stop": "pnpm dlx supabase stop",
+		"db:restart": "pnpm dlx supabase restart",
+		"db:status": "pnpm dlx supabase status",
+		"db:reset": "pnpm dlx supabase db reset"
+	},
+	"devDependencies": {
+		"@types/node": "^22.16.0",
+		"dotenv-cli": "^8.0.0",
+		"drizzle-kit": "^0.31.4",
+		"typescript": "^5.8.3"
+	},
+	"dependencies": {
+		"drizzle-zod": "^0.7.1",
+		"postgres": "^3.4.7"
+	},
+	"peerDependencies": {
+		"drizzle-orm": "^0.43.1"
+	},
+	"trustedDependencies": [
+		"supabase"
+	],
+	"exports": {
+		".": "./src/index.ts",
+		"./schema": "./src/schema/index.ts",
+		"./types": "./src/types.ts",
+		"./validation": "./src/zod.ts"
+	}
+}
