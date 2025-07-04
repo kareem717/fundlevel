@@ -8,10 +8,14 @@ import { ArrowRight } from "lucide-react";
 import { SignInButton } from "./sign-in-button";
 
 interface SignInFormProps extends React.ComponentPropsWithoutRef<"div"> {
-	redirect?: string;
+	callbackURL: string;
 }
 
-export function SignInForm({ className, redirect, ...props }: SignInFormProps) {
+export function SignInForm({
+	className,
+	callbackURL,
+	...props
+}: SignInFormProps) {
 	return (
 		<div className={cn("flex flex-col gap-6", className)} {...props}>
 			<Card className="overflow-hidden p-0">
@@ -30,7 +34,7 @@ export function SignInForm({ className, redirect, ...props }: SignInFormProps) {
 									variant="outline"
 									type="button"
 									className="w-full"
-									redirect={redirect}
+									callbackURL={callbackURL}
 								>
 									<GoogleIcon className="size-4" />
 									<span className="sr-only">Login with Google</span>

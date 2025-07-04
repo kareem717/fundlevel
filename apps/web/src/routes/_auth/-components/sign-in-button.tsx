@@ -4,20 +4,19 @@ import { authClient } from "@/lib/auth-client";
 
 interface SignInButtonProps extends ComponentPropsWithRef<typeof Button> {
 	provider: "google";
-	redirect?: string;
+	callbackURL: string;
 }
 
 export function SignInButton({
 	className,
 	provider,
-	redirect = "http://localhost:3001", //TODO: change this to the actual URL
+	callbackURL,
 	children = "Sign In",
 	...props
 }: SignInButtonProps) {
 	const [isLoading, setIsLoading] = useState(false);
 
 	async function handleLogin() {
-		console.log("handleLogin", provider, redirect);
 		setIsLoading(true);
 
 		await authClient.signIn.social({
@@ -30,7 +29,7 @@ export function SignInButton({
 			 * A URL to redirect after the user authenticates with the provider
 			 * @default "/"
 			 */
-			callbackURL: redirect,
+			callbackURL,
 			/**
 			 * A URL to redirect if an error occurs during the sign in process
 			 */

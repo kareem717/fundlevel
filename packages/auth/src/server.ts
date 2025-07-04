@@ -1,5 +1,5 @@
 import { getDb } from "@fundlevel/db";
-import { auth as AuthSchema } from "@fundlevel/db/schema";
+import { auth } from "@fundlevel/db/schema";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { openAPI } from "better-auth/plugins";
@@ -40,7 +40,7 @@ export const createServerClient = ({
 		database: drizzleAdapter(getDb(databaseUrl), {
 			provider: "pg",
 			schema: {
-				...AuthSchema,
+				...auth,
 				// ...SubscriptionSchema,
 			},
 		}),

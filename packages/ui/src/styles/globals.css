@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@reference "tailwindcss";
 @import "tw-animate-css";
 @source "../../../apps/**/*.{ts,tsx}";
 @source "../../../components/**/*.{ts,tsx}";
@@ -88,7 +87,8 @@
 	--color-sidebar-ring: var(--sidebar-ring);
 }
 
-
+/* 
+@reference "tailwindcss";
 @layer base {
 	* {
 		@apply border-border outline-ring/50;
@@ -97,4 +97,4 @@
 	body {
 		@apply bg-background text-foreground;
 	}
-}
+} */

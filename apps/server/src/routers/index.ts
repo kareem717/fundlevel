@@ -1,14 +1,12 @@
-import { protectedProcedure, publicProcedure } from "@/lib/orpc";
+import { z } from "zod";
+import { publicProcedure } from "@/lib/orpc";
+import { nangoRouter } from "./nango";
 
 export const appRouter = {
-	healthCheck: publicProcedure.handler(() => {
-		return "OK";
-	}),
-	privateData: protectedProcedure.handler(({ context }) => {
-		return {
-			message: "This is private",
-			user: context.session?.user,
-		};
-	}),
+	health: publicProcedure
+		.output(z.object({ status: z.literal("OK") }))
+		.handler(() => ({ status: "OK" })),
+	nango: nangoRouter,
 };
+
 export type AppRouter = typeof appRouter;

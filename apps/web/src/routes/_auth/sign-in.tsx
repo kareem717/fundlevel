@@ -25,5 +25,8 @@ export const Route = createFileRoute("/_auth/sign-in")({
 function RouteComponent() {
 	const { redirect } = Route.useSearch();
 
-	return <SignInForm redirect={redirect} />;
+	//TODO: change this to the actual URL
+	return (
+		<SignInForm callbackURL={"http://localhost:3001" + (redirect ?? "/")} />
+	);
 }
