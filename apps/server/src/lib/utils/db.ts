@@ -1,4 +1,4 @@
 import { env } from "cloudflare:workers";
 import { getDb } from "@fundlevel/db";
 
-export const db = getDb(env.DATABASE_URL);
+export const createDB = () => getDb(env.DATABASE_URL);

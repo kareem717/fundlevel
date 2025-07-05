@@ -19,8 +19,6 @@
 .vinxi
 .output
 .react-router/
-/.nitro/
-vite.config.timestamp_*.js
 
 # Deployment
 .vercel
@@ -33,7 +31,6 @@ vite.config.timestamp_*.js
 .DS_Store
 *.pem
 *.local
-.dev.vars
 
 # Logs
 npm-debug.log*
@@ -54,5 +51,7 @@ next-env.d.ts
 # Other
 dev-dist
 
-# Tanstack Start
-.tanstack
+.wrangler
+.dev.vars*
+
+.open-next

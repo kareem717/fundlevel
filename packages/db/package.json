@@ -25,7 +25,7 @@
 		"postgres": "^3.4.7"
 	},
 	"peerDependencies": {
-		"drizzle-orm": "^0.43.1"
+		"drizzle-orm": "^0.44.2"
 	},
 	"trustedDependencies": [
 		"supabase"

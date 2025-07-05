@@ -1,21 +1,18 @@
 import { env } from "cloudflare:workers";
-import { OpenAPIGenerator } from "@orpc/openapi";
-import { RPCHandler } from "@orpc/server/fetch";
-import { ZodSmartCoercionPlugin, ZodToJsonSchemaConverter } from "@orpc/zod";
+import { AUTH_SESSION_COOKIE_KEY } from "@fundlevel/auth/server";
+import { OpenAPIHono } from "@hono/zod-openapi";
+import { Scalar } from "@scalar/hono-api-reference";
 import { createMarkdownFromOpenApi } from "@scalar/openapi-to-markdown";
-import { Hono } from "hono";
+import { createAuthClient } from "@server/lib/utils/auth";
+import type { Context } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
-import { createAuthClient } from "@/lib/utils/auth";
-import { createContext } from "@/lib/utils/context";
-import { appRouter } from "@/routers/index";
-import { webhookRouter } from "./routers/webhooks";
+import { healthHandler, nangoHandler } from "./handlers";
 
-const app = new Hono();
+const app = new OpenAPIHono();
 
-app.use(logger());
-app.use(
-	"/*",
+// Middleware
+app.use(logger()).use(
 	cors({
 		origin: [env.WEB_APP_URL, env.BASE_URL],
 		allowMethods: ["GET", "POST", "OPTIONS", "*"],
@@ -24,85 +21,54 @@ app.use(
 	}),
 );
 
-app.on(["POST", "GET"], "/auth/*", (c) =>
-	createAuthClient().handler(c.req.raw),
-);
+export const appRoutes = app
+	.on(["POST", "GET"], "/auth/*", (c) => createAuthClient().handler(c.req.raw))
+	.route("/health", healthHandler())
+	.route("/nango", nangoHandler());
 
-app.route("/webhooks", webhookRouter);
+// Docs
+app
+	.get("/openapi.json", async (c) => {
+		return c.json(getOpenAPISchema(c));
+	})
+	.get("/llms.txt", async (c) => {
+		// Generate Markdown from your OpenAPI document
+		const markdown = await createMarkdownFromOpenApi(
+			JSON.stringify(getOpenAPISchema(c)),
+		);
 
-const rpcHandler = new RPCHandler(appRouter, {
-	plugins: [new ZodSmartCoercionPlugin()],
+		return c.text(markdown);
+	})
+	.get(
+		"/",
+		Scalar({
+			url: "/openapi.json",
+			pageTitle: "Fundlevel API",
+		}),
+	);
+
+// OpenAPI
+app.openAPIRegistry.registerComponent("securitySchemes", "Cookie", {
+	type: "apiKey",
+	in: "cookie",
+	name: AUTH_SESSION_COOKIE_KEY,
 });
 
-app.use("/rpc/*", async (c, next) => {
-	const context = await createContext({ context: c });
-	const result = await rpcHandler.handle(c.req.raw, {
-		prefix: "/rpc",
-		context: context,
-	});
-
-	if (result.matched) {
-		if (c.req.raw.url.includes("session-token")) {
-			if (result.response.status === 400) {
-				console.log("400", c.req.raw);
-			} else if (result.response.status === 200) {
-				console.log("200", c.req.raw);
-			}
-		}
-
-		return result.response;
-	}
-
-	await next();
-});
-
-app.get("/openapi.json", async (c) => {
-	return c.json(await getOpenAPISchema());
-});
-
-app.get("/llms.txt", async (c) => {
-	// Generate Markdown from your OpenAPI document
-	const schema = await getOpenAPISchema();
-	const markdown = await createMarkdownFromOpenApi(schema);
-
-	/**
-	 * Register a route to serve the Markdown for LLMs
-	 *
-	 * Q: Why /llms.txt?
-	 * A: It's a proposal to standardise on using an /llms.txt file.
-	 *
-	 * @see https://llmstxt.org/
-	 */
-	return c.text(markdown);
-});
-
-const getOpenAPISchema = async () => {
-	const openAPIGenerator = new OpenAPIGenerator({
-		schemaConverters: [new ZodToJsonSchemaConverter()],
-	});
-
-	const schema = await openAPIGenerator.generate(appRouter, {
+const getOpenAPISchema = (c: Context) =>
+	app.getOpenAPI31Document({
+		openapi: "3.1.0",
 		info: {
 			title: "Fundlevel API",
 			version: "1.0.0",
 		},
 		servers: [
 			{
-				url: env.BASE_URL + "/rpc",
-			} /** Should use absolute URLs in production */,
+				url: new URL(c.req.url).origin,
+				description: "Current environment",
+			},
 		],
-		// security: [{ cookieAuth: [] }],
-		// components: {
-		// 	securitySchemes: {
-		// 		cookieAuth: {
-		// 			type: 'http',
-		// 			scheme: 'cookie',
-		// 		},
-		// 	},
-		// },
+		security: [{ Cookie: [] }],
 	});
 
-	return schema;
-};
-
 export default app;
+export type AppRouter = typeof appRoutes;

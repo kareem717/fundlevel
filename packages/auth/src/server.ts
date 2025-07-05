@@ -2,10 +2,10 @@ import { getDb } from "@fundlevel/db";
 import { auth } from "@fundlevel/db/schema";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { nextCookies } from "better-auth/next-js";
 import { openAPI } from "better-auth/plugins";
-// import { reactStartCookies } from "better-auth/react-start";
 
-export const API_KEY_HEADER_NAME = "x-api-key";
+export const AUTH_SESSION_COOKIE_KEY = "better-auth.session_token";
 
 interface ServerClientConfig {
 	basePath: string;
@@ -80,6 +80,12 @@ export const createServerClient = ({
 				enabled: true,
 				domain: `.${baseDomain}`, // Domain with a leading period
 			},
+			// cookies: {
+			// 	session_token: {
+			// 		name: AUTH_SESSION_COOKIE_NAME,
+			// 	},
+			// },
+			// cookiePrefix: AUTH_SESSION_COOKIE_PREFIX,
 			defaultCookieAttributes: {
 				secure: true,
 				httpOnly: true,
@@ -91,6 +97,7 @@ export const createServerClient = ({
 			openAPI({
 				path: "/docs",
 			}),
+			nextCookies(), // make sure this is the last plugin in the array
 			// apiKey({
 			//   apiKeyHeaders: API_KEY_HEADER_NAME,
 			// }),

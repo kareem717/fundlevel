@@ -10,7 +10,8 @@
 			"vars": {
 				"NODE_ENV": "production",
 				"BASE_URL": "https://api.fundlevel.co",
-				"WEB_APP_URL": "https://app.fundlevel.co"
+				"WEB_APP_URL": "https://app.fundlevel.co",
+				"BASE_DOMAIN": "fundlevel.co"
 			},
 			"routes": [
 				{
@@ -23,6 +24,7 @@
 	"vars": {
 		"NODE_ENV": "development",
 		"BASE_URL": "http://localhost:3000",
-		"WEB_APP_URL": "http://localhost:3001"
+		"WEB_APP_URL": "http://localhost:3001",
+		"BASE_DOMAIN": "localhost"
 	}
 }

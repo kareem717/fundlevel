@@ -1,6 +1,8 @@
-import Nango from "@nangohq/frontend";
-import { useQuery } from "@tanstack/react-query";
-import { orpc } from "@/utils/orpc";
+import Nango, { type ConnectUI } from "@nangohq/frontend";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { apiClient } from "@web/lib/api-client";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export function useNango({
 	onConnect,
@@ -9,32 +11,43 @@ export function useNango({
 	onConnect?: () => void;
 	onClose?: () => void;
 }) {
-	const queryOptions = orpc.nango["session-token"].queryOptions({
-		initialData: "",
-		input: {
-			integration: "quickbooks",
-		},
-	});
-	const { data: sessionToken } = useQuery(queryOptions);
-
+	const [connect, setConnect] = useState<ConnectUI | null>(null);
 	const nango = new Nango();
 
-	function connect() {
-		const connect = nango.openConnectUI({
-			onEvent: (event) => {
-				if (event.type === "close") {
-					onClose?.();
-				} else if (event.type === "connect") {
-					console.log(event.payload);
-					onConnect?.();
-				}
-			},
-		});
+	return useMutation({
+		mutationFn: async () => {
+			const resp = await apiClient.nango["session-token"].$post();
+			if (!resp.ok) {
+				throw new Error(await resp.text());
+			}
 
-		connect.setSessionToken(sessionToken); // A loading indicator is shown until this is set.
-	}
-
-	return {
-		connect,
-	};
+			return await resp.json();
+		},
+		onMutate: () => {
+			setConnect(
+				nango.openConnectUI({
+					onEvent: (event) => {
+						if (event.type === "close") {
+							onClose?.();
+						} else if (event.type === "connect") {
+							console.log(event.payload);
+							onConnect?.();
+						}
+					},
+				}),
+			);
+		},
+		onSuccess: (data) => {
+			if ("sessionToken" in data) {
+				connect?.setSessionToken(data.sessionToken);
+			} else {
+				throw new Error("No session token found");
+			}
+		},
+		onError: (error) => {
+			console.error("Error connecting to Nango", error);
+			toast.error(error.message);
+			connect?.close();
+		},
+	});
 }

@@ -1,9 +1,9 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "fundlevel-web",
-	"compatibility_flags": ["nodejs_compat"],
-	"compatibility_date": "2025-06-30",
-	"main": ".output/server/index.mjs",
+	"compatibility_date": "2025-07-05",
+	"compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+	"main": ".open-next/worker.js",
 	"minify": true,
 	"env": {
 		"production": {
@@ -15,19 +15,19 @@
 			],
 			"name": "fundlevel-web",
 			"vars": {
-				"BASE_URL": "https://app.fundlevel.co",
-				"SERVER_URL": "https://api.fundlevel.co"
+				"NEXT_PUBLIC_BASE_URL": "https://app.fundlevel.co",
+				"NEXT_PUBLIC_SERVER_URL": "https://api.fundlevel.co"
 			}
 		}
 	},
 	"assets": {
-		"directory": "./.output/public"
+		"directory": ".open-next/assets"
 	},
 	"observability": {
 		"enabled": true
 	},
 	"vars": {
-		"BASE_URL": "http://localhost:3001",
-		"SERVER_URL": "http://localhost:3000"
+		"NEXT_PUBLIC_BASE_URL": "http://localhost:3001",
+		"NEXT_PUBLIC_SERVER_URL": "http://localhost:3000"
 	}
 }

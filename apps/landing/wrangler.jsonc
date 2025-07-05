@@ -1,9 +1,9 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "fundlevel-landing",
-	"compatibility_flags": ["nodejs_compat"],
-	"compatibility_date": "2025-06-30",
-	"main": ".output/server/index.mjs",
+	"compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+	"main": ".open-next/worker.js",
+	"compatibility_date": "2025-07-05",
 	"minify": true,
 	"env": {
 		"production": {
@@ -15,17 +15,17 @@
 			],
 			"name": "fundlevel-landing",
 			"vars": {
-				"BASE_URL": "https://www.fundlevel.co"
+				"NEXT_PUBLIC_BASE_URL": "https://www.fundlevel.co"
 			}
 		}
 	},
 	"assets": {
-		"directory": "./.output/public"
+		"directory": ".open-next/assets"
 	},
 	"observability": {
 		"enabled": true
 	},
 	"vars": {
-		"BASE_URL": "http://localhost:3001"
+		"NEXT_PUBLIC_BASE_URL": "http://localhost:3002"
 	}
 }

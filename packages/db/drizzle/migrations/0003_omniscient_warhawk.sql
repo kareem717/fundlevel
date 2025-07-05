@@ -1,0 +1,1 @@
+ALTER TABLE "nango_connections" ADD COLUMN "provider_config_key" text NOT NULL;

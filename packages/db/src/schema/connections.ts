@@ -5,11 +5,14 @@ import { users } from "./auth";
 export const nangoConnections = pgTable("nango_connections", {
 	id: text("id").primaryKey(),
 	provider: text("provider").notNull(),
-	user_id: integer("user_id").references(() => users.id),
-	created_at: timestamp("created_at", { withTimezone: true })
+	userId: integer("user_id")
+		.references(() => users.id)
+		.notNull(),
+	providerConfigKey: text("provider_config_key").notNull(),
+	createdAt: timestamp("created_at", { withTimezone: true })
 		.notNull()
 		.defaultNow(),
-	updated_at: timestamp("updated_at", { withTimezone: true })
+	updatedAt: timestamp("updated_at", { withTimezone: true })
 		.notNull()
 		.$onUpdateFn(() => sql`CURRENT_TIMESTAMP`),
 });
