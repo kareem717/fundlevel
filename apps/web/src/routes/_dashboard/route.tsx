@@ -13,7 +13,8 @@ export const Route = createFileRoute("/_dashboard")({
 			throw redirect({
 				to: "/sign-in",
 				search: {
-					redirect: import.meta.env.VITE_APP_URL + location.href,
+					//TODO: change this to the actual URL
+					redirect: "https://localhost:3001" + location.href,
 				},
 			});
 		}

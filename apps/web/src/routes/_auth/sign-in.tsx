@@ -17,7 +17,8 @@ export const Route = createFileRoute("/_auth/sign-in")({
 	},
 	validateSearch: zodValidator(
 		z.object({
-			redirect: z.string().optional(),
+			//TODO: change this to the actual URL
+			redirect: z.string().optional().default(`${"https://localhost:3001"}/`),
 		}),
 	),
 });
@@ -26,7 +27,5 @@ function RouteComponent() {
 	const { redirect } = Route.useSearch();
 
 	//TODO: change this to the actual URL
-	return (
-		<SignInForm callbackURL={"http://localhost:3001" + (redirect ?? "/")} />
-	);
+	return <SignInForm callbackURL={redirect ?? "/"} />;
 }

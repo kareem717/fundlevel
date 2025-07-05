@@ -8,7 +8,6 @@ import {
 } from "@fundlevel/ui/components/card";
 import {
 	createFileRoute,
-	Navigate,
 	redirect,
 	useNavigate,
 	useRouter,
