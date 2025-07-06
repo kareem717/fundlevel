@@ -6,6 +6,7 @@ import { createMarkdownFromOpenApi } from "@scalar/openapi-to-markdown";
 import { createAuthClient } from "@server/lib/utils/auth";
 import type { Context } from "hono";
 import { cors } from "hono/cors";
+import { HTTPException } from "hono/http-exception";
 import { logger } from "hono/logger";
 import { healthHandler, nangoHandler } from "./handlers";
 import { AUTH_BASE_PATH } from "./lib/utils/auth";
@@ -73,5 +74,16 @@ const getOpenAPISchema = (c: Context) =>
 		security: [{ Cookie: [] }],
 	});
 
+// Error handling
+app.onError((err, c) => {
+	if (err instanceof HTTPException) {
+		return c.json({ error: err.message, status: err.status }, err.status);
+	}
+
+	// Unknown error
+	return c.json({ error: "Internal Server Error", status: 500 }, 500);
+});
+
 export default app;
+
 export type AppRouter = typeof appRoutes;
