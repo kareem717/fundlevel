@@ -1,1 +1,0 @@
-ALTER TABLE "nango_connections" ALTER COLUMN "user_id" SET NOT NULL;

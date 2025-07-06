@@ -1,1 +1,0 @@
-ALTER TABLE "nango_connections" ALTER COLUMN "created_at" SET DEFAULT now();
