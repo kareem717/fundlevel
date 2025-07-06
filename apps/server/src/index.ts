@@ -77,11 +77,11 @@ const getOpenAPISchema = (c: Context) =>
 // Error handling
 app.onError((err, c) => {
 	if (err instanceof HTTPException) {
-		return c.json({ error: err.message, status: err.status }, err.status);
+		return c.json({ message: err.message, status: err.status }, err.status);
 	}
 
 	// Unknown error
-	return c.json({ error: "Internal Server Error", status: 500 }, 500);
+	return c.json({ message: "Internal Server Error", status: 500 }, 500);
 });
 
 export default app;

@@ -13,8 +13,9 @@ export const healthHandler = () =>
 			await db.execute(sql<number>`SELECT 1`);
 			dbConnected = true;
 		} catch (error) {
+			//TODO: handler error
 			isHealthy = false;
 		}
 
-		return c.json({ isHealthy, dbConnected }, isHealthy ? 200 : 500);
+		return c.json({ isHealthy, dbConnected }, 200);
 	});

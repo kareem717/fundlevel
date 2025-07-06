@@ -5,6 +5,7 @@ export const ERROR_RESPONSE_SCHEMA = {
 		"application/json": {
 			schema: z.object({
 				message: z.string().describe("Error message"),
+				status: z.number().describe("Error status code"),
 			}),
 		},
 	},

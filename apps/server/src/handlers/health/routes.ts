@@ -18,17 +18,7 @@ export const healthRoutes = {
 				},
 				description: "Healthy service",
 			},
-			500: {
-				content: {
-					"application/json": {
-						schema: z.object({
-							isHealthy: z.boolean(),
-							dbConnected: z.boolean(),
-						}),
-					},
-				},
-				description: "Unhealthy service",
-			},
+			500: ERROR_RESPONSE_SCHEMA,
 		},
 	}),
 };
