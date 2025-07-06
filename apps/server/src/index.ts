@@ -3,6 +3,7 @@ import { AUTH_SESSION_COOKIE_KEY } from "@fundlevel/auth/server";
 import { OpenAPIHono } from "@hono/zod-openapi";
 import { Scalar } from "@scalar/hono-api-reference";
 import { createMarkdownFromOpenApi } from "@scalar/openapi-to-markdown";
+import * as Sentry from "@sentry/cloudflare";
 import { createAuthClient } from "@server/lib/utils/auth";
 import type { Context } from "hono";
 import { cors } from "hono/cors";
@@ -76,6 +77,8 @@ const getOpenAPISchema = (c: Context) =>
 
 // Error handling
 app.onError((err, c) => {
+	// Report _all_ unhandled errors.
+	Sentry.captureException(err);
 	if (err instanceof HTTPException) {
 		return c.json({ message: err.message, status: err.status }, err.status);
 	}
@@ -84,6 +87,27 @@ app.onError((err, c) => {
 	return c.json({ message: "Internal Server Error", status: 500 }, 500);
 });
 
-export default app;
+export default Sentry.withSentry(
+	(env: CloudflareBindings) => {
+		const { id: versionId } = env.CF_VERSION_METADATA;
+		return {
+			dsn: env.SENTRY_DSN,
+			release: versionId,
+			enabled: env.NODE_ENV === "production",
+			// Adds request headers and IP for users, for more info visit:
+			// https://docs.sentry.io/platforms/javascript/guides/cloudflare/configuration/options/#sendDefaultPii
+			sendDefaultPii: true,
+
+			// Enable logs to be sent to Sentry
+			_experiments: { enableLogs: true },
+			// Set tracesSampleRate to 1.0 to capture 100% of spans for tracing.
+			// Learn more at
+			// https://docs.sentry.io/platforms/javascript/configuration/options/#traces-sample-rate
+			tracesSampleRate: 1.0,
+		};
+	},
+	// your existing worker export
+	app,
+);
 
 export type AppRouter = typeof appRoutes;

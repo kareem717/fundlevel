@@ -138,6 +138,7 @@ jobs:
           GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
           GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
           NANGO_SECRET_KEY: ${{ secrets.NANGO_SECRET_KEY }}
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -148,5 +149,6 @@ jobs:
             GOOGLE_CLIENT_ID
             GOOGLE_CLIENT_SECRET
             NANGO_SECRET_KEY
+            SENTRY_DSN
           workingDirectory: 'apps/server'
           command: deploy --minify --config wrangler.jsonc

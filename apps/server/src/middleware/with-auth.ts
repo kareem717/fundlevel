@@ -1,4 +1,5 @@
 import type { AuthType } from "@fundlevel/auth/types";
+import * as Sentry from "@sentry/cloudflare";
 import { createAuthClient } from "@server/lib/utils/auth";
 import type { Context } from "hono";
 import { createMiddleware } from "hono/factory";
@@ -36,11 +37,11 @@ export const withAuth = () =>
 			const resp = await auth.api.getSession({ headers: c.req.raw.headers });
 
 			if (resp) {
-				// // set both or none
-				// c.get("sentry").setTags({
-				// 	userId: resp.user.id, // downstream heavily depends on this tag
-				// 	sessionId: resp.session.id,
-				// });
+				// set both or none
+				Sentry.setTags({
+					userId: resp.user.id, // downstream heavily depends on this tag
+					sessionId: resp.session.id,
+				});
 
 				c.set(USER_KEY, resp.user);
 				c.set(SESSION_KEY, resp.session);
@@ -48,16 +49,9 @@ export const withAuth = () =>
 				return await next();
 			}
 		} catch (e) {
-			// c.get("sentry").captureException(e, {
-			// 	captureContext: {
-			// 		extra: {
-			// 			request: c.req.raw,
-			// 		},
-			// 	},
-			// });
-
 			throw new HTTPException(500, {
 				message: "Failed to get session",
+				cause: e,
 			});
 		}
 
