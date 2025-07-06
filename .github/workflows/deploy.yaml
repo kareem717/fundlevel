@@ -101,10 +101,11 @@ jobs:
       - name: Deploy to Cloudflare Workers
         uses: cloudflare/wrangler-action@v3
         with:
+          environment: production
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: 'apps/docs'
-          command: deploy --minify --env production --config wrangler.jsonc
+          command: deploy --minify --config wrangler.jsonc
 
   deploy-server:
     name: Deploy Server to Cloudflare Workers
@@ -140,6 +141,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          environment: production
           secrets: |
             DATABASE_URL
             BETTER_AUTH_SECRET
@@ -147,4 +149,4 @@ jobs:
             GOOGLE_CLIENT_SECRET
             NANGO_SECRET_KEY
           workingDirectory: 'apps/server'
-          command: deploy --minify --env production --config wrangler.jsonc
+          command: deploy --minify --config wrangler.jsonc
