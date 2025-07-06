@@ -230,5 +230,17 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          secrets: |
+            DATABASE_URL
+            BETTER_AUTH_SECRET
+            GOOGLE_CLIENT_ID
+            GOOGLE_CLIENT_SECRET
+            NANGO_SECRET_KEY
+          env: |
+            DATABASE_URL: ${{ secrets.DATABASE_URL }}
+            BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
+            GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+            GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+            NANGO_SECRET_KEY: ${{ secrets.NANGO_SECRET_KEY }}
           workingDirectory: 'apps/server'
           command: deploy --minify --env production --config wrangler.jsonc
