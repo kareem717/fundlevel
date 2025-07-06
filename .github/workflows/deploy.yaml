@@ -9,6 +9,7 @@ on:
       - 'apps/web/**'
       - 'apps/docs/**'
       - 'apps/server/**'
+      - 'packages/db/drizzle/migrations/**'
   workflow_dispatch:
     inputs:
       bypass_change_checks:
@@ -75,12 +76,13 @@ jobs:
           files: |
             apps/docs/**
 
-      - name: Check Server changes
+      - name: Check Server changes (including database migrations)
         id: check_server
         uses: tj-actions/changed-files@v44
         with:
           files: |
             apps/server/**
+            packages/db/drizzle/migrations/**
 
   deploy-landing:
     name: Deploy Landing Page to Cloudflare Workers
@@ -225,8 +227,30 @@ jobs:
       - name: Install Server Dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Check for Database Migration Changes
+        id: check_migrations
+        uses: tj-actions/changed-files@v44
+        with:
+          files: |
+            packages/db/drizzle/migrations/**
+      # //TODO: This can cause real problems if changes aren't backwards compatible and the cf deployment fails - need to implement a better way to handle this
+      - name: Apply Database Migrations
+        if: steps.check_migrations.outputs.any_changed == 'true'
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          echo "Database migrations detected, applying changes..."
+          cd packages/db
+          pnpm db:migrate
+
       - name: Deploy to Cloudflare Workers
         uses: cloudflare/wrangler-action@v3
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          NANGO_SECRET_KEY: ${{ secrets.NANGO_SECRET_KEY }}
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -236,11 +260,5 @@ jobs:
             GOOGLE_CLIENT_ID
             GOOGLE_CLIENT_SECRET
             NANGO_SECRET_KEY
-          env: |
-            DATABASE_URL: ${{ secrets.DATABASE_URL }}
-            BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
-            GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
-            GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
-            NANGO_SECRET_KEY: ${{ secrets.NANGO_SECRET_KEY }}
           workingDirectory: 'apps/server'
           command: deploy --minify --env production --config wrangler.jsonc
