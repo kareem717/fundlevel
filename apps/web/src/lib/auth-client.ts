@@ -1,8 +1,7 @@
 import { createClient } from "@fundlevel/auth/client";
-import { getCloudflareContext } from "@opennextjs/cloudflare";
 
-export const authClient = () =>
+export const authClient = (baseUrl: string) =>
 	createClient({
-		baseURL: getCloudflareContext().env.NEXT_PUBLIC_SERVER_URL,
+		baseURL: baseUrl,
 		basePath: "/auth",
 	});

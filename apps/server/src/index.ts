@@ -1,5 +1,8 @@
 import { env } from "cloudflare:workers";
-import { AUTH_SESSION_COOKIE_KEY } from "@fundlevel/auth/server";
+import {
+	AUTH_BASE_PATH,
+	AUTH_SESSION_COOKIE_KEY,
+} from "@fundlevel/auth/server";
 import { OpenAPIHono } from "@hono/zod-openapi";
 import { Scalar } from "@scalar/hono-api-reference";
 import { createMarkdownFromOpenApi } from "@scalar/openapi-to-markdown";
@@ -10,7 +13,6 @@ import { HTTPException } from "hono/http-exception";
 import { logger } from "hono/logger";
 import { createAuthClient } from "@/lib/utils/auth";
 import { healthHandler, nangoHandler } from "./handlers";
-import { AUTH_BASE_PATH } from "./lib/utils/auth";
 
 const app = new OpenAPIHono();
 

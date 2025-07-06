@@ -6,6 +6,7 @@ import { nextCookies } from "better-auth/next-js";
 import { openAPI } from "better-auth/plugins";
 
 export const AUTH_SESSION_COOKIE_KEY = "better-auth.session_token";
+export const AUTH_BASE_PATH = "/auth";
 
 interface ServerClientConfig {
 	databaseUrl: string;
@@ -39,6 +40,7 @@ export const createServerClient = ({
 
 	return betterAuth({
 		baseUrl,
+		basePath: AUTH_BASE_PATH,
 		database: drizzleAdapter(getDb(databaseUrl), {
 			provider: "pg",
 			schema: {

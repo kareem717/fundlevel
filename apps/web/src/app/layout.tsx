@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "@fundlevel/ui/styles/globals.css";
+import { Toaster } from "@fundlevel/ui/components/sonner";
+import { getCloudflareContext } from "@opennextjs/cloudflare";
+import { ThemeProvider } from "next-themes";
 import type { ReactNode } from "react";
-import { Providers } from "@/components/providers";
+import { BindingsProvider } from "@/components/providers/bindings-provider";
+import { ReactQueryProvider } from "@/components/providers/react-query";
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -19,17 +23,29 @@ export const metadata: Metadata = {
 	description: "nextjs",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
 	children,
 }: Readonly<{
 	children: ReactNode;
 }>) {
+	const { env } = await getCloudflareContext({ async: true });
+
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 			>
-				<Providers>{children}</Providers>
+				<ThemeProvider
+					attribute="class"
+					defaultTheme="system"
+					enableSystem
+					disableTransitionOnChange
+				>
+					<BindingsProvider bindings={env}>
+						<ReactQueryProvider>{children}</ReactQueryProvider>
+					</BindingsProvider>
+					<Toaster richColors />
+				</ThemeProvider>
 			</body>
 		</html>
 	);

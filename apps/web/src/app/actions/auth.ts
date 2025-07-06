@@ -1,8 +1,16 @@
 "use server";
 
+import { createClient } from "@fundlevel/auth/client";
+import { headers } from "next/headers";
 import { cache } from "react";
-import { authClient } from "@/lib/auth-client";
 
 export const getSessionFn = cache(async () => {
-	return await authClient().getSession();
+	return await createClient({
+		baseURL: "http://localhost:3000",
+		basePath: "/auth",
+	}).getSession({
+		fetchOptions: {
+			headers: await headers(),
+		},
+	});
 });

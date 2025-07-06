@@ -1,9 +1,9 @@
 "use client";
 
 import { Button } from "@fundlevel/ui/components/button";
-import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { useMutation } from "@tanstack/react-query";
 import type { ComponentPropsWithRef } from "react";
+import { useBindings } from "@/components/providers/bindings-provider";
 import { authClient } from "@/lib/auth-client";
 
 interface SignInButtonProps extends ComponentPropsWithRef<typeof Button> {
@@ -17,12 +17,14 @@ export function SignInButton({
 	children = "Sign In",
 	...props
 }: SignInButtonProps) {
+	const baseUrl = useBindings().NEXT_PUBLIC_SERVER_URL;
 	const { mutate: signIn, isPending } = useMutation({
 		mutationFn: async () =>
-			await authClient().signIn.social({
+			await authClient(baseUrl).signIn.social({
 				provider,
-				callbackURL: getCloudflareContext().env.NEXT_PUBLIC_BASE_URL,
+				callbackURL: baseUrl,
 			}),
+		throwOnError: true,
 	});
 
 	return (

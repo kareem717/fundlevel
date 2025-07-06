@@ -8,6 +8,7 @@ import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import type { ComponentPropsWithRef } from "react";
 import { toast } from "sonner";
+import { useBindings } from "@/components/providers/bindings-provider";
 import { authClient } from "@/lib/auth-client";
 import { redirects } from "@/lib/config/redirects";
 
@@ -21,10 +22,11 @@ export function SignOutButtons({
 	...props
 }: SignOutButtonsProps) {
 	const router = useRouter();
+	const baseUrl = useBindings().NEXT_PUBLIC_SERVER_URL;
 
 	const { mutate: signOut, isPending } = useMutation({
 		mutationFn: async () => {
-			const { data, error } = await authClient.signOut({
+			const { data, error } = await authClient(baseUrl).signOut({
 				fetchOptions: {
 					onError: (error: ErrorContext) => {
 						console.error(error);
