@@ -4,96 +4,13 @@ on:
   push:
     branches:
       - main
-    paths: 
-      - 'apps/landing/**'
-      - 'apps/web/**'
-      - 'apps/docs/**'
-      - 'apps/server/**'
-      - 'packages/db/drizzle/migrations/**'
-  workflow_dispatch:
-    inputs:
-      bypass_change_checks:
-        description: 'Bypass change checks and force deploy'
-        required: false
-        default: false
-        type: boolean
-      deploy_landing_only:
-        description: 'Deploy only the Landing page (ignores bypass_change_checks if true)'
-        required: false
-        default: false
-        type: boolean
-      deploy_web_only:
-        description: 'Deploy only the Web app (ignores bypass_change_checks if true)'
-        required: false
-        default: false
-        type: boolean
-      deploy_docs_only:
-        description: 'Deploy only the Docs app (ignores bypass_change_checks if true)'
-        required: false
-        default: false
-        type: boolean
-      deploy_server_only:
-        description: 'Deploy only the Server app (ignores bypass_change_checks if true)'
-        required: false
-        default: false
-        type: boolean
 
 jobs:
-  check-changes:
-    name: Check for Changed Files
-    runs-on: ubuntu-latest
-    outputs:
-      landing_changed: ${{ steps.check_landing.outputs.any_changed }}
-      web_changed: ${{ steps.check_web.outputs.any_changed }}
-      docs_changed: ${{ steps.check_docs.outputs.any_changed }}
-      server_changed: ${{ steps.check_server.outputs.any_changed }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Check Landing changes (including workspace deps) 
-        id: check_landing
-        uses: tj-actions/changed-files@v44
-        with:
-          files: |
-            apps/landing/**
-            packages/ui/**
-
-      - name: Check Web changes (including workspace deps)
-        id: check_web
-        uses: tj-actions/changed-files@v44
-        with:
-          files: |
-            apps/web/**
-            packages/ui/**
-
-      - name: Check Docs changes
-        id: check_docs
-        uses: tj-actions/changed-files@v44
-        with:
-          files: |
-            apps/docs/**
-
-      - name: Check Server changes (including database migrations)
-        id: check_server
-        uses: tj-actions/changed-files@v44
-        with:
-          files: |
-            apps/server/**
-            packages/db/drizzle/migrations/**
-
   deploy-landing:
     name: Deploy Landing Page to Cloudflare Workers
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    environment: production # Add this to access environment variables
-    needs: check-changes # Depends on the check-changes job
-    if: |
-      needs.check-changes.outputs.landing_changed == 'true' || 
-      inputs.bypass_change_checks == true || 
-      inputs.deploy_landing_only == true
+    environment: production
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -125,11 +42,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment: production
-    needs: check-changes
-    if: |
-      needs.check-changes.outputs.web_changed == 'true' || 
-      inputs.bypass_change_checks == true || 
-      inputs.deploy_web_only == true
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -161,11 +73,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment: production
-    needs: check-changes
-    if: |
-      needs.check-changes.outputs.docs_changed == 'true' || 
-      inputs.bypass_change_checks == true || 
-      inputs.deploy_docs_only == true
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -204,11 +111,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment: production
-    needs: check-changes
-    if: |
-      needs.check-changes.outputs.server_changed == 'true' || 
-      inputs.bypass_change_checks == true || 
-      inputs.deploy_server_only == true
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -227,19 +129,11 @@ jobs:
       - name: Install Server Dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Check for Database Migration Changes
-        id: check_migrations
-        uses: tj-actions/changed-files@v44
-        with:
-          files: |
-            packages/db/drizzle/migrations/**
-      # //TODO: This can cause real problems if changes aren't backwards compatible and the cf deployment fails - need to implement a better way to handle this
       - name: Apply Database Migrations
-        if: steps.check_migrations.outputs.any_changed == 'true'
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
-          echo "Database migrations detected, applying changes..."
+          echo "Applying database migrations..."
           cd packages/db
           pnpm db:migrate
 
