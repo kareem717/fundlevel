@@ -43,10 +43,10 @@ jobs:
     name: Check for Changed Files
     runs-on: ubuntu-latest
     outputs:
-      landing_changed: ${{ steps.check_landing.outputs.changed }}
-      web_changed: ${{ steps.check_web.outputs.changed }}
-      docs_changed: ${{ steps.check_docs.outputs.changed }}
-      server_changed: ${{ steps.check_server.outputs.changed }}
+      landing_changed: ${{ steps.check_landing.outputs.any_changed }}
+      web_changed: ${{ steps.check_web.outputs.any_changed }}
+      docs_changed: ${{ steps.check_docs.outputs.any_changed }}
+      server_changed: ${{ steps.check_server.outputs.any_changed }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -245,12 +245,6 @@ jobs:
 
       - name: Deploy to Cloudflare Workers
         uses: cloudflare/wrangler-action@v3
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
-          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
-          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
-          NANGO_SECRET_KEY: ${{ secrets.NANGO_SECRET_KEY }}
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
