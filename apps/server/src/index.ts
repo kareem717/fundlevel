@@ -57,7 +57,7 @@ app.openAPIRegistry.registerComponent("securitySchemes", "Cookie", {
 	type: "apiKey",
 	in: "cookie",
 	name: AUTH_SESSION_COOKIE_KEY,
-});
+}); //TODO: add google oauth2 security scheme
 
 const getOpenAPISchema = (c: Context) =>
 	app.getOpenAPI31Document({

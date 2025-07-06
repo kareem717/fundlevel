@@ -6,6 +6,7 @@ export const healthRoutes = {
 		method: "get",
 		path: "/",
 		tags: ["Health"],
+		security: [{}],
 		responses: {
 			200: {
 				content: {
