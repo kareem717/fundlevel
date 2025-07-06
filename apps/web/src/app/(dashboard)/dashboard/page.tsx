@@ -1,4 +1,4 @@
-import { getSessionFn } from "@web/app/actions/auth";
+import { getSessionFn } from "@/app/actions/auth";
 import { ConnectIntegrationButton } from "./components/connect-integration-button";
 
 export default async function DashboardPage() {

@@ -1,6 +1,6 @@
 import { OpenAPIHono } from "@hono/zod-openapi";
-import { createDB } from "@server/lib/utils/db";
 import { sql } from "drizzle-orm";
+import { createDB } from "@/lib/utils/db";
 import { healthRoutes } from "./routes";
 
 export const healthHandler = () =>

@@ -2,11 +2,11 @@ import { connections } from "@fundlevel/db/schema";
 import type { NangoConnection } from "@fundlevel/db/types";
 import { OpenAPIHono } from "@hono/zod-openapi";
 import type { NangoWebhookBody } from "@nangohq/node";
-import { createDB } from "@server/lib/utils/db";
-import { createNangoClient, NangoIntegration } from "@server/lib/utils/nango";
-import { getAuth } from "@server/middleware/with-auth";
 import { eq } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
+import { createDB } from "@/lib/utils/db";
+import { createNangoClient, NangoIntegration } from "@/lib/utils/nango";
+import { getAuth } from "@/middleware/with-auth";
 import { nangoRoutes } from "./routes";
 
 export const nangoHandler = () =>

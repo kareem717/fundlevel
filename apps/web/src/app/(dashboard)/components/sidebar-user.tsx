@@ -17,10 +17,10 @@ import {
 	SidebarMenuButton,
 	SidebarMenuItem,
 } from "@fundlevel/ui/components/sidebar";
-import { redirects } from "@web/lib/config/redirects";
 import { ChevronsUpDown, LogOut } from "lucide-react";
 import Link from "next/link";
 import type { ComponentPropsWithoutRef } from "react";
+import { redirects } from "@/lib/config/redirects";
 
 interface SidebarUserProps
 	extends ComponentPropsWithoutRef<typeof SidebarMenu> {

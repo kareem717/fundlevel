@@ -1,5 +1,5 @@
 import { createRoute, z } from "@hono/zod-openapi";
-import { withAuth } from "@server/middleware/with-auth";
+import { withAuth } from "@/middleware/with-auth";
 import { ERROR_RESPONSE_SCHEMA } from "../shared/schemas";
 
 export const nangoRoutes = {

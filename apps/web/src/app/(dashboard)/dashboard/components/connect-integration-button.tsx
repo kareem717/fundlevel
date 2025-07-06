@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@fundlevel/ui/components/button";
-import { useNango } from "@web/hooks/use-nango";
 import { Loader2 } from "lucide-react";
+import { useNango } from "@/hooks/use-nango";
 
 export function ConnectIntegrationButton() {
 	const { mutate, isPending } = useNango({

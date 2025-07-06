@@ -2,9 +2,9 @@
 
 import { Button } from "@fundlevel/ui/components/button";
 import { useMutation } from "@tanstack/react-query";
-import { authClient } from "@web/lib/auth-client";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import type { ComponentPropsWithRef } from "react";
+import { authClient } from "@/lib/auth-client";
 
 interface SignInButtonProps extends ComponentPropsWithRef<typeof Button> {
 	provider: "google";

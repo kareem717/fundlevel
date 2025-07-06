@@ -1,7 +1,7 @@
 import { FundlevelLogo } from "@fundlevel/ui/components/custom/icons";
-import { copy } from "@landing/lib/config/copy";
-import { socials } from "@landing/lib/config/socials";
 import Link from "next/link";
+import { copy } from "@/lib/config/copy";
+import { socials } from "@/lib/config/socials";
 
 export default async function HomePage() {
 	return (

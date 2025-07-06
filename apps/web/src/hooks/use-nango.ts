@@ -1,8 +1,8 @@
 import Nango, { type ConnectUI } from "@nangohq/frontend";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { apiClient } from "@web/lib/api-client";
 import { useState } from "react";
 import { toast } from "sonner";
+import { apiClient } from "@/lib/api-client";
 
 export function useNango({
 	onConnect,

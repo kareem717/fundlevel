@@ -5,9 +5,9 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@fundlevel/ui/components/card";
-import { getSessionFn } from "@web/app/actions/auth";
-import { redirects } from "@web/lib/config/redirects";
 import { redirect } from "next/navigation";
+import { getSessionFn } from "@/app/actions/auth";
+import { redirects } from "@/lib/config/redirects";
 import { SignOutButtons } from "./components/sign-out-buttons";
 
 export default async function SignOutPage() {

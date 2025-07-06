@@ -1,9 +1,9 @@
 import type { AuthType } from "@fundlevel/auth/types";
 import * as Sentry from "@sentry/cloudflare";
-import { createAuthClient } from "@server/lib/utils/auth";
 import type { Context } from "hono";
 import { createMiddleware } from "hono/factory";
 import { HTTPException } from "hono/http-exception";
+import { createAuthClient } from "@/lib/utils/auth";
 
 const AUTH_CLIENT_KEY = "auth-client" as const;
 const SESSION_KEY = "auth-session" as const;

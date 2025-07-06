@@ -3,13 +3,13 @@
 import { Button } from "@fundlevel/ui/components/button";
 import { cn } from "@fundlevel/ui/lib/utils";
 import { useMutation } from "@tanstack/react-query";
-import { authClient } from "@web/lib/auth-client";
-import { redirects } from "@web/lib/config/redirects";
 import type { ErrorContext } from "better-auth/react";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import type { ComponentPropsWithRef } from "react";
 import { toast } from "sonner";
+import { authClient } from "@/lib/auth-client";
+import { redirects } from "@/lib/config/redirects";
 
 interface SignOutButtonsProps extends ComponentPropsWithRef<"div"> {
 	onSuccess?: () => void;

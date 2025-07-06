@@ -20,7 +20,7 @@
 			}
 		],
 		"paths": {
-			"@web/*": ["./src/*"],
+			"@/*": ["./src/*"],
 			"@fundlevel/ui/*": ["../../packages/ui/src/*"]
 		}
 	},

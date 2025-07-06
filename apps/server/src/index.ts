@@ -4,11 +4,11 @@ import { OpenAPIHono } from "@hono/zod-openapi";
 import { Scalar } from "@scalar/hono-api-reference";
 import { createMarkdownFromOpenApi } from "@scalar/openapi-to-markdown";
 import * as Sentry from "@sentry/cloudflare";
-import { createAuthClient } from "@server/lib/utils/auth";
 import type { Context } from "hono";
 import { cors } from "hono/cors";
 import { HTTPException } from "hono/http-exception";
 import { logger } from "hono/logger";
+import { createAuthClient } from "@/lib/utils/auth";
 import { healthHandler, nangoHandler } from "./handlers";
 import { AUTH_BASE_PATH } from "./lib/utils/auth";
 

@@ -1,4 +1,4 @@
-import { NavBack } from "@web/components/nav-back";
+import { NavBack } from "@/components/nav-back";
 
 export default function AuthLayout({
 	children,

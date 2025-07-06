@@ -13,9 +13,9 @@ import {
 	SidebarProvider,
 } from "@fundlevel/ui/components/sidebar";
 import { cn } from "@fundlevel/ui/lib/utils";
-import { redirects } from "@web/lib/config/redirects";
 import Link from "next/link";
 import type { ComponentPropsWithoutRef } from "react";
+import { redirects } from "@/lib/config/redirects";
 import { SidebarUser } from "./sidebar-user";
 
 interface DashboardSidebarProps

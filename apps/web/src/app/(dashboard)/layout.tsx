@@ -1,7 +1,7 @@
 import { ScrollArea } from "@fundlevel/ui/components/scroll-area";
-import { redirects } from "@web/lib/config/redirects";
 import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
+import { redirects } from "@/lib/config/redirects";
 import { getSessionFn } from "../actions/auth";
 import { DashboardSidebar } from "./components/dashboard-sidebar";
 
