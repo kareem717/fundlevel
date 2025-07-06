@@ -1,5 +1,3 @@
-"use server";
-
 import { createClient } from "@fundlevel/auth/client";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 
