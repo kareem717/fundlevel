@@ -11,13 +11,24 @@ export const healthRoutes = {
 				content: {
 					"application/json": {
 						schema: z.object({
-							status: z.literal("ok"),
+							isHealthy: z.boolean(),
+							dbConnected: z.boolean(),
 						}),
 					},
 				},
 				description: "Healthy service",
 			},
-			500: ERROR_RESPONSE_SCHEMA,
+			500: {
+				content: {
+					"application/json": {
+						schema: z.object({
+							isHealthy: z.boolean(),
+							dbConnected: z.boolean(),
+						}),
+					},
+				},
+				description: "Unhealthy service",
+			},
 		},
 	}),
 };
