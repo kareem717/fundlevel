@@ -8,6 +8,7 @@ import type { Context } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { healthHandler, nangoHandler } from "./handlers";
+import { AUTH_BASE_PATH } from "./lib/utils/auth";
 
 const app = new OpenAPIHono();
 
@@ -22,7 +23,9 @@ app.use(logger()).use(
 );
 
 export const appRoutes = app
-	.on(["POST", "GET"], "/auth/*", (c) => createAuthClient().handler(c.req.raw))
+	.on(["POST", "GET"], `${AUTH_BASE_PATH}/*`, (c) =>
+		createAuthClient().handler(c.req.raw),
+	)
 	.route("/health", healthHandler())
 	.route("/nango", nangoHandler());
 

@@ -8,12 +8,13 @@ import { openAPI } from "better-auth/plugins";
 export const AUTH_SESSION_COOKIE_KEY = "better-auth.session_token";
 
 interface ServerClientConfig {
-	basePath: string;
 	databaseUrl: string;
 	trustedOrigins: string[];
 	googleClientId: string;
 	googleClientSecret: string;
 	baseDomain: string;
+	betterAuthSecret: string;
+	baseUrl: string;
 	// stripeConfig: {
 	//   apiKey: string;
 	//   webhookSecret: string;
@@ -23,12 +24,13 @@ interface ServerClientConfig {
 }
 
 export const createServerClient = ({
-	basePath,
 	databaseUrl,
 	trustedOrigins,
 	googleClientId,
 	googleClientSecret,
 	baseDomain = "localhost",
+	betterAuthSecret,
+	baseUrl,
 }: ServerClientConfig) => {
 	// const stripeClient = new Stripe(stripeConfig.apiKey, {
 	//   apiVersion: "2025-06-30.basil",
@@ -36,7 +38,7 @@ export const createServerClient = ({
 	// });
 
 	return betterAuth({
-		basePath,
+		baseUrl,
 		database: drizzleAdapter(getDb(databaseUrl), {
 			provider: "pg",
 			schema: {
@@ -44,6 +46,7 @@ export const createServerClient = ({
 				// ...SubscriptionSchema,
 			},
 		}),
+		secret: betterAuthSecret,
 		// Allow requests from the frontend development server
 		trustedOrigins,
 		emailAndPassword: {

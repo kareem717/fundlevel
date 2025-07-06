@@ -5,10 +5,11 @@ export const AUTH_BASE_PATH = "/auth" as const;
 
 export const createAuthClient = () =>
 	createServerClient({
-		basePath: AUTH_BASE_PATH,
+		baseUrl: env.BASE_URL + AUTH_BASE_PATH,
 		databaseUrl: env.DATABASE_URL,
 		trustedOrigins: [env.WEB_APP_URL],
 		googleClientId: env.GOOGLE_CLIENT_ID,
 		googleClientSecret: env.GOOGLE_CLIENT_SECRET,
 		baseDomain: env.BASE_DOMAIN,
+		betterAuthSecret: env.BETTER_AUTH_SECRET,
 	});
