@@ -17,8 +17,6 @@ export function SignInButton({
 }: SignInButtonProps) {
 	const [isLoading, setIsLoading] = useState(false);
 
-	console.log(callbackURL.replace(/\/$/, ""));
-
 	async function handleLogin() {
 		setIsLoading(true);
 

@@ -1,0 +1,19 @@
+import { createEnv } from "@t3-oss/env-nextjs";
+import { z } from "zod";
+
+export const env = createEnv({
+	server: {
+		NODE_ENV: z.enum(["development", "production"]),
+	},
+	client: {
+		NEXT_PUBLIC_BASE_URL: z.string().url(),
+		NEXT_PUBLIC_SERVER_URL: z.string().url(),
+	},
+	// If you're using Next.js < 13.4.4, you'll need to specify the runtimeEnv manually
+	// For Next.js >= 13.4.4, you only need to destructure client variables:
+	experimental__runtimeEnv: {
+		NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL, // TODO: can we use __NEXT_PRIVATE_ORIGIN?
+		NEXT_PUBLIC_SERVER_URL: process.env.NEXT_PUBLIC_SERVER_URL,
+	},
+	skipValidation: process.env.NODE_ENV === "production",
+});
