@@ -15,6 +15,7 @@
 		"cf-typegen": "turbo cf-typegen --filter='./apps/*'",
 		"dev:web": "turbo -F web dev",
 		"dev:server": "turbo -F server dev",
+		"dev:landing": "turbo -F landing dev",
 		"db:push": "turbo -F @fundlevel/db db:push",
 		"db:studio": "turbo -F @fundlevel/db db:studio",
 		"db:generate": "turbo -F @fundlevel/db db:generate",

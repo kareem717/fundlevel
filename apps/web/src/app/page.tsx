@@ -1,3 +1,5 @@
+import { getCloudflareContext } from "@opennextjs/cloudflare";
+
 const TITLE_TEXT = `
  ██████╗ ███████╗████████╗████████╗███████╗██████╗
  ██╔══██╗██╔════╝╚══██╔══╝╚══██╔══╝██╔════╝██╔══██╗
@@ -21,6 +23,9 @@ export default function HomePge() {
 			<div className="grid gap-6">
 				<section className="rounded-lg border p-4">
 					<h2 className="mb-2 font-medium">API Status</h2>
+					<pre className="overflow-x-auto font-mono text-sm">
+						{JSON.stringify(getCloudflareContext().env, null, 2)}
+					</pre>
 				</section>
 			</div>
 		</div>
