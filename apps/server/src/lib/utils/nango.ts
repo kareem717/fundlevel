@@ -8,5 +8,4 @@ export const createNangoClient = () =>
 
 export const NangoIntegration = {
 	QUICKBOOKS: "quickbooks",
-	QUICKBOOKS_SANDBOX: "quickbooks-sandbox-kw84",
 } as const;

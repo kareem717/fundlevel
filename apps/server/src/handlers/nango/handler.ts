@@ -48,10 +48,7 @@ export const nangoHandler = () =>
 						email: user.email,
 						display_name: user.name,
 					},
-					allowed_integrations: [
-						NangoIntegration.QUICKBOOKS_SANDBOX,
-						NangoIntegration.QUICKBOOKS,
-					],
+					allowed_integrations: [NangoIntegration.QUICKBOOKS],
 				});
 
 				return c.json(
