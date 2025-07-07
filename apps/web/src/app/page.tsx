@@ -1,27 +1,18 @@
-const TITLE_TEXT = `
- ██████╗ ███████╗████████╗████████╗███████╗██████╗
- ██╔══██╗██╔════╝╚══██╔══╝╚══██╔══╝██╔════╝██╔══██╗
- ██████╔╝█████╗     ██║      ██║   █████╗  ██████╔╝
- ██╔══██╗██╔══╝     ██║      ██║   ██╔══╝  ██╔══██╗
- ██████╔╝███████╗   ██║      ██║   ███████╗██║  ██║
- ╚═════╝ ╚══════╝   ╚═╝      ╚═╝   ╚══════╝╚═╝  ╚═╝
+import { cookies } from "next/headers";
+import { getSessionFn } from "./actions/auth";
 
- ████████╗    ███████╗████████╗ █████╗  ██████╗██╗  ██╗
- ╚══██╔══╝    ██╔════╝╚══██╔══╝██╔══██╗██╔════╝██║ ██╔╝
-    ██║       ███████╗   ██║   ███████║██║     █████╔╝
-    ██║       ╚════██║   ██║   ██╔══██║██║     ██╔═██╗
-    ██║       ███████║   ██║   ██║  ██║╚██████╗██║  ██╗
-    ╚═╝       ╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝
- `;
+export default async function HomePge() {
+	const session = await getSessionFn();
 
-export default function HomePge() {
 	return (
-		<div className="container mx-auto max-w-3xl px-4 py-2">
-			<pre className="overflow-x-auto font-mono text-sm">{TITLE_TEXT}</pre>
-			<div className="grid gap-6">
-				<section className="rounded-lg border p-4">
-					<h2 className="mb-2 font-medium">API Status</h2>
-				</section>
+		<div className="flex h-screen w-full items-center justify-center">
+			<div className="container mx-auto max-w-3xl px-4 py-2">
+				<pre className="w-full overflow-auto overflow-x-auto rounded-md bg-secondary p-2 font-mono text-sm">
+					{JSON.stringify(session, null, 2)}
+				</pre>
+				<pre className="w-full overflow-auto overflow-x-auto rounded-md bg-secondary p-2 font-mono text-sm">
+					{JSON.stringify(await cookies(), null, 2)}
+				</pre>
 			</div>
 		</div>
 	);
