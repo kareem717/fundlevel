@@ -25,6 +25,7 @@
 		"postgres": "^3.4.7"
 	},
 	"peerDependencies": {
+		"zod": "^3.25.74",
 		"drizzle-orm": "^0.44.2"
 	},
 	"trustedDependencies": [

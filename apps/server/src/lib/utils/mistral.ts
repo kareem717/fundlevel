@@ -1,7 +1,7 @@
 import { env } from "cloudflare:workers";
-import { Mistral } from "@mistralai/mistralai";
+import { createMistral } from "@ai-sdk/mistral";
 
-export const createMistralClient = () =>
-	new Mistral({
+export const createMistralAIProvider = () =>
+	createMistral({
 		apiKey: env.MISTRAL_API_KEY,
 	});

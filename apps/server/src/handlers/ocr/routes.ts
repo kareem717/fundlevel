@@ -1,11 +1,20 @@
+import { InsertTransactionSchema } from "@fundlevel/db/validation";
 import { createRoute, z } from "@hono/zod-openapi";
 import { withAuth } from "@/middleware/with-auth";
 import { ERROR_RESPONSE_SCHEMA } from "../shared/schemas";
 
+export const TransactionSchema = InsertTransactionSchema.pick({
+	date: true,
+	amountCents: true,
+	merchant: true,
+	description: true,
+	currency: true,
+});
+
 export const ocrRoutes = {
-	process: createRoute({
+	transactions: createRoute({
 		method: "post",
-		path: "/process",
+		path: "/transactions",
 		tags: ["OCR"],
 		description: "Process an image",
 		middleware: [withAuth()],
@@ -34,16 +43,8 @@ export const ocrRoutes = {
 			200: {
 				content: {
 					"application/json": {
-						schema: z
-							.array(
-								z.object({
-									index: z.number().describe("The index of the page"),
-									markdown: z
-										.string()
-										.describe("The extracted markdown of the page"),
-								}),
-							)
-							.describe("The processed pages of the document"),
+						schema: z.array(TransactionSchema),
+						description: "The processed transactions",
 					},
 				},
 				description: "Result of the OCR process",

@@ -8,6 +8,13 @@
 			"when": 1751843420199,
 			"tag": "0000_dear_boomerang",
 			"breakpoints": true
+		},
+		{
+			"idx": 1,
+			"version": "7",
+			"when": 1751934132302,
+			"tag": "0001_noisy_nekra",
+			"breakpoints": true
 		}
 	]
 }

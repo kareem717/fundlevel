@@ -80,8 +80,13 @@ const getOpenAPISchema = (c: Context) =>
 
 // Error handling
 app.onError((err, c) => {
-	// Report _all_ unhandled errors.
-	Sentry.captureException(err);
+	if (env.NODE_ENV === "development") {
+		console.error(err);
+	} else {
+		// Report _all_ unhandled errors.
+		Sentry.captureException(err); // ik this is already handled by the withSentry wrapper
+	}
+
 	if (err instanceof HTTPException) {
 		return c.json({ message: err.message, status: err.status }, err.status);
 	}
