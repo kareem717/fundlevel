@@ -1,7 +1,8 @@
 import Nango, { type ConnectUI } from "@nangohq/frontend";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useBindings } from "@/components/providers/bindings-provider";
 import { apiClient } from "@/lib/api-client";
 
 export function useNango({
@@ -11,12 +12,15 @@ export function useNango({
 	onConnect?: () => void;
 	onClose?: () => void;
 }) {
+	const env = useBindings();
 	const [connect, setConnect] = useState<ConnectUI | null>(null);
 	const nango = new Nango();
 
 	return useMutation({
 		mutationFn: async () => {
-			const resp = await apiClient.nango["session-token"].$post();
+			const resp = await apiClient(env.NEXT_PUBLIC_SERVER_URL).nango[
+				"session-token"
+			].$post();
 			if (!resp.ok) {
 				throw new Error(await resp.text());
 			}
