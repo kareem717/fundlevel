@@ -12,7 +12,7 @@ import { cors } from "hono/cors";
 import { HTTPException } from "hono/http-exception";
 import { logger } from "hono/logger";
 import { createAuthClient } from "@/lib/utils/auth";
-import { healthHandler, nangoHandler } from "./handlers";
+import { healthHandler, nangoHandler, ocrHandler } from "./handlers";
 
 const app = new OpenAPIHono();
 
@@ -31,7 +31,8 @@ export const appRoutes = app
 		createAuthClient().handler(c.req.raw),
 	)
 	.route("/health", healthHandler())
-	.route("/nango", nangoHandler());
+	.route("/nango", nangoHandler())
+	.route("/ocr", ocrHandler());
 
 // Docs
 app
