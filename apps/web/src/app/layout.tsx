@@ -3,10 +3,10 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "@fundlevel/ui/styles/globals.css";
 import { Toaster } from "@fundlevel/ui/components/sonner";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
-import { ThemeProvider } from "next-themes";
 import type { ReactNode } from "react";
 import { BindingsProvider } from "@/components/providers/bindings-provider";
-import { ReactQueryProvider } from "@/components/providers/react-query";
+import { ReactQueryProvider } from "@/components/providers/react-query-provider";
+import { ThemeProvider } from "@/components/providers/theme-provider";
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -35,12 +35,7 @@ export default async function RootLayout({
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 			>
-				<ThemeProvider
-					attribute="class"
-					defaultTheme="system"
-					enableSystem
-					disableTransitionOnChange
-				>
+				<ThemeProvider>
 					<BindingsProvider bindings={env}>
 						<ReactQueryProvider>{children}</ReactQueryProvider>
 					</BindingsProvider>

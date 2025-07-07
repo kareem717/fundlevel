@@ -43,14 +43,19 @@ export function SignOutButtons({
 		onSuccess: (data) => {
 			if (data?.success) {
 				onSuccess?.();
+				toast.success("Signed out successfully!");
 				router.push(redirects.home);
 			} else {
-				toast.error("Failed to sign out");
+				toast.error("Uh oh! Something went wrong.", {
+					description: "Failed to sign out",
+				});
 			}
 		},
 		onError: (error) => {
 			console.error(error);
-			toast.error("Failed to sign out");
+			toast.error("Uh oh! Something went wrong.", {
+				description: error.message,
+			});
 		},
 	});
 

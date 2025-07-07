@@ -3,6 +3,7 @@
 import { Button } from "@fundlevel/ui/components/button";
 import { useMutation } from "@tanstack/react-query";
 import type { ComponentPropsWithRef } from "react";
+import { toast } from "sonner";
 import { useBindings } from "@/components/providers/bindings-provider";
 import { authClient } from "@/lib/auth-client";
 
@@ -24,7 +25,14 @@ export function SignInButton({
 				provider,
 				callbackURL: env.NEXT_PUBLIC_BASE_URL,
 			}),
-		throwOnError: true,
+		onError: (error) => {
+			toast.error("Uh oh! Something went wrong.", {
+				description: error.message,
+			});
+		},
+		onSuccess: () => {
+			toast.success("Redirecting...");
+		},
 	});
 
 	return (
