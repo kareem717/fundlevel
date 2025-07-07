@@ -17,12 +17,12 @@ export function SignInButton({
 	children = "Sign In",
 	...props
 }: SignInButtonProps) {
-	const baseUrl = useBindings().NEXT_PUBLIC_SERVER_URL;
+	const env = useBindings();
 	const { mutate: signIn, isPending } = useMutation({
 		mutationFn: async () =>
-			await authClient(baseUrl).signIn.social({
+			await authClient(env.NEXT_PUBLIC_SERVER_URL).signIn.social({
 				provider,
-				callbackURL: baseUrl,
+				callbackURL: env.NEXT_PUBLIC_BASE_URL,
 			}),
 		throwOnError: true,
 	});
