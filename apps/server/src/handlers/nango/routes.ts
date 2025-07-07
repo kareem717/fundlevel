@@ -56,5 +56,6 @@ export const nangoRoutes = {
 			500: ERROR_RESPONSE_SCHEMA,
 			501: ERROR_RESPONSE_SCHEMA,
 		},
+		hide: true,
 	}),
 };
