@@ -11,6 +11,7 @@ import type { Context } from "hono";
 import { cors } from "hono/cors";
 import { HTTPException } from "hono/http-exception";
 import { logger } from "hono/logger";
+import { merge } from "ts-deepmerge";
 import { createAuthClient } from "@/lib/auth/client";
 import { healthHandler, integrationHandler, ocrHandler } from "./handlers";
 
@@ -37,12 +38,12 @@ export const appRoutes = app
 // Docs
 app
 	.get("/openapi.json", async (c) => {
-		return c.json(getOpenAPISchema(c));
+		return c.json(await getOpenAPISchema(c));
 	})
 	.get("/llms.txt", async (c) => {
 		// Generate Markdown from your OpenAPI document
 		const markdown = await createMarkdownFromOpenApi(
-			JSON.stringify(getOpenAPISchema(c)),
+			JSON.stringify(await getOpenAPISchema(c)),
 		);
 
 		return c.text(markdown);
@@ -55,15 +56,39 @@ app
 		}),
 	);
 
-// OpenAPI
-app.openAPIRegistry.registerComponent("securitySchemes", "Cookie", {
-	type: "apiKey",
-	in: "cookie",
-	name: AUTH_SESSION_COOKIE_KEY,
-}); //TODO: add google oauth2 security scheme
+const getOpenAPISchema = async (c: Context) => {
+	const auth = await createAuthClient().api.generateOpenAPISchema();
 
-const getOpenAPISchema = (c: Context) =>
-	app.getOpenAPI31Document({
+	//prefix all paths with /auth
+	auth.paths = Object.fromEntries(
+		Object.entries(auth.paths).map(([path, value]) => {
+			// Add auth prefix to path
+			const authPath = `/auth${path}`;
+
+			// Add auth prefix to all route tags
+			const operations = Object.entries(value).map(([method, operation]) => {
+				return [
+					method,
+					{
+						...operation,
+						tags: operation.tags?.map((tag: string) => `Auth - ${tag}`) || [],
+					},
+				];
+			});
+
+			return [authPath, Object.fromEntries(operations)];
+		}),
+	);
+
+	// Prefix all tags with "Auth"
+	auth.tags = auth.tags.map((tag) => ({
+		...tag,
+		name: `Auth - ${tag.name}`,
+	}));
+
+	const { info, ...authOpenAPI } = auth;
+
+	const main = app.getOpenAPI31Document({
 		openapi: "3.1.0",
 		info: {
 			title: "Fundlevel API",
@@ -75,8 +100,13 @@ const getOpenAPISchema = (c: Context) =>
 				description: "Current environment",
 			},
 		],
-		security: [{ Cookie: [] }],
+		security: [{ Cookie: [] }, { Google: [] }],
 	});
+
+	const result = merge(main, authOpenAPI);
+
+	return result;
+};
 
 // Error handling
 app.onError((err, c) => {

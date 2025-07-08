@@ -130,6 +130,9 @@ importers:
       hono:
         specifier: ^4.8.4
         version: 4.8.4
+      ts-deepmerge:
+        specifier: ^7.0.3
+        version: 7.0.3
       zod:
         specifier: ^3.25.74
         version: 3.25.74

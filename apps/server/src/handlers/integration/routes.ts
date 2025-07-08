@@ -9,8 +9,9 @@ export const integrationRoutes = {
 		method: "get",
 		path: "/connections",
 		tags: ["Integrations"],
-		security: [{ Cookie: [] }],
 		description: "Get all connections for the current user",
+		security: [{ apiKeyCookie: [] }],
+
 		middleware: [withAuth()],
 		responses: {
 			200: {
@@ -31,9 +32,9 @@ export const integrationRoutes = {
 		method: "post",
 		path: "/:integration/session-token",
 		tags: ["Integrations"],
-		security: [{ Cookie: [] }],
 		description: "Get the session token for the user",
 		middleware: [withAuth()],
+		security: [{ apiKeyCookie: [] }],
 		request: {
 			params: z.object({
 				integration: z.nativeEnum(NangoIntegration),
@@ -92,10 +93,10 @@ export const integrationRoutes = {
 			method: "get",
 			path: "/quickbooks/:connectionId/accounts",
 			tags: ["Integrations", "Quickbooks"],
-			security: [{ Cookie: [] }],
+			security: [{ apiKeyCookie: [] }],
+			middleware: [withAuth()],
 			description:
 				"Fetches all accounts in QuickBooks. Handles both active and archived accounts, saving or deleting them based on their status.",
-			middleware: [withAuth()],
 			request: {
 				params: z.object({
 					connectionId: z

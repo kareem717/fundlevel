@@ -27,6 +27,7 @@ export const ocrRoutes = {
 		tags: ["OCR"],
 		description: "Process an image",
 		middleware: [withAuth()],
+		security: [{ apiKeyCookie: [] }],
 		request: {
 			body: {
 				content: {
