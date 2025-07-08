@@ -1,12 +1,14 @@
 import { env } from "cloudflare:workers";
-import { transactionSchema } from "@fundlevel/db/schema";
-import { OpenAPIHono, type z } from "@hono/zod-openapi";
+import { integrationSchema, transactionSchema } from "@fundlevel/db/schema";
+import { OpenAPIHono, z } from "@hono/zod-openapi";
 import * as Sentry from "@sentry/cloudflare";
 import { generateObject } from "ai";
+import { eq } from "drizzle-orm";
 import { getTableConfig } from "drizzle-orm/pg-core";
 import { HTTPException } from "hono/http-exception";
 import { createDB } from "@/lib/db/client";
 import { createMistralAIProvider } from "@/lib/mistral/client";
+import { getQuickbookAccounts } from "@/lib/nango/quickbooks";
 import { getAuth } from "@/middleware/with-auth";
 import { ocrRoutes, TransactionSchema } from "./routes";
 
@@ -28,6 +30,26 @@ export const ocrHandler = () =>
 			});
 		}
 
+		const db = createDB();
+
+		// Get QB connection
+		const [nangoConnection] = await db
+			.select()
+			.from(integrationSchema.nangoConnections)
+			.where(eq(integrationSchema.nangoConnections.userId, userId))
+			.limit(1);
+
+		let accountsPrompt = "";
+		if (nangoConnection) {
+			const accounts = await getQuickbookAccounts(nangoConnection.id);
+			if (accounts.length > 0) {
+				const accountsList = accounts
+					.map((acc) => `- ${acc.name} (ID: ${acc.id})`)
+					.join("\n");
+				accountsPrompt = `Here are the available Quickbooks accounts, please classify each transaction into one of them and include the account name and ID:\n${accountsList}`;
+			}
+		}
+
 		const { file } = await c.req.valid("form");
 
 		// upload file to r2
@@ -44,7 +66,7 @@ export const ocrHandler = () =>
 			);
 			if (!tempFile) {
 				throw new HTTPException(500, {
-					message: "Failed to upload file to R2.",
+					message: "Initializing file upload to R2 failed.",
 				});
 			}
 			fileUrl = `${env.DOCUMENTS_BUCKET_URL}/${tempFile.key}`;
@@ -58,7 +80,9 @@ export const ocrHandler = () =>
 		const mistralClient = createMistralAIProvider();
 		const MODEL_NAME = "mistral-small-latest";
 
-		let transactions: z.infer<typeof TransactionSchema>[] = [];
+		let transactions: (z.infer<typeof TransactionSchema> & {
+			quickbooksAccount?: { id: string; name: string };
+		})[] = [];
 		try {
 			transactions = await Sentry.startSpan(
 				{
@@ -70,13 +94,16 @@ export const ocrHandler = () =>
 					const response = await generateObject({
 						model: mistralClient(MODEL_NAME),
 						output: "array",
-						schema: TransactionSchema,
+						schema: TransactionSchema.extend({
+							quickbooksAccountId: z.string().optional(),
+							quickbooksAccountName: z.string().optional(),
+						}),
 						abortSignal: AbortSignal.timeout(1000 * 45),
 						messages: [
 							{
 								role: "system",
 								//TODO: centralize system prompts
-								content: "Extract the transactions from the provided files",
+								content: `Extract the transactions from the provided files.${accountsPrompt ? `\n\n${accountsPrompt}` : ""}`,
 							},
 							{
 								role: "user",
@@ -111,7 +138,20 @@ export const ocrHandler = () =>
 						);
 					}
 
-					return response.object;
+					return response.object.map(
+						({ quickbooksAccountId, quickbooksAccountName, ...rest }) => {
+							const result: z.infer<typeof TransactionSchema> & {
+								quickbooksAccount?: { id: string; name: string };
+							} = { ...rest };
+							if (quickbooksAccountId && quickbooksAccountName) {
+								result.quickbooksAccount = {
+									id: quickbooksAccountId,
+									name: quickbooksAccountName,
+								};
+							}
+							return result;
+						},
+					);
 				},
 			);
 		} catch (error) {
@@ -134,15 +174,19 @@ export const ocrHandler = () =>
 				async () => {
 					const startTime = performance.now();
 
-					const db = createDB();
-
-					await db.insert(table).values(
-						transactions.map((transaction) => ({
-							...transaction,
-							userId,
-							sourceFileURL: fileUrl,
-						})),
-					);
+					if (transactions.length > 0) {
+						await db.insert(table).values(
+							transactions.map((transaction) => ({
+								date: transaction.date,
+								amountCents: transaction.amountCents,
+								merchant: transaction.merchant,
+								description: transaction.description,
+								currency: transaction.currency,
+								userId,
+								sourceFileURL: fileUrl,
+							})),
+						);
+					}
 
 					const span = Sentry.getActiveSpan();
 					if (span) {

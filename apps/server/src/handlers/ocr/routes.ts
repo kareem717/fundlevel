@@ -11,6 +11,15 @@ export const TransactionSchema = InsertTransactionSchema.pick({
 	currency: true,
 });
 
+const OcrTransactionSchema = TransactionSchema.extend({
+	quickbooksAccount: z
+		.object({
+			id: z.string(),
+			name: z.string(),
+		})
+		.optional(),
+});
+
 export const ocrRoutes = {
 	transactions: createRoute({
 		method: "post",
@@ -43,7 +52,7 @@ export const ocrRoutes = {
 			200: {
 				content: {
 					"application/json": {
-						schema: z.array(TransactionSchema),
+						schema: z.array(OcrTransactionSchema),
 						description: "The processed transactions",
 					},
 				},
