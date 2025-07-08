@@ -1,9 +1,20 @@
 "use client";
+
 import { Button } from "@fundlevel/ui/components/button";
 import { Loader2 } from "lucide-react";
+import type { ComponentPropsWithoutRef } from "react";
 import { useNango } from "@/hooks/use-nango";
 
-export function ConnectIntegrationButton() {
+interface ConnectIntegrationButtonProps
+	extends ComponentPropsWithoutRef<typeof Button> {
+	integration: "quickbooks" | "google-sheet";
+}
+
+export function ConnectIntegrationButton({
+	integration,
+	children,
+	...props
+}: ConnectIntegrationButtonProps) {
 	const { mutate, isPending } = useNango({
 		onConnect: () => {
 			console.log("connected");
@@ -14,9 +25,9 @@ export function ConnectIntegrationButton() {
 	});
 
 	return (
-		<Button onClick={() => mutate()} disabled={isPending}>
+		<Button onClick={() => mutate(integration)} disabled={isPending} {...props}>
 			{isPending ? <Loader2 className="mr-2 animate-spin" /> : null}
-			Connect
+			{children ? children : `Connect ${integration}`}
 		</Button>
 	);
 }

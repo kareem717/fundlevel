@@ -8,7 +8,8 @@ export default async function DashboardPage() {
 		<div>
 			<h1>Dashboard</h1>
 			<p>Welcome {session?.user.name}</p>
-			<ConnectIntegrationButton />
+			<ConnectIntegrationButton integration="quickbooks" />
+			<ConnectIntegrationButton integration="google-sheet" />
 		</div>
 	);
 }

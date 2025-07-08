@@ -1,5 +1,5 @@
 import { getDb } from "@fundlevel/db";
-import { auth } from "@fundlevel/db/schema";
+import { authSchema } from "@fundlevel/db/schema";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
@@ -44,7 +44,7 @@ export const createServerClient = ({
 		database: drizzleAdapter(getDb(databaseUrl), {
 			provider: "pg",
 			schema: {
-				...auth,
+				...authSchema,
 				// ...SubscriptionSchema,
 			},
 		}),

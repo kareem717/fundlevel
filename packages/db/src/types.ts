@@ -1,5 +1,5 @@
 import type { users } from "./schema/auth";
-import type { nangoConnections } from "./schema/connections";
+import type { nangoConnections } from "./schema/integration";
 
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;

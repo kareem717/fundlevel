@@ -17,10 +17,14 @@ export function useNango({
 	const nango = new Nango();
 
 	return useMutation({
-		mutationFn: async () => {
-			const resp = await apiClient(env.NEXT_PUBLIC_SERVER_URL).nango[
-				"session-token"
-			].$post();
+		mutationFn: async (integration: "quickbooks" | "google-sheet") => {
+			const resp = await apiClient(env.NEXT_PUBLIC_SERVER_URL).integrations[
+				":integration"
+			]["session-token"].$post({
+				param: {
+					integration,
+				},
+			});
 			if (!resp.ok) {
 				throw new Error(await resp.text());
 			}

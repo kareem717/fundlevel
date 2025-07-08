@@ -1,15 +1,21 @@
 import { createRoute, z } from "@hono/zod-openapi";
+import { NangoIntegration } from "@/lib/utils/nango";
 import { withAuth } from "@/middleware/with-auth";
 import { ERROR_RESPONSE_SCHEMA } from "../shared/schemas";
 
-export const nangoRoutes = {
+export const integrationRoutes = {
 	sessionToken: createRoute({
 		method: "post",
-		path: "/session-token",
-		tags: ["Nango"],
+		path: "/:integration/session-token",
+		tags: ["Integrations"],
 		security: [{ Cookie: [] }],
 		description: "Get the session token for the user",
 		middleware: [withAuth()],
+		request: {
+			params: z.object({
+				integration: z.nativeEnum(NangoIntegration),
+			}),
+		},
 		responses: {
 			200: {
 				content: {
@@ -31,7 +37,7 @@ export const nangoRoutes = {
 	webhook: createRoute({
 		method: "post",
 		path: "/webhook",
-		tags: ["Nango"],
+		tags: ["Integrations"],
 		request: {
 			headers: z.object({
 				"x-nango-signature": z

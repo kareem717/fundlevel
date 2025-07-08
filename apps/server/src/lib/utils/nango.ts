@@ -8,4 +8,5 @@ export const createNangoClient = () =>
 
 export const NangoIntegration = {
 	QUICKBOOKS: "quickbooks",
+	GOOGLE_SHEETS: "google-sheet",
 } as const;
