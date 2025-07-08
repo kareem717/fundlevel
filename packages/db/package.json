@@ -35,6 +35,6 @@
 		".": "./src/index.ts",
 		"./schema": "./src/schema/index.ts",
 		"./types": "./src/types.ts",
-		"./validation": "./src/zod.ts"
+		"./validation": "./src/validation.ts"
 	}
 }

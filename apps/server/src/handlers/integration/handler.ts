@@ -1,7 +1,7 @@
 import { integrationSchema } from "@fundlevel/db/schema";
 import type { NangoConnection } from "@fundlevel/db/types";
 import { OpenAPIHono } from "@hono/zod-openapi";
-import type { NangoRecord, NangoWebhookBody } from "@nangohq/node";
+import type { NangoWebhookBody } from "@nangohq/node";
 import * as Sentry from "@sentry/cloudflare";
 import { and, eq } from "drizzle-orm";
 import { getTableConfig } from "drizzle-orm/pg-core";
@@ -9,12 +9,60 @@ import { HTTPException } from "hono/http-exception";
 import { createDB } from "@/lib/db/client";
 import { createNangoClient } from "@/lib/nango/client";
 import { getQuickbookAccounts } from "@/lib/nango/quickbooks";
-import { NangoIntegration, type QuickbooksAccount } from "@/lib/nango/types";
 import { getAuth } from "@/middleware/with-auth";
 import { integrationRoutes } from "./routes";
 
 export const integrationHandler = () =>
 	new OpenAPIHono()
+		.openapi(integrationRoutes.getConnections, async (c) => {
+			const { user } = getAuth(c);
+			if (!user) {
+				throw new HTTPException(403, { message: "Unauthorized" });
+			}
+
+			const db = createDB();
+			let connections: NangoConnection[] = [];
+			try {
+				connections = await Sentry.startSpan(
+					{
+						name: "DB Query",
+						op: "db.query",
+						attributes: {
+							table: getTableConfig(integrationSchema.nangoConnections).name,
+						},
+					},
+					async () => {
+						const queryStartTime = performance.now();
+						const result = await db
+							.select()
+							.from(integrationSchema.nangoConnections)
+							.where(
+								eq(
+									integrationSchema.nangoConnections.userId,
+									Number.parseInt(user.id),
+								),
+							);
+
+						const span = Sentry.getActiveSpan();
+						if (span) {
+							span.setAttribute(
+								"db.query.processing_time_ms",
+								performance.now() - queryStartTime,
+							);
+							span.setAttribute("db.query.records_found", result.length);
+						}
+						return result;
+					},
+				);
+			} catch (error) {
+				throw new HTTPException(500, {
+					message: "Failed to get connections.",
+					cause: error,
+				});
+			}
+
+			return c.json({ connections }, 200);
+		})
 		.openapi(integrationRoutes.sessionToken, async (c) => {
 			const { user } = getAuth(c);
 			if (!user) {

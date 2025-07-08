@@ -1,9 +1,32 @@
+import { SelectNangoConnectionSchema } from "@fundlevel/db/validation";
 import { createRoute, z } from "@hono/zod-openapi";
 import { NangoIntegration } from "@/lib/nango/types";
 import { withAuth } from "@/middleware/with-auth";
 import { ERROR_RESPONSE_SCHEMA } from "../shared/schemas";
 
 export const integrationRoutes = {
+	getConnections: createRoute({
+		method: "get",
+		path: "/connections",
+		tags: ["Integrations"],
+		security: [{ Cookie: [] }],
+		description: "Get all connections for the current user",
+		middleware: [withAuth()],
+		responses: {
+			200: {
+				content: {
+					"application/json": {
+						schema: z.object({
+							connections: z.array(SelectNangoConnectionSchema),
+						}),
+					},
+				},
+				description: "A list of connections for the user",
+			},
+			403: ERROR_RESPONSE_SCHEMA,
+			500: ERROR_RESPONSE_SCHEMA,
+		},
+	}),
 	sessionToken: createRoute({
 		method: "post",
 		path: "/:integration/session-token",

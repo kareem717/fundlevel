@@ -1,5 +1,6 @@
-import { createInsertSchema } from "drizzle-zod";
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
+import { nangoConnections } from "./schema/integration";
 import { transactions } from "./schema/transactions";
 
 export const InsertTransactionSchema = createInsertSchema(transactions, {
@@ -23,3 +24,5 @@ export const InsertTransactionSchema = createInsertSchema(transactions, {
 			"The currency of the transaction, i.e. USD, CAD, etc. If not provided, try to infer it from the source file.",
 		),
 });
+
+export const SelectNangoConnectionSchema = createSelectSchema(nangoConnections);
