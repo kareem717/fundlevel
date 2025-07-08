@@ -1,5 +1,5 @@
 import { createRoute, z } from "@hono/zod-openapi";
-import { NangoIntegration } from "@/lib/utils/nango";
+import { NangoIntegration } from "@/lib/nango/types";
 import { withAuth } from "@/middleware/with-auth";
 import { ERROR_RESPONSE_SCHEMA } from "../shared/schemas";
 
@@ -64,4 +64,36 @@ export const integrationRoutes = {
 		},
 		hide: true,
 	}),
+	quickbooks: {
+		getAccounts: createRoute({
+			method: "get",
+			path: "/quickbooks/:connectionId/accounts",
+			tags: ["Integrations", "Quickbooks"],
+			security: [{ Cookie: [] }],
+			description:
+				"Fetches all accounts in QuickBooks. Handles both active and archived accounts, saving or deleting them based on their status.",
+			middleware: [withAuth()],
+			request: {
+				params: z.object({
+					connectionId: z
+						.string()
+						.describe("The ID of the connection to the Quickbooks account"),
+				}),
+			},
+			responses: {
+				200: {
+					content: {
+						"application/json": {
+							schema: z.object({
+								accounts: z.array(z.any()),
+							}),
+						},
+					},
+					description: "Accounts fetched from Quickbooks",
+				},
+				403: ERROR_RESPONSE_SCHEMA,
+				500: ERROR_RESPONSE_SCHEMA,
+			},
+		}),
+	},
 };

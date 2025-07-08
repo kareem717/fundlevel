@@ -5,8 +5,8 @@ import * as Sentry from "@sentry/cloudflare";
 import { generateObject } from "ai";
 import { getTableConfig } from "drizzle-orm/pg-core";
 import { HTTPException } from "hono/http-exception";
-import { createDB } from "@/lib/utils/db";
-import { createMistralAIProvider } from "@/lib/utils/mistral";
+import { createDB } from "@/lib/db/client";
+import { createMistralAIProvider } from "@/lib/mistral/client";
 import { getAuth } from "@/middleware/with-auth";
 import { ocrRoutes, TransactionSchema } from "./routes";
 

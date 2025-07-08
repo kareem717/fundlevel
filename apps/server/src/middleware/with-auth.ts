@@ -3,7 +3,7 @@ import * as Sentry from "@sentry/cloudflare";
 import type { Context } from "hono";
 import { createMiddleware } from "hono/factory";
 import { HTTPException } from "hono/http-exception";
-import { createAuthClient } from "@/lib/utils/auth";
+import { createAuthClient } from "@/lib/auth/client";
 
 const AUTH_CLIENT_KEY = "auth-client" as const;
 const SESSION_KEY = "auth-session" as const;

@@ -11,7 +11,7 @@ import type { Context } from "hono";
 import { cors } from "hono/cors";
 import { HTTPException } from "hono/http-exception";
 import { logger } from "hono/logger";
-import { createAuthClient } from "@/lib/utils/auth";
+import { createAuthClient } from "@/lib/auth/client";
 import { healthHandler, integrationHandler, ocrHandler } from "./handlers";
 
 const app = new OpenAPIHono();
