@@ -11,3 +11,20 @@ export const ERROR_RESPONSE_SCHEMA = {
 	},
 	description: "Error response",
 };
+
+export const REDIRECT_RESPONSE_SCHEMA = {
+	headers: {
+		Location: {
+			description: "URL to redirect to.",
+			schema: { type: "string" as const },
+		},
+	},
+	content: {
+		"application/json": {
+			schema: z.object({
+				redirectUrl: z.string().url(),
+				shouldRedirect: z.boolean().default(true),
+			}),
+		},
+	},
+};

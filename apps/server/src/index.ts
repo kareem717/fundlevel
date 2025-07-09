@@ -1,8 +1,4 @@
 import { env } from "cloudflare:workers";
-import {
-	AUTH_BASE_PATH,
-	AUTH_SESSION_COOKIE_KEY,
-} from "@fundlevel/auth/server";
 import { OpenAPIHono } from "@hono/zod-openapi";
 import { Scalar } from "@scalar/hono-api-reference";
 import { createMarkdownFromOpenApi } from "@scalar/openapi-to-markdown";
@@ -11,9 +7,12 @@ import type { Context } from "hono";
 import { cors } from "hono/cors";
 import { HTTPException } from "hono/http-exception";
 import { logger } from "hono/logger";
-import { merge } from "ts-deepmerge";
-import { createAuthClient } from "@/lib/auth/client";
-import { healthHandler, integrationHandler, ocrHandler } from "./handlers";
+import {
+	authHandler,
+	healthHandler,
+	integrationHandler,
+	ocrHandler,
+} from "./handlers";
 
 const app = new OpenAPIHono();
 
@@ -28,12 +27,10 @@ app.use(logger()).use(
 );
 
 export const appRoutes = app
-	.on(["POST", "GET"], `${AUTH_BASE_PATH}/*`, (c) =>
-		createAuthClient().handler(c.req.raw),
-	)
 	.route("/health", healthHandler())
 	.route("/integrations", integrationHandler())
-	.route("/ocr", ocrHandler());
+	.route("/ocr", ocrHandler())
+	.route("/auth", authHandler());
 
 // Docs
 app
@@ -56,39 +53,8 @@ app
 		}),
 	);
 
-const getOpenAPISchema = async (c: Context) => {
-	const auth = await createAuthClient().api.generateOpenAPISchema();
-
-	//prefix all paths with /auth
-	auth.paths = Object.fromEntries(
-		Object.entries(auth.paths).map(([path, value]) => {
-			// Add auth prefix to path
-			const authPath = `/auth${path}`;
-
-			// Add auth prefix to all route tags
-			const operations = Object.entries(value).map(([method, operation]) => {
-				return [
-					method,
-					{
-						...operation,
-						tags: operation.tags?.map((tag: string) => `Auth - ${tag}`) || [],
-					},
-				];
-			});
-
-			return [authPath, Object.fromEntries(operations)];
-		}),
-	);
-
-	// Prefix all tags with "Auth"
-	auth.tags = auth.tags.map((tag) => ({
-		...tag,
-		name: `Auth - ${tag.name}`,
-	}));
-
-	const { info, ...authOpenAPI } = auth;
-
-	const main = app.getOpenAPI31Document({
+const getOpenAPISchema = async (c: Context) =>
+	app.getOpenAPI31Document({
 		openapi: "3.1.0",
 		info: {
 			title: "Fundlevel API",
@@ -102,11 +68,6 @@ const getOpenAPISchema = async (c: Context) => {
 		],
 		security: [{ Cookie: [] }, { Google: [] }],
 	});
-
-	const result = merge(main, authOpenAPI);
-
-	return result;
-};
 
 // Error handling
 app.onError((err, c) => {
