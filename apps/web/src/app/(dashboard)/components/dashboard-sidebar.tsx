@@ -1,4 +1,3 @@
-import type { AuthUser } from "@fundlevel/auth/types";
 import { FundlevelLogo } from "@fundlevel/ui/components/custom/icons";
 import {
 	Sidebar,
@@ -13,6 +12,7 @@ import {
 	SidebarProvider,
 } from "@fundlevel/ui/components/sidebar";
 import { cn } from "@fundlevel/ui/lib/utils";
+import type { User } from "@workos-inc/node";
 import Link from "next/link";
 import type { ComponentPropsWithoutRef } from "react";
 import { redirects } from "@/lib/config/redirects";
@@ -20,7 +20,7 @@ import { SidebarUser } from "./sidebar-user";
 
 interface DashboardSidebarProps
 	extends ComponentPropsWithoutRef<typeof Sidebar> {
-	user: AuthUser;
+	user: User;
 }
 
 export function DashboardSidebar({

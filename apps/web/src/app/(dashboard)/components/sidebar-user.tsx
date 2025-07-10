@@ -1,4 +1,3 @@
-import type { AuthUser } from "@fundlevel/auth/types";
 import {
 	Avatar,
 	AvatarFallback,
@@ -17,6 +16,7 @@ import {
 	SidebarMenuButton,
 	SidebarMenuItem,
 } from "@fundlevel/ui/components/sidebar";
+import type { User } from "@workos-inc/node";
 import { ChevronsUpDown, LogOut } from "lucide-react";
 import Link from "next/link";
 import type { ComponentPropsWithoutRef } from "react";
@@ -24,16 +24,20 @@ import { redirects } from "@/lib/config/redirects";
 
 interface SidebarUserProps
 	extends ComponentPropsWithoutRef<typeof SidebarMenu> {
-	user: AuthUser;
+	user: User;
 }
 
 export function SidebarUser({ className, user, ...props }: SidebarUserProps) {
-	const { name, image } = user;
+	const { firstName, lastName, profilePictureUrl } = user;
 
-	const [firstName = "", lastName = ""] = (name ?? "").split(" ");
-	const firstInitial = firstName[0] ?? "";
-	const lastInitial = lastName[0] ?? "";
+	const [firstInitial = "", lastInitial = ""] = (
+		firstName ??
+		lastName ??
+		""
+	).split(" ");
 	const initials = `${firstInitial}${lastInitial}`.toUpperCase();
+
+	const name = firstName && lastName ? `${firstName} ${lastName}` : user.email;
 	return (
 		<SidebarMenu {...props}>
 			<SidebarMenuItem>
@@ -42,7 +46,7 @@ export function SidebarUser({ className, user, ...props }: SidebarUserProps) {
 						<DropdownMenuTrigger className="w-full">
 							<div className="flex w-full items-center justify-between gap-2">
 								<Avatar className="size-7" {...props}>
-									{image && <AvatarImage src={image} />}
+									{profilePictureUrl && <AvatarImage src={profilePictureUrl} />}
 									<AvatarFallback>{initials}</AvatarFallback>
 								</Avatar>
 								<div className="flex flex-col">
@@ -61,11 +65,11 @@ export function SidebarUser({ className, user, ...props }: SidebarUserProps) {
 						<DropdownMenuLabel className="p-0 font-normal">
 							<div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
 								<Avatar>
-									{user.image && <AvatarImage src={user.image} />}
-									<AvatarFallback>{user.name?.[0]}</AvatarFallback>
+									{profilePictureUrl && <AvatarImage src={profilePictureUrl} />}
+									<AvatarFallback>{initials}</AvatarFallback>
 								</Avatar>
 								<div className="grid flex-1 text-left text-sm leading-tight">
-									<span className="truncate font-semibold">{user.name}</span>
+									<span className="truncate font-semibold">{name}</span>
 									<span className="truncate text-xs">{user.email}</span>
 								</div>
 							</div>

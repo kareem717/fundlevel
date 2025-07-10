@@ -13,6 +13,7 @@ import {
 	integrationHandler,
 	ocrHandler,
 } from "./handlers";
+import { WORKOS_COOKIE_KEY } from "./lib/workos";
 
 const app = new OpenAPIHono();
 
@@ -21,7 +22,7 @@ app.use(logger()).use(
 	cors({
 		origin: [env.WEB_APP_URL, env.BASE_URL],
 		allowMethods: ["GET", "POST", "OPTIONS", "*"],
-		allowHeaders: ["Content-Type", "Authorization", "*"],
+		allowHeaders: ["Content-Type", "Authorization", "Cookie", "*"],
 		credentials: true,
 	}),
 );
@@ -53,6 +54,12 @@ app
 		}),
 	);
 
+app.openAPIRegistry.registerComponent("securitySchemes", "CookieAuth", {
+	type: "apiKey",
+	in: "cookie",
+	name: WORKOS_COOKIE_KEY,
+});
+
 const getOpenAPISchema = async (c: Context) =>
 	app.getOpenAPI31Document({
 		openapi: "3.1.0",
@@ -66,7 +73,7 @@ const getOpenAPISchema = async (c: Context) =>
 				description: "Current environment",
 			},
 		],
-		security: [{ Cookie: [] }, { Google: [] }],
+		security: [{ CookieAuth: [] }],
 	});
 
 // Error handling

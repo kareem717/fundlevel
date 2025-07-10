@@ -2,6 +2,7 @@ import Nango, { type ConnectUI } from "@nangohq/frontend";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
+import { getCookieHeaderFn } from "@/app/actions/utils";
 import { useBindings } from "@/components/providers/bindings-provider";
 import { apiClient } from "@/lib/api-client";
 
@@ -18,9 +19,10 @@ export function useNango({
 
 	return useMutation({
 		mutationFn: async (integration: "quickbooks" | "google-sheet") => {
-			const resp = await apiClient(env.NEXT_PUBLIC_SERVER_URL).integrations[
-				":integration"
-			]["session-token"].$post({
+			const resp = await apiClient(
+				env.NEXT_PUBLIC_SERVER_URL,
+				await getCookieHeaderFn(),
+			).integrations[":integration"]["session-token"].$post({
 				param: {
 					integration,
 				},

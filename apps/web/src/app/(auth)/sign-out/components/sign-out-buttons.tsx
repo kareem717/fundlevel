@@ -3,14 +3,13 @@
 import { Button } from "@fundlevel/ui/components/button";
 import { cn } from "@fundlevel/ui/lib/utils";
 import { useMutation } from "@tanstack/react-query";
-import type { ErrorContext } from "better-auth/react";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import type { ComponentPropsWithRef } from "react";
 import { toast } from "sonner";
+import { getCookieHeaderFn } from "@/app/actions/auth";
 import { useBindings } from "@/components/providers/bindings-provider";
-import { authClient } from "@/lib/auth-client";
-import { redirects } from "@/lib/config/redirects";
+import { apiClient } from "@/lib/api-client";
 
 interface SignOutButtonsProps extends ComponentPropsWithRef<"div"> {
 	onSuccess?: () => void;
@@ -26,25 +25,27 @@ export function SignOutButtons({
 
 	const { mutate: signOut, isPending } = useMutation({
 		mutationFn: async () => {
-			const { data, error } = await authClient(baseUrl).signOut({
-				fetchOptions: {
-					onError: (error: ErrorContext) => {
-						console.error(error);
-					},
+			const headersList = await getCookieHeaderFn();
+			const response = await apiClient(baseUrl, headersList).auth[
+				"sign-out"
+			].$get({
+				query: {
+					redirectUrl: window.location.href,
 				},
 			});
 
-			if (error) {
-				throw error;
+			if (response.status !== 200) {
+				const error = await response.json();
+				throw new Error(error.message);
 			}
 
-			return data;
+			return response.json();
 		},
 		onSuccess: (data) => {
-			if (data?.success) {
+			if (data.shouldRedirect) {
 				onSuccess?.();
 				toast.success("Signed out successfully!");
-				router.push(redirects.home);
+				router.push(data.redirectUrl);
 			} else {
 				toast.error("Uh oh! Something went wrong.", {
 					description: "Failed to sign out",

@@ -134,23 +134,23 @@ jobs:
         uses: cloudflare/wrangler-action@v3
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }} 
-          BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
-          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
-          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
           NANGO_SECRET_KEY: ${{ secrets.NANGO_SECRET_KEY }}
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
           MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          WORKOS_API_KEY: ${{ secrets.WORKOS_API_KEY }}
+          WORKOS_CLIENT_ID: ${{ secrets.WORKOS_CLIENT_ID }}
+          WORKOS_COOKIE_PASSWORD: ${{ secrets.WORKOS_COOKIE_PASSWORD }}
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           environment: production
           secrets: |
             DATABASE_URL
-            BETTER_AUTH_SECRET
-            GOOGLE_CLIENT_ID
-            GOOGLE_CLIENT_SECRET
             NANGO_SECRET_KEY
             SENTRY_DSN
             MISTRAL_API_KEY
+            WORKOS_API_KEY
+            WORKOS_CLIENT_ID
+            WORKOS_COOKIE_PASSWORD
           workingDirectory: 'apps/server'
           command: deploy --minify --config wrangler.jsonc

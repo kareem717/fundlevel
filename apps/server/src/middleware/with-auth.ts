@@ -1,59 +1,99 @@
-import type { AuthType } from "@fundlevel/auth/types";
+import { env } from "cloudflare:workers";
 import * as Sentry from "@sentry/cloudflare";
+import type { User } from "@workos-inc/node";
 import type { Context } from "hono";
+import { deleteCookie, getCookie } from "hono/cookie";
 import { createMiddleware } from "hono/factory";
-import { HTTPException } from "hono/http-exception";
-import { createAuthClient } from "@/lib/auth/client";
+import {
+	createWorkOS,
+	setSessionCookie,
+	WORKOS_COOKIE_KEY,
+} from "@/lib/workos";
 
-const AUTH_CLIENT_KEY = "auth-client" as const;
-const SESSION_KEY = "auth-session" as const;
-const USER_KEY = "auth-user" as const;
+const AUTH_DATA_KEY = "auth-data" as const;
 
 export const getAuth = (c: Context) => {
-	const client = c.get(AUTH_CLIENT_KEY);
-	const session = c.get(SESSION_KEY);
-	const user = c.get(USER_KEY);
+	const authData = c.get(AUTH_DATA_KEY);
 
-	if (!client || !session || !user) {
-		return {
-			client: null,
-			session: null,
-			user: null,
-		};
+	if (!authData) {
+		return null;
 	}
 
-	return {
-		client: client as ReturnType<typeof createAuthClient>,
-		session: session as AuthType["Variables"]["session"],
-		user: user as AuthType["Variables"]["user"],
+	return authData as {
+		user: User;
+		sessionId: string;
 	};
 };
 
 export const withAuth = () =>
 	createMiddleware(async (c, next) => {
-		const auth = createAuthClient();
+		const workos = createWorkOS();
 
-		try {
-			const resp = await auth.api.getSession({ headers: c.req.raw.headers });
+		const sessionData = getCookie(c, WORKOS_COOKIE_KEY) || "";
 
-			if (resp) {
-				// set both or none
-				Sentry.setTags({
-					userId: resp.user.id, // downstream heavily depends on this tag
-					sessionId: resp.session.id,
-				});
-
-				c.set(USER_KEY, resp.user);
-				c.set(SESSION_KEY, resp.session);
-				c.set(AUTH_CLIENT_KEY, auth);
-				return await next();
-			}
-		} catch (e) {
-			throw new HTTPException(500, {
-				message: "Failed to get session",
-				cause: e,
-			});
+		if (sessionData) {
+			console.log("withAuth: session cookie data:", sessionData);
 		}
 
-		return await next();
+		const session = workos.userManagement.loadSealedSession({
+			sessionData,
+			cookiePassword: env.WORKOS_COOKIE_PASSWORD,
+		});
+
+		const authResp = await session.authenticate();
+
+		if (authResp.authenticated) {
+			setSessionData(c, {
+				sessionId: authResp.sessionId,
+				user: authResp.user,
+			});
+			return next();
+		}
+
+		if (
+			!authResp.authenticated &&
+			authResp.reason === "no_session_cookie_provided"
+		) {
+			return next();
+		}
+
+		try {
+			console.log("Refreshing session");
+			const refreshResp = await session.refresh({
+				cookiePassword: env.WORKOS_COOKIE_PASSWORD,
+			});
+			if (!refreshResp.authenticated || !refreshResp.sealedSession) {
+				return next();
+			}
+
+			setSessionCookie(c, refreshResp.sealedSession);
+
+			setSessionData(c, {
+				sessionId: refreshResp.sessionId,
+				user: refreshResp.user,
+			});
+			return next();
+		} catch (error) {
+			Sentry.captureException(error);
+			deleteCookie(c, WORKOS_COOKIE_KEY);
+			return next();
+		}
 	});
+
+const setSessionData = (
+	c: Context,
+	authResp: {
+		sessionId: string;
+		user: User;
+	},
+) => {
+	Sentry.setTags({
+		userId: authResp.user.id, // downstream heavily depends on this tag
+		sessionId: authResp.sessionId,
+	});
+
+	c.set(AUTH_DATA_KEY, {
+		sessionId: authResp.sessionId,
+		user: authResp.user,
+	});
+};

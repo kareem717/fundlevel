@@ -11,7 +11,7 @@ import { redirects } from "@/lib/config/redirects";
 import { SignOutButtons } from "./components/sign-out-buttons";
 
 export default async function SignOutPage() {
-	const { data: session } = await getSessionFn();
+	const session = await getSessionFn();
 
 	if (!session) {
 		redirect(redirects.auth.signIn);

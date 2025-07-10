@@ -10,7 +10,7 @@ export default async function DashboardLayout({
 }: Readonly<{
 	children: ReactNode;
 }>) {
-	const { data: session } = await getSessionFn();
+	const session = await getSessionFn();
 
 	if (!session) {
 		redirect(redirects.auth.signIn);

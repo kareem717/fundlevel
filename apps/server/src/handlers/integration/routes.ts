@@ -11,7 +11,6 @@ export const integrationRoutes = {
 		tags: ["Integrations"],
 		description: "Get all connections for the current user",
 		security: [{ apiKeyCookie: [] }],
-
 		middleware: [withAuth()],
 		responses: {
 			200: {

@@ -15,20 +15,12 @@ import { ocrRoutes, TransactionSchema } from "./routes";
 export const ocrHandler = () =>
 	new OpenAPIHono().openapi(ocrRoutes.transactions, async (c) => {
 		//TODO: this ocr -> transaction logic can me merged using the ai sdk and mistral provider
-		const { user } = getAuth(c);
-		if (!user) {
+		const session = getAuth(c);
+		if (!session) {
 			throw new HTTPException(403, { message: "Unauthorized" });
 		}
 
-		let userId: number;
-		try {
-			userId = Number.parseInt(user.id);
-		} catch (error) {
-			throw new HTTPException(500, {
-				message: "Failed to parse user ID.",
-				cause: error,
-			});
-		}
+		const { user } = session;
 
 		const db = createDB();
 
@@ -36,7 +28,7 @@ export const ocrHandler = () =>
 		const [nangoConnection] = await db
 			.select()
 			.from(integrationSchema.nangoConnections)
-			.where(eq(integrationSchema.nangoConnections.userId, userId))
+			.where(eq(integrationSchema.nangoConnections.userId, user.id))
 			.limit(1);
 
 		let accountsPrompt = "";
@@ -182,7 +174,7 @@ export const ocrHandler = () =>
 								merchant: transaction.merchant,
 								description: transaction.description,
 								currency: transaction.currency,
-								userId,
+								userId: user.id,
 								sourceFileURL: fileUrl,
 							})),
 						);

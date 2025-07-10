@@ -8,7 +8,6 @@ import {
 	timestamp,
 	varchar,
 } from "drizzle-orm/pg-core";
-import { users } from "./auth";
 
 export const transactions = pgTable("transactions", {
 	id: serial("id").primaryKey(),
@@ -17,9 +16,7 @@ export const transactions = pgTable("transactions", {
 	description: text("description").notNull(),
 	merchant: text("merchant").notNull(),
 	currency: varchar("currency", { length: 3 }),
-	userId: integer("user_id")
-		.references(() => users.id)
-		.notNull(),
+	userId: text("user_id").notNull(),
 	sourceFileURL: text("source_file_url").notNull(),
 	createdAt: timestamp("created_at", { withTimezone: true })
 		.notNull()

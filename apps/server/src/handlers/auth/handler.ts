@@ -1,13 +1,23 @@
 import { env } from "cloudflare:workers";
 import { OpenAPIHono } from "@hono/zod-openapi";
-import { setCookie } from "hono/cookie";
+import { getCookie } from "hono/cookie";
 import { HTTPException } from "hono/http-exception";
-import { createWorkOS, WORKOS_COOKIE_KEY } from "@/lib/workos/client";
+import {
+	createWorkOS,
+	setSessionCookie,
+	WORKOS_COOKIE_KEY,
+} from "@/lib/workos";
+import { getAuth } from "@/middleware/with-auth";
 import { authRoutes } from "./routes";
 
 export const authHandler = () =>
 	new OpenAPIHono()
 		.openapi(authRoutes.signIn, async (c) => {
+			const session = getAuth(c);
+			if (session) {
+				throw new HTTPException(403, { message: "Already signed in." });
+			}
+
 			const workos = createWorkOS();
 
 			const redirectUri = `${env.BASE_URL}/auth${authRoutes.callback.path}`;
@@ -17,6 +27,7 @@ export const authHandler = () =>
 
 				// The callback endpoint that WorkOS will redirect to after a user authenticates
 				redirectUri,
+
 				clientId: env.WORKOS_CLIENT_ID,
 			});
 
@@ -25,6 +36,36 @@ export const authHandler = () =>
 			return c.json(
 				{
 					redirectUrl: authorizationUrl,
+					shouldRedirect: true,
+				},
+				200,
+			);
+		})
+		.openapi(authRoutes.signOut, async (c) => {
+			const session = getAuth(c);
+			if (!session) {
+				throw new HTTPException(403, { message: "Unauthorized" });
+			}
+
+			const cookie = getCookie(c, WORKOS_COOKIE_KEY);
+			if (!cookie) {
+				throw new HTTPException(403, { message: "Unauthorized" });
+			}
+
+			const workos = createWorkOS();
+			const sealedSession = workos.userManagement.loadSealedSession({
+				sessionData: cookie,
+				cookiePassword: env.WORKOS_COOKIE_PASSWORD,
+			});
+
+			const redirectUrl = await sealedSession.getLogoutUrl({
+				returnTo: c.req.valid("query").redirectUrl,
+			});
+
+			c.header("Location", redirectUrl);
+			return c.json(
+				{
+					redirectUrl,
 					shouldRedirect: true,
 				},
 				200,
@@ -46,7 +87,6 @@ export const authHandler = () =>
 						},
 					});
 
-				console.log(authenticateResponse);
 				sealedSession = authenticateResponse.sealedSession ?? null;
 			} catch (error) {
 				throw new HTTPException(500, {
@@ -62,26 +102,23 @@ export const authHandler = () =>
 			}
 
 			try {
-				setCookie(c, WORKOS_COOKIE_KEY, sealedSession, {
-					path: "/",
-					httpOnly: true,
-					secure: true,
-					sameSite: "lax",
-					domain: `.${env.BASE_DOMAIN}`, // TODO: idk if this is correct
-				});
-
+				setSessionCookie(c, sealedSession);
 				// Redirect the user to the homepage
-				return c.json(
-					{
-						redirectUrl: env.WEB_APP_URL,
-						shouldRedirect: true,
-					},
-					200,
-				);
+				return c.redirect(env.WEB_APP_URL, 308);
 			} catch (error) {
 				throw new HTTPException(500, {
 					message: "Failed to authenticate user",
 					cause: error,
 				});
 			}
+		})
+		.openapi(authRoutes.session, async (c) => {
+			const cookie = getCookie(c, WORKOS_COOKIE_KEY);
+
+			const session = getAuth(c);
+			if (!session) {
+				throw new HTTPException(403, { message: "Unauthorized" });
+			}
+
+			return c.json({ session }, 200);
 		});

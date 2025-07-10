@@ -15,8 +15,8 @@ import { integrationRoutes } from "./routes";
 export const integrationHandler = () =>
 	new OpenAPIHono()
 		.openapi(integrationRoutes.getConnections, async (c) => {
-			const { user } = getAuth(c);
-			if (!user) {
+			const session = getAuth(c);
+			if (!session) {
 				throw new HTTPException(403, { message: "Unauthorized" });
 			}
 
@@ -37,10 +37,7 @@ export const integrationHandler = () =>
 							.select()
 							.from(integrationSchema.nangoConnections)
 							.where(
-								eq(
-									integrationSchema.nangoConnections.userId,
-									Number.parseInt(user.id),
-								),
+								eq(integrationSchema.nangoConnections.userId, session.user.id),
 							);
 
 						const span = Sentry.getActiveSpan();
@@ -64,10 +61,13 @@ export const integrationHandler = () =>
 			return c.json({ connections }, 200);
 		})
 		.openapi(integrationRoutes.sessionToken, async (c) => {
-			const { user } = getAuth(c);
-			if (!user) {
+			const session = getAuth(c);
+
+			if (!session) {
 				throw new HTTPException(403, { message: "Unauthorized" });
 			}
+
+			const { user } = session;
 
 			const db = createDB();
 			let existingConnections: NangoConnection[] = [];
@@ -85,12 +85,7 @@ export const integrationHandler = () =>
 						const connections = await db
 							.select()
 							.from(integrationSchema.nangoConnections)
-							.where(
-								eq(
-									integrationSchema.nangoConnections.userId,
-									Number.parseInt(user.id),
-								),
-							);
+							.where(eq(integrationSchema.nangoConnections.userId, user.id));
 
 						const span = Sentry.getActiveSpan();
 						if (span) {
@@ -124,7 +119,10 @@ export const integrationHandler = () =>
 					end_user: {
 						id: user.id,
 						email: user.email,
-						display_name: user.name,
+						display_name:
+							user.firstName && user.lastName
+								? `${user.firstName} ${user.lastName}`
+								: user.email,
 					},
 					allowed_integrations: [integration],
 				});
@@ -185,7 +183,7 @@ export const integrationHandler = () =>
 											id: body.connectionId,
 											provider: body.provider,
 											providerConfigKey: body.providerConfigKey,
-											userId: Number.parseInt(body.endUser?.endUserId!),
+											userId: body.endUser?.endUserId!,
 										});
 
 										const span = Sentry.getActiveSpan();
@@ -222,19 +220,14 @@ export const integrationHandler = () =>
 			}
 		})
 		.openapi(integrationRoutes.quickbooks.getAccounts, async (c) => {
-			const { user } = getAuth(c);
-			if (!user) {
+			const session = getAuth(c);
+			if (!session) {
 				throw new HTTPException(403, { message: "Unauthorized" });
 			}
 
 			const { connectionId } = c.req.valid("param");
 
-			let userId: number;
-			try {
-				userId = Number.parseInt(user.id);
-			} catch (error) {
-				throw new HTTPException(403, { message: "Unauthorized" });
-			}
+			const { user } = session;
 
 			const db = createDB();
 			let connection: NangoConnection;
@@ -254,7 +247,7 @@ export const integrationHandler = () =>
 							.from(integrationSchema.nangoConnections)
 							.where(
 								and(
-									eq(integrationSchema.nangoConnections.userId, userId),
+									eq(integrationSchema.nangoConnections.userId, user.id),
 									eq(integrationSchema.nangoConnections.id, connectionId),
 								),
 							);
