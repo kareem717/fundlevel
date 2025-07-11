@@ -10,12 +10,15 @@
 		"prepare": "husky",
 		"dev": "turbo dev",
 		"build": "turbo build",
-		"clean-all": "find . -type d -name node_modules -o -name dist -o -name .turbo -o -name .next -o -type f -name tsconfig.tsbuildinfo -o -name pnpm-lock.yaml -name .wrangler -name .nitro | xargs rm -rf",
+		"format": "biome format --write .",
+		"lint": "turbo lint && manypkg check",
+		"typecheck": "turbo typecheck",
+		"clean-all": "find . -type d -name node_modules -o -name dist -o -name .turbo -o -name .next -o -type f -name tsconfig.tsbuildinfo -o -name bun.lock -name .wrangler -name .nitro | xargs rm -rf",
 		"check-types": "turbo check-types",
 		"cf-typegen": "turbo cf-typegen --filter='./apps/*'",
-		"dev:web": "turbo -F web dev",
-		"dev:server": "turbo -F server dev",
-		"dev:landing": "turbo -F landing dev",
+		"dev:web": "turbo -F @fundlevel/web dev",
+		"dev:api": "turbo -F @fundlevel/api dev",
+		"dev:landing": "turbo -F @fundlevel/landing dev",
 		"db:push": "turbo -F @fundlevel/db db:push",
 		"db:studio": "turbo -F @fundlevel/db db:studio",
 		"db:generate": "turbo -F @fundlevel/db db:generate",
@@ -38,5 +41,5 @@
 			"biome check --write"
 		]
 	},
-	"packageManager": "pnpm@10.12.4"
+	"packageManager": "bun@1.2.12"
 }

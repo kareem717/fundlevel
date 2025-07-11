@@ -4,15 +4,19 @@
 	"type": "module",
 	"private": true,
 	"scripts": {
-		"db:push": "drizzle-kit push",
-		"db:studio": "drizzle-kit studio",
-		"db:generate": "drizzle-kit generate",
-		"db:migrate": "drizzle-kit migrate",
-		"db:start": "pnpm dlx supabase start",
-		"db:stop": "pnpm dlx supabase stop",
-		"db:restart": "pnpm dlx supabase restart",
-		"db:status": "pnpm dlx supabase status",
-		"db:reset": "pnpm dlx supabase db reset"
+		"db:push": "dotenv -e .env.local -- drizzle-kit push",
+		"db:studio": "dotenv -e .env.local -- drizzle-kit studio",
+		"db:generate": "dotenv -e .env.local -- drizzle-kit generate",
+		"db:migrate": "dotenv -e .env.local -- drizzle-kit migrate",
+		"db:start": "dotenv -e .env.local -- bunx supabase@latest start",
+		"db:stop": "dotenv -e .env.local -- bunx supabase@latest stop",
+		"db:restart": "dotenv -e .env.local -- bunx supabase@latest restart",
+		"db:status": "dotenv -e .env.local -- bunx supabase@latest status",
+		"db:reset": "dotenv -e .env.local -- bunx supabase@latest db reset",
+		"lint": "biome check .",
+		"lint:fix": "biome check --write .",
+		"format": "biome format --write .",
+		"typecheck": "tsc --noEmit"
 	},
 	"devDependencies": {
 		"@types/node": "^22.16.0",

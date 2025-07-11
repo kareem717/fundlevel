@@ -5,10 +5,15 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@fundlevel/ui/components/card";
+import { getSessionFn } from "@fundlevel/web/app/actions/auth";
+import { redirects } from "@fundlevel/web/lib/config/redirects";
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { getSessionFn } from "@/app/actions/auth";
-import { redirects } from "@/lib/config/redirects";
 import { SignOutButtons } from "./components/sign-out-buttons";
+
+export const metadata: Metadata = {
+	title: "Sign Out",
+};
 
 export default async function SignOutPage() {
 	const session = await getSessionFn();

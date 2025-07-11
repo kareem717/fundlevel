@@ -1,0 +1,189 @@
+{
+	"health": {
+		"check": {
+			"~orpc": {
+				"errorMap": {},
+				"meta": {},
+				"route": {
+					"method": "GET",
+					"path": "/health/check"
+				}
+			}
+		}
+	},
+	"auth": {
+		"signIn": {
+			"~orpc": {
+				"errorMap": {},
+				"meta": {},
+				"route": {
+					"method": "GET",
+					"path": "/auth/sign-in",
+					"tags": ["Auth"],
+					"successStatus": 302,
+					"inputStructure": "detailed",
+					"outputStructure": "detailed"
+				}
+			}
+		},
+		"signOut": {
+			"~orpc": {
+				"errorMap": {},
+				"meta": {},
+				"route": {
+					"method": "GET",
+					"path": "/auth/sign-out",
+					"tags": ["Auth"],
+					"inputStructure": "detailed",
+					"outputStructure": "detailed",
+					"successStatus": 301
+				}
+			}
+		},
+		"callback": {
+			"~orpc": {
+				"errorMap": {},
+				"meta": {},
+				"route": {
+					"method": "GET",
+					"path": "/auth/callback",
+					"tags": ["Auth"],
+					"inputStructure": "detailed",
+					"outputStructure": "detailed",
+					"successStatus": 301
+				}
+			}
+		},
+		"session": {
+			"~orpc": {
+				"errorMap": {},
+				"meta": {},
+				"route": {
+					"method": "GET",
+					"path": "/auth/session",
+					"tags": ["Auth"]
+				}
+			}
+		}
+	},
+	"integration": {
+		"webhook": {
+			"~orpc": {
+				"errorMap": {},
+				"meta": {},
+				"route": {
+					"method": "POST",
+					"path": "/integrations/webhook",
+					"inputStructure": "detailed",
+					"tags": ["Integrations"]
+				}
+			}
+		},
+		"connections": {
+			"~orpc": {
+				"errorMap": {},
+				"meta": {},
+				"route": {
+					"method": "GET",
+					"path": "/integrations/connections",
+					"tags": ["Integrations"]
+				}
+			}
+		},
+		"sessionToken": {
+			"~orpc": {
+				"errorMap": {},
+				"meta": {},
+				"route": {
+					"method": "POST",
+					"path": "/integrations/session-token",
+					"tags": ["Integrations"]
+				}
+			}
+		},
+		"quickbooks": {
+			"accounts": {
+				"~orpc": {
+					"errorMap": {},
+					"meta": {},
+					"route": {
+						"method": "GET",
+						"path": "/integrations/quickbooks/accounts",
+						"tags": ["Integrations", "Quickbooks"]
+					}
+				}
+			}
+		}
+	},
+	"bankStatement": {
+		"list": {
+			"~orpc": {
+				"errorMap": {},
+				"meta": {},
+				"route": {
+					"method": "GET",
+					"path": "/bank-statements",
+					"tags": ["Bank Statements"]
+				}
+			}
+		},
+		"upload": {
+			"~orpc": {
+				"errorMap": {},
+				"meta": {},
+				"route": {
+					"method": "POST",
+					"path": "/bank-statements/upload",
+					"tags": ["Bank Statements"],
+					"inputStructure": "detailed"
+				}
+			}
+		},
+		"extract": {
+			"~orpc": {
+				"errorMap": {},
+				"meta": {},
+				"route": {
+					"method": "POST",
+					"path": "/bank-statements/{id}/extract",
+					"tags": ["Bank Statements"]
+				}
+			}
+		},
+		"transactions": {
+			"~orpc": {
+				"errorMap": {},
+				"meta": {},
+				"route": {
+					"method": "GET",
+					"path": "/bank-statements/{id}/transactions",
+					"tags": ["Bank Statements"],
+					"inputStructure": "detailed"
+				}
+			}
+		},
+		"exportCsv": {
+			"~orpc": {
+				"errorMap": {},
+				"meta": {},
+				"route": {
+					"method": "POST",
+					"path": "/bank-statements/{id}/export-csv",
+					"tags": ["Bank Statements"]
+				}
+			}
+		},
+		"delete": {
+			"~orpc": {
+				"errorMap": {},
+				"meta": {},
+				"route": {
+					"method": "DELETE",
+					"path": "/bank-statements/{id}",
+					"tags": ["Bank Statements"],
+					"inputStructure": "detailed"
+				}
+			}
+		}
+	}
+}

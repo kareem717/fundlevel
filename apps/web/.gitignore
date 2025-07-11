@@ -37,7 +37,7 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.pnpm-debug.log*
+.bun-debug.log*
 *.log*
 
 # TypeScript
@@ -56,3 +56,4 @@ dev-dist
 .dev.vars*
 
 .open-next
+.env*.local

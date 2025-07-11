@@ -2,14 +2,14 @@
 
 import { Button } from "@fundlevel/ui/components/button";
 import { cn } from "@fundlevel/ui/lib/utils";
+import { getCookieHeaderFn } from "@fundlevel/web/app/actions/utils";
+import { env } from "@fundlevel/web/env";
+import { apiClient } from "@fundlevel/web/lib/api-client";
 import { useMutation } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import type { ComponentPropsWithRef } from "react";
 import { toast } from "sonner";
-import { getCookieHeaderFn } from "@/app/actions/auth";
-import { useBindings } from "@/components/providers/bindings-provider";
-import { apiClient } from "@/lib/api-client";
 
 interface SignOutButtonsProps extends ComponentPropsWithRef<"div"> {
 	onSuccess?: () => void;
@@ -21,14 +21,11 @@ export function SignOutButtons({
 	...props
 }: SignOutButtonsProps) {
 	const router = useRouter();
-	const baseUrl = useBindings().NEXT_PUBLIC_SERVER_URL;
 
 	const { mutate: signOut, isPending } = useMutation({
 		mutationFn: async () => {
 			const headersList = await getCookieHeaderFn();
-			const response = await apiClient(baseUrl, headersList).auth[
-				"sign-out"
-			].$get({
+			const response = await apiClient(headersList).auth["sign-out"].$get({
 				query: {
 					redirectUrl: window.location.href,
 				},

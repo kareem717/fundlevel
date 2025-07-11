@@ -1,30 +1,23 @@
-import { getCloudflareContext } from "@opennextjs/cloudflare";
+import { getSessionFn } from "@fundlevel/web/app/actions/auth";
+import { getCookieHeaderFn } from "@fundlevel/web/app/actions/utils";
+import { redirects } from "@fundlevel/web/lib/config/redirects";
+import { createServerORPCClient } from "@fundlevel/web/lib/orpc/server";
 import { redirect } from "next/navigation";
-import { getSessionFn } from "@/app/actions/auth";
-import { getCookieHeaderFn } from "@/app/actions/utils";
-import { apiClient } from "@/lib/api-client";
-import { redirects } from "@/lib/config/redirects";
 
 export async function GET() {
 	const session = await getSessionFn();
 
 	if (session) {
-		return redirect(redirects.home);
+		return redirect(redirects.app.index);
 	}
 
-	const { env } = await getCloudflareContext({ async: true });
-	const headers = await getCookieHeaderFn();
+	const orpc = await createServerORPCClient();
 
-	const response = await apiClient(env.NEXT_PUBLIC_SERVER_URL, headers).auth[
-		"sign-in"
-	].$get();
+	const resp = await orpc.auth.signIn.call();
 
-	if (response.status === 200) {
-		const data = await response.json();
-
-		return redirect(data.redirectUrl);
+	if (resp.shouldRedirect) {
+		return redirect(resp.location);
 	}
-	//TODO: Handle error
-	const error = await response.json();
-	throw new Error(error.message);
+
+	return resp;
 }

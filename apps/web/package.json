@@ -1,21 +1,24 @@
 {
-	"name": "web",
+	"name": "@fundlevel/web",
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
 		"dev": "next dev --turbopack --port=3001",
 		"build": "next build",
 		"start": "next start",
-		"lint": "next lint",
-		"preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
-		"deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
-		"upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
-		"cf-typegen": "wrangler types --env-interface CloudflareEnv worker-configuration.d.ts"
+		"lint": "biome check .",
+		"lint:fix": "biome check --write .",
+		"format": "biome format --write .",
+		"typecheck": "tsc --noEmit",
+		"vercel-env": "bunx vercel env pull --environment=development"
 	},
 	"dependencies": {
+		"@fundlevel/api": "workspace:*",
 		"@fundlevel/ui": "workspace:*",
 		"@nangohq/frontend": "^0.62.0",
-		"@opennextjs/cloudflare": "^1.4.0",
+		"@orpc/client": "^1.6.8",
+		"@orpc/openapi-client": "^1.6.8",
+		"@orpc/tanstack-query": "^1.6.8",
 		"@t3-oss/env-nextjs": "^0.13.8",
 		"@tanstack/react-query": "^5.81.5",
 		"framer-motion": "^12.23.3",
@@ -38,7 +41,9 @@
 		"@types/react-dom": "^19.1.6",
 		"@workos-inc/node": "^7.59.0",
 		"tailwindcss": "^4.1.11",
-		"typescript": "^5.8.3",
-		"wrangler": "^4.23.0"
+		"typescript": "^5.8.3"
+	},
+	"browser": {
+		"fs": false
 	}
 }

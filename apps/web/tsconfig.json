@@ -20,8 +20,10 @@
 			}
 		],
 		"paths": {
-			"@/*": ["./src/*"],
-			"@fundlevel/ui/*": ["../../packages/ui/src/*"]
+			"@fundlevel/web/*": ["./src/*"],
+			"@fundlevel/ui/*": ["../../packages/ui/src/*"],
+			"@fundlevel/api/*": ["../../apps/api/src/*"],
+			"@fundlevel/db/*": ["../../packages/db/src/*"]
 		}
 	},
 	"include": [
@@ -31,10 +33,5 @@
 		"./next-env.d.ts",
 		".next/types/**/*.ts"
 	],
-	"exclude": ["./node_modules"],
-	"references": [
-		{
-			"path": "../server"
-		}
-	]
+	"exclude": ["./node_modules"]
 }
