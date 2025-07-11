@@ -7,10 +7,11 @@ import {
 	CheckCircle,
 	Clock,
 	FileText,
-	Image,
+	Image as ImageIcon,
 	Trash2,
 } from "lucide-react";
-import React, { type ComponentPropsWithoutRef } from "react";
+import Image from "next/image";
+import type { ComponentPropsWithoutRef } from "react";
 import type { FileUploadItem } from "./types";
 
 interface UploadFileItemProps
@@ -24,11 +25,11 @@ const formatFileSize = (bytes: number): string => {
 	const k = 1024;
 	const sizes = ["Bytes", "KB", "MB", "GB"];
 	const i = Math.floor(Math.log(bytes) / Math.log(k));
-	return Number.parseFloat((bytes / k ** i).toFixed(2)) + " " + sizes[i];
+	return `${Number.parseFloat((bytes / k ** i).toFixed(2))} ${sizes[i]}`;
 };
 
 const getFileIcon = (type: string) => {
-	if (type.startsWith("image/")) return Image;
+	if (type.startsWith("image/")) return ImageIcon;
 	if (type === "application/pdf") return FileText;
 	return FileText;
 };
@@ -53,7 +54,7 @@ export function UploadFileItem({
 				{/* File Icon/Preview */}
 				<div className="flex-shrink-0">
 					{file.preview ? (
-						<img
+						<Image
 							src={file.preview}
 							alt={file.name}
 							className="h-10 w-10 rounded-lg object-cover"

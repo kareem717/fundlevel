@@ -1,4 +1,3 @@
-import { sql } from "drizzle-orm";
 import { pgTable, serial, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
 export const bankStatements = pgTable("bank_statements", {

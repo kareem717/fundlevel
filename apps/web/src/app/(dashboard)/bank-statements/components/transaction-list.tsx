@@ -2,7 +2,7 @@
 
 import type { Transaction } from "@fundlevel/db/types";
 import { DollarSign } from "lucide-react";
-import React, { type ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithoutRef } from "react";
 
 interface TransactionListProps extends ComponentPropsWithoutRef<"div"> {
 	transactions: Transaction[];

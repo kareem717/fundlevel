@@ -12,6 +12,7 @@ import {
 	bankStatementHandler,
 	healthHandler,
 	integrationHandler,
+	receiptHandler,
 } from "./handlers";
 import { WORKOS_COOKIE_KEY } from "./lib/workos";
 
@@ -31,7 +32,8 @@ export const appRoutes = app
 	.route("/health", healthHandler())
 	.route("/integrations", integrationHandler())
 	.route("/auth", authHandler())
-	.route("/bank-statements", bankStatementHandler());
+	.route("/bank-statements", bankStatementHandler())
+	.route("/receipts", receiptHandler());
 
 // Docs
 app

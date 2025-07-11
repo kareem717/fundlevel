@@ -3,7 +3,7 @@
 import { Button } from "@fundlevel/ui/components/button";
 import { AnimatePresence } from "framer-motion";
 import { Grid, List, RefreshCw } from "lucide-react";
-import React, { type ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithoutRef } from "react";
 import type { FileUploadItem, ViewMode } from "./types";
 import { UploadFileItem } from "./upload-file-item";
 
@@ -22,7 +22,7 @@ export function RecentUploadsList({
 	onRemoveFile,
 	...props
 }: RecentUploadsListProps) {
-	const completedFiles = files.filter((file) => file.status === "completed");
+	const _completedFiles = files.filter((file) => file.status === "completed");
 	const uploadingFiles = files.filter((file) => file.status === "uploading");
 
 	if (files.length === 0) {

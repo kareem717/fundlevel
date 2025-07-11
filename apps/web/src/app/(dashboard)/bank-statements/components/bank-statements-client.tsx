@@ -1,12 +1,12 @@
 "use client";
 
 import { RefreshCw } from "lucide-react";
-import React, { type ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithoutRef } from "react";
+import { UploadSection } from "@/components/upload-section";
 import { useBankStatementsComplete } from "@/hooks/use-bank-statements-complete";
 import { useFileStats } from "@/hooks/use-file-stats";
 import { BankStatementsList } from "./bank-statements-list";
 import { RecentUploadsList } from "./recent-uploads-list";
-import { UploadSection } from "./upload-section";
 
 interface BankStatementsClientProps extends ComponentPropsWithoutRef<"div"> {}
 

@@ -2,19 +2,30 @@
 
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
-import type {
-	FileUploadItem,
-	SortBy,
-	SortOrder,
-	ViewMode,
-} from "@/app/(dashboard)/bank-statements/components/types";
 
-interface BankStatementsUIState {
+// UI-specific types (will be defined in components/types.ts)
+interface FileUploadItem {
+	id: string;
+	name: string;
+	size: number;
+	type: string;
+	status: "uploading" | "completed" | "error";
+	progress: number;
+	preview?: string;
+	uploadedAt?: Date;
+	error?: string;
+}
+
+type ViewMode = "list" | "grid";
+type SortBy = "date" | "merchant" | "amount";
+type SortOrder = "asc" | "desc";
+
+interface ReceiptsUIState {
 	// UI State only
 	files: FileUploadItem[];
-	expandedStatements: Set<number>;
-	extractingStatements: Set<number>;
-	exportingStatements: Set<number>;
+	expandedReceipts: Set<number>;
+	extractingReceipts: Set<number>;
+	exportingReceipts: Set<number>;
 	viewMode: ViewMode;
 	sortBy: SortBy;
 	sortOrder: SortOrder;
@@ -26,23 +37,23 @@ interface BankStatementsUIState {
 	removeFile: (id: string) => void;
 	clearFiles: () => void;
 
-	toggleExpansion: (statementId: number) => void;
-	setExtracting: (statementId: number, extracting: boolean) => void;
-	setExporting: (statementId: number, exporting: boolean) => void;
+	toggleExpansion: (receiptId: number) => void;
+	setExtracting: (receiptId: number, extracting: boolean) => void;
+	setExporting: (receiptId: number, exporting: boolean) => void;
 
 	setViewMode: (mode: ViewMode) => void;
 	setSortBy: (sortBy: SortBy) => void;
 	setSortOrder: (order: SortOrder) => void;
 }
 
-export const useBankStatementsUIStore = create<BankStatementsUIState>()(
+export const useReceiptsUIStore = create<ReceiptsUIState>()(
 	devtools(
 		(set, _get) => ({
 			// Initial state
 			files: [],
-			expandedStatements: new Set(),
-			extractingStatements: new Set(),
-			exportingStatements: new Set(),
+			expandedReceipts: new Set(),
+			extractingReceipts: new Set(),
+			exportingReceipts: new Set(),
 			viewMode: "list",
 			sortBy: "date",
 			sortOrder: "desc",
@@ -64,37 +75,37 @@ export const useBankStatementsUIStore = create<BankStatementsUIState>()(
 			clearFiles: () => set({ files: [] }),
 
 			// Expansion and loading state actions
-			toggleExpansion: (statementId) =>
+			toggleExpansion: (receiptId) =>
 				set((state) => {
-					const newExpanded = new Set(state.expandedStatements);
-					if (newExpanded.has(statementId)) {
-						newExpanded.delete(statementId);
+					const newExpanded = new Set(state.expandedReceipts);
+					if (newExpanded.has(receiptId)) {
+						newExpanded.delete(receiptId);
 					} else {
-						newExpanded.add(statementId);
+						newExpanded.add(receiptId);
 					}
-					return { expandedStatements: newExpanded };
+					return { expandedReceipts: newExpanded };
 				}),
 
-			setExtracting: (statementId, extracting) =>
+			setExtracting: (receiptId, extracting) =>
 				set((state) => {
-					const newExtracting = new Set(state.extractingStatements);
+					const newExtracting = new Set(state.extractingReceipts);
 					if (extracting) {
-						newExtracting.add(statementId);
+						newExtracting.add(receiptId);
 					} else {
-						newExtracting.delete(statementId);
+						newExtracting.delete(receiptId);
 					}
-					return { extractingStatements: newExtracting };
+					return { extractingReceipts: newExtracting };
 				}),
 
-			setExporting: (statementId, exporting) =>
+			setExporting: (receiptId, exporting) =>
 				set((state) => {
-					const newExporting = new Set(state.exportingStatements);
+					const newExporting = new Set(state.exportingReceipts);
 					if (exporting) {
-						newExporting.add(statementId);
+						newExporting.add(receiptId);
 					} else {
-						newExporting.delete(statementId);
+						newExporting.delete(receiptId);
 					}
-					return { exportingStatements: newExporting };
+					return { exportingReceipts: newExporting };
 				}),
 
 			// View and sorting actions
@@ -102,13 +113,13 @@ export const useBankStatementsUIStore = create<BankStatementsUIState>()(
 			setSortBy: (sortBy) => set({ sortBy }),
 			setSortOrder: (sortOrder) => set({ sortOrder }),
 		}),
-		{ name: "bank-statements-ui-store" },
+		{ name: "receipts-ui-store" },
 	),
 );
 
-// Main hook that combines UI state with React Query
-export const useBankStatements = () => {
-	const uiStore = useBankStatementsUIStore();
+// Main hook that combines UI state
+export const useReceipts = () => {
+	const uiStore = useReceiptsUIStore();
 
 	// Helper function to create file upload items
 	const createFileUploadItems = (fileList: FileList): FileUploadItem[] => {

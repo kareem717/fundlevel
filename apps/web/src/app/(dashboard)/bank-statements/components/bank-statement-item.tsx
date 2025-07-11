@@ -1,6 +1,6 @@
 "use client";
 
-import type { BankStatement, Transaction } from "@fundlevel/db/types";
+import type { BankStatement } from "@fundlevel/db/types";
 import { Button } from "@fundlevel/ui/components/button";
 import {
 	ChevronDown,
@@ -13,7 +13,7 @@ import {
 	RefreshCw,
 	Trash2,
 } from "lucide-react";
-import React, { type ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithoutRef } from "react";
 import { useStatementTransactions } from "@/hooks/use-bank-statements-complete";
 import { TransactionList } from "./transaction-list";
 
@@ -33,7 +33,7 @@ const formatFileSize = (bytes: number): string => {
 	const k = 1024;
 	const sizes = ["Bytes", "KB", "MB", "GB"];
 	const i = Math.floor(Math.log(bytes) / Math.log(k));
-	return Number.parseFloat((bytes / k ** i).toFixed(2)) + " " + sizes[i];
+	return `${Number.parseFloat((bytes / k ** i).toFixed(2))} ${sizes[i]}`;
 };
 
 const getFileIcon = (type: string) => {
@@ -169,25 +169,22 @@ export function BankStatementItem({
 			</div>
 
 			{/* Transactions List */}
-			{isExpanded && (
-				<>
-					{transactionsLoading ? (
-						<div className="px-6 pb-4">
-							<div className="rounded-lg bg-muted/30 p-4 text-center">
-								<RefreshCw className="mx-auto mb-2 h-4 w-4 animate-spin" />
-								<p className="text-muted-foreground text-sm">
-									Loading transactions...
-								</p>
-							</div>
+			{isExpanded &&
+				(transactionsLoading ? (
+					<div className="px-6 pb-4">
+						<div className="rounded-lg bg-muted/30 p-4 text-center">
+							<RefreshCw className="mx-auto mb-2 h-4 w-4 animate-spin" />
+							<p className="text-muted-foreground text-sm">
+								Loading transactions...
+							</p>
 						</div>
-					) : (
-						<TransactionList
-							transactions={transactions}
-							statementId={statement.id}
-						/>
-					)}
-				</>
-			)}
+					</div>
+				) : (
+					<TransactionList
+						transactions={transactions}
+						statementId={statement.id}
+					/>
+				))}
 		</div>
 	);
 }

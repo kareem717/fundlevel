@@ -113,7 +113,7 @@ export const authHandler = () =>
 			}
 		})
 		.openapi(authRoutes.session, async (c) => {
-			const cookie = getCookie(c, WORKOS_COOKIE_KEY);
+			const _cookie = getCookie(c, WORKOS_COOKIE_KEY);
 
 			const session = getAuth(c);
 			if (!session) {

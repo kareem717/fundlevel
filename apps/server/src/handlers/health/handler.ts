@@ -12,7 +12,7 @@ export const healthHandler = () =>
 		try {
 			await db.execute(sql<number>`SELECT 1`);
 			dbConnected = true;
-		} catch (error) {
+		} catch (_error) {
 			//TODO: handler error
 			isHealthy = false;
 		}

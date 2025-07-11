@@ -1,8 +1,8 @@
 "use client";
 
-import type { BankStatement, Transaction } from "@fundlevel/db/types";
+import type { BankStatement } from "@fundlevel/db/types";
 import { FileText } from "lucide-react";
-import React, { type ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithoutRef } from "react";
 import { BankStatementItem } from "./bank-statement-item";
 
 interface BankStatementsListProps extends ComponentPropsWithoutRef<"div"> {

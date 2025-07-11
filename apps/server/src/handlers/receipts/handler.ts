@@ -1,16 +1,16 @@
 import { env } from "cloudflare:workers";
-import { bankStatementSchema } from "@fundlevel/db/schema";
+import { receiptSchema } from "@fundlevel/db/schema";
 import { OpenAPIHono } from "@hono/zod-openapi";
 import { eq } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
 import { createDB } from "@/lib/db/client";
 import { getAuth } from "@/middleware/with-auth";
 import { OCRService } from "@/services/ocr";
-import { bankStatementRoutes } from "./routes";
+import { receiptRoutes } from "./routes";
 
-export const bankStatementHandler = () =>
+export const receiptHandler = () =>
 	new OpenAPIHono()
-		.openapi(bankStatementRoutes.list, async (c) => {
+		.openapi(receiptRoutes.list, async (c) => {
 			const session = getAuth(c);
 			if (!session) {
 				throw new HTTPException(403, { message: "Unauthorized" });
@@ -20,21 +20,21 @@ export const bankStatementHandler = () =>
 			const db = createDB();
 
 			try {
-				const statements = await db
+				const receipts = await db
 					.select()
-					.from(bankStatementSchema.bankStatements)
-					.where(eq(bankStatementSchema.bankStatements.userId, user.id))
-					.orderBy(bankStatementSchema.bankStatements.createdAt);
+					.from(receiptSchema.receipts)
+					.where(eq(receiptSchema.receipts.userId, user.id))
+					.orderBy(receiptSchema.receipts.createdAt);
 
-				return c.json(statements, 200);
+				return c.json(receipts, 200);
 			} catch (error) {
 				throw new HTTPException(500, {
-					message: "Failed to fetch bank statements.",
+					message: "Failed to fetch receipts.",
 					cause: error,
 				});
 			}
 		})
-		.openapi(bankStatementRoutes.upload, async (c) => {
+		.openapi(receiptRoutes.upload, async (c) => {
 			const session = getAuth(c);
 			if (!session) {
 				throw new HTTPException(403, { message: "Unauthorized" });
@@ -49,7 +49,7 @@ export const bankStatementHandler = () =>
 			let uploadedFile: R2Object;
 			try {
 				uploadedFile = await env.DOCUMENTS_BUCKET.put(
-					`${new Date().toISOString()}-${crypto.randomUUID()}`,
+					`receipts/${new Date().toISOString()}-${crypto.randomUUID()}`,
 					file,
 					{
 						httpMetadata: {
@@ -70,10 +70,10 @@ export const bankStatementHandler = () =>
 				});
 			}
 
-			// Create bank statement record
+			// Create receipt record
 			try {
-				const [bankStatement] = await db
-					.insert(bankStatementSchema.bankStatements)
+				const [receipt] = await db
+					.insert(receiptSchema.receipts)
 					.values({
 						originalFileName: file.name,
 						r2Url: fileUrl,
@@ -84,15 +84,15 @@ export const bankStatementHandler = () =>
 					})
 					.returning();
 
-				return c.json(bankStatement, 201);
+				return c.json(receipt, 201);
 			} catch (error) {
 				throw new HTTPException(500, {
-					message: "Failed to create bank statement record.",
+					message: "Failed to create receipt record.",
 					cause: error,
 				});
 			}
 		})
-		.openapi(bankStatementRoutes.extract, async (c) => {
+		.openapi(receiptRoutes.extract, async (c) => {
 			const session = getAuth(c);
 			if (!session) {
 				throw new HTTPException(403, { message: "Unauthorized" });
@@ -104,71 +104,66 @@ export const bankStatementHandler = () =>
 			const ocrService = new OCRService();
 
 			try {
-				// Get the bank statement
-				const [statement] = await db
+				// Get the receipt
+				const [receipt] = await db
 					.select()
-					.from(bankStatementSchema.bankStatements)
-					.where(eq(bankStatementSchema.bankStatements.id, Number.parseInt(id)))
+					.from(receiptSchema.receipts)
+					.where(eq(receiptSchema.receipts.id, Number.parseInt(id)))
 					.limit(1);
 
-				if (!statement) {
-					throw new HTTPException(404, { message: "Bank statement not found" });
+				if (!receipt) {
+					throw new HTTPException(404, { message: "Receipt not found" });
 				}
 
-				if (statement.userId !== user.id) {
+				if (receipt.userId !== user.id) {
 					throw new HTTPException(403, { message: "Access denied" });
 				}
 
 				// Update status to processing
 				await db
-					.update(bankStatementSchema.bankStatements)
+					.update(receiptSchema.receipts)
 					.set({
 						processingStatus: "processing",
 						updatedAt: new Date(),
 					})
-					.where(
-						eq(bankStatementSchema.bankStatements.id, Number.parseInt(id)),
-					);
+					.where(eq(receiptSchema.receipts.id, Number.parseInt(id)));
 
 				try {
-					// Extract transactions
-					const transactions = await ocrService.extractTransactions({
-						fileUrl: statement.r2Url,
-						fileType: statement.fileType,
+					// Extract receipt items
+					const extractedData = await ocrService.extractReceiptItems({
+						fileUrl: receipt.r2Url,
+						fileType: receipt.fileType,
 						userId: user.id,
-						bankStatementId: statement.id,
+						receiptId: receipt.id,
 					});
 
 					// Update status to completed
 					await db
-						.update(bankStatementSchema.bankStatements)
+						.update(receiptSchema.receipts)
 						.set({
 							processingStatus: "completed",
 							updatedAt: new Date(),
 						})
-						.where(
-							eq(bankStatementSchema.bankStatements.id, Number.parseInt(id)),
-						);
+						.where(eq(receiptSchema.receipts.id, Number.parseInt(id)));
 
 					return c.json(
 						{
 							success: true,
-							transactionsExtracted: transactions.length,
-							transactions,
+							itemsExtracted: extractedData.items.length,
+							metadata: extractedData.metadata,
+							items: extractedData.items,
 						},
 						200,
 					);
 				} catch (error) {
 					// Update status to failed
 					await db
-						.update(bankStatementSchema.bankStatements)
+						.update(receiptSchema.receipts)
 						.set({
 							processingStatus: "failed",
 							updatedAt: new Date(),
 						})
-						.where(
-							eq(bankStatementSchema.bankStatements.id, Number.parseInt(id)),
-						);
+						.where(eq(receiptSchema.receipts.id, Number.parseInt(id)));
 
 					throw error;
 				}
@@ -177,12 +172,12 @@ export const bankStatementHandler = () =>
 					throw error;
 				}
 				throw new HTTPException(500, {
-					message: "Failed to extract transactions.",
+					message: "Failed to extract receipt items.",
 					cause: error,
 				});
 			}
 		})
-		.openapi(bankStatementRoutes.transactions, async (c) => {
+		.openapi(receiptRoutes.items, async (c) => {
 			const session = getAuth(c);
 			if (!session) {
 				throw new HTTPException(403, { message: "Unauthorized" });
@@ -194,38 +189,38 @@ export const bankStatementHandler = () =>
 			const ocrService = new OCRService();
 
 			try {
-				// Check if the bank statement belongs to the user
-				const [statement] = await db
+				// Check if the receipt belongs to the user
+				const [receipt] = await db
 					.select()
-					.from(bankStatementSchema.bankStatements)
-					.where(eq(bankStatementSchema.bankStatements.id, Number.parseInt(id)))
+					.from(receiptSchema.receipts)
+					.where(eq(receiptSchema.receipts.id, Number.parseInt(id)))
 					.limit(1);
 
-				if (!statement) {
-					throw new HTTPException(404, { message: "Bank statement not found" });
+				if (!receipt) {
+					throw new HTTPException(404, { message: "Receipt not found" });
 				}
 
-				if (statement.userId !== user.id) {
+				if (receipt.userId !== user.id) {
 					throw new HTTPException(403, { message: "Access denied" });
 				}
 
-				// Get transactions for this bank statement
-				const transactions = await ocrService.getTransactionsByBankStatement(
+				// Get items for this receipt
+				const items = await ocrService.getReceiptItemsByReceipt(
 					Number.parseInt(id),
 				);
 
-				return c.json(transactions, 200);
+				return c.json(items, 200);
 			} catch (error) {
 				if (error instanceof HTTPException) {
 					throw error;
 				}
 				throw new HTTPException(500, {
-					message: "Failed to fetch transactions.",
+					message: "Failed to fetch receipt items.",
 					cause: error,
 				});
 			}
 		})
-		.openapi(bankStatementRoutes.exportCsv, async (c) => {
+		.openapi(receiptRoutes.exportCsv, async (c) => {
 			const session = getAuth(c);
 			if (!session) {
 				throw new HTTPException(403, { message: "Unauthorized" });
@@ -237,37 +232,39 @@ export const bankStatementHandler = () =>
 			const ocrService = new OCRService();
 
 			try {
-				// Check if the bank statement belongs to the user
-				const [statement] = await db
+				// Check if the receipt belongs to the user
+				const [receipt] = await db
 					.select()
-					.from(bankStatementSchema.bankStatements)
-					.where(eq(bankStatementSchema.bankStatements.id, Number.parseInt(id)))
+					.from(receiptSchema.receipts)
+					.where(eq(receiptSchema.receipts.id, Number.parseInt(id)))
 					.limit(1);
 
-				if (!statement) {
-					throw new HTTPException(404, { message: "Bank statement not found" });
+				if (!receipt) {
+					throw new HTTPException(404, { message: "Receipt not found" });
 				}
 
-				if (statement.userId !== user.id) {
+				if (receipt.userId !== user.id) {
 					throw new HTTPException(403, { message: "Access denied" });
 				}
 
-				// Get transactions for this bank statement
-				const transactions = await ocrService.getTransactionsByBankStatement(
+				// Get items for this receipt
+				const items = await ocrService.getReceiptItemsByReceipt(
 					Number.parseInt(id),
 				);
 
-				if (transactions.length === 0) {
+				if (items.length === 0) {
 					throw new HTTPException(400, {
-						message: "No transactions to export",
+						message: "No items to export",
 					});
 				}
 
 				// Generate CSV content
-				const csvHeader = "Date,Merchant,Description,Amount,Currency\n";
-				const csvRows = transactions
-					.map((transaction) => {
-						const amount = (transaction.amountCents / 100).toFixed(2);
+				const csvHeader = "Item,Quantity,Unit Price,Total Price,Category\n";
+				const csvRows = items
+					.map((item) => {
+						const unitPrice = (item.unitPriceCents / 100).toFixed(2);
+						const totalPrice = (item.totalPriceCents / 100).toFixed(2);
+
 						// Escape commas and quotes in CSV
 						const escapeCsvField = (field: string) => {
 							if (
@@ -281,11 +278,11 @@ export const bankStatementHandler = () =>
 						};
 
 						return [
-							transaction.date,
-							escapeCsvField(transaction.merchant),
-							escapeCsvField(transaction.description),
-							amount,
-							transaction.currency || "USD",
+							escapeCsvField(item.name),
+							item.quantity,
+							unitPrice,
+							totalPrice,
+							escapeCsvField(item.category || ""),
 						].join(",");
 					})
 					.join("\n");
@@ -293,7 +290,7 @@ export const bankStatementHandler = () =>
 				const csvContent = csvHeader + csvRows;
 
 				// Generate filename
-				const fileName = `transactions-${statement.originalFileName.replace(/\.[^/.]+$/, "")}-${new Date().toISOString().split("T")[0]}.csv`;
+				const fileName = `receipt-items-${receipt.originalFileName.replace(/\.[^/.]+$/, "")}-${new Date().toISOString().split("T")[0]}.csv`;
 				const r2Key = `exports/${user.id}/${fileName}`;
 
 				// Upload CSV to R2
@@ -315,8 +312,6 @@ export const bankStatementHandler = () =>
 				const expiresAt = new Date(Date.now() + expiresIn * 1000);
 
 				// For R2, generate a direct download URL
-				// Note: R2 pre-signed URLs would require AWS S3 SDK or custom implementation
-				// This approach uses direct URLs which work for the current setup
 				const downloadUrl = `${env.DOCUMENTS_BUCKET_URL}/${r2Key}`;
 
 				return c.json(
@@ -337,7 +332,7 @@ export const bankStatementHandler = () =>
 				});
 			}
 		})
-		.openapi(bankStatementRoutes.delete, async (c) => {
+		.openapi(receiptRoutes.delete, async (c) => {
 			const session = getAuth(c);
 			if (!session) {
 				throw new HTTPException(403, { message: "Unauthorized" });
@@ -348,35 +343,39 @@ export const bankStatementHandler = () =>
 			const db = createDB();
 
 			try {
-				// Check if the bank statement belongs to the user
-				const [statement] = await db
+				// Check if the receipt belongs to the user
+				const [receipt] = await db
 					.select()
-					.from(bankStatementSchema.bankStatements)
-					.where(eq(bankStatementSchema.bankStatements.id, Number.parseInt(id)))
+					.from(receiptSchema.receipts)
+					.where(eq(receiptSchema.receipts.id, Number.parseInt(id)))
 					.limit(1);
 
-				if (!statement) {
-					throw new HTTPException(404, { message: "Bank statement not found" });
+				if (!receipt) {
+					throw new HTTPException(404, { message: "Receipt not found" });
 				}
 
-				if (statement.userId !== user.id) {
+				if (receipt.userId !== user.id) {
 					throw new HTTPException(403, { message: "Access denied" });
 				}
 
-				// Delete the bank statement (transactions will be cascade deleted)
+				// Delete the receipt (cascade will handle receipt items)
 				await db
-					.delete(bankStatementSchema.bankStatements)
-					.where(
-						eq(bankStatementSchema.bankStatements.id, Number.parseInt(id)),
-					);
+					.delete(receiptSchema.receipts)
+					.where(eq(receiptSchema.receipts.id, Number.parseInt(id)));
 
-				return c.json({ success: true }, 200);
+				return c.json(
+					{
+						success: true,
+						message: "Receipt deleted successfully",
+					},
+					200,
+				);
 			} catch (error) {
 				if (error instanceof HTTPException) {
 					throw error;
 				}
 				throw new HTTPException(500, {
-					message: "Failed to delete bank statement.",
+					message: "Failed to delete receipt.",
 					cause: error,
 				});
 			}

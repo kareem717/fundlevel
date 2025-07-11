@@ -74,6 +74,13 @@ export function DashboardSidebar({
 										</Link>
 									</SidebarMenuButton>
 								</SidebarMenuItem>
+								<SidebarMenuItem>
+									<SidebarMenuButton asChild>
+										<Link href={redirects.dashboard.receipts}>
+											<span>Receipts</span>
+										</Link>
+									</SidebarMenuButton>
+								</SidebarMenuItem>
 							</SidebarMenu>
 						</SidebarGroupContent>
 					</SidebarGroup>
