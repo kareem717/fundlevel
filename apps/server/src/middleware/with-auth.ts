@@ -40,7 +40,6 @@ export const withAuth = () =>
 				const sessionData = getCookie(c, WORKOS_COOKIE_KEY) || "";
 
 				if (sessionData) {
-					console.log("withAuth: session cookie data:", sessionData);
 					span?.setAttribute("middleware.auth.session_cookie_present", true);
 				} else {
 					span?.setAttribute("middleware.auth.session_cookie_present", false);
@@ -90,7 +89,6 @@ export const withAuth = () =>
 				}
 
 				try {
-					console.log("Refreshing session");
 					span?.setAttribute("middleware.auth.refresh_attempted", true);
 					const refreshStartTime = performance.now();
 					const refreshResp = await session.refresh({

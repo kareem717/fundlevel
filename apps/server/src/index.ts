@@ -9,9 +9,9 @@ import { HTTPException } from "hono/http-exception";
 import { logger } from "hono/logger";
 import {
 	authHandler,
+	bankStatementHandler,
 	healthHandler,
 	integrationHandler,
-	ocrHandler,
 } from "./handlers";
 import { WORKOS_COOKIE_KEY } from "./lib/workos";
 
@@ -21,7 +21,7 @@ const app = new OpenAPIHono();
 app.use(logger()).use(
 	cors({
 		origin: [env.WEB_APP_URL, env.BASE_URL],
-		allowMethods: ["GET", "POST", "OPTIONS", "*"],
+		allowMethods: ["GET", "POST", "OPTIONS", "DELETE", "PUT", "PATCH"],
 		allowHeaders: ["Content-Type", "Authorization", "Cookie", "*"],
 		credentials: true,
 	}),
@@ -30,8 +30,8 @@ app.use(logger()).use(
 export const appRoutes = app
 	.route("/health", healthHandler())
 	.route("/integrations", integrationHandler())
-	.route("/ocr", ocrHandler())
-	.route("/auth", authHandler());
+	.route("/auth", authHandler())
+	.route("/bank-statements", bankStatementHandler());
 
 // Docs
 app

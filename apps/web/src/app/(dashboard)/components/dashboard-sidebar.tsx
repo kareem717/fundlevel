@@ -67,6 +67,13 @@ export function DashboardSidebar({
 										</Link>
 									</SidebarMenuButton>
 								</SidebarMenuItem>
+								<SidebarMenuItem>
+									<SidebarMenuButton asChild>
+										<Link href={redirects.dashboard.bankStatements}>
+											<span>Bank Statements</span>
+										</Link>
+									</SidebarMenuButton>
+								</SidebarMenuItem>
 							</SidebarMenu>
 						</SidebarGroupContent>
 					</SidebarGroup>

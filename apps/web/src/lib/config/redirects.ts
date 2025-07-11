@@ -6,5 +6,6 @@ export const redirects = {
 	},
 	dashboard: {
 		index: "/dashboard",
+		bankStatements: "/bank-statements",
 	},
 };
