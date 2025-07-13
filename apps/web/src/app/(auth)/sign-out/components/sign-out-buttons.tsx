@@ -2,12 +2,12 @@
 
 import { Button } from "@fundlevel/ui/components/button";
 import { cn } from "@fundlevel/ui/lib/utils";
-import { getCookieHeaderFn } from "@fundlevel/web/app/actions/utils";
 import { env } from "@fundlevel/web/env";
-import { apiClient } from "@fundlevel/web/lib/api-client";
+import { orpc } from "@fundlevel/web/lib/orpc/client";
+import { ORPCError } from "@orpc/server";
 import { useMutation } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import type { ComponentPropsWithRef } from "react";
 import { toast } from "sonner";
 
@@ -21,48 +21,48 @@ export function SignOutButtons({
 	...props
 }: SignOutButtonsProps) {
 	const router = useRouter();
+	const pathname = usePathname();
+	const redirectUrl = `${env.NEXT_PUBLIC_BASE_URL}${pathname}`;
 
-	const { mutate: signOut, isPending } = useMutation({
-		mutationFn: async () => {
-			const headersList = await getCookieHeaderFn();
-			const response = await apiClient(headersList).auth["sign-out"].$get({
-				query: {
-					redirectUrl: window.location.href,
-				},
-			});
-
-			if (response.status !== 200) {
-				const error = await response.json();
-				throw new Error(error.message);
-			}
-
-			return response.json();
-		},
-		onSuccess: (data) => {
-			if (data.shouldRedirect) {
-				onSuccess?.();
-				toast.success("Signed out successfully!");
-				router.push(data.redirectUrl);
-			} else {
+	const { mutate: signOut, isPending } = useMutation(
+		orpc.auth.signOut.mutationOptions({
+			onSuccess: (data) => {
+				if (data.shouldRedirect) {
+					onSuccess?.();
+					toast.success("Signed out successfully!");
+					router.push(data.location);
+				} else {
+					toast.error("Uh oh! Something went wrong.", {
+						description: "Failed to sign out",
+					});
+				}
+			},
+			onError: (error) => {
+				if (error instanceof ORPCError) {
+					console.log("error", JSON.stringify(error, null, 2));
+				}
+				console.error(error);
 				toast.error("Uh oh! Something went wrong.", {
-					description: "Failed to sign out",
+					description: error.message,
 				});
-			}
-		},
-		onError: (error) => {
-			console.error(error);
-			toast.error("Uh oh! Something went wrong.", {
-				description: error.message,
-			});
-		},
-	});
+			},
+		}),
+	);
+
+	function handleSignOut() {
+		signOut({
+			query: {
+				redirectUrl,
+			},
+		});
+	}
 
 	return (
 		<div className={cn("grid grid-cols-2 gap-2", className)} {...props}>
 			<Button onClick={() => router.back()} variant="secondary">
 				Cancel
 			</Button>
-			<Button onClick={() => signOut()} disabled={isPending}>
+			<Button onClick={handleSignOut} disabled={isPending}>
 				{isPending && <Loader2 className="mr-2 size-4 animate-spin" />}
 				Logout
 			</Button>

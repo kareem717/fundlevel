@@ -4,7 +4,11 @@ import * as Sentry from "@sentry/bun";
 import type { Context as HonoContext } from "hono";
 import { deleteCookie, getCookie } from "hono/cookie";
 import env from "../env";
-import { createWorkOS, WORKOS_COOKIE_KEY } from "../lib/workos";
+import {
+	createWorkOS,
+	setSessionCookie,
+	WORKOS_COOKIE_KEY,
+} from "../lib/workos";
 import type { ORPCContext } from "./context";
 
 export const o = os.$context<ORPCContext>();
@@ -112,6 +116,8 @@ export const requireAuth = oo.spec(
 						"orpc.middleware.require_auth.total_time_ms",
 						performance.now() - startTime,
 					);
+
+					setSessionCookie(context.honoCtx, refreshResp.sealedSession);
 					return {
 						sessionId: refreshResp.sessionId,
 						user: refreshResp.user,

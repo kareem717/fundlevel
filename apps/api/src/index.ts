@@ -104,15 +104,14 @@ app.onError((err, c) => {
 		Sentry.captureException(err); // ik this is already handled by the withSentry wrapper
 	}
 
-	if (err instanceof HTTPException) {
-		return c.json({ message: err.message, status: err.status }, err.status);
-	}
 	if (err instanceof ORPCError) {
 		return c.json(
 			{ message: err.message, status: err.status },
 			err.status as ContentfulStatusCode,
 		);
 	}
+
+	console.log("err", err);
 
 	// Unknown error
 	return c.json({ message: "Internal Server Error", status: 500 }, 500);

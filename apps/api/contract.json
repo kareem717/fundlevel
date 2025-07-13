@@ -6,7 +6,8 @@
 				"meta": {},
 				"route": {
 					"method": "GET",
-					"path": "/health/check"
+					"path": "/health/check",
+					"tags": ["Health"]
 				}
 			}
 		}
@@ -16,14 +17,7 @@
 			"~orpc": {
 				"errorMap": {},
 				"meta": {},
-				"route": {
-					"method": "GET",
-					"path": "/auth/sign-in",
-					"tags": ["Auth"],
-					"successStatus": 302,
-					"inputStructure": "detailed",
-					"outputStructure": "detailed"
-				}
+				"route": { "method": "GET", "path": "/auth/sign-in", "tags": ["Auth"] }
 			}
 		},
 		"signOut": {
@@ -34,9 +28,7 @@
 					"method": "GET",
 					"path": "/auth/sign-out",
 					"tags": ["Auth"],
-					"inputStructure": "detailed",
-					"outputStructure": "detailed",
-					"successStatus": 301
+					"inputStructure": "detailed"
 				}
 			}
 		},
@@ -48,7 +40,6 @@
 					"method": "GET",
 					"path": "/auth/callback",
 					"tags": ["Auth"],
-					"inputStructure": "detailed",
 					"outputStructure": "detailed",
 					"successStatus": 301
 				}
@@ -58,11 +49,7 @@
 			"~orpc": {
 				"errorMap": {},
 				"meta": {},
-				"route": {
-					"method": "GET",
-					"path": "/auth/session",
-					"tags": ["Auth"]
-				}
+				"route": { "method": "GET", "path": "/auth/session", "tags": ["Auth"] }
 			}
 		}
 	},
@@ -146,7 +133,8 @@
 				"route": {
 					"method": "POST",
 					"path": "/bank-statements/{id}/extract",
-					"tags": ["Bank Statements"]
+					"tags": ["Bank Statements"],
+					"inputStructure": "detailed"
 				}
 			}
 		},
@@ -169,7 +157,8 @@
 				"route": {
 					"method": "POST",
 					"path": "/bank-statements/{id}/export-csv",
-					"tags": ["Bank Statements"]
+					"tags": ["Bank Statements"],
+					"inputStructure": "detailed"
 				}
 			}
 		},

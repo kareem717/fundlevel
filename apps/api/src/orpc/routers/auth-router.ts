@@ -45,6 +45,7 @@ export const authRouter = {
 			method: "GET",
 			path: "/auth/sign-out",
 			tags: ["Auth"],
+			inputStructure: "detailed",
 		})
 		.input(
 			z.object({
@@ -72,14 +73,21 @@ export const authRouter = {
 				cookiePassword: env.WORKOS_COOKIE_PASSWORD,
 			});
 
-			const redirectUrl = await sealedSession.getLogoutUrl({
-				returnTo: input.query.redirectUrl,
-			});
+			try {
+				const redirectUrl = await sealedSession.getLogoutUrl({
+					returnTo: input.query.redirectUrl,
+				});
 
-			return {
-				location: redirectUrl,
-				shouldRedirect: true,
-			};
+				return {
+					location: redirectUrl,
+					shouldRedirect: true,
+				};
+			} catch (error) {
+				throw new ORPCError("INTERNAL_SERVER_ERROR", {
+					message: "Failed to get logout URL",
+					cause: error,
+				});
+			}
 		}),
 
 	callback: publicProcedure
@@ -87,6 +95,7 @@ export const authRouter = {
 			method: "GET",
 			path: "/auth/callback",
 			tags: ["Auth"],
+			inputStructure: "detailed",
 			outputStructure: "detailed",
 			successStatus: 301,
 		})
