@@ -15,6 +15,13 @@
 			"when": 1752254195157,
 			"tag": "0001_absurd_nova",
 			"breakpoints": true
+		},
+		{
+			"idx": 2,
+			"version": "7",
+			"when": 1752445311787,
+			"tag": "0002_nosy_natasha_romanoff",
+			"breakpoints": true
 		}
 	]
 }

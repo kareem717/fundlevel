@@ -1,4 +1,4 @@
-import { ConnectIntegrationButton } from "./components/connect-integration-button";
+import { IntegrationList } from "./components/integration-list";
 
 export const metadata = {
 	title: "Integrations",
@@ -7,10 +7,17 @@ export const metadata = {
 
 export default function IntegrationsPage() {
 	return (
-		<div>
-			<h1>Integrations</h1>
-			<ConnectIntegrationButton integration="quickbooks" />
-			<ConnectIntegrationButton integration="google-sheet" />
+		<div className="container mx-auto space-y-14 p-6">
+			{/* Header */}
+			<div className="space-y-2">
+				<h1 className="font-bold text-3xl text-foreground">Integrations</h1>
+				<p className="text-muted-foreground">
+					Connect and manage your integrations to extend functionality
+				</p>
+			</div>
+
+			{/* Integration List */}
+			<IntegrationList className="w-full space-y-20" />
 		</div>
 	);
 }

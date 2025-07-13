@@ -40,6 +40,7 @@
 					"method": "GET",
 					"path": "/auth/callback",
 					"tags": ["Auth"],
+					"inputStructure": "detailed",
 					"outputStructure": "detailed",
 					"successStatus": 301
 				}
@@ -66,13 +67,13 @@
 				}
 			}
 		},
-		"connections": {
+		"getAll": {
 			"~orpc": {
 				"errorMap": {},
 				"meta": {},
 				"route": {
 					"method": "GET",
-					"path": "/integrations/connections",
+					"path": "/integrations",
 					"tags": ["Integrations"]
 				}
 			}
@@ -84,6 +85,17 @@
 				"route": {
 					"method": "POST",
 					"path": "/integrations/session-token",
+					"tags": ["Integrations"]
+				}
+			}
+		},
+		"disconnect": {
+			"~orpc": {
+				"errorMap": {},
+				"meta": {},
+				"route": {
+					"method": "POST",
+					"path": "/integrations/disconnect",
 					"tags": ["Integrations"]
 				}
 			}

@@ -1,7 +1,7 @@
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 import { bankStatements } from "./schema/bank-statements";
-import { nangoConnections } from "./schema/integration";
+import { nangoConnections, nangoProviders } from "./schema/integration";
 import { receiptItems, receipts } from "./schema/receipts";
 import { transactions } from "./schema/transactions";
 
@@ -94,3 +94,5 @@ export const InsertReceiptItemSchema = createInsertSchema(receiptItems, {
 });
 
 export const SelectReceiptItemSchema = createSelectSchema(receiptItems);
+
+export const NangoProviderSchema = z.enum(nangoProviders.enumValues);

@@ -1,0 +1,2 @@
+CREATE TYPE "public"."nango_providers" AS ENUM('QuickBooks', 'Google Sheets');--> statement-breakpoint
+ALTER TABLE "nango_connections" ALTER COLUMN "provider_config_key" SET DATA TYPE "public"."nango_providers" USING "provider_config_key"::"public"."nango_providers";

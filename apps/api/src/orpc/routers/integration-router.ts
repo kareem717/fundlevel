@@ -4,14 +4,18 @@ import { getQuickbookAccounts } from "@fundlevel/api/lib/nango/quickbooks";
 import { QuickbooksAccountSchema } from "@fundlevel/api/lib/nango/schema";
 import { NangoIntegration } from "@fundlevel/api/lib/nango/types";
 import { integrationSchema } from "@fundlevel/db/schema";
-import type { NangoConnection } from "@fundlevel/db/types";
-import { SelectNangoConnectionSchema } from "@fundlevel/db/validation";
+import type { NangoConnection, NangoProviders } from "@fundlevel/db/types";
+import {
+	NangoProviderSchema,
+	SelectNangoConnectionSchema,
+} from "@fundlevel/db/validation";
 import type { NangoWebhookBody } from "@nangohq/node";
 import { ORPCError } from "@orpc/server";
 import * as Sentry from "@sentry/bun";
 import { and, eq, sql } from "drizzle-orm";
 import { getTableConfig } from "drizzle-orm/pg-core";
 import z from "zod";
+import { nangoProviders } from "../../../../../packages/db/src/schema/integration";
 import { protectedProcedure, publicProcedure } from "../init";
 
 export const integrationRouter = {
@@ -80,10 +84,22 @@ export const integrationRouter = {
 									async () => {
 										const insertStartTime = performance.now();
 										const db = createDB();
+
+										// try to cast the provider config key to the enum
+										const providerConfigKey =
+											body.providerConfigKey as NangoProviders;
+										if (
+											!nangoProviders.enumValues.includes(providerConfigKey)
+										) {
+											throw new ORPCError("BAD_REQUEST", {
+												message: `Invalid provider config key: ${providerConfigKey}`,
+											});
+										}
+
 										await db.insert(integrationSchema.nangoConnections).values({
 											id: body.connectionId,
 											provider: body.provider,
-											providerConfigKey: body.providerConfigKey,
+											providerConfigKey,
 											userId,
 										});
 
@@ -121,10 +137,10 @@ export const integrationRouter = {
 					});
 			}
 		}),
-	connections: protectedProcedure
+	getAll: protectedProcedure
 		.route({
 			method: "GET",
-			path: "/integrations/connections",
+			path: "/integrations",
 			tags: ["Integrations"],
 		})
 		.output(
@@ -134,20 +150,19 @@ export const integrationRouter = {
 				),
 			}),
 		)
-		.handler(async ({ input, context }) => {
-			const db = createDB();
-			let connections: NangoConnection[] = [];
-			try {
-				connections = await Sentry.startSpan(
-					{
-						name: "DB Query",
-						op: "db.query",
-						attributes: {
-							table: getTableConfig(integrationSchema.nangoConnections).name,
-						},
+		.handler(async ({ input, context }) =>
+			Sentry.startSpan(
+				{
+					name: "DB Query",
+					op: "db.query",
+					attributes: {
+						table: getTableConfig(integrationSchema.nangoConnections).name,
 					},
-					async () => {
-						const queryStartTime = performance.now();
+				},
+				async () => {
+					const db = createDB();
+					const queryStartTime = performance.now();
+					try {
 						const result = await db
 							.select()
 							.from(integrationSchema.nangoConnections)
@@ -163,18 +178,16 @@ export const integrationRouter = {
 							);
 							span.setAttribute("db.query.records_found", result.length);
 						}
-						return result;
-					},
-				);
-			} catch (error) {
-				throw new ORPCError("INTERNAL_SERVER_ERROR", {
-					message: "Failed to get connections.",
-					cause: error,
-				});
-			}
-
-			return { connections };
-		}),
+						return { connections: result };
+					} catch (error) {
+						throw new ORPCError("INTERNAL_SERVER_ERROR", {
+							message: "Failed to fetch connections.",
+							cause: error,
+						});
+					}
+				},
+			),
+		),
 	sessionToken: protectedProcedure
 		.route({
 			method: "POST",
@@ -183,9 +196,9 @@ export const integrationRouter = {
 		})
 		.input(
 			z.object({
-				integration: z
-					.nativeEnum(NangoIntegration)
-					.describe("The integration to create a session token for"),
+				integration: NangoProviderSchema.describe(
+					"The integration to create a session token for",
+				),
 			}),
 		)
 		.output(
@@ -264,6 +277,91 @@ export const integrationRouter = {
 					cause: error,
 				});
 			}
+		}),
+	disconnect: protectedProcedure
+		.route({
+			method: "POST",
+			path: "/integrations/disconnect",
+			tags: ["Integrations"],
+		})
+		.input(
+			z.object({
+				connectionId: z
+					.string()
+					.describe("The ID of the connection to disconnect"),
+			}),
+		)
+		.output(
+			z.object({
+				success: z
+					.boolean()
+					.describe("Whether the connection was disconnected successfully"),
+			}),
+		)
+		.handler(async ({ input, context }) => {
+			const { user } = context;
+
+			const db = createDB();
+
+			return await Sentry.startSpan(
+				{
+					name: "Disconnect Integration",
+					op: "integration.disconnect",
+				},
+				async () => {
+					return await db.transaction(async (tx) => {
+						const dbStartTime = performance.now();
+						const connections = await tx
+							.delete(integrationSchema.nangoConnections)
+							.where(
+								and(
+									eq(integrationSchema.nangoConnections.userId, user.id),
+									eq(integrationSchema.nangoConnections.id, input.connectionId),
+								),
+							)
+							.returning();
+						const dbDuration = performance.now() - dbStartTime;
+						const span = Sentry.getActiveSpan();
+						if (span) {
+							span.setAttribute("db.delete.processing_time_ms", dbDuration);
+						}
+
+						if (connections.length === 0) {
+							throw new ORPCError("NOT_FOUND", {
+								message: "No connection found",
+							});
+						}
+
+						const [connection] = connections;
+
+						try {
+							const nangoClient = createNangoClient();
+							const nangoStartTime = performance.now();
+							await nangoClient.deleteConnection(
+								connection.providerConfigKey,
+								connection.id,
+							);
+							const nangoDuration = performance.now() - nangoStartTime;
+
+							if (span) {
+								span.setAttribute(
+									"nango.delete.processing_time_ms",
+									nangoDuration,
+								);
+							}
+
+							return {
+								success: true,
+							};
+						} catch (error) {
+							throw new ORPCError("INTERNAL_SERVER_ERROR", {
+								message: "Failed to delete connection.",
+								cause: error,
+							});
+						}
+					});
+				},
+			);
 		}),
 	quickbooks: {
 		accounts: protectedProcedure

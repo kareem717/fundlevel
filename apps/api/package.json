@@ -2,12 +2,11 @@
 	"name": "@fundlevel/api",
 	"type": "module",
 	"scripts": {
-		"dev": "bun run --hot src/index.ts",
+		"dev": "bun run --hot src/index.ts & bun run --hot scripts/contract.ts",
 		"lint": "biome check .",
 		"lint:fix": "biome check --write .",
 		"format": "biome format --write .",
-		"typecheck": "tsc --noEmit",
-		"contract": "bun run scripts/contract.ts"
+		"typecheck": "tsc --noEmit"
 	},
 	"exports": {
 		"./_app": "./src/orpc/routers/_app.ts",

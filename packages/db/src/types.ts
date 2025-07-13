@@ -1,7 +1,9 @@
 import type { bankStatements } from "./schema/bank-statements";
-import type { nangoConnections } from "./schema/integration";
+import type { nangoConnections, nangoProviders } from "./schema/integration";
 import type { receiptItems, receipts } from "./schema/receipts";
 import type { transactions } from "./schema/transactions";
+
+export type NangoProviders = (typeof nangoProviders.enumValues)[number];
 
 export type NangoConnection = typeof nangoConnections.$inferSelect;
 export type InsertNangoConnection = typeof nangoConnections.$inferInsert;
