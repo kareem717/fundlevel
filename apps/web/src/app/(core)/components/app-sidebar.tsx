@@ -1,4 +1,5 @@
-import { FundlevelLogo } from "@fundlevel/ui/components/custom/icons";
+import { Button } from "@fundlevel/ui/components/button";
+import { FundlevelIcon } from "@fundlevel/ui/components/custom/icons";
 import {
 	Sidebar,
 	SidebarContent,
@@ -13,6 +14,7 @@ import {
 import { cn } from "@fundlevel/ui/lib/utils";
 import { redirects } from "@fundlevel/web/lib/config/redirects";
 import type { User } from "@workos-inc/node";
+import { Home, MailIcon, Plug2Icon, PlusCircleIcon } from "lucide-react";
 import Link from "next/link";
 import type { ComponentPropsWithoutRef } from "react";
 import { SidebarUser } from "./sidebar-user";
@@ -20,6 +22,19 @@ import { SidebarUser } from "./sidebar-user";
 interface AppSidebarProps extends ComponentPropsWithoutRef<typeof Sidebar> {
 	user: User;
 }
+
+const items = [
+	{
+		title: "Dashboard",
+		icon: Home,
+		href: redirects.app.index,
+	},
+	{
+		title: "Integrations",
+		icon: Plug2Icon,
+		href: redirects.app.integrations,
+	},
+];
 
 export function AppSidebar({
 	className,
@@ -34,44 +49,52 @@ export function AppSidebar({
 			{...props}
 		>
 			<SidebarHeader>
-				{/* <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton size="lg" asChild> */}
-				<Link href={redirects.app.index} className="w-min">
-					<FundlevelLogo className="w-40" />
-				</Link>
-				{/* </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu> */}
+				<SidebarMenu>
+					<SidebarMenuItem>
+						<SidebarMenuButton asChild>
+							{/* <a href="#">
+								<IconInnerShadowTop className="!size-5" />
+								<span className="text-base font-semibold">Acme Inc.</span>
+							</a> */}
+							<Link href={redirects.app.index} className="w-full">
+								<FundlevelIcon className="!size-5" />
+								<span className="font-semibold text-base">Fundlevel</span>
+							</Link>
+						</SidebarMenuButton>
+					</SidebarMenuItem>
+				</SidebarMenu>
 			</SidebarHeader>
 			<SidebarContent>
 				<SidebarGroup>
-					<SidebarGroupContent>
+					<SidebarGroupContent className="flex flex-col gap-2">
 						<SidebarMenu>
-							{/* {Object.entries(DashboardTabs).map(([key, value]) => (
-                  <SidebarMenuItem key={key}>
-                    <SidebarMenuButton asChild isActive={currentTab === key}>
-                      <Link to={"/dashboard"} search={{ tab: key }}>
-                        <value.icon />
-                        <span>{value.name}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))} */}
-							<SidebarMenuItem>
-								<SidebarMenuButton asChild>
-									<Link href={redirects.app.index}>
-										<span>Dashboard</span>
-									</Link>
+							<SidebarMenuItem className="flex items-center gap-2">
+								<SidebarMenuButton
+									tooltip="Quick Create"
+									className="min-w-8 bg-primary text-primary-foreground duration-200 ease-linear hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground"
+								>
+									<PlusCircleIcon />
+									<span>Quick Create</span>
 								</SidebarMenuButton>
+								<Button
+									size="icon"
+									className="size-8 group-data-[collapsible=icon]:opacity-0"
+									variant="outline"
+								>
+									<MailIcon />
+									<span className="sr-only">Inbox</span>
+								</Button>
 							</SidebarMenuItem>
-							<SidebarMenuItem>
-								<SidebarMenuButton asChild>
-									<Link href={redirects.app.bankStatements}>
-										<span>Bank Statements</span>
-									</Link>
-								</SidebarMenuButton>
-							</SidebarMenuItem>
+						</SidebarMenu>
+						<SidebarMenu>
+							{items.map((item) => (
+								<SidebarMenuItem key={item.title}>
+									<SidebarMenuButton tooltip={item.title}>
+										{item.icon && <item.icon />}
+										<span>{item.title}</span>
+									</SidebarMenuButton>
+								</SidebarMenuItem>
+							))}
 						</SidebarMenu>
 					</SidebarGroupContent>
 				</SidebarGroup>

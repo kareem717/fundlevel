@@ -5,10 +5,19 @@ import {
 	SidebarTrigger,
 } from "@fundlevel/ui/components/sidebar";
 import { redirects } from "@fundlevel/web/lib/config/redirects";
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
 import { getSessionFn } from "../actions/auth";
 import { AppSidebar } from "./components/app-sidebar";
+
+export const metadata: Metadata = {
+	title: {
+		template: "%s | Fundlevel",
+		default: "Fundlevel",
+	},
+	description: "Fundlevel",
+};
 
 export default async function CoreLayout({
 	children,
