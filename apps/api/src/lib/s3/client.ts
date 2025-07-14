@@ -1,13 +1,20 @@
 import { S3Client } from "@aws-sdk/client-s3";
+import env from "@fundlevel/api/env";
 
 export const createS3Client = () => {
 	//TODO: fix
 	return new S3Client({
-		region: "auto",
-		endpoint: "https://.r2.cloudflarestorage.com",
+		region: env.AWS_REGION,
+		endpoint: env.AWS_ENDPOINT_URL_S3,
 		credentials: {
-			accessKeyId: "env.R2_ACCESS_KEY_ID",
-			secretAccessKey: "env.R2_SECRET_ACCESS_KEY",
+			accessKeyId: env.AWS_ACCESS_KEY_ID,
+			secretAccessKey: env.AWS_SECRET_ACCESS_KEY,
 		},
 	});
 };
+
+export const bankStatementS3Key = (userId: string, fileName: string) =>
+	`bank-statements/${userId}/${fileName}`;
+
+export const exportS3Key = (userId: string, fileName: string) =>
+	`exports/${userId}/${fileName}`;

@@ -1,9 +1,12 @@
 import type { NangoRecord } from "@nangohq/node";
 import * as Sentry from "@sentry/bun";
 import { createNangoClient } from "./client";
-import { NangoIntegration, type QuickbooksAccount } from "./types";
+import type { QuickbooksAccount } from "./types";
 
-export const getQuickbookAccounts = async (connectionId: string) => {
+export const getQuickbookAccounts = async (
+	connectionId: string,
+	providerConfigKey: string,
+) => {
 	const nangoClient = createNangoClient();
 	let accounts: NangoRecord<QuickbooksAccount>[] = [];
 
@@ -16,7 +19,7 @@ export const getQuickbookAccounts = async (connectionId: string) => {
 				name: "Nango API Call",
 				op: "nango.api.listRecords",
 				attributes: {
-					provider: NangoIntegration.QUICKBOOKS,
+					providerConfigKey,
 					model: "Account",
 					page: page,
 				},
@@ -24,7 +27,7 @@ export const getQuickbookAccounts = async (connectionId: string) => {
 			async () => {
 				const apiCallStartTime = performance.now();
 				const result = await nangoClient.listRecords<QuickbooksAccount>({
-					providerConfigKey: NangoIntegration.QUICKBOOKS,
+					providerConfigKey,
 					connectionId: connectionId,
 					model: "Account",
 					cursor: cursor,

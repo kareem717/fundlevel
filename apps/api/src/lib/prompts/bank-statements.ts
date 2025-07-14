@@ -1,3 +1,6 @@
+import type { NangoRecord } from "@nangohq/node";
+import type { QuickbooksAccount } from "../nango/types";
+
 export const BANK_STATEMENT_EXTRACTION_PROMPT = `You are an expert financial document processor specializing in extracting transaction data from bank statements.
 
 Your task is to analyze bank statement documents (PDF or images) and extract ALL transactions with high accuracy.
@@ -39,12 +42,16 @@ QUALITY CHECKS:
 - Remove duplicate transactions
 - Maintain chronological order when possible`;
 
-export const buildBankStatementPrompt = (accountsPrompt?: string): string => {
-	let prompt = "Extract the transactions from the provided files.";
-
-	if (accountsPrompt) {
-		prompt += `\n\n${accountsPrompt}`;
+export const buildBankStatementPrompt = (
+	accounts?: NangoRecord<QuickbooksAccount>[],
+): string => {
+	let accountsPrompt = "";
+	if (accounts) {
+		const accountsList = accounts
+			.map((acc) => `- ${acc.name} (ID: ${acc.id})`)
+			.join("\n");
+		accountsPrompt = `Here are the available Quickbooks accounts, please classify each transaction into one of them and include the account name and ID:\n${accountsList}`;
 	}
 
-	return prompt;
+	return `Extract the transactions from the provided files. ${accountsPrompt}`;
 };

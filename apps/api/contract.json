@@ -126,27 +126,34 @@
 				}
 			}
 		},
-		"upload": {
-			"~orpc": {
-				"errorMap": {},
-				"meta": {},
-				"route": {
-					"method": "POST",
-					"path": "/bank-statements/upload",
-					"tags": ["Bank Statements"],
-					"inputStructure": "detailed"
-				}
-			}
-		},
 		"extract": {
 			"~orpc": {
 				"errorMap": {},
 				"meta": {},
 				"route": {
 					"method": "POST",
-					"path": "/bank-statements/{id}/extract",
-					"tags": ["Bank Statements"],
-					"inputStructure": "detailed"
+					"path": "/bank-statements/extract",
+					"spec": {
+						"tags": ["Bank Statements"],
+						"requestBody": {
+							"required": true,
+							"content": {
+								"multipart/form-data": {
+									"schema": {
+										"type": "object",
+										"properties": {
+											"file": {
+												"type": "string",
+												"format": "binary",
+												"description": "The bank statement file to extract transactions from (PDF, CSV, or other supported formats)"
+											}
+										},
+										"required": ["file"]
+									}
+								}
+							}
+						}
+					}
 				}
 			}
 		},

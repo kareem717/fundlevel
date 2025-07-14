@@ -1,8 +1,3 @@
-export const NangoIntegration = {
-	QUICKBOOKS: "quickbooks",
-	GOOGLE_SHEETS: "google-sheet",
-} as const;
-
 export type QuickbooksAccount = {
 	created_at: string;
 	updated_at: string;

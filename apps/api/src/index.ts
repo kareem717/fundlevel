@@ -97,12 +97,11 @@ const getOpenAPISchema = async (c: Context) => {
 
 // Error handling
 app.onError((err, c) => {
-	if (env.NODE_ENV === "development") {
+	if (env.NODE_ENV !== "production") {
 		console.error(err);
-	} else {
-		// Report _all_ unhandled errors.
-		Sentry.captureException(err); // ik this is already handled by the withSentry wrapper
 	}
+
+	Sentry.captureException(err); // Disabled on non-production environments
 
 	if (err instanceof ORPCError) {
 		return c.json(
@@ -110,8 +109,6 @@ app.onError((err, c) => {
 			err.status as ContentfulStatusCode,
 		);
 	}
-
-	console.log("err", err);
 
 	// Unknown error
 	return c.json({ message: "Internal Server Error", status: 500 }, 500);

@@ -1,17 +1,40 @@
+import {
+	DeleteObjectCommand,
+	GetObjectCommand,
+	PutObjectCommand,
+} from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import env from "@fundlevel/api/env";
 import { createDB } from "@fundlevel/api/lib/db/client";
-import { OCRService } from "@fundlevel/api/services/ocr";
-import { bankStatementSchema, transactionSchema } from "@fundlevel/db/schema";
+import { createMistralAIProvider } from "@fundlevel/api/lib/mistral/client";
+import { getQuickbookAccounts } from "@fundlevel/api/lib/nango/quickbooks";
+import type { QuickbooksAccount } from "@fundlevel/api/lib/nango/types";
+import { buildBankStatementPrompt } from "@fundlevel/api/lib/prompts";
 import {
+	bankStatementS3Key,
+	createS3Client,
+	exportS3Key,
+} from "@fundlevel/api/lib/s3/client";
+import {
+	bankStatementSchema,
+	integrationSchema,
+	transactionSchema,
+} from "@fundlevel/db/schema";
+import type { NangoConnection } from "@fundlevel/db/types";
+import {
+	InsertTransactionSchema,
 	SelectBankStatementSchema,
 	SelectTransactionSchema,
 } from "@fundlevel/db/validation";
+import type { NangoRecord } from "@nangohq/node";
 import { ORPCError } from "@orpc/server";
 import * as Sentry from "@sentry/bun";
+import { generateObject } from "ai";
 import { eq } from "drizzle-orm";
 import { getTableConfig } from "drizzle-orm/pg-core";
 import z from "zod";
 import { protectedProcedure } from "../init";
+import { ExtractTransactionSchema } from "../schemas";
 
 export const bankStatementRouter = {
 	list: protectedProcedure
@@ -63,71 +86,72 @@ export const bankStatementRouter = {
 			);
 		}),
 
-	upload: protectedProcedure
+	extract: protectedProcedure
 		.route({
 			method: "POST",
-			path: "/bank-statements/upload",
-			tags: ["Bank Statements"],
-			inputStructure: "detailed",
+			path: "/bank-statements/extract",
+			spec: {
+				tags: ["Bank Statements"],
+				requestBody: {
+					required: true,
+					content: {
+						"multipart/form-data": {
+							schema: {
+								type: "object",
+								properties: {
+									file: {
+										type: "string",
+										format: "binary",
+										description:
+											"The bank statement file to extract transactions from (PDF, CSV, or other supported formats)",
+									},
+								},
+								required: ["file"],
+							},
+						},
+					},
+				},
+			},
 		})
 		.input(
 			z.object({
-				form: z.object({
-					file: z
-						.instanceof(File)
-						.refine(
-							(file) =>
-								file.type.startsWith("image/") ||
-								file.type.startsWith("application/pdf"),
-							{
-								message: "Only image or PDF files are allowed",
-							},
-						)
-						.describe("The bank statement file"),
-				}),
+				file: z.instanceof(File),
 			}),
 		)
 		.output(
-			z.object({
-				bankStatement: SelectBankStatementSchema.describe(
-					"The uploaded bank statement",
-				),
-			}),
+			z.array(ExtractTransactionSchema).describe("Extracted transactions"),
 		)
 		.handler(async ({ input, context }) => {
 			const { user } = context;
-			const { file } = input.form;
+
+			const { file } = input;
+
 			const db = createDB();
+			// Upload file to s3
+			const s3Client = createS3Client();
 
-			// Upload file to R2
-			const fileUrl = "";
-			//TODO: fix and replace
-			// let uploadedFile: R2Object;
-			// try {
-			// 	uploadedFile = await env.DOCUMENTS_BUCKET.put(
-			// 		`${new Date().toISOString()}-${crypto.randomUUID()}`,
-			// 		file,
-			// 		{
-			// 			httpMetadata: {
-			// 				contentType: file.type,
-			// 			},
-			// 		},
-			// 	);
-			// 	if (!uploadedFile) {
-			// 		throw new ORPCError("INTERNAL_SERVER_ERROR", {
-			// 			message: "Initializing file upload to R2 failed.",
-			// 		});
-			// 	}
-			// 	fileUrl = `${env.DOCUMENTS_BUCKET_URL}/${uploadedFile.key}`;
-			// } catch (error) {
-			// 	throw new ORPCError("INTERNAL_SERVER_ERROR", {
-			// 		message: "Failed to upload file to R2.",
-			// 		cause: error,
-			// 	});
-			// }
+			const s3Key = bankStatementS3Key(user.id, file.name);
+			try {
+				// Convert File to Buffer to avoid streaming hash calculation issues
+				const fileBuffer = Buffer.from(await file.arrayBuffer());
 
-			// Create bank statement record
-			const [bankStatement] = await Sentry.startSpan(
+				await s3Client.send(
+					new PutObjectCommand({
+						Bucket: env.BUCKET_NAME,
+						Key: s3Key,
+						Body: fileBuffer,
+					}),
+				);
+			} catch (error) {
+				console.log("error", error);
+				throw new ORPCError("INTERNAL_SERVER_ERROR", {
+					message: "Failed to save bank statement to storage.",
+					cause: error,
+				});
+			}
+
+			// Insert bank statement into database
+			const statement = await Sentry.startSpan(
 				{
 					name: "DB Insert",
 					op: "db.insert",
@@ -138,17 +162,219 @@ export const bankStatementRouter = {
 				async () => {
 					try {
 						const insertStartTime = performance.now();
-						const result = await db
+						const [statement] = await db
 							.insert(bankStatementSchema.bankStatements)
 							.values({
 								originalFileName: file.name,
-								r2Url: fileUrl,
+								s3Key,
 								fileType: file.type,
-								fileSize: file.size.toString(),
+								fileSizeBytes: BigInt(file.size),
 								userId: user.id,
-								processingStatus: "pending",
 							})
 							.returning();
+
+						const span = Sentry.getActiveSpan();
+						if (span) {
+							span.setAttribute(
+								"db.insert.processing_time_ms",
+								performance.now() - insertStartTime,
+							);
+						}
+
+						return statement;
+					} catch (error) {
+						throw new ORPCError("INTERNAL_SERVER_ERROR", {
+							message: "Failed to insert bank statement.",
+							cause: error,
+						});
+					}
+				},
+			);
+
+			// Get QB connection for account classification
+			const nangoConnection = await Sentry.startSpan(
+				{
+					name: "DB Query",
+					op: "db.query",
+					attributes: {
+						table: getTableConfig(integrationSchema.nangoConnections).name,
+					},
+				},
+				async () => {
+					let nangoConnection: NangoConnection;
+					const queryStartTime = performance.now();
+					try {
+						[nangoConnection] = await db
+							.select()
+							.from(integrationSchema.nangoConnections)
+							.where(eq(integrationSchema.nangoConnections.userId, user.id))
+							.limit(1);
+					} catch (error) {
+						throw new ORPCError("INTERNAL_SERVER_ERROR", {
+							message: "Failed to fetch nango connection.",
+							cause: error,
+						});
+					}
+					const span = Sentry.getActiveSpan();
+					if (span) {
+						span.setAttribute(
+							"db.query.processing_time_ms",
+							performance.now() - queryStartTime,
+						);
+					}
+
+					if (!nangoConnection) {
+						throw new ORPCError("NOT_FOUND", {
+							message: "Nango connection not found",
+						});
+					}
+
+					return nangoConnection;
+				},
+			);
+
+			// create presigned url for bank statement
+			const presignedUrl = await Sentry.startSpan(
+				{
+					name: "S3 Get Object",
+					op: "s3.get_object",
+				},
+				async () => {
+					try {
+						const getUrlStartTime = performance.now();
+						const url = await getSignedUrl(
+							s3Client,
+							new GetObjectCommand({
+								Bucket: env.BUCKET_NAME,
+								Key: s3Key,
+							}),
+							{
+								expiresIn: 60, // 60 seconds
+							},
+						);
+						const span = Sentry.getActiveSpan();
+						if (span) {
+							span.setAttribute(
+								"s3.get_object.processing_time_ms",
+								performance.now() - getUrlStartTime,
+							);
+						}
+
+						return url;
+					} catch (error) {
+						throw new ORPCError("INTERNAL_SERVER_ERROR", {
+							message: "Failed to create presigned url.",
+							cause: error,
+						});
+					}
+				},
+			);
+
+			let accounts: NangoRecord<QuickbooksAccount>[] = [];
+			if (nangoConnection) {
+				try {
+					accounts = await getQuickbookAccounts(
+						nangoConnection.id,
+						nangoConnection.providerConfigKey,
+					);
+				} catch (error) {
+					console.log("error", error);
+					throw new ORPCError("INTERNAL_SERVER_ERROR", {
+						message: "Failed to fetch quickbooks accounts.",
+						cause: error,
+					});
+				}
+			}
+
+			const mistralClient = createMistralAIProvider();
+			const MODEL_NAME = "mistral-small-latest";
+
+			const transactions = await Sentry.startSpan(
+				{
+					name: "OCR Process",
+					op: "ocr.process",
+				},
+				async () => {
+					try {
+						const startTime = performance.now();
+						const response = await generateObject({
+							model: mistralClient(MODEL_NAME),
+							output: "array",
+							schema: ExtractTransactionSchema,
+							abortSignal: AbortSignal.timeout(1000 * 60),
+							messages: [
+								{
+									role: "system",
+									content: buildBankStatementPrompt(accounts),
+								},
+								{
+									role: "user",
+									content: [
+										{
+											type: "file",
+											data: presignedUrl,
+											mimeType: file.type,
+										},
+									],
+								},
+							],
+							providerOptions: {
+								mistral: {
+									documentPageLimit: 10,
+								},
+							},
+						});
+
+						const span = Sentry.getActiveSpan();
+						if (span) {
+							span.setAttribute(
+								"ocr.completion_tokens",
+								response.usage.completionTokens,
+							);
+							span.setAttribute(
+								"ocr.prompt_tokens",
+								response.usage.promptTokens,
+							);
+							span.setAttribute("ocr.model", MODEL_NAME);
+							span.setAttribute("ocr.provider", "mistral");
+							span.setAttribute(
+								"ocr.processing_time_ms",
+								performance.now() - startTime,
+							);
+						}
+
+						return response.object;
+					} catch (error) {
+						console.log("error", error);
+						throw new ORPCError("INTERNAL_SERVER_ERROR", {
+							message: "Failed to extract transactions.",
+							cause: error,
+						});
+					}
+				},
+			);
+
+			// Insert transactions into database
+			await Sentry.startSpan(
+				{
+					name: "DB Insert",
+					op: "db.insert",
+					attributes: {
+						table: getTableConfig(transactionSchema.transactions).name,
+					},
+				},
+				async () => {
+					try {
+						const insertStartTime = performance.now();
+						const result = await db
+							.insert(transactionSchema.transactions)
+							.values(
+								transactions.map((transaction) => ({
+									...transaction,
+									userId: user.id,
+									bankStatementId: statement.id,
+								})),
+							);
 
 						const span = Sentry.getActiveSpan();
 						if (span) {
@@ -160,221 +386,15 @@ export const bankStatementRouter = {
 						return result;
 					} catch (error) {
 						throw new ORPCError("INTERNAL_SERVER_ERROR", {
-							message: "Failed to create bank statement record.",
+							message: "Failed to insert transactions.",
 							cause: error,
 						});
 					}
 				},
 			);
 
-			return { bankStatement };
+			return transactions;
 		}),
-
-	extract: protectedProcedure
-		.route({
-			method: "POST",
-			path: "/bank-statements/{id}/extract",
-			tags: ["Bank Statements"],
-			inputStructure: "detailed",
-		})
-		.input(
-			z.object({
-				params: z.object({
-					id: z
-						.string()
-						.describe("The ID of the bank statement to extract from"),
-				}),
-			}),
-		)
-		.output(
-			z.object({
-				success: z.boolean().describe("Whether the extraction was successful"),
-				transactionsExtracted: z
-					.number()
-					.describe("Number of transactions extracted"),
-				transactions: z.array(z.any()).describe("Extracted transactions"),
-			}),
-		)
-		.handler(async ({ input, context }) => {
-			const { user } = context;
-			const { id } = input.params;
-			const db = createDB();
-			const ocrService = new OCRService();
-
-			// Get the bank statement
-			const [statement] = await Sentry.startSpan(
-				{
-					name: "DB Query",
-					op: "db.query",
-					attributes: {
-						table: getTableConfig(bankStatementSchema.bankStatements).name,
-					},
-				},
-				async () => {
-					try {
-						const queryStartTime = performance.now();
-						const result = await db
-							.select()
-							.from(bankStatementSchema.bankStatements)
-							.where(
-								eq(bankStatementSchema.bankStatements.id, Number.parseInt(id)),
-							)
-							.limit(1);
-
-						const span = Sentry.getActiveSpan();
-						if (span) {
-							span.setAttribute(
-								"db.query.processing_time_ms",
-								performance.now() - queryStartTime,
-							);
-						}
-						return result;
-					} catch (error) {
-						throw new ORPCError("INTERNAL_SERVER_ERROR", {
-							message: "Failed to fetch bank statement.",
-							cause: error,
-						});
-					}
-				},
-			);
-
-			if (!statement) {
-				throw new ORPCError("NOT_FOUND", {
-					message: "Bank statement not found",
-				});
-			}
-
-			if (statement.userId !== user.id) {
-				throw new ORPCError("FORBIDDEN", { message: "Access denied" });
-			}
-
-			// Update status to processing
-			await Sentry.startSpan(
-				{
-					name: "DB Update",
-					op: "db.update",
-					attributes: {
-						table: getTableConfig(bankStatementSchema.bankStatements).name,
-					},
-				},
-				async () => {
-					try {
-						const updateStartTime = performance.now();
-						await db
-							.update(bankStatementSchema.bankStatements)
-							.set({
-								processingStatus: "processing",
-								updatedAt: new Date(),
-							})
-							.where(
-								eq(bankStatementSchema.bankStatements.id, Number.parseInt(id)),
-							);
-
-						const span = Sentry.getActiveSpan();
-						if (span) {
-							span.setAttribute(
-								"db.update.processing_time_ms",
-								performance.now() - updateStartTime,
-							);
-						}
-					} catch (error) {
-						throw new ORPCError("INTERNAL_SERVER_ERROR", {
-							message: "Failed to initialize bank statement processing.",
-							cause: error,
-						});
-					}
-				},
-			);
-
-			try {
-				const transactions = await ocrService.extractTransactions({
-					fileUrl: statement.r2Url,
-					fileType: statement.fileType,
-					userId: user.id,
-					bankStatementId: statement.id,
-				});
-				// Update status to completed
-				await Sentry.startSpan(
-					{
-						name: "DB Update",
-						op: "db.update",
-						attributes: {
-							table: getTableConfig(bankStatementSchema.bankStatements).name,
-						},
-					},
-					async () => {
-						try {
-							const updateStartTime = performance.now();
-							await db
-								.update(bankStatementSchema.bankStatements)
-								.set({
-									processingStatus: "completed",
-									updatedAt: new Date(),
-								})
-								.where(
-									eq(
-										bankStatementSchema.bankStatements.id,
-										Number.parseInt(id),
-									),
-								);
-
-							const span = Sentry.getActiveSpan();
-							if (span) {
-								span.setAttribute(
-									"db.update.processing_time_ms",
-									performance.now() - updateStartTime,
-								);
-							}
-						} catch (error) {
-							throw new ORPCError("INTERNAL_SERVER_ERROR", {
-								message: "Failed to update bank statement status.",
-								cause: error,
-							});
-						}
-					},
-				);
-
-				return {
-					success: true,
-					transactionsExtracted: transactions.length,
-					transactions,
-				};
-			} catch (error) {
-				// Update status to failed
-				await Sentry.startSpan(
-					{
-						name: "DB Update",
-						op: "db.update",
-						attributes: {
-							table: getTableConfig(bankStatementSchema.bankStatements).name,
-						},
-					},
-					async () => {
-						const updateStartTime = performance.now();
-						await db
-							.update(bankStatementSchema.bankStatements)
-							.set({
-								processingStatus: "failed",
-								updatedAt: new Date(),
-							})
-							.where(
-								eq(bankStatementSchema.bankStatements.id, Number.parseInt(id)),
-							);
-
-						const span = Sentry.getActiveSpan();
-						if (span) {
-							span.setAttribute(
-								"db.update.processing_time_ms",
-								performance.now() - updateStartTime,
-							);
-						}
-					},
-				);
-
-				throw error;
-			}
-		}),
-
 	transactions: protectedProcedure
 		.route({
 			method: "GET",
@@ -394,7 +414,6 @@ export const bankStatementRouter = {
 			const { user } = context;
 			const { id } = input.params;
 			const db = createDB();
-			const ocrService = new OCRService();
 
 			// Check if the bank statement belongs to the user
 			const [statement] = await Sentry.startSpan(
@@ -507,7 +526,6 @@ export const bankStatementRouter = {
 			const { user } = context;
 			const { id } = input.params;
 			const db = createDB();
-			const ocrService = new OCRService();
 
 			// Check if the bank statement belongs to the user
 			const [statement] = await Sentry.startSpan(
@@ -603,7 +621,7 @@ export const bankStatementRouter = {
 			}
 
 			// Generate CSV content
-			const csvHeader = "Date,Merchant,Description,Amount,Currency\n";
+			const csvHeader = "Date,Merchant,Description,Credit,Debit,Currency\n";
 			const csvRows = transactions
 				.map((transaction) => {
 					const amount = (transaction.amountCents / 100).toFixed(2);
@@ -623,7 +641,8 @@ export const bankStatementRouter = {
 						transaction.date,
 						escapeCsvField(transaction.merchant),
 						escapeCsvField(transaction.description),
-						amount,
+						transaction.amountCents > 0 ? amount : "",
+						transaction.amountCents < 0 ? amount : "",
 						transaction.currency || "USD",
 					].join(",");
 				})
@@ -633,38 +652,54 @@ export const bankStatementRouter = {
 
 			// Generate filename
 			const fileName = `transactions-${statement.originalFileName.replace(/\.[^/.]+$/, "")}-${new Date().toISOString().split("T")[0]}.csv`;
-			const r2Key = `exports/${user.id}/${fileName}`;
+			const s3Key = exportS3Key(user.id, fileName);
 
 			// TODO: fix and replace
-			// // Upload CSV to R2
-			// const uploadResult = await env.DOCUMENTS_BUCKET.put(r2Key, csvContent, {
-			// 	httpMetadata: {
-			// 		contentType: "text/csv",
-			// 		contentDisposition: `attachment; filename="${fileName}"`,
-			// 	},
-			// });
+			// Upload CSV to s3
+			const s3Client = createS3Client();
+			const command = new PutObjectCommand({
+				Bucket: env.BUCKET_NAME,
+				Key: s3Key,
+				Body: csvContent,
+				Metadata: {
+					contentType: "text/csv",
+					contentDisposition: `attachment; filename="${fileName}"`,
+				},
+			});
 
-			// if (!uploadResult) {
-			// 	throw new ORPCError("INTERNAL_SERVER_ERROR", {
-			// 		message: "Failed to upload CSV to storage",
-			// 	});
-			// }
+			try {
+				await s3Client.send(command);
+			} catch (error) {
+				throw new ORPCError("INTERNAL_SERVER_ERROR", {
+					message: "Failed to upload CSV to storage",
+					cause: error,
+				});
+			}
 
-			// Generate pre-signed URL (expires in 1 hour)
-			const expiresIn = 3600; // 1 hour
-			const expiresAt = new Date(Date.now() + expiresIn * 1000);
+			const expiresIn = 3600; // 15 minutes
 
-			// For R2, generate a direct download URL
-			// Note: R2 pre-signed URLs would require AWS S3 SDK or custom implementation
-			// This approach uses direct URLs which work for the current setup
-			// const downloadUrl = `${env.DOCUMENTS_BUCKET_URL}/${r2Key}`;
-			const downloadUrl = "";
-
-			return {
-				downloadUrl,
-				fileName,
-				expiresAt: expiresAt.toISOString(),
-			};
+			try {
+				const downloadUrl = await getSignedUrl(
+					s3Client,
+					new GetObjectCommand({
+						Bucket: env.BUCKET_NAME,
+						Key: s3Key,
+					}),
+					{
+						expiresIn,
+					},
+				);
+				return {
+					downloadUrl,
+					fileName,
+					expiresAt: new Date(Date.now() + expiresIn * 1000).toISOString(),
+				};
+			} catch (error) {
+				throw new ORPCError("INTERNAL_SERVER_ERROR", {
+					message: "Failed to generate download URL",
+					cause: error,
+				});
+			}
 		}),
 
 	delete: protectedProcedure
@@ -735,36 +770,76 @@ export const bankStatementRouter = {
 				});
 			}
 
-			// Delete the bank statement (transactions will be cascade deleted)
-			await Sentry.startSpan(
-				{
-					name: "DB Delete",
-					op: "db.delete",
-					attributes: {
-						table: getTableConfig(bankStatementSchema.bankStatements).name,
+			await db.transaction(async (tx) => {
+				// Delete the bank statement (transactions will be cascade deleted)
+				await Sentry.startSpan(
+					{
+						name: "DB Delete",
+						op: "db.delete",
+						attributes: {
+							table: getTableConfig(bankStatementSchema.bankStatements).name,
+						},
 					},
-				},
-				async () => {
-					const deleteStartTime = performance.now();
-					try {
-						await db
-							.delete(bankStatementSchema.bankStatements)
-							.where(eq(bankStatementSchema.bankStatements.id, id));
-					} catch (error) {
-						throw new ORPCError("INTERNAL_SERVER_ERROR", {
-							message: "Failed to delete bank statement.",
-							cause: error,
-						});
-					}
+					async () => {
+						const deleteStartTime = performance.now();
+						try {
+							await tx
+								.delete(bankStatementSchema.bankStatements)
+								.where(eq(bankStatementSchema.bankStatements.id, id));
+						} catch (error) {
+							throw new ORPCError("INTERNAL_SERVER_ERROR", {
+								message: "Failed to delete bank statement.",
+								cause: error,
+							});
+						}
 
-					const span = Sentry.getActiveSpan();
-					if (span) {
-						span.setAttribute(
-							"db.delete.processing_time_ms",
-							performance.now() - deleteStartTime,
-						);
-					}
-				},
-			);
+						const span = Sentry.getActiveSpan();
+						if (span) {
+							span.setAttribute(
+								"db.delete.processing_time_ms",
+								performance.now() - deleteStartTime,
+							);
+						}
+					},
+				);
+
+				// Delete the CSV file from s3
+				const s3Client = createS3Client();
+
+				await Sentry.startSpan(
+					{
+						name: "S3 Delete",
+						op: "s3.delete",
+						attributes: {
+							bucket: env.BUCKET_NAME,
+							key: statement.s3Key,
+						},
+					},
+					async () => {
+						try {
+							const deleteStartTime = performance.now();
+							await s3Client.send(
+								new DeleteObjectCommand({
+									Bucket: env.BUCKET_NAME,
+									Key: statement.s3Key,
+								}),
+							);
+
+							const span = Sentry.getActiveSpan();
+							if (span) {
+								span.setAttribute(
+									"s3.delete.processing_time_ms",
+									performance.now() - deleteStartTime,
+								);
+							}
+						} catch (error) {
+							throw new ORPCError("INTERNAL_SERVER_ERROR", {
+								message: "Failed to delete CSV file from storage",
+								cause: error,
+							});
+						}
+					},
+				);
+			});
 		}),
 };

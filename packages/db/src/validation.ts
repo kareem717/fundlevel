@@ -39,12 +39,9 @@ export const InsertBankStatementSchema = createInsertSchema(bankStatements, {
 	originalFileName: z
 		.string()
 		.describe("The original filename of the uploaded file"),
-	r2Url: z.string().url().describe("The R2 URL where the file is stored"),
+	s3Key: z.string().describe("The S3 key where the file is stored"),
 	fileType: z.string().describe("The MIME type of the file"),
-	fileSize: z.string().describe("The size of the file in bytes"),
-	processingStatus: z
-		.enum(["pending", "processing", "completed", "failed"])
-		.optional(),
+	fileSizeBytes: z.bigint().describe("The size of the file in bytes"),
 });
 
 export const SelectBankStatementSchema = createSelectSchema(bankStatements);

@@ -2,7 +2,6 @@ import { createDB } from "@fundlevel/api/lib/db/client";
 import { createNangoClient } from "@fundlevel/api/lib/nango/client";
 import { getQuickbookAccounts } from "@fundlevel/api/lib/nango/quickbooks";
 import { QuickbooksAccountSchema } from "@fundlevel/api/lib/nango/schema";
-import { NangoIntegration } from "@fundlevel/api/lib/nango/types";
 import { integrationSchema } from "@fundlevel/db/schema";
 import type { NangoConnection, NangoProviders } from "@fundlevel/db/types";
 import {
@@ -440,7 +439,10 @@ export const integrationRouter = {
 					});
 				}
 
-				const accounts = await getQuickbookAccounts(connection.id);
+				const accounts = await getQuickbookAccounts(
+					connection.id,
+					connection.providerConfigKey,
+				);
 
 				return { accounts };
 			}),
