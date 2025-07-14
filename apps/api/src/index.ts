@@ -123,7 +123,7 @@ Sentry.init({
 	// Adds request headers and IP for users, for more info visit:
 	// https://docs.sentry.io/platforms/javascript/guides/cloudflare/configuration/options/#sendDefaultPii
 	sendDefaultPii: true,
-
+	environment: env.NODE_ENV,
 	// Enable logs to be sent to Sentry
 	_experiments: { enableLogs: true },
 	// Set tracesSampleRate to 1.0 to capture 100% of spans for tracing.

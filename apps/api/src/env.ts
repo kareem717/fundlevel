@@ -32,6 +32,11 @@ const EnvSchema = z.object({
 	WEB_APP_URL: z.string().url(),
 	BASE_URL: z.string().url(),
 	BASE_DOMAIN: z.string(),
+	AWS_ACCESS_KEY_ID: z.string(),
+	AWS_ENDPOINT_URL_S3: z.string().url(),
+	AWS_REGION: z.string(),
+	AWS_SECRET_ACCESS_KEY: z.string(),
+	BUCKET_NAME: z.string(),
 });
 
 export type env = z.infer<typeof EnvSchema>;
