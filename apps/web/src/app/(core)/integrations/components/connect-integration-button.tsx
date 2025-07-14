@@ -1,5 +1,6 @@
 "use client";
 
+import type { NangoProviders } from "@fundlevel/db/types";
 import { Button } from "@fundlevel/ui/components/button";
 import { useIntegrationConnect } from "@fundlevel/web/hooks/use-integration-connect";
 import { Loader2 } from "lucide-react";
@@ -7,7 +8,7 @@ import type { ComponentPropsWithoutRef } from "react";
 
 interface ConnectIntegrationButtonProps
 	extends ComponentPropsWithoutRef<typeof Button> {
-	integration: "quickbooks" | "google-sheet";
+	integration: NangoProviders;
 }
 
 export function ConnectIntegrationButton({
