@@ -19,6 +19,8 @@
 		"dev:web": "turbo -F @fundlevel/web dev",
 		"dev:api": "turbo -F @fundlevel/api dev",
 		"dev:landing": "turbo -F @fundlevel/landing dev",
+		"dev:jobs": "turbo -F @fundlevel/jobs dev",
+		"dev:app": "turbo -F @fundlevel/api -F @fundlevel/web -F @fundlevel/jobs dev",
 		"db:push": "turbo -F @fundlevel/db db:push",
 		"db:studio": "turbo -F @fundlevel/db db:studio",
 		"db:generate": "turbo -F @fundlevel/db db:generate",

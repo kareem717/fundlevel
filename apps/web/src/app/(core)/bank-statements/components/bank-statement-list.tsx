@@ -109,7 +109,7 @@ export function BankStatementList({
 							Upload your bank statements to get started.
 						</p>
 						<div className="fade-in-0 -mt-20 grid min-h-[500px] animate-in place-items-center opacity-100 duration-700 [grid-template-areas:'stack']">
-							{DEFAULT_BANK_STATEMENTS.map((statement, index) => (
+							{DEFAULT_BANK_STATEMENTS.map((statement, _index) => (
 								<BankStatementCard key={nanoid()} {...statement} />
 							))}
 						</div>
