@@ -1,5 +1,4 @@
 import { getSessionFn } from "@fundlevel/web/app/actions/auth";
-import { getCookieHeaderFn } from "@fundlevel/web/app/actions/utils";
 import { redirects } from "@fundlevel/web/lib/config/redirects";
 import { createServerORPCClient } from "@fundlevel/web/lib/orpc/server";
 import { redirect } from "next/navigation";
@@ -19,5 +18,5 @@ export async function GET() {
 		return redirect(resp.location);
 	}
 
-	return resp;
+	throw new Error("Failed to sign in");
 }
