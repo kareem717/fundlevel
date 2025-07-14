@@ -1,5 +1,3 @@
-"use client";
-
 import type { NangoConnection, NangoProviders } from "@fundlevel/db/types";
 import { Badge } from "@fundlevel/ui/components/badge";
 import { Button } from "@fundlevel/ui/components/button";

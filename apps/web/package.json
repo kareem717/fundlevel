@@ -19,6 +19,7 @@
 		"@orpc/client": "^1.6.8",
 		"@orpc/openapi-client": "^1.6.8",
 		"@orpc/tanstack-query": "^1.6.8",
+		"@radix-ui/react-slot": "^1.2.3",
 		"@t3-oss/env-nextjs": "^0.13.8",
 		"@tanstack/react-query": "^5.81.5",
 		"@tanstack/react-query-devtools": "^5.83.0",

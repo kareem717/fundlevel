@@ -20,9 +20,8 @@ import {
 	integrationSchema,
 	transactionSchema,
 } from "@fundlevel/db/schema";
-import type { NangoConnection } from "@fundlevel/db/types";
+import type { BankStatement, NangoConnection } from "@fundlevel/db/types";
 import {
-	InsertTransactionSchema,
 	SelectBankStatementSchema,
 	SelectTransactionSchema,
 } from "@fundlevel/db/validation";
@@ -85,11 +84,10 @@ export const bankStatementRouter = {
 				},
 			);
 		}),
-
-	extract: protectedProcedure
+	upload: protectedProcedure
 		.route({
 			method: "POST",
-			path: "/bank-statements/extract",
+			path: "/bank-statements",
 			spec: {
 				tags: ["Bank Statements"],
 				requestBody: {
@@ -115,7 +113,153 @@ export const bankStatementRouter = {
 		})
 		.input(
 			z.object({
-				file: z.instanceof(File),
+				file: z
+					.instanceof(File)
+					.refine(
+						(file) =>
+							["image/png", "image/jpeg", "application/pdf"].includes(
+								file.type,
+							),
+						{
+							message: "File must be a PNG, JPEG, or PDF",
+						},
+					),
+			}),
+		)
+		.handler(async ({ input, context }) => {
+			const { user } = context;
+			const { file } = input;
+			const db = createDB();
+			const s3Client = createS3Client();
+			const s3Key = bankStatementS3Key(user.id, file.name);
+
+			await db.transaction(async (tx) => {
+				try {
+					await tx.insert(bankStatementSchema.bankStatements).values({
+						originalFileName: file.name,
+						s3Key,
+						fileType: file.type,
+						fileSizeBytes: BigInt(file.size),
+						userId: user.id,
+					});
+				} catch (error) {
+					throw new ORPCError("INTERNAL_SERVER_ERROR", {
+						message: "Failed to insert bank statement.",
+						cause: error,
+					});
+				}
+
+				try {
+					// Convert File to Buffer to avoid streaming hash calculation issues
+					const fileBuffer = Buffer.from(await file.arrayBuffer());
+
+					await s3Client.send(
+						new PutObjectCommand({
+							Bucket: env.BUCKET_NAME,
+							Key: s3Key,
+							Body: fileBuffer,
+						}),
+					);
+				} catch (error) {
+					throw new ORPCError("INTERNAL_SERVER_ERROR", {
+						message: "Failed to save bank statement to storage.",
+						cause: error,
+					});
+				}
+			});
+		}),
+	download: protectedProcedure
+		.route({
+			method: "GET",
+			path: "/bank-statements/{id}/download",
+			tags: ["Bank Statements"],
+			inputStructure: "detailed",
+		})
+		.input(
+			z.object({
+				params: z.object({
+					id: z.coerce
+						.number()
+						.describe("The ID of the bank statement to download"),
+				}),
+			}),
+		)
+		.output(
+			z.object({
+				downloadUrl: z.string().describe("The URL of the bank statement file"),
+				expiresAt: z
+					.string()
+					.datetime()
+					.describe("The date and time the URL will expire"),
+				expiresIn: z
+					.number()
+					.describe("The number of seconds the URL will expire in"),
+			}),
+		)
+		.handler(async ({ input, context }) => {
+			const { user } = context;
+			const { id } = input.params;
+			const db = createDB();
+			const s3Client = createS3Client();
+
+			let statement: BankStatement;
+			try {
+				[statement] = await db
+					.select()
+					.from(bankStatementSchema.bankStatements)
+					.where(eq(bankStatementSchema.bankStatements.id, id));
+			} catch (error) {
+				throw new ORPCError("INTERNAL_SERVER_ERROR", {
+					message: "Failed to fetch bank statement.",
+					cause: error,
+				});
+			}
+
+			if (!statement) {
+				throw new ORPCError("NOT_FOUND", {
+					message: "Bank statement not found",
+				});
+			}
+
+			if (statement.userId !== user.id) {
+				throw new ORPCError("FORBIDDEN", {
+					message: "Bank statement does not belong to user",
+				});
+			}
+
+			const expiresIn = 60 * 60 * 24; // 24 hours
+
+			const presignedUrl = await getSignedUrl(
+				s3Client,
+				new GetObjectCommand({
+					Bucket: env.BUCKET_NAME,
+					Key: statement.s3Key,
+				}),
+				{
+					expiresIn,
+				},
+			);
+
+			return {
+				downloadUrl: presignedUrl,
+				expiresAt: new Date(Date.now() + expiresIn * 1000).toISOString(),
+				expiresIn,
+			};
+		}),
+	extract: protectedProcedure
+		.route({
+			method: "POST",
+			path: "/bank-statements/{id}/extract",
+			tags: ["Bank Statements"],
+			inputStructure: "detailed",
+		})
+		.input(
+			z.object({
+				params: z.object({
+					id: z.coerce
+						.number()
+						.describe("The ID of the bank statement to extract"),
+				}),
 			}),
 		)
 		.output(
@@ -123,73 +267,32 @@ export const bankStatementRouter = {
 		)
 		.handler(async ({ input, context }) => {
 			const { user } = context;
-
-			const { file } = input;
-
 			const db = createDB();
-			// Upload file to s3
 			const s3Client = createS3Client();
 
-			const s3Key = bankStatementS3Key(user.id, file.name);
+			let statement: BankStatement;
 			try {
-				// Convert File to Buffer to avoid streaming hash calculation issues
-				const fileBuffer = Buffer.from(await file.arrayBuffer());
-
-				await s3Client.send(
-					new PutObjectCommand({
-						Bucket: env.BUCKET_NAME,
-						Key: s3Key,
-						Body: fileBuffer,
-					}),
-				);
+				[statement] = await db
+					.select()
+					.from(bankStatementSchema.bankStatements)
+					.where(eq(bankStatementSchema.bankStatements.id, input.params.id));
 			} catch (error) {
-				console.log("error", error);
 				throw new ORPCError("INTERNAL_SERVER_ERROR", {
-					message: "Failed to save bank statement to storage.",
+					message: "Failed to fetch bank statement.",
 					cause: error,
 				});
 			}
+			if (!statement) {
+				throw new ORPCError("NOT_FOUND", {
+					message: "Bank statement not found",
+				});
+			}
 
-			// Insert bank statement into database
-			const statement = await Sentry.startSpan(
-				{
-					name: "DB Insert",
-					op: "db.insert",
-					attributes: {
-						table: getTableConfig(bankStatementSchema.bankStatements).name,
-					},
-				},
-				async () => {
-					try {
-						const insertStartTime = performance.now();
-						const [statement] = await db
-							.insert(bankStatementSchema.bankStatements)
-							.values({
-								originalFileName: file.name,
-								s3Key,
-								fileType: file.type,
-								fileSizeBytes: BigInt(file.size),
-								userId: user.id,
-							})
-							.returning();
-
-						const span = Sentry.getActiveSpan();
-						if (span) {
-							span.setAttribute(
-								"db.insert.processing_time_ms",
-								performance.now() - insertStartTime,
-							);
-						}
-
-						return statement;
-					} catch (error) {
-						throw new ORPCError("INTERNAL_SERVER_ERROR", {
-							message: "Failed to insert bank statement.",
-							cause: error,
-						});
-					}
-				},
-			);
+			if (statement.userId !== user.id) {
+				throw new ORPCError("FORBIDDEN", {
+					message: "Bank statement does not belong to user",
+				});
+			}
 
 			// Get QB connection for account classification
 			const nangoConnection = await Sentry.startSpan(
@@ -246,7 +349,7 @@ export const bankStatementRouter = {
 							s3Client,
 							new GetObjectCommand({
 								Bucket: env.BUCKET_NAME,
-								Key: s3Key,
+								Key: statement.s3Key,
 							}),
 							{
 								expiresIn: 60, // 60 seconds
@@ -278,7 +381,6 @@ export const bankStatementRouter = {
 						nangoConnection.providerConfigKey,
 					);
 				} catch (error) {
-					console.log("error", error);
 					throw new ORPCError("INTERNAL_SERVER_ERROR", {
 						message: "Failed to fetch quickbooks accounts.",
 						cause: error,
@@ -313,7 +415,7 @@ export const bankStatementRouter = {
 										{
 											type: "file",
 											data: presignedUrl,
-											mimeType: file.type,
+											mimeType: statement.fileType,
 										},
 									],
 								},
@@ -345,7 +447,6 @@ export const bankStatementRouter = {
 
 						return response.object;
 					} catch (error) {
-						console.log("error", error);
 						throw new ORPCError("INTERNAL_SERVER_ERROR", {
 							message: "Failed to extract transactions.",
 							cause: error,
@@ -354,44 +455,47 @@ export const bankStatementRouter = {
 				},
 			);
 
-			// Insert transactions into database
-			await Sentry.startSpan(
-				{
-					name: "DB Insert",
-					op: "db.insert",
-					attributes: {
-						table: getTableConfig(transactionSchema.transactions).name,
+			// Insert transactions and update status to "done" in a transaction
+			await db.transaction(async (tx) => {
+				// Insert transactions into database
+				await Sentry.startSpan(
+					{
+						name: "DB Insert",
+						op: "db.insert",
+						attributes: {
+							table: getTableConfig(transactionSchema.transactions).name,
+						},
 					},
-				},
-				async () => {
-					try {
-						const insertStartTime = performance.now();
-						const result = await db
-							.insert(transactionSchema.transactions)
-							.values(
-								transactions.map((transaction) => ({
-									...transaction,
-									userId: user.id,
-									bankStatementId: statement.id,
-								})),
-							);
+					async () => {
+						try {
+							const insertStartTime = performance.now();
+							const result = await tx
+								.insert(transactionSchema.transactions)
+								.values(
+									transactions.map((transaction) => ({
+										...transaction,
+										userId: user.id,
+										bankStatementId: statement.id,
+									})),
+								);
 
-						const span = Sentry.getActiveSpan();
-						if (span) {
-							span.setAttribute(
-								"db.insert.processing_time_ms",
-								performance.now() - insertStartTime,
-							);
+							const span = Sentry.getActiveSpan();
+							if (span) {
+								span.setAttribute(
+									"db.insert.processing_time_ms",
+									performance.now() - insertStartTime,
+								);
+							}
+							return result;
+						} catch (error) {
+							throw new ORPCError("INTERNAL_SERVER_ERROR", {
+								message: "Failed to insert transactions.",
+								cause: error,
+							});
 						}
-						return result;
-					} catch (error) {
-						throw new ORPCError("INTERNAL_SERVER_ERROR", {
-							message: "Failed to insert transactions.",
-							cause: error,
-						});
-					}
-				},
-			);
+					},
+				);
+			});
 
 			return transactions;
 		}),

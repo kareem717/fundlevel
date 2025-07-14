@@ -6,5 +6,6 @@ export const redirects = {
 	app: {
 		index: "/",
 		integrations: "/integrations",
+		bankStatements: "/bank-statements",
 	},
 };

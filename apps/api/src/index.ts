@@ -10,7 +10,6 @@ import { Scalar } from "@scalar/hono-api-reference";
 import { createMarkdownFromOpenApi } from "@scalar/openapi-to-markdown";
 import * as Sentry from "@sentry/bun";
 import type { Context } from "hono";
-import { HTTPException } from "hono/http-exception";
 import { logger } from "hono/logger";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
 import { WORKOS_COOKIE_KEY } from "./lib/workos";
@@ -32,7 +31,7 @@ const handler = new OpenAPIHandler(appRouter, {
 			credentials: true,
 		}),
 		new BodyLimitPlugin({
-			maxBodySize: 1024 * 1024, // 1MB
+			maxBodySize: 1024 * 1024 * 2, // 2MB
 		}),
 	],
 });
@@ -71,7 +70,7 @@ app
 		}),
 	);
 
-const getOpenAPISchema = async (c: Context) => {
+const getOpenAPISchema = async (_c: Context) => {
 	const openAPIGenerator = new OpenAPIGenerator({
 		schemaConverters: [new ZodToJsonSchemaConverter()],
 	});

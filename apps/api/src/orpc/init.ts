@@ -1,7 +1,6 @@
 import { oo } from "@orpc/openapi";
 import { ORPCError, os } from "@orpc/server";
 import * as Sentry from "@sentry/bun";
-import type { Context as HonoContext } from "hono";
 import { deleteCookie, getCookie } from "hono/cookie";
 import env from "../env";
 import {

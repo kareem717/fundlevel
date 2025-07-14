@@ -29,7 +29,10 @@
 		"db:status": "turbo -F @fundlevel/db db:status",
 		"db:reset": "turbo -F @fundlevel/db db:reset"
 	},
-	"dependencies": {},
+	"dependencies": {
+		"date-fns": "^4.1.0",
+		"web": "^0.0.2"
+	},
 	"devDependencies": {
 		"@biomejs/biome": "^2.0.6",
 		"husky": "^9.1.7",

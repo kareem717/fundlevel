@@ -1,7 +1,7 @@
 import type { AppRouter } from "@fundlevel/api/_app";
 import contract from "@fundlevel/api/contract";
 import { env } from "@fundlevel/web/env";
-import { createORPCClient } from "@orpc/client";
+import { createORPCClient, ORPCError } from "@orpc/client";
 import type { ContractRouterClient } from "@orpc/contract";
 import type { JsonifiedClient } from "@orpc/openapi-client";
 import { OpenAPILink } from "@orpc/openapi-client/fetch";
@@ -10,6 +10,19 @@ import { QueryCache, QueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 export const queryClient = new QueryClient({
+	defaultOptions: {
+		queries: {
+			refetchOnMount: false,
+			refetchOnWindowFocus: false,
+			retry: (failureCount, error) => {
+				if (error instanceof ORPCError) {
+					return false;
+				}
+				// only retry unhandled errors
+				return failureCount <= 1;
+			},
+		},
+	},
 	queryCache: new QueryCache({
 		onError: (error) => {
 			toast.error("Uh oh! Something went wrong.", {

@@ -44,7 +44,9 @@ export const InsertBankStatementSchema = createInsertSchema(bankStatements, {
 	fileSizeBytes: z.bigint().describe("The size of the file in bytes"),
 });
 
-export const SelectBankStatementSchema = createSelectSchema(bankStatements);
+export const SelectBankStatementSchema = createSelectSchema(bankStatements, {
+	fileSizeBytes: z.bigint().describe("The size of the file in bytes"),
+});
 
 // Receipt schemas
 export const InsertReceiptSchema = createInsertSchema(receipts, {

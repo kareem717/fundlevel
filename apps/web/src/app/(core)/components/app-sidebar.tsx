@@ -14,7 +14,7 @@ import {
 import { cn } from "@fundlevel/ui/lib/utils";
 import { redirects } from "@fundlevel/web/lib/config/redirects";
 import type { User } from "@workos-inc/node";
-import { Home, MailIcon, Plug2Icon, PlusCircleIcon } from "lucide-react";
+import { FileText, Home, MailIcon, Plug2, PlusCircleIcon } from "lucide-react";
 import Link from "next/link";
 import type { ComponentPropsWithoutRef } from "react";
 import { SidebarUser } from "./sidebar-user";
@@ -31,8 +31,13 @@ const items = [
 	},
 	{
 		title: "Integrations",
-		icon: Plug2Icon,
+		icon: Plug2,
 		href: redirects.app.integrations,
+	},
+	{
+		title: "Bank Statements",
+		icon: FileText,
+		href: redirects.app.bankStatements,
 	},
 ];
 

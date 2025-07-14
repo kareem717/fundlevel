@@ -11,7 +11,7 @@ import {
 import type { NangoWebhookBody } from "@nangohq/node";
 import { ORPCError } from "@orpc/server";
 import * as Sentry from "@sentry/bun";
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { getTableConfig } from "drizzle-orm/pg-core";
 import z from "zod";
 import { nangoProviders } from "../../../../../packages/db/src/schema/integration";
@@ -44,7 +44,7 @@ export const integrationRouter = {
 			}),
 		)
 		.handler(async ({ input }) => {
-			const db = createDB();
+			const _db = createDB();
 			const nangoClient = createNangoClient();
 			const valid = nangoClient.verifyWebhookSignature(
 				input.headers["x-nango-signature"],

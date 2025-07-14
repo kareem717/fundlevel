@@ -126,13 +126,13 @@
 				}
 			}
 		},
-		"extract": {
+		"upload": {
 			"~orpc": {
 				"errorMap": {},
 				"meta": {},
 				"route": {
 					"method": "POST",
-					"path": "/bank-statements/extract",
+					"path": "/bank-statements",
 					"spec": {
 						"tags": ["Bank Statements"],
 						"requestBody": {
@@ -154,6 +154,30 @@
 							}
 						}
 					}
+				}
+			}
+		},
+		"download": {
+			"~orpc": {
+				"errorMap": {},
+				"meta": {},
+				"route": {
+					"method": "GET",
+					"path": "/bank-statements/{id}/download",
+					"tags": ["Bank Statements"],
+					"inputStructure": "detailed"
+				}
+			}
+		},
+		"extract": {
+			"~orpc": {
+				"errorMap": {},
+				"meta": {},
+				"route": {
+					"method": "POST",
+					"path": "/bank-statements/{id}/extract",
+					"tags": ["Bank Statements"],
+					"inputStructure": "detailed"
 				}
 			}
 		},

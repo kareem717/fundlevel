@@ -2,8 +2,7 @@
 
 import { queryClient } from "@fundlevel/web/lib/orpc/client";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { lazy, type ReactNode, Suspense, useState } from "react";
+import { lazy, type ReactNode, Suspense } from "react";
 
 const ReactQueryDevtoolsProduction = lazy(() =>
 	import("@tanstack/react-query-devtools/production").then((d) => ({
