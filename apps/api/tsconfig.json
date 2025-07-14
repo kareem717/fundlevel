@@ -10,9 +10,12 @@
 		"module": "ESNext",
 		"moduleResolution": "Bundler",
 		"paths": {
-			"@fundlevel/api/*": ["./src/*"]
+			"@fundlevel/api/*": ["./src/*"],
+			"@fundlevel/db/*": ["../../packages/db/src/*"]
 		},
 		"types": ["bun-types"],
 		"composite": true
-	}
+	},
+	"exclude": ["node_modules"],
+	"include": ["src/**/*.ts", "../../packages/db/src/**/*.ts"]
 }
