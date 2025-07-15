@@ -3,12 +3,12 @@ env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_LANDING }}
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - apps/landing/**
-      - packages/**
+  # push:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - apps/landing/**
+  #     - packages/**
   workflow_dispatch:
 jobs:
   # Note: the working dir is already setup in the vercel dashboard
