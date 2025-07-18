@@ -1,4 +1,5 @@
 import { cn } from "@fundlevel/ui/lib/utils";
+import { formatDate, getFileTypeColor } from "@fundlevel/web/lib/utils";
 import { Calendar, FileText, HardDrive } from "lucide-react";
 
 interface BankStatementCardProps {
@@ -64,26 +65,3 @@ export function BankStatementCard({
 		</div>
 	);
 }
-
-const formatDate = (dateString: string) => {
-	const date = new Date(dateString);
-	return date.toLocaleDateString("en-US", {
-		year: "numeric",
-		month: "short",
-		day: "numeric",
-	});
-};
-
-const getFileTypeColor = (type: string) => {
-	switch (type.toLowerCase()) {
-		case "pdf":
-			return "bg-red-100 text-red-700 border-red-200";
-		case "xlsx":
-		case "xls":
-			return "bg-green-100 text-green-700 border-green-200";
-		case "csv":
-			return "bg-blue-100 text-blue-700 border-blue-200";
-		default:
-			return "bg-gray-100 text-gray-700 border-gray-200";
-	}
-};

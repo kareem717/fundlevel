@@ -7,13 +7,20 @@ import {
 } from "@fundlevel/ui/components/hover-card";
 import { cn } from "@fundlevel/ui/lib/utils";
 import { redirects } from "@fundlevel/web/lib/config/redirects";
+import { orpc, queryClient } from "@fundlevel/web/lib/orpc/client";
+import {
+	formatBytes,
+	formatDate,
+	getFileTypeDisplay,
+} from "@fundlevel/web/lib/utils";
 import { useRealtimeRun } from "@trigger.dev/react-hooks";
 import { Calendar, File, HardDrive } from "lucide-react";
 import Link from "next/link";
 import type { ComponentPropsWithoutRef } from "react";
 import { BankStatementItemMenu } from "./bank-statement-menu";
 
-interface BankStatementItemProps extends ComponentPropsWithoutRef<typeof Link> {
+interface BankStatementItemProps
+	extends Omit<ComponentPropsWithoutRef<typeof Link>, "href"> {
 	bankStatement: Omit<
 		BankStatement,
 		"fileSizeBytes" | "createdAt" | "updatedAt"
@@ -32,9 +39,18 @@ export function BankStatementItem({
 	const hadExtractionJob =
 		!!bankStatement.extractionJobId && !!bankStatement.extractionJobToken;
 
-	const { run, error } = useRealtimeRun(bankStatement.extractionJobId ?? "", {
+	//TODO: handle query
+	const { run } = useRealtimeRun(bankStatement.extractionJobId ?? "", {
 		accessToken: bankStatement.extractionJobToken ?? "",
 		enabled: hadExtractionJob,
+		onComplete: () => {
+			//invalidate the transactions query
+			queryClient.invalidateQueries({
+				queryKey: orpc.bankStatement.transactions.queryKey({
+					input: { params: { id: bankStatement.id } },
+				}),
+			});
+		},
 	});
 
 	return (
@@ -82,7 +98,7 @@ export function BankStatementItem({
 						variant="secondary"
 					>
 						<HardDrive className="h-4 w-4" />
-						{formatFileSize(bankStatement.fileSizeBytes)}
+						{formatBytes(bankStatement.fileSizeBytes)}
 					</Badge>
 					<Badge
 						className="flex items-center gap-2 text-sm"
@@ -113,28 +129,3 @@ export function BankStatementItem({
 		</Link>
 	);
 }
-
-const formatDate = (date: string) => {
-	const dateObj = new Date(date);
-	return dateObj.toLocaleDateString("en-US", {
-		year: "numeric",
-		month: "short",
-		day: "numeric",
-	});
-};
-
-const formatFileSize = (bytes: string) => {
-	const bytesNum = Number(BigInt(bytes));
-	if (bytesNum === 0) return "0 Bytes";
-
-	const k = 1024;
-	const sizes = ["Bytes", "KB", "MB", "GB"];
-	const i = Math.floor(Math.log(bytesNum) / Math.log(k));
-
-	return `${Number.parseFloat((bytesNum / k ** i).toFixed(2))} ${sizes[i]}`;
-};
-
-const getFileTypeDisplay = (fileType: string) => {
-	const [_, subtype] = fileType.split("/");
-	return subtype.toUpperCase();
-};
