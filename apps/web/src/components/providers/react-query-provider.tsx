@@ -14,9 +14,11 @@ export function ReactQueryProvider({ children }: { children: ReactNode }) {
 	return (
 		<QueryClientProvider client={queryClient}>
 			{children}
-			<Suspense fallback={null}>
-				<ReactQueryDevtoolsProduction />
-			</Suspense>
+			{process.env.NODE_ENV === "development" && (
+				<Suspense fallback={null}>
+					<ReactQueryDevtoolsProduction />
+				</Suspense>
+			)}
 		</QueryClientProvider>
 	);
 }
