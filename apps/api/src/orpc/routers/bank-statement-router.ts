@@ -641,7 +641,7 @@ export const bankStatementRouter = {
 			const csvHeader = "Date,Merchant,Description,Credit,Debit,Currency\n";
 			const csvRows = transactions
 				.map((transaction) => {
-					const amount = (transaction.amountCents / 100).toFixed(2);
+					const amount = Math.abs(transaction.amountCents / 100).toFixed(2);
 					// Escape commas and quotes in CSV
 					const escapeCsvField = (field: string) => {
 						if (
@@ -693,7 +693,7 @@ export const bankStatementRouter = {
 				});
 			}
 
-			const expiresIn = 3600; // 15 minutes
+			const expiresIn = 60 * 15; // 15 minutes
 
 			try {
 				const downloadUrl = await getSignedUrl(
@@ -717,6 +717,8 @@ export const bankStatementRouter = {
 					cause: error,
 				});
 			}
+
+			// TODO: store exports for retention and reuse
 		}),
 
 	delete: protectedProcedure
