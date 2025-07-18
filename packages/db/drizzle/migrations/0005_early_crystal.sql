@@ -1,0 +1,1 @@
+ALTER TABLE "bank_statements" DROP COLUMN "extraction_job_id";

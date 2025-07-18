@@ -10,17 +10,19 @@ import {
 import { cn } from "@fundlevel/ui/lib/utils";
 import { orpc } from "@fundlevel/web/lib/orpc/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Download, Ellipsis, Loader2, Trash } from "lucide-react";
+import { Download, Ellipsis, FileText, Loader2, Trash } from "lucide-react";
 import type { ComponentPropsWithoutRef } from "react";
 import { toast } from "sonner";
 
 interface BankStatementItemMenuProps
 	extends ComponentPropsWithoutRef<typeof Button> {
 	bankStatementId: number;
+	alreadyExtracted: boolean;
 }
 
 export function BankStatementItemMenu({
 	bankStatementId,
+	alreadyExtracted = false,
 	className,
 	...props
 }: BankStatementItemMenuProps) {
@@ -45,19 +47,52 @@ export function BankStatementItemMenu({
 		}),
 	);
 
+	const {
+		mutateAsync: extractBankStatement,
+		isPending: isExtractingBankStatement,
+	} = useMutation(
+		orpc.bankStatement.extract.mutationOptions({
+			onSuccess: () => {
+				toast.success("Bank statement extraction started");
+				queryClient.invalidateQueries({
+					queryKey: orpc.bankStatement.list.queryKey(),
+				});
+			},
+		}),
+	);
+
+	function handleExtractBankStatement() {
+		if (alreadyExtracted) {
+			toast.error("Bank statement already extracted");
+			return;
+		}
+		extractBankStatement({ params: { id: bankStatementId } });
+	}
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
 				<Button
 					variant="ghost"
 					size="icon"
-					className={cn("h-8 w-8 p-0 hover:bg-muted", className)}
+					className={cn("h-8 p-0 hover:bg-muted", className)}
 					{...props}
 				>
 					<Ellipsis className="h-4 w-4" />
 				</Button>
 			</DropdownMenuTrigger>
-			<DropdownMenuContent align="end" className="w-32">
+			<DropdownMenuContent align="end">
+				<DropdownMenuItem
+					className="flex items-center gap-2"
+					onClick={() => handleExtractBankStatement()}
+					disabled={isExtractingBankStatement || alreadyExtracted}
+				>
+					{isExtractingBankStatement ? (
+						<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+					) : (
+						<FileText className="mr-2 h-4 w-4" />
+					)}
+					Extract transactions
+				</DropdownMenuItem>
 				<DropdownMenuItem
 					className="flex items-center gap-2"
 					onClick={() =>

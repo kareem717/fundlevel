@@ -1,0 +1,21 @@
+{
+	"name": "@fundlevel/documents",
+	"module": "index.ts",
+	"type": "module",
+	"private": true,
+	"scripts": {
+		"lint": "biome check .",
+		"lint:fix": "biome check --write .",
+		"format": "biome format --write .",
+		"typecheck": "tsc --noEmit"
+	},
+	"devDependencies": {
+		"typescript": "^5.9.0-beta"
+	},
+	"dependencies": {
+		"@ai-sdk/mistral": "^1.2.8",
+		"@fundlevel/db": "workspace:*",
+		"ai": "^4.3.19",
+		"zod": "^4.0.5"
+	}
+}

@@ -36,15 +36,15 @@
 		"web": "^0.0.2"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^2.0.6",
+		"@biomejs/biome": "^2.1.2",
 		"husky": "^9.1.7",
 		"lint-staged": "^15.5.2",
-		"turbo": "^2.5.4"
+		"turbo": "^2.5.5"
 	},
 	"lint-staged": {
 		"*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}": [
 			"biome check --write"
 		]
 	},
-	"packageManager": "bun@1.2.12"
+	"packageManager": "bun@1.2.18"
 }

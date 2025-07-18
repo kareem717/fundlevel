@@ -6,6 +6,7 @@ import {
 	HoverCardTrigger,
 } from "@fundlevel/ui/components/hover-card";
 import { cn } from "@fundlevel/ui/lib/utils";
+import { useRealtimeRun } from "@trigger.dev/react-hooks";
 import { Calendar, File, HardDrive } from "lucide-react";
 import type { ComponentPropsWithoutRef } from "react";
 import { BankStatementItemMenu } from "./bank-statement-menu";
@@ -26,10 +27,18 @@ export function BankStatementItem({
 	className,
 	...props
 }: BankStatementItemProps) {
+	const hadExtractionJob =
+		!!bankStatement.extractionJobId && !!bankStatement.extractionJobToken;
+
+	const { run, error } = useRealtimeRun(bankStatement.extractionJobId ?? "", {
+		accessToken: bankStatement.extractionJobToken ?? "",
+		enabled: hadExtractionJob,
+	});
+
 	return (
 		<div
 			className={cn(
-				"group hover:-translate-y-1 relative flex transform-gpu flex-col justify-between overflow-hidden rounded-xl border bg-background p-6 transition-all duration-300 hover:border-primary/20 hover:shadow-lg",
+				"group hover:-translate-y-1 relative flex transform-gpu flex-col justify-between gap-4 overflow-hidden rounded-xl border bg-background p-6 transition-all duration-300 hover:border-primary/20 hover:shadow-lg",
 				className,
 			)}
 			{...props}
@@ -55,13 +64,15 @@ export function BankStatementItem({
 					</div>
 					<BankStatementItemMenu
 						bankStatementId={bankStatement.id}
+						alreadyExtracted={["COMPLETED", "QUEUED", "DELAYED"].includes(
+							run?.status ?? "",
+						)}
 						className="-top-4 -right-4 absolute"
 					/>
 				</div>
 			</div>
-
 			{/* File Details */}
-			<div className="space-y-3">
+			<div className="flex items-center justify-between">
 				<div className="flex items-center gap-2 text-muted-foreground text-sm">
 					<Badge
 						className="flex items-center gap-2 text-sm"
@@ -78,8 +89,22 @@ export function BankStatementItem({
 						{getFileTypeDisplay(bankStatement.fileType)}
 					</Badge>
 				</div>
+				<HoverCard>
+					<HoverCardTrigger>
+						{run?.status ? (
+							<Badge>{run.status}</Badge>
+						) : (
+							<Badge variant="outline">Unprocessed</Badge>
+						)}
+					</HoverCardTrigger>
+					<HoverCardContent>
+						<p>
+							The status of the transaction extraction job is:{" "}
+							{run?.status ?? "Unprocessed"}
+						</p>
+					</HoverCardContent>
+				</HoverCard>
 			</div>
-
 			{/* Hover overlay */}
 			<div className="pointer-events-none absolute inset-0 transform-gpu transition-all duration-300 group-hover:bg-primary/[0.02]" />
 		</div>

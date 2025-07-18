@@ -19,7 +19,8 @@
 			"!**/src-tauri",
 			"!**/.nuxt",
 			"!bts.jsonc",
-			"!**/worker-configuration.d.ts"
+			"!**/worker-configuration.d.ts",
+			"!**/.trigger"
 		]
 	},
 	"formatter": {
@@ -48,6 +49,9 @@
 						"functions": ["clsx", "cva", "cn"]
 					}
 				}
+			},
+			"suspicious": {
+				"noImplicitAnyLet": "warn"
 			},
 			"style": {
 				"noParameterAssign": "error",

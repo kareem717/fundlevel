@@ -19,9 +19,8 @@
 		"noUncheckedIndexedAccess": true,
 		"baseUrl": ".",
 		"paths": {
-			"@fundlevel/jobs/*": ["./src/*"],
-			"@fundlevel/db/*": ["../db/src/*"],
-			"@fundlevel/documents/*": ["../documents/src/*"]
+			"@fundlevel/documents/*": ["./src/*"],
+			"@fundlevel/db/*": ["../db/src/*"]
 		},
 		// Some stricter flags (disabled by default)
 		"noUnusedLocals": false,

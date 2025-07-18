@@ -1,0 +1,1 @@
+ALTER TABLE "bank_statements" ADD COLUMN "extraction_job_token" text;

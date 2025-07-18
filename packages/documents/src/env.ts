@@ -18,27 +18,8 @@ const EnvSchema = z.object({
 	NODE_ENV: z
 		.enum(["development", "production", "test"])
 		.default("development"),
-	PORT: z.coerce.number().default(3000),
-	LOG_LEVEL: z
-		.enum(["fatal", "error", "warn", "info", "debug", "trace", "silent"])
-		.default("info"),
-	DATABASE_URL: z.string().url(),
-	NANGO_SECRET_KEY: z.string(),
-	SENTRY_DSN: z.string(),
+	DATABASE_URL: z.url(),
 	MISTRAL_API_KEY: z.string(),
-	WORKOS_API_KEY: z.string(),
-	WORKOS_CLIENT_ID: z.string(),
-	WORKOS_COOKIE_PASSWORD: z.string(),
-	WEB_APP_URL: z.string().url(),
-	BASE_URL: z.string().url(),
-	BASE_DOMAIN: z.string(),
-	AWS_ACCESS_KEY_ID: z.string(),
-	AWS_ENDPOINT_URL_S3: z.string().url(),
-	AWS_REGION: z.string(),
-	AWS_SECRET_ACCESS_KEY: z.string(),
-	BUCKET_NAME: z.string(),
-	TRIGGER_PROJECT_ID: z.string(),
-	TRIGGER_SECRET_KEY: z.string(),
 });
 
 export type env = z.infer<typeof EnvSchema>;
@@ -48,7 +29,7 @@ const { data: env, error } = EnvSchema.safeParse(process.env);
 
 if (error) {
 	console.error("❌ Invalid env:");
-	console.error(JSON.stringify(error.flatten().fieldErrors, null, 2));
+	console.error(JSON.stringify(z.treeifyError(error), null, 2));
 	process.exit(1);
 }
 

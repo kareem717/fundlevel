@@ -23,7 +23,8 @@
 			"@fundlevel/web/*": ["./src/*"],
 			"@fundlevel/ui/*": ["../../packages/ui/src/*"],
 			"@fundlevel/api/*": ["../../apps/api/src/*"],
-			"@fundlevel/db/*": ["../../packages/db/src/*"]
+			"@fundlevel/db/*": ["../../packages/db/src/*"],
+			"@fundlevel/documents/*": ["../../packages/documents/src/*"]
 		}
 	},
 	"include": [

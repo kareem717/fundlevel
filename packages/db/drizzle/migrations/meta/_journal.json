@@ -29,6 +29,34 @@
 			"when": 1752457067739,
 			"tag": "0003_tiresome_cannonball",
 			"breakpoints": true
+		},
+		{
+			"idx": 4,
+			"version": "7",
+			"when": 1752858951917,
+			"tag": "0004_cold_lady_mastermind",
+			"breakpoints": true
+		},
+		{
+			"idx": 5,
+			"version": "7",
+			"when": 1752869593693,
+			"tag": "0005_early_crystal",
+			"breakpoints": true
+		},
+		{
+			"idx": 6,
+			"version": "7",
+			"when": 1752869738035,
+			"tag": "0006_illegal_hex",
+			"breakpoints": true
+		},
+		{
+			"idx": 7,
+			"version": "7",
+			"when": 1752869857160,
+			"tag": "0007_solid_mad_thinker",
+			"breakpoints": true
 		}
 	]
 }

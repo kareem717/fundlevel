@@ -12,13 +12,18 @@
 	},
 	"devDependencies": {
 		"@trigger.dev/build": "^3.3.17",
-		"@types/node": "^22.16.0",
+		"@types/node": "^22.16.4",
 		"dotenv": "^17.2.0",
-		"typescript": "^5.8.3"
+		"typescript": "^5.9.0-beta"
 	},
 	"dependencies": {
+		"@fundlevel/documents": "workspace:*",
+		"@sentry/esbuild-plugin": "^3.6.1",
+		"@sentry/node": "^9.40.0",
 		"@trigger.dev/sdk": "^3.3.17"
 	},
 	"peerDependencies": {},
-	"exports": {}
+	"exports": {
+		"./tasks": "./src/tasks/index.ts"
+	}
 }

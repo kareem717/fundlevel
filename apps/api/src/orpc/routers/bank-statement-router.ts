@@ -6,34 +6,25 @@ import {
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import env from "@fundlevel/api/env";
 import { createDB } from "@fundlevel/api/lib/db/client";
-import { createMistralAIProvider } from "@fundlevel/api/lib/mistral/client";
-import { getQuickbookAccounts } from "@fundlevel/api/lib/nango/quickbooks";
-import type { QuickbooksAccount } from "@fundlevel/api/lib/nango/types";
-import { buildBankStatementPrompt } from "@fundlevel/api/lib/prompts";
 import {
 	bankStatementS3Key,
 	createS3Client,
 	exportS3Key,
 } from "@fundlevel/api/lib/s3/client";
-import {
-	bankStatementSchema,
-	integrationSchema,
-	transactionSchema,
-} from "@fundlevel/db/schema";
-import type { BankStatement, NangoConnection } from "@fundlevel/db/types";
+import { bankStatementSchema, transactionSchema } from "@fundlevel/db/schema";
+import type { BankStatement } from "@fundlevel/db/types";
 import {
 	SelectBankStatementSchema,
 	SelectTransactionSchema,
 } from "@fundlevel/db/validation";
-import type { NangoRecord } from "@nangohq/node";
+import { extractBankStatement } from "@fundlevel/jobs/tasks";
 import { ORPCError } from "@orpc/server";
 import * as Sentry from "@sentry/bun";
-import { generateObject } from "ai";
+import { runs } from "@trigger.dev/sdk/v3";
 import { eq } from "drizzle-orm";
 import { getTableConfig } from "drizzle-orm/pg-core";
 import z from "zod";
 import { protectedProcedure } from "../init";
-import { ExtractTransactionSchema } from "../schemas";
 
 export const bankStatementRouter = {
 	list: protectedProcedure
@@ -262,9 +253,6 @@ export const bankStatementRouter = {
 				}),
 			}),
 		)
-		.output(
-			z.array(ExtractTransactionSchema).describe("Extracted transactions"),
-		)
 		.handler(async ({ input, context }) => {
 			const { user } = context;
 			const db = createDB();
@@ -294,47 +282,57 @@ export const bankStatementRouter = {
 				});
 			}
 
-			// Get QB connection for account classification
-			const nangoConnection = await Sentry.startSpan(
-				{
-					name: "DB Query",
-					op: "db.query",
-					attributes: {
-						table: getTableConfig(integrationSchema.nangoConnections).name,
-					},
-				},
-				async () => {
-					let nangoConnection: NangoConnection;
-					const queryStartTime = performance.now();
-					try {
-						[nangoConnection] = await db
-							.select()
-							.from(integrationSchema.nangoConnections)
-							.where(eq(integrationSchema.nangoConnections.userId, user.id))
-							.limit(1);
-					} catch (error) {
-						throw new ORPCError("INTERNAL_SERVER_ERROR", {
-							message: "Failed to fetch nango connection.",
-							cause: error,
-						});
-					}
-					const span = Sentry.getActiveSpan();
-					if (span) {
-						span.setAttribute(
-							"db.query.processing_time_ms",
-							performance.now() - queryStartTime,
-						);
-					}
+			if (statement.extractionJobId) {
+				// check if the job is completed
+				const job = await runs.retrieve(statement.extractionJobId);
+				if (["COMPLETED", "QUEUED", "DELAYED"].includes(job.status ?? "")) {
+					throw new ORPCError("BAD_REQUEST", {
+						message: `Bank statement processing already been ${job.status?.toLowerCase()}`,
+					});
+				}
+			}
 
-					if (!nangoConnection) {
-						throw new ORPCError("NOT_FOUND", {
-							message: "Nango connection not found",
-						});
-					}
+			// // Get QB connection for account classification
+			// const nangoConnection = await Sentry.startSpan(
+			// 	{
+			// 		name: "DB Query",
+			// 		op: "db.query",
+			// 		attributes: {
+			// 			table: getTableConfig(integrationSchema.nangoConnections).name,
+			// 		},
+			// 	},
+			// 	async () => {
+			// 		let nangoConnection: NangoConnection;
+			// 		const queryStartTime = performance.now();
+			// 		try {
+			// 			[nangoConnection] = await db
+			// 				.select()
+			// 				.from(integrationSchema.nangoConnections)
+			// 				.where(eq(integrationSchema.nangoConnections.userId, user.id))
+			// 				.limit(1);
+			// 		} catch (error) {
+			// 			throw new ORPCError("INTERNAL_SERVER_ERROR", {
+			// 				message: "Failed to fetch nango connection.",
+			// 				cause: error,
+			// 			});
+			// 		}
+			// 		const span = Sentry.getActiveSpan();
+			// 		if (span) {
+			// 			span.setAttribute(
+			// 				"db.query.processing_time_ms",
+			// 				performance.now() - queryStartTime,
+			// 			);
+			// 		}
 
-					return nangoConnection;
-				},
-			);
+			// 		if (!nangoConnection) {
+			// 			throw new ORPCError("NOT_FOUND", {
+			// 				message: "Nango connection not found",
+			// 			});
+			// 		}
+
+			// 		return nangoConnection;
+			// 	},
+			// );
 
 			// create presigned url for bank statement
 			const presignedUrl = await Sentry.startSpan(
@@ -373,131 +371,46 @@ export const bankStatementRouter = {
 				},
 			);
 
-			let accounts: NangoRecord<QuickbooksAccount>[] = [];
-			if (nangoConnection) {
-				try {
-					accounts = await getQuickbookAccounts(
-						nangoConnection.id,
-						nangoConnection.providerConfigKey,
-					);
-				} catch (error) {
-					throw new ORPCError("INTERNAL_SERVER_ERROR", {
-						message: "Failed to fetch quickbooks accounts.",
-						cause: error,
-					});
-				}
-			}
+			// let accounts: NangoRecord<QuickbooksAccount>[] = [];
+			// if (nangoConnection) {
+			// 	try {
+			// 		accounts = await getQuickbookAccounts(
+			// 			nangoConnection.id,
+			// 			nangoConnection.providerConfigKey,
+			// 		);
+			// 	} catch (error) {
+			// 		throw new ORPCError("INTERNAL_SERVER_ERROR", {
+			// 			message: "Failed to fetch quickbooks accounts.",
+			// 			cause: error,
+			// 		});
+			// 	}
+			// }
 
-			const mistralClient = createMistralAIProvider();
-			const MODEL_NAME = "mistral-small-latest";
-
-			const transactions = await Sentry.startSpan(
-				{
-					name: "OCR Process",
-					op: "ocr.process",
-				},
-				async () => {
-					try {
-						const startTime = performance.now();
-						const response = await generateObject({
-							model: mistralClient(MODEL_NAME),
-							output: "array",
-							schema: ExtractTransactionSchema,
-							abortSignal: AbortSignal.timeout(1000 * 60),
-							messages: [
-								{
-									role: "system",
-									content: buildBankStatementPrompt(accounts),
-								},
-								{
-									role: "user",
-									content: [
-										{
-											type: "file",
-											data: presignedUrl,
-											mimeType: statement.fileType,
-										},
-									],
-								},
-							],
-							providerOptions: {
-								mistral: {
-									documentPageLimit: 10,
-								},
-							},
-						});
-
-						const span = Sentry.getActiveSpan();
-						if (span) {
-							span.setAttribute(
-								"ocr.completion_tokens",
-								response.usage.completionTokens,
-							);
-							span.setAttribute(
-								"ocr.prompt_tokens",
-								response.usage.promptTokens,
-							);
-							span.setAttribute("ocr.model", MODEL_NAME);
-							span.setAttribute("ocr.provider", "mistral");
-							span.setAttribute(
-								"ocr.processing_time_ms",
-								performance.now() - startTime,
-							);
-						}
-
-						return response.object;
-					} catch (error) {
-						throw new ORPCError("INTERNAL_SERVER_ERROR", {
-							message: "Failed to extract transactions.",
-							cause: error,
-						});
-					}
-				},
-			);
-
-			// Insert transactions and update status to "done" in a transaction
-			await db.transaction(async (tx) => {
-				// Insert transactions into database
-				await Sentry.startSpan(
-					{
-						name: "DB Insert",
-						op: "db.insert",
-						attributes: {
-							table: getTableConfig(transactionSchema.transactions).name,
-						},
-					},
-					async () => {
-						try {
-							const insertStartTime = performance.now();
-							const result = await tx
-								.insert(transactionSchema.transactions)
-								.values(
-									transactions.map((transaction) => ({
-										...transaction,
-										userId: user.id,
-										bankStatementId: statement.id,
-									})),
-								);
-
-							const span = Sentry.getActiveSpan();
-							if (span) {
-								span.setAttribute(
-									"db.insert.processing_time_ms",
-									performance.now() - insertStartTime,
-								);
-							}
-							return result;
-						} catch (error) {
-							throw new ORPCError("INTERNAL_SERVER_ERROR", {
-								message: "Failed to insert transactions.",
-								cause: error,
-							});
-						}
-					},
-				);
+			const jobRes = await extractBankStatement.trigger({
+				userId: user.id,
+				bankStatementId: statement.id,
+				url: presignedUrl,
+				mimeType: statement.fileType,
+				fileName: statement.originalFileName,
 			});
 
-			return transactions;
+			try {
+				// TODO: we don't wanna store this, it expires in 15 min
+				await db
+					.update(bankStatementSchema.bankStatements)
+					.set({
+						extractionJobId: jobRes.id,
+						extractionJobToken: jobRes.publicAccessToken,
+					})
+					.where(eq(bankStatementSchema.bankStatements.id, statement.id));
+			} catch (error) {
+				throw new ORPCError("INTERNAL_SERVER_ERROR", {
+					message: "Failed to update bank statement.",
+					cause: error,
+				});
+			}
+
+			return jobRes;
 		}),
 	transactions: protectedProcedure
 		.route({

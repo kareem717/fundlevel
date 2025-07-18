@@ -33,12 +33,20 @@ jobs:
               - 'packages/**'
             jobs:
               - 'packages/jobs/**'
+              - 'packages/documents/**'
             landing:
               - 'apps/landing/**'
               - 'packages/**'
             web:
               - 'apps/web/**'
               - 'packages/**'
+
+      - name: Debug filter outputs
+        run: |
+          echo "api: ${{ steps.filter.outputs.api }}"
+          echo "jobs: ${{ steps.filter.outputs.jobs }}"
+          echo "landing: ${{ steps.filter.outputs.landing }}"
+          echo "web: ${{ steps.filter.outputs.web }}"
 
   deploy-jobs:
     name: Deploy Background Jobs
@@ -62,7 +70,11 @@ jobs:
       - name: Deploy Background Jobs
         env:
           TRIGGER_PROJECT_ID: ${{ secrets.TRIGGER_PROJECT_ID }}
-        run: TRIGGER_PROJECT_ID=${{ secrets.TRIGGER_PROJECT_ID }} bunx trigger.dev@latest deploy
+          SKIP_ENV_VALIDATION: true
+          NODE_ENV: production
+        run: |
+          TRIGGER_PROJECT_ID=${{ secrets.TRIGGER_PROJECT_ID }} 
+          bunx trigger.dev@latest deploy
         working-directory: ./packages/jobs
 
   deploy-api:

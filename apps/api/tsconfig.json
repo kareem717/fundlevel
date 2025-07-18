@@ -11,11 +11,16 @@
 		"moduleResolution": "Bundler",
 		"paths": {
 			"@fundlevel/api/*": ["./src/*"],
-			"@fundlevel/db/*": ["../../packages/db/src/*"]
+			"@fundlevel/db/*": ["../../packages/db/src/*"],
+			"@fundlevel/documents/*": ["../../packages/documents/src/*"]
 		},
 		"types": ["bun-types"],
 		"composite": true
 	},
-	"exclude": ["node_modules"],
-	"include": ["src/**/*.ts", "../../packages/db/src/**/*.ts"]
+	"exclude": ["./node_modules"],
+	"include": [
+		"src/**/*.ts",
+		"../../packages/db/src/**/*.ts",
+		"../../packages/documents/src/**/*.ts"
+	]
 }
