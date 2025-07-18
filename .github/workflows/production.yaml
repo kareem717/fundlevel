@@ -33,16 +33,19 @@ jobs:
               - 'packages/db/drizzle/**' 
             api:
               - 'apps/api/**'
-              - 'packages/**'
+              - 'packages/db/**'
+              - 'packages/documents/**'
+              - 'packages/jobs/**'
             jobs:
               - 'packages/jobs/**'
               - 'packages/documents/**'
             landing:
               - 'apps/landing/**'
-              - 'packages/**'
+              - 'packages/ui/**'
             web:
               - 'apps/web/**'
-              - 'packages/**'
+              - 'packages/ui/**'
+              - 'packages/db/**' 
 
       - name: Debug filter outputs
         run: |
@@ -163,8 +166,7 @@ jobs:
 
   deploy-landing:
     name: Deploy Landing Page to Vercel
-    needs: [changes, deploy-jobs, migrate-db]
-    if: (needs.deploy-jobs.result == 'success' || needs.deploy-jobs.result == 'skipped') && (needs.migrate-db.result == 'success' || needs.migrate-db.result == 'skipped') && needs.changes.outputs.landing == 'true'
+    needs: [changes]
     environment: production
     runs-on: ubuntu-latest
     steps:
