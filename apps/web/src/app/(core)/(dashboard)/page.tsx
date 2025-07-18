@@ -1,5 +1,7 @@
-import { orpc } from "@fundlevel/web/lib/orpc/client";
+import { getSessionFn } from "@fundlevel/web/app/actions/auth";
+import { redirects } from "@fundlevel/web/lib/config/redirects";
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
 	title: "Home",
@@ -7,12 +9,15 @@ export const metadata: Metadata = {
 };
 
 export default async function DashboardPage() {
-	const healthCheck = await orpc.health.check.call();
+	const session = await getSessionFn();
+
+	if (!session) {
+		redirect(redirects.auth.signIn);
+	}
 
 	return (
 		<div>
 			<h1>Dashboard</h1>
-			<pre>{JSON.stringify(healthCheck, null, 2)}</pre>
 		</div>
 	);
 }

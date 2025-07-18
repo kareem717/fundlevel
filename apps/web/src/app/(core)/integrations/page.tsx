@@ -1,3 +1,6 @@
+import { redirects } from "@fundlevel/web/lib/config/redirects";
+import { redirect } from "next/navigation";
+import { getSessionFn } from "../../actions/auth";
 import { IntegrationList } from "./components/integration-list";
 
 export const metadata = {
@@ -5,7 +8,13 @@ export const metadata = {
 	description: "Integrations connected to your account",
 };
 
-export default function IntegrationsPage() {
+export default async function IntegrationsPage() {
+	const session = await getSessionFn();
+
+	if (!session) {
+		redirect(redirects.auth.signIn);
+	}
+
 	return (
 		<div className="container mx-auto space-y-14 p-6">
 			{/* Header */}
