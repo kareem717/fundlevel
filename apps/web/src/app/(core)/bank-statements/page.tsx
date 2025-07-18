@@ -1,14 +1,8 @@
 import { redirects } from "@fundlevel/web/lib/config/redirects";
-import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getSessionFn } from "../../actions/auth";
 import { BankStatementList } from "./components/bank-statement-list";
 import { BankStatementUpload } from "./components/bank-statement-upload";
-
-export const metadata: Metadata = {
-	title: "Bank Statements",
-	description: "Bank Statements",
-};
 
 export default async function BankStatementsPage() {
 	const session = await getSessionFn();

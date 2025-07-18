@@ -80,7 +80,10 @@ export function BankStatementItemMenu({
 					<Ellipsis className="h-4 w-4" />
 				</Button>
 			</DropdownMenuTrigger>
-			<DropdownMenuContent align="end">
+			<DropdownMenuContent
+				align="end"
+				onClick={(e) => e.preventDefault()} // We nest this in a link, so we need to prevent the default behavior
+			>
 				<DropdownMenuItem
 					className="flex items-center gap-2"
 					onClick={() => handleExtractBankStatement()}

@@ -6,12 +6,14 @@ import {
 	HoverCardTrigger,
 } from "@fundlevel/ui/components/hover-card";
 import { cn } from "@fundlevel/ui/lib/utils";
+import { redirects } from "@fundlevel/web/lib/config/redirects";
 import { useRealtimeRun } from "@trigger.dev/react-hooks";
 import { Calendar, File, HardDrive } from "lucide-react";
+import Link from "next/link";
 import type { ComponentPropsWithoutRef } from "react";
 import { BankStatementItemMenu } from "./bank-statement-menu";
 
-interface BankStatementItemProps extends ComponentPropsWithoutRef<"div"> {
+interface BankStatementItemProps extends ComponentPropsWithoutRef<typeof Link> {
 	bankStatement: Omit<
 		BankStatement,
 		"fileSizeBytes" | "createdAt" | "updatedAt"
@@ -36,41 +38,42 @@ export function BankStatementItem({
 	});
 
 	return (
-		<div
+		<Link
+			{...props}
+			href={redirects.app.bankStatements.view(bankStatement.id)}
 			className={cn(
 				"group hover:-translate-y-1 relative flex transform-gpu flex-col justify-between gap-4 overflow-hidden rounded-xl border bg-background p-6 transition-all duration-300 hover:border-primary/20 hover:shadow-lg",
 				className,
 			)}
-			{...props}
 		>
 			{/* File Icon and Type with Dropdown */}
-			<div className="relative mb-4 flex items-start justify-between">
-				<div className="flex items-center gap-3">
-					<div className="flex flex-col">
-						<HoverCard openDelay={250} closeDelay={100}>
-							<HoverCardTrigger>
-								<h3 className="max-w-[220px] cursor-default truncate font-semibold text-foreground">
-									{bankStatement.originalFileName}
-								</h3>
-							</HoverCardTrigger>
-							<HoverCardContent className="max-w-xs">
+			{/* <div className="relative mb-4 flex items-start justify-between"> */}
+			<div className="relative flex items-center gap-3">
+				<div className="flex flex-col">
+					<HoverCard openDelay={250} closeDelay={100}>
+						<HoverCardTrigger asChild>
+							<h3 className="max-w-[220px] cursor-default truncate font-semibold text-foreground">
 								{bankStatement.originalFileName}
-							</HoverCardContent>
-						</HoverCard>
-						<div className="flex items-center gap-2 text-muted-foreground text-sm">
-							<Calendar className="h-4 w-4" />
-							<span>{formatDate(bankStatement.createdAt)}</span>
-						</div>
+							</h3>
+						</HoverCardTrigger>
+						<HoverCardContent className="max-w-xs">
+							{bankStatement.originalFileName}
+						</HoverCardContent>
+					</HoverCard>
+					<div className="flex items-center gap-2 text-muted-foreground text-sm">
+						<Calendar className="h-4 w-4" />
+						<span>{formatDate(bankStatement.createdAt)}</span>
 					</div>
-					<BankStatementItemMenu
-						bankStatementId={bankStatement.id}
-						alreadyExtracted={["COMPLETED", "QUEUED", "DELAYED"].includes(
-							run?.status ?? "",
-						)}
-						className="-top-4 -right-4 absolute"
-					/>
 				</div>
+				<BankStatementItemMenu
+					bankStatementId={bankStatement.id}
+					alreadyExtracted={["COMPLETED", "QUEUED", "DELAYED"].includes(
+						run?.status ?? "",
+					)}
+					className="-top-4 -right-4 absolute"
+				/>
 			</div>
+			{/* </div> */}
 			{/* File Details */}
 			<div className="flex items-center justify-between">
 				<div className="flex items-center gap-2 text-muted-foreground text-sm">
@@ -90,7 +93,7 @@ export function BankStatementItem({
 					</Badge>
 				</div>
 				<HoverCard>
-					<HoverCardTrigger>
+					<HoverCardTrigger asChild>
 						{run?.status ? (
 							<Badge>{run.status}</Badge>
 						) : (
@@ -107,7 +110,7 @@ export function BankStatementItem({
 			</div>
 			{/* Hover overlay */}
 			<div className="pointer-events-none absolute inset-0 transform-gpu transition-all duration-300 group-hover:bg-primary/[0.02]" />
-		</div>
+		</Link>
 	);
 }
 

@@ -21,7 +21,7 @@ import { extractBankStatement } from "@fundlevel/jobs/tasks";
 import { ORPCError } from "@orpc/server";
 import * as Sentry from "@sentry/bun";
 import { runs } from "@trigger.dev/sdk/v3";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { getTableConfig } from "drizzle-orm/pg-core";
 import z from "zod";
 import { protectedProcedure } from "../init";
@@ -858,5 +858,45 @@ export const bankStatementRouter = {
 					},
 				);
 			});
+		}),
+	get: protectedProcedure
+		.route({
+			method: "GET",
+			path: "/bank-statements/{id}",
+			tags: ["Bank Statements"],
+			inputStructure: "detailed",
+		})
+		.input(
+			z.object({
+				params: z.object({
+					id: z.coerce.number().describe("The ID of the bank statement"),
+				}),
+			}),
+		)
+		.handler(async ({ input, context }) => {
+			const { user } = context;
+			const { id } = input.params;
+
+			const db = createDB();
+			const [statement] = await db
+				.select()
+				.from(bankStatementSchema.bankStatements)
+				.where(eq(bankStatementSchema.bankStatements.id, id));
+
+			if (!statement) {
+				throw new ORPCError("NOT_FOUND", {
+					message: "Bank statement not found",
+				});
+			}
+
+			if (statement.userId !== user.id) {
+				throw new ORPCError("FORBIDDEN", {
+					message: "Bank statement does not belong to user",
+				});
+			}
+
+			return {
+				statement,
+			};
 		}),
 };

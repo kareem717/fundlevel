@@ -37,7 +37,7 @@ const items = [
 	{
 		title: "Bank Statements",
 		icon: FileText,
-		href: redirects.app.bankStatements,
+		href: redirects.app.bankStatements.index,
 	},
 ];
 

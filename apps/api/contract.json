@@ -216,6 +216,18 @@
 					"inputStructure": "detailed"
 				}
 			}
+		},
+		"get": {
+			"~orpc": {
+				"errorMap": {},
+				"meta": {},
+				"route": {
+					"method": "GET",
+					"path": "/bank-statements/{id}",
+					"tags": ["Bank Statements"],
+					"inputStructure": "detailed"
+				}
+			}
 		}
 	}
 }
