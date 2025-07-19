@@ -53,6 +53,7 @@ jobs:
           echo "jobs: ${{ steps.filter.outputs.jobs }}"
           echo "landing: ${{ steps.filter.outputs.landing }}"
           echo "web: ${{ steps.filter.outputs.web }}"
+          echo "db: ${{ steps.filter.outputs.db }}"
 
   deploy-jobs:
     name: Deploy Background Jobs
@@ -111,7 +112,7 @@ jobs:
   deploy-api:
     name: Deploy API to Fly.io
     needs: [changes, deploy-jobs, migrate-db]
-    if: (needs.deploy-jobs.result == 'success' || needs.deploy-jobs.result == 'skipped') && (needs.migrate-db.result == 'success' || needs.migrate-db.result == 'skipped') && needs.changes.outputs.api == 'true'
+    if: always() && (needs.changes.outputs.jobs != 'true' || needs.deploy-jobs.result == 'success') && (needs.changes.outputs.db != 'true' || needs.migrate-db.result == 'success') && needs.changes.outputs.api == 'true'
     runs-on: ubuntu-latest
     concurrency: fly-production
     steps:
@@ -132,8 +133,8 @@ jobs:
 
   deploy-web:
     name: Deploy Web App to Vercel
-    needs: [changes, deploy-jobs, migrate-db]
-    if: (needs.deploy-jobs.result == 'success' || needs.deploy-jobs.result == 'skipped') && (needs.migrate-db.result == 'success' || needs.migrate-db.result == 'skipped') && needs.changes.outputs.web == 'true'
+    needs: [changes, deploy-jobs, migrate-db, deploy-api]
+    if: always() && (needs.changes.outputs.jobs != 'true' || needs.deploy-jobs.result == 'success') && (needs.changes.outputs.db != 'true' || needs.migrate-db.result == 'success') && (needs.changes.outputs.api != 'true' || needs.deploy-api.result == 'success') && needs.changes.outputs.web == 'true'
     environment: production
     runs-on: ubuntu-latest
     steps:
